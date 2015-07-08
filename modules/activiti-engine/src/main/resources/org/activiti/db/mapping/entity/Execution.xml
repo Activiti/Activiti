@@ -448,20 +448,26 @@
         </otherwise>
       </choose> 
     </foreach>
-    <if test="orQueryObject != null">
+    <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
+      <if test="orQueryObject.processDefinitionId != null || orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionName != null || (orQueryObject.processDefinitionIds != null &amp;&amp; !orQueryObject.processDefinitionIds.isEmpty()) || (orQueryObject.processDefinitionKeys != null &amp;&amp; !orQueryObject.processDefinitionKeys.isEmpty())">
+        inner join ${prefix}ACT_RE_PROCDEF P_OR${orIndex} on RES.PROC_DEF_ID_ = P_OR${orIndex}.ID_
+      </if>
       <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
-        left outer join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_
+        left outer join ${prefix}ACT_RU_VARIABLE A_OR${orIndex}_${index} on RES.PROC_INST_ID_ = A_OR${orIndex}_${index}.PROC_INST_ID_
       </foreach>
-    </if>
+      <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
+        left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
+      </if>
+    </foreach>
     <if test="eventSubscriptions != null">
-    	 <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
-    	 	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on RES.ID_ = EVT${index}.EXECUTION_ID_
-	    </foreach>
+      <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
+    	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on RES.ID_ = EVT${index}.EXECUTION_ID_
+	   </foreach>
     </if>
     <if test="businessKey != null and includeChildExecutionsWithBusinessKeyQuery">
         inner join ${prefix}ACT_RU_EXECUTION INST on RES.PROC_INST_ID_ = INST.ID_
     </if>
-    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where>
@@ -634,29 +640,29 @@
     	    and (EVT${index}.EVENT_TYPE_ = #{eventSubscriptionValue.eventType} and EVT${index}.EVENT_NAME_ = #{eventSubscriptionValue.eventName}) 
 	      </foreach>
       </if>
-      <if test="orQueryObject != null">
+      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         and 
         <trim prefix="(" prefixOverrides="OR" suffix=")">
           <if test="orQueryObject.processDefinitionId != null">
-            P.ID_ = #{orQueryObject.processDefinitionId}
+            P_OR${orIndex}.ID_ = #{orQueryObject.processDefinitionId}
           </if>
           <if test="orQueryObject.processDefinitionIds != null and !orQueryObject.processDefinitionIds.isEmpty()">
-            or P.ID_ in
+            or P_OR${orIndex}.ID_ in
             <foreach item="item" index="index" collection="orQueryObject.processDefinitionIds" open="(" separator="," close=")">
               #{item}
             </foreach>
           </if>
           <if test="orQueryObject.processDefinitionKey != null">
-            or P.KEY_ = #{orQueryObject.processDefinitionKey}
+            or P_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
           </if>
           <if test="orQueryObject.processDefinitionKeys != null and !orQueryObject.processDefinitionKeys.isEmpty()">
-            or P.KEY_ in
+            or P_OR${orIndex}.KEY_ in
             <foreach item="item" index="index" collection="orQueryObject.processDefinitionKeys" open="(" separator="," close=")">
               #{item}
             </foreach>
           </if>
           <if test="orQueryObject.processDefinitionName != null">
-            or P.NAME_ = #{orQueryObject.processDefinitionName}
+            or P_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
           </if>
           <if test="orQueryObject.executionId != null">
             or RES.ID_ = #{orQueryObject.executionId}
@@ -680,10 +686,10 @@
             or RES.PARENT_ID_ = #{orQueryObject.parentId}
           </if>
           <if test="orQueryObject.deploymentId != null">
-            or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+            or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
           </if>
           <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
-            or DEPLOY_P.DEPLOYMENT_ID_ IN
+            or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ IN
             <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
                      open="(" separator="," close=")">
               #{deployment}
@@ -735,23 +741,23 @@
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <if test="!queryVariableValue.local">
                 <!-- When process instance variable is queried for, only process variables are taken into account -->
-                and A_OR${index}.EXECUTION_ID_ = A_OR${index}.PROC_INST_ID_
+                and A_OR${orIndex}_${index}.EXECUTION_ID_ = A_OR${orIndex}_${index}.PROC_INST_ID_
               </if>
               <if test="queryVariableValue.name != null">
                 <!-- Match-all variable-names when name is null -->
-                and A_OR${index}.NAME_= #{queryVariableValue.name}
+                and A_OR${orIndex}_${index}.NAME_= #{queryVariableValue.name}
               </if>
               <if test="!queryVariableValue.type.equals('null')">
               <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
-                and A_OR${index}.TYPE_ = #{queryVariableValue.type}
+                and A_OR${orIndex}_${index}.TYPE_ = #{queryVariableValue.type}
               </if>
               <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
                   <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
-                    and lower(A_OR${index}.TEXT_)
+                    and lower(A_OR${orIndex}_${index}.TEXT_)
                   </when>
                   <otherwise>
-                    and A_OR${index}.TEXT_
+                    and A_OR${orIndex}_${index}.TEXT_
                   </otherwise>
                 </choose>
               <choose>
@@ -761,7 +767,7 @@
                 #{queryVariableValue.textValue}
               </if>
               <if test="queryVariableValue.textValue2 != null">
-              and A_OR${index}.TEXT2_
+              and A_OR${orIndex}_${index}.TEXT2_
               <choose>
                 <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
                 <otherwise><include refid="executionVariableOperator" /></otherwise>
@@ -769,12 +775,12 @@
                 #{queryVariableValue.textValue2}
               </if>
               <if test="queryVariableValue.longValue != null">
-              and A_OR${index}.LONG_
+              and A_OR${orIndex}_${index}.LONG_
               <include refid="executionVariableOperator" />
               #{queryVariableValue.longValue}
               </if>
               <if test="queryVariableValue.doubleValue != null">
-              and A_OR${index}.DOUBLE_
+              and A_OR${orIndex}_${index}.DOUBLE_
               <include refid="executionVariableOperator" />
               #{queryVariableValue.doubleValue}
               </if>
@@ -782,17 +788,17 @@
               <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
                   <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
-                    and (A_OR${index}.TEXT_ is not null or A_OR${index}.TEXT2_ is not null or A_OR${index}.LONG_ is not null or A_OR${index}.DOUBLE_ is not null or A_OR${index}.BYTEARRAY_ID_ is not null)
+                    and (A_OR${orIndex}_${index}.TEXT_ is not null or A_OR${orIndex}_${index}.TEXT2_ is not null or A_OR${orIndex}_${index}.LONG_ is not null or A_OR${orIndex}_${index}.DOUBLE_ is not null or A_OR${orIndex}_${index}.BYTEARRAY_ID_ is not null)
                   </when>
                   <otherwise>
-                    and A_OR${index}.TEXT_ is null and A_OR${index}.TEXT2_ is null and A_OR${index}.LONG_ is null and A_OR${index}.DOUBLE_ is null and A_OR${index}.BYTEARRAY_ID_ is null
+                    and A_OR${orIndex}_${index}.TEXT_ is null and A_OR${orIndex}_${index}.TEXT2_ is null and A_OR${orIndex}_${index}.LONG_ is null and A_OR${orIndex}_${index}.DOUBLE_ is null and A_OR${orIndex}_${index}.BYTEARRAY_ID_ is null
                   </otherwise>
                 </choose>
               </if>
             </trim>
           </foreach>
         </trim>
-      </if>
+      </foreach>
     </where>
   </sql>
   

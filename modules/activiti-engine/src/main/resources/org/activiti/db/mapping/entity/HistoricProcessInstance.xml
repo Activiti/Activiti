@@ -327,18 +327,24 @@
   </sql>
   
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
-    <if test="processKeyNotIn != null || processDefinitionKey != null || (processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)))">
+    <if test="processKeyNotIn != null || processDefinitionKey != null || (processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0)">
       inner join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       inner join ${prefix}ACT_HI_VARINST  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
     </foreach>
-    <if test="orQueryObject != null">
+    <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
+      <if test="orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)">
+        inner join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex} on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
+      </if>
+      <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
+        left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
+      </if>
       <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
-        left outer join ${prefix}ACT_HI_VARINST A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_
+        left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex}_${index} on RES.PROC_INST_ID_ = A_OR${orIndex}_${index}.PROC_INST_ID_
       </foreach>
-    </if>
-    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
+    </foreach>
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where>
@@ -492,7 +498,7 @@
         </choose>
         </if>
       </foreach>
-      <if test="orQueryObject != null">
+      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         and 
         <trim prefix="(" prefixOverrides="OR" suffix=")">
           <if test="orQueryObject.processInstanceId != null">
@@ -508,10 +514,10 @@
             or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
           </if>
           <if test="orQueryObject.processDefinitionKey != null">
-            or DEF.KEY_ = #{orQueryObject.processDefinitionKey}
+            or DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
           </if>
           <if test="orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0">
-            or DEF.KEY_ IN
+            or DEF_OR${orIndex}.KEY_ IN
             <foreach item="definition" index="index" collection="orQueryObject.processDefinitionKeyIn"
                      open="(" separator="," close=")">
               #{definition}
@@ -521,10 +527,10 @@
             or RES.BUSINESS_KEY_ = #{orQueryObject.businessKey}
           </if>
           <if test="orQueryObject.deploymentId != null">
-            or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+            or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
           </if>
           <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
-            or DEPLOY_P.DEPLOYMENT_ID_ IN
+            or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ IN
             <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
                      open="(" separator="," close=")">
               #{deployment}
@@ -546,7 +552,7 @@
             or
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <foreach collection="orQueryObject.processKeyNotIn" index="index" item="procDefKey">
-                and DEF.KEY_ not like #{procDefKey}
+                and DEF_OR${orIndex}.KEY_ not like #{procDefKey}
               </foreach>
             </trim>
           </if>
@@ -599,19 +605,19 @@
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <if test="queryVariableValue.name != null">
                 <!-- Match-all variable-names when name is null -->
-                and A_OR${index}.NAME_= #{queryVariableValue.name}
+                and A_OR${orIndex}_${index}.NAME_= #{queryVariableValue.name}
               </if>
               <if test="!queryVariableValue.type.equals('null')">
               <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
-                and A_OR${index}.VAR_TYPE_ = #{queryVariableValue.type}
+                and A_OR${orIndex}_${index}.VAR_TYPE_ = #{queryVariableValue.type}
               </if>
               <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
                   <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
-                    and lower(A_OR${index}.TEXT_)
+                    and lower(A_OR${orIndex}_${index}.TEXT_)
                   </when>
                   <otherwise>
-                    and A_OR${index}.TEXT_
+                    and A_OR${orIndex}_${index}.TEXT_
                   </otherwise>
                 </choose>
                 <choose>
@@ -621,7 +627,7 @@
                 #{queryVariableValue.textValue}
               </if>
               <if test="queryVariableValue.textValue2 != null">
-              and A_OR${index}.TEXT2_
+              and A_OR${orIndex}_${index}.TEXT2_
               <choose>
                 <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
                 <otherwise><include refid="executionVariableOperator" /></otherwise>
@@ -629,12 +635,12 @@
                 #{queryVariableValue.textValue2}
               </if>
               <if test="queryVariableValue.longValue != null">
-              and A_OR${index}.LONG_
+              and A_OR${orIndex}_${index}.LONG_
               <include refid="executionVariableOperator" />
               #{queryVariableValue.longValue}
               </if>
               <if test="queryVariableValue.doubleValue != null">
-              and A_OR${index}.DOUBLE_
+              and A_OR${orIndex}_${index}.DOUBLE_
               <include refid="executionVariableOperator" />
               #{queryVariableValue.doubleValue}
               </if>
@@ -642,17 +648,17 @@
               <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
                   <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
-                    and (A_OR${index}.TEXT_ is not null or A_OR${index}.TEXT2_ is not null or A_OR${index}.LONG_ is not null or A_OR${index}.DOUBLE_ is not null or A_OR${index}.BYTEARRAY_ID_ is not null)
+                    and (A_OR${orIndex}_${index}.TEXT_ is not null or A_OR${orIndex}_${index}.TEXT2_ is not null or A_OR${orIndex}_${index}.LONG_ is not null or A_OR${orIndex}_${index}.DOUBLE_ is not null or A_OR${orIndex}_${index}.BYTEARRAY_ID_ is not null)
                   </when>
                   <otherwise>
-                    and A_OR${index}.TEXT_ is null and A_OR${index}.TEXT2_ is null and A_OR${index}.LONG_ is null and A_OR${index}.DOUBLE_ is null and A_OR${index}.BYTEARRAY_ID_ is null
+                    and A_OR${orIndex}_${index}.TEXT_ is null and A_OR${orIndex}_${index}.TEXT2_ is null and A_OR${orIndex}_${index}.LONG_ is null and A_OR${orIndex}_${index}.DOUBLE_ is null and A_OR${orIndex}_${index}.BYTEARRAY_ID_ is null
                   </otherwise>
                 </choose>
               </if>
             </trim>
           </foreach>
         </trim>
-      </if>
+      </foreach>
     </where>
   </sql>
   

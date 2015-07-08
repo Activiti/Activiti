@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -62,9 +63,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
-  protected HistoricProcessInstanceQueryImpl orQueryObject;
-  protected boolean inOrStatement;
-
+  protected List<HistoricProcessInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricProcessInstanceQueryImpl>();
+  protected HistoricProcessInstanceQueryImpl currentOrQueryObject = null;
+  protected boolean inOrStatement = false;
+  
   public HistoricProcessInstanceQueryImpl() {
   }
 
@@ -78,7 +80,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
     if (inOrStatement) {
-      this.orQueryObject.processInstanceId = processInstanceId;
+      this.currentOrQueryObject.processInstanceId = processInstanceId;
     } else {
       this.processInstanceId = processInstanceId;
     }
@@ -94,7 +96,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     }
 
     if (inOrStatement) {
-      this.orQueryObject.processInstanceIds = processInstanceIds;
+      this.currentOrQueryObject.processInstanceIds = processInstanceIds;
     } else {
       this.processInstanceIds = processInstanceIds;
     }
@@ -103,7 +105,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
     if (inOrStatement) {
-      this.orQueryObject.processDefinitionId = processDefinitionId;
+      this.currentOrQueryObject.processDefinitionId = processDefinitionId;
     } else {
       this.processDefinitionId = processDefinitionId;
     }
@@ -112,7 +114,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery processDefinitionKey(String processDefinitionKey) {
     if (inOrStatement) {
-      this.orQueryObject.processDefinitionKey = processDefinitionKey;
+      this.currentOrQueryObject.processDefinitionKey = processDefinitionKey;
     } else {
       this.processDefinitionKey = processDefinitionKey;
     }
@@ -122,7 +124,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
     if (inOrStatement) {
-      orQueryObject.processDefinitionKeyIn = processDefinitionKeys;
+      currentOrQueryObject.processDefinitionKeyIn = processDefinitionKeys;
     } else {
       this.processDefinitionKeyIn = processDefinitionKeys;
     }
@@ -131,7 +133,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     if (inOrStatement) {
-      this.orQueryObject.businessKey = businessKey;
+      this.currentOrQueryObject.businessKey = businessKey;
     } else {
       this.businessKey = businessKey;
     }
@@ -140,7 +142,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery deploymentId(String deploymentId) {
     if (inOrStatement) {
-      this.orQueryObject.deploymentId = deploymentId;
+      this.currentOrQueryObject.deploymentId = deploymentId;
     } else {
       this.deploymentId = deploymentId;
     }
@@ -149,7 +151,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery deploymentIdIn(List<String> deploymentIds) {
     if (inOrStatement) {
-      orQueryObject.deploymentIds = deploymentIds;
+      currentOrQueryObject.deploymentIds = deploymentIds;
     } else {
       this.deploymentIds = deploymentIds;
     }
@@ -158,7 +160,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery finished() {
     if (inOrStatement) {
-      this.orQueryObject.finished = true;
+      this.currentOrQueryObject.finished = true;
     } else {
       this.finished = true;
     }
@@ -167,7 +169,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery unfinished() {
     if (inOrStatement) {
-      this.orQueryObject.unfinished = true;
+      this.currentOrQueryObject.unfinished = true;
     } else {
       this.unfinished = true;
     }
@@ -176,7 +178,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery deleted() {
     if (inOrStatement) {
-      this.orQueryObject.deleted = true;
+      this.currentOrQueryObject.deleted = true;
     } else {
       this.deleted = true;
     }
@@ -185,7 +187,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery notDeleted() {
     if (inOrStatement) {
-      this.orQueryObject.notDeleted = true;
+      this.currentOrQueryObject.notDeleted = true;
     } else {
       this.notDeleted = true;
     }
@@ -194,7 +196,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery startedBy(String startedBy) {
     if (inOrStatement) {
-      this.orQueryObject.startedBy = startedBy;
+      this.currentOrQueryObject.startedBy = startedBy;
     } else {
       this.startedBy = startedBy;
     }
@@ -203,7 +205,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys) {
     if (inOrStatement) {
-      this.orQueryObject.processKeyNotIn = processDefinitionKeys;
+      this.currentOrQueryObject.processKeyNotIn = processDefinitionKeys;
     } else {
       this.processKeyNotIn = processDefinitionKeys;
     }
@@ -212,7 +214,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery startedAfter(Date startedAfter) {
     if (inOrStatement) {
-      this.orQueryObject.startedAfter = startedAfter;
+      this.currentOrQueryObject.startedAfter = startedAfter;
     } else {
       this.startedAfter = startedAfter;
     }
@@ -221,7 +223,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery startedBefore(Date startedBefore) {
     if (inOrStatement) {
-      this.orQueryObject.startedBefore = startedBefore;
+      this.currentOrQueryObject.startedBefore = startedBefore;
     } else {
       this.startedBefore = startedBefore;
     }
@@ -230,7 +232,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery finishedAfter(Date finishedAfter) {
     if (inOrStatement) {
-      this.orQueryObject.finishedAfter = finishedAfter;
+      this.currentOrQueryObject.finishedAfter = finishedAfter;
     } else {
       this.finishedAfter = finishedAfter;
       this.finished = true;
@@ -240,7 +242,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery finishedBefore(Date finishedBefore) {
     if (inOrStatement) {
-      this.orQueryObject.finishedBefore = finishedBefore;
+      this.currentOrQueryObject.finishedBefore = finishedBefore;
     } else {
       this.finishedBefore = finishedBefore;
       this.finished = true;
@@ -250,7 +252,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
     if (inOrStatement) {
-      this.orQueryObject.superProcessInstanceId = superProcessInstanceId;
+      this.currentOrQueryObject.superProcessInstanceId = superProcessInstanceId;
     } else {
       this.superProcessInstanceId = superProcessInstanceId;
     }
@@ -259,7 +261,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses) {
     if (inOrStatement) {
-      this.orQueryObject.excludeSubprocesses = excludeSubprocesses;
+      this.currentOrQueryObject.excludeSubprocesses = excludeSubprocesses;
     } else {
       this.excludeSubprocesses = excludeSubprocesses;
     }
@@ -269,7 +271,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery involvedUser(String involvedUser) {
     if (inOrStatement) {
-      this.orQueryObject.involvedUser = involvedUser;
+      this.currentOrQueryObject.involvedUser = involvedUser;
     } else {
       this.involvedUser = involvedUser;
     }
@@ -282,11 +284,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   public HistoricProcessInstanceQuery processInstanceTenantId(String tenantId) {
-    if (tenantId == null) {
-      throw new ActivitiIllegalArgumentException("process instance tenant id is null");
-    }
-    if (inOrStatement) {
-      this.orQueryObject.tenantId = tenantId;
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	if (inOrStatement) {
+      this.currentOrQueryObject.tenantId = tenantId;
     } else {
       this.tenantId = tenantId;
     }
@@ -294,11 +296,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   public HistoricProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike) {
-    if (tenantIdLike == null) {
-      throw new ActivitiIllegalArgumentException("process instance tenant id is null");
-    }
-    if (inOrStatement) {
-      this.orQueryObject.tenantIdLike = tenantIdLike;
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	if (inOrStatement) {
+      this.currentOrQueryObject.tenantIdLike = tenantIdLike;
     } else {
       this.tenantIdLike = tenantIdLike;
     }
@@ -307,7 +309,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public HistoricProcessInstanceQuery processInstanceWithoutTenantId() {
     if (inOrStatement) {
-      this.orQueryObject.withoutTenantId = true;
+      this.currentOrQueryObject.withoutTenantId = true;
     } else {
       this.withoutTenantId = true;
     }
@@ -317,7 +319,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery processInstanceName(String name) {
     if (inOrStatement) {
-      this.orQueryObject.name = name;
+      this.currentOrQueryObject.name = name;
     } else {
       this.name = name;
     }
@@ -327,7 +329,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery processInstanceNameLike(String nameLike) {
     if (inOrStatement) {
-      this.orQueryObject.nameLike = nameLike;
+      this.currentOrQueryObject.nameLike = nameLike;
     } else {
       this.nameLike = nameLike;
     }
@@ -337,7 +339,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase) {
     if (inOrStatement) {
-      this.orQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+      this.currentOrQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
     } else {
       this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
     }
@@ -347,7 +349,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
-      orQueryObject.variableValueEquals(variableName, variableValue, true);
+      currentOrQueryObject.variableValueEquals(variableName, variableValue, true);
       return this;
     } else {
       return variableValueEquals(variableName, variableValue, true);
@@ -357,7 +359,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueNotEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
-      orQueryObject.variableValueNotEquals(variableName, variableValue, true);
+      currentOrQueryObject.variableValueNotEquals(variableName, variableValue, true);
       return this;
     } else {
       return variableValueNotEquals(variableName, variableValue, true);
@@ -367,7 +369,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueEquals(Object variableValue) {
     if (inOrStatement) {
-      orQueryObject.variableValueEquals(variableValue, true);
+      currentOrQueryObject.variableValueEquals(variableValue, true);
       return this;
     } else {
       return variableValueEquals(variableValue, true);
@@ -377,7 +379,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value) {
     if (inOrStatement) {
-      orQueryObject.variableValueEqualsIgnoreCase(name, value, true);
+      currentOrQueryObject.variableValueEqualsIgnoreCase(name, value, true);
       return this;
     } else {
       return variableValueEqualsIgnoreCase(name, value, true);
@@ -387,7 +389,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueNotEqualsIgnoreCase(String name, String value) {
     if (inOrStatement) {
-      orQueryObject.variableValueNotEqualsIgnoreCase(name, value, true);
+      currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value, true);
       return this;
     } else {
       return variableValueNotEqualsIgnoreCase(name, value, true);
@@ -397,7 +399,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueGreaterThan(String name, Object value) {
     if (inOrStatement) {
-      orQueryObject.variableValueGreaterThan(name, value, true);
+      currentOrQueryObject.variableValueGreaterThan(name, value, true);
       return this;
     } else {
       return variableValueGreaterThan(name, value, true);
@@ -407,7 +409,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueGreaterThanOrEqual(String name, Object value) {
     if (inOrStatement) {
-      orQueryObject.variableValueGreaterThanOrEqual(name, value, true);
+      currentOrQueryObject.variableValueGreaterThanOrEqual(name, value, true);
       return this;
     } else {
       return variableValueGreaterThanOrEqual(name, value, true);
@@ -417,7 +419,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueLessThan(String name, Object value) {
     if (inOrStatement) {
-      orQueryObject.variableValueLessThan(name, value, true);
+      currentOrQueryObject.variableValueLessThan(name, value, true);
       return this;
     } else {
       return variableValueLessThan(name, value, true);
@@ -427,7 +429,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueLessThanOrEqual(String name, Object value) {
     if (inOrStatement) {
-      orQueryObject.variableValueLessThanOrEqual(name, value, true);
+      currentOrQueryObject.variableValueLessThanOrEqual(name, value, true);
       return this;
     } else {
       return variableValueLessThanOrEqual(name, value, true);
@@ -437,7 +439,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   public HistoricProcessInstanceQuery variableValueLike(String name, String value) {
     if (inOrStatement) {
-      orQueryObject.variableValueLike(name, value, true);
+      currentOrQueryObject.variableValueLike(name, value, true);
       return this;
     } else {
       return variableValueLike(name, value, true);
@@ -445,22 +447,23 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   public HistoricProcessInstanceQuery or() {
-    if (orQueryObject != null) {
-      // only one OR statement is allowed
-      throw new ActivitiException("Only one OR statement is allowed");
-    } else {
-      inOrStatement = true;
-      orQueryObject = new HistoricProcessInstanceQueryImpl();
+    if (inOrStatement) {
+      throw new ActivitiException("the query is already in an or statement");
     }
+    
+    inOrStatement = true;
+    currentOrQueryObject = new HistoricProcessInstanceQueryImpl();
+    orQueryObjects.add(currentOrQueryObject);
     return this;
   }
 
   public HistoricProcessInstanceQuery endOr() {
-    if (orQueryObject == null || inOrStatement == false) {
-      throw new ActivitiException("OR statement hasn't started, so it can't be ended");
-    } else {
-      inOrStatement = false;
+    if (!inOrStatement) {
+      throw new ActivitiException("endOr() can only be called after calling or()");
     }
+    
+    inOrStatement = false;
+    currentOrQueryObject = null;
     return this;
   }
 
@@ -520,8 +523,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   @Override
   protected void ensureVariablesInitialized() {
     super.ensureVariablesInitialized();
-
-    if (orQueryObject != null) {
+    
+    for (HistoricProcessInstanceQueryImpl orQueryObject : orQueryObjects) {
       orQueryObject.ensureVariablesInitialized();
     }
   }
@@ -659,7 +662,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return nameLikeIgnoreCase;
   }
 
-  public HistoricProcessInstanceQueryImpl getOrQueryObject() {
-    return orQueryObject;
+  public List<HistoricProcessInstanceQueryImpl> getOrQueryObjects() {
+    return orQueryObjects;
   }
 }

@@ -1623,8 +1623,24 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().or().taskId("invalid").processDefinitionId(processInstance.getProcessDefinitionId()).list();
     assertEquals(1, tasks.size());
     assertEquals(processInstance.getId(), tasks.get(0).getProcessInstanceId());
-
-    assertEquals(0, taskService.createTaskQuery().or().taskId("invalid").processDefinitionId("unexisting").count());
+    
+    tasks = taskService.createTaskQuery()
+        .or()
+          .taskId("invalid")
+          .processDefinitionId(processInstance.getProcessDefinitionId())
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("invalid")
+        .endOr()
+        .list();
+    assertEquals(1, tasks.size());
+    assertEquals(processInstance.getId(), tasks.get(0).getProcessInstanceId());
+    
+    assertEquals(0, taskService.createTaskQuery()
+        .or()
+        .taskId("invalid")
+        .processDefinitionId("unexisting").count());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
@@ -1687,7 +1703,24 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   public void testProcessCategoryInOr() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    final Task task = taskService.createTaskQuery().or().taskId("invalid").processCategoryIn(Collections.singletonList("Examples")).singleResult();
+    Task task = taskService.createTaskQuery()
+        .or()
+        .taskId("invalid")
+        .processCategoryIn(Collections.singletonList("Examples")).singleResult();
+    assertNotNull(task);
+    assertEquals("theTask", task.getTaskDefinitionKey());
+    assertEquals(processInstance.getId(), task.getProcessInstanceId());
+    
+    task = taskService.createTaskQuery()
+        .or()
+          .taskId("invalid")
+          .processCategoryIn(Collections.singletonList("Examples"))
+        .endOr()
+        .or()
+          .taskId(task.getId())
+          .processCategoryIn(Collections.singletonList("Examples2"))
+        .endOr()
+        .singleResult();
     assertNotNull(task);
     assertEquals("theTask", task.getTaskDefinitionKey());
     assertEquals(processInstance.getId(), task.getProcessInstanceId());
@@ -2367,29 +2400,44 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
   // Test for https://jira.codehaus.org/browse/ACT-2103
   public void testTaskLocalAndProcessInstanceVariableEqualsInOr() {
-
-    deployOneTaskTestProcess();
-    for (int i = 0; i < 10; i++) {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    }
-
-    List<Task> allTasks = taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").list();
-    assertEquals(10, allTasks.size());
-
-    // Give two tasks a task local variable
-    taskService.setVariableLocal(allTasks.get(0).getId(), "localVar", "someValue");
-    taskService.setVariableLocal(allTasks.get(1).getId(), "localVar", "someValue");
-
-    // Give three tasks a proc inst var
-    runtimeService.setVariable(allTasks.get(2).getProcessInstanceId(), "var", "theValue");
-    runtimeService.setVariable(allTasks.get(3).getProcessInstanceId(), "var", "theValue");
-    runtimeService.setVariable(allTasks.get(4).getProcessInstanceId(), "var", "theValue");
-
-    assertEquals(2, taskService.createTaskQuery().taskVariableValueEquals("localVar", "someValue").list().size());
-    assertEquals(3, taskService.createTaskQuery().processVariableValueEquals("var", "theValue").list().size());
-
-    assertEquals(5, taskService.createTaskQuery().or().taskVariableValueEquals("localVar", "someValue").processVariableValueEquals("var", "theValue").endOr().list().size());
-
+  	
+  	deployOneTaskTestProcess();
+  	for (int i=0; i<10; i++) {
+  		runtimeService.startProcessInstanceByKey("oneTaskProcess");
+  	}
+  	
+  	List<Task> allTasks = taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").list();
+  	assertEquals(10, allTasks.size());
+  	
+  	// Give two tasks a task local variable
+  	taskService.setVariableLocal(allTasks.get(0).getId(), "localVar", "someValue");
+  	taskService.setVariableLocal(allTasks.get(1).getId(), "localVar", "someValue");
+  	
+  	// Give three tasks a proc inst var
+  	runtimeService.setVariable(allTasks.get(2).getProcessInstanceId(), "var", "theValue");
+  	runtimeService.setVariable(allTasks.get(3).getProcessInstanceId(), "var", "theValue");
+  	runtimeService.setVariable(allTasks.get(4).getProcessInstanceId(), "var", "theValue");
+  	
+  	assertEquals(2, taskService.createTaskQuery().taskVariableValueEquals("localVar", "someValue").list().size());
+  	assertEquals(3, taskService.createTaskQuery().processVariableValueEquals("var", "theValue").list().size());
+  	
+  	assertEquals(5, taskService.createTaskQuery().or()
+  			.taskVariableValueEquals("localVar", "someValue")
+  			.processVariableValueEquals("var", "theValue")
+  			.endOr().list().size());
+  	
+  	assertEquals(5, taskService.createTaskQuery()
+  	    .or()
+          .taskVariableValueEquals("localVar", "someValue")
+          .processVariableValueEquals("var", "theValue")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("notexisting")
+        .endOr()
+        .list()
+        .size());
+  	
   }
 
   /**

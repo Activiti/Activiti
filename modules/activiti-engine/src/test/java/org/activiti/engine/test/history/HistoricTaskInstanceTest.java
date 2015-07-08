@@ -321,6 +321,13 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     taskNameList.clear();
     taskNameList.add("unexistingname");
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskNameInIgnoreCase(taskNameList).endOr().count());
+    
+    taskNameList.clear();
+    taskNameList.add("clean up");
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskName("Clean up").endOr().or().taskNameInIgnoreCase(taskNameList).endOr().count());
+    taskNameList.clear();
+    taskNameList.add("unexistingname");
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskName("Clean up").endOr().or().taskNameInIgnoreCase(taskNameList).endOr().count());
 
     // Description
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskDescription("Historic task description").endOr().count());
@@ -329,7 +336,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskDescriptionLike("%task description").taskDescription("unexistingdescription").endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDescriptionLike("%unexistingdescripton%").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskDescriptionLike("%unexistingdescripton%").taskDescription("unexistingdescription").endOr().count());
-
+    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskDescription("Historic task description").endOr().or().taskDescriptionLike("%task description").endOr().count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskDescription("Historic task description").endOr().or().taskDescriptionLike("%task description2").endOr().count());
+    
     // Execution id
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().processInstanceId(finishedInstance.getId()).endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().executionId("unexistingexecution").endOr().count());
@@ -359,7 +369,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskAssignee("johndoe").endOr().count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskAssigneeLike("%ermit").endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskAssigneeLike("%johndoe%").endOr().count());
-
+    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskAssignee("kermit").endOr().or().taskAssigneeLike("%ermit").endOr().count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskAssignee("kermit").endOr().or().taskAssigneeLike("%johndoe%").endOr().count());
+    
     // Delete reason
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskDeleteReason(TaskEntity.DELETE_REASON_COMPLETED).endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskDeleteReason("deleted").endOr().count());
@@ -378,7 +391,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskMaxPriority(1234).endOr().count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskMaxPriority(1300).endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskMaxPriority(1000).endOr().count());
-
+    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskPriority(1234).endOr().or().taskMinPriority(1234).endOr().count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskPriority(1234).endOr().or().taskMinPriority(1300).endOr().count());
+    
     // Due date
     Calendar anHourAgo = Calendar.getInstance();
     anHourAgo.setTime(dueDate);

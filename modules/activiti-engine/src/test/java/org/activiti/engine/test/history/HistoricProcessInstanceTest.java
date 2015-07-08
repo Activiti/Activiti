@@ -204,7 +204,29 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("% name").processDefinitionId("undefined").endOr().count());
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("%nope").processDefinitionId("undefined").endOr().count());
-
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery()
+        .or()
+          .processInstanceName("The name")
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processInstanceNameLike("% name")
+          .processDefinitionId("undefined")
+        .endOr()
+        .count());
+    
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery()
+        .or()
+          .processInstanceName("The name")
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processInstanceNameLike("undefined")
+          .processDefinitionId("undefined")
+        .endOr()
+        .count());
+    
     // Query after update name
     runtimeService.setProcessInstanceName(processInstance.getId(), "New name");
     assertEquals("New name", historyService.createHistoricProcessInstanceQuery().or().processInstanceName("New name").processDefinitionId("undefined").endOr().singleResult().getName());

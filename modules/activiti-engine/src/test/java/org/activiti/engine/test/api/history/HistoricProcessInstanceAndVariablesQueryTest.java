@@ -144,9 +144,35 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
       Map<String, Object> variableMap = processInstance.getProcessVariables();
       assertEquals(1, variableMap.size());
       assertEquals(123, variableMap.get("anothertest"));
-
-      List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().or().processDefinitionKey(PROCESS_DEFINITION_KEY)
-          .processDefinitionId("undefined").endOr().list();
+      
+      processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
+              .or()
+                .variableValueEquals("anothertest", 123)
+                .processDefinitionId("undefined")
+              .endOr()
+              .or()
+                .processDefinitionKey(PROCESS_DEFINITION_KEY_2)
+                .processDefinitionId("undefined")
+              .endOr()
+              .singleResult();
+      variableMap = processInstance.getProcessVariables();
+      assertEquals(1, variableMap.size());
+      assertEquals(123, variableMap.get("anothertest"));
+      
+      processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
+          .or()
+            .variableValueEquals("anothertest", 123)
+            .processDefinitionId("undefined")
+          .endOr()
+          .or()
+            .processDefinitionKey(PROCESS_DEFINITION_KEY)
+            .processDefinitionId("undefined")
+          .endOr()
+          .singleResult();
+      assertNull(processInstance);
+      
+      List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().or()
+          .processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionId("undefined").endOr().list();
       assertEquals(4, instanceList.size());
       processInstance = instanceList.get(0);
       variableMap = processInstance.getProcessVariables();
@@ -201,6 +227,21 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
 
       instanceList = historyService.createHistoricProcessInstanceQuery().or().variableValueEquals("test", "test").processDefinitionId("undefined").endOr().includeProcessVariables()
           .orderByProcessInstanceId().asc().listPage(0, 50);
+      assertEquals(4, instanceList.size());
+      
+      instanceList = historyService.createHistoricProcessInstanceQuery()
+          .or()
+            .variableValueEquals("test", "test")
+            .processDefinitionId("undefined")
+          .endOr()
+          .or()
+            .processDefinitionKey(PROCESS_DEFINITION_KEY)
+            .processDefinitionId("undefined")
+          .endOr()
+          .includeProcessVariables()
+          .orderByProcessInstanceId()
+          .asc()
+          .listPage(0, 50);
       assertEquals(4, instanceList.size());
     }
   }
