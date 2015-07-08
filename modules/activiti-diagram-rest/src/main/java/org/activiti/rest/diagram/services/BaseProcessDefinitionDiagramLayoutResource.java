@@ -443,13 +443,14 @@ public class BaseProcessDefinitionDiagramLayoutResource {
               .processDefinitionKey(callActivityBehavior.getProcessDefinitonKey())
               .latestVersion().singleResult();
 
-          // TODO: unuseful fields there are processDefinitionName,
-          // processDefinitionKey
-          ObjectNode processInstanceJSON = new ObjectMapper().createObjectNode();
-          processInstanceJSON.put("processDefinitionId", lastProcessDefinition.getId());
-          processInstanceJSON.put("processDefinitionKey", lastProcessDefinition.getKey());
-          processInstanceJSON.put("processDefinitionName", lastProcessDefinition.getName());
-          processInstanceArray.add(processInstanceJSON);
+          // TODO: unuseful fields there are processDefinitionName, processDefinitionKey
+          if (lastProcessDefinition != null) {
+            ObjectNode processInstanceJSON = new ObjectMapper().createObjectNode();
+            processInstanceJSON.put("processDefinitionId", lastProcessDefinition.getId());
+            processInstanceJSON.put("processDefinitionKey", lastProcessDefinition.getKey());
+            processInstanceJSON.put("processDefinitionName", lastProcessDefinition.getName());
+            processInstanceArray.add(processInstanceJSON);
+          }
         }
 
         if (processInstanceArray.size() > 0) {

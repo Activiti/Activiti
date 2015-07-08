@@ -65,7 +65,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String nameLikeIgnoreCase;
   protected String deploymentId;
   protected List<String> deploymentIds;
-  protected ExecutionQueryImpl orQueryObject;
+  protected List<ExecutionQueryImpl> orQueryObjects = new ArrayList<ExecutionQueryImpl>();
   
   public ExecutionQueryImpl() {
   }
