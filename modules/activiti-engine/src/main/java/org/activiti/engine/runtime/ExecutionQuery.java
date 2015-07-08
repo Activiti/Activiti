@@ -13,6 +13,8 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
@@ -28,6 +30,9 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** Only select executions which have the given process definition key. **/
   ExecutionQuery processDefinitionKey(String processDefinitionKey);
+  
+  /** Only select executions which have process definitions with the given keys. **/
+  ExecutionQuery processDefinitionKeys(Set<String> processDefinitionKeys);
   
   /** Only select executions which have the given process definition id. **/
   ExecutionQuery processDefinitionId(String processDefinitionId);
