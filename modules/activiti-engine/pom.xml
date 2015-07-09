@@ -371,6 +371,57 @@
     </profile>
     
     <profile>
+      <id>databasewithschema</id>
+      <activation>
+        <property>
+          <name>databasewithschema</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to db ${databasewithschema}" />
+                    <copy file="${basedir}/../../qa/db/schema/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasewithschema}.properties" />
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${databasewithschema}" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
       <id>databasemssql</id>
       <activation>
         <property>
@@ -792,6 +843,23 @@
       <activation>
         <property>
           <name>database</name>
+          <value>oracle</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>ojdbc5</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>oraclewithschema</id>
+      <activation>
+        <property>
+          <name>databasewithschema</name>
           <value>oracle</value>
         </property>
       </activation>

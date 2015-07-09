@@ -71,7 +71,7 @@ public class JPAEntityScanner {
     Id idAnnotation = null;
     for(Method method : methods) {
       idAnnotation = method.getAnnotation(Id.class);
-      if(idAnnotation != null) {
+      if(idAnnotation != null && !method.isBridge()) {
         idMethod = method;
         break;
       }

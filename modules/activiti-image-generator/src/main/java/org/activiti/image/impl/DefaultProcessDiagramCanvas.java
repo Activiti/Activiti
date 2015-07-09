@@ -776,6 +776,7 @@ public class DefaultProcessDiagramCanvas {
           }
           layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
         }
+        break;
       } else {
         layouts.add(layout);
         lastLine = text.substring(previousPosition, measurer.getPosition());

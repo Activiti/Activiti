@@ -125,13 +125,15 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
       return result;
     } else if (query.getFullNameLike() != null){
       
+      final String fullNameLike = query.getFullNameLike().replaceAll("%", "");
+      
       LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
       return ldapTemplate.execute(new LDAPCallBack<List<User>>() {
         
         public List<User> executeInContext(InitialDirContext initialDirContext) {
           List<User> result = new ArrayList<User>();
           try {
-            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, query.getFullNameLike());
+            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, fullNameLike);
             String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
             NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
             
@@ -167,19 +169,23 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
     if (ldapConfigurator.getUserFirstNameAttribute() != null) {
     	try{
     		user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
-    	}catch(NullPointerException e){
+    	} catch(NullPointerException e){
     		user.setFirstName("");
     	}
     }
     if (ldapConfigurator.getUserLastNameAttribute() != null) {
     	try{
     		user.setLastName(result.getAttributes().get(ldapConfigurator.getUserLastNameAttribute()).get().toString());
-    	}catch(NullPointerException e){
+    	} catch(NullPointerException e){
     		user.setLastName("");
     	}
     }
     if (ldapConfigurator.getUserEmailAttribute() != null) {
-      user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+      try {
+        user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+      } catch(NullPointerException e){
+    		user.setEmail("");
+      }
     }
   }
   
@@ -194,36 +200,30 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
 
-
   @Override
   public UserQuery createNewUserQuery() {
     return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
-
 
   @Override
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
 
-
   @Override
   public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
-
 
   @Override
   public List<User> findPotentialStarterUsers(String proceDefId) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
 
-
   @Override
   public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
-
 
   @Override
   public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {

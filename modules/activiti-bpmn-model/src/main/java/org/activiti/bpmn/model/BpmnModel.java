@@ -41,7 +41,7 @@ public class BpmnModel {
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
 	protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
-    protected List<Resource> resources = new ArrayList<Resource>();
+	protected List<Resource> resources = new ArrayList<Resource>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
 	protected List<String> userTaskFormTypes;

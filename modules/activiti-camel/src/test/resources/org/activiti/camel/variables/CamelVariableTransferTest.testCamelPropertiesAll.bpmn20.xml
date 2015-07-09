@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+             http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+
+
+   <process id="testPropertiesProcess">
+        <startEvent id="start" activiti:initiator="initiator"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="simpleTask"/>
+        <userTask id="simpleTask" name="Simple Task" activiti:assignee="kermit"/>
+        <sequenceFlow id="flow2" sourceRef="simpleTask" targetRef="end"/>       
+        <endEvent id="end"/>
+    </process>
+
+  
+</definitions>

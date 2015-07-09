@@ -1863,6 +1863,19 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, tasks.size());
     assertEquals(processInstance.getId(), tasks.get(0).getProcessInstanceId());
     
+    tasks = taskService.createTaskQuery()
+        .or()
+          .taskId("invalid")
+          .processDefinitionId(processInstance.getProcessDefinitionId())
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("invalid")
+        .endOr()
+        .list();
+    assertEquals(1, tasks.size());
+    assertEquals(processInstance.getId(), tasks.get(0).getProcessInstanceId());
+    
     assertEquals(0, taskService.createTaskQuery()
         .or()
         .taskId("invalid")
@@ -1943,10 +1956,24 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   public void testProcessCategoryInOr() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    final Task task = taskService.createTaskQuery()
+    Task task = taskService.createTaskQuery()
         .or()
         .taskId("invalid")
         .processCategoryIn(Collections.singletonList("Examples")).singleResult();
+    assertNotNull(task);
+    assertEquals("theTask", task.getTaskDefinitionKey());
+    assertEquals(processInstance.getId(), task.getProcessInstanceId());
+    
+    task = taskService.createTaskQuery()
+        .or()
+          .taskId("invalid")
+          .processCategoryIn(Collections.singletonList("Examples"))
+        .endOr()
+        .or()
+          .taskId(task.getId())
+          .processCategoryIn(Collections.singletonList("Examples2"))
+        .endOr()
+        .singleResult();
     assertNotNull(task);
     assertEquals("theTask", task.getTaskDefinitionKey());
     assertEquals(processInstance.getId(), task.getProcessInstanceId());
@@ -2778,6 +2805,18 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   			.taskVariableValueEquals("localVar", "someValue")
   			.processVariableValueEquals("var", "theValue")
   			.endOr().list().size());
+  	
+  	assertEquals(5, taskService.createTaskQuery()
+  	    .or()
+          .taskVariableValueEquals("localVar", "someValue")
+          .processVariableValueEquals("var", "theValue")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("notexisting")
+        .endOr()
+        .list()
+        .size());
   	
   }
   
