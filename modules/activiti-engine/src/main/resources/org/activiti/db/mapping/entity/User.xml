@@ -18,6 +18,32 @@
     )
   </insert>
 
+  <insert id="bulkInsertUser" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_) VALUES 
+      <foreach collection="list" item="user" index="index" separator=",">
+        (#{user.id ,jdbcType=VARCHAR},
+         1,
+         #{user.firstName ,jdbcType=VARCHAR},
+         #{user.lastName ,jdbcType=VARCHAR},
+         #{user.email ,jdbcType=VARCHAR},
+         #{user.password ,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertUser_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="user" index="index">
+        INTO ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_) VALUES 
+        (#{user.id ,jdbcType=VARCHAR},
+         1,
+         #{user.firstName ,jdbcType=VARCHAR},
+         #{user.lastName ,jdbcType=VARCHAR},
+         #{user.email ,jdbcType=VARCHAR},
+         #{user.password ,jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- USER UPDATE -->
 
   <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">

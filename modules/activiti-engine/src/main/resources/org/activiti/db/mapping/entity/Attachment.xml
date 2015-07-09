@@ -37,6 +37,43 @@
     )
   </insert>
 
+  <insert id="bulkInsertAttachment" parameterType="java.util.List">
+    insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_)
+    values 
+      <foreach collection="list" item="attachment" index="index" separator=","> 
+        (#{attachment.id ,jdbcType=VARCHAR},
+         1,
+         #{attachment.userId ,jdbcType=VARCHAR},
+         #{attachment.name ,jdbcType=VARCHAR},
+         #{attachment.description ,jdbcType=VARCHAR},
+         #{attachment.type ,jdbcType=VARCHAR},
+         #{attachment.taskId ,jdbcType=VARCHAR},
+         #{attachment.processInstanceId ,jdbcType=VARCHAR},
+         #{attachment.url ,jdbcType=VARCHAR},
+         #{attachment.contentId ,jdbcType=VARCHAR},
+         #{attachment.time ,jdbcType=TIMESTAMP})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertAttachment_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="attachment" index="index"> 
+        INTO ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_) VALUES 
+          (#{attachment.id ,jdbcType=VARCHAR},
+           1,
+           #{attachment.userId ,jdbcType=VARCHAR},
+           #{attachment.name ,jdbcType=VARCHAR},
+           #{attachment.description ,jdbcType=VARCHAR},
+           #{attachment.type ,jdbcType=VARCHAR},
+           #{attachment.taskId ,jdbcType=VARCHAR},
+           #{attachment.processInstanceId ,jdbcType=VARCHAR},
+           #{attachment.url ,jdbcType=VARCHAR},
+           #{attachment.contentId ,jdbcType=VARCHAR},
+           #{attachment.time ,jdbcType=TIMESTAMP})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- ATTACHMENT UPDATE -->
 
   <update id="updateAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">

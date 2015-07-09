@@ -27,6 +27,7 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
   protected String propertyValue;
   
   public HistoricFormPropertyEntity() {
+    this.detailType = "FormProperty";
   }
 
   public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue) {
@@ -40,6 +41,7 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
     this.propertyId = propertyId;
     this.propertyValue = propertyValue;
     this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    this.detailType = "FormProperty";
 
     HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution);
     if (historicActivityInstance!=null) {

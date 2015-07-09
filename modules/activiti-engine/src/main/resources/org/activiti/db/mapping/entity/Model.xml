@@ -22,7 +22,49 @@
            #{editorSourceExtraValueId, jdbcType=VARCHAR},
            #{tenantId, jdbcType=VARCHAR})
   </insert>
-  
+
+  <insert id="bulkInsertModel" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
+    VALUES 
+      <foreach collection="list" item="model" index="index" separator=","> 
+        (#{model.id, jdbcType=VARCHAR}, 
+         1,
+         #{model.name, jdbcType=VARCHAR}, 
+         #{model.key, jdbcType=VARCHAR}, 
+         #{model.category, jdbcType=VARCHAR}, 
+         #{model.createTime, jdbcType=TIMESTAMP},
+         #{model.lastUpdateTime, jdbcType=TIMESTAMP},
+         #{model.version, jdbcType=INTEGER}, 
+         #{model.metaInfo, jdbcType=VARCHAR}, 
+         #{model.deploymentId, jdbcType=VARCHAR},
+         #{model.editorSourceValueId, jdbcType=VARCHAR}, 
+         #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
+         #{model.tenantId, jdbcType=VARCHAR})
+     </foreach>
+  </insert>
+
+  <insert id="bulkInsertModel_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="model" index="index"> 
+        INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_,
+        VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_) VALUES 
+          (#{model.id, jdbcType=VARCHAR}, 
+           1,
+           #{model.name, jdbcType=VARCHAR}, 
+           #{model.key, jdbcType=VARCHAR}, 
+           #{model.category, jdbcType=VARCHAR}, 
+           #{model.createTime, jdbcType=TIMESTAMP},
+           #{model.lastUpdateTime, jdbcType=TIMESTAMP},
+           #{model.version, jdbcType=INTEGER}, 
+           #{model.metaInfo, jdbcType=VARCHAR}, 
+           #{model.deploymentId, jdbcType=VARCHAR},
+           #{model.editorSourceValueId, jdbcType=VARCHAR}, 
+           #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
+           #{model.tenantId, jdbcType=VARCHAR})
+     </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- MODEL UPDATE -->
   <update id="updateModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
     update ${prefix}ACT_RE_MODEL set

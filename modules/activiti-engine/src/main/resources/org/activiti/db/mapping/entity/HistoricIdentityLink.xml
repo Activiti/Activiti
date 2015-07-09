@@ -30,6 +30,33 @@
             #{processInstanceId, jdbcType=VARCHAR})
   </insert>
   
+  <insert id="bulkInsertHistoricIdentityLink" parameterType="java.util.List">
+    insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_)
+    values 
+      <foreach collection="list" item="historicIdentityLink" index="index" separator=",">
+        (#{historicIdentityLink.id, jdbcType=VARCHAR},
+         #{historicIdentityLink.type, jdbcType=VARCHAR},
+         #{historicIdentityLink.userId, jdbcType=VARCHAR},
+         #{historicIdentityLink.groupId, jdbcType=VARCHAR},
+         #{historicIdentityLink.taskId, jdbcType=VARCHAR},
+         #{historicIdentityLink.processInstanceId, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+  
+  <insert id="bulkInsertHistoricIdentityLink_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="historicIdentityLink" index="index">
+        INTO ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_) VALUES 
+          (#{historicIdentityLink.id, jdbcType=VARCHAR},
+           #{historicIdentityLink.type, jdbcType=VARCHAR},
+           #{historicIdentityLink.userId, jdbcType=VARCHAR},
+           #{historicIdentityLink.groupId, jdbcType=VARCHAR},
+           #{historicIdentityLink.taskId, jdbcType=VARCHAR},
+           #{historicIdentityLink.processInstanceId, jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+  
   <!-- HISTORIC IDENTITY LINK DELETE -->
   
   <delete id="deleteHistoricIdentityLink" parameterType="string">

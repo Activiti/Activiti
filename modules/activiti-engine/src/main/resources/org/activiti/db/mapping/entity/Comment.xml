@@ -17,13 +17,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.CommentEntity">
-  
+
   <!-- COMMENT INSERT -->
-  
+
   <insert id="insertComment" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
     insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
-    values (
-      #{id ,jdbcType=VARCHAR},
+    values (#{id ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR},
       #{time ,jdbcType=TIMESTAMP},
       #{userId ,jdbcType=VARCHAR},
@@ -31,14 +30,12 @@
       #{processInstanceId ,jdbcType=VARCHAR},
       #{action ,jdbcType=VARCHAR},
       #{message ,jdbcType=VARCHAR},
-      #{fullMessageBytes ,jdbcType=BLOB}
-    )
+      #{fullMessageBytes ,jdbcType=BLOB})
   </insert>
 
   <insert id="insertComment_postgres" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
     insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
-    values (
-      #{id ,jdbcType=VARCHAR},
+    values (#{id ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR},
       #{time ,jdbcType=TIMESTAMP},
       #{userId ,jdbcType=VARCHAR},
@@ -46,12 +43,60 @@
       #{processInstanceId ,jdbcType=VARCHAR},
       #{action ,jdbcType=VARCHAR},
       #{message ,jdbcType=VARCHAR},
-      #{fullMessageBytes ,jdbcType=BINARY}
-    )
+      #{fullMessageBytes ,jdbcType=BINARY})
+  </insert>
+
+  <insert id="bulkInsertComment" parameterType="java.util.List">
+    insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    values 
+      <foreach collection="list" item="comment" index="index" separator=",">
+        (#{comment.id ,jdbcType=VARCHAR},
+         #{comment.type ,jdbcType=VARCHAR},
+         #{comment.time ,jdbcType=TIMESTAMP},
+         #{comment.userId ,jdbcType=VARCHAR},
+         #{comment.taskId ,jdbcType=VARCHAR},
+         #{comment.processInstanceId ,jdbcType=VARCHAR},
+         #{comment.action ,jdbcType=VARCHAR},
+         #{comment.message ,jdbcType=VARCHAR},
+         #{comment.fullMessageBytes ,jdbcType=BLOB})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertComment_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="comment" index="index">
+        into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_) VALUES 
+          (#{comment.id ,jdbcType=VARCHAR},
+           #{comment.type ,jdbcType=VARCHAR},
+           #{comment.time ,jdbcType=TIMESTAMP},
+           #{comment.userId ,jdbcType=VARCHAR},
+           #{comment.taskId ,jdbcType=VARCHAR},
+           #{comment.processInstanceId ,jdbcType=VARCHAR},
+           #{comment.action ,jdbcType=VARCHAR},
+           #{comment.message ,jdbcType=VARCHAR},
+           #{comment.fullMessageBytes ,jdbcType=BLOB})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+
+  <insert id="bulkInsertComment_postgres" parameterType="java.util.List">
+    insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    values 
+      <foreach collection="list" item="comment" index="index" separator=",">
+        (#{comment.id ,jdbcType=VARCHAR},
+         #{comment.type ,jdbcType=VARCHAR},
+         #{comment.time ,jdbcType=TIMESTAMP},
+         #{comment.userId ,jdbcType=VARCHAR},
+         #{comment.taskId ,jdbcType=VARCHAR},
+         #{comment.processInstanceId ,jdbcType=VARCHAR},
+         #{comment.action ,jdbcType=VARCHAR},
+         #{comment.message ,jdbcType=VARCHAR},
+         #{comment.fullMessageBytes ,jdbcType=BINARY})
+      </foreach>
   </insert>
 
   <!-- COMMENT DELETE -->
-  
+
   <delete id="deleteComment" parameterType="string">
     delete from ${prefix}ACT_HI_COMMENT where ID_ = #{id}
   </delete>

@@ -35,7 +35,7 @@ public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
     eventType = "signal";
   }
   
-  public SignalEventSubscriptionEntity() {    
+  public SignalEventSubscriptionEntity() {
     eventType = "signal";
   }
   

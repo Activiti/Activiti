@@ -28,6 +28,49 @@
     )
   </insert>
 
+  <insert id="bulkInsertVariableInstance"
+    parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,
+          TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
+          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES 
+      <foreach collection="list" item="variable" index="index" separator=",">
+         (#{variable.id, jdbcType=VARCHAR},
+          1,
+          #{variable.typeName, jdbcType=VARCHAR },
+          #{variable.name, jdbcType=VARCHAR},
+          #{variable.processInstanceId, jdbcType=VARCHAR},
+          #{variable.executionId, jdbcType=VARCHAR},
+          #{variable.taskId, jdbcType=VARCHAR},
+          #{variable.byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+          #{variable.doubleValue, jdbcType=DOUBLE},
+          #{variable.longValue, jdbcType=BIGINT},
+          #{variable.textValue, jdbcType=VARCHAR},
+          #{variable.textValue2, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertVariableInstance_oracle" parameterType="java.util.List">
+    INSERT ALL
+      <foreach collection="list" item="variable" index="index">
+          INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,
+          TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
+          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES 
+         (#{variable.id, jdbcType=VARCHAR},
+          1,
+          #{variable.typeName, jdbcType=VARCHAR },
+          #{variable.name, jdbcType=VARCHAR},
+          #{variable.processInstanceId, jdbcType=VARCHAR},
+          #{variable.executionId, jdbcType=VARCHAR},
+          #{variable.taskId, jdbcType=VARCHAR},
+          #{variable.byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+          #{variable.doubleValue, jdbcType=DOUBLE},
+          #{variable.longValue, jdbcType=BIGINT},
+          #{variable.textValue, jdbcType=VARCHAR},
+          #{variable.textValue2, jdbcType=VARCHAR}) 
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- VARIABLE INSTANCE UPDATE -->
 
   <update id="updateVariableInstance"

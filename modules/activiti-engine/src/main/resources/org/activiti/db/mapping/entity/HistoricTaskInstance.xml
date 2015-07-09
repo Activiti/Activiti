@@ -66,6 +66,102 @@
       )
   </insert>
 
+  <insert id="bulkInsertHistoricTaskInstance" parameterType="java.util.List">
+      insert into ${prefix}ACT_HI_TASKINST (
+        ID_,
+        PROC_DEF_ID_,
+        PROC_INST_ID_,
+        EXECUTION_ID_,
+        NAME_,
+        PARENT_TASK_ID_,
+        DESCRIPTION_,
+        OWNER_,
+        ASSIGNEE_,
+        START_TIME_,
+        CLAIM_TIME_,
+        END_TIME_,
+        DURATION_,
+        DELETE_REASON_,
+        TASK_DEF_KEY_,
+        FORM_KEY_,
+        PRIORITY_,
+        DUE_DATE_,
+        CATEGORY_,
+        TENANT_ID_
+      ) values 
+        <foreach collection="list" item="historicTask" index="index" separator=",">
+          (#{historicTask.id ,jdbcType=VARCHAR},
+           #{historicTask.processDefinitionId, jdbcType=VARCHAR},
+           #{historicTask.processInstanceId, jdbcType=VARCHAR},
+           #{historicTask.executionId, jdbcType=VARCHAR},
+           #{historicTask.name ,jdbcType=VARCHAR},
+           #{historicTask.parentTaskId ,jdbcType=VARCHAR},
+           #{historicTask.description ,jdbcType=VARCHAR},
+           #{historicTask.owner ,jdbcType=VARCHAR},
+           #{historicTask.assignee ,jdbcType=VARCHAR},
+           #{historicTask.startTime, jdbcType=TIMESTAMP},
+           #{historicTask.claimTime, jdbcType=TIMESTAMP},
+           #{historicTask.endTime, jdbcType=TIMESTAMP},
+           #{historicTask.durationInMillis ,jdbcType=BIGINT},
+           #{historicTask.deleteReason ,jdbcType=VARCHAR},
+           #{historicTask.taskDefinitionKey ,jdbcType=VARCHAR},
+           #{historicTask.formKey ,jdbcType=VARCHAR},
+           #{historicTask.priority, jdbcType=INTEGER},
+           #{historicTask.dueDate, jdbcType=TIMESTAMP},
+           #{historicTask.category, jdbcType=VARCHAR},
+           #{historicTask.tenantId, jdbcType=VARCHAR})
+        </foreach>
+  </insert>
+
+  <insert id="bulkInsertHistoricTaskInstance_oracle" parameterType="java.util.List">
+      INSERT ALL 
+        <foreach collection="list" item="historicTask" index="index">
+          INTO ${prefix}ACT_HI_TASKINST (
+            ID_,
+            PROC_DEF_ID_,
+            PROC_INST_ID_,
+            EXECUTION_ID_,
+            NAME_,
+            PARENT_TASK_ID_,
+            DESCRIPTION_,
+            OWNER_,
+            ASSIGNEE_,
+            START_TIME_,
+            CLAIM_TIME_,
+            END_TIME_,
+            DURATION_,
+            DELETE_REASON_,
+            TASK_DEF_KEY_,
+            FORM_KEY_,
+            PRIORITY_,
+            DUE_DATE_,
+            CATEGORY_,
+            TENANT_ID_
+          ) VALUES 
+            (#{historicTask.id ,jdbcType=VARCHAR},
+             #{historicTask.processDefinitionId, jdbcType=VARCHAR},
+             #{historicTask.processInstanceId, jdbcType=VARCHAR},
+             #{historicTask.executionId, jdbcType=VARCHAR},
+             #{historicTask.name ,jdbcType=VARCHAR},
+             #{historicTask.parentTaskId ,jdbcType=VARCHAR},
+             #{historicTask.description ,jdbcType=VARCHAR},
+             #{historicTask.owner ,jdbcType=VARCHAR},
+             #{historicTask.assignee ,jdbcType=VARCHAR},
+             #{historicTask.startTime, jdbcType=TIMESTAMP},
+             #{historicTask.claimTime, jdbcType=TIMESTAMP},
+             #{historicTask.endTime, jdbcType=TIMESTAMP},
+             #{historicTask.durationInMillis ,jdbcType=BIGINT},
+             #{historicTask.deleteReason ,jdbcType=VARCHAR},
+             #{historicTask.taskDefinitionKey ,jdbcType=VARCHAR},
+             #{historicTask.formKey ,jdbcType=VARCHAR},
+             #{historicTask.priority, jdbcType=INTEGER},
+             #{historicTask.dueDate, jdbcType=TIMESTAMP},
+             #{historicTask.category, jdbcType=VARCHAR},
+             #{historicTask.tenantId, jdbcType=VARCHAR})
+        </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- HISTORIC TASK INSTANCE UPDATE -->
   
   <update id="updateHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">

@@ -53,6 +53,78 @@
         #{name, jdbcType=VARCHAR}
       )
   </insert>
+  
+  <insert id="bulkInsertHistoricProcessInstance" parameterType="java.util.List">
+      insert into ${prefix}ACT_HI_PROCINST (
+        ID_,
+        PROC_INST_ID_,
+        BUSINESS_KEY_,
+        PROC_DEF_ID_,
+        START_TIME_,
+        END_TIME_,
+        DURATION_,
+        START_USER_ID_,
+        START_ACT_ID_,
+        END_ACT_ID_,
+        SUPER_PROCESS_INSTANCE_ID_,
+        DELETE_REASON_,
+        TENANT_ID_,
+        NAME_
+      ) values 
+        <foreach collection="list" item="historicProcessInstance" index="index" separator=",">
+          (#{historicProcessInstance.id ,jdbcType=VARCHAR},
+           #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
+           #{historicProcessInstance.businessKey, jdbcType=VARCHAR},
+           #{historicProcessInstance.processDefinitionId, jdbcType=VARCHAR},
+           #{historicProcessInstance.startTime, jdbcType=TIMESTAMP},
+           #{historicProcessInstance.endTime, jdbcType=TIMESTAMP},
+           #{historicProcessInstance.durationInMillis ,jdbcType=BIGINT},
+           #{historicProcessInstance.startUserId, jdbcType=VARCHAR},
+           #{historicProcessInstance.startActivityId, jdbcType=VARCHAR},
+           #{historicProcessInstance.endActivityId, jdbcType=VARCHAR},
+           #{historicProcessInstance.superProcessInstanceId, jdbcType=VARCHAR},
+           #{historicProcessInstance.deleteReason, jdbcType=VARCHAR},
+           #{historicProcessInstance.tenantId, jdbcType=VARCHAR},
+           #{historicProcessInstance.name, jdbcType=VARCHAR})
+         </foreach>
+  </insert>
+  
+  <insert id="bulkInsertHistoricProcessInstance_oracle" parameterType="java.util.List">
+      INSERT ALL 
+        <foreach collection="list" item="historicProcessInstance" index="index">
+          INTO ${prefix}ACT_HI_PROCINST (
+            ID_,
+            PROC_INST_ID_,
+            BUSINESS_KEY_,
+            PROC_DEF_ID_,
+            START_TIME_,
+            END_TIME_,
+            DURATION_,
+            START_USER_ID_,
+            START_ACT_ID_,
+            END_ACT_ID_,
+            SUPER_PROCESS_INSTANCE_ID_,
+            DELETE_REASON_,
+            TENANT_ID_,
+            NAME_
+          ) VALUES 
+              (#{historicProcessInstance.id ,jdbcType=VARCHAR},
+               #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
+               #{historicProcessInstance.businessKey, jdbcType=VARCHAR},
+               #{historicProcessInstance.processDefinitionId, jdbcType=VARCHAR},
+               #{historicProcessInstance.startTime, jdbcType=TIMESTAMP},
+               #{historicProcessInstance.endTime, jdbcType=TIMESTAMP},
+               #{historicProcessInstance.durationInMillis ,jdbcType=BIGINT},
+               #{historicProcessInstance.startUserId, jdbcType=VARCHAR},
+               #{historicProcessInstance.startActivityId, jdbcType=VARCHAR},
+               #{historicProcessInstance.endActivityId, jdbcType=VARCHAR},
+               #{historicProcessInstance.superProcessInstanceId, jdbcType=VARCHAR},
+               #{historicProcessInstance.deleteReason, jdbcType=VARCHAR},
+               #{historicProcessInstance.tenantId, jdbcType=VARCHAR},
+               #{historicProcessInstance.name, jdbcType=VARCHAR})
+       </foreach>
+    SELECT * FROM dual
+  </insert>
 
   <!-- HISTORIC PROCESS INSTANCE UPDATE -->
   
