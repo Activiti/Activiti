@@ -81,9 +81,9 @@ public class DbSqlSession implements Session {
   
   private static final Logger log = LoggerFactory.getLogger(DbSqlSession.class);
   
-  private static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
+  protected static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
   
-  private static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
+  protected static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
   static {
 	  
 	  /* Previous */
@@ -786,7 +786,7 @@ public class DbSqlSession implements Session {
     for (Class<? extends PersistentObject> persistentObjectClass : EntityDependencyOrder.INSERT_ORDER) {
       if (insertedObjects.containsKey(persistentObjectClass)) {
       	List<PersistentObject> persistentObjectsToInsert = insertedObjects.get(persistentObjectClass);
-      	if (persistentObjectsToInsert.size() == 1) {
+      	if (persistentObjectsToInsert.size() == 1 || Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(persistentObjectClass))) {
       		flushRegularInsert(persistentObjectsToInsert.get(0), persistentObjectClass);
       	} else {
       		flushBulkInsert(insertedObjects.get(persistentObjectClass), persistentObjectClass);
