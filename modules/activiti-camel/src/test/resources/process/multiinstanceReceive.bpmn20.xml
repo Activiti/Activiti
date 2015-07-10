@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+             http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+
+    <process id="miProcessExample">
+
+        <startEvent id="start"/>
+        <sequenceFlow sourceRef="start" targetRef="subProcess"/>
+        <subProcess id="subProcess">
+          <multiInstanceLoopCharacteristics isSequential="false">
+            <loopCardinality>5</loopCardinality>
+          </multiInstanceLoopCharacteristics>
+          <startEvent id="subProcessStart"/>
+          <sequenceFlow sourceRef="subProcessStart" targetRef="serviceTask1"/>
+          <serviceTask id="serviceTask1" activiti:type="camel" activiti:async="true" activiti:exclusive="false"/>
+          <sequenceFlow sourceRef="serviceTask1" targetRef="receive1"/>
+          <receiveTask id="receive1" name="Wait State" />
+          <sequenceFlow sourceRef="receive1" targetRef="subProcessEnd"/>
+          <endEvent id="subProcessEnd"/>
+        </subProcess>
+        <sequenceFlow sourceRef="subProcess" targetRef="end"/>
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>
