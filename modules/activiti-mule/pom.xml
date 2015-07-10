@@ -258,7 +258,7 @@
       <repository>
           <id>mulesoft-releases</id>
           <name>MuleSoft Releases Repository</name>
-          <url>http://repository.mulesoft.org/releases/</url>
+          <url>https://repository-master.mulesoft.org/nexus/content/groups/public/</url>
           <layout>default</layout>
       </repository>
   </repositories>
