@@ -329,6 +329,12 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
       assertEquals(1, tasks.size());
       
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").taskCandidateGroupIn(groups).list();
+      assertEquals(3, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").taskCandidateGroupIn(groups).list();
+      assertEquals(1, tasks.size());
+      
       Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       taskService.complete(task.getId());
       
@@ -345,6 +351,15 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       
       tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
       assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").taskCandidateGroup("management").list();
+      assertEquals(3, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").taskCandidateGroup("management").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").taskCandidateGroup("invalid").list();
+      assertEquals(0, tasks.size());
       
       tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
       assertEquals(1, tasks.size());

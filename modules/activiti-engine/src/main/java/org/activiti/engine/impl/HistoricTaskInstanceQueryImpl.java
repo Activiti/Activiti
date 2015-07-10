@@ -924,12 +924,6 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (candidateUser == null) {
       throw new ActivitiIllegalArgumentException("Candidate user is null");
     }
-    if (candidateGroup != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroup");
-    }
-    if (candidateGroups != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroupIn");
-    }
     
     if (inOrStatement) {
       this.currentOrQueryObject.candidateUser = candidateUser;
@@ -943,9 +937,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (candidateGroup == null) {
       throw new ActivitiIllegalArgumentException("Candidate group is null");
     }
-    if (candidateUser != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
-    }
+    
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
@@ -959,16 +951,14 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
   
   public HistoricTaskInstanceQuery taskCandidateGroupIn(List<String> candidateGroups) {
-    if(candidateGroups == null) {
+    if (candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
-    if(candidateGroups.isEmpty()) {
+    
+    if (candidateGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Candidate group list is empty");
     }
     
-    if (candidateUser != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateUser");
-    }
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
@@ -1184,15 +1174,17 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
   
   public List<String> getCandidateGroups() {
-    if (candidateGroup!=null) {
+    if (candidateGroup != null) {
       List<String> candidateGroupList = new ArrayList<String>(1);
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
-    } else if (candidateUser != null) {
-      return getGroupsForCandidateUser(candidateUser);
+      
     } else if(candidateGroups != null) {
       return candidateGroups;
-    }
+    
+    } else if (candidateUser != null) {
+      return getGroupsForCandidateUser(candidateUser);
+    } 
     return null;
   }
   
