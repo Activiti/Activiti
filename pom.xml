@@ -885,6 +885,8 @@
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti5-engine</module>
+        <module>modules/activiti5-compatibility</module>
         <!--  <module>modules/activiti-spring-boot</module> -->
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
