@@ -415,14 +415,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateUser == null) {
       throw new ActivitiIllegalArgumentException("Candidate user is null");
     }
-    if (candidateGroup != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroup");
-    }
-    if (candidateGroups != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroupIn");
-    }
     
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.candidateUser = candidateUser;
     } else {
       this.candidateUser = candidateUser;
@@ -447,13 +441,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroup == null) {
       throw new ActivitiIllegalArgumentException("Candidate group is null");
     }
-    if (candidateUser != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
-    }
+    
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
-    if(orActive) {
+    
+    if (orActive) {
       currentOrQueryObject.candidateGroup = candidateGroup;
     } else {
       this.candidateGroup = candidateGroup;
@@ -485,18 +478,16 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
+    
     if (candidateGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Candidate group list is empty");
     }
-
-    if (candidateUser != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateUser");
-    }
+    
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
     
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.candidateGroups = candidateGroups;
     } else {
       this.candidateGroups = candidateGroups;
@@ -1057,11 +1048,13 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       List<String> candidateGroupList = new ArrayList<String>(1);
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
-    } else if (candidateUser != null) {
-      return getGroupsForCandidateUser(candidateUser);
+      
     } else if (candidateGroups != null) {
       return candidateGroups;
-    }
+    
+    } else if (candidateUser != null) {
+      return getGroupsForCandidateUser(candidateUser);
+    } 
     return null;
   }
 

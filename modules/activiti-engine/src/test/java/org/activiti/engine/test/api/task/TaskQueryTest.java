@@ -831,12 +831,25 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     TaskQuery query = taskService.createTaskQuery().taskCandidateGroupIn(groups);
     assertEquals(5, query.count());
     assertEquals(5, query.list().size());
+    
     try {
       query.singleResult();
       fail("expected exception");
     } catch (ActivitiException e) {
       // OK
     }
+    
+    query = taskService.createTaskQuery().taskCandidateUser("kermit").taskCandidateGroupIn(groups);
+    assertEquals(11, query.count());
+    assertEquals(11, query.list().size());
+    
+    query = taskService.createTaskQuery().taskCandidateUser("kermit").taskCandidateGroup("unexisting");
+    assertEquals(6, query.count());
+    assertEquals(6, query.list().size());
+    
+    query = taskService.createTaskQuery().taskCandidateUser("unexisting").taskCandidateGroup("unexisting");
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
 
     // Unexisting groups or groups that don't have candidate tasks shouldn't
     // influence other results
@@ -851,15 +864,32 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     TaskQuery query = taskService.createTaskQuery().or().taskId("invalid").taskCandidateGroupIn(groups);
     assertEquals(5, query.count());
     assertEquals(5, query.list().size());
+    
     try {
       query.singleResult();
       fail("expected exception");
     } catch (ActivitiException e) {
       // OK
     }
-
-    // Unexisting groups or groups that don't have candidate tasks shouldn't
-    // influence other results
+    
+    query = taskService.createTaskQuery().or().taskCandidateUser("kermit").taskCandidateGroupIn(groups).endOr();
+    assertEquals(11, query.count());
+    assertEquals(11, query.list().size());
+    
+    query = taskService.createTaskQuery().or().taskCandidateUser("kermit").taskCandidateGroup("unexisting").endOr();
+    assertEquals(6, query.count());
+    assertEquals(6, query.list().size());
+    
+    query = taskService.createTaskQuery().or().taskCandidateUser("unexisting").taskCandidateGroup("unexisting").endOr();
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+    
+    query = taskService.createTaskQuery().or().taskCandidateUser("kermit").taskCandidateGroupIn(groups).endOr()
+        .or().taskCandidateUser("gonzo").taskCandidateGroupIn(groups);
+    assertEquals(5, query.count());
+    assertEquals(5, query.list().size());
+    
+    // Unexisting groups or groups that don't have candidate tasks shouldn't influence other results
     groups = Arrays.asList("management", "accountancy", "sales", "unexising");
     query = taskService.createTaskQuery().or().taskId("invalid").taskCandidateGroupIn(groups);
     assertEquals(5, query.count());
