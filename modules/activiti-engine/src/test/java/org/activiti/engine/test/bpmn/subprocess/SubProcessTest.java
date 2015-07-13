@@ -429,12 +429,17 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     variables = runtimeService.getVariablesLocal(currentTask.getExecutionId());
     assertEquals(0, variables.size());
 
+    currentTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    
+    // Verify there are no local variables assigned to the current task. (subprocess variables are gone).
+    variables = runtimeService.getVariablesLocal(currentTask.getExecutionId());
+    assertEquals(0, variables.size());
+    
     // After completing the final task in the main process,
     // the process scope is destroyed and the process ends
-    currentTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Complete Task B", currentTask.getName());
-
+    
     taskService.complete(currentTask.getId());
     assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
-  }
+  }  
 }

@@ -81,6 +81,14 @@ public class DestroyScopeOperation extends AbstractOperation {
       variableInstanceEntityManager.delete(variable);
     }
 
+    // Remove variables associated with this scope
+    VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+    Collection<VariableInstanceEntity> variablesForExecution = variableInstanceEntityManager.findVariableInstancesByExecutionId(parentScopeExecution.getId());
+    for(VariableInstanceEntity variable : variablesForExecution)
+    {
+      variableInstanceEntityManager.delete(variable);
+    }
+    
     // Not a scope anymore
     parentScopeExecution.setScope(false);
     parentScopeExecution.setCurrentFlowElement(currentFlowElement);
