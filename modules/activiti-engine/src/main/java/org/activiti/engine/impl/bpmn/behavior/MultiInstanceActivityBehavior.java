@@ -34,6 +34,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -221,6 +222,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     // If loopcounter == 0, then historic activity instance already created,
     // no need to pass through executeActivity again since it will create a new historic activity
     if (loopCounter == 0) {
+      callCustomActivityStartListeners(execution);
       innerActivityBehavior.execute(execution);
     } else {
       execution.setCurrentFlowElement(activity);
@@ -280,6 +282,52 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected Integer getLocalLoopVariable(ActivityExecution execution, String variableName) {
     return (Integer) execution.getVariableLocal(variableName);
   }
+  
+  /**
+   * Since the first loop of the multi instance is not executed as a regular activity,
+   * it is needed to call the start listeners yourself.
+   */
+  protected void callCustomActivityStartListeners(ActivityExecution execution) {
+    
+    // TODO: needs to be made generic with callActivityEndListeners and calling activiti listeners in general!
+    
+    List<ActivitiListener> listeners = activity.getExecutionListeners();
+    if (CollectionUtils.isNotEmpty(listeners)) {
+      
+      ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+      
+      for (ActivitiListener activitiListener : listeners) {
+        if ("start".equalsIgnoreCase(activitiListener.getEvent())) {
+          
+          // TODO: this needs to be put in a util class or something
+          ExecutionListener executionListener = null;
+
+          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            
+            // Sad that we have to do this, but it's the only way I could find (which is also safe for backwards compatibility)
+            if (!ActivityInstanceStartHandler.class.getName().equals(activitiListener.getImplementation())) {
+              executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
+            }
+            
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          }
+
+          if (executionListener != null) {
+            ((ExecutionEntity) execution).setEventName(ExecutionListener.EVENTNAME_START);
+            executionListener.notify(execution);
+            
+            // TODO: is this still needed? Is this property still needed?
+            ((ExecutionEntity) execution).setEventName(null);
+          }
+          
+        }
+      }
+    }
+    
+  }
 
   /**
    * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
@@ -293,6 +341,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       for (ActivitiListener activitiListener : listeners) {
         if ("end".equalsIgnoreCase(activitiListener.getEvent())) {
           
+          // TODO: this needs to be put in a util class or something
           ExecutionListener executionListener = null;
 
           if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
