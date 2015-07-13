@@ -136,6 +136,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     }
   }
   
+  public ExecutionQuery processDefinitionKeys(Set<String> processDefinitionKeys) {
+    if (processDefinitionKeys == null) {
+      throw new ActivitiIllegalArgumentException("Process definition keys is null");
+    }
+    this.processDefinitionKeys = processDefinitionKeys;
+    return this;
+  }
+  
   public ExecutionQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");

@@ -181,6 +181,14 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processDefinitionKey("HistoricTaskQueryTest").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().processDefinitionKey("unexistingdefinitionkey").count());
     
+    // Process definition key in
+    List<String> includeIds = new ArrayList<String>();
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processDefinitionKeyIn(includeIds).count());
+    includeIds.add("unexistingProcessDefinition");    
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processDefinitionKeyIn(includeIds).count());    
+    includeIds.add("HistoricTaskQueryTest");
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(includeIds).count());
+    
     // Form key
     HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery()
         .processInstanceId(finishedInstance.getId()).singleResult();
@@ -365,6 +373,16 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Process definition key
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("HistoricTaskQueryTest").endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("unexistingdefinitionkey").endOr().count());
+    
+    // Process definition key in
+    List<String> includeIds = new ArrayList<String>();
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("unexistingdefinitionkey").processDefinitionKeyIn(includeIds).endOr().count());
+    includeIds.add("unexistingProcessDefinition");
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("unexistingdefinitionkey").processDefinitionKeyIn(includeIds).endOr().count());    
+    includeIds.add("unexistingProcessDefinition");    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("HistoricTaskQueryTest").processDefinitionKeyIn(includeIds).endOr().count());
+    includeIds.add("HistoricTaskQueryTest");
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionKey("unexistingdefinitionkey").processDefinitionKeyIn(includeIds).endOr().count());
     
     // Assignee
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskAssignee("kermit").endOr().count());
