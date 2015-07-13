@@ -192,6 +192,11 @@ public enum ActivitiEventType {
    * when it reaches state in which process instance does not have any transition to take.
    */
   PROCESS_COMPLETED,
+  
+  /**
+   * A process has been completed with an error end event.
+   */
+  PROCESS_COMPLETED_WITH_ERROR_END_EVENT,
 
   /**
    * A process has been cancelled. Dispatched when process instance is deleted by

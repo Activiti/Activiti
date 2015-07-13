@@ -68,11 +68,12 @@ public class ErrorPropagation {
         executeCatch(eventHandlerId, execution, errorCode);
         break;
       }
+      
       if (execution.isProcessInstanceType()) {
         // dispatch process completed event
         if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                  ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+                  ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT, execution));
         }
       }
       execution = getSuperExecution(execution);
