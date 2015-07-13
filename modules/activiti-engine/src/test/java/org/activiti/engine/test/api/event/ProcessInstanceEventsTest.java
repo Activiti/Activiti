@@ -509,8 +509,8 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     // which is caught on the call activity boundary
     taskService.complete(task.getId());
 
-    List<ActivitiEvent> processCompletedEvents = listener.filterEvents(ActivitiEventType.PROCESS_COMPLETED);
-    assertEquals("There should be exactly an ActivitiEventType.PROCESS_COMPLETE event after the task complete.", 1, processCompletedEvents.size());
+    List<ActivitiEvent> processCompletedEvents = listener.filterEvents(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT);
+    assertEquals("There should be exactly an ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT event after the task complete.", 1, processCompletedEvents.size());
     ActivitiEntityEvent processCompletedEvent = (ActivitiEntityEvent) processCompletedEvents.get(0);
     assertEquals(subProcesses.get(0).getId(), processCompletedEvent.getExecutionId());
 

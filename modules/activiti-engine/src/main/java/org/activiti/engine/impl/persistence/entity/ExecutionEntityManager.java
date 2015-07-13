@@ -399,6 +399,11 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   
   public void deleteProcessInstanceExecutionEntity(ExecutionEntity processInstanceEntity, 
       String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel) {
+    deleteProcessInstanceExecutionEntity(processInstanceEntity, currentFlowElementId, deleteReason, cascade, cancel, true);
+  }
+  
+  public void deleteProcessInstanceExecutionEntity(ExecutionEntity processInstanceEntity, 
+      String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel, boolean fireEvent) {
     
     if (processInstanceEntity.isDeleted()) {
       return;

@@ -77,21 +77,32 @@ public class ErrorPropagation {
           // get execution node for parent process of current process instance
           ExecutionTreeNode parentNode = existingNode.getParent();
           
-          Set<String> toDeleteExecutions = new HashSet<String>();
-          toDeleteExecutions.add(execution.getProcessInstanceId());
+          Set<String> toDeleteProcessInstanceIds = new HashSet<String>();
+          toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
           
           while (parentNode != null && eventMap.size() == 0) {
             eventMap = findCatchingEventsForProcess(parentNode.getExecutionEntity().getProcessDefinitionId(), errorCode);
             if (eventMap.size() > 0) {
               
-              for (String processInstanceId : toDeleteExecutions) {
-                executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, 
-                    execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED");
+              for (String processInstanceId : toDeleteProcessInstanceIds) {
+                
+                ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
+                
+                // Delete
+                executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity, 
+                    execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null,
+                    "ERROR_EVENT " + errorCode, false, false, false);
+                
+                // Event
+                if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                  Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                      ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT, processInstanceEntity));
+                }
               }
               executeCatch(eventMap, parentNode.getExecutionEntity(), errorCode);
             
             } else {
-              toDeleteExecutions.add(parentNode.getExecutionEntity().getProcessInstanceId());
+              toDeleteProcessInstanceIds.add(parentNode.getExecutionEntity().getProcessInstanceId());
               parentNode = parentNode.getParent();
             }
           }
