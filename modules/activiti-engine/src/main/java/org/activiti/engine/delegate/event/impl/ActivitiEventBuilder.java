@@ -77,24 +77,23 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 
-    /**
-     * @param entity
-     *            the entity this event targets
-     * @param variables
-     *            the variables associated with this entity
-     * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related
-     *         event fields will be populated. If not, execution details will be reteived from the {@link Object} if
-     *         possible.
-     */
-    @SuppressWarnings("rawtypes")
-    public static ActivitiProcessStartedEvent createProcessStartedEvent(final Object entity,
-            final Map variables, final boolean localScope) {
-        final ActivitiProcessStartedEventImpl newEvent = new ActivitiProcessStartedEventImpl(entity, variables, localScope);
+  /**
+   * @param entity
+   *            the entity this event targets
+   * @param variables
+   *            the variables associated with this entity
+   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related
+   *         event fields will be populated. If not, execution details will be reteived from the {@link Object} if
+   *         possible.
+   */
+  @SuppressWarnings("rawtypes")
+  public static ActivitiProcessStartedEvent createProcessStartedEvent(final Object entity, final Map variables, final boolean localScope) {
+    final ActivitiProcessStartedEventImpl newEvent = new ActivitiProcessStartedEventImpl(entity, variables, localScope);
 
-        // In case an execution-context is active, populate the event fields related to the execution
-        populateEventWithCurrentContext(newEvent);
-        return newEvent;
-    }
+    // In case an execution-context is active, populate the event fields related to the execution
+    populateEventWithCurrentContext(newEvent);
+    return newEvent;
+  }
 	
 	/**
    * @param type type of event

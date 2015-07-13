@@ -66,21 +66,21 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-            assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
-            assertEquals(processInstance.getId(), event.getProcessInstanceId());
-            assertEquals(processInstance.getId(), event.getExecutionId());
-            assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
-            
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
-            assertEquals(ActivitiEventType.PROCESS_STARTED, event.getType());
-            assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
-            assertEquals(processInstance.getId(), event.getProcessInstanceId());
-            assertEquals(processInstance.getId(), event.getExecutionId());
-            assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
-            assertTrue(event instanceof ActivitiProcessStartedEvent);
-            assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId());
-            assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId());
+      assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+      assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+      assertEquals(processInstance.getId(), event.getProcessInstanceId());
+      assertEquals(processInstance.getId(), event.getExecutionId());
+      assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      
+      event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+      assertEquals(ActivitiEventType.PROCESS_STARTED, event.getType());
+      assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+      assertEquals(processInstance.getId(), event.getProcessInstanceId());
+      assertEquals(processInstance.getId(), event.getExecutionId());
+      assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      assertTrue(event instanceof ActivitiProcessStartedEvent);
+      assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId());
+      assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId());
 			listener.clearEventsReceived();
 
 			// Check update event when suspended/activated
