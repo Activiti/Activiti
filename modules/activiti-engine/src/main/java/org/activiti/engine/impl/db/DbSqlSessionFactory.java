@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 
@@ -202,6 +203,12 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mssql", "selectHistoricTaskInstancesWithVariablesByQueryCriteria", "selectHistoricTaskInstancesWithVariablesByQueryCriteria_mssql_or_db2");
   }
   
+  
+  /**
+   * A map {class, boolean}, to indicate whether or not a certain {@link PersistentObject} class can be bulk inserted.
+   */
+  protected static Map<Class<? extends PersistentObject>, Boolean> bulkInsertableMap;
+  
   protected String databaseType;
   protected String databaseTablePrefix = "";
   private boolean tablePrefixIsSchema;
@@ -302,6 +309,24 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setDatabaseType(String databaseType) {
     this.databaseType = databaseType;
     this.statementMappings = databaseSpecificStatements.get(databaseType);
+    initBulkInsertEnabledMap(databaseType);
+  }
+  
+  protected void initBulkInsertEnabledMap(String databaseType) {
+  	bulkInsertableMap = new HashMap<Class<? extends PersistentObject>, Boolean>();
+  	
+  	for (Class<? extends PersistentObject> clazz : EntityDependencyOrder.INSERT_ORDER) {
+  		bulkInsertableMap.put(clazz, Boolean.TRUE);
+  	}
+
+  	// Only Oracle is making a fuss in one specific case right now
+		if ("oracle".equals(databaseType)) {
+			bulkInsertableMap.put(EventLogEntryEntity.class, Boolean.FALSE);
+		}
+  }
+  
+  public boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
+  	return bulkInsertableMap.get(persistentObjectClass);
   }
 
   // getters and setters //////////////////////////////////////////////////////
