@@ -78,6 +78,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
   protected String processDefinitionKeyLikeIgnoreCase;
+  protected List<String> processDefinitionKeys;
   protected String processDefinitionId;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
@@ -861,6 +862,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
+  
+  public TaskQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
+    if (orActive) {
+      this.currentOrQueryObject.processDefinitionKeys = processDefinitionKeys;
+    } else {
+      this.processDefinitionKeys = processDefinitionKeys;
+    }
+    return this;
+  }
 
   public TaskQuery processDefinitionId(String processDefinitionId) {
     if(orActive) {
@@ -1357,6 +1367,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 
   public String getProcessDefinitionKeyLike() {
     return processDefinitionKeyLike;
+  }
+
+  public List<String> getProcessDefinitionKeys() {
+    return processDefinitionKeys;
   }
 
   public String getProcessDefinitionNameLike() {

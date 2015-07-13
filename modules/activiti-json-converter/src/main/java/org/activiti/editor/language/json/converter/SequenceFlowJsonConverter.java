@@ -100,6 +100,10 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
       propertiesNode.put(PROPERTY_SEQUENCEFLOW_CONDITION, sequenceFlow.getConditionExpression());
     }
 
+    if (sequenceFlow.getExecutionListeners().size() > 0) {
+      BpmnJsonConverterUtil.convertListenersToJson(sequenceFlow.getExecutionListeners(), true, propertiesNode);
+    }
+
     flowNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     shapesArrayNode.add(flowNode);
   }
