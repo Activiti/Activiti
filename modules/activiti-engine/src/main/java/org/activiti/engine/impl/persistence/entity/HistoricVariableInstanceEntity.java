@@ -87,8 +87,8 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.longValue = variableInstance.getLongValue();
 
     this.variableType = variableInstance.getType();
-    if (variableInstance.getByteArrayValueId() != null) {
-      setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
+    if (variableInstance.getByteArrayRef() != null) {
+      setBytes(variableInstance.getBytes());
     }
 
     this.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
@@ -137,24 +137,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   @Override
   public void setBytes(byte[] bytes) {
     byteArrayRef.setValue("hist.var-" + name, bytes);
-  }
-
-  @Override
-  @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-
-  @Override
-  @Deprecated
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
-  }
-
-  @Override
-  @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
   }
 
   // getters and setters

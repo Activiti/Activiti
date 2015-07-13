@@ -147,25 +147,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     byteArrayRef.setValue("var-" + name, bytes);
   }
 
-  @Override
-  @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-
-  @Override
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
-  }
-
   public ByteArrayRef getByteArrayRef() {
     return byteArrayRef;
-  }
-
-  @Override
-  @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
   }
 
   // value

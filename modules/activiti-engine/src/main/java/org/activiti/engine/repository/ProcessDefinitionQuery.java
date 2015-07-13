@@ -129,12 +129,6 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   // Support for event subscriptions /////////////////////////////////////
 
   /**
-   * @see #messageEventSubscriptionName(String)
-   */
-  @Deprecated
-  ProcessDefinitionQuery messageEventSubscription(String messageName);
-
-  /**
    * Selects the single process definition which has a start message event with the messageName.
    */
   ProcessDefinitionQuery messageEventSubscriptionName(String messageName);

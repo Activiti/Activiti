@@ -302,7 +302,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     }
 
     try {
-      runtimeService.signal(processInstance.getId());
+      runtimeService.trigger(processInstance.getId());
       fail();
     } catch (ActivitiException e) {
       // This is expected
@@ -310,7 +310,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     }
 
     try {
-      runtimeService.signal(processInstance.getId(), new HashMap<String, Object>());
+      runtimeService.trigger(processInstance.getId(), new HashMap<String, Object>());
       fail();
     } catch (ActivitiException e) {
       // This is expected

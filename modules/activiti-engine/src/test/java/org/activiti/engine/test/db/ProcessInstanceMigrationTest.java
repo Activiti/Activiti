@@ -162,7 +162,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // signal process instance
-    runtimeService.signal(execution.getId());
+    runtimeService.trigger(execution.getId());
 
     // check that the instance now uses the new process definition version
     ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(2).singleResult();
@@ -225,7 +225,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // signal process instance
-    runtimeService.signal(execution.getId());
+    runtimeService.trigger(execution.getId());
 
     // should be finished now
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count());

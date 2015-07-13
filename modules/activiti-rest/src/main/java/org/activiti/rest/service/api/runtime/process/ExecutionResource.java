@@ -43,9 +43,9 @@ public class ExecutionResource extends ExecutionBaseResource {
 
     if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
       if (actionRequest.getVariables() != null) {
-        runtimeService.signal(execution.getId(), getVariablesToSet(actionRequest));
+        runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest));
       } else {
-        runtimeService.signal(execution.getId());
+        runtimeService.trigger(execution.getId());
       }
     } else if (ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
       if (actionRequest.getSignalName() == null) {

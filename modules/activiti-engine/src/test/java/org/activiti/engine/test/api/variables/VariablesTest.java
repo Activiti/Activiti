@@ -322,10 +322,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers
-                                                                                                   // service
-                                                                                                   // task
-                                                                                                   // invocation
+    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers service task invocation
 
     String varValue = (String) runtimeService.getVariable(processInstanceId, "testVar");
     assertEquals("HELLO world!", varValue);
@@ -338,10 +335,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers
-                                                                                                   // service
-                                                                                                   // task
-                                                                                                   // invocation
+    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers service task invocation
 
     assertEquals("test 1 2 3", (String) runtimeService.getVariable(processInstanceId, "testVar"));
     assertEquals("Hiya", (String) runtimeService.getVariable(processInstanceId, "testVar2"));

@@ -1199,16 +1199,16 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("catchSignal");
 
     // it finds subscribed instances
-    Execution execution = runtimeService.createExecutionQuery().signalEventSubscription("alert").singleResult();
+    Execution execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
     assertNotNull(execution);
 
     // test query for nonexisting subscription
-    execution = runtimeService.createExecutionQuery().signalEventSubscription("nonExisitng").singleResult();
+    execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("nonExisitng").singleResult();
     assertNull(execution);
 
     // it finds more than one
     runtimeService.startProcessInstanceByKey("catchSignal");
-    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("alert").count());
+    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count());
   }
 
   @Deployment
@@ -1216,16 +1216,16 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("signalProces");
 
     // it finds subscribed instances
-    Execution execution = runtimeService.createExecutionQuery().signalEventSubscription("Test signal").singleResult();
+    Execution execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("Test signal").singleResult();
     assertNotNull(execution);
 
     // test query for nonexisting subscription
-    execution = runtimeService.createExecutionQuery().signalEventSubscription("nonExisitng").singleResult();
+    execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("nonExisitng").singleResult();
     assertNull(execution);
 
     // it finds more than one
     runtimeService.startProcessInstanceByKey("signalProces");
-    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("Test signal").count());
+    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscriptionName("Test signal").count());
   }
 
   public void testNativeQuery() {

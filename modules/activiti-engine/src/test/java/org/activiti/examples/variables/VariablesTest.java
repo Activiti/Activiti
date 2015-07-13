@@ -29,8 +29,6 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author Tom Baeyens
@@ -323,18 +321,25 @@ class CustomType {
 
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCode(value);
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(value);
+    return result;
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof CustomType))
+    if (this == obj)
+      return true;
+    if (obj == null)
       return false;
-
+    if (getClass() != obj.getClass())
+      return false;
     CustomType other = (CustomType) obj;
-    return ArrayUtils.isEquals(this.value, other.value);
+    if (!Arrays.equals(value, other.value))
+      return false;
+    return true;
   }
-
 }
 
 /**

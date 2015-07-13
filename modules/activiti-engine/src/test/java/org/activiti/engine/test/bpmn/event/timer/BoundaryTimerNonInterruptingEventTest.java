@@ -270,7 +270,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertEquals("task", activeActivityIds.get(0));
     assertEquals("timer", activeActivityIds.get(1));
 
-    runtimeService.signal(executions.get(0).getId());
+    runtimeService.trigger(executions.get(0).getId());
 
     // // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire

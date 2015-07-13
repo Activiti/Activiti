@@ -89,21 +89,6 @@ public interface HistoricTaskInstanceQuery extends TaskInfoQuery<HistoricTaskIns
   HistoricTaskInstanceQuery orderByHistoricTaskInstanceEndTime();
 
   /**
-   * Order by start time (needs to be followed by {@link #asc()} or {@link #desc()}).
-   * 
-   * @deprecated use {@link #orderByHistoricTaskInstanceStartTime()}
-   */
-  @Deprecated
-  HistoricTaskInstanceQuery orderByHistoricActivityInstanceStartTime();
-
-  /**
-   * Order by start time (needs to be followed by {@link #asc()} or {@link #desc()}).
-   * 
-   * @deprecated Use {@link #orderByTaskCreateTime()}
-   */
-  HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime();
-
-  /**
    * Order by task delete reason (needs to be followed by {@link #asc()} or {@link #desc()}).
    */
   HistoricTaskInstanceQuery orderByDeleteReason();

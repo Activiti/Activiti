@@ -13,6 +13,9 @@
 
 package org.activiti.engine.test.api.runtime;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,9 +38,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 
 /**
  * @author Frederik Heremans
@@ -391,7 +391,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
   public void testSignalNullExecutionId() {
     try {
-      runtimeService.signal(null);
+      runtimeService.trigger(null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());

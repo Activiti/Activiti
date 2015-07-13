@@ -26,8 +26,8 @@ import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -301,11 +301,6 @@ public interface RuntimeService {
   List<String> getActiveActivityIds(String executionId);
 
   /**
-   * @deprecated Will be replaced by #trigger(String)
-   */
-  void signal(String executionId);
-
-  /**
    * Sends an external trigger to an activity instance that is waiting inside the given execution.
    * 
    * @param executionId
@@ -314,11 +309,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   void trigger(String executionId);
-
-  /**
-   * @deprecated Will be replaced by {@link #trigger(String, Map)}
-   */
-  void signal(String executionId, Map<String, Object> processVariables);
 
   /**
    * Sends an external trigger to an activity instance that is waiting inside the given execution.

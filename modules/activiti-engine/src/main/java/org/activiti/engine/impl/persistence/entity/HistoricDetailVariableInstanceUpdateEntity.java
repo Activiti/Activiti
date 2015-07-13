@@ -108,24 +108,6 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     throw new UnsupportedOperationException("HistoricDetailVariableInstanceUpdateEntity is immutable");
   }
 
-  @Override
-  @Deprecated
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
-  }
-
-  @Override
-  @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-
-  @Override
-  @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
-  }
-
   // getters and setters
   // //////////////////////////////////////////////////////
 

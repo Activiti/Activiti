@@ -121,7 +121,7 @@ public class ActivitiProducer extends DefaultProducer {
     }
 
     runtimeService.setVariables(execution.getId(), ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
-    runtimeService.signal(execution.getId());
+    runtimeService.trigger(execution.getId());
   }
 
   protected String findProcessInstanceId(Exchange exchange) {

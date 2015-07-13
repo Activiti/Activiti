@@ -23,7 +23,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
@@ -133,13 +132,6 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
   @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId) {
     return getDbSqlSession().selectList("selectTasksByProcessInstanceId", processInstanceId);
-  }
-
-  @Deprecated
-  public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
-    taskQuery.setFirstResult(page.getFirstResult());
-    taskQuery.setMaxResults(page.getMaxResults());
-    return findTasksByQueryCriteria(taskQuery);
   }
 
   @SuppressWarnings("unchecked")

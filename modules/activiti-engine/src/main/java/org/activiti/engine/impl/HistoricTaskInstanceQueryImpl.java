@@ -799,12 +799,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
-
-  @Override
-  public HistoricTaskInstanceQuery dueDate(Date dueDate) {
-    return taskDueDate(dueDate);
-  }
-
+  
   public HistoricTaskInstanceQuery taskDueAfter(Date dueAfter) {
     if (inOrStatement) {
       this.orQueryObject.dueAfter = dueAfter;
@@ -814,11 +809,6 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  @Override
-  public HistoricTaskInstanceQuery dueAfter(Date dueDate) {
-    return taskDueAfter(dueDate);
-  }
-
   public HistoricTaskInstanceQuery taskDueBefore(Date dueBefore) {
     if (inOrStatement) {
       this.orQueryObject.dueBefore = dueBefore;
@@ -826,11 +816,6 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.dueBefore = dueBefore;
     }
     return this;
-  }
-
-  @Override
-  public HistoricTaskInstanceQuery dueBefore(Date dueDate) {
-    return taskDueBefore(dueDate);
   }
 
   public HistoricTaskInstanceQuery taskCreatedOn(Date creationDate) {
@@ -894,11 +879,6 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.withoutDueDate = true;
     }
     return this;
-  }
-
-  @Override
-  public HistoricTaskInstanceQuery withoutDueDate() {
-    return withoutTaskDueDate();
   }
 
   public HistoricTaskInstanceQuery taskCategory(String category) {
@@ -1087,13 +1067,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  @Override
   public HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime() {
     orderBy(HistoricTaskInstanceQueryProperty.START);
     return this;
   }
 
-  @Override
   public HistoricTaskInstanceQuery orderByTaskCreateTime() {
     return orderByHistoricTaskInstanceStartTime();
   }
@@ -1123,12 +1101,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  @Override
   public HistoricTaskInstanceQuery orderByDueDateNullsFirst() {
     return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
   }
 
-  @Override
   public HistoricTaskInstanceQuery orderByDueDateNullsLast() {
     return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_LAST);
   }

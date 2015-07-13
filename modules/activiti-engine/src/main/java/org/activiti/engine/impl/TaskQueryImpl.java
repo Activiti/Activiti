@@ -384,12 +384,6 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
-  /** @see {@link #taskUnassigned} */
-  @Deprecated
-  public TaskQuery taskUnnassigned() {
-    return taskUnassigned();
-  }
-
   public TaskQuery taskUnassigned() {
     if (orActive) {
       orQueryObject.unassigned = true;

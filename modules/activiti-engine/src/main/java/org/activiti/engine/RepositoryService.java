@@ -13,6 +13,10 @@
 
 package org.activiti.engine;
 
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -26,10 +30,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
-
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Service providing access to the repository of process definitions and deployments.
@@ -53,15 +53,6 @@ public interface RepositoryService {
    * @throwns RuntimeException if there are still runtime or history process instances or jobs.
    */
   void deleteDeployment(String deploymentId);
-
-  /**
-   * Deletes the given deployment and cascade deletion to process instances, history process instances and jobs.
-   * 
-   * @param deploymentId
-   *          id of the deployment, cannot be null.
-   * @deprecated use {@link #deleteDeployment(String, boolean)}. This methods may be deleted from 5.3.
-   */
-  void deleteDeploymentCascade(String deploymentId);
 
   /**
    * Deletes the given deployment and cascade deletion to process instances, history process instances and jobs.

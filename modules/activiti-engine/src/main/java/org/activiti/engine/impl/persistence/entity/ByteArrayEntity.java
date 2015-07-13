@@ -18,7 +18,7 @@ import java.util.Arrays;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -130,7 +130,7 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
     public boolean equals(Object obj) {
       if (obj instanceof PersistentState) {
         PersistentState other = (PersistentState) obj;
-        return ObjectUtils.equals(this.name, other.name) && Arrays.equals(this.bytes, other.bytes);
+        return StringUtils.equals(this.name, other.name) && Arrays.equals(this.bytes, other.bytes);
       }
       return false;
     }

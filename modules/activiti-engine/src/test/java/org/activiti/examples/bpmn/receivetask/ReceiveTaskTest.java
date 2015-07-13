@@ -29,7 +29,7 @@ public class ReceiveTaskTest extends PluggableActivitiTestCase {
     Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
     assertNotNull(execution);
 
-    runtimeService.signal(execution.getId());
+    runtimeService.trigger(execution.getId());
     assertProcessEnded(pi.getId());
   }
 

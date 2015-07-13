@@ -221,38 +221,22 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks with the given due date.
-   * 
-   * @deprecated
    */
-  T dueDate(Date dueDate);
-
   T taskDueDate(Date dueDate);
 
   /**
    * Only select tasks which have a due date before the given date.
-   * 
-   * @deprecated
    */
-  T dueBefore(Date dueDate);
-
   T taskDueBefore(Date dueDate);
 
   /**
    * Only select tasks which have a due date after the given date.
-   * 
-   * @deprecated
    */
-  T dueAfter(Date dueDate);
-
   T taskDueAfter(Date dueDate);
 
   /**
    * Only select tasks with no due date.
-   * 
-   * @deprecated
    */
-  T withoutDueDate();
-
   T withoutTaskDueDate();
 
   /**

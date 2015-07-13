@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.task;
 
+import java.util.List;
+
 /**
  * Allows programmatic querying of {@link Task}s;
  * 
@@ -23,10 +25,6 @@ public interface TaskQuery extends TaskInfoQuery<TaskQuery, Task> {
 
   /** Only select tasks which don't have an assignee. */
   TaskQuery taskUnassigned();
-
-  /** @see {@link #taskUnassigned} */
-  @Deprecated
-  TaskQuery taskUnnassigned();
 
   /** Only select tasks with the given {@link DelegationState}. */
   TaskQuery taskDelegationState(DelegationState delegationState);
@@ -50,14 +48,4 @@ public interface TaskQuery extends TaskInfoQuery<TaskQuery, Task> {
    * Only selects tasks which are active (ie. not suspended)
    */
   TaskQuery active();
-
-  // ordering ////////////////////////////////////////////////////////////
-
-  /**
-   * Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}). This will use the default handling of null values of the used database.
-   * 
-   * @deprecated Use orderByTaskDueDate() instead
-   */
-  TaskQuery orderByDueDate();
-
 }

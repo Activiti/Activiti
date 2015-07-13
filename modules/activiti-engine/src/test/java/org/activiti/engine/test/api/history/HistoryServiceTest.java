@@ -69,7 +69,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByExecutionId().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceId().asc().list();
-    historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceStartTime().asc().list();
+    historyService.createHistoricTaskInstanceQuery().orderByTaskCreateTime().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceDuration().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceEndTime().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByProcessDefinitionId().asc().list();

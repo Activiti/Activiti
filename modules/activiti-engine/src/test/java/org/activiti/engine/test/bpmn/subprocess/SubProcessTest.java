@@ -409,7 +409,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     // the subprocess scope is destroyed and the main process continues
     taskService.complete(currentTask.getId());
 
-    // verify main process scoped variables - subprocess variables are gone
+    // verify main process scoped variables
     variables = runtimeService.getVariables(pi.getId());
     assertEquals(2, variables.size());
     varNameIt = variables.keySet().iterator();
@@ -423,6 +423,11 @@ public class SubProcessTest extends PluggableActivitiTestCase {
         fail("Variable not expected " + varName);
       }
     }
+    
+    currentTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();  
+    // Verify there are no local variables assigned to the current task. (subprocess variables are gone).
+    variables = runtimeService.getVariablesLocal(currentTask.getExecutionId());
+    assertEquals(0, variables.size());
 
     // After completing the final task in the main process,
     // the process scope is destroyed and the process ends

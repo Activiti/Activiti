@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
 /**
  * Common interface for regular and historic variable entities.
@@ -76,26 +75,6 @@ public interface ValueFields {
    * Sets the byte array value. A value of null is allowed.
    */
   void setBytes(byte[] bytes);
-
-  /**
-   * @return the id of the byte array entity value, or null if the byte array value is null.
-   * @deprecated should no longer be used
-   */
-  @Deprecated
-  String getByteArrayValueId();
-
-  /**
-   * @return the ByteArrayEntity that contains the byte array value, or null if the byte array value is null.
-   * @deprecated use getBytes.
-   */
-  @Deprecated
-  ByteArrayEntity getByteArrayValue();
-
-  /**
-   * @deprecated use setBytes.
-   */
-  @Deprecated
-  void setByteArrayValue(byte[] bytes);
 
   Object getCachedValue();
 
