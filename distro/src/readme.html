@@ -35,11 +35,12 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
-<h3>Release Notes - Activiti - 5.17.1-SNAPSHOT</h3>
+<h3>Release Notes - Activiti - 5.18.0-SNAPSHOT</h3>
   
 <h4>Backwards incompatible changes</h4>
 <ul>
-	<li><a href="http://jira.codehaus.org/browse/ACT-2186">http://jira.codehaus.org/browse/ACT-2186</a> : When variables are removed, the historic variable entry is also removed. In earlier versions, the value of the historic variable was set to <i>null</i>.</li>
+	<li><a href="https://activiti.atlassian.net/browse/ACT-2186">https://activiti.atlassian.net/browse/ACT-2186</a> : When variables are removed, the historic variable entry is also removed. In earlier versions, the value of the historic variable was set to <i>null</i>.</li>
+	<li><a href="https://activiti.atlassian.net/browse/ACT-4036">https://activiti.atlassian.net/browse/ACT-4036</a> : when using an execution listener for the <i>start</i> event, in combination with multi instance, the behavior is changed. In 5.18, there will be one extra invocation of the execution listener (when entering the multi instance, without the loopCounter variable being said). For more information, check the section <i>Multi instance and execution listeners</i> in the user guide.</li>
 </ul>
 
 <h3>Release Notes - Activiti - Version 5.17.0</h3>

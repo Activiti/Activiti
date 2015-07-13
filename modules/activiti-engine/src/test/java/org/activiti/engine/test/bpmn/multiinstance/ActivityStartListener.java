@@ -23,11 +23,17 @@ import org.activiti.engine.delegate.ExecutionListener;
 public class ActivityStartListener implements ExecutionListener {
   
   public void notify(DelegateExecution execution) throws Exception {
-    Integer counter = (Integer) execution.getVariable("executionListenerCounter");
-    if (counter == null) {
-      counter = 0;
-    }
-    execution.setVariable("executionListenerCounter", ++counter);
+  	
+  	Integer loopCounter = (Integer) execution.getVariable("loopCounter");
+  	if (loopCounter != null) {
+  	
+	    Integer counter = (Integer) execution.getVariable("executionListenerCounter");
+	    if (counter == null) {
+	      counter = 0;
+	    }
+	    execution.setVariable("executionListenerCounter", ++counter);
+	    
+  	}
   }
 
 }

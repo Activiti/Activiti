@@ -21,7 +21,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -1228,5 +1233,97 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
   	}
   }
+  
+  @Deployment
+  public void testExecutionListenersOnMultiInstanceSubprocess() {
+  	resetTestCounts();
+		Map<String, Object> variableMap = new HashMap<String, Object>();
+		List<String> assignees = new ArrayList<String>();
+		assignees.add("john");
+		assignees.add("jane");
+		assignees.add("matt");
+		variableMap.put("assignees", assignees );
+		runtimeService.startProcessInstanceByKey("MultiInstanceTest", variableMap);
+		
+		assertEquals(3, TestStartExecutionListener.countWithLoopCounter.get());
+		assertEquals(3, TestEndExecutionListener.countWithLoopCounter.get());
+		
+		assertEquals(1, TestStartExecutionListener.countWithoutLoopCounter.get());
+		assertEquals(1, TestEndExecutionListener.countWithoutLoopCounter.get());
+  }
+  
+  
+  @Deployment
+  public void testExecutionListenersOnMultiInstanceUserTask() {
+  	resetTestCounts();
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testExecutionListenersOnMultiInstanceUserTask");
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		
+		assertEquals(4, TestTaskCompletionListener.count.get());
+		
+		assertEquals(4, TestStartExecutionListener.countWithLoopCounter.get());
+		assertEquals(4, TestEndExecutionListener.countWithLoopCounter.get());
+		
+		assertEquals(1, TestStartExecutionListener.countWithoutLoopCounter.get());
+		assertEquals(1, TestEndExecutionListener.countWithoutLoopCounter.get());
+  }
+  
+  protected void resetTestCounts() {
+  	TestStartExecutionListener.countWithLoopCounter.set(0);
+  	TestStartExecutionListener.countWithoutLoopCounter.set(0);
+  	TestEndExecutionListener.countWithLoopCounter.set(0);
+  	TestEndExecutionListener.countWithoutLoopCounter.set(0);
+  	TestTaskCompletionListener.count.set(0);
+  }
+  
+  public static class TestStartExecutionListener implements ExecutionListener {
+  	
+  	public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
+  	public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
+
+  	@Override
+  	public void notify(DelegateExecution execution) throws Exception {
+  		Integer loopCounter = (Integer) execution.getVariable("loopCounter");
+  		if (loopCounter != null) {
+  			countWithLoopCounter.incrementAndGet();
+  		} else {
+  			countWithoutLoopCounter.incrementAndGet();
+  		}
+  	}
+
+  }
+  
+  public static class TestEndExecutionListener implements ExecutionListener {
+  	
+  	public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
+  	public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
+
+  	@Override
+  	public void notify(DelegateExecution execution) throws Exception {
+  		Integer loopCounter = (Integer) execution.getVariable("loopCounter");
+  		if (loopCounter != null) {
+  			countWithLoopCounter.incrementAndGet();
+  		} else{
+  			countWithoutLoopCounter.incrementAndGet();
+  		}
+  	}
+
+  }
+  
+  public static class TestTaskCompletionListener implements TaskListener {
+  	
+  	public static AtomicInteger count = new AtomicInteger(0);
+  	
+  	@Override
+  	public void notify(DelegateTask delegateTask) {
+  		count.incrementAndGet();
+  	}
+  	
+  }
+
 
 }
