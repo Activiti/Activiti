@@ -37,6 +37,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
   protected String processDefinitionKeyLikeIgnoreCase;
+  protected List<String> processDefinitionKeys;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
   protected List<String> processCategoryInList;
@@ -232,7 +233,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
      }
      return this;
   }
-
+  
+  public HistoricTaskInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionKeys = processDefinitionKeys;
+    } else {
+      this.processDefinitionKeys = processDefinitionKeys;
+    }
+    return this;
+  }
+  
   public HistoricTaskInstanceQuery processDefinitionName(String processDefinitionName) {
     if (inOrStatement) {
       this.currentOrQueryObject.processDefinitionName = processDefinitionName;
@@ -1199,7 +1209,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getProcessDefinitionKeyLike() {
     return processDefinitionKeyLike;
   }
-
+  public List<String> getProcessDefinitionKeys() { 
+    return processDefinitionKeys;
+  }
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }

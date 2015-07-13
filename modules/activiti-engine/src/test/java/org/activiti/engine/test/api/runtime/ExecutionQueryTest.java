@@ -32,8 +32,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -84,7 +86,18 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).list().size());
     assertEquals(2, runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).list().size());
   }
-
+  
+  public void testQueryByProcessDefinitionKeyIn() {
+    Set<String> includeIds = new HashSet<String>();
+    assertEquals(13, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+    includeIds.add(CONCURRENT_PROCESS_KEY);
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+    includeIds.add(SEQUENTIAL_PROCESS_KEY);
+    assertEquals(13, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+    includeIds.add("invalid");
+    assertEquals(13, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+  }
+  
   public void testQueryByInvalidProcessDefinitionKey() {
     ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionKey("invalid");
     assertNull(query.singleResult());

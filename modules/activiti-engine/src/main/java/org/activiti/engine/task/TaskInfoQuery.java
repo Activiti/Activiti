@@ -256,7 +256,10 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    * is executed.
    */
   T processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase);
-
+  
+  /** Only select tasks that have a process definition for which the key is present in the given list **/
+  T processDefinitionKeyIn(List<String> processDefinitionKeys);
+  
   /**
    * Only select tasks which are part of a process instance which has the given process definition id.
    */
