@@ -62,18 +62,25 @@ public class ErrorPropagation {
   
   public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
 
-	  while (execution != null) {
-		    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode); 
-		    if (eventHandlerId != null) {
-		    	 executeCatch(eventHandlerId, execution, errorCode);
-		    	 break;
-		    }
-		    execution = getSuperExecution(execution);
-	  }
+    while (execution != null) {
+      String eventHandlerId = findLocalErrorEventHandler(execution, errorCode);
+      if (eventHandlerId != null) {
+        executeCatch(eventHandlerId, execution, errorCode);
+        break;
+      }
+      if (execution.isProcessInstanceType()) {
+        // dispatch process completed event
+        if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                  ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+        }
+      }
+      execution = getSuperExecution(execution);
+    }
     if (execution == null) {
-		  throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
-	                + errorCode + "', neither in same process nor in parent process");		  
-	  }
+      throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '"
+              + errorCode + "', neither in same process nor in parent process");
+    }
   }
 
 
