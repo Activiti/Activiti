@@ -783,32 +783,34 @@ public class DbSqlSession implements Session {
 
   protected void flushInserts() {
   	
+  	// Handle in entity dependency order
     for (Class<? extends PersistentObject> persistentObjectClass : EntityDependencyOrder.INSERT_ORDER) {
       if (insertedObjects.containsKey(persistentObjectClass)) {
-      	List<PersistentObject> persistentObjectsToInsert = insertedObjects.get(persistentObjectClass);
-      	if (persistentObjectsToInsert.size() == 1 || Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(persistentObjectClass))) {
-      		flushRegularInsert(persistentObjectsToInsert.get(0), persistentObjectClass);
-      	} else {
-      		flushBulkInsert(insertedObjects.get(persistentObjectClass), persistentObjectClass);
-      	}
-      	
-      	insertedObjects.remove(persistentObjectClass);
+      	flushPersistentObjects(persistentObjectClass, insertedObjects.get(persistentObjectClass));
       }
     }
     
     // Next, in case of custom entities or we've screwed up and forgotton some entity
     if (insertedObjects.size() > 0) {
-	    for (Class<? extends PersistentObject> clazz : insertedObjects.keySet()) {
-	    	List<PersistentObject> persistentObjectsToInsert = insertedObjects.get(clazz);
-      	if (persistentObjectsToInsert.size() == 1) {
-      		flushRegularInsert(persistentObjectsToInsert.get(0), clazz);
-      	} else {
-      		flushBulkInsert(insertedObjects.get(clazz), clazz);
-      	}
+	    for (Class<? extends PersistentObject> persistentObjectClass : insertedObjects.keySet()) {
+      	flushPersistentObjects(persistentObjectClass, insertedObjects.get(persistentObjectClass));
 	    }
     }
     
     insertedObjects.clear();
+  }
+
+	protected void flushPersistentObjects(Class<? extends PersistentObject> persistentObjectClass, List<PersistentObject> persistentObjectsToInsert) {
+	  if (persistentObjectsToInsert.size() == 1) {
+	  	flushRegularInsert(persistentObjectsToInsert.get(0), persistentObjectClass);
+	  } else if (Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(persistentObjectClass))) {
+	  	for (PersistentObject persistentObject : persistentObjectsToInsert) {
+	  		flushRegularInsert(persistentObject, persistentObjectClass);
+	  	}
+	  }	else {
+	  	flushBulkInsert(insertedObjects.get(persistentObjectClass), persistentObjectClass);
+	  }
+	  insertedObjects.remove(persistentObjectClass);
   }
   
   protected void flushRegularInsert(PersistentObject persistentObject, Class<? extends PersistentObject> clazz) {

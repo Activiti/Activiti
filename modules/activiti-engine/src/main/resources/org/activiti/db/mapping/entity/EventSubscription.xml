@@ -350,7 +350,7 @@
   
   <insert id="bulkInsertSignalEventSubscription" parameterType="java.util.List">
    insert into ${prefix}ACT_RU_EVENT_SUBSCR (
-             ID_, 
+            ID_, 
             REV_,
             EVENT_TYPE_,
             EVENT_NAME_,
@@ -382,7 +382,7 @@
    INSERT ALL 
       <foreach collection="list" item="signalEventSubscription" index="index">
          into ${prefix}ACT_RU_EVENT_SUBSCR (
-           ID_, 
+          ID_, 
           REV_,
           EVENT_TYPE_,
           EVENT_NAME_,
@@ -397,7 +397,7 @@
           VALUES 
           (#{signalEventSubscription.id, jdbcType=VARCHAR},
            1,
-           #{signalEventSubscription.eventType, jdbcType=VARCHAR}',
+           #{signalEventSubscription.eventType, jdbcType=VARCHAR},
            #{signalEventSubscription.eventName, jdbcType=VARCHAR},
            #{signalEventSubscription.executionId, jdbcType=VARCHAR},
            #{signalEventSubscription.processInstanceId, jdbcType=VARCHAR},

@@ -2,14 +2,18 @@ package org.activiti.engine.test.api.tenant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -83,6 +87,21 @@ public class TenancyTest extends PluggableActivitiTestCase {
 	  		.singleResult()
 	  		.getId();
   }
+	
+	private String deployTestProcessWithTwoTasksNoTenant() {
+	  String id = repositoryService.createDeployment()
+			.addBpmnModel("testProcess.bpmn20.xml", createTwoTasksTestProcess())
+			.deploy()
+			.getId();
+	  
+	  autoCleanedUpDeploymentIds.add(id);
+	  
+	  return repositoryService.createProcessDefinitionQuery()
+	  		.deploymentId(id)
+	  		.singleResult()
+	  		.getId();
+  }
+	
 	
 	public void testDeploymentTenancy() {
 		
@@ -883,4 +902,64 @@ public class TenancyTest extends PluggableActivitiTestCase {
   		}
 	  }
 	}
+	
+	/*
+	 * See https://activiti.atlassian.net/browse/ACT-4034
+	 */
+	public void testGetLatestProcessDefinitionVersionForSameProcessDefinitionKey() {
+		String tenant1 = "tenant1";
+		String tenant2 = "tenant2";
+		
+		// Tenant 1 ==> version 4
+		for (int i=0; i<4; i++) {
+			deployTestProcessWithTestTenant(tenant1);
+		}
+		
+		// Tenant 2 ==> version 2
+		for (int i=0; i<2; i++) {
+			deployTestProcessWithTestTenant(tenant2);
+		}
+		
+		// No tenant ==> version 3
+		for (int i=0; i<3; i++) {
+			deployTestProcessWithTwoTasksNoTenant();
+		}
+		
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+			.processDefinitionTenantId(tenant1)
+			.latestVersion()
+			.singleResult();
+		assertEquals(4, processDefinition.getVersion());
+		
+		processDefinition = repositoryService.createProcessDefinitionQuery()
+				.processDefinitionTenantId(tenant2)
+				.latestVersion()
+				.singleResult();
+			assertEquals(2, processDefinition.getVersion());
+			
+			processDefinition = repositoryService.createProcessDefinitionQuery()
+					.processDefinitionWithoutTenantId()
+					.latestVersion()
+					.singleResult();
+			assertEquals(3, processDefinition.getVersion());
+			
+			List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().latestVersion().list();
+			assertEquals(3, processDefinitions.size());
+			
+			// Verify they have different tenant ids
+			int tenant1Count = 0, tenant2Count = 0, noTenantCount = 0 ;
+			for (ProcessDefinition p : processDefinitions) {
+				if (p.getTenantId() == null || p.getTenantId().equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+					noTenantCount++;
+				} else if (p.getTenantId().equals(tenant1)) {
+					tenant1Count++;
+				} else if (p.getTenantId().equals(tenant2)) {
+					tenant2Count++;
+				}
+			}
+			assertEquals(1, tenant1Count);
+			assertEquals(1, tenant2Count);
+			assertEquals(1, noTenantCount);
+	}
+	
 }
