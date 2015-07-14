@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
@@ -33,7 +35,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
@@ -43,6 +47,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_ERROR, BoundaryEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_SIGNAL, BoundaryEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_MESSAGE, BoundaryEventJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_CANCEL, BoundaryEventJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_COMPENSATION, BoundaryEventJsonConverter.class);
   }
 
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -64,6 +70,10 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
       return STENCIL_EVENT_BOUNDARY_SIGNAL;
     } else if (eventDefinition instanceof MessageEventDefinition) {
       return STENCIL_EVENT_BOUNDARY_MESSAGE;
+    } else if (eventDefinition instanceof CancelEventDefinition) {
+      return STENCIL_EVENT_BOUNDARY_CANCEL;
+    } else if (eventDefinition instanceof CompensateEventDefinition) {
+      return STENCIL_EVENT_BOUNDARY_COMPENSATION;
     } else {
       return STENCIL_EVENT_BOUNDARY_TIMER;
     }
@@ -101,6 +111,16 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
 
     } else if (STENCIL_EVENT_BOUNDARY_MESSAGE.equals(stencilId)) {
       convertJsonToMessageDefinition(elementNode, boundaryEvent);
+      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
+      
+    } else if (STENCIL_EVENT_BOUNDARY_CANCEL.equals(stencilId)) {
+      CancelEventDefinition cancelEventDefinition = new CancelEventDefinition();
+      boundaryEvent.getEventDefinitions().add(cancelEventDefinition);
+      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
+    
+    } else if (STENCIL_EVENT_BOUNDARY_COMPENSATION.equals(stencilId)) {
+      CompensateEventDefinition compensateEventDefinition = new CompensateEventDefinition();
+      boundaryEvent.getEventDefinitions().add(compensateEventDefinition);
       boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
     }
     boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));

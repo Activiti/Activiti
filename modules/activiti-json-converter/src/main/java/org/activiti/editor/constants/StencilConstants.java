@@ -27,6 +27,7 @@ public interface StencilConstants {
   final String STENCIL_EVENT_END_NONE = "EndNoneEvent";
   final String STENCIL_EVENT_END_ERROR = "EndErrorEvent";
   final String STENCIL_EVENT_END_CANCEL = "EndCancelEvent";
+  final String STENCIL_EVENT_END_TERMINATE = "EndTerminateEvent";
 
   final String STENCIL_SUB_PROCESS = "SubProcess";
   final String STENCIL_EVENT_SUB_PROCESS = "EventSubProcess";
@@ -56,6 +57,8 @@ public interface StencilConstants {
   final String STENCIL_EVENT_BOUNDARY_ERROR = "BoundaryErrorEvent";
   final String STENCIL_EVENT_BOUNDARY_SIGNAL = "BoundarySignalEvent";
   final String STENCIL_EVENT_BOUNDARY_MESSAGE = "BoundaryMessageEvent";
+  final String STENCIL_EVENT_BOUNDARY_CANCEL = "BoundaryCancelEvent";
+  final String STENCIL_EVENT_BOUNDARY_COMPENSATION = "BoundaryCompensationEvent";
 
   final String STENCIL_EVENT_CATCH_SIGNAL = "CatchSignalEvent";
   final String STENCIL_EVENT_CATCH_TIMER = "CatchTimerEvent";

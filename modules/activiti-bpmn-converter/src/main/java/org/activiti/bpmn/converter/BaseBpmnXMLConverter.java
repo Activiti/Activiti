@@ -30,6 +30,7 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -398,6 +399,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         writeErrorDefinition(parentEvent, (ErrorEventDefinition) eventDefinition, xtw);
       } else if (eventDefinition instanceof TerminateEventDefinition) {
         writeTerminateDefinition(parentEvent, (TerminateEventDefinition) eventDefinition, xtw);
+      } else if (eventDefinition instanceof CancelEventDefinition) {
+        writeCancelDefinition(parentEvent, (CancelEventDefinition) eventDefinition, xtw);
       } else if (eventDefinition instanceof CompensateEventDefinition) {
         writeCompensateDefinition(parentEvent, (CompensateEventDefinition) eventDefinition, xtw);
       }
@@ -441,7 +444,16 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
     xtw.writeEndElement();
   }
-
+  
+  protected void writeCancelDefinition(Event parentEvent, CancelEventDefinition cancelEventDefinition, XMLStreamWriter xtw) throws Exception {
+    xtw.writeStartElement(ELEMENT_EVENT_CANCELDEFINITION);
+    boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(cancelEventDefinition, false, xtw);
+    if (didWriteExtensionStartElement) {
+      xtw.writeEndElement();
+    }
+    xtw.writeEndElement();
+  }
+  
   protected void writeCompensateDefinition(Event parentEvent, CompensateEventDefinition compensateEventDefinition, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartElement(ELEMENT_EVENT_COMPENSATEDEFINITION);
     writeDefaultAttribute(ATTRIBUTE_COMPENSATE_ACTIVITYREF, compensateEventDefinition.getActivityRef(), xtw);
@@ -451,7 +463,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
     xtw.writeEndElement();
   }
-
+  
   protected void writeMessageDefinition(Event parentEvent, MessageEventDefinition messageDefinition, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartElement(ELEMENT_EVENT_MESSAGEDEFINITION);
 

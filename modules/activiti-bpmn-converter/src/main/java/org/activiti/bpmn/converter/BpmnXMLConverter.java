@@ -89,6 +89,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TextAnnotation;
+import org.activiti.bpmn.model.Transaction;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -547,7 +548,12 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     if (flowElement instanceof SubProcess) {
 
       SubProcess subProcess = (SubProcess) flowElement;
-      xtw.writeStartElement(ELEMENT_SUBPROCESS);
+      if (flowElement instanceof Transaction) {
+        xtw.writeStartElement(ELEMENT_TRANSACTION);
+      } else {
+        xtw.writeStartElement(ELEMENT_SUBPROCESS);
+      }
+      
       xtw.writeAttribute(ATTRIBUTE_ID, subProcess.getId());
       if (StringUtils.isNotEmpty(subProcess.getName())) {
         xtw.writeAttribute(ATTRIBUTE_NAME, subProcess.getName());
