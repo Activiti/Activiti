@@ -1,26 +1,28 @@
 package org.activiti.spring.test.email;
 
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.Deployment;
-import org.activiti.spring.impl.test.SpringActivitiTestCase;
-import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-import org.springframework.test.context.ContextConfiguration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.NoSuchProviderException;
 import javax.mail.Provider;
 import javax.mail.Provider.Type;
 import javax.mail.Session;
 import javax.naming.NamingException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
+import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:org/activiti/spring/test/email/jndiEmailConfiguaration-context.xml")
 public class JndiEmailTest extends SpringActivitiTestCase {
 
-  static Logger logger = Logger.getLogger(JndiEmailTest.class.getName());
+  private static Logger logger = LoggerFactory.getLogger(JndiEmailTest.class);
 
   @BeforeClass
   public void setUp() {
@@ -39,13 +41,13 @@ public class JndiEmailTest extends SpringActivitiTestCase {
       builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
       builder.bind("java:comp/env/Session", mailSession);
     } catch (NamingException e) {
-      logger.error(e);
+      logger.error("Naming error in email setup", e);
     } catch (NoSuchProviderException e) {
-      logger.error(e);
+      logger.error("provider error in email setup", e);
     }
   }
 
-  @Deployment(resources = { "org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml"})
   public void testEmailUsingJndi() {
     Map<String, Object> variables = new HashMap<String, Object>();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess", variables);
