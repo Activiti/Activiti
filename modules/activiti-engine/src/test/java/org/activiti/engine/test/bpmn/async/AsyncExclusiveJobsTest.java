@@ -13,6 +13,7 @@
 package org.activiti.engine.test.bpmn.async;
 
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -24,23 +25,26 @@ public class AsyncExclusiveJobsTest extends PluggableActivitiTestCase {
 	@Deployment
 	public void testExclusiveJobs() {
 		
-		// The process has two script tasks in parallel, both exclusive.
-		// They should be executed with at least 6 seconds in between (as they both sleep for 6 seconds)
-		runtimeService.startProcessInstanceByKey("testExclusiveJobs");
-		waitForJobExecutorToProcessAllJobs(20000L, 500L);
+		if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 		
-		HistoricActivityInstance scriptTaskAInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskA").singleResult();
-		HistoricActivityInstance scriptTaskBInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskB").singleResult();
-		
-		long endTimeA = scriptTaskAInstance.getEndTime().getTime();
-		long endTimeB = scriptTaskBInstance.getEndTime().getTime();
-		long endTimeDifference = 0;
-		if (endTimeB > endTimeA) {
-			endTimeDifference = endTimeB - endTimeA;
-		} else {
-			endTimeDifference = endTimeA - endTimeB;
+			// The process has two script tasks in parallel, both exclusive.
+			// They should be executed with at least 6 seconds in between (as they both sleep for 6 seconds)
+			runtimeService.startProcessInstanceByKey("testExclusiveJobs");
+			waitForJobExecutorToProcessAllJobs(20000L, 500L);
+			
+			HistoricActivityInstance scriptTaskAInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskA").singleResult();
+			HistoricActivityInstance scriptTaskBInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskB").singleResult();
+			
+			long endTimeA = scriptTaskAInstance.getEndTime().getTime();
+			long endTimeB = scriptTaskBInstance.getEndTime().getTime();
+			long endTimeDifference = 0;
+			if (endTimeB > endTimeA) {
+				endTimeDifference = endTimeB - endTimeA;
+			} else {
+				endTimeDifference = endTimeA - endTimeB;
+			}
+			assertTrue(endTimeDifference > 6000); // > 6000 -> jobs were executed in parallel
 		}
-		assertTrue(endTimeDifference > 6000); // > 6000 -> jobs were executed in parallel
 		
 	}
 
