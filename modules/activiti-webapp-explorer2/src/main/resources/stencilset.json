@@ -1056,6 +1056,17 @@
     "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
   }, {
     "type" : "node",
+    "id" : "EndCancelEvent",
+    "title" : "End Cancel event",
+    "description" : "An end event that throws an cancel event",
+    "view" :     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n <svg\n xmlns=\"http://www.w3.org/2000/svg\"\n xmlns:wapama=\"http://www.wapama.net/diagram\"\n width=\"40\"\n height=\"40\"\n version=\"1.0\">\n <defs></defs>\n <wapama:magnets>\n\t<wapama:magnet wapama:cx=\"16\" wapama:cy=\"16\" wapama:default=\"yes\" />\n </wapama:magnets>\n <g pointer-events=\"fill\">\n <circle id=\"frame\" cx=\"16\" cy=\"16\" r=\"14\" stroke=\"black\" fill=\"white\" stroke-width=\"3\"/>\n\n <path d=\"M 9 9 L 23 23 M 9 23 L 23 9\" fill=\"none\" stroke=\"black\" stroke-width=\"5\" />\n </g>\n </svg>",
+    "icon" : "endevent/cancel.png",
+    "groups" : [ "End Events" ],
+    "propertyPackages" : [ "overrideidpackage", "namepackage", "documentationpackage", "executionlistenerspackage"],
+    "hiddenPropertyPackages" : [ ],
+    "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
+  }, {
+    "type" : "node",
     "id" : "Pool",
     "title" : "Pool",
     "description" : "A pool to stucture the process definition",
