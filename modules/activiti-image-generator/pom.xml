@@ -100,15 +100,15 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-model</artifactId>
 		</dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-      <scope>test</scope>
-		</dependency>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<profiles>
