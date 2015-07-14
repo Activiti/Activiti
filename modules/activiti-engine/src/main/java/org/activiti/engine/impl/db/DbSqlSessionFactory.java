@@ -325,7 +325,7 @@ public class DbSqlSessionFactory implements SessionFactory {
 		}
   }
   
-  public boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
+  public Boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
   	return bulkInsertableMap.get(persistentObjectClass);
   }
 
