@@ -181,11 +181,22 @@ public enum ActivitiEventType {
    */
   TASK_COMPLETED,
 
+    /**
+     * A process instance has been started. Dispatched when starting a process instance previously created. The event
+     * PROCESS_STARTED is dispatched after the associated event ENTITY_INITIALIZED.
+     */
+  PROCESS_STARTED,
+
   /**
    * A process has been completed. Dispatched after the last activity is ACTIVITY_COMPLETED. Process is completed
    * when it reaches state in which process instance does not have any transition to take.
    */
   PROCESS_COMPLETED,
+  
+  /**
+   * A process has been completed with an error end event.
+   */
+  PROCESS_COMPLETED_WITH_ERROR_END_EVENT,
 
   /**
    * A process has been cancelled. Dispatched when process instance is deleted by

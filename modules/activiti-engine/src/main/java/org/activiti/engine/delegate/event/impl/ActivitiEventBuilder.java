@@ -15,7 +15,21 @@ package org.activiti.engine.delegate.event.impl;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.event.*;
+import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
+import org.activiti.engine.delegate.event.ActivitiErrorEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
+import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
+import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -62,6 +76,24 @@ public class ActivitiEventBuilder {
 		populateEventWithCurrentContext(newEvent);
 		return newEvent;
 	}
+
+  /**
+   * @param entity
+   *            the entity this event targets
+   * @param variables
+   *            the variables associated with this entity
+   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related
+   *         event fields will be populated. If not, execution details will be reteived from the {@link Object} if
+   *         possible.
+   */
+  @SuppressWarnings("rawtypes")
+  public static ActivitiProcessStartedEvent createProcessStartedEvent(final Object entity, final Map variables, final boolean localScope) {
+    final ActivitiProcessStartedEventImpl newEvent = new ActivitiProcessStartedEventImpl(entity, variables, localScope);
+
+    // In case an execution-context is active, populate the event fields related to the execution
+    populateEventWithCurrentContext(newEvent);
+    return newEvent;
+  }
 	
 	/**
    * @param type type of event
