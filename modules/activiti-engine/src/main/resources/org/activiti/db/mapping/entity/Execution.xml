@@ -96,8 +96,7 @@
       ROOT_PROC_INST_ID_ = #{rootProcessInstanceId, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER},
-      NAME_ = #{name, jdbcType=VARCHAR},
-      LOCK_TIME_ = #{lockTime, jdbcType=TIMESTAMP}
+      NAME_ = #{name, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -140,7 +139,7 @@
     set
       LOCK_TIME_ = #{lockTime, jdbcType=TIMESTAMP}
     where ID_ = #{id}
-      and (LOCK_TIME_ is null OR LOCK_TIME_ &lt;= #{expirationTime, jdbcType=TIMESTAMP})
+      and (LOCK_TIME_ is null OR LOCK_TIME_ &lt; #{expirationTime, jdbcType=TIMESTAMP})
   </update>
   
   <update id="clearProcessInstanceLockTime" parameterType="java.util.Map">

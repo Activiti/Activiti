@@ -104,6 +104,14 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
 
   public void retryAsyncJob(JobEntity job) {
     AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+    try {
+    	
+    	// If a job has to be retried, we wait for a certain amount of time,
+    	// otherwise the job will be continuously be retried without delay (and thus seriously stressing the database).
+	    Thread.sleep(asyncExecutor.getRetryWaitTimeInMillis());
+	    
+    } catch (InterruptedException e) {
+    }
     asyncExecutor.executeAsyncJob(job);
   }
 
