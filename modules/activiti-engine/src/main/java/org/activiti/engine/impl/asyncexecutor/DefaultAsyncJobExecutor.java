@@ -62,6 +62,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   protected String lockOwner = UUID.randomUUID().toString();
   protected int timerLockTimeInMillis = 5 * 60 * 1000;
   protected int asyncJobLockTimeInMillis = 5 * 60 * 1000;
+  protected int retryWaitTimeInMillis = 500;
   
   // Job queue used when async executor is not yet started and jobs are already added.
   // This is mainly used for testing purpose.
@@ -327,4 +328,13 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   public void setAsyncJobsDueRunnable(AcquireAsyncJobsDueRunnable asyncJobsDueRunnable) {
     this.asyncJobsDueRunnable = asyncJobsDueRunnable;
   }
+
+	public int getRetryWaitTimeInMillis() {
+		return retryWaitTimeInMillis;
+	}
+
+	public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
+		this.retryWaitTimeInMillis = retryWaitTimeInMillis;
+	}
+
 }
