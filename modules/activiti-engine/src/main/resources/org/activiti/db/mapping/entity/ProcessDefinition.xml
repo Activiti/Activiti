@@ -201,6 +201,9 @@
 	         <if test="withoutTenantId">
 	           and (TENANT_ID_ = '' or TENANT_ID_ is null)
 	         </if>
+	         <if test="tenantId == null and tenantIdLike == null and !withoutTenantId">
+	           and ( (TENANT_ID_ IS NOT NULL and TENANT_ID_ = RES.TENANT_ID_) or (TENANT_ID_ IS NULL and RES.TENANT_ID_ IS NULL) )
+	         </if>
         )
       </if>
       <if test="suspensionState != null">
