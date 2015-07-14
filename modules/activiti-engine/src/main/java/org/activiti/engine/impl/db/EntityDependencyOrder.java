@@ -7,6 +7,7 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -28,10 +29,12 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.MembershipEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
@@ -119,6 +122,22 @@ public class EntityDependencyOrder {
 		 * FK to Execution
 		 */
 		DELETE_ORDER.add(EventSubscriptionEntity.class);
+		
+		/*
+		 * FK to Execution
+		 */
+		DELETE_ORDER.add(CompensateEventSubscriptionEntity.class);
+		
+		/*
+		 * FK to Execution
+		 */
+		DELETE_ORDER.add(MessageEventSubscriptionEntity.class);
+		
+		/*
+		 * FK to Execution
+		 */
+		DELETE_ORDER.add(SignalEventSubscriptionEntity.class);
+		
 		
 		/*
 		 * FK to process definition
