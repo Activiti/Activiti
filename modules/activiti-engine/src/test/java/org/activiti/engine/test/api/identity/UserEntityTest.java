@@ -1,9 +1,10 @@
-package org.activiti.engine.impl.persistence.entity;
+package org.activiti.engine.test.api.identity;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.activiti.engine.identity.Picture;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.junit.Test;
 
 /**
