@@ -75,8 +75,9 @@ public class CdiTaskListener implements TaskListener, Serializable {
   }
 
   protected BusinessProcessEvent createEvent(DelegateTask task) {
-    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getExecution().getProcessDefinitionId());
-    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, task, type, task.getExecution().getProcessInstanceId(), task.getExecutionId(), new Date());
+    ProcessDefinition processDefinition = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(task.getExecution().getProcessDefinitionId());
+    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, task, type, task.getExecution().getProcessInstanceId(), task.getExecutionId(), now);
   }
 
   protected BeanManager getBeanManager() {
