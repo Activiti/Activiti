@@ -461,7 +461,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   }
   
   /**
-   * Validation for https://jira.codehaus.org/browse/ACT-2182
+   * Validation for https://activiti.atlassian.net/browse/ACT-2182
    */
   public void testNameAndTenantIdSetWhenFetchingVariables() {
   	

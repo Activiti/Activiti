@@ -2844,7 +2844,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   	}
   }
   
-  // Test for https://jira.codehaus.org/browse/ACT-2103
+  // Test for https://activiti.atlassian.net/browse/ACT-2103
   public void testTaskLocalAndProcessInstanceVariableEqualsInOr() {
   	
   	deployOneTaskTestProcess();

@@ -216,7 +216,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   
   @Deployment
   /**
-   * see http://jira.codehaus.org/browse/ACT-1173
+   * see https://activiti.atlassian.net/browse/ACT-1173
    */
   public void testTimerOnEmbeddedSubprocess() {
     String id = runtimeService.startProcessInstanceByKey("nonInterruptingTimerOnEmbeddedSubprocess").getId();
@@ -243,7 +243,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   
   @Deployment
   /**
-   * see http://jira.codehaus.org/browse/ACT-1106
+   * see https://activiti.atlassian.net/browse/ACT-1106
    */
   public void testReceiveTaskWithBoundaryTimer(){
     // Set the clock fixed

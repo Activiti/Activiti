@@ -107,7 +107,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     taskService.deleteTask(taskId, true);
   }
   
-  // See http://jira.codehaus.org/browse/ACT-1290 
+  // See https://activiti.atlassian.net/browse/ACT-1290
   public void testRevisionUpdatedOnSave() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
@@ -124,7 +124,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     taskService.deleteTask(task.getId(), true);
   }
 
-  // See http://jira.codehaus.org/browse/ACT-1290 
+  // See https://activiti.atlassian.net/browse/ACT-1290
   public void testRevisionUpdatedOnSaveWhenFetchedUsingQuery() {
     Task task = taskService.newTask();
     taskService.saveTask(task);

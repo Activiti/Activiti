@@ -94,7 +94,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
   "</definitions>";
   
   
-  // See http://jira.codehaus.org/browse/ACT-1579?focusedCommentId=319886#comment-319886
+  // See https://activiti.atlassian.net/browse/ACT-1579?focusedCommentId=319886#comment-319886
   public void testProcessEngineDenialOfServiceAttackUsingUnsafeXmlTest() throws InterruptedException {
 
   	// Putting this in a Runnable so we can time it out

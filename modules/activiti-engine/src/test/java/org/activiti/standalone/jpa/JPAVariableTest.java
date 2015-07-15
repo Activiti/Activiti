@@ -439,7 +439,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
   }
   
-  // http://jira.codehaus.org/browse/ACT-995
+  // https://activiti.atlassian.net/browse/ACT-995
   @Deployment(resources="org/activiti/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml")
   public void testReplaceExistingJPAEntityWithAnotherOfSameType() {
     EntityManager manager = entityManagerFactory.createEntityManager();

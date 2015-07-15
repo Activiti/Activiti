@@ -267,7 +267,7 @@ public class DefaultProcessValidatorTest {
 	}
 	
 	/*
-	 * Test for https://jira.codehaus.org/browse/ACT-2071:
+	 * Test for https://activiti.atlassian.net/browse/ACT-2071:
 	 * 
 	 * If all processes in a deployment are not executable, throw an exception
 	 * as this doesn't make sense to do.
@@ -286,7 +286,7 @@ public class DefaultProcessValidatorTest {
 	}
 	
 	/*
-	 * Test for https://jira.codehaus.org/browse/ACT-2071:
+	 * Test for https://activiti.atlassian.net/browse/ACT-2071:
 	 * 
 	 * If there is at least one process definition which is executable, 
 	 * and the deployment contains other process definitions which are not executable,
