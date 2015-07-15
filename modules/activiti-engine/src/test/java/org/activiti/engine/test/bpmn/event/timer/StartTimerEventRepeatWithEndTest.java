@@ -91,13 +91,18 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
 
     // ADVANCE THE CLOCK
     // advance the clock to 11 dec -> the system will execute the pending job and will create a new one
-    moveByMinutes((60 * 24) + 10);
+    moveByMinutes(60 * 25);
     try {
-      waitForJobExecutorToProcessAllJobs(4000, 400);
+      waitForJobExecutorToProcessAllJobs(10000, 400);
       fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       // expected failure
     }
+    
+    jobs = managementService.createJobQuery().list();
+    assertEquals(1, jobs.size());
+    
+    log.error("TESTFORJOBERROR " + jobs.get(0).getProcessDefinitionId() + " " + jobs.get(0).getDuedate());
 
     // After the first startEvent Execution should be one process instance
     // started
