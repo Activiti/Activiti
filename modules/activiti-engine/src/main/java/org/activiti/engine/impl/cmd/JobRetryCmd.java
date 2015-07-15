@@ -28,7 +28,13 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
+import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -152,11 +158,19 @@ public class JobRetryCmd implements Command<Object> {
       if (job instanceof TimerEntity) {
          processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
       }
-      ProcessDefinitionEntity processDefinition =
-      		deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
+      
+      
+      ProcessDefinitionEntity processDefinition = null;
+      if (job.getTenantId() != null && job.getTenantId().length() > 0) {
+        processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
+      } else {
+        processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processId);
+      }
+      
       if (processDefinition != null) {
         activity = processDefinition.getInitial();
       }
+      
     } else if (AsyncContinuationJobHandler.TYPE.equals(type)) {
       ExecutionEntity execution = fetchExecutionEntity(commandContext, job.getExecutionId());
       if (execution != null) {

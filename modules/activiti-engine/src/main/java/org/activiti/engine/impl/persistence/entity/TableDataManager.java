@@ -241,9 +241,12 @@ public class TableDataManager extends AbstractManager {
 
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
+        log.error("" + resultSet.getMetaData().getColumnCount());
+        for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+          log.error(resultSet.getMetaData().getColumnName(i+1) + " " + resultSet.getObject(resultSet.getMetaData().getColumnName(i+1)) + " " + schema);
+        }
         String name = resultSet.getString("COLUMN_NAME").toUpperCase();
         String type = resultSet.getString("TYPE_NAME").toUpperCase();
-        log.error("TESTMETADATA " + resultSet.getString("TABLE_SCHEMA") + " " + schema);
         result.addColumnMetaData(name, type);
       }
       
