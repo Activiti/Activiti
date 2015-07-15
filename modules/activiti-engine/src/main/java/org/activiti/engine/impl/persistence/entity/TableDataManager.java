@@ -13,6 +13,16 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
@@ -38,16 +48,6 @@ import org.activiti.engine.task.Task;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -235,8 +235,11 @@ public class TableDataManager extends AbstractManager {
       if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
         tableName = tableName.toLowerCase();
       }
+      
+      String catalog = getProcessEngineConfiguration().getDatabaseCatalog();
+      String schema = getProcessEngineConfiguration().getDatabaseSchema();
 
-      ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
+      ResultSet resultSet = metaData.getColumns(catalog, schema, tableName, null);
       while(resultSet.next()) {
         String name = resultSet.getString("COLUMN_NAME").toUpperCase();
         String type = resultSet.getString("TYPE_NAME").toUpperCase();

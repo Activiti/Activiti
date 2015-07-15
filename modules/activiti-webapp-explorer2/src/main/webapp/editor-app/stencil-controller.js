@@ -130,39 +130,35 @@ angular.module('activitiModeler')
                         'removed': removed,
                         'customIcon': false,
                         'canConnect': false,
-                        'canConnectTo': false};
+                        'canConnectTo': false,
+                        'canConnectAssociation': false};
                     
-                    if (data.stencils[stencilIndex].customIconId && data.stencils[stencilIndex].customIconId > 0)
-                    {
+                    if (data.stencils[stencilIndex].customIconId && data.stencils[stencilIndex].customIconId > 0) {
                         stencilItem.customIcon = true;
                         stencilItem.icon = data.stencils[stencilIndex].customIconId;
                     }
                     
                     if (!removed) {
-                        if (quickMenuDefinition.indexOf(stencilItem.id) >= 0)
-                        {
+                        if (quickMenuDefinition.indexOf(stencilItem.id) >= 0) {
                         	quickMenuItems[quickMenuDefinition.indexOf(stencilItem.id)] = stencilItem;
                         }
                     }
                     
-                    for (var i = 0; i < data.stencils[stencilIndex].roles.length; i++)
-                    {
+                    if (stencilItem.id === 'TextAnnotation' || stencilItem.id === 'BoundaryCompensationEvent') {
+                    	stencilItem.canConnectAssociation = true;
+                    }
+                    
+                    for (var i = 0; i < data.stencils[stencilIndex].roles.length; i++) {
                     	var stencilRole = data.stencils[stencilIndex].roles[i];
-                    	if (stencilRole === 'sequence_start')
-                    	{
+                    	if (stencilRole === 'sequence_start') {
                     		stencilItem.canConnect = true;
-                    	}
-                    	else if (stencilRole === 'sequence_end')
-                    	{
+                    	} else if (stencilRole === 'sequence_end') {
                     		stencilItem.canConnectTo = true;
                     	}
                     	
-                    	for (var j = 0; j < morphRoles.length; j++)
-                    	{
-                    		if (stencilRole === morphRoles[j].role)
-                    		{
-                    		    if (!removed)
-                    		    {
+                    	for (var j = 0; j < morphRoles.length; j++) {
+                    		if (stencilRole === morphRoles[j].role) {
+                    		    if (!removed) {
                     			     morphRoles[j].morphOptions.push(stencilItem);
                     			}
                     			stencilItem.morphRole = morphRoles[j].role;
@@ -171,17 +167,14 @@ angular.module('activitiModeler')
                     	}
                     }
 
-                    if (currentGroup)
-                    {
+                    if (currentGroup) {
 	                    // Add the stencil item to the correct group
 	                    currentGroup.items.push(stencilItem);
-	                    if (ignoreForPaletteDefinition.indexOf(stencilItem.id) < 0)
-	                    {
+	                    if (ignoreForPaletteDefinition.indexOf(stencilItem.id) < 0) {
 	                    	currentGroup.paletteItems.push(stencilItem);
 	                    }
 
-                    } else
-                    {
+                    } else {
                         // It's a root stencil element
                         if (!removed) {
                             stencilItemGroups.push(stencilItem);
@@ -422,44 +415,38 @@ angular.module('activitiModeler')
             			}
             	    }
         			
-        			if (morphShapes && morphShapes.length > 0)
-        			{
+        			var x = shapeXY.x;
+    				if (bounds.width() < 48) {
+    					x -= 24;
+    				}
+        			
+        			if (morphShapes && morphShapes.length > 0) {
         				// In case the element is not wide enough, start the 2 bottom-buttons more to the left
         				// to prevent overflow in the right-menu
-	        			  
-        				var x = shapeXY.x;
-        				if(bounds.width() < 48) {
-        					x -= 24;
-        				}
-        			  
 	        			var morphButton = document.getElementById('morph-button');
 	        			morphButton.style.display = "block";
 	        			morphButton.style.left = x + 24 +'px';
 	        			morphButton.style.top = (shapeXY.y+bounds.height() + 2) + 'px';
-	        			
-	        			var deleteButton = document.getElementById('delete-button');
-	        			deleteButton.style.display = "block";
-	        			deleteButton.style.left = x + 'px';
-	        			deleteButton.style.top = (shapeXY.y+bounds.height() + 2) + 'px';
         			}
         			
-        			if (stencilItem && stencilItem.canConnect)
-        			{
+        			var deleteButton = document.getElementById('delete-button');
+        			deleteButton.style.display = "block";
+        			deleteButton.style.left = x + 'px';
+        			deleteButton.style.top = (shapeXY.y+bounds.height() + 2) + 'px';
+        			
+        			if (stencilItem && (stencilItem.canConnect || stencilItem.canConnectAssociation)) {
 	        			var quickButtonCounter = 0;
 	        			var quickButtonX = shapeXY.x+bounds.width() + 5;
 	        			var quickButtonY = shapeXY.y;
 	        			jQuery('.Oryx_button').each(function(i, obj) {
-	        				if (obj.id !== 'morph-button' && obj.id != 'delete-button')
-	        				{
+	        				if (obj.id !== 'morph-button' && obj.id != 'delete-button') {
 	        					quickButtonCounter++;
-	        					if (quickButtonCounter > 3)
-	        					{
+	        					if (quickButtonCounter > 3) {
 	        						quickButtonX = shapeXY.x+bounds.width() + 5;
 	        						quickButtonY += 24;
 	        						quickButtonCounter = 1;
-	        					}
-	        					else if (quickButtonCounter > 1)
-	        					{
+	        						
+	        					} else if (quickButtonCounter > 1) {
 	        						quickButtonX += 24;
 	        					}
 	        					obj.style.display = "block";
@@ -1099,27 +1086,21 @@ angular.module('activitiModeler')
                         $scope.dragCurrentParentId = parentCandidate.id;
                         $scope.dragCurrentParentStencil = parentStencilId;
                         $scope.dragCanContain = _canContain;
-                    }
-                    else 
-                    { 
+                        
+                    } else  { 
                     	var canvasCandidate = $scope.editor.getCanvas();
                     	var canConnect = false;
                     	
                     	var targetStencil = $scope.getStencilItemById(parentCandidate.getStencil().idWithoutNs());
-            			if (targetStencil)
-            			{
+            			if (targetStencil) {
             				var associationConnect = false;
-            				if (stencil.idWithoutNs() === 'Association' && curCan.getStencil().idWithoutNs() === 'TextAnnotation')
-            				{
+            				if (stencil.idWithoutNs() === 'Association' && (curCan.getStencil().idWithoutNs() === 'TextAnnotation' || curCan.getStencil().idWithoutNs() === 'BoundaryCompensationEvent')) {
             				    associationConnect = true;
-            				}
-                            else if (stencil.idWithoutNs() === 'DataAssociation' && curCan.getStencil().idWithoutNs() === 'DataStore')
-                            {
+            				} else if (stencil.idWithoutNs() === 'DataAssociation' && curCan.getStencil().idWithoutNs() === 'DataStore') {
                                 associationConnect = true;
                             }
             				
-            				if (targetStencil.canConnectTo || associationConnect)
-            				{
+            				if (targetStencil.canConnectTo || associationConnect) {
             					canConnect = true;
             				}
             			}
@@ -1250,7 +1231,7 @@ angular.module('activitiModeler')
             			if (targetStencil)
             			{
             				var associationConnect = false;
-            				if (stencil.idWithoutNs() === 'Association' && curCan.getStencil().idWithoutNs() === 'TextAnnotation')  
+            				if (stencil.idWithoutNs() === 'Association' && (curCan.getStencil().idWithoutNs() === 'TextAnnotation' || curCan.getStencil().idWithoutNs() === 'BoundaryCompensationEvent'))  
             				{
             					associationConnect = true;
             				}

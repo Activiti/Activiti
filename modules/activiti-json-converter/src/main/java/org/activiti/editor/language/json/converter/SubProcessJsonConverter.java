@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.ValuedDataObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,6 +44,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
   
     public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
       convertersToJsonMap.put(SubProcess.class, SubProcessJsonConverter.class);
+      convertersToJsonMap.put(Transaction.class, SubProcessJsonConverter.class);
     }
   
     protected String getStencilId(BaseElement baseElement) {
@@ -60,11 +62,22 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
               graphicInfo.getX(), graphicInfo.getY());
       flowElementNode.put("childShapes", subProcessShapesArrayNode);
       
+      if (subProcess instanceof Transaction) {
+        propertiesNode.put("istransaction", true);
+      }
+      
       BpmnJsonConverterUtil.convertDataPropertiesToJson(subProcess.getDataObjects(), propertiesNode);
     }
   
     protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-      SubProcess subProcess = new SubProcess();
+      SubProcess subProcess = null;
+      if (getPropertyValueAsBoolean("istransaction", elementNode)) {
+        subProcess = new Transaction();
+        
+      } else {
+        subProcess = new SubProcess();
+      }
+      
       JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
       processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, model);
       
