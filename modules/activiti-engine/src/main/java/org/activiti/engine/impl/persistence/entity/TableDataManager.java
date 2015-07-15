@@ -236,18 +236,28 @@ public class TableDataManager extends AbstractManager {
         tableName = tableName.toLowerCase();
       }
       
-      String catalog = getProcessEngineConfiguration().getDatabaseCatalog();
       String schema = getProcessEngineConfiguration().getDatabaseSchema();
 
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
-        log.error("" + resultSet.getMetaData().getColumnCount());
-        for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-          log.error(resultSet.getMetaData().getColumnName(i+1) + " " + resultSet.getObject(resultSet.getMetaData().getColumnName(i+1)) + " " + schema);
+        boolean wrongSchema = false;
+        if (schema != null && schema.length() > 0) {
+          for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+            String columnName = resultSet.getMetaData().getColumnName(i+1);
+            if ("TABLE_SCHEM".equalsIgnoreCase(columnName) || "TABLE_SCHEMA".equalsIgnoreCase(columnName)) {
+              if (schema.equalsIgnoreCase(resultSet.getString(resultSet.getMetaData().getColumnName(i+1))) == false) {
+                wrongSchema = true;
+              }
+              break;
+            }
+          }
         }
-        String name = resultSet.getString("COLUMN_NAME").toUpperCase();
-        String type = resultSet.getString("TYPE_NAME").toUpperCase();
-        result.addColumnMetaData(name, type);
+        
+        if (wrongSchema == false) {
+          String name = resultSet.getString("COLUMN_NAME").toUpperCase();
+          String type = resultSet.getString("TYPE_NAME").toUpperCase();
+          result.addColumnMetaData(name, type);
+        }
       }
       
     } catch (SQLException e) {
