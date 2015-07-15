@@ -824,7 +824,7 @@ public class DbSqlSession implements Session {
      log.debug("inserting: {}", persistentObject);
      sqlSession.insert(insertStatement, persistentObject);
      
-     // See http://jira.codehaus.org/browse/ACT-1290
+     // See https://activiti.atlassian.net/browse/ACT-1290
      if (persistentObject instanceof HasRevision) {
        ((HasRevision) persistentObject).setRevision(((HasRevision) persistentObject).getRevisionNext());
      }
@@ -862,7 +862,7 @@ public class DbSqlSession implements Session {
         throw new ActivitiOptimisticLockingException(updatedObject + " was updated by another transaction concurrently");
       } 
       
-      // See http://jira.codehaus.org/browse/ACT-1290
+      // See https://activiti.atlassian.net/browse/ACT-1290
       if (updatedObject instanceof HasRevision) {
         ((HasRevision) updatedObject).setRevision(((HasRevision) updatedObject).getRevisionNext());
       }

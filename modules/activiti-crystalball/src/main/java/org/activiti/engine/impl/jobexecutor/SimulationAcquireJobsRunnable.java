@@ -81,7 +81,7 @@ public class SimulationAcquireJobsRunnable extends AcquireJobsRunnableImpl {
 		        }
 
 		      } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
-		        // See http://jira.codehaus.org/browse/ACT-1390
+		        // See https://activiti.atlassian.net/browse/ACT-1390
 		        log.trace("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
 		          		"this exception means that this thread tried to acquire a job, which already was acquired by another job executor acquisition thread." +
 		          		"This is expected behavior in a clustered environment. " +

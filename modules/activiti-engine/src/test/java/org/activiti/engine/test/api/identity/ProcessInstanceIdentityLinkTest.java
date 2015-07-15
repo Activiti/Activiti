@@ -23,7 +23,7 @@ import org.activiti.engine.test.Deployment;
  */
 public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
   
-  // Test specific for fix introduced by https://jira.codehaus.org/browse/ACT-1591
+  // Test specific for fix introduced by https://activiti.atlassian.net/browse/ACT-1591
   // (Referential integrity constraint violation on PROC_INST and IDENTITY_LINK)
   @Deployment
   public void testSetAuthenticatedUserAndCompleteLastTask() {
@@ -43,7 +43,7 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
     
   }
   
-  // Test specific for fix introduced by https://jira.codehaus.org/browse/ACT-1591
+  // Test specific for fix introduced by https://activiti.atlassian.net/browse/ACT-1591
   // (Referential integrity constraint violation on PROC_INST and IDENTITY_LINK)
   @Deployment
   public void testSetAuthenticatedUserWithNoWaitStates() {

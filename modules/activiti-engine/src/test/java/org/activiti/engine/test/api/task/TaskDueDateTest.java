@@ -36,7 +36,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
 	}
 
 	 /**
-   * See http://jira.codehaus.org/browse/ACT-2089
+   * See https://activiti.atlassian.net/browse/ACT-2089
    */
   public void testDueDateSortingWithNulls() {
   	Date now = processEngineConfiguration.getClock().getCurrentTime();

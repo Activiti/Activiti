@@ -30,7 +30,7 @@ import org.activiti.engine.test.Deployment;
 public class DelegateTaskTest extends PluggableActivitiTestCase {
 
 	/**
-	 * @see <a href="http://jira.codehaus.org/browse/ACT-380">http://jira.codehaus.org/browse/ACT-380</a>
+	 * @see <a href="https://activiti.atlassian.net/browse/ACT-380">https://activiti.atlassian.net/browse/ACT-380</a>
 	 */
 	@Deployment
 	public void testGetCandidates() {

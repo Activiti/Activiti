@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
 /**
- * @see <a href="http://jira.codehaus.org/browse/ACT-2055">http://jira.codehaus.org/browse/ACT-2055</a>
+ * @see <a href="https://activiti.atlassian.net/browse/ACT-2055">https://activiti.atlassian.net/browse/ACT-2055</a>
  */
 public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest {
   

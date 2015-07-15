@@ -22,7 +22,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
  */
 public class RegressionTest extends PluggableActivitiTestCase {
   
-  // https://jira.codehaus.org/browse/ACT-1623
+  // https://activiti.atlassian.net/browse/ACT-1623
   // NPE when eventbased gateway is after referenced event
   public void testAct1623() throws Exception {
    

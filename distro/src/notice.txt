@@ -166,7 +166,7 @@ javassist-3.6.0.GA.jar : MPL http://www.mozilla.org/MPL/ and the LGPL http://www
 jaxb-api-2.2.1.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 jaxb-impl-2.2.1.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 jaxb-xjc-2.1.7.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-jaxen-1.1.1.jar : http://jaxen.codehaus.org/license.html (modified apache license)
+jaxen-1.1.1.jar : http://jaxen.org/license.html (modified apache license)
 jcip-annotations-1.0.jar : Creative Commons Attribution License http://creativecommons.org/licenses/by/2.5
 jetty-continuation-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 jetty-http-7.2.0.v20101020.jar : http://www.apache.org/licenses/LICENSE-2.0.html

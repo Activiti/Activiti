@@ -901,7 +901,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       }
     }
     
-    // Special case, see http://jira.codehaus.org/browse/ACT-1431
+    // Special case, see https://activiti.atlassian.net/browse/ACT-1431
     if (flowNodes.isEmpty() && bpmnModel.getPools().isEmpty() && nrOfLanes == 0) {
       // Nothing to show
       minX = 0;

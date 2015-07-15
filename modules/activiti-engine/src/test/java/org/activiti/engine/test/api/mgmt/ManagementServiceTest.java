@@ -243,7 +243,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     managementService.executeJob(timerJob.getId());
   }
   
-  // https://jira.codehaus.org/browse/ACT-1816:
+  // https://activiti.atlassian.net/browse/ACT-1816:
   // ManagementService doesn't seem to give actual table Name for EventSubscriptionEntity.class
   public void testGetTableName() {
 	  String table = managementService.getTableName(EventSubscriptionEntity.class);

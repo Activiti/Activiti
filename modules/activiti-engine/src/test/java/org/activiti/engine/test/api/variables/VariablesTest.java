@@ -15,7 +15,7 @@ import org.activiti.engine.task.Task;
 
 /**
  * Testing various constructs with variables. 
- * Created to test the changes done in https://jira.codehaus.org/browse/ACT-1900.
+ * Created to test the changes done in https://activiti.atlassian.net/browse/ACT-1900.
  * 
  * @author Joram Barrez
  */
