@@ -5,7 +5,7 @@
 
 === License
 
-Activiti is distributed under link:$$http://www.apache.org/licenses/LICENSE-2.0.html$$[the Apache V2 license]. 
+Activiti is distributed under link:$$http://www.apache.org/licenses/LICENSE-2.0.html$$[the Apache V2 license].
 The Activiti Modeler uses a different license link:$$http://opensource.org/licenses/LGPL-2.1$$[the LGPL 2.1 license].
 
 [[download]]
@@ -18,8 +18,8 @@ link:$$http://activiti.org/download.html$$[http://activiti.org/download.html]
 
 === Sources
 
-The distribution contains most of the sources as jar files. To find and build the full source codebase, please read the
-  link:$$http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution$$['Building the distribution' wiki page]
+The distribution contains most of the sources as jar files. The source code of Activiti can be found on
+  link:$$https://github.com/Activiti/Activiti$$[https://github.com/Activiti/Activiti]
 
 
 [[required.software]]
@@ -44,12 +44,12 @@ Further in this user guide, there is a section on <<eclipseDesignerInstallation,
 Every self-respecting developer should have read link:$$http://www.catb.org/~esr/faqs/smart-questions.html$$[How to ask questions the smart way].
 
 
-After you've done that you can post questions and comments on link:$$http://forums.activiti.org/en/viewforum.php?f=3$$[the Users forum] and create issues in link:$$http://jira.codehaus.org/browse/ACT$$[our JIRA issue tracker].
+After you've done that you can post questions and comments on link:$$http://forums.activiti.org/en/viewforum.php?f=3$$[the Users forum] and create issues in link:$$https://activiti.atlassian.net$$[our JIRA issue tracker].
 
 [NOTE]
 ====
 
-Even though Activiti is hosted on GitHub, issues should not be reported using GitHub's issue system. If you wish to report an issue, do not create a GitHub issue, but use link:$$http://jira.codehaus.org/browse/ACT$$[JIRA].
+Even though Activiti is hosted on GitHub, issues should not be reported using GitHub's issue system. If you wish to report an issue, do not create a GitHub issue, but use link:$$https://activiti.atlassian.net$$[our JIRA].
 
 ====
 
