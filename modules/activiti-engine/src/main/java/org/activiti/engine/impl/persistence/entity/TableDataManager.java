@@ -239,10 +239,11 @@ public class TableDataManager extends AbstractManager {
       String catalog = getProcessEngineConfiguration().getDatabaseCatalog();
       String schema = getProcessEngineConfiguration().getDatabaseSchema();
 
-      ResultSet resultSet = metaData.getColumns(catalog, schema, tableName, null);
+      ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
         String name = resultSet.getString("COLUMN_NAME").toUpperCase();
         String type = resultSet.getString("TYPE_NAME").toUpperCase();
+        log.error("TESTMETADATA " + resultSet.getString("TABLE_SCHEMA") + " " + schema);
         result.addColumnMetaData(name, type);
       }
       
