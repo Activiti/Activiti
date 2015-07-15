@@ -962,7 +962,7 @@ Since BPMN 2.0 there is the difference between the interrupting and non interrup
 ===== Known issue with boundary events
 
 
-There is a known issue regarding concurrency when using boundary events of any type. Currently, it is not possible to have multiple outgoing sequence flow attached to a boundary event (see issue link:$$http://jira.codehaus.org/browse/ACT-47$$[ACT-47]). A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
+There is a known issue regarding concurrency when using boundary events of any type. Currently, it is not possible to have multiple outgoing sequence flow attached to a boundary event (see issue link:$$https://activiti.atlassian.net/browse/ACT-47$$[ACT-47]). A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
 
 image::images/bpmn.known.issue.boundary.event.png[align="center"]
 
