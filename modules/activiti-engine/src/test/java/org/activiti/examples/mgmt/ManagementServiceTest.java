@@ -18,7 +18,6 @@ import java.util.Map;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Test case for the various operations of the {@link ManagementService}
@@ -48,14 +47,8 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testGetTableMetaData() {
     
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
-    String schema = processEngineConfiguration.getDatabaseSchema();
-    if (StringUtils.isEmpty(schema)) {
-      schema = "";
-    } else {
-      schema += ".";
-    }
     
-    TableMetaData tableMetaData = managementService.getTableMetaData(schema + tablePrefix+"ACT_RU_TASK");
+    TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix+"ACT_RU_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(19, tableMetaData.getColumnNames().size());
 
