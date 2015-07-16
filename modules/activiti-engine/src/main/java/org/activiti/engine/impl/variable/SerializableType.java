@@ -35,9 +35,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 public class SerializableType extends ByteArrayType {
 
   public static final String TYPE_NAME = "serializable";
-
-  private static final long serialVersionUID = 1L;
-
+  
   public String getTypeName() {
     return TYPE_NAME;
   }
@@ -47,18 +45,19 @@ public class SerializableType extends ByteArrayType {
     if (cachedObject != null) {
       return cachedObject;
     }
-
+    
     byte[] bytes = (byte[]) super.getValue(valueFields);
     if (bytes != null) {
-      Object deserializedObject = deserialize(bytes, valueFields);
-
+	    Object deserializedObject = deserialize(bytes, valueFields);
+	    
       valueFields.setCachedValue(deserializedObject);
-
+      
       if (valueFields instanceof VariableInstanceEntity) {
-        // we need to register the deserialized object for dirty
-        // checking,
-        // so that it can be serialized again if it was changed.
-        Context.getCommandContext().getDbSqlSession().addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
+        // we need to register the deserialized object for dirty checking, 
+        // so that it can be serialized again if it was changed. 
+        Context.getCommandContext()
+          .getDbSqlSession()
+          .addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
       }
 
       return deserializedObject;
@@ -71,11 +70,12 @@ public class SerializableType extends ByteArrayType {
     valueFields.setCachedValue(value);
 
     if (valueFields.getBytes() == null) {
-      // TODO why the null check? won't this cause issues when setValue is
-      // called the second this with a different object?
+      // TODO why the null check? won't this cause issues when setValue is called the second this with a different object?
       if (valueFields instanceof VariableInstanceEntity) {
         // register the deserialized object for dirty checking.
-        Context.getCommandContext().getDbSqlSession().addDeserializedObject(new DeserializedObject(this, valueFields.getCachedValue(), byteArray, (VariableInstanceEntity) valueFields));
+        Context.getCommandContext()
+          .getDbSqlSession()
+          .addDeserializedObject(new DeserializedObject(this, valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields));
       }
     }
 
@@ -92,13 +92,13 @@ public class SerializableType extends ByteArrayType {
       oos = createObjectOutputStream(baos);
       oos.writeObject(value);
     } catch (Exception e) {
-      throw new ActivitiException("Couldn't serialize value '" + value + "' in variable '" + valueFields.getName() + "'", e);
+      throw new ActivitiException("Couldn't serialize value '"+value+"' in variable '"+valueFields.getName()+"'", e);
     } finally {
       IoUtil.closeSilently(oos);
     }
     return baos.toByteArray();
   }
-
+  
   public Object deserialize(byte[] bytes, ValueFields valueFields) {
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     try {
@@ -107,7 +107,7 @@ public class SerializableType extends ByteArrayType {
 
       return deserializedObject;
     } catch (Exception e) {
-      throw new ActivitiException("Couldn't deserialize object in variable '" + valueFields.getName() + "'", e);
+      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
     } finally {
       IoUtil.closeSilently(bais);
     }
@@ -126,7 +126,7 @@ public class SerializableType extends ByteArrayType {
     };
   }
 
-  protected ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
+	protected ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
     return new ObjectOutputStream(os);
   }
 }
