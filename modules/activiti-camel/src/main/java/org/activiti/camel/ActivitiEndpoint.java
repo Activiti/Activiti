@@ -27,9 +27,10 @@ import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes significantly increases the flexibility of our Camel integration, as you
- * can either choose one of three "out-of-the-box" modes, or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the out-of-the-box
- * implementation class options.
+ * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes
+ * significantly increases the flexibility of our Camel integration, as you can either choose one of three "out-of-the-box" modes,
+ * or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the 
+ * out-of-the-box implementation class options.  
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Arnold Schrijver
  */
@@ -46,19 +47,19 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   protected boolean copyVariablesToBodyAsMap;
 
   protected boolean copyCamelBodyToBody;
+  
+  protected String copyVariablesFromProperties;
 
-  protected boolean copyVariablesFromProperties;
-
-  protected boolean copyVariablesFromHeader;
-
+  protected String copyVariablesFromHeader;
+  
   protected boolean copyCamelBodyToBodyAsString;
-
+  
   protected String processInitiatorHeaderName;
-
+  
   protected Map<String, Object> returnVarMap = new HashMap<String, Object>();
-
+  
   protected long timeout = 5000;
-
+  
   protected int timeResolution = 100;
 
   public ActivitiEndpoint(String uri, CamelContext camelContext) {
@@ -67,15 +68,11 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     setEndpointUri(uri);
   }
 
-  public void process(Exchange ex) {
+  public void process(Exchange ex) throws Exception {
     if (activitiConsumer == null) {
       throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
     }
-    try {
-      activitiConsumer.getProcessor().process(ex);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    activitiConsumer.getProcessor().process(ex);
   }
 
   public Producer createProducer() throws Exception {
@@ -88,14 +85,14 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   public Consumer createConsumer(Processor processor) throws Exception {
     return new ActivitiConsumer(this, processor);
   }
-
+  
   protected void addConsumer(ActivitiConsumer consumer) {
     if (activitiConsumer != null) {
       throw new RuntimeException("Activiti consumer already defined for " + getEndpointUri() + "!");
     }
     activitiConsumer = consumer;
   }
-
+  
   protected void removeConsumer() {
     activitiConsumer = null;
   }
@@ -103,7 +100,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   public boolean isSingleton() {
     return true;
   }
-
+  
   public void setIdentityService(IdentityService identityService) {
     this.identityService = identityService;
   }
@@ -136,34 +133,60 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
   }
 
-  public boolean isCopyVariablesFromProperties() {
-    return copyVariablesFromProperties;
+  public boolean isCopyVariablesFromPropertiesBoolean() {
+    if (copyVariablesFromProperties == null)
+      return false;
+    String lower = copyVariablesFromProperties.toLowerCase();
+    return lower.equals("true") || lower.equals("false");
   }
 
-  public void setCopyVariablesFromProperties(boolean copyVariablesFromProperties) {
+  public String getCopyVariablesFromProperties() {
+    return copyVariablesFromProperties ;
+  }
+
+  public boolean CopyVariablesFromPropertiesAsBoolean() {
+    return copyVariablesFromProperties != null &&  copyVariablesFromProperties.equalsIgnoreCase("true");
+  }
+
+  public void setCopyVariablesFromProperties(String copyVariablesFromProperties) {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
-  public boolean isCopyVariablesFromHeader() {
-    return this.copyVariablesFromHeader;
+  
+  public boolean isCopyVariablesFromHeaderBoolean() {
+    if (copyVariablesFromHeader == null)
+      return false;
+    String lower = copyVariablesFromHeader.toLowerCase();
+    return lower.equals("true") || lower.equals("false");
+  }
+  
+  public String getCopyVariablesFromHeader() {
+    return copyVariablesFromHeader;
+    
+  }
+  
+  public boolean  copyVariablesFromHeaderAsBoolean() {
+    return copyVariablesFromHeader != null && copyVariablesFromHeader.equalsIgnoreCase("true");
+    
   }
 
-  public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
+
+  public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
     this.copyVariablesFromHeader = copyVariablesFromHeader;
   }
-
+  
   public boolean isCopyCamelBodyToBodyAsString() {
     return copyCamelBodyToBodyAsString;
   }
-
+  
   public void setCopyCamelBodyToBodyAsString(boolean copyCamelBodyToBodyAsString) {
     this.copyCamelBodyToBodyAsString = copyCamelBodyToBodyAsString;
   }
-
+  
   public boolean isSetProcessInitiator() {
-    return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
+      return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
   }
-
+  
   public Map<String, Object> getReturnVarMap() {
     return returnVarMap;
   }
@@ -171,24 +194,24 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   public void setReturnVarMap(Map<String, Object> returnVarMap) {
     this.returnVarMap = returnVarMap;
   }
-
+  
   public String getProcessInitiatorHeaderName() {
-    return processInitiatorHeaderName;
+      return processInitiatorHeaderName;
   }
-
+  
   public void setProcessInitiatorHeaderName(String processInitiatorHeaderName) {
-    this.processInitiatorHeaderName = processInitiatorHeaderName;
+      this.processInitiatorHeaderName = processInitiatorHeaderName;
   }
-
+  
   @Override
   public boolean isLenientProperties() {
     return true;
   }
-
+  
   public long getTimeout() {
     return timeout;
   }
-
+  
   public int getTimeResolution() {
     return timeResolution;
   }
