@@ -843,11 +843,10 @@ public class DbSqlSession implements Session {
 
   protected void flushRegularDeletes(boolean dispatchEvent) {
   
-//    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
-//    for (DeleteOperation delete : optimizedDeleteOperations) {
+    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
+    for (DeleteOperation delete : optimizedDeleteOperations) {
     
-    for (DeleteOperation delete : deleteOperations) {
-      // for (DeleteOperation delete : deleteOperations) {
+//    for (DeleteOperation delete : deleteOperations) {
       log.debug("executing: {}", delete);
 
       delete.execute();
