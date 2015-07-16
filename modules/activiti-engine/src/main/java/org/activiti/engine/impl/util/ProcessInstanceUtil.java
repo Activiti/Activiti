@@ -198,16 +198,20 @@ public class ProcessInstanceUtil {
     }
     
     if (startProcessInstance) {
-      startProcessInstance(processInstance, commandContext);
+      startProcessInstance(processInstance, commandContext, variables);
     }
 
     return processInstance;
   }
   
-  public static void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext)
-  {
+  public static void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables) {
     ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
     commandContext.getAgenda().planContinueProcessOperation(execution);
+    
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(execution, variables, false));
+    }
   }
   
   protected static Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {

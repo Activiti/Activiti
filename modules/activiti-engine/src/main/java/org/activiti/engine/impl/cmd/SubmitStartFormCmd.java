@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.form.StartFormHandler;
@@ -55,8 +56,17 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
     StartFormHandler startFormHandler = FormHandlerUtil.getStartFormHandler(commandContext, processDefinition); 
     startFormHandler.submitFormProperties(properties, processInstance);
     
-    ProcessInstanceUtil.startProcessInstance(processInstance, commandContext);
+    ProcessInstanceUtil.startProcessInstance(processInstance, commandContext, convertPropertiesToVariablesMap());
 
     return processInstance;
   }
+  
+  protected Map<String, Object> convertPropertiesToVariablesMap() {
+    Map<String, Object> vars = new HashMap<String, Object>(properties.size());
+    for (String key : properties.keySet()) {
+      vars.put(key, properties.get(key));
+    }
+    return vars;
+  }
+  
 }
