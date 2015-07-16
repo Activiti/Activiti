@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -119,7 +120,7 @@ public class ProcessDefinitionBuilder {
       String destinationActivityName = (String) unresolvedTransition[1];
       ActivityImpl destination = processDefinition.findActivity(destinationActivityName);
       if (destination == null) {
-        throw new RuntimeException("destination '"+destinationActivityName+"' not found.  (referenced from transition in '"+transition.getSource().getId()+"')");
+        throw new ActivitiException("destination '"+destinationActivityName+"' not found.  (referenced from transition in '"+transition.getSource().getId()+"')");
       }
       transition.setDestination(destination);
     }

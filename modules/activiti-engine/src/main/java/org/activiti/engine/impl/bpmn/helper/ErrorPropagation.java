@@ -195,12 +195,13 @@ public class ErrorPropagation {
   }
 
   public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap) throws Exception {
-    return mapException(e,execution,  exceptionMap, false); 
+    return mapException(e, execution, exceptionMap, false); 
   }
 
   public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap, boolean wrapped) throws Exception {
-    if (exceptionMap == null)
+    if (exceptionMap == null) {
       return false;
+    }
     
     if (wrapped && e instanceof PvmException) {
       e = (Exception) ((PvmException) e).getCause();

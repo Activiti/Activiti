@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
@@ -354,7 +355,7 @@ public class SelectUsersPopupWindow extends PopupWindow {
   
   public String getSelectedUserId() {
     if (multiSelect) {
-      throw new RuntimeException("Only use getSelectedUserId in non-multiselect mode");
+      throw new ActivitiException("Only use getSelectedUserId in non-multiselect mode");
     }
     return (String) matchingUsersTable.getValue();
   }
@@ -362,14 +363,14 @@ public class SelectUsersPopupWindow extends PopupWindow {
   @SuppressWarnings("unchecked")
   public Collection<String> getSelectedUserIds() {
     if (!multiSelect) {
-      throw new RuntimeException("Only use getSelectedUserIds in multiselect mode");
+      throw new ActivitiException("Only use getSelectedUserIds in multiselect mode");
     }
     return (Collection<String>) selectedUsersTable.getItemIds();
   }
   
   public String getSelectedUserRole(String userId) {
     if (!multiSelect) {
-      throw new RuntimeException("Only use getSelectedUserIds in multiselect mode");
+      throw new ActivitiException("Only use getSelectedUserIds in multiselect mode");
     }
     return (String) ((ComboBox) selectedUsersTable.getItem(userId).getItemProperty("role").getValue()).getValue();
   }

@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.login;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.explorer.ExplorerApp;
@@ -60,7 +61,7 @@ public class LoginPage extends CustomLayout {
       try {
         initTemplateContentsFromInputStream(loginHtmlStream);
       } catch (IOException e) {
-        throw new RuntimeException("Error while loading login page template from classpath resource", e);
+        throw new ActivitiException("Error while loading login page template from classpath resource", e);
       }
     } else {
       setTemplateName(ExplorerLayout.CUSTOM_LAYOUT_LOGIN);

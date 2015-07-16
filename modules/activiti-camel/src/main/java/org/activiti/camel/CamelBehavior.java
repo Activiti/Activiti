@@ -128,7 +128,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
         return (ActivitiEndpoint) e;
       }
     }
-    throw new RuntimeException("Activiti endpoint not defined for " + key);    
+    throw new ActivitiException("Activiti endpoint not defined for " + key);    
   }
 
   protected Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
