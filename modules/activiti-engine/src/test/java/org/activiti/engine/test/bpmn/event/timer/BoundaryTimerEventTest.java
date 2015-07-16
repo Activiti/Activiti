@@ -124,7 +124,32 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // which means the process has ended
     assertProcessEnded(pi.getId());
   }
+  
 
+  @Deployment
+  public void testNullExpressionOnTimer(){
+	  
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("duration", null);
+    
+    // After process start, there should be a timer created
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testNullExpressionOnTimer", variables);
+
+    //NO job scheduled as null expression set
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(0, jobs.size());
+
+    // which means the process is still running waiting for human task input.
+    ProcessInstance processInstance = processEngine
+    	      .getRuntimeService()
+    	      .createProcessInstanceQuery()
+    	      .processInstanceId(pi.getId())
+    	      .singleResult();
+    assertNotNull(processInstance);
+  }
+  
+  
   @Deployment
   public void testTimerInSingleTransactionProcess() {
     // make sure that if a PI completes in single transaction, JobEntities

@@ -153,13 +153,16 @@ public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEnt
                     TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
                     TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
                         TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
-                    timer.setProcessDefinitionId(previousProcessDefinition.getId());
-
-                    if (previousProcessDefinition.getTenantId() != null) {
-                      timer.setTenantId(previousProcessDefinition.getTenantId());
+                    
+                    if (timer != null) {
+                      timer.setProcessDefinitionId(previousProcessDefinition.getId());
+  
+                      if (previousProcessDefinition.getTenantId() != null) {
+                        timer.setTenantId(previousProcessDefinition.getTenantId());
+                      }
+  
+                      Context.getCommandContext().getJobEntityManager().schedule(timer);
                     }
-
-                    Context.getCommandContext().getJobEntityManager().schedule(timer);
                   }
                 }
               }

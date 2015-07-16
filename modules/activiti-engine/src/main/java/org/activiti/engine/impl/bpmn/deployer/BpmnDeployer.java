@@ -278,12 +278,16 @@ public class BpmnDeployer implements Deployer {
               TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
               TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, false, null, TimerStartEventJobHandler.TYPE,
                   TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
-              timer.setProcessDefinitionId(processDefinition.getId());
-
-              if (processDefinition.getTenantId() != null) {
-                timer.setTenantId(processDefinition.getTenantId());
+              
+              if (timer != null) {
+                timer.setProcessDefinitionId(processDefinition.getId());
+  
+                if (processDefinition.getTenantId() != null) {
+                  timer.setTenantId(processDefinition.getTenantId());
+                }
+                timers.add(timer);
               }
-              timers.add(timer);
+              
             }
           }
         }

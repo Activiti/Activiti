@@ -19,6 +19,7 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,25 +79,32 @@ public class TimerUtil {
       dueDateString = (String) dueDateValue;
     } else if (dueDateValue instanceof Date) {
       duedate = (Date) dueDateValue;
-    } else {
+    } else if (dueDateValue instanceof DateTime) {
+      //JodaTime support
+      duedate = ((DateTime) dueDateValue).toDate();
+    } else if(dueDateValue!=null){
       throw new ActivitiException("Timer '" + executionEntity.getActivityId()
           + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
     }
+    //dueDateValue==null is OK - but unexpected class type must throw an error.
 
-    if (duedate == null) {
+    if (duedate == null && dueDateString != null) {
       duedate = businessCalendar.resolveDuedate(dueDateString);
     }
 
-    TimerEntity timer = new TimerEntity(jobHandlerType, jobHandlerConfig, true, TimerEntity.DEFAULT_RETRIES);
-    timer.setDuedate(duedate);
-    if (executionEntity != null) {
-      timer.setExecution(executionEntity);
-      timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
-      timer.setProcessInstanceId(executionEntity.getProcessInstanceId());
+    TimerEntity timer = null;
+    if (duedate != null) {
+      timer = new TimerEntity(jobHandlerType, jobHandlerConfig, true, TimerEntity.DEFAULT_RETRIES);
+      timer.setDuedate(duedate);
+      if (executionEntity != null) {
+        timer.setExecution(executionEntity);
+        timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
+        timer.setProcessInstanceId(executionEntity.getProcessInstanceId());
 
-      // Inherit tenant identifier (if applicable)
-      if (executionEntity.getTenantId() != null) {
-        timer.setTenantId(executionEntity.getTenantId());
+        // Inherit tenant identifier (if applicable)
+        if (executionEntity.getTenantId() != null) {
+          timer.setTenantId(executionEntity.getTenantId());
+        }
       }
     }
 
@@ -118,7 +126,7 @@ public class TimerUtil {
       }
     }
 
-    if (executionEntity != null) {
+    if (timer != null && executionEntity != null) {
       timer.setExecution(executionEntity);
       timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
 
