@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.bpmn.model.Process;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -61,7 +61,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
         return (ActivitiEndpoint) e;
       }
     }
-    throw new RuntimeException("Activiti endpoint not defined for " + key);
+    throw new ActivitiException("Activiti endpoint not defined for " + key);    
   }
 
   private CamelContext getContext(ActivityExecution execution) {
@@ -73,7 +73,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
         return ctx;
       }
     }
-    throw new RuntimeException("Could not find camel context for " + processKey + " names are " + names);
+    throw new ActivitiException("Could not find camel context for " + processName + " names are " + names);
   }
 
   private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {

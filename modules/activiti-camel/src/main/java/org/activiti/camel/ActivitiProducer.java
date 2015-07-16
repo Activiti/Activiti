@@ -178,7 +178,7 @@ public class ActivitiProducer extends DefaultProducer {
 
   protected void setProcessInitiator(String processInitiator) {
     if (identityService == null) {
-      throw new RuntimeException("IdentityService is missing and must be provided to set process initiator.");
+      throw new ActivitiException("IdentityService is missing and must be provided to set process initiator.");
     }
     identityService.setAuthenticatedUserId(processInitiator);
   }

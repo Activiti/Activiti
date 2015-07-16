@@ -16,6 +16,7 @@ package org.activiti.camel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
@@ -70,7 +71,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
 
   public void process(Exchange ex) throws Exception {
     if (activitiConsumer == null) {
-      throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
+      throw new ActivitiException("Activiti consumer not defined for " + getEndpointUri());
     }
     activitiConsumer.getProcessor().process(ex);
   }
@@ -88,7 +89,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   
   protected void addConsumer(ActivitiConsumer consumer) {
     if (activitiConsumer != null) {
-      throw new RuntimeException("Activiti consumer already defined for " + getEndpointUri() + "!");
+      throw new ActivitiException("Activiti consumer already defined for " + getEndpointUri() + "!");
     }
     activitiConsumer = consumer;
   }
