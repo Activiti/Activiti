@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -90,21 +91,23 @@ public class JsonTest extends PluggableActivitiTestCase {
     assertNotNull(task);
     assertEquals("userTaskSuccess", task.getTaskDefinitionKey());
     
-    List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName().asc().list();
-    assertEquals(2, historicVariableInstances.size());
-    
-    assertEquals("bigJsonObj", historicVariableInstances.get(0).getVariableName());
-    value = (ObjectNode) historicVariableInstances.get(0).getValue();
-    assertNotNull(value);
-    assertEquals(createBigJsonObject().toString(), value.toString());
-    
-    assertEquals("myJsonObj", historicVariableInstances.get(1).getVariableName());
-    value = (ObjectNode) historicVariableInstances.get(1).getValue();
-    assertNotNull(value);
-    assertEquals("myValue", value.get("var").asText());
-    assertEquals("myOtherValue", value.get("var2").asText());
-    assertEquals("myThirdValue", value.get("var3").asText());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName().asc().list();
+      assertEquals(2, historicVariableInstances.size());
+      
+      assertEquals("bigJsonObj", historicVariableInstances.get(0).getVariableName());
+      value = (ObjectNode) historicVariableInstances.get(0).getValue();
+      assertNotNull(value);
+      assertEquals(createBigJsonObject().toString(), value.toString());
+      
+      assertEquals("myJsonObj", historicVariableInstances.get(1).getVariableName());
+      value = (ObjectNode) historicVariableInstances.get(1).getValue();
+      assertNotNull(value);
+      assertEquals("myValue", value.get("var").asText());
+      assertEquals("myOtherValue", value.get("var2").asText());
+      assertEquals("myThirdValue", value.get("var3").asText());
+    }
   }
 
   @Deployment
@@ -163,13 +166,15 @@ public class JsonTest extends PluggableActivitiTestCase {
     assertNotNull(task);
     assertEquals("userTaskSuccess", task.getTaskDefinitionKey());
 
-    HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getProcessInstanceId()).singleResult();
-    value = (ArrayNode) historicVariableInstance.getValue();
-    assertNotNull(value);
-    assertEquals("myValue", value.get(0).get("var").asText());
-    assertEquals("myOtherValue", value.get(1).get("var").asText());
-    assertEquals("myThirdValue", value.get(2).get("var").asText());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(processInstance.getProcessInstanceId()).singleResult();
+      value = (ArrayNode) historicVariableInstance.getValue();
+      assertNotNull(value);
+      assertEquals("myValue", value.get(0).get("var").asText());
+      assertEquals("myOtherValue", value.get(1).get("var").asText());
+      assertEquals("myThirdValue", value.get(2).get("var").asText());
+    }
   }
   
   protected ObjectNode createBigJsonObject() {
