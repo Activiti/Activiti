@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.variable.JsonType;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -48,6 +49,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     serializable.add("three");
     byte[] bytes1 = "somebytes1".getBytes();
     byte[] bytes2 = "somebytes2".getBytes();
+    String json = "{ \"name\": \"Kermit\" }";
+    String jsonArray = "[{ \"name\": \"Kermit\" },{ \"name\": \"Fozzie\" }]";
 
     // Start process instance with different types of variables
     Map<String, Object> variables = new HashMap<String, Object>();
@@ -61,6 +64,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     variables.put("bytesVar", bytes1);
     variables.put("customVar1", new CustomType(bytes2));
     variables.put("customVar2", null);
+    variables.put("jsonVar", json);
+    variables.put("jsonArrayVar", jsonArray);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
 
     variables = runtimeService.getVariables(processInstance.getId());
@@ -74,7 +79,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
     assertEquals(new CustomType(bytes2), variables.get("customVar1"));
     assertEquals(null, variables.get("customVar2"));
-    assertEquals(10, variables.size());
+    assertEquals(JsonType.parse("{ \"name\": \"Kermit\" }"), variables.get("jsonVar"));
+    assertEquals(JsonType.parse("[{ \"name\": \"Kermit\" },{ \"name\": \"Fozzie\" }]"), variables.get("jsonArrayVar"));
+    assertEquals(12, variables.size());
 
     // Set all existing variables values to null
     runtimeService.setVariable(processInstance.getId(), "longVar", null);
@@ -87,6 +94,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "bytesVar", null);
     runtimeService.setVariable(processInstance.getId(), "customVar1", null);
     runtimeService.setVariable(processInstance.getId(), "customVar2", null);
+    runtimeService.setVariable(processInstance.getId(), "jsonVar", null);
+    runtimeService.setVariable(processInstance.getId(), "jsonArrayVar", null);
 
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(null, variables.get("longVar"));
@@ -99,7 +108,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(null, variables.get("bytesVar"));
     assertEquals(null, variables.get("customVar1"));
     assertEquals(null, variables.get("customVar2"));
-    assertEquals(10, variables.size());
+    assertEquals(null, variables.get("jsonVar"));
+    assertEquals(null, variables.get("jsonArrayVar"));
+    assertEquals(12, variables.size());
 
     // Update existing variable values again, and add a new variable
     runtimeService.setVariable(processInstance.getId(), "new var", "hi");
@@ -112,6 +123,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "bytesVar", bytes1);
     runtimeService.setVariable(processInstance.getId(), "customVar1", new CustomType(bytes2));
     runtimeService.setVariable(processInstance.getId(), "customVar2", new CustomType(bytes1));
+    runtimeService.setVariable(processInstance.getId(), "jsonVar", JsonType.parse("{ \"name\": \"Kermit\" }"));
+    runtimeService.setVariable(processInstance.getId(), "jsonArrayVar", JsonType.parse("[{ \"name\": \"Kermit\" },{ \"name\": \"Fozzie\" }]"));
 
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
@@ -125,7 +138,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
     assertEquals(new CustomType(bytes2), variables.get("customVar1"));
     assertEquals(new CustomType(bytes1), variables.get("customVar2"));
-    assertEquals(11, variables.size());
+    assertEquals(JsonType.parse("{ \"name\": \"Kermit\" }"), variables.get("jsonVar"));
+    assertEquals(JsonType.parse("[{ \"name\": \"Kermit\" },{ \"name\": \"Fozzie\" }]"), variables.get("jsonArrayVar"));
+    assertEquals(13, variables.size());
     
     Collection<String> varFilter = new ArrayList<String>(2);
     varFilter.add("stringVar");

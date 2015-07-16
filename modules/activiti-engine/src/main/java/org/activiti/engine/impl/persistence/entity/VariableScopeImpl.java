@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,9 @@ import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 
 /**
@@ -37,6 +41,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * @author Joram Barrez
  * @author Tijs Rademakers
  * @author Saeid Mirzaei
+ * @author Tim Stephenson
  */
 public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
@@ -143,7 +148,13 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public Object getVariable(String variableName) {
     return getVariable(variableName, true);
   }
-  
+
+  public JsonObject getJsonVariable(String variableName) {
+    String var = (String) getVariable(variableName, true);
+    JsonReader jsonReader = Json.createReader(new StringReader(var));
+    return jsonReader.readObject();
+  }
+
   /**
    * The same operation as {@link VariableScopeImpl#getVariable(String)}, but with
    * an extra parameter to indicate whether or not all variables need to be fetched.

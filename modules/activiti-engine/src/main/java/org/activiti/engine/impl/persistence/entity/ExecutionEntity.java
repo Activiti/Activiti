@@ -38,6 +38,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.persistence.entity.json.JsonVariableScopeImpl;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
@@ -71,7 +72,7 @@ import org.slf4j.LoggerFactory;
  * @author Saeid Mirzaei
  */
 
-public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, 
+public class ExecutionEntity extends JsonVariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution,
 	ProcessInstance, InterpretableExecution, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
