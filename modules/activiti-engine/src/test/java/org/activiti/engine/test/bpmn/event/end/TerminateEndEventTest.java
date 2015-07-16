@@ -20,11 +20,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -366,4 +373,33 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		
 		assertProcessEnded(pi.getId());
 	}
+	
+	public void testParseTerminateEndEventDefinitionWithExtensions() {
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
+    ProcessDefinition processDefinitionQuery = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+    BpmnModel bpmnModel = this.processEngineConfiguration.getProcessDefinitionCache().get(processDefinitionQuery.getId()).getBpmnModel();
+
+    org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().get(0);
+    List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
+    assertEquals(1, endEvents.size());
+    EndEvent endEvent = endEvents.get(0);
+    assertThat(endEvent.getId(), is("terminateEnd"));
+    assertTrue(endEvent.getBehavior() instanceof TerminateEndEventActivityBehavior);
+    TerminateEndEventActivityBehavior terminateEndEventBehavior = (TerminateEndEventActivityBehavior) endEvent.getBehavior();
+    Map<String, List<ExtensionElement>> extensionElements = endEvent.getExtensionElements();
+    assertThat(extensionElements.size(), is(1));
+    List<ExtensionElement> strangeProperties = extensionElements.get("strangeProperty");
+    assertThat(strangeProperties.size(), is(1));
+    ExtensionElement strangeProperty = strangeProperties.get(0);
+    assertThat(strangeProperty.getNamespace(), is("http://activiti.org/bpmn"));
+    assertThat(strangeProperty.getElementText(), is("value"));
+    assertThat(strangeProperty.getAttributes().size(), is(1));
+    ExtensionAttribute id = strangeProperty.getAttributes().get("id").get(0);
+    assertThat(id.getName(), is("id"));
+    assertThat(id.getValue(), is("strangeId"));
+
+
+    repositoryService.deleteDeployment(deployment.getId());
+  }
+	
 }
