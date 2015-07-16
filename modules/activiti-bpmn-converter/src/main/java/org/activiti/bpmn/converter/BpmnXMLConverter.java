@@ -325,8 +325,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
 				if (ELEMENT_DEFINITIONS.equals(xtr.getLocalName())) {
 				  definitionsParser.parse(xtr, model);
-                } else if (ELEMENT_RESOURCE.equals(xtr.getLocalName())) {
-                    resourceParser.parse(xtr, model);
+				  
+        } else if (ELEMENT_RESOURCE.equals(xtr.getLocalName())) {
+          resourceParser.parse(xtr, model);
+          
 				} else if (ELEMENT_SIGNAL.equals(xtr.getLocalName())) {
 					signalParser.parse(xtr, model);
 					
@@ -563,6 +565,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
       if (subProcess instanceof EventSubProcess) {
         xtw.writeAttribute(ATTRIBUTE_TRIGGERED_BY, ATTRIBUTE_VALUE_TRUE);
+        
+      } else if (subProcess instanceof Transaction == false) {
+        if (subProcess.isAsynchronous()) {
+          BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
+          if (subProcess.isNotExclusive()) {
+            BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_EXCLUSIVE, ATTRIBUTE_VALUE_FALSE, xtw);
+          }
+        }
       }
 
       if (StringUtils.isNotEmpty(subProcess.getDocumentation())) {
