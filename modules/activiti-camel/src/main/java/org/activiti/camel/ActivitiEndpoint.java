@@ -133,45 +133,23 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
   }
 
-  public boolean isCopyVariablesFromPropertiesBoolean() {
-    if (copyVariablesFromProperties == null)
-      return false;
-    String lower = copyVariablesFromProperties.toLowerCase();
-    return lower.equals("true") || lower.equals("false");
-  }
 
   public String getCopyVariablesFromProperties() {
     return copyVariablesFromProperties ;
   }
 
-  public boolean CopyVariablesFromPropertiesAsBoolean() {
-    return copyVariablesFromProperties != null &&  copyVariablesFromProperties.equalsIgnoreCase("true");
-  }
-
+  
   public void setCopyVariablesFromProperties(String copyVariablesFromProperties) {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
-  
-  public boolean isCopyVariablesFromHeaderBoolean() {
-    if (copyVariablesFromHeader == null)
-      return false;
-    String lower = copyVariablesFromHeader.toLowerCase();
-    return lower.equals("true") || lower.equals("false");
-  }
   
   public String getCopyVariablesFromHeader() {
     return copyVariablesFromHeader;
     
   }
   
-  public boolean  copyVariablesFromHeaderAsBoolean() {
-    return copyVariablesFromHeader != null && copyVariablesFromHeader.equalsIgnoreCase("true");
-    
-  }
-
-
-  public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
+   public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
     this.copyVariablesFromHeader = copyVariablesFromHeader;
   }
   
