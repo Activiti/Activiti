@@ -32,9 +32,8 @@ public class DueDateBusinessCalendar extends BusinessCalendarImpl {
   public Date resolveDuedate(String duedate, int maxIterations) {
     try {
       // check if due period was specified
-      if (duedate.startsWith("P")) {
-        DateTime dateTime = new DateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime());
-        return dateTime.plus(Period.parse(duedate)).toDate();
+      if(duedate.startsWith("P")){
+        return new DateTime(clockReader.getCurrentTime()).plus(Period.parse(duedate)).toDate();
       }
 
       return DateTime.parse(duedate).toDate();
