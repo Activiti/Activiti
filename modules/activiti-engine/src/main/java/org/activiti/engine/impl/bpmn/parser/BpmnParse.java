@@ -95,6 +95,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected boolean validateProcess = true;
 
   protected StreamSource streamSource;
+  protected String sourceSystemId;
 
   protected BpmnModel bpmnModel;
 
@@ -295,6 +296,15 @@ public class BpmnParse implements BpmnXMLConstants {
       throw new ActivitiIllegalArgumentException("invalid: multiple sources " + this.streamSource + " and " + streamSource);
     }
     this.streamSource = streamSource;
+  }
+  
+  public String getSourceSystemId() {
+    return sourceSystemId;
+  }
+
+  public BpmnParse setSourceSystemId(String sourceSystemId) {
+    this.sourceSystemId = sourceSystemId;
+    return this;
   }
 
   protected void createImports() {

@@ -100,7 +100,11 @@ public class BpmnDeployer implements Deployer {
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 
-        BpmnParse bpmnParse = bpmnParser.createParse().sourceInputStream(inputStream).deployment(deployment).name(resourceName);
+        BpmnParse bpmnParse = bpmnParser.createParse()
+            .sourceInputStream(inputStream)
+            .setSourceSystemId(resourceName)
+            .deployment(deployment)
+            .name(resourceName);
 
         if (deploymentSettings != null) {
 
