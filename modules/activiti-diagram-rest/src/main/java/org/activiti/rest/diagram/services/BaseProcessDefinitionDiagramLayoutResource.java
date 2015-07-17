@@ -436,7 +436,7 @@ public class BaseProcessDefinitionDiagramLayoutResource {
 
         // If active activities nas no instance of this callActivity then add
         // last definition
-        if (processInstanceArray.size() == 0) {
+        if (processInstanceArray.size() == 0 && StringUtils.isNotEmpty(callActivityBehavior.getProcessDefinitonKey())) {
           // Get last definition by key
           ProcessDefinition lastProcessDefinition = repositoryService
               .createProcessDefinitionQuery()
