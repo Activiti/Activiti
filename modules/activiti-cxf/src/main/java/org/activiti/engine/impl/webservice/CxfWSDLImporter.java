@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.webservice;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +44,6 @@ import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.wsdl.WSDLManager;
 import org.apache.cxf.wsdl11.WSDLServiceBuilder;
-import org.xml.sax.InputSource;
 
 import com.ibm.wsdl.extensions.schema.SchemaImpl;
 import com.sun.codemodel.JClass;
@@ -200,16 +198,6 @@ public class CxfWSDLImporter implements XMLImporter {
   }
   
   private S2JJAXBModel compileModel(Types types, SchemaCompiler compiler, org.w3c.dom.Element rootTypes) {
-
-        // Customize Jaxb to generate java.util.Date instead of javax.xml.datatype.XMLGregorianCalendar, because
-        // Activiti engine provides dates as java.util.Date
-        final InputStream isBindingsXjc = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("bindings.xjc");
-        if (isBindingsXjc != null) {
-            final InputSource bindingsXjcSource = new InputSource(isBindingsXjc);
-            bindingsXjcSource.setSystemId("bindings.xjc");
-            compiler.parseSchema(bindingsXjcSource);
-        }
 
     Schema schema = (Schema) types.getExtensibilityElements().get(0);
     compiler.parseSchema(schema.getDocumentBaseURI() + "#types1", rootTypes);
