@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of the {@link UserIdentityManager} interface specifically for LDAP.
  * 
- * Note that only a few methods are actually implemented, as many of the operations (save, update, etc.) are done on the LDAP system directly.
+ * Note that only a few methods are actually implemented, as many of the operations 
+ * (save, update, etc.) are done on the LDAP system directly. 
  * 
  * @author Joram Barrez
  */
@@ -117,15 +118,17 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
       List<User> result = new ArrayList<User>();
       result.add(findUserById(query.getId()));
       return result;
-    } else if (query.getFullNameLike() != null) {
-
+    } else if (query.getFullNameLike() != null){
+      
+      final String fullNameLike = query.getFullNameLike().replaceAll("%", "");
+      
       LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
       return ldapTemplate.execute(new LDAPCallBack<List<User>>() {
 
         public List<User> executeInContext(InitialDirContext initialDirContext) {
           List<User> result = new ArrayList<User>();
           try {
-            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, query.getFullNameLike());
+            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, fullNameLike);
             String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
             NamingEnumeration<?> namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
 
@@ -173,7 +176,11 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
       }
     }
     if (ldapConfigurator.getUserEmailAttribute() != null) {
-      user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+        try {
+            user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+        }catch(NullPointerException e){
+    		user.setEmail("");
+    	}
     }
   }
 
