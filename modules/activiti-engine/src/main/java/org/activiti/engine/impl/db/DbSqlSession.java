@@ -805,7 +805,7 @@ public class DbSqlSession implements Session {
       }
     }
     
-    // Next, in case of custom entities or we've screwed up and forgotton some entity
+    // Next, in case of custom entities or we've screwed up and forgotten some entity
     if (insertedObjects.size() > 0) {
 	    for (Class<? extends PersistentObject> persistentObjectClass : insertedObjects.keySet()) {
       	flushPersistentObjects(persistentObjectClass, insertedObjects.get(persistentObjectClass));

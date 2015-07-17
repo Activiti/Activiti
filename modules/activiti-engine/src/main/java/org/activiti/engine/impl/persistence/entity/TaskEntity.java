@@ -332,18 +332,33 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
 
   public void deleteIdentityLink(String userId, String groupId, String type) {
-    List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByTaskUserGroupAndType(id, userId, groupId, type);
-
-    for (IdentityLinkEntity identityLink : identityLinks) {
-      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, true);
+    List<IdentityLinkEntity> identityLinks = Context
+      .getCommandContext()
+      .getIdentityLinkEntityManager()
+      .findIdentityLinkByTaskUserGroupAndType(id, userId, groupId, type);
+    
+    List<String> identityLinkIds = new ArrayList<String>();
+    for (IdentityLinkEntity identityLink: identityLinks) {
+      Context
+        .getCommandContext()
+        .getIdentityLinkEntityManager()
+        .deleteIdentityLink(identityLink, true);
+      identityLinkIds.add(identityLink.getId());
     }
 
     // fix deleteCandidate() in create TaskListener
     List<IdentityLinkEntity> removedIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
     for (IdentityLinkEntity identityLinkEntity : this.getIdentityLinks()) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
-        if ((userId != null && userId.equals(identityLinkEntity.getUserId())) || (groupId != null && groupId.equals(identityLinkEntity.getGroupId()))) {
-          Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLinkEntity, true);
+      if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType()) && 
+          identityLinkIds.contains(identityLinkEntity.getId()) == false) {
+        
+        if ((userId != null && userId.equals(identityLinkEntity.getUserId()))
+          || (groupId != null && groupId.equals(identityLinkEntity.getGroupId()))) {
+          
+          Context
+            .getCommandContext()
+            .getIdentityLinkEntityManager()
+            .deleteIdentityLink(identityLinkEntity, true);
           removedIdentityLinkEntities.add(identityLinkEntity);
         }
       }
