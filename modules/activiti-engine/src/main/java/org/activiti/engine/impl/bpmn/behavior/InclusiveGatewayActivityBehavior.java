@@ -12,11 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
@@ -29,10 +24,15 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based
  * gateway as defined in the BPMN specification.
- * 
+ *
  * @author Tijs Rademakers
  * @author Tom Van Buskirk
  * @author Joram Barrez
@@ -40,19 +40,19 @@ import org.slf4j.LoggerFactory;
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
   private static final long serialVersionUID = 1L;
-  
+
   private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
   public void execute(ActivityExecution execution) throws Exception {
-    
+
     execution.inactivate();
     lockConcurrentRoot(execution);
-    
+
     PvmActivity activity = execution.getActivity();
     if (!activeConcurrentExecutionsExist(execution)) {
 
       if (log.isDebugEnabled()) {
-        log.debug("inclusive gateway '{}' activates", activity.getId());
+        log.debug("Inclusive gateway '{}' activates", activity.getId());
       }
 
       List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
@@ -60,13 +60,22 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
       for (PvmTransition outgoingTransition : execution.getActivity().getOutgoingTransitions()) {
-        
+
         Expression skipExpression = outgoingTransition.getSkipExpression();
         if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
-          if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-            Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-            if (condition == null || condition.evaluate(execution)) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          if (condition == null) {
+            if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
               transitionsToTake.add(outgoingTransition);
+            }
+          } else {
+            if (condition.evaluate(execution)) {
+
+              logSequenceSelection(log, outgoingTransition, true);
+              transitionsToTake.add(outgoingTransition);
+            } else {
+
+              logSequenceSelection(log, outgoingTransition, false);
             }
           }
         }
@@ -80,9 +89,16 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
       } else {
 
+        logExecutionVariables(log, execution);
+
         if (defaultSequenceFlow != null) {
           PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
           if (defaultTransition != null) {
+
+            if (log.isDebugEnabled()) {
+              log.debug("Default sequence flow '{}' selected as outgoing sequence flow.", defaultTransition.getId());
+            }
+
             execution.take(defaultTransition);
           } else {
             throw new ActivitiException("Default sequence flow '"
@@ -130,7 +146,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
           } else {
             reachable = isReachable(concurrentExecution.getActivity(), activity, new HashSet<PvmActivity>());
           }
-          
+
           if (reachable) {
             if (log.isDebugEnabled()) {
               log.debug("an active concurrent execution found: '{}'", concurrentExecution.getActivity());
