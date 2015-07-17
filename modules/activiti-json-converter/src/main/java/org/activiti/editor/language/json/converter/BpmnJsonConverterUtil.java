@@ -302,8 +302,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
   
   protected static void parseListeners(JsonNode listenersNode, BaseElement element, boolean isTaskListener) {  
     if (listenersNode == null) return;
-    
+    listenersNode = validateIfNodeIsTextual(listenersNode);
     for (JsonNode listenerNode : listenersNode) {
+      listenerNode = validateIfNodeIsTextual(listenerNode);
       JsonNode eventNode = listenerNode.get(PROPERTY_LISTENER_EVENT);
       if (eventNode != null && eventNode.isNull() == false && StringUtils.isNotEmpty(eventNode.asText())) {
         
