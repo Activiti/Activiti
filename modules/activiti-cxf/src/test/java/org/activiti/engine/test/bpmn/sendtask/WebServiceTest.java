@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.sendtask;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
 
+
 /**
  * @author Esteban Robles Luna
  * @author Falko Menge
@@ -23,11 +24,11 @@ public class WebServiceTest extends AbstractWebServiceTaskTest {
 
   @Deployment
   public void testAsyncInvocationWithoutDataFlow() throws Exception {
-    assertEquals(-1, counter.getCount());
-
+    assertEquals(-1, webServiceMock.getCount());
+    
     processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithoutDataFlow");
     waitForJobExecutorToProcessAllJobs(10000L, 250L);
-
-    assertEquals(0, counter.getCount());
+    
+    assertEquals(0, webServiceMock.getCount());
   }
 }

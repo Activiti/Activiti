@@ -12,17 +12,19 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import java.util.Date;
+
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
 /**
- * A simple Counter WS that starts the counter in -1
- * 
+ * A simple WS for unit test purpose
+ *
  * @author Esteban Robles Luna
  */
 @WebService
-public interface Counter {
+public interface WebServiceMock {
 
   /**
    * Increase the counter in 1
@@ -31,10 +33,10 @@ public interface Counter {
 
   /**
    * Returns the current count
-   * 
+   *
    * @return the count
    */
-  @WebResult(name = "count")
+  @WebResult(name="count")
   int getCount();
 
   /**
@@ -44,21 +46,36 @@ public interface Counter {
 
   /**
    * Sets the counter to value
-   * 
-   * @param value
-   *          the value of the new counter
+   *
+   * @param value the value of the new counter
    */
-  void setTo(@WebParam(name = "value") int value);
+  void setTo(@WebParam(name="value") int value);
 
   /**
    * Returns a formated string composed of prefix + current count + suffix
-   * 
-   * @param prefix
-   *          the prefix
-   * @param suffix
-   *          the suffix
+   *
+   * @param prefix the prefix
+   * @param suffix the suffix
    * @return the formated string
    */
-  @WebResult(name = "prettyPrint")
-  String prettyPrintCount(@WebParam(name = "prefix") String prefix, @WebParam(name = "suffix") String suffix);
+  @WebResult(name="prettyPrint")
+  String prettyPrintCount(@WebParam(name="prefix") String prefix, @WebParam(name="suffix") String suffix);
+
+  /**
+   * Sets the current data structure
+   *
+   * @param str
+   *            the new string of data structure
+   * @param date
+   *            the new date of data structure
+   */
+    void setDataStructure(@WebParam(name = "eltStr") String str, @WebParam(name = "eltDate") Date date);
+  
+  /**
+   * Returns the current data structure
+   *
+   * @return the current data structure
+   */
+  @WebResult(name="currentStructure")
+  WebServiceDataStructure getDataStructure();
 }
