@@ -20,7 +20,7 @@
         <errorEventDefinition errorRef="myError"></errorEventDefinition>
       </boundaryEvent>
       <scriptTask id="scripttask3" name="Script Task" scriptFormat="javascript" activiti:autoStoreVariables="false">
-        <script>println("Exeption in inner caught")</script>
+        <script>print("Exeption in inner caught")</script>
       </scriptTask>
       <sequenceFlow id="flow12" sourceRef="boundaryerror1" targetRef="scripttask3"></sequenceFlow>
       <endEvent id="endevent3" name="End"></endEvent>
@@ -32,7 +32,7 @@
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="parallelgateway2" targetRef="scripttask2"></sequenceFlow>
     <scriptTask id="scripttask1" name="Script Task" scriptFormat="javascript" activiti:autoStoreVariables="false">
-      <script>println("in Script task")</script>
+      <script>print("in Script task")</script>
     </scriptTask>
     <sequenceFlow id="flow9" sourceRef="parallelgateway1" targetRef="scripttask1"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="scripttask1" targetRef="parallelgateway2"></sequenceFlow>

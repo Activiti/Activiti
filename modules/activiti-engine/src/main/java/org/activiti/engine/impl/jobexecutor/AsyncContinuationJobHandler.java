@@ -20,6 +20,7 @@ import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 /**
  * 
  * @author Daniel Meyer
+ * @author Saeid Mirzaei
  */
 public class AsyncContinuationJobHandler implements JobHandler {
   
@@ -32,7 +33,7 @@ public class AsyncContinuationJobHandler implements JobHandler {
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     // if  retries are exhausted, goto define error code in ClassDelegate (for now, later on it can be checked in other activities)
     if (job.getRetries() == 1) 
-      execution.setAsyncRetryFailErrorCode(execution.getActivity().getFailedJobRetryErrorCode());
+    	execution.getActivity().setFailedJobRetryExhausted(true);
     // ATM only AtomicOperationTransitionCreateScope can be performed asynchronously 
     AtomicOperation atomicOperation = AtomicOperation.TRANSITION_CREATE_SCOPE;
     commandContext.performOperation(atomicOperation, execution);

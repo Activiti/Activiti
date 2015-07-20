@@ -49,6 +49,7 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Saeid Mirzaei
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
   
@@ -136,10 +137,8 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
       } catch (Exception e) {
-        String asyncFailRetryErrorCode = ((ExecutionEntity) execution).getAsyncRetryFailErrorCode();
-        // this was last try, if an errorcode is defined, follow it
-        if (StringUtils.isNotEmpty(asyncFailRetryErrorCode))
-          ErrorPropagation.propagateError(asyncFailRetryErrorCode, execution);
+    	  if (((ExecutionEntity) execution).getActivity().isFailedJobRetryExhausted())
+             ErrorPropagation.propagateError(((ExecutionEntity) execution).getActivity().getFailedJobRetryErrorCode(), execution);
         else
             throw e;
           

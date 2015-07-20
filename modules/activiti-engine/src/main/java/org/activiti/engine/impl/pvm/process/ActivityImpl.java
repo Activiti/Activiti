@@ -27,6 +27,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 
 /**
  * @author Tom Baeyens
+ * @author Saeid Mirzaei
  */
 public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds {
 
@@ -42,8 +43,17 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   protected boolean isExclusive;
   protected String failedJobRetryTimeCycleValue;
   protected String failedJobRetryErrorCode;
+  protected boolean failedJobRetryExhausted;
   
-  // Graphical information
+  public boolean isFailedJobRetryExhausted() {
+	return failedJobRetryExhausted;
+  }
+
+  public void setFailedJobRetryExhausted(boolean failedJobRetryExhausted) {
+	this.failedJobRetryExhausted = failedJobRetryExhausted;
+  }
+
+// Graphical information
   protected int x = -1;
   protected int y = -1;
   protected int width = -1;

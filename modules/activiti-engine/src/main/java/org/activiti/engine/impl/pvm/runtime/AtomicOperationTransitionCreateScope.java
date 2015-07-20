@@ -36,8 +36,6 @@ public class AtomicOperationTransitionCreateScope implements AtomicOperation {
     if (activity.isScope()) {
       propagatingExecution = (InterpretableExecution) execution.createExecution();
       
-      if (execution instanceof ExecutionEntity)
-        ((ExecutionEntity) propagatingExecution).setAsyncRetryFailErrorCode(((ExecutionEntity) execution).getAsyncRetryFailErrorCode());
       propagatingExecution.setActivity(activity);
       
       propagatingExecution.setTransition(execution.getTransition());
