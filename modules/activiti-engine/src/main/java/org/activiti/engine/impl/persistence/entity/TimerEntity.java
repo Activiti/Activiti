@@ -55,15 +55,16 @@ public class TimerEntity extends JobEntity {
   }
 
   public TimerEntity(TimerDeclarationImpl timerDeclaration) {
+    this();
     jobHandlerType = timerDeclaration.getJobHandlerType();
     jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
     isExclusive = timerDeclaration.isExclusive();
     repeat = timerDeclaration.getRepeat();
     retries = timerDeclaration.getRetries();
-    this.jobType = "timer";
   }
 
   public TimerEntity(String jobHandlerType, String jobHandlerConfiguration, boolean isExclusive, int retries) {
+    this();
     this.jobHandlerType = jobHandlerType;
     this.jobHandlerConfiguration = jobHandlerConfiguration;
     this.isExclusive = isExclusive;
@@ -116,7 +117,6 @@ public class TimerEntity extends JobEntity {
         Date newTimer = calculateNextTimer();
         if (newTimer != null && isValidTime(newTimer)) {
           TimerEntity te = new TimerEntity(this);
-          System.out.println("-------AAP--->" + newTimer);
           te.setDuedate(newTimer);
           Context.getCommandContext().getJobEntityManager().schedule(te);
         }

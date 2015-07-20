@@ -30,7 +30,7 @@
   </insert>
 
   <insert id="bulkInsertExecution" parameterType="java.util.List">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
     values 
       <foreach collection="list" item="execution" index="index" separator=",">
         (#{execution.id ,jdbcType=VARCHAR},
@@ -45,6 +45,7 @@
          #{execution.isEventScope ,jdbcType=BOOLEAN},
          #{execution.parentId, jdbcType=VARCHAR},
          #{execution.superExecutionId, jdbcType=VARCHAR},
+         #{execution.rootProcessInstanceId, jdbcType=VARCHAR},
          #{execution.suspensionState, jdbcType=INTEGER},
          #{execution.cachedEntityState, jdbcType=INTEGER},
          #{execution.tenantId, jdbcType=VARCHAR},
@@ -56,7 +57,7 @@
     insert all 
       <foreach collection="list" item="execution" index="index">
         into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_,
-        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_) values 
+        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_) values 
             (#{execution.id ,jdbcType=VARCHAR},
              1,
              #{execution.processInstanceId, jdbcType=VARCHAR},
@@ -69,6 +70,7 @@
              #{execution.isEventScope ,jdbcType=BOOLEAN},
              #{execution.parentId, jdbcType=VARCHAR},
              #{execution.superExecutionId, jdbcType=VARCHAR},
+             #{execution.rootProcessInstanceId, jdbcType=VARCHAR},
              #{execution.suspensionState, jdbcType=INTEGER},
              #{execution.cachedEntityState, jdbcType=INTEGER},
              #{execution.tenantId, jdbcType=VARCHAR},
