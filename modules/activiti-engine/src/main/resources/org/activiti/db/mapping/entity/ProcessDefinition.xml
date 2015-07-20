@@ -24,6 +24,50 @@
             #{tenantId, jdbcType=VARCHAR},
             #{engineVersion, jdbcType=VARCHAR})
   </insert>
+
+  <insert id="bulkInsertProcessDefinition" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_)
+    VALUES 
+      <foreach collection="list" item="processDefinition" index="index" separator=","> 
+        (#{processDefinition.id, jdbcType=VARCHAR},
+         1,
+         #{processDefinition.category, jdbcType=VARCHAR},
+         #{processDefinition.name, jdbcType=VARCHAR},
+         #{processDefinition.key, jdbcType=VARCHAR}, 
+         #{processDefinition.version, jdbcType=INTEGER},
+         #{processDefinition.deploymentId, jdbcType=VARCHAR},
+         #{processDefinition.resourceName, jdbcType=VARCHAR},
+         #{processDefinition.diagramResourceName, jdbcType=VARCHAR},
+         #{processDefinition.description, jdbcType=VARCHAR},
+         #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
+         #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
+         #{processDefinition.suspensionState, jdbcType=INTEGER},
+         #{processDefinition.tenantId, jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertProcessDefinition_oracle" parameterType="java.util.List">
+    INSERT ALL 
+    <foreach collection="list" item="processDefinition" index="index"> 
+      INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_,
+      DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_) VALUES 
+        (#{processDefinition.id, jdbcType=VARCHAR},
+         1,
+         #{processDefinition.category, jdbcType=VARCHAR},
+         #{processDefinition.name, jdbcType=VARCHAR},
+         #{processDefinition.key, jdbcType=VARCHAR}, 
+         #{processDefinition.version, jdbcType=INTEGER},
+         #{processDefinition.deploymentId, jdbcType=VARCHAR},
+         #{processDefinition.resourceName, jdbcType=VARCHAR},
+         #{processDefinition.diagramResourceName, jdbcType=VARCHAR},
+         #{processDefinition.description, jdbcType=VARCHAR},
+         #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
+         #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
+         #{processDefinition.suspensionState, jdbcType=INTEGER},
+         #{processDefinition.tenantId, jdbcType=VARCHAR})
+    </foreach>
+    SELECT * FROM dual;
+  </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
 

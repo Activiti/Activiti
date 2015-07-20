@@ -37,6 +37,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   protected String name;
   protected VariableType type;
+  protected String typeName;
 
   protected String processInstanceId;
   protected String executionId;
@@ -73,6 +74,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     VariableInstanceEntity variableInstance = new VariableInstanceEntity();
     variableInstance.name = name;
     variableInstance.type = type;
+    variableInstance.typeName = type.getTypeName();
     variableInstance.setValue(value);
     return variableInstance;
   }
@@ -163,6 +165,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   public void setValue(Object value) {
     type.setValue(value, this);
+    typeName = type.getTypeName();
     cachedValue = value;
   }
 
@@ -187,6 +190,13 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   public String getName() {
     return name;
+  }
+
+  public String getTypeName() {
+    return typeName;
+  }
+  public void setTypeName(String typeName) {
+    this.typeName = typeName;
   }
 
   public VariableType getType() {

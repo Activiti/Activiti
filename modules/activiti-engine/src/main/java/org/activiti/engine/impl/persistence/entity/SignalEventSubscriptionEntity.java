@@ -31,7 +31,7 @@ public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
   public SignalEventSubscriptionEntity() {
     eventType = "signal";
   }
-
+  
   @Override
   public void setConfiguration(String configuration) {
     if (configuration != null && configuration.contains("{\"scope\":")) {

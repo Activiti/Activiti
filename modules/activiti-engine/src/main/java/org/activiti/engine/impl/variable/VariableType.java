@@ -20,8 +20,8 @@ public interface VariableType {
   /**
    * name of variable type (limited to 100 characters length)
    */
-  String getTypeName();
-
+  public String getTypeName();
+  
   /**
    * <p>
    * Indicates if this variable type supports caching.

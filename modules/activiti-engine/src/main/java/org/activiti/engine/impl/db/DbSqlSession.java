@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -767,24 +768,49 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushInserts() {
-    for (PersistentObject insertedObject : insertedObjects) {
-      String insertStatement = dbSqlSessionFactory.getInsertStatement(insertedObject);
-      insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
-
-      if (insertStatement == null) {
-        throw new ActivitiException("no insert statement for " + insertedObject.getClass() + " in the ibatis mapping files");
+    LinkedHashMap<Class<? extends PersistentObject>, List<PersistentObject>> bulkInsertHandledMap =
+        new LinkedHashMap<Class<? extends PersistentObject>, List<PersistentObject>>();
+    for (PersistentObject insertedObject: insertedObjects) {
+      if (!bulkInsertHandledMap.containsKey(insertedObject.getClass())) {
+        bulkInsertHandledMap.put(insertedObject.getClass(), new ArrayList<PersistentObject>());
       }
-
-      log.debug("inserting: {}", insertedObject);
-      sqlSession.insert(insertStatement, insertedObject);
-
-      // See http://jira.codehaus.org/browse/ACT-1290
-      if (insertedObject instanceof HasRevision) {
-        ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
+      bulkInsertHandledMap.get(insertedObject.getClass()).add(insertedObject);
+    }
+    log.info("Insert queries collection formed: " + bulkInsertHandledMap);
+    // First process for entities in order of dependency requirement
+    for (EntityDependencyOrder entityName : EntityDependencyOrder.values()) {
+      if (!bulkInsertHandledMap.containsKey(entityName.getClazz())) {
+        continue;
       }
+      flushBulkInserts(bulkInsertHandledMap.get(entityName.getClazz()), entityName.getClazz());
+      bulkInsertHandledMap.remove(entityName.getClazz());
+    }
+    // Next, process for all remaining entities
+    for (Class<? extends PersistentObject> clazz : bulkInsertHandledMap.keySet()) {
+      flushBulkInserts(bulkInsertHandledMap.get(clazz), clazz);
     }
     insertedObjects.clear();
   }
+
+  private void flushBulkInserts(List<PersistentObject> variableList, Class<? extends PersistentObject> clazz) {
+    String insertStatement = dbSqlSessionFactory.getBulkInsertStatement(clazz);
+    insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
+    log.info("Insert statement to be executed:" + insertStatement);
+
+    if (insertStatement==null) {
+      throw new ActivitiException("no insert statement for "+variableList.get(0).getClass()+" in the ibatis mapping files");
+    }
+
+    log.info("inserting: {}", variableList);
+    sqlSession.insert(insertStatement, variableList);
+
+    if (variableList.get(0) instanceof HasRevision) {
+      for (PersistentObject insertedObject: variableList) {
+        ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
+      }
+    }
+  }
+
 
   protected void flushUpdates(List<PersistentObject> updatedObjects) {
     for (PersistentObject updatedObject : updatedObjects) {

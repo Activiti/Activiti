@@ -71,6 +71,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
   protected String exceptionMessage;
 
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  protected String jobType;
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;
@@ -275,7 +276,12 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
   public void setExceptionMessage(String exceptionMessage) {
     this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
   }
-
+  public String getJobType() {
+    return jobType;
+  }
+  public void setJobType(String jobType) {
+    this.jobType = jobType;
+  }
   public String getTenantId() {
     return tenantId;
   }
