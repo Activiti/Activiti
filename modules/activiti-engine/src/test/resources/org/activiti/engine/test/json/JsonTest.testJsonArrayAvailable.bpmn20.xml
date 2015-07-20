@@ -12,9 +12,9 @@
     <sequenceFlow id="flow2" sourceRef="userTask" targetRef="script1" />
     <scriptTask id="script1" scriptFormat="JavaScript">
         <script><![CDATA[var jsonArr = execution.getVariable("myJsonArr");
-println('JSON:'+jsonArr);
-println('  var:'+jsonArr.get(0));
-println('  var2:'+jsonArr.get(1));
+java.lang.System.out.println('JSON:'+jsonArr);
+java.lang.System.out.println('  var:'+jsonArr.get(0));
+java.lang.System.out.println('  var2:'+jsonArr.get(1));
         ]]></script>
     </scriptTask>
     <sequenceFlow sourceRef="script1" targetRef="haveVar2"/>
