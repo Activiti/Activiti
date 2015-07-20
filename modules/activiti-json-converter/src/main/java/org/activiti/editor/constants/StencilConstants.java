@@ -26,6 +26,7 @@ public interface StencilConstants {
 
   final String STENCIL_EVENT_END_NONE = "EndNoneEvent";
   final String STENCIL_EVENT_END_ERROR = "EndErrorEvent";
+  final String STENCIL_EVENT_END_CANCEL = "EndCancelEvent";
 
   final String STENCIL_SUB_PROCESS = "SubProcess";
   final String STENCIL_EVENT_SUB_PROCESS = "EventSubProcess";

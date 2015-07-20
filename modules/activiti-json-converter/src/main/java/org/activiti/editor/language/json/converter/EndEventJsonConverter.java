@@ -20,6 +20,7 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.TerminateEventDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,7 +30,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EndEventJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
 
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
@@ -38,6 +40,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
   public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_EVENT_END_NONE, EndEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_END_ERROR, EndEventJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_EVENT_END_CANCEL, EndEventJsonConverter.class);
   }
 
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -54,6 +57,8 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     EventDefinition eventDefinition = eventDefinitions.get(0);
     if (eventDefinition instanceof ErrorEventDefinition) {
       return STENCIL_EVENT_END_ERROR;
+    } else if (eventDefinition instanceof TerminateEventDefinition) {
+      return STENCIL_EVENT_END_CANCEL;
     } else {
       return STENCIL_EVENT_END_NONE;
     }
@@ -69,6 +74,9 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_END_ERROR.equals(stencilId)) {
       convertJsonToErrorDefinition(elementNode, endEvent);
+    } else if (STENCIL_EVENT_END_CANCEL.equals(stencilId)) {
+        TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+        endEvent.getEventDefinitions().add(eventDefinition);
     }
     return endEvent;
   }

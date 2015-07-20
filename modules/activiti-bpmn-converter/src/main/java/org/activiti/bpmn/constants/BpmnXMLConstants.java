@@ -55,6 +55,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_FLOWNODE_REF = "flowNodeRef";
   public static final String ATTRIBUTE_PROCESS_REF = "processRef";
   public static final String ELEMENT_RESOURCE = "resource";
+  
   public static final String ELEMENT_PROCESS = "process";
   public static final String ATTRIBUTE_PROCESS_EXECUTABLE = "isExecutable";
   public static final String ELEMENT_POTENTIAL_STARTER = "potentialStarter";
@@ -285,6 +286,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_RESOURCE_ASSIGNMENT = "resourceAssignmentExpression";
   public static final String ELEMENT_FORMAL_EXPRESSION = "formalExpression";
   public static final String ELEMENT_RESOURCE_REF = "resourceRef";
+  
   public static final String FAILED_JOB_RETRY_TIME_CYCLE = "failedJobRetryTimeCycle";
   public static final String MAP_EXCEPTION = "mapException";
   public static final String MAP_EXCEPTION_ERRORCODE = "errorCode";
