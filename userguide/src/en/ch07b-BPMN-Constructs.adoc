@@ -832,14 +832,14 @@ Note that the _errorRef_ must comply with the BPMN 2.0 schema, and must be a val
 [[bpmnCancelEndEvent]]
 
 
-==== Terminate End Event
+==== Cancel End Event
 
 <<experimental, [EXPERIMENTAL]>>[[bpmnCancelEndEventDescription]]
 
 
 ===== Description
 
-The terminate end event can only be used in combination with a bpmn transaction subprocess. When the terminate end event is reached, a terminate event is thrown which must be caught by a cancel boundary event. The cancel boundary event then cancels the transaction and triggers compensation.
+The cancel end event can only be used in combination with a bpmn transaction subprocess. When the cancel end event is reached, a cancel event is thrown which must be caught by a cancel boundary event. The cancel boundary event then cancels the transaction and triggers compensation.
 
 
 [[bpmnCancelEndEventGraphicalNotation]]
@@ -847,7 +847,7 @@ The terminate end event can only be used in combination with a bpmn transaction 
 
 ===== Graphical notation
 
-A terminate end event visualized as a typical end event (circle with thick outline), with the cancel icon inside. The cancel icon is completely black, to indicate the throwing semantics.
+A cancel end event visualized as a typical end event (circle with thick outline), with the cancel icon inside. The cancel icon is completely black, to indicate the throwing semantics.
 
 image::images/bpmn.cancel.end.event.png[align="center"]
 
@@ -859,12 +859,12 @@ image::images/bpmn.cancel.end.event.png[align="center"]
 ===== XML representation
 
 
-A terminate end event is represented as an end event, with a _cancelEventDefinition_ child element.
+A cancel end event is represented as an end event, with a _cancelEventDefinition_ child element.
 
 [source,xml,linenums]
 ----
-<endEvent id="myTerminateEndEvent">
-  <terminateEventDefinition />
+<endEvent id="myCancelEndEvent">
+  <cancelEventDefinition />
 </endEvent>
 ----
 
