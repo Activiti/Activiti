@@ -61,7 +61,7 @@ import com.sun.tools.xjc.api.XJC;
  */
 public class CxfWSDLImporter implements XMLImporter {
     
-  private static final String JAXB_BINDINGS_RESOURCE = "activiti-bindings.xjc";
+    protected static final String JAXB_BINDINGS_RESOURCE = "activiti-bindings.xjc";
 
   protected Map<String, WSService> wsServices = new HashMap<String, WSService>();
   protected Map<String, WSOperation> wsOperations = new HashMap<String, WSOperation>();
