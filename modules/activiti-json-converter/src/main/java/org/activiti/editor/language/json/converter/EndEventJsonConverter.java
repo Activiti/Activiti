@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.TerminateEventDefinition;
+import org.activiti.bpmn.model.CancelEventDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -57,7 +57,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     EventDefinition eventDefinition = eventDefinitions.get(0);
     if (eventDefinition instanceof ErrorEventDefinition) {
       return STENCIL_EVENT_END_ERROR;
-    } else if (eventDefinition instanceof TerminateEventDefinition) {
+    } else if (eventDefinition instanceof CancelEventDefinition) {
       return STENCIL_EVENT_END_CANCEL;
     } else {
       return STENCIL_EVENT_END_NONE;
@@ -75,7 +75,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     if (STENCIL_EVENT_END_ERROR.equals(stencilId)) {
       convertJsonToErrorDefinition(elementNode, endEvent);
     } else if (STENCIL_EVENT_END_CANCEL.equals(stencilId)) {
-        TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+        CancelEventDefinition eventDefinition = new CancelEventDefinition();
         endEvent.getEventDefinitions().add(eventDefinition);
     }
     return endEvent;
