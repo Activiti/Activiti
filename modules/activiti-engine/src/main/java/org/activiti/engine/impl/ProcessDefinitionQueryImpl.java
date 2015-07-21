@@ -37,6 +37,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   private static final long serialVersionUID = 1L;
   protected String id;
+  protected Set<String> ids;
   protected String category;
   protected String categoryLike;
   protected String categoryNotEquals;
@@ -75,7 +76,13 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     this.id = processDefinitionId;
     return this;
   }
-
+  
+  @Override
+  public ProcessDefinitionQuery processDefinitionIds(Set<String> processDefinitionIds) {
+  	this.ids = processDefinitionIds;
+  	return this;
+  }
+  
   public ProcessDefinitionQueryImpl processDefinitionCategory(String category) {
     if (category == null) {
       throw new ActivitiIllegalArgumentException("category is null");
