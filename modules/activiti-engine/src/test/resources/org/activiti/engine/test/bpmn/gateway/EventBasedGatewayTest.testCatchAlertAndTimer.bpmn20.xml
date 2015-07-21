@@ -26,7 +26,7 @@
 		
 		<intermediateCatchEvent id="timerEvent" name="Alert">
 			<timerEventDefinition>
-				<timeDuration>PT0S</timeDuration>
+				<timeDuration>PT10S</timeDuration>
 			</timerEventDefinition>		
 		</intermediateCatchEvent>
 	

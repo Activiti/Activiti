@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -190,6 +191,18 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     } catch (ActivitiException ex) {
     }
 
+  }
+  
+  @Deployment
+  public void testAsyncExclusiveGateway() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncExclusive", CollectionUtil.singletonMap("input", 1));
+    
+    Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(job);
+    
+    managementService.executeJob(job.getId());
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("Input is one", task.getName());
   }
 
 }
