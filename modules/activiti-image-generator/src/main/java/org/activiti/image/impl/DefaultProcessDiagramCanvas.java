@@ -256,6 +256,7 @@ public class DefaultProcessDiagramCanvas {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       ImageIO.write(processDiagram, imageType, out);
+      
     } catch (IOException e) {
       throw new ActivitiImageException("Error while generating process image", e);
     } finally {
@@ -1147,7 +1148,7 @@ public class DefaultProcessDiagramCanvas {
     	  Rectangle2D bb = tl.getBounds();
     	  double tX = graphicInfo.getX();
     	  if (centered) {
-    	    tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
+    	  	tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
     	  }
     	  tl.draw(g, (float) tX, textY);
     	  textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
