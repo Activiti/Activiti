@@ -776,7 +776,7 @@ public class DbSqlSession implements Session {
       }
       bulkInsertHandledMap.get(insertedObject.getClass()).add(insertedObject);
     }
-    log.info("Insert queries collection formed: " + bulkInsertHandledMap);
+    log.debug("Insert queries collection formed: " + bulkInsertHandledMap);
     // First process for entities in order of dependency requirement
     for (EntityDependencyOrder entityName : EntityDependencyOrder.values()) {
       if (!bulkInsertHandledMap.containsKey(entityName.getClazz())) {
@@ -792,20 +792,20 @@ public class DbSqlSession implements Session {
     insertedObjects.clear();
   }
 
-  private void flushBulkInserts(List<PersistentObject> variableList, Class<? extends PersistentObject> clazz) {
+  private void flushBulkInserts(List<PersistentObject> persistentObjects, Class<? extends PersistentObject> clazz) {
     String insertStatement = dbSqlSessionFactory.getBulkInsertStatement(clazz);
     insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
-    log.info("Insert statement to be executed:" + insertStatement);
+    log.debug("Insert statement to be executed:" + insertStatement);
 
     if (insertStatement==null) {
-      throw new ActivitiException("no insert statement for "+variableList.get(0).getClass()+" in the ibatis mapping files");
+      throw new ActivitiException("no insert statement for "+persistentObjects.get(0).getClass()+" in the ibatis mapping files");
     }
 
-    log.info("inserting: {}", variableList);
-    sqlSession.insert(insertStatement, variableList);
+    log.debug("inserting: {}", persistentObjects);
+    sqlSession.insert(insertStatement, persistentObjects);
 
-    if (variableList.get(0) instanceof HasRevision) {
-      for (PersistentObject insertedObject: variableList) {
+    if (persistentObjects.get(0) instanceof HasRevision) {
+      for (PersistentObject insertedObject: persistentObjects) {
         ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
       }
     }

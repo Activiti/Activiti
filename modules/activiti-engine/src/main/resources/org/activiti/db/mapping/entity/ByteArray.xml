@@ -51,7 +51,7 @@
           #{byteArray.bytes, jdbcType=BLOB}, 
           #{byteArray.deploymentId, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- BYTE ARRAY UPDATE -->

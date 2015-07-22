@@ -54,7 +54,7 @@
            #{historicIdentityLink.taskId, jdbcType=VARCHAR},
            #{historicIdentityLink.processInstanceId, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- HISTORIC IDENTITY LINK DELETE -->

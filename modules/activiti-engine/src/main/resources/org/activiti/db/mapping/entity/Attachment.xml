@@ -71,7 +71,7 @@
            #{attachment.contentId ,jdbcType=VARCHAR},
            #{attachment.time ,jdbcType=TIMESTAMP})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- ATTACHMENT UPDATE -->

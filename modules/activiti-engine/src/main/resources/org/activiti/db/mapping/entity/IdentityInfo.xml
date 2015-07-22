@@ -48,7 +48,7 @@
            #{identityInfo.passwordBytes ,jdbcType=BLOB},
            #{identityInfo.parentId ,jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
    <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">

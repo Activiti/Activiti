@@ -34,7 +34,7 @@
          #{resource.deploymentId, jdbcType=VARCHAR},
          #{resource.generated, jdbcType=BOOLEAN})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- RESOURCE UPDATE -->
