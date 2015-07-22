@@ -81,7 +81,7 @@
            #{historicVariable.createTime, jdbcType=TIMESTAMP},
            #{historicVariable.lastUpdatedTime, jdbcType=TIMESTAMP})
        </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- HISTORIC PROCESS VARIABLE UPDATE -->

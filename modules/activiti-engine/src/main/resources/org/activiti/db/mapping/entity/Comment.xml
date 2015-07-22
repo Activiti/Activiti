@@ -76,7 +76,7 @@
            #{comment.message ,jdbcType=VARCHAR},
            #{comment.fullMessageBytes ,jdbcType=BLOB})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <insert id="bulkInsertComment_postgres" parameterType="java.util.List">

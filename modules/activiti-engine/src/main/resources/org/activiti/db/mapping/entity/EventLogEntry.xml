@@ -112,7 +112,7 @@
              #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
              #{eventLogEntry.isProcessed, jdbcType=INTEGER})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- RESULTMAP -->

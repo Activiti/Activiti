@@ -68,7 +68,7 @@
           #{variable.textValue, jdbcType=VARCHAR},
           #{variable.textValue2, jdbcType=VARCHAR}) 
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- VARIABLE INSTANCE UPDATE -->
