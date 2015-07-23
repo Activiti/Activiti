@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -229,16 +230,18 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
     
-    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
-    assertEquals(3, variables.size());
-    
-    Object historyValue = null;
-    for (HistoricVariableInstance variable : variables) {
-      if ("variableSetInExecutionListener".equals(variable.getVariableName())) {
-        historyValue = variable.getValue();
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+      assertEquals(3, variables.size());
+      
+      Object historyValue = null;
+      for (HistoricVariableInstance variable : variables) {
+        if ("variableSetInExecutionListener".equals(variable.getVariableName())) {
+          historyValue = variable.getValue();
+        }
       }
+      assertEquals("firstValue", historyValue);
     }
-    assertEquals("firstValue", historyValue);
   }
 
   @Deployment
