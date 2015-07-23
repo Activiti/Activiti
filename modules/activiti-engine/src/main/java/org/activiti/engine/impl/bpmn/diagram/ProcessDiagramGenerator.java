@@ -427,9 +427,9 @@ public class ProcessDiagramGenerator {
             GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
             if (labelGraphicInfo != null) {
               processDiagramCanvas.drawLabel(sequenceFlow.getName(),
-                      (int) labelGraphicInfo.getX()-15,
-                      (int) labelGraphicInfo.getY()-15,
-                      (int) labelGraphicInfo.getWidth()*2,
+                      (int) labelGraphicInfo.getX(),
+                      (int) labelGraphicInfo.getY(),
+                      (int) labelGraphicInfo.getWidth(),
                       (int) labelGraphicInfo.getHeight());
               drawedLabel = true;
             }
