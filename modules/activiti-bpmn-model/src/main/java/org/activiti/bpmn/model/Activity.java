@@ -19,9 +19,7 @@ import java.util.List;
  * @author Tijs Rademakers
  */
 public abstract class Activity extends FlowNode {
-
-  protected boolean asynchronous;
-  protected boolean notExclusive;
+ 
   protected String defaultFlow;
   protected boolean forCompensation;
   protected MultiInstanceLoopCharacteristics loopCharacteristics;
@@ -32,14 +30,6 @@ public abstract class Activity extends FlowNode {
   protected String failedJobRetryTimeCycleValue;
   protected List<MapExceptionEntry> mapExceptions = new ArrayList<MapExceptionEntry>();
 
-  public boolean isAsynchronous() {
-    return asynchronous;
-  }
-
-  public void setAsynchronous(boolean asynchronous) {
-    this.asynchronous = asynchronous;
-  }
-
   public String getFailedJobRetryTimeCycleValue() {
     return failedJobRetryTimeCycleValue;
   }
@@ -47,15 +37,6 @@ public abstract class Activity extends FlowNode {
   public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
     this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
-
-  public boolean isNotExclusive() {
-    return notExclusive;
-  }
-
-  public void setNotExclusive(boolean notExclusive) {
-    this.notExclusive = notExclusive;
-  }
-
   public boolean isForCompensation() {
     return forCompensation;
   }
@@ -114,9 +95,7 @@ public abstract class Activity extends FlowNode {
 
   public void setValues(Activity otherActivity) {
     super.setValues(otherActivity);
-    setAsynchronous(otherActivity.isAsynchronous());
     setFailedJobRetryTimeCycleValue(otherActivity.getFailedJobRetryTimeCycleValue());
-    setNotExclusive(otherActivity.isNotExclusive());
     setDefaultFlow(otherActivity.getDefaultFlow());
     setForCompensation(otherActivity.isForCompensation());
     if (otherActivity.getLoopCharacteristics() != null) {

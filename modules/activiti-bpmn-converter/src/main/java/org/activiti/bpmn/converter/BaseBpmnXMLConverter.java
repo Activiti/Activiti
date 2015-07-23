@@ -99,28 +99,29 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       FlowElement currentFlowElement = (FlowElement) parsedElement;
       currentFlowElement.setId(elementId);
       currentFlowElement.setName(elementName);
-
-      if (currentFlowElement instanceof Activity) {
-
-        Activity activity = (Activity) currentFlowElement;
-        activity.setAsynchronous(async);
-        activity.setNotExclusive(notExclusive);
-        activity.setForCompensation(isForCompensation);
-        if (StringUtils.isNotEmpty(defaultFlow)) {
-          activity.setDefaultFlow(defaultFlow);
+      
+      if (currentFlowElement instanceof FlowNode) {
+        FlowNode flowNode = (FlowNode) currentFlowElement;
+        flowNode.setAsynchronous(async);
+        flowNode.setNotExclusive(notExclusive);
+        
+        if (currentFlowElement instanceof Activity) {
+          
+          Activity activity = (Activity) currentFlowElement;
+          activity.setForCompensation(isForCompensation);
+          if (StringUtils.isNotEmpty(defaultFlow)) {
+            activity.setDefaultFlow(defaultFlow);
+          }
+        }
+        
+        if (currentFlowElement instanceof Gateway) {
+          Gateway gateway = (Gateway) currentFlowElement;
+          if (StringUtils.isNotEmpty(defaultFlow)) {
+            gateway.setDefaultFlow(defaultFlow);
+          }
         }
       }
-
-      if (currentFlowElement instanceof Gateway) {
-        Gateway gateway = (Gateway) currentFlowElement;
-        if (StringUtils.isNotEmpty(defaultFlow)) {
-          gateway.setDefaultFlow(defaultFlow);
-        }
-
-        gateway.setAsynchronous(async);
-        gateway.setNotExclusive(notExclusive);
-      }
-
+      
       if (currentFlowElement instanceof DataObject) {
         if (!activeSubProcessList.isEmpty()) {
           SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
@@ -131,6 +132,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       }
 
       if (!activeSubProcessList.isEmpty()) {
+        
         SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
         subProcess.addFlowElement(currentFlowElement);
         if (currentFlowElement instanceof FlowNode) {
@@ -150,38 +152,36 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     if (baseElement instanceof FlowElement) {
       writeDefaultAttribute(ATTRIBUTE_NAME, ((FlowElement) baseElement).getName(), xtw);
     }
-
-    if (baseElement instanceof Activity) {
-      final Activity activity = (Activity) baseElement;
-      if (activity.isAsynchronous()) {
+    
+    if (baseElement instanceof FlowNode) {
+      final FlowNode flowNode = (FlowNode) baseElement;
+      if (flowNode.isAsynchronous()) {
         writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
-        if (activity.isNotExclusive()) {
+        if (flowNode.isNotExclusive()) {
           writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_EXCLUSIVE, ATTRIBUTE_VALUE_FALSE, xtw);
         }
       }
-      if (activity.isForCompensation()) {
-        writeDefaultAttribute(ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION, ATTRIBUTE_VALUE_TRUE, xtw);
-      }
-      if (StringUtils.isNotEmpty(activity.getDefaultFlow())) {
-        FlowElement defaultFlowElement = model.getFlowElement(activity.getDefaultFlow());
-        if (defaultFlowElement instanceof SequenceFlow) {
-          writeDefaultAttribute(ATTRIBUTE_DEFAULT, activity.getDefaultFlow(), xtw);
+      
+      if (baseElement instanceof Activity) {
+        final Activity activity = (Activity) baseElement;
+        if (activity.isForCompensation()) {
+          writeDefaultAttribute(ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION, ATTRIBUTE_VALUE_TRUE, xtw);
+        }
+        if (StringUtils.isNotEmpty(activity.getDefaultFlow())) {
+          FlowElement defaultFlowElement = model.getFlowElement(activity.getDefaultFlow());
+          if (defaultFlowElement instanceof SequenceFlow) {
+            writeDefaultAttribute(ATTRIBUTE_DEFAULT, activity.getDefaultFlow(), xtw);
+          }
         }
       }
-    }
-
-    if (baseElement instanceof Gateway) {
-      final Gateway gateway = (Gateway) baseElement;
-      if (gateway.isAsynchronous()) {
-        writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
-        if (gateway.isNotExclusive()) {
-          writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_EXCLUSIVE, ATTRIBUTE_VALUE_FALSE, xtw);
-        }
-      }
-      if (StringUtils.isNotEmpty(gateway.getDefaultFlow())) {
-        FlowElement defaultFlowElement = model.getFlowElement(gateway.getDefaultFlow());
-        if (defaultFlowElement instanceof SequenceFlow) {
-          writeDefaultAttribute(ATTRIBUTE_DEFAULT, gateway.getDefaultFlow(), xtw);
+      
+      if (baseElement instanceof Gateway) {
+        final Gateway gateway = (Gateway) baseElement;
+        if (StringUtils.isNotEmpty(gateway.getDefaultFlow())) {
+          FlowElement defaultFlowElement = model.getFlowElement(gateway.getDefaultFlow());
+          if (defaultFlowElement instanceof SequenceFlow) {
+            writeDefaultAttribute(ATTRIBUTE_DEFAULT, gateway.getDefaultFlow(), xtw);
+          }
         }
       }
     }

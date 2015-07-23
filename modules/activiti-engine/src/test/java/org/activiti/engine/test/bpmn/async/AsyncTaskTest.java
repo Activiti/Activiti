@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.async;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -209,6 +210,35 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
     // the job is done
     assertEquals(0, managementService.createJobQuery().count());
+  }
+  
+  @Deployment
+  public void testAsyncEndEvent() {  
+    // start process 
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncEndEvent");
+    // now there should be one job in the database:
+    assertEquals(1, managementService.createJobQuery().count());
+    
+    Object value = runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
+    assertNull(value);
+    
+    waitForJobExecutorToProcessAllJobs(2000L, 200L);
+    
+    // the job is done
+    assertEquals(0, managementService.createJobQuery().count());
+    
+    assertProcessEnded(processInstance.getId());
+    
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(3, variables.size());
+    
+    Object historyValue = null;
+    for (HistoricVariableInstance variable : variables) {
+      if ("variableSetInExecutionListener".equals(variable.getVariableName())) {
+        historyValue = variable.getValue();
+      }
+    }
+    assertEquals("firstValue", historyValue);
   }
 
   @Deployment

@@ -87,22 +87,9 @@ public class ContinueProcessOperation extends AbstractOperation {
   protected void continueThroughFlowNode(FlowNode flowNode) {
     // See if flowNode is an async activity and schedule as a job if that evaluates to true
     if (!forceSynchronousOperation) {
-      boolean isAsynchronous = false;
-      boolean isExclusive = false;
-      if (flowNode instanceof Activity) {
-        Activity activity = (Activity) flowNode;
-        if (activity.isAsynchronous()) {
-          isAsynchronous = true;
-          isExclusive = !activity.isNotExclusive();
-        }
-      } else if (flowNode instanceof Gateway) {
-        Gateway gateway = (Gateway) flowNode;
-        if (gateway.isAsynchronous()) {
-          isAsynchronous = true;
-          isExclusive = !gateway.isNotExclusive();
-        }
-      }
-
+      boolean isAsynchronous = flowNode.isAsynchronous();
+      boolean isExclusive = flowNode.isExclusive();
+      
       if (isAsynchronous) {
         scheduleJob(isExclusive);
         return;

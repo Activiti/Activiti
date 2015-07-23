@@ -25,11 +25,37 @@ public abstract class FlowNode extends FlowElement {
 
   protected SubProcess subProcess;
 
+  protected boolean asynchronous;
+  protected boolean notExclusive;
+
   protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
   protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
   public FlowNode() {
 
+  }
+
+ public boolean isAsynchronous() {
+    return asynchronous;
+  }
+
+  public void setAsynchronous(boolean asynchronous) {
+    this.asynchronous = asynchronous;
+  }
+  
+  public boolean isExclusive() {
+    return !notExclusive;
+  }
+  
+  public void setExclusive(boolean exclusive) {
+    this.notExclusive = !exclusive;
+  }
+  
+  public boolean isNotExclusive() {
+    return notExclusive;
+  }
+  public void setNotExclusive(boolean notExclusive) {
+    this.notExclusive = notExclusive;
   }
 
   public Object getBehavior() {
@@ -66,5 +92,7 @@ public abstract class FlowNode extends FlowElement {
 
   public void setValues(FlowNode otherNode) {
     super.setValues(otherNode);
+    setAsynchronous(otherNode.isAsynchronous());
+    setNotExclusive(otherNode.isNotExclusive());
   }
 }

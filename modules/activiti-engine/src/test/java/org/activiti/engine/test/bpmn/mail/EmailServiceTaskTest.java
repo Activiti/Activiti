@@ -160,7 +160,6 @@ public class EmailServiceTaskTest extends EmailTestCase {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("gender", "male");
     vars.put("html", "<![CDATA[<html><body>Hello ${gender == 'male' ? 'Mr' : 'Ms' }. <b>Kermit</b><body></html>]]");
-    vars.put("text", "Hello ${gender == 'male' ? 'Mr' : 'Ms' }. Kermit");
     runtimeService.startProcessInstanceByKey("variableTemplatedMail", vars);
 
     List<WiserMessage> messages = wiser.getMessages();

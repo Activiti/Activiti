@@ -18,7 +18,7 @@
         </activiti:field>
         <activiti:field name="htmlVar">
           <activiti:expression>html</activiti:expression>
-        </activiti:field>
+        </activiti:field>  
       </extensionElements>
     </serviceTask>
     <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
