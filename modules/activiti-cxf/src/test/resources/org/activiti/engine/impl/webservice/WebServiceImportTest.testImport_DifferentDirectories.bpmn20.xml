@@ -2,8 +2,8 @@
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
-  targetNamespace="org.activiti.enginge.impl.webservice"
-  xmlns:tns="org.activiti.enginge.impl.webservice"
+  targetNamespace="org.activiti.engine.impl.webservice"
+  xmlns:tns="org.activiti.engine.impl.webservice"
   xmlns:counter="http://webservice.activiti.org/">
 
   <import importType="http://schemas.xmlsoap.org/wsdl/"
@@ -27,7 +27,6 @@
 
   </process>
 
-
   <itemDefinition id="incRequestItem" structureRef="counter:inc" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
   <itemDefinition id="incResponseItem" structureRef="counter:incResponse" /><!-- QName of output element -->
 
@@ -43,6 +42,5 @@
       <outMessageRef>tns:incResponseMessage</outMessageRef>
     </operation>
   </interface>
-
 
 </definitions>
