@@ -408,6 +408,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
   */
   protected int maxLengthStringVariableType = 4000;
+  
+  /**
+   * If set to true, enables bulk insert (grouping sql inserts together).
+   * Default true. For some databases (eg DB2 on Zos: https://activiti.atlassian.net/browse/ACT-4042) needs to be set to false
+   */
+  protected boolean isBulkInsertEnabled = true;
 
   // Backwards compatibility
   protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
@@ -821,6 +827,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
+      dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);;
       addSessionFactory(dbSqlSessionFactory);
 
       addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
@@ -2137,6 +2144,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public boolean isBulkInsertEnabled() {
+    return isBulkInsertEnabled;
+  }
+
+  public void setBulkInsertEnabled(boolean isBulkInsertEnabled) {
+    this.isBulkInsertEnabled = isBulkInsertEnabled;
+  }
   
   
   // Activiti 5

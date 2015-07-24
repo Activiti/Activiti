@@ -131,11 +131,8 @@ public class DbSqlSession implements Session {
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
 
-  protected boolean isOptimizeDeleteOperationsEnabled;
-
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
-    this.isOptimizeDeleteOperationsEnabled = dbSqlSessionFactory.isOptimizeDeleteOperationsEnabled();
     this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession();
   }
 
@@ -679,6 +676,8 @@ public class DbSqlSession implements Session {
   }
 
   protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
+    
+    // TODO: cannot be deleted yet, determines the order of deletion
     
     // TODO: currently only for Execution entities. Needs to be done for all.
     
@@ -1557,14 +1556,6 @@ public class DbSqlSession implements Session {
 
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
-  }
-
-  public boolean isOptimizeDeleteOperationsEnabled() {
-    return isOptimizeDeleteOperationsEnabled;
-  }
-
-  public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
-    this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
   }
 
 }

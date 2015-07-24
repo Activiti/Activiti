@@ -214,8 +214,10 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   protected String databaseCatalog;
   /**
-   * In some situations you want to set the schema to use for table checks / generation if the database metadata doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
-   * https://jira.codehaus.org/browse/ACT-1062
+   * In some situations you want to set the schema to use for table checks /
+   * generation if the database metadata doesn't return that correctly, see
+   * https://activiti.atlassian.net/browse/ACT-1220,
+   * https://activiti.atlassian.net/browse/ACT-1062
    */
   protected String databaseSchema;
   protected SqlSessionFactory sqlSessionFactory;
@@ -229,7 +231,6 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
-  protected boolean isOptimizeDeleteOperationsEnabled;
 
   public Class<?> getSessionType() {
     return DbSqlSession.class;
@@ -309,7 +310,13 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setDatabaseType(String databaseType) {
     this.databaseType = databaseType;
     this.statementMappings = databaseSpecificStatements.get(databaseType);
-    initBulkInsertEnabledMap(databaseType);
+  }
+  
+  public void setBulkInsertEnabled(boolean isBulkInsertEnabled, String databaseType) {
+  	// If false, just keep don't initialize the map. Memory saved.
+  	if (isBulkInsertEnabled) {
+  		initBulkInsertEnabledMap(databaseType);
+  	}
   }
   
   protected void initBulkInsertEnabledMap(String databaseType) {
@@ -326,7 +333,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
   
   public Boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
-  	return bulkInsertableMap.get(persistentObjectClass);
+  	return bulkInsertableMap != null && bulkInsertableMap.get(persistentObjectClass);
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -456,14 +463,6 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   public boolean isTablePrefixIsSchema() {
     return tablePrefixIsSchema;
-  }
-
-  public boolean isOptimizeDeleteOperationsEnabled() {
-    return isOptimizeDeleteOperationsEnabled;
-  }
-
-  public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
-    this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
   }
 
 }
