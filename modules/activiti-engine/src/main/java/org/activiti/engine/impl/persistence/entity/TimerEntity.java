@@ -31,6 +31,7 @@ import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +106,9 @@ public class TimerEntity extends JobEntity {
         if (repeatValue > 0) {
           setNewRepeat(repeatValue);
         }
-        Date newTimer = calculateNextTimer();
+
+        String calendarName = TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration);
+        Date newTimer = calculateNextTimer(calendarName);
         if (newTimer != null && isValidTime(newTimer)) {
           TimerEntity te = new TimerEntity(this);
           te.setDuedate(newTimer);
@@ -132,7 +135,7 @@ public class TimerEntity extends JobEntity {
         String endDateString = null;
 
         BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager()
-                .getBusinessCalendar(CycleBusinessCalendar.NAME);
+                .getBusinessCalendar(getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration)));
 
         VariableScope executionEntity = null;
         if (executionId != null) {
@@ -218,7 +221,7 @@ public class TimerEntity extends JobEntity {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(CycleBusinessCalendar.NAME);
+        .getBusinessCalendar(getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration)));
     return businessCalendar.validateDuedate(repeat , maxIterations, endDate, newTimer);
   }
 
@@ -246,12 +249,24 @@ public class TimerEntity extends JobEntity {
     repeat = repeatBuilder.toString();
   }
 
-  private Date calculateNextTimer() {
+  private Date calculateNextTimer(String calendarName) {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(CycleBusinessCalendar.NAME);
+        .getBusinessCalendar(getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration)));
     return businessCalendar.resolveDuedate(repeat,maxIterations);
+  }
+
+  private String getBusinessCalendarName(String calendarName) {
+    String businessCalendarName = CycleBusinessCalendar.NAME;
+    if (StringUtils.isNotEmpty(calendarName)) {
+      VariableScope execution = NoExecutionVariableScope.getSharedInstance();
+      if (StringUtils.isNotEmpty(this.executionId)) {
+        execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(this.executionId);
+      }
+      businessCalendarName = (String) Context.getProcessEngineConfiguration().getExpressionManager().createExpression(calendarName).getValue(execution);
+    }
+    return businessCalendarName;
   }
 
   public String getRepeat() {

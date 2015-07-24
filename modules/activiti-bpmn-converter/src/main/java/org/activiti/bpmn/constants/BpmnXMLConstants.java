@@ -229,6 +229,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_SIGNAL_REF = "signalRef";
   public static final String ATTRIBUTE_SCOPE = "scope";
   public static final String ELEMENT_EVENT_TIMERDEFINITION = "timerEventDefinition";
+  public static final String ATTRIBUTE_CALENDAR_NAME = "businessCalendarName";
   public static final String ATTRIBUTE_TIMER_DATE = "timeDate";
   public static final String ATTRIBUTE_TIMER_CYCLE = "timeCycle";
   public static final String ATTRIBUTE_END_DATE = "endDate";
