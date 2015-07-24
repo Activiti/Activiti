@@ -126,11 +126,8 @@ public class DbSqlSession implements Session {
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
   
-  protected boolean isOptimizeDeleteOperationsEnabled;
-
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
-    this.isOptimizeDeleteOperationsEnabled = dbSqlSessionFactory.isOptimizeDeleteOperationsEnabled();
     this.sqlSession = dbSqlSessionFactory
       .getSqlSessionFactory()
       .openSession();
@@ -662,71 +659,74 @@ public class DbSqlSession implements Session {
     return removedDeleteOperations;
   }
   
-  /**
-   * Optimizes the given delete operations:
-   * for example, if there are two deletes for two different variables, merges this into
-   * one bulk delete which improves performance
-   */
-  protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
-  	
-  	// No optimization possible for 0 or 1 operations
-  	if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
-  		return deleteOperations;
-  	}
-  	
-  	List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>();
-  	boolean[] checkedIndices = new boolean[deleteOperations.size()];
-  	for (int i=0; i<deleteOperations.size(); i++) {
-  		
-  		if (checkedIndices[i] == true) {
-  			continue;
-  		}
-  		
-  		DeleteOperation deleteOperation = deleteOperations.get(i);
-  		boolean couldOptimize = false;
-  		if (deleteOperation instanceof CheckedDeleteOperation) {
-  			
-  			PersistentObject persistentObject = ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
-  			if (persistentObject instanceof BulkDeleteable) {
-				String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
-				bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
-				if (bulkDeleteStatement != null) {
-					BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
-					
-					// Find all objects of the same type
-					for (int j=0; j<deleteOperations.size(); j++) {
-						DeleteOperation otherDeleteOperation = deleteOperations.get(j);
-						if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
-							PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
-							if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
-	  							if (bulkCheckedDeleteOperation == null) {
-	  								bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(persistentObject.getClass());
-	  								bulkCheckedDeleteOperation.addPersistentObject(persistentObject);
-	  								optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
-	  							}
-	  							couldOptimize = true;
-	  							bulkCheckedDeleteOperation.addPersistentObject(otherPersistentObject);
-	  							checkedIndices[j] = true;
-							} else {
-							    // We may only optimize subsequent delete operations of the same type, to prevent messing up 
-							    // the order of deletes of related entities which may depend on the referenced entity being deleted before
-							    break;
-							}
-						}
-						
-					}
-				}
-  			}
-  		}
-  		
-   		if (!couldOptimize) {
-  			optimizedDeleteOperations.add(deleteOperation);
-  		}
-  		checkedIndices[i]=true;
-  		
-  	}
-  	return optimizedDeleteOperations;
-  }
+//  
+//  [Joram] Put this in comments. Had all kinds of errors.
+//  
+//  /**
+//   * Optimizes the given delete operations:
+//   * for example, if there are two deletes for two different variables, merges this into
+//   * one bulk delete which improves performance
+//   */
+//  protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
+//  	
+//  	// No optimization possible for 0 or 1 operations
+//  	if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
+//  		return deleteOperations;
+//  	}
+//  	
+//  	List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>();
+//  	boolean[] checkedIndices = new boolean[deleteOperations.size()];
+//  	for (int i=0; i<deleteOperations.size(); i++) {
+//  		
+//  		if (checkedIndices[i] == true) {
+//  			continue;
+//  		}
+//  		
+//  		DeleteOperation deleteOperation = deleteOperations.get(i);
+//  		boolean couldOptimize = false;
+//  		if (deleteOperation instanceof CheckedDeleteOperation) {
+//  			
+//  			PersistentObject persistentObject = ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
+//  			if (persistentObject instanceof BulkDeleteable) {
+//				String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
+//				bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
+//				if (bulkDeleteStatement != null) {
+//					BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
+//					
+//					// Find all objects of the same type
+//					for (int j=0; j<deleteOperations.size(); j++) {
+//						DeleteOperation otherDeleteOperation = deleteOperations.get(j);
+//						if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
+//							PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
+//							if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
+//	  							if (bulkCheckedDeleteOperation == null) {
+//	  								bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(persistentObject.getClass());
+//	  								bulkCheckedDeleteOperation.addPersistentObject(persistentObject);
+//	  								optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
+//	  							}
+//	  							couldOptimize = true;
+//	  							bulkCheckedDeleteOperation.addPersistentObject(otherPersistentObject);
+//	  							checkedIndices[j] = true;
+//							} else {
+//							    // We may only optimize subsequent delete operations of the same type, to prevent messing up 
+//							    // the order of deletes of related entities which may depend on the referenced entity being deleted before
+//							    break;
+//							}
+//						}
+//						
+//					}
+//				}
+//  			}
+//  		}
+//  		
+//   		if (!couldOptimize) {
+//  			optimizedDeleteOperations.add(deleteOperation);
+//  		}
+//  		checkedIndices[i]=true;
+//  		
+//  	}
+//  	return optimizedDeleteOperations;
+//  }
 
   protected void flushDeserializedObjects() {
     for (DeserializedObject deserializedObject: deserializedObjects) {
@@ -905,9 +905,7 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushRegularDeletes(boolean dispatchEvent) {
-  	List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
-    for (DeleteOperation delete : optimizedDeleteOperations) {
-//  	for (DeleteOperation delete : deleteOperations) {
+  	for (DeleteOperation delete : deleteOperations) {
       log.debug("executing: {}", delete);
 
       delete.execute();
@@ -1531,12 +1529,4 @@ public class DbSqlSession implements Session {
     return dbSqlSessionFactory;
   }
 
-	public boolean isOptimizeDeleteOperationsEnabled() {
-		return isOptimizeDeleteOperationsEnabled;
-	}
-
-	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
-		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
-	}
-  
 }

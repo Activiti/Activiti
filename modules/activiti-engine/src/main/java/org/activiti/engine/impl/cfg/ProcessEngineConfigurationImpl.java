@@ -107,7 +107,6 @@ import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
@@ -393,14 +392,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int batchSizeTasks = 25;
   
   /**
-   * Experimental setting. Default is false.
-   * 
-   * If set to true, in the {@link DbSqlSession} during the handling of delete operations,
-   * those operations of the same type are merged together. 
-   * (eg if you have two 'DELETE from X where id=Y' and 'DELETE from X where id=W', it will be merged
-   * into one delete statement 'DELETE from X where id=Y or id=W'.
+   * If set to true, enables bulk insert (grouping sql inserts together).
+   * Default true. For some databases (eg DB2 on Zos: https://activiti.atlassian.net/browse/ACT-4042) needs to be set to false
    */
-  protected boolean isOptimizeDeleteOperationsEnabled;
+  protected boolean isBulkInsertEnabled = true;
   
   protected boolean enableEventDispatcher = true;
   protected ActivitiEventDispatcher eventDispatcher;
@@ -811,7 +806,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
-      dbSqlSessionFactory.setOptimizeDeleteOperationsEnabled(isOptimizeDeleteOperationsEnabled);
+      dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
       addSessionFactory(dbSqlSessionFactory);
       
       addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
@@ -2101,5 +2096,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.maxLengthStringVariableType = maxLengthStringVariableType;
     return this;
   }
+  
+	public ProcessEngineConfigurationImpl setBulkInsertEnabled(boolean isBulkInsertEnabled) {
+		this.isBulkInsertEnabled = isBulkInsertEnabled;
+		return this;
+	}
+
+	public boolean isBulkInsertEnabled() {
+		return isBulkInsertEnabled;
+	}
+
 	
 }
