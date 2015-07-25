@@ -73,7 +73,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
       + " <userTask id='theTask' name='my task' />" + " <sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />" + " <endEvent id='theEnd' />" + "</process>" + "</definitions>";
 
   // See
-  // http://jira.codehaus.org/browse/ACT-1579?focusedCommentId=319886#comment-319886
+  // https://activiti.atlassian.net/browse/ACT-1579?focusedCommentId=319886#comment-319886
   public void testProcessEngineDenialOfServiceAttackUsingUnsafeXmlTest() throws InterruptedException {
 
     // Putting this in a Runnable so we can time it out

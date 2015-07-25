@@ -1274,7 +1274,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
       if (!((ExecutionEntity) execution).isProcessInstanceType()) {
         // only the concurrent executions, not the root one, would be
         // cooler to query that directly, see
-        // http://jira.codehaus.org/browse/ACT-1373
+        // https://activiti.atlassian.net/browse/ACT-1373
         runtimeService.setVariableLocal(execution.getId(), "x", "child");
         runtimeService.setVariableLocal(execution.getId(), "xIgnoreCase", "ChILD");
       }

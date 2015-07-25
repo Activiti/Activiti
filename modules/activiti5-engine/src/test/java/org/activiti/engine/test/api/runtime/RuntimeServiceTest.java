@@ -200,7 +200,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   public void testNonUniqueBusinessKey() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
     
-    // Behaviour changed: http://jira.codehaus.org/browse/ACT-1860
+    // Behaviour changed: https://activiti.atlassian.net/browse/ACT-1860
     runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
     assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").count());
   }
@@ -1018,7 +1018,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertTrue(e instanceof ClassCastException);
     }
     
-    // Test for http://jira.codehaus.org/browse/ACT-2186
+    // Test for https://activiti.atlassian.net/browse/ACT-2186
     @Deployment(resources={
     	"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testHistoricVariableRemovedWhenRuntimeVariableIsRemoved() {

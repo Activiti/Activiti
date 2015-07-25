@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * @author Angel Lopez Cima
  * @author Falko Menge
- * @see http://jira.codehaus.org/browse/ACT-1166
+ * @see https://activiti.atlassian.net/browse/ACT-1166
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
 public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {

@@ -332,7 +332,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <!--
               only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
+              see https://activiti.atlassian.net/browse/MANTRUN-109
             -->
             <version>1.4</version>
             <executions>
@@ -383,7 +383,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <!--
               only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
+              see https://activiti.atlassian.net/browse/MANTRUN-109
             -->
             <version>1.4</version>
             <executions>
@@ -417,7 +417,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <!--
               only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
+              see https://activiti.atlassian.net/browse/MANTRUN-109
             -->
             <version>1.4</version>
             <executions>
@@ -483,7 +483,7 @@
 				<plugin>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<!-- only worked with this version, there might be a bug with antrun 
-						see http://jira.codehaus.org/browse/MANTRUN-109 -->
+						see https://activiti.atlassian.net/browse/MANTRUN-109 -->
 					<version>1.4</version>
 					<executions>
 						<execution>
@@ -571,10 +571,10 @@
             <configuration>
               <excludes>
                 <exclude>**/*TestCase.java</exclude>
-                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
-                <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
-                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
-                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-485  -->
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
@@ -593,7 +593,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <!--
               only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
+              see https://activiti.atlassian.net/browse/MANTRUN-109
             -->
             <version>1.4</version>
             <executions>
@@ -661,10 +661,10 @@
             <configuration>
               <excludes>
                 <exclude>**/*TestCase.java</exclude>
-                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
-                <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
-                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
-                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-485  -->
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
@@ -704,10 +704,10 @@
             <configuration>
               <excludes>
                 <exclude>**/*TestCase.java</exclude>
-                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
-                <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
-                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
-                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-485  -->
                 <exclude>**/Historic*InstanceTest.java</exclude>
                 <exclude>**/HistoryServiceTest.java</exclude>
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>

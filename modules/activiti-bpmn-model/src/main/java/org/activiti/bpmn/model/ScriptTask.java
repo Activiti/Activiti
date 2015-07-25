@@ -22,7 +22,7 @@ public class ScriptTask extends Task {
   protected String script;
   protected String resultVariable;
   protected boolean autoStoreVariables = false; // see
-                                                // http://jira.codehaus.org/browse/ACT-1626
+                                                // https://activiti.atlassian.net/browse/ACT-1626
 
   public String getScriptFormat() {
     return scriptFormat;

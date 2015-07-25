@@ -58,7 +58,7 @@ public class UserTaskTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testCompleteAfterParallelGateway() throws InterruptedException {
-	  // related to http://jira.codehaus.org/browse/ACT-1054
+	  // related to https://activiti.atlassian.net/browse/ACT-1054
 	  
 	  // start the process
     runtimeService.startProcessInstanceByKey("ForkProcess");

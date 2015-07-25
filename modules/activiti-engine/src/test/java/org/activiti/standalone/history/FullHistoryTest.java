@@ -1332,7 +1332,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
   }
 
-  // Test for http://jira.codehaus.org/browse/ACT-2186
+  // Test for https://activiti.atlassian.net/browse/ACT-2186
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testHistoricVariableRemovedWhenRuntimeVariableIsRemoved() {
     Map<String, Object> vars = new HashMap<String, Object>();

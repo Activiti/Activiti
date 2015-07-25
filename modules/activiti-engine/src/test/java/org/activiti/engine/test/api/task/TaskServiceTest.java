@@ -1088,7 +1088,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see <a href="http://jira.codehaus.org/browse/ACT-1059">http://jira.codehaus.org/browse/ACT-1059</a>
+   * @see <a href="https://activiti.atlassian.net/browse/ACT-1059">https://activiti.atlassian.net/browse/ACT-1059</a>
    */
   public void testSetDelegationState() {
     Task task = taskService.newTask();

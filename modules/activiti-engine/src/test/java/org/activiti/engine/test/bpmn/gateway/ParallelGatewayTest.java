@@ -101,7 +101,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * http://jira.codehaus.org/browse/ACT-1222
+   * https://activiti.atlassian.net/browse/ACT-1222
    */
   @Deployment
   public void testReceyclingExecutionWithCallActivity() {

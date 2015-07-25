@@ -544,7 +544,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * Test case for http://jira.codehaus.org/browse/ACT-1978
+   * Test case for https://activiti.atlassian.net/browse/ACT-1978
    */
   public void testSignalDeleteOnRedeploy() {
 

@@ -63,7 +63,7 @@ public abstract class JobExecutor {
    * In a non-clustered setup, this setting can be changed to any value > 0
    * without problems.
    * 
-   * See http://jira.codehaus.org/browse/ACT-1879 for more information.
+   * See https://activiti.atlassian.net/browse/ACT-1879 for more information.
    */
   protected int maxJobsPerAcquisition = 1;
   protected long waitTimeInMillis = 5000L;

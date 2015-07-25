@@ -56,7 +56,7 @@ public class ProcessDefinitionEntityManager extends AbstractEntityManager<Proces
 
     // skipped this after discussion within the team
     // // retrieve process definitions from cache
-    // (http://jira.codehaus.org/browse/ACT-1020) to have all available
+    // (https://activiti.atlassian.net/browse/ACT-1020) to have all available
     // information
     // ArrayList<ProcessDefinition> result = new
     // ArrayList<ProcessDefinition>();

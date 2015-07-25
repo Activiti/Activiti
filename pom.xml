@@ -1027,7 +1027,7 @@
   </developers>
   <issueManagement>
     <system>JIRA</system>
-    <url>http://jira.codehaus.org/browse/ACT</url>
+    <url>https://activiti.atlassian.net/browse/ACT</url>
   </issueManagement>
   <ciManagement>
     <system>Bamboo</system>
