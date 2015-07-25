@@ -645,7 +645,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("PostgreSQL", DATABASE_TYPE_POSTGRES);
     databaseTypeMappings.setProperty("Microsoft SQL Server", DATABASE_TYPE_MSSQL);
     databaseTypeMappings.setProperty(DATABASE_TYPE_DB2, DATABASE_TYPE_DB2);
-    databaseTypeMappings.setProperty(DATABASE_TYPE_DB2, DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/NT", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/NT64", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2 UDP", DATABASE_TYPE_DB2);
