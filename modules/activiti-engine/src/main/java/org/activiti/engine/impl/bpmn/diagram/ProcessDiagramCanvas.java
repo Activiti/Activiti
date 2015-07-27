@@ -898,8 +898,8 @@ public class ProcessDiagramCanvas {
       g.setPaint(LABEL_COLOR);
       g.setFont(LABEL_FONT);
 
-      int textX = x + width/2 - fontMetrics.stringWidth(name)/2;
-      int textY = y + height + fontMetrics.getHeight();
+      int textX = x;
+      int textY = y + height;
 
       g.drawString(name, textX, textY);
   
