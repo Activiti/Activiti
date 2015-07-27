@@ -35,7 +35,10 @@ public class DisabledSchemaValidationTest {
 
   @Before
   public void setup() {
-    this.processEngine = new StandaloneInMemProcessEngineConfiguration().setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000").buildProcessEngine();
+    this.processEngine = new StandaloneInMemProcessEngineConfiguration()
+      .setProcessEngineName(this.getClass().getName())
+      .setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
+      .buildProcessEngine();
     this.repositoryService = processEngine.getRepositoryService();
   }
 

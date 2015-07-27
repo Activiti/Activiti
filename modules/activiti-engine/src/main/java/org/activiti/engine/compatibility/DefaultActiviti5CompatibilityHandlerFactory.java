@@ -35,7 +35,7 @@ public class DefaultActiviti5CompatibilityHandlerFactory implements Activiti5Com
       Activiti5CompatibilityHandler handler = (Activiti5CompatibilityHandler) Class.forName(compatibilityHandlerClassName).newInstance();
       return handler;
     } catch (Exception e) {
-      logger.info("Activiti 5 compatibility handler implementation not found or error during instantiation. " + "Error : " + e.getMessage() + ". Activiti 5 backwards compatibility disabled.");
+      logger.info("Activiti 5 compatibility handler implementation not found or error during instantiation : " + e.getMessage() + ". Activiti 5 backwards compatibility disabled.");
     }
     return null;
   }
