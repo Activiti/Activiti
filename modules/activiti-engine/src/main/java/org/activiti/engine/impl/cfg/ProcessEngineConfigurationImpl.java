@@ -397,6 +397,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    */
   protected boolean isBulkInsertEnabled = true;
   
+  /**
+  * Some databases have a limit of how many parameters one sql insert can have (eg SQL Server, 2000 params (!= insert statements) ).
+  * Tweak this parameter in case of exceptions indicating too much is being put into one bulk insert,
+  * or make it higher if your database can cope with it and there are inserts with a huge amount of data.
+  * 
+  * By default: 100.
+  */
+  protected int maxNrOfStatementsInBulkInsert = 100;
+  
   protected boolean enableEventDispatcher = true;
   protected ActivitiEventDispatcher eventDispatcher;
   protected List<ActivitiEventListener> eventListeners;
@@ -807,6 +816,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
+      dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
       addSessionFactory(dbSqlSessionFactory);
       
       addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
@@ -2106,5 +2116,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 		return isBulkInsertEnabled;
 	}
 
+	public int getMaxNrOfStatementsInBulkInsert() {
+		return maxNrOfStatementsInBulkInsert;
+	}
+
+	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
+	}
 	
 }

@@ -232,6 +232,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
+  protected int maxNrOfStatementsInBulkInsert = 100;
 
 
   public Class< ? > getSessionType() {
@@ -473,4 +474,12 @@ public class DbSqlSessionFactory implements SessionFactory {
 	  return tablePrefixIsSchema;
   }
 
+	public int getMaxNrOfStatementsInBulkInsert() {
+		return maxNrOfStatementsInBulkInsert;
+	}
+
+	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
+	}
+	
 }

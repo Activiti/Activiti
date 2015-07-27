@@ -838,7 +838,17 @@ public class DbSqlSession implements Session {
       throw new ActivitiException("no insert statement for " + persistentObjectList.get(0).getClass() + " in the ibatis mapping files");
     }
 
-    sqlSession.insert(insertStatement, persistentObjectList);
+    if (persistentObjectList.size() <= dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
+      sqlSession.insert(insertStatement, persistentObjectList);
+    } else {
+      
+      for (int start = 0; start < persistentObjectList.size(); start += dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
+        List<PersistentObject> subList = persistentObjectList.subList(start, 
+            Math.min(start + dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert(), persistentObjectList.size()));
+        sqlSession.insert(insertStatement, subList);
+      }
+      
+    }
 
     if (persistentObjectList.get(0) instanceof HasRevision) {
       for (PersistentObject insertedObject: persistentObjectList) {
