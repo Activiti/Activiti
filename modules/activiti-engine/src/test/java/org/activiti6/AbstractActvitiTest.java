@@ -15,6 +15,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.impl.logger.ProcessExecutionLoggerConfigurator;
 import org.h2.tools.Server;
@@ -39,6 +40,7 @@ public class AbstractActvitiTest {
   public ActivitiRule activitiRule = new ActivitiRule();
 
   protected static ProcessEngine cachedProcessEngine;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
@@ -59,6 +61,7 @@ public class AbstractActvitiTest {
       }
     }
 
+    this.processEngineConfiguration = (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
     this.repositoryService = cachedProcessEngine.getRepositoryService();
     this.runtimeService = cachedProcessEngine.getRuntimeService();
     this.taskService = cachedProcessEngine.getTaskService();

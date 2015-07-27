@@ -414,6 +414,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * Default true. For some databases (eg DB2 on Zos: https://activiti.atlassian.net/browse/ACT-4042) needs to be set to false
    */
   protected boolean isBulkInsertEnabled = true;
+  
+  /**
+   * Some databases have a limit of how many parameters one sql insert can have (eg SQL Server, 2000 params (!= insert statements) ).
+   * Tweak this parameter in case of exceptions indicating too much is being put into one bulk insert,
+   * or make it higher if your database can cope with it and there are inserts with a huge amount of data.
+   * 
+   * By default: 100.
+   */
+  protected int maxNrOfStatementsInBulkInsert = 100;
 
   // Backwards compatibility
   protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
@@ -827,7 +836,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
-      dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);;
+      dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
+      dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
       addSessionFactory(dbSqlSessionFactory);
 
       addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
@@ -2150,6 +2160,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void setBulkInsertEnabled(boolean isBulkInsertEnabled) {
     this.isBulkInsertEnabled = isBulkInsertEnabled;
+  }
+  
+  public int getMaxNrOfStatementsInBulkInsert() {
+    return maxNrOfStatementsInBulkInsert;
+  }
+
+  public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+    this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
   }
   
   

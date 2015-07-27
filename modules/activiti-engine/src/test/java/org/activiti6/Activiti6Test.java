@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.Deployment;
@@ -123,7 +124,7 @@ public class Activiti6Test extends AbstractActvitiTest {
   @Test
   @org.activiti.engine.test.Deployment
   public void testLongServiceTaskLoop() {
-    int maxCount = 1000; // You can make this as big as you want (as long as
+    int maxCount = 3210; // You can make this as big as you want (as long as
                          // it still fits within transaction timeouts). Go
                          // on, try it!
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -135,6 +136,11 @@ public class Activiti6Test extends AbstractActvitiTest {
 
     assertEquals(maxCount, CountingServiceTaskTestDelegate.CALL_COUNT.get());
     assertEquals(0, runtimeService.createExecutionQuery().count());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      assertEquals(maxCount, historyService.createHistoricActivityInstanceQuery()
+          .processInstanceId(processInstance.getId()).activityId("serviceTask").count());
+    }
   }
 
   @Test
