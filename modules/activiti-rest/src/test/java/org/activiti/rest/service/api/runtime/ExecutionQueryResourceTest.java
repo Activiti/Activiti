@@ -41,6 +41,10 @@ public class ExecutionQueryResourceTest extends BaseSpringRestTestCase {
     processVariables.put("booleanVar", false);
 
     Execution parentExecution = runtimeService.startProcessInstanceByKey("processOne", processVariables);
+    
+    Execution subProcessExecution = runtimeService.createExecutionQuery().activityId("subProcess").singleResult();
+    assertNotNull(subProcessExecution);
+
     Execution childExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
     assertNotNull(childExecution);
 
@@ -125,61 +129,61 @@ public class ExecutionQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // Integer equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67890);
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // Boolean equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", false);
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // String not equals
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "ghijkl");
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // Integer not equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 45678);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // Boolean not equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", true);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // String equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "azeRTY");
     variableNode.put("operation", "equalsIgnoreCase");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // String not equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "HIJKLm");
     variableNode.put("operation", "notEqualsIgnoreCase");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
 
     // String equals without name
     variableNode.removeAll();
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), parentExecution.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, childExecution.getId(), subProcessExecution.getId(), parentExecution.getId());
   }
 }

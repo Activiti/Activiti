@@ -23,13 +23,12 @@ public class MockEmailTransport extends Transport {
     super(smtpSession, urlName);
   }
 
-    @Override
-    public void sendMessage(Message message, Address[] addresses) throws MessagingException {
-        try {
-            logger.info(message.getContent().toString());
-        } catch (IOException ex) {
-            logger.error("Error occured while sending email" + ex);
-        }
+  @Override
+  public void sendMessage(Message message, Address[] addresses) throws MessagingException {
+    try {
+      logger.info(message.getContent().toString());
+    } catch (IOException ex) {
+      logger.error("Error occured while sending email" + ex);
     }
   }
 

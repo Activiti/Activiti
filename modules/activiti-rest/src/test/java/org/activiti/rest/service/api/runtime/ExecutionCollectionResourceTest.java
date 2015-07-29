@@ -44,12 +44,15 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
     String id = processInstance.getId();
     runtimeService.addUserIdentityLink(id, "kermit", "whatever");
 
-    Execution childExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
-    assertNotNull(childExecution);
+    Execution childExecutionInTask = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
+    assertNotNull(childExecutionInTask);
+    
+    Execution childExecutionInSubProcess = runtimeService.createExecutionQuery().activityId("subProcess").singleResult();
+    assertNotNull(childExecutionInSubProcess);
 
     // Test without any parameters
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION);
-    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    assertResultsPresentInDataResponse(url, id, childExecutionInTask.getId(), childExecutionInSubProcess.getId());
 
     // Process instance id
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?id=" + id;
@@ -67,35 +70,35 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
 
     // Process definition key
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?processDefinitionKey=processOne";
-    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    assertResultsPresentInDataResponse(url, id, childExecutionInTask.getId(), childExecutionInSubProcess.getId());
 
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?processDefinitionKey=processTwo";
     assertResultsPresentInDataResponse(url);
 
     // Process definition id
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?processDefinitionId=" + processInstance.getProcessDefinitionId();
-    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    assertResultsPresentInDataResponse(url, id, childExecutionInTask.getId(), childExecutionInSubProcess.getId());
 
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?processDefinitionId=anotherId";
     assertResultsPresentInDataResponse(url);
 
     // Parent id
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?parentId=" + id;
-    assertResultsPresentInDataResponse(url, childExecution.getId());
+    assertResultsPresentInDataResponse(url, childExecutionInSubProcess.getId());
 
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?parentId=anotherId";
     assertResultsPresentInDataResponse(url);
 
     // Activity id
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?activityId=processTask";
-    assertResultsPresentInDataResponse(url, childExecution.getId());
+    assertResultsPresentInDataResponse(url, childExecutionInTask.getId());
 
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?activityId=anotherId";
     assertResultsPresentInDataResponse(url);
 
     // Without tenant ID, before tenant is set
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?withoutTenantId=true";
-    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    assertResultsPresentInDataResponse(url, id, childExecutionInTask.getId(), childExecutionInSubProcess.getId());
 
     // Update the tenant for the deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
@@ -106,14 +109,14 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
 
     // Tenant id
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantId=myTenant";
-    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    assertResultsPresentInDataResponse(url, id, childExecutionInTask.getId(), childExecutionInSubProcess.getId());
 
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantId=myTenant2";
     assertResultsPresentInDataResponse(url);
 
     // Tenant id like
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantIdLike=" + encode("%enant");
-    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    assertResultsPresentInDataResponse(url, id, childExecutionInTask.getId(), childExecutionInSubProcess.getId());
 
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantIdLike=" + encode("%whatever");
     assertResultsPresentInDataResponse(url);
@@ -143,7 +146,6 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
-    assertEquals(signalExecution.getId(), waitingExecution.getId());
   }
 
   /**
@@ -177,7 +179,6 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
-    assertEquals(signalExecution.getId(), waitingExecution.getId());
 
     Map<String, Object> vars = runtimeService.getVariables(waitingExecution.getId());
     assertEquals(1, vars.size());

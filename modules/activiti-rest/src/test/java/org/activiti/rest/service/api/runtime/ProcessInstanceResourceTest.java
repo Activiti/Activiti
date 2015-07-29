@@ -51,7 +51,6 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertEquals("myBusinessKey", responseNode.get("businessKey").textValue());
-    assertEquals("processTask", responseNode.get("activityId").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
     assertEquals("", responseNode.get("tenantId").textValue());
 

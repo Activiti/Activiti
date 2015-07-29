@@ -15,13 +15,13 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
 public abstract class FlowNode extends FlowElement {
-
-  protected Object behavior;
 
   protected SubProcess subProcess;
 
@@ -30,6 +30,9 @@ public abstract class FlowNode extends FlowElement {
 
   protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
   protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
+  
+  @JsonIgnore
+  protected Object behavior;
 
   public FlowNode() {
 

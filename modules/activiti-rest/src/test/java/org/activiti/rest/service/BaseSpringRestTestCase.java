@@ -41,6 +41,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.WebConfigurer;
 import org.activiti.rest.conf.ApplicationConfiguration;
 import org.activiti.rest.service.api.RestUrlBuilder;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -256,7 +257,14 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       }
       response = client.execute(request);
       Assert.assertNotNull(response.getStatusLine());
-      Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
+      
+      int responseStatusCode = response.getStatusLine().getStatusCode();
+      if (expectedStatusCode != responseStatusCode) {
+        log.info("Wrong status code : " + responseStatusCode + ", but should be " + expectedStatusCode);
+        log.info("Response body: " + IOUtils.toString(response.getEntity().getContent()));
+      }
+      
+      Assert.assertEquals(expectedStatusCode, responseStatusCode);
       httpResponses.add(response);
       return response;
 

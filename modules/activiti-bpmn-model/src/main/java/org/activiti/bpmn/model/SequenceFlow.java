@@ -15,6 +15,8 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
@@ -28,7 +30,10 @@ public class SequenceFlow extends FlowElement {
 
   // Actual flow elements that match the source and target ref
   // Set during process definition parsing
+  @JsonIgnore
   protected FlowElement sourceFlowElement;
+  
+  @JsonIgnore
   protected FlowElement targetFlowElement;
 
   /**

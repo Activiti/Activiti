@@ -239,7 +239,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCas
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("businessKey").isNull());
-    assertEquals("processTask", responseNode.get("activityId").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
 
     assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
@@ -260,7 +259,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCas
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("businessKey").isNull());
-    assertEquals("processTask", responseNode.get("activityId").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
 
     assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
@@ -281,7 +279,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCas
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("businessKey").isNull());
-    assertEquals("processTask", responseNode.get("activityId").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
 
     assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
@@ -358,7 +355,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCas
 
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
-    assertEquals("processTask", responseNode.get("activityId").asText());
     assertEquals(false, responseNode.get("ended").asBoolean());
     JsonNode variablesArrayNode = responseNode.get("variables");
     assertEquals(0, variablesArrayNode.size());
@@ -409,7 +405,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCas
     CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
-    assertEquals("processTask", responseNode.get("activityId").asText());
     assertEquals(false, responseNode.get("ended").asBoolean());
     JsonNode variablesArrayNode = responseNode.get("variables");
     assertEquals(2, variablesArrayNode.size());

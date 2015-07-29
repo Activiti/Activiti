@@ -41,25 +41,29 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
    */
   @Deployment(resources = { "org/activiti/rest/service/api/runtime/ExecutionResourceTest.process-with-subprocess.bpmn20.xml" })
   public void testGetExecution() throws Exception {
-    Execution parentExecution = runtimeService.startProcessInstanceByKey("processOne");
+    Execution processInstanceExecution = runtimeService.startProcessInstanceByKey("processOne");
+    
+    Execution subProcessExecution = runtimeService.createExecutionQuery().activityId("subProcess").singleResult();
+    assertNotNull(subProcessExecution);
+    
     Execution childExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
     assertNotNull(childExecution);
 
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId())), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, processInstanceExecution.getId())), HttpStatus.SC_OK);
 
     // Check resulting parent execution
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
     assertNotNull(responseNode);
-    assertEquals(parentExecution.getId(), responseNode.get("id").textValue());
+    assertEquals(processInstanceExecution.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("activityId").isNull());
     assertFalse(responseNode.get("suspended").booleanValue());
     assertTrue(responseNode.get("parentUrl").isNull());
     assertFalse(responseNode.get("suspended").booleanValue());
 
-    assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId())));
+    assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, processInstanceExecution.getId())));
 
-    assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, parentExecution.getId())));
+    assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstanceExecution.getId())));
 
     // Check resulting child execution
     response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, childExecution.getId())), HttpStatus.SC_OK);
@@ -74,9 +78,9 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
 
     assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, childExecution.getId())));
 
-    assertTrue(responseNode.get("parentUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId())));
+    assertTrue(responseNode.get("parentUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, subProcessExecution.getId())));
 
-    assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, parentExecution.getId())));
+    assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstanceExecution.getId())));
   }
 
   /**
@@ -92,7 +96,9 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
    */
   @Deployment(resources = { "org/activiti/rest/service/api/runtime/ExecutionResourceTest.process-with-signal.bpmn20.xml" })
   public void testSignalExecution() throws Exception {
-    Execution signalExecution = runtimeService.startProcessInstanceByKey("processOne");
+    runtimeService.startProcessInstanceByKey("processOne");
+    
+    Execution signalExecution = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
     assertNotNull(signalExecution);
     assertEquals("waitState", signalExecution.getActivityId());
 
@@ -142,13 +148,12 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     // Sending signal event causes the execution to end (scope-execution for
     // the catching event)
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    response = executeRequest(httpPut, HttpStatus.SC_OK);
     closeResponse(response);
 
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
-    assertEquals(signalExecution.getId(), waitingExecution.getId());
 
   }
 
@@ -178,13 +183,12 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     // the catching event)
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     closeResponse(response);
 
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
-    assertEquals(signalExecution.getId(), waitingExecution.getId());
 
     Map<String, Object> vars = runtimeService.getVariables(waitingExecution.getId());
     assertEquals(1, vars.size());
@@ -216,13 +220,12 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     // Sending signal event causes the execution to end (scope-execution for
     // the catching event)
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    response = executeRequest(httpPut, HttpStatus.SC_OK);
     closeResponse(response);
 
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
-    assertEquals(execution.getId(), waitingExecution.getId());
   }
 
   /**
@@ -251,13 +254,12 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     // the catching event)
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     closeResponse(response);
 
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
-    assertEquals(signalExecution.getId(), waitingExecution.getId());
 
     Map<String, Object> vars = runtimeService.getVariables(waitingExecution.getId());
     assertEquals(1, vars.size());

@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLinkType;
@@ -177,7 +178,8 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
 
       // Execution filtering
       requestNode.removeAll();
-      requestNode.put("executionId", processInstance.getId());
+      Execution taskExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
+      requestNode.put("executionId", taskExecution.getId());
       assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
 
       // Process instance businesskey filtering

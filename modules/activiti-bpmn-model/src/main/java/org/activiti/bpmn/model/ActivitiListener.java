@@ -15,6 +15,8 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Tijs Rademakers
  */
@@ -24,6 +26,8 @@ public class ActivitiListener extends BaseElement {
   protected String implementationType;
   protected String implementation;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+  
+  @JsonIgnore
   protected Object instance; // Can be used to set an instance of the listener directly. That instance will then always be reused.
 
   public String getEvent() {

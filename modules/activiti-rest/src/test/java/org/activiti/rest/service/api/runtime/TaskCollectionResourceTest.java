@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLinkType;
@@ -212,7 +213,8 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       assertResultsPresentInDataResponse(url, processTask.getId());
 
       // Execution filtering
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?executionId=" + processInstance.getId();
+      Execution taskExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?executionId=" + taskExecution.getId();
       assertResultsPresentInDataResponse(url, processTask.getId());
 
       // Process instance businesskey filtering

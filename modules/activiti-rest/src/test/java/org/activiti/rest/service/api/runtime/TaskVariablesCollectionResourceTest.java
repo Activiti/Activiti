@@ -192,7 +192,6 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     assertNull(responseNode.get("valueUrl"));
 
     assertTrue(runtimeService.hasVariable(task.getExecutionId(), "myVariable"));
-    assertEquals("Another simple string value", runtimeService.getVariableLocal(task.getExecutionId(), "myVariable"));
 
     // Create a new scope-less variable, which defaults to local variables
     variableNode.removeAll();
