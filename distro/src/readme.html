@@ -34,7 +34,17 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
-<h3>Release Notes - Activiti - 5.18.0-SNAPSHOT</h3>
+<h3>Release Notes - Activiti - Version 5.18.0</h3>
+
+<h4>Highlights</h4>
+<ul>
+    <li>We introduced bulk inserts. For more information you can read more about it in this blog post <a href="http://www.jorambarrez.be/blog/2015/07/20/the-activiti-performance-showdown-2015/">http://www.jorambarrez.be/blog/2015/07/20/the-activiti-performance-showdown-2015/</a></li>
+    <li>We enhanced the OR query support, it's now possible to use multiple OR parts in one query</li>
+    <li>Improvements to the async executor we introduced in Activiti 5.17.0. There were some cases that could result in deadlock exceptions and that's resolved in this version.</li>
+    <li>Improvements to the Activiti Modeler with terminate end events, cancel event and transaction support, and more intermediate catch and throw event support. 
+    Also, improvements to interrupting and non-interrupting solid and dashed line for boundary events.</li>
+    <li>Upgraded Spring dependency version to 4.1. Activiti is still working with Spring 4.0.x and 3.x as well</li>
+</ul>
   
 <h4>Backwards incompatible changes</h4>
 <ul>
