@@ -476,10 +476,10 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
       for (HistoricDetail detail : variables) {
       	if(detail instanceof HistoricVariableUpdate) {
 	      	HistoricVariableUpdate variable = (HistoricVariableUpdate) detail;
-	      	if(variableNames.contains(variable.getId()) == false) {
-	      		variableNames.add(variable.getId());
-		        Item variableItem = variablesTable.addItem(variable.getId());
-		        variableItem.getItemProperty("name").setValue(variable.getId());
+	      	if (variableNames.contains(variable.getVariableName()) == false) {
+	      		variableNames.add(variable.getVariableName());
+		        Item variableItem = variablesTable.addItem(variable.getVariableName());
+		        variableItem.getItemProperty("name").setValue(variable.getVariableName());
 		        
 		        // Get string value to show
 		        String theValue = variableRendererManager.getStringRepresentation(variable.getValue());
@@ -488,7 +488,7 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
 	      	}
       	} else {
       		HistoricFormProperty form = (HistoricFormProperty) detail;
-	      	if(variableNames.contains(form.getPropertyId()) == false) {
+	      	if (variableNames.contains(form.getPropertyId()) == false) {
 	      		variableNames.add(form.getPropertyId());
 		        Item variableItem = variablesTable.addItem(form.getPropertyId());
 		        variableItem.getItemProperty("name").setValue(form.getPropertyId());
