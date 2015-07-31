@@ -31,21 +31,21 @@ import org.activiti5.engine.impl.scripting.ResolverFactory;
  * http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;<br>
  * <br>
  * &lt;bean id=&quot;processEngineConfiguration&quot;<br>
- * class=&quot;org.activiti.engine.impl.cfg.
+ * class=&quot;org.activiti5.engine.impl.cfg.
  * StandaloneInMemProcessEngineConfiguration&quot;&gt;<br>
  * &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot;
  * /&gt;<br>
  * &lt;property name=&quot;expressionManager&quot;&gt;<br>
  * &lt;bean
- * class=&quot;org.activiti.engine.test.mock.MockExpressionManager&quot; /&gt;<br>
+ * class=&quot;org.activiti5.engine.test.mock.MockExpressionManager&quot; /&gt;<br>
  * &lt;/property&gt;<br>
  * &lt;property name=&quot;resolverFactories&quot;&gt;<br>
  * &lt;list&gt;<br>
  * &lt;bean
- * class=&quot;org.activiti.engine.impl.scripting.VariableScopeResolverFactory
+ * class=&quot;org.activiti5.engine.impl.scripting.VariableScopeResolverFactory
  * &quot; /&gt;<br>
  * &lt;bean
- * class=&quot;org.activiti.engine.impl.scripting.BeansResolverFactory&quot;
+ * class=&quot;org.activiti5.engine.impl.scripting.BeansResolverFactory&quot;
  * /&gt;<br>
  * &lt;bean class=&quot;com.deenero.activiti.MockResolverFactory&quot; /&gt;<br>
  * &lt;/list&gt;<br>

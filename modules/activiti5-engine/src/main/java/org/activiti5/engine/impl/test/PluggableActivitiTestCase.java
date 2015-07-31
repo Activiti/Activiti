@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * standalone or on a server etc.  Those requirements create some complications 
  * so we think it's best to use a separate base class.  That way it is much easier 
  * for us to maintain our own codebase and at the same time provide stability 
- * on the test support classes that we offer as part of our api (in org.activiti.engine.test).
+ * on the test support classes that we offer as part of our api (in org.activiti5.engine.test).
  * 
  * @author Tom Baeyens
  * @author Joram Barrez

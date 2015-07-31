@@ -676,7 +676,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       variableInstance.setType(newType);
       variableInstance.forceUpdate();
       variableInstance.setValue(value);
-      VariableInstanceEntity.touch(variableInstance);
     } else {
       variableInstance.setValue(value);
     }

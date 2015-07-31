@@ -282,7 +282,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     if (businessRuleTask.getResultVariableName() != null && businessRuleTask.getResultVariableName().length() > 0) {
       ruleActivity.setResultVariable(businessRuleTask.getResultVariableName());
     } else {
-      ruleActivity.setResultVariable("org.activiti.engine.rules.OUTPUT");
+      ruleActivity.setResultVariable("org.activiti5.engine.rules.OUTPUT");
     }
     
     return ruleActivity;
@@ -406,7 +406,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
   
   public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent) {
-    return new TerminateEndEventActivityBehavior();
+    return new TerminateEndEventActivityBehavior(endEvent);
   }
 
   // Boundary Events

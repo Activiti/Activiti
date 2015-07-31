@@ -7,11 +7,11 @@
     <setting name="lazyLoadingEnabled" value="false" />
   </settings>
   <typeAliases>
-    <typeAlias type="org.activiti.engine.impl.persistence.ByteArrayRefTypeHandler" alias="ByteArrayRefTypeHandler"/>
+    <typeAlias type="org.activiti5.engine.impl.persistence.ByteArrayRefTypeHandler" alias="ByteArrayRefTypeHandler"/>
   </typeAliases>
   <typeHandlers>
     <typeHandler handler="ByteArrayRefTypeHandler" 
-                 javaType="org.activiti.engine.impl.persistence.entity.ByteArrayRef"
+                 javaType="org.activiti5.engine.impl.persistence.entity.ByteArrayRef"
                  jdbcType="VARCHAR"/>
   </typeHandlers>
   <mappers>

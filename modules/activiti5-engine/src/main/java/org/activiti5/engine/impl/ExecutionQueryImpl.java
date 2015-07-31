@@ -65,7 +65,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String nameLikeIgnoreCase;
   protected String deploymentId;
   protected List<String> deploymentIds;
-  protected ExecutionQueryImpl orQueryObject;
+  protected List<ExecutionQueryImpl> orQueryObjects = new ArrayList<ExecutionQueryImpl>();
   
   public ExecutionQueryImpl() {
   }
@@ -134,6 +134,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       this.includeChildExecutionsWithBusinessKeyQuery = includeChildExecutions;
       return this;
     }
+  }
+  
+  public ExecutionQuery processDefinitionKeys(Set<String> processDefinitionKeys) {
+    if (processDefinitionKeys == null) {
+      throw new ActivitiIllegalArgumentException("Process definition keys is null");
+    }
+    this.processDefinitionKeys = processDefinitionKeys;
+    return this;
   }
   
   public ExecutionQueryImpl executionId(String executionId) {

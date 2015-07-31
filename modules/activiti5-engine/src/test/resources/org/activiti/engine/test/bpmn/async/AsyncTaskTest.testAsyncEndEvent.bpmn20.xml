@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="asyncEndEvent">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow sourceRef="theStart" targetRef="task" />
+      
+    <manualTask id="task" />
+    
+    <sequenceFlow sourceRef="task" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" activiti:async="true">
+      <extensionElements>
+        <activiti:executionListener event="start" class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne"></activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    
+  </process>
+
+</definitions>

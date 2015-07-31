@@ -12,9 +12,6 @@
  */
 package org.activiti5.engine.runtime;
 
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
-
 /**
  * Helper for starting new ProcessInstance.
  * 

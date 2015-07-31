@@ -263,7 +263,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	    } catch (Exception e) {
 		    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
 
-	    	assertEquals("class org.activiti.engine.ActivitiException", e.getClass().toString());
+	    	assertEquals("class org.activiti5.engine.ActivitiException", e.getClass().toString());
 	    }
 	    
 	    	    

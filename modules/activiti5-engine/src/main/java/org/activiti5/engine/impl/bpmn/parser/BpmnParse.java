@@ -99,6 +99,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected boolean validateProcess = true;
   
   protected StreamSource streamSource;
+  protected String sourceSystemId;
 
   protected BpmnModel bpmnModel;
 
@@ -318,7 +319,7 @@ public class BpmnParse implements BpmnXMLConstants {
       if (theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/")) {
         Class< ? > wsdlImporterClass;
         try {
-          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
+          wsdlImporterClass = Class.forName("org.activiti5.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
           XMLImporter newInstance = (XMLImporter) wsdlImporterClass.newInstance();
           this.importers.put(theImport.getImportType(), newInstance);
           return newInstance;
@@ -717,6 +718,15 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void removeCurrentScope() {
     currentScopeStack.pop();
+  }
+  
+  public BpmnParse setSourceSystemId(String systemId) {
+    sourceSystemId = systemId;
+    return this;
+  }
+  
+  public String getSourceSystemId() {
+    return this.sourceSystemId;
   }
   
 }

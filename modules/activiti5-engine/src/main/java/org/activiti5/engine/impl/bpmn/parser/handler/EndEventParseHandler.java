@@ -70,10 +70,14 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
     
     // Terminate end event  
     } else if (eventDefinition instanceof TerminateEventDefinition) {
+      endEventActivity.setAsync(endEvent.isAsynchronous());
+      endEventActivity.setExclusive(!endEvent.isNotExclusive());
       endEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createTerminateEndEventActivityBehavior(endEvent));
       
     // None end event  
     } else if (eventDefinition == null) {
+      endEventActivity.setAsync(endEvent.isAsynchronous());
+      endEventActivity.setExclusive(!endEvent.isNotExclusive());
       endEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
     }
   }

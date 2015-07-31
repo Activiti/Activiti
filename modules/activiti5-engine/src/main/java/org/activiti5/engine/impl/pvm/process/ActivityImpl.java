@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmException;
@@ -42,8 +41,6 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   protected boolean isAsync;
   protected boolean isExclusive;
   protected String failedJobRetryTimeCycleValue;
-  protected List<MapExceptionEntry> mapExceptions = new ArrayList<MapExceptionEntry>(); 
-  
   
   // Graphical information
   protected int x = -1;
@@ -203,14 +200,4 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   public void setExclusive(boolean isExclusive) {
     this.isExclusive = isExclusive;
   }
-
-  public List<MapExceptionEntry> getMapExceptions() {
-    return mapExceptions;
-  }
-  
-  public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
-    this.mapExceptions = mapExceptions;
-  }
-  
-  
 }

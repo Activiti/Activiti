@@ -35,6 +35,7 @@ public abstract class HistoricDetailEntity implements HistoricDetail, Persistent
   protected String taskId;
   protected String executionId;
   protected Date time;
+  protected String detailType;
 
   public Object getPersistentState() {
     // details are not updatable so we always provide the same object as the state
@@ -91,5 +92,12 @@ public abstract class HistoricDetailEntity implements HistoricDetail, Persistent
   }
   public void setTime(Date time) {
     this.time = time;
+  }
+
+  public String getDetailType() {
+    return detailType;
+  }
+  public void setDetailType(String detailType) {
+    this.detailType = detailType;
   }
 }

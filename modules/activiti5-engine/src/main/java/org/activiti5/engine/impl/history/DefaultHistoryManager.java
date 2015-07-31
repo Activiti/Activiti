@@ -60,7 +60,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryLevelAtLeast(org.activiti.engine.impl.history.HistoryLevel)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#isHistoryLevelAtLeast(org.activiti5.engine.impl.history.HistoryLevel)
  */
   @Override
 public boolean isHistoryLevelAtLeast(HistoryLevel level) {
@@ -72,7 +72,7 @@ public boolean isHistoryLevelAtLeast(HistoryLevel level) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryEnabled()
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#isHistoryEnabled()
  */
   @Override
 public boolean isHistoryEnabled() {
@@ -85,7 +85,7 @@ public boolean isHistoryEnabled() {
   // Process related history
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
  */
   @Override
 public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
@@ -114,7 +114,7 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordProcessInstanceStart(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
   @Override
 public void recordProcessInstanceStart(ExecutionEntity processInstance) {
@@ -152,7 +152,7 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordSubProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordSubProcessInstanceStart(org.activiti5.engine.impl.persistence.entity.ExecutionEntity, org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
   @Override
 public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance) {
@@ -197,7 +197,7 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
   // Activity related history
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordActivityStart(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
   @Override
 public void recordActivityStart(ExecutionEntity executionEntity) {
@@ -230,7 +230,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityEnd(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordActivityEnd(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
   @Override
 public void recordActivityEnd(ExecutionEntity executionEntity) {
@@ -243,7 +243,7 @@ public void recordActivityEnd(ExecutionEntity executionEntity) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordStartEventEnded(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordStartEventEnded(java.lang.String, java.lang.String)
  */
   @Override
 public void recordStartEventEnded(String executionId, String activityId) {
@@ -269,7 +269,7 @@ public void recordStartEventEnded(String executionId, String activityId) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#findActivityInstance(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#findActivityInstance(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
   @Override
 public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
@@ -306,7 +306,7 @@ public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execu
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordExecutionReplacedBy(org.activiti.engine.impl.persistence.entity.ExecutionEntity, org.activiti.engine.impl.pvm.runtime.InterpretableExecution)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordExecutionReplacedBy(org.activiti5.engine.impl.persistence.entity.ExecutionEntity, org.activiti5.engine.impl.pvm.runtime.InterpretableExecution)
  */
   @Override
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -334,7 +334,7 @@ public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execu
     }
   }
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessDefinitionChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordProcessDefinitionChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordProcessDefinitionChange(String processInstanceId, String processDefinitionId) {
@@ -350,7 +350,7 @@ public void recordProcessDefinitionChange(String processInstanceId, String proce
   // Task related history 
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCreated(org.activiti.engine.impl.persistence.entity.TaskEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskCreated(org.activiti5.engine.impl.persistence.entity.TaskEntity, org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
   @Override
 public void recordTaskCreated(TaskEntity task, ExecutionEntity execution) {
@@ -361,7 +361,7 @@ public void recordTaskCreated(TaskEntity task, ExecutionEntity execution) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskAssignment(org.activiti.engine.impl.persistence.entity.TaskEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskAssignment(org.activiti5.engine.impl.persistence.entity.TaskEntity)
  */
   @Override
 public void recordTaskAssignment(TaskEntity task) {
@@ -377,7 +377,7 @@ public void recordTaskAssignment(TaskEntity task) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskClaim(java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskClaim(java.lang.String)
  */
 
   @Override
@@ -392,7 +392,7 @@ public void recordTaskClaim(String taskId) {
 
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskId(org.activiti.engine.impl.persistence.entity.TaskEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskId(org.activiti5.engine.impl.persistence.entity.TaskEntity)
  */
   @Override
 public void recordTaskId(TaskEntity task) {
@@ -408,7 +408,7 @@ public void recordTaskId(TaskEntity task) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskEnd(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskEnd(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskEnd(String taskId, String deleteReason) {
@@ -421,7 +421,7 @@ public void recordTaskEnd(String taskId, String deleteReason) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskAssigneeChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskAssigneeChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskAssigneeChange(String taskId, String assignee) {
@@ -434,7 +434,7 @@ public void recordTaskAssigneeChange(String taskId, String assignee) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskOwnerChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskOwnerChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskOwnerChange(String taskId, String owner) {
@@ -447,7 +447,7 @@ public void recordTaskOwnerChange(String taskId, String owner) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskNameChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskNameChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskNameChange(String taskId, String taskName) {
@@ -460,7 +460,7 @@ public void recordTaskNameChange(String taskId, String taskName) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDescriptionChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskDescriptionChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskDescriptionChange(String taskId, String description) {
@@ -473,7 +473,7 @@ public void recordTaskDescriptionChange(String taskId, String description) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDueDateChange(java.lang.String, java.util.Date)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskDueDateChange(java.lang.String, java.util.Date)
  */
   @Override
 public void recordTaskDueDateChange(String taskId, Date dueDate) {
@@ -486,7 +486,7 @@ public void recordTaskDueDateChange(String taskId, Date dueDate) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskPriorityChange(java.lang.String, int)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskPriorityChange(java.lang.String, int)
  */
   @Override
 public void recordTaskPriorityChange(String taskId, int priority) {
@@ -499,7 +499,7 @@ public void recordTaskPriorityChange(String taskId, int priority) {
   }
   
  /* (non-Javadoc)
-  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCategoryChange(java.lang.String, java.lang.String)
+  * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskCategoryChange(java.lang.String, java.lang.String)
   */
   @Override
   public void recordTaskCategoryChange(String taskId, String category) {
@@ -523,7 +523,7 @@ public void recordTaskPriorityChange(String taskId, int priority) {
 
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskParentTaskIdChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskParentTaskIdChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
@@ -536,7 +536,7 @@ public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskExecutionIdChange(java.lang.String, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskExecutionIdChange(java.lang.String, java.lang.String)
  */
   @Override
 public void recordTaskExecutionIdChange(String taskId, String executionId) {
@@ -549,7 +549,7 @@ public void recordTaskExecutionIdChange(String taskId, String executionId) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionKeyChange(org.activiti.engine.impl.persistence.entity.TaskEntity, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionKeyChange(org.activiti5.engine.impl.persistence.entity.TaskEntity, java.lang.String)
  */
   @Override
 public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
@@ -577,7 +577,7 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
   // Variables related history
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableCreate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordVariableCreate(org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity)
  */
   @Override
 public void recordVariableCreate(VariableInstanceEntity variable) {
@@ -588,7 +588,7 @@ public void recordVariableCreate(VariableInstanceEntity variable) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordHistoricDetailVariableCreate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity, boolean)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordHistoricDetailVariableCreate(org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity, org.activiti5.engine.impl.persistence.entity.ExecutionEntity, boolean)
  */
   @Override
 public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
@@ -610,8 +610,8 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableUpdate
-	 * (org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
+	 * org.activiti5.engine.impl.history.HistoryManagerInterface#recordVariableUpdate
+	 * (org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity)
 	 */
 	@Override
 	public void recordVariableUpdate(VariableInstanceEntity variable) {
@@ -654,7 +654,7 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
   // Comment related history
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
  */
   @Override
 public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
@@ -662,7 +662,7 @@ public void createIdentityLinkComment(String taskId, String userId, String group
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
  */
   @Override
 public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
@@ -726,7 +726,7 @@ public void createIdentityLinkComment(String taskId, String userId, String group
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#createAttachmentComment(java.lang.String, java.lang.String, java.lang.String, boolean)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createAttachmentComment(java.lang.String, java.lang.String, java.lang.String, boolean)
  */
   @Override
 public void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create) {
@@ -749,7 +749,7 @@ public void createAttachmentComment(String taskId, String processInstanceId, Str
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#reportFormPropertiesSubmitted(org.activiti.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#reportFormPropertiesSubmitted(org.activiti5.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
  */
   @Override
 public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
@@ -764,7 +764,7 @@ public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<S
   
   // Identity link related history
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordIdentityLinkCreated(org.activiti.engine.impl.persistence.entity.IdentityLinkEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordIdentityLinkCreated(org.activiti5.engine.impl.persistence.entity.IdentityLinkEntity)
  */
   @Override
 public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
@@ -777,7 +777,7 @@ public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#deleteHistoricIdentityLink(java.lang.String)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#deleteHistoricIdentityLink(java.lang.String)
  */
 @Override
 public void deleteHistoricIdentityLink(String id) {
@@ -787,7 +787,7 @@ public void deleteHistoricIdentityLink(String id) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#updateProcessBusinessKeyInHistory(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+ * @see org.activiti5.engine.impl.history.HistoryManagerInterface#updateProcessBusinessKeyInHistory(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
  */
 @Override
 public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {

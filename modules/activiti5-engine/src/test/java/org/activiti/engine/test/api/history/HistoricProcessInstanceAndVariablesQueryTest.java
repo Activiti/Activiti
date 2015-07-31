@@ -170,6 +170,32 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
       assertEquals(1, variableMap.size());
       assertEquals(123, variableMap.get("anothertest"));
       
+      processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
+              .or()
+                .variableValueEquals("anothertest", 123)
+                .processDefinitionId("undefined")
+              .endOr()
+              .or()
+                .processDefinitionKey(PROCESS_DEFINITION_KEY_2)
+                .processDefinitionId("undefined")
+              .endOr()
+              .singleResult();
+      variableMap = processInstance.getProcessVariables();
+      assertEquals(1, variableMap.size());
+      assertEquals(123, variableMap.get("anothertest"));
+      
+      processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
+          .or()
+            .variableValueEquals("anothertest", 123)
+            .processDefinitionId("undefined")
+          .endOr()
+          .or()
+            .processDefinitionKey(PROCESS_DEFINITION_KEY)
+            .processDefinitionId("undefined")
+          .endOr()
+          .singleResult();
+      assertNull(processInstance);
+      
       List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().or()
           .processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionId("undefined").endOr().list();
       assertEquals(4, instanceList.size());
@@ -251,6 +277,21 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
           .or()
           .variableValueEquals("test", "test")
           .processDefinitionId("undefined").endOr()
+          .includeProcessVariables()
+          .orderByProcessInstanceId()
+          .asc()
+          .listPage(0, 50);
+      assertEquals(4, instanceList.size());
+      
+      instanceList = historyService.createHistoricProcessInstanceQuery()
+          .or()
+            .variableValueEquals("test", "test")
+            .processDefinitionId("undefined")
+          .endOr()
+          .or()
+            .processDefinitionKey(PROCESS_DEFINITION_KEY)
+            .processDefinitionId("undefined")
+          .endOr()
           .includeProcessVariables()
           .orderByProcessInstanceId()
           .asc()

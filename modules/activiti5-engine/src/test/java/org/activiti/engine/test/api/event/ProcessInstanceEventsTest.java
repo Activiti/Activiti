@@ -12,7 +12,21 @@
  */
 package org.activiti.engine.test.api.event;
 
-import org.activiti5.engine.delegate.event.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti5.engine.delegate.event.ActivitiCancelledEvent;
+import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti5.engine.delegate.event.ActivitiEvent;
+import org.activiti5.engine.delegate.event.ActivitiEventListener;
+import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti5.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti5.engine.delegate.event.impl.ActivitiActivityCancelledEventImpl;
 import org.activiti5.engine.delegate.event.impl.ActivitiProcessCancelledEventImpl;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -21,14 +35,6 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.task.Task;
 import org.activiti5.engine.test.Deployment;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotEquals;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process instances.
@@ -49,7 +55,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			assertNotNull(processInstance);
 
 			// Check create-event
-			assertEquals(2, listener.getEventsReceived().size());
+			assertEquals(3, listener.getEventsReceived().size());
 			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -60,11 +66,21 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-            assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
-            assertEquals(processInstance.getId(), event.getProcessInstanceId());
-            assertEquals(processInstance.getId(), event.getExecutionId());
-            assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+      assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+      assertEquals(processInstance.getId(), event.getProcessInstanceId());
+      assertEquals(processInstance.getId(), event.getExecutionId());
+      assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      
+      event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+      assertEquals(ActivitiEventType.PROCESS_STARTED, event.getType());
+      assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+      assertEquals(processInstance.getId(), event.getProcessInstanceId());
+      assertEquals(processInstance.getId(), event.getExecutionId());
+      assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      assertTrue(event instanceof ActivitiProcessStartedEvent);
+      assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId());
+      assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId());
 			listener.clearEventsReceived();
 
 			// Check update event when suspended/activated
@@ -138,7 +154,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertNotNull(processInstance);
 
     // Check create-event one main process the second one Scope execution, and the third one subprocess
-    assertEquals(6, listener.getEventsReceived().size());
+    assertEquals(8, listener.getEventsReceived().size());
     assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -153,20 +169,37 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+    assertEquals(ActivitiEventType.PROCESS_STARTED, event.getType());
+    assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+    assertEquals(processInstance.getId(), event.getProcessInstanceId());
+    assertEquals(processInstance.getId(), event.getExecutionId());
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+    assertTrue(event instanceof ActivitiProcessStartedEvent);
+    assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId());
+    assertNull(((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getParentId());
     
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
     assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getParentId());
 
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     assertEquals("simpleSubProcess", ((ExecutionEntity) event.getEntity()).getProcessDefinition().getKey());
 
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(6);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
     assertEquals("simpleSubProcess", ((ExecutionEntity) event.getEntity()).getProcessDefinition().getKey());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(7);
+    assertEquals(ActivitiEventType.PROCESS_STARTED, event.getType());
+    assertEquals("simpleSubProcess", ((ExecutionEntity) event.getEntity()).getProcessDefinition().getKey());
+    assertTrue(event instanceof ActivitiProcessStartedEvent);
+    assertEquals(processInstance.getProcessDefinitionId(), ((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId());
+    assertEquals(processInstance.getId(), ((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId());
 
     listener.clearEventsReceived();
   }
@@ -403,6 +436,35 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     activityEvent = (ActivitiActivityCancelledEventImpl) activityTerminatedEvents.get(2);
     assertThat("The gateway must be terminated", activityEvent.getActivityId(), is("ParallelGateway_1"));
     assertThat("The cause must be terminate end event", ((ActivityImpl) activityEvent.getCause()).getId(), is("EndEvent_3"));
+  }
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnCallActivity-parent.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
+  })
+  public void testProcessCompletedEvents_callActivityErrorEndEvent() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity");
+
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task in subprocess", task.getName());
+    List<ProcessInstance> subProcesses = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).list();
+    assertEquals(1, subProcesses.size());
+
+    // Completing the task will reach the end error event,
+    // which is caught on the call activity boundary
+    taskService.complete(task.getId());
+
+    List<ActivitiEvent> processCompletedEvents = listener.filterEvents(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT);
+    assertEquals("There should be exactly one ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT event after the task complete.", 1, processCompletedEvents.size());
+    ActivitiEntityEvent processCompletedEvent = (ActivitiEntityEvent) processCompletedEvents.get(0);
+    assertEquals(subProcesses.get(0).getId(), processCompletedEvent.getExecutionId());
+
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Escalated Task", task.getName());
+
+    // Completing the task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(pi.getId());
   }
 
   @Override

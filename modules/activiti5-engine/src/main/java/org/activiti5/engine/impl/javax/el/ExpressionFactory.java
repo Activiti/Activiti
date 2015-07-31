@@ -180,7 +180,7 @@ public abstract class ExpressionFactory {
 		}
 
 		if (className == null || className.trim().length() == 0) {
-			className = "org.activiti.engine.impl.juel.ExpressionFactoryImpl";
+			className = "org.activiti5.engine.impl.juel.ExpressionFactoryImpl";
 		}
 
 		return newInstance(properties, className);

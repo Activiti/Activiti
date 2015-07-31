@@ -140,7 +140,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   }
   
   /**
-   * Verifies the solution of https://jira.codehaus.org/browse/ACT-1309
+   * Verifies the solution of https://activiti.atlassian.net/browse/ACT-1309
    */
   @Deployment
   public void testSignalBoundaryOnSubProcess() {

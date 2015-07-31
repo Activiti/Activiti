@@ -12,9 +12,13 @@
  */
 package org.activiti.examples.task;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti5.engine.ActivitiOptimisticLockingException;
+import org.activiti5.engine.history.HistoricVariableInstance;
+import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.task.Task;
@@ -103,7 +107,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     taskService.deleteTask(taskId, true);
   }
   
-  // See https://activiti.atlassian.net/browse/ACT-1290 
+  // See https://activiti.atlassian.net/browse/ACT-1290
   public void testRevisionUpdatedOnSave() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
@@ -120,7 +124,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     taskService.deleteTask(task.getId(), true);
   }
 
-  // See https://activiti.atlassian.net/browse/ACT-1290 
+  // See https://activiti.atlassian.net/browse/ACT-1290
   public void testRevisionUpdatedOnSaveWhenFetchedUsingQuery() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
@@ -140,5 +144,34 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     
     taskService.deleteTask(task.getId(), true);
   }
+  
+  public void testHistoricVariableOkOnUpdate() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+  		// 1. create a task
+  		Task task = taskService.newTask();
+  		task.setName("test execution");
+  		task.setOwner("josOwner");
+  		task.setAssignee("JosAssignee");
+  		taskService.saveTask(task);
+  		 
+  		// 2. set task variables
+  		Map<String, Object> taskVariables = new HashMap<String, Object>();
+  		taskVariables.put("finishedAmount", 0);
+  		taskService.setVariables(task.getId(), taskVariables);
+  		 
+  		// 3. complete this task with a new variable
+  		Map<String, Object> finishVariables = new HashMap<String, Object>();
+  		finishVariables.put("finishedAmount", 40);
+  		taskService.complete(task.getId(), finishVariables);
+  		 
+  		// 4. get completed variable
+  		List<HistoricVariableInstance> hisVarList = historyService.createHistoricVariableInstanceQuery().taskId(task.getId()).list();
+  		assertEquals(1, hisVarList.size());
+  		assertEquals(40, hisVarList.get(0).getValue());
+  		
+  		// Cleanup
+  		historyService.deleteHistoricTaskInstance(task.getId());
+    }
+	}
 
 }

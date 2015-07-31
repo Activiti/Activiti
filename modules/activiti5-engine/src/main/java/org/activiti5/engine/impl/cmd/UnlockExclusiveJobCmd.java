@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
 
@@ -49,11 +50,11 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
     }
     
     if (job.isExclusive()) {
-      if (job.getExecutionId() != null) {
-        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
+      if (job.getProcessInstanceId() != null) {
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getProcessInstanceId());
         if (execution != null) {
-          commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(execution.getProcessInstanceId());
-        }
+          commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(execution.getId());
+        } 
       }
     }
     

@@ -58,7 +58,7 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   }
 
   public void saveGroup(Group group) {
-    commandExecutor.execute(new SaveGroupCmd((GroupEntity) group));
+    commandExecutor.execute(new SaveGroupCmd(group));
   }
 
   public void saveUser(User user) {

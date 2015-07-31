@@ -31,6 +31,9 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   /** Only select process definiton with the given id.  */
   ProcessDefinitionQuery processDefinitionId(String processDefinitionId);
   
+  /** Only select process definitions with the given ids. */
+  ProcessDefinitionQuery processDefinitionIds(Set<String> processDefinitionIds);
+  
   /** Only select process definitions with the given category. */
   ProcessDefinitionQuery processDefinitionCategory(String processDefinitionCategory);
   

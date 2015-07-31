@@ -14,7 +14,6 @@ package org.activiti5.engine.runtime;
 
 
 
-
 /**
  * Represent a 'path of execution' in a process instance.
  * 

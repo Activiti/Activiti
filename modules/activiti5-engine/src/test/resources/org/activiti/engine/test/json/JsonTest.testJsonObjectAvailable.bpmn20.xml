@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="testJsonAvailableProcess" name="Test JSON available process">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask" />
+    <userTask id="userTask" />
+    <sequenceFlow id="flow2" sourceRef="userTask" targetRef="script1" />
+    <scriptTask id="script1" scriptFormat="JavaScript">
+        <script><![CDATA[var jsonObj = execution.getVariable("myJsonObj");
+java.lang.System.out.println('JSON:'+jsonObj);
+java.lang.System.out.println('  var:'+jsonObj.get('var'));
+java.lang.System.out.println('  var2:'+jsonObj.get('var2'));
+        ]]></script>
+    </scriptTask>
+    <sequenceFlow sourceRef="script1" targetRef="haveVar2"/>
+    <exclusiveGateway id="haveVar2" name="Have var2?"/>
+    <sequenceFlow sourceRef="haveVar2" targetRef="userTaskFailure">
+      <conditionExpression><![CDATA[${myJsonObj.get('var3').asText() != 'myThirdValue'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow sourceRef="haveVar2" targetRef="userTaskSuccess"/>
+    <userTask id="userTaskFailure" />
+    <sequenceFlow id="flow3" sourceRef="userTaskFailure" targetRef="theEndFailure" />
+    <endEvent id="theEndFailure" />
+    <userTask id="userTaskSuccess" />
+    <sequenceFlow id="flow4" sourceRef="userTaskSuccess" targetRef="theEndSuccess" />
+    <endEvent id="theEndSuccess" />
+    
+  </process>
+
+</definitions>

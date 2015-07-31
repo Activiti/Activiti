@@ -13,7 +13,26 @@
       #{groupId ,jdbcType=VARCHAR}
     )
   </insert>
-  
+
+  <insert id="bulkInsertMembership" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_)
+    VALUES 
+    <foreach collection="list" item="membership" index="index" separator=","> 
+      (#{membership.userId ,jdbcType=VARCHAR},
+       #{membership.groupId ,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertMembership_oracle" parameterType="java.util.List">
+    INSERT ALL 
+    <foreach collection="list" item="membership" index="index">
+      INTO ${prefix}ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_) VALUES  
+        (#{membership.userId ,jdbcType=VARCHAR},
+         #{membership.groupId ,jdbcType=VARCHAR})
+    </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- MEMBERSHIP UPDATE -->
   
   <!-- MEMBERSHIP DELETE -->

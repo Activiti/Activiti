@@ -12,12 +12,12 @@
  */
 package org.activiti5.engine.runtime;
 
+import org.activiti5.engine.ProcessEngineConfiguration;
+import org.activiti5.engine.query.Query;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-
-import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.

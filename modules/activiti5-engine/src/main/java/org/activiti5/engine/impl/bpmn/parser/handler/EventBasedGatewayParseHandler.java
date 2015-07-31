@@ -31,6 +31,9 @@ public class EventBasedGatewayParseHandler extends AbstractActivityBpmnParseHand
   protected void executeParse(BpmnParse bpmnParse, EventGateway gateway) {
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EVENT);   
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createEventBasedGatewayActivityBehavior(gateway));
+    
+    activity.setAsync(gateway.isAsynchronous());
+    activity.setExclusive(!gateway.isNotExclusive());
     activity.setScope(true);
   }
 

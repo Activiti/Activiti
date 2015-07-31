@@ -18,7 +18,7 @@ import org.activiti5.engine.delegate.DelegateTask;
 
 
 /**
- * @deprecated use org.activiti.engine.delegate.TaskListener instead
+ * @deprecated use org.activiti5.engine.delegate.TaskListener instead
  * 
  * @author Tom Baeyens
  */

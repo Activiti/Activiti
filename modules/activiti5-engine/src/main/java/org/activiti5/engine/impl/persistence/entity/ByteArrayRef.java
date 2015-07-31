@@ -84,6 +84,8 @@ public final class ByteArrayRef implements Serializable {
           .getByteArrayEntityManager()
           .deleteByteArrayById(id);
       }
+      entity = null;
+      id = null;
       deleted = true;
     }
   }

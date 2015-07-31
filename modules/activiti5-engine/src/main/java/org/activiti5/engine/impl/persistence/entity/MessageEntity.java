@@ -22,6 +22,11 @@ public class MessageEntity extends JobEntity {
 
   private static final long serialVersionUID = 1L;
 
+  public MessageEntity() {
+    super();
+    this.jobType = "message";
+  }
+
   private String repeat = null;
   
   @Override

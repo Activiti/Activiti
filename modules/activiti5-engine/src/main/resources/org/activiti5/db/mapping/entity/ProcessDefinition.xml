@@ -5,11 +5,11 @@
 <mapper namespace="org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity">
   
   <!-- PROCESSDEFINITION INSERT -->
-
+  
   <insert id="insertProcessDefinition" parameterType="org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity">
     insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
     values (#{id, jdbcType=VARCHAR},
-    		    1,
+            1,
             #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
@@ -23,6 +23,52 @@
             #{suspensionState, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR},
             "activiti-5")
+  </insert>
+
+  <insert id="bulkInsertProcessDefinition" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
+    VALUES 
+      <foreach collection="list" item="processDefinition" index="index" separator=","> 
+        (#{processDefinition.id, jdbcType=VARCHAR},
+         1,
+         #{processDefinition.category, jdbcType=VARCHAR},
+         #{processDefinition.name, jdbcType=VARCHAR},
+         #{processDefinition.key, jdbcType=VARCHAR}, 
+         #{processDefinition.version, jdbcType=INTEGER},
+         #{processDefinition.deploymentId, jdbcType=VARCHAR},
+         #{processDefinition.resourceName, jdbcType=VARCHAR},
+         #{processDefinition.diagramResourceName, jdbcType=VARCHAR},
+         #{processDefinition.description, jdbcType=VARCHAR},
+         #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
+         #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
+         #{processDefinition.suspensionState, jdbcType=INTEGER},
+         #{processDefinition.tenantId, jdbcType=VARCHAR},
+         "activiti-5")
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertProcessDefinition_oracle" parameterType="java.util.List">
+    INSERT ALL 
+    <foreach collection="list" item="processDefinition" index="index"> 
+      INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_,
+      DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_) VALUES 
+        (#{processDefinition.id, jdbcType=VARCHAR},
+         1,
+         #{processDefinition.category, jdbcType=VARCHAR},
+         #{processDefinition.name, jdbcType=VARCHAR},
+         #{processDefinition.key, jdbcType=VARCHAR}, 
+         #{processDefinition.version, jdbcType=INTEGER},
+         #{processDefinition.deploymentId, jdbcType=VARCHAR},
+         #{processDefinition.resourceName, jdbcType=VARCHAR},
+         #{processDefinition.diagramResourceName, jdbcType=VARCHAR},
+         #{processDefinition.description, jdbcType=VARCHAR},
+         #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
+         #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
+         #{processDefinition.suspensionState, jdbcType=INTEGER},
+         #{processDefinition.tenantId, jdbcType=VARCHAR},
+         "activiti-5")
+    </foreach>
+    SELECT * FROM dual
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
@@ -100,6 +146,12 @@
       <if test="id != null">
         RES.ID_ = #{id}
       </if>
+      <if test="ids != null and ids">
+        and RES.ID_ in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
       <if test="category != null">
         and RES.CATEGORY_ = #{category}
       </if>
@@ -149,6 +201,9 @@
 	         </if>
 	         <if test="withoutTenantId">
 	           and (TENANT_ID_ = '' or TENANT_ID_ is null)
+	         </if>
+	         <if test="tenantId == null and tenantIdLike == null and !withoutTenantId">
+	           and ( (TENANT_ID_ IS NOT NULL and TENANT_ID_ = RES.TENANT_ID_) or (TENANT_ID_ IS NULL and RES.TENANT_ID_ IS NULL) )
 	         </if>
         )
       </if>

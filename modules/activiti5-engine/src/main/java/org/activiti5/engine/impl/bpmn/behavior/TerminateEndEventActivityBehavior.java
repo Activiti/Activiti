@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.bpmn.model.EndEvent;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.context.Context;
@@ -21,9 +22,18 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
- * @author Nico Rehwaldt
+ * @author Martin Grofcik
+ * @author Tijs Rademakers
  */
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
+  
+  private static final long serialVersionUID = 1L;
+  
+  protected final EndEvent endEvent;
+  
+  public TerminateEndEventActivityBehavior(EndEvent endEvent) {
+    this.endEvent = endEvent.clone();
+  }
 
   public void execute(ActivityExecution execution) throws Exception {
     ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
@@ -47,7 +57,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     terminateExecution(execution, terminateEndEventActivity, scopeExecution);
   }
 
-  private void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
+  protected void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
     // send cancelled event
     sendCancelledEvent( execution, terminateEndEventActivity, scopeExecution);
 
@@ -62,7 +72,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     scopeExecution.end();
   }
 
-  private void sendCancelledEvent(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
+  protected void sendCancelledEvent(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
               ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(),
@@ -90,7 +100,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     }
   }
 
-  private void dispatchActivityCancelled(ActivityExecution execution, ActivityImpl activity, ActivityImpl causeActivity) {
+  protected void dispatchActivityCancelled(ActivityExecution execution, ActivityImpl activity, ActivityImpl causeActivity) {
     Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(),
                     (String) activity.getProperties().get("name"),
@@ -100,6 +110,10 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
                     activity.getActivityBehavior().getClass().getCanonicalName(),
                     causeActivity)
     );
+  }
+  
+  public EndEvent getEndEvent() {
+    return this.endEvent;
   }
 
 }

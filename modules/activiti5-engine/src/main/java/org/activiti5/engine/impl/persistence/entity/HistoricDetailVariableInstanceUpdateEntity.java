@@ -42,6 +42,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   protected Object cachedValue;
 
   protected HistoricDetailVariableInstanceUpdateEntity() {
+    this.detailType = "VariableUpdate";
   }
 
   public static HistoricDetailVariableInstanceUpdateEntity copyAndInsert(VariableInstanceEntity variableInstance) {

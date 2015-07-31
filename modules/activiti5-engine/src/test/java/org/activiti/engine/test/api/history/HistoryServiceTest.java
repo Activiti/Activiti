@@ -362,6 +362,64 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     
     taskInstanceQuery = historyService.createHistoricTaskInstanceQuery().taskDefinitionKey("theTask").or().deploymentId("invalid").endOr();
     assertEquals(0, taskInstanceQuery.count());
+    
+    taskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
+        .or()
+          .taskDefinitionKey("theTask")
+          .deploymentId("invalid")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("invalid")
+        .endOr();
+    assertEquals(4, taskInstanceQuery.count());
+    
+    taskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
+        .or()
+          .taskDefinitionKey("theTask")
+          .deploymentId("invalid")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess2")
+          .processDefinitionId("invalid")
+        .endOr();
+    assertEquals(1, taskInstanceQuery.count());
+    
+    taskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
+        .or()
+          .taskDefinitionKey("theTask")
+          .deploymentId("invalid")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("invalid")
+        .endOr()
+        .processInstanceBusinessKey("1");
+    assertEquals(1, taskInstanceQuery.count());
+    
+    taskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
+        .or()
+          .taskDefinitionKey("theTask")
+          .deploymentId("invalid")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess2")
+          .processDefinitionId("invalid")
+        .endOr()
+        .processInstanceBusinessKey("1");
+    assertEquals(1, taskInstanceQuery.count());
+    
+    taskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
+        .or()
+          .taskDefinitionKey("theTask")
+          .deploymentId("invalid")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess2")
+          .processDefinitionId("invalid")
+        .endOr()
+        .processInstanceBusinessKey("2");
+    assertEquals(0, taskInstanceQuery.count());
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })

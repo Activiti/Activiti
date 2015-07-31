@@ -321,7 +321,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   }
   
   /**
-   * Testcase to reproduce ACT-950 (https://jira.codehaus.org/browse/ACT-950) 
+   * Testcase to reproduce ACT-950 (https://activiti.atlassian.net/browse/ACT-950)
    */
   @Deployment
   public void testFindActiveActivityIdProcessWithErrorEventAndSubProcess() {

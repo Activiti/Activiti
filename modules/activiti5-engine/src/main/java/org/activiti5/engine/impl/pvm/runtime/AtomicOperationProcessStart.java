@@ -42,7 +42,7 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
 
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
-  	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+  	if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
   	  Map<String, Object> variablesMap = null;
   	  try {
   	    variablesMap = execution.getVariables();
@@ -53,6 +53,8 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.ENTITY_INITIALIZED, 
     			    execution, variablesMap, false));
+      Context.getProcessEngineConfiguration().getEventDispatcher()
+              .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(execution, variablesMap, false));
     }
   	
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();

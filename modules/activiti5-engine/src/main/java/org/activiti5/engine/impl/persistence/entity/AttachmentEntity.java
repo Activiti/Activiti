@@ -43,6 +43,9 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   protected String userId;
   protected Date time;
 
+  public AttachmentEntity() {
+  }
+
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("name", name);

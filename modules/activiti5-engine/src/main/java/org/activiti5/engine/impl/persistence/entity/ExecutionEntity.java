@@ -251,12 +251,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected boolean forcedUpdate;
   
   protected List<VariableInstanceEntity> queryVariables;
-
-  public ExecutionEntity() {
-  }
   
   public ExecutionEntity(ActivityImpl activityImpl) {
     this.startingExecution = new StartingExecution(activityImpl);
+  }
+
+  public ExecutionEntity() {
   }
 
   /** creates a new execution. properties processDefinition, processInstance and activity will be initialized. */  
@@ -349,10 +349,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
-        Context
-          .getCommandContext()
-          .getJobEntityManager()
-          .schedule(timer);        
+        if (timer!=null) {
+          Context
+            .getCommandContext()
+            .getJobEntityManager()
+            .schedule(timer);
+        }
       }
     }
     

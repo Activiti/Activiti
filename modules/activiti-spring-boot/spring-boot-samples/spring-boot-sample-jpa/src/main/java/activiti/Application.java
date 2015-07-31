@@ -72,7 +72,7 @@ class PhotoService {
         System.out.println("--> # executions = " + waitingExecutions.size());
 
         for (Execution execution : waitingExecutions) {
-            runtimeService.signal(execution.getId());
+            runtimeService.trigger(execution.getId());
         }
 
         Task reviewTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

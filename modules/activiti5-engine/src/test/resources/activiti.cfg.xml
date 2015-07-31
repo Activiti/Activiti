@@ -5,12 +5,12 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="processEngineConfiguration"
-    class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+    class="org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration">
 
-    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
-    <property name="jdbcDriver" value="org.h2.Driver" />
-    <property name="jdbcUsername" value="sa" />
-    <property name="jdbcPassword" value="" />
+   <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
+   <property name="jdbcDriver" value="org.h2.Driver" />
+   <property name="jdbcUsername" value="sa" />
+   <property name="jdbcPassword" value="" />
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
@@ -30,7 +30,7 @@
     <property name="mailServers">
       <map>
         <entry key="myEmailTenant">
-          <bean class="org.activiti.engine.cfg.MailServerInfo">
+          <bean class="org.activiti5.engine.cfg.MailServerInfo">
             <property name="mailServerHost" value="localhost" />
             <property name="mailServerPort" value="5025" />
             <property name="mailServerUseSSL" value="false" />
@@ -46,7 +46,7 @@
     <property name="history" value="full" />
   </bean>
   
-  <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
+  <bean id="asyncExecutor" class="org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
     <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
     <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
   </bean>

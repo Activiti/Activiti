@@ -43,6 +43,9 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
       eventDefinition = intermediateEvent.getEventDefinitions().get(0);
     }
     
+    nestedActivityImpl.setAsync(intermediateEvent.isAsynchronous());
+    nestedActivityImpl.setExclusive(!intermediateEvent.isNotExclusive());
+    
     if (eventDefinition instanceof SignalEventDefinition) {
       bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
     } else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {

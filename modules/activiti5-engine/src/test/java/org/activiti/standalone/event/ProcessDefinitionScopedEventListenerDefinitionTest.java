@@ -116,7 +116,7 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 			} catch(ActivitiException ae) {
 				assertEquals("Exception while executing event-listener", ae.getMessage());
 				assertTrue(ae.getCause() instanceof ActivitiException);
-				assertEquals("couldn't instantiate class org.activiti.engine.test.api.event.UnexistingClass", ae.getCause().getMessage());
+				assertEquals("couldn't instantiate class org.activiti5.engine.test.api.event.UnexistingClass", ae.getCause().getMessage());
 				assertTrue(ae.getCause().getCause() instanceof ActivitiClassLoadingException);
 				assertTrue(ae.getCause().getCause().getCause() instanceof ClassNotFoundException);
 			}

@@ -186,6 +186,33 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 	}
 	
+	/**
+	 * Check deletion of links on process instances.
+	 */
+	@Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+	public void testProcessInstanceIdentityDeleteCandidateGroupEvents() throws Exception {
+	
+	  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+	
+	  Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+	  assertNotNull(task);
+
+	  // Add identity link
+	  taskService.addCandidateUser(task.getId(), "kermit");
+	  taskService.addCandidateGroup(task.getId(), "sales");
+
+	  // Three events are received, since the user link on the task also creates an involvement in the process. See previous test
+	  assertEquals(6, listener.getEventsReceived().size());
+
+	  listener.clearEventsReceived();
+	  taskService.deleteCandidateUser(task.getId(), "kermit");
+	  assertEquals(1, listener.getEventsReceived().size());
+
+	  listener.clearEventsReceived();
+	  taskService.deleteCandidateGroup(task.getId(), "sales");
+	  assertEquals(1, listener.getEventsReceived().size());
+	}
+	
 
 	@Override
 	protected void initializeServices() {

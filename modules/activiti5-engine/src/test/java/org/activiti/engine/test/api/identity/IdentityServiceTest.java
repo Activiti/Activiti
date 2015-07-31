@@ -97,6 +97,12 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     user = identityService.createUserQuery().userId("johndoe").singleResult();
     assertTrue("byte arrays differ", Arrays.equals("niceface".getBytes(), picture.getBytes()));
     assertEquals("image/string", picture.getMimeType());
+    
+    //interface defintion states that setting picture to null should delete it
+    identityService.setUserPicture(userId, null);
+    assertNull("it should be possible to nullify user picture",identityService.getUserPicture(userId));    
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
+    assertNull("it should be possible to delete user picture",identityService.getUserPicture(userId));
 
     identityService.deleteUser(user.getId());
   }

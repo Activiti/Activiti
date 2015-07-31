@@ -31,7 +31,7 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   
-  public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
+  public static final String CURRENT_MESSAGE = "org.activiti5.engine.impl.bpmn.CURRENT_MESSAGE";
 
   protected Operation operation;
   

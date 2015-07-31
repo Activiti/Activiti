@@ -44,7 +44,6 @@ public class AcquireAsyncJobsDueCmd implements Command<AcquiredJobEntities> {
     for (JobEntity job: jobs) {
       lockJob(commandContext, job, asyncExecutor.getAsyncJobLockTimeInMillis());
       acquiredJobs.addJob(job);
-      asyncExecutor.executeAsyncJob(job);
     }
     
     return acquiredJobs;

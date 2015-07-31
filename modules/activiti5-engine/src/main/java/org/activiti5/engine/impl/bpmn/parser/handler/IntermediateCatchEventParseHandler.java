@@ -14,7 +14,6 @@ package org.activiti5.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -40,7 +39,6 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
   
   protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
     
-    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
     ActivityImpl nestedActivity = null;
     EventDefinition eventDefinition = null;
     if (!event.getEventDefinitions().isEmpty()) {
@@ -50,6 +48,8 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
     if (eventDefinition == null) {
       
       nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
+      nestedActivity.setAsync(event.isAsynchronous());
+      nestedActivity.setExclusive(!event.isNotExclusive());
       
     } else {
       
@@ -61,6 +61,9 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
       } else {
         nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
       }
+      
+      nestedActivity.setAsync(event.isAsynchronous());
+      nestedActivity.setExclusive(!event.isNotExclusive());
       
       // Catch event behavior is the same for all types
       nestedActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));

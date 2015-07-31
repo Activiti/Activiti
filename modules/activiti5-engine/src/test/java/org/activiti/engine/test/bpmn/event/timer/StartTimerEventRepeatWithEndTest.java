@@ -13,6 +13,10 @@ package org.activiti.engine.test.bpmn.event.timer;
  * limitations under the License.
  */
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
@@ -22,10 +26,6 @@ import org.activiti5.engine.runtime.Clock;
 import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.task.Task;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author Vasile Dirla
@@ -92,13 +92,16 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
 
     // ADVANCE THE CLOCK
     // advance the clock to 11 dec -> the system will execute the pending job and will create a new one
-    moveByMinutes(60 * 24);
+    moveByMinutes(60 * 25);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 200);
       fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       //expected failure
     }
+    
+    jobs = managementService.createJobQuery().list();
+    assertEquals(1, jobs.size());
 
     // After the first startEvent Execution should be one process instance started
     processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -119,7 +122,7 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
 
     // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
     // 12 dec (last execution)
-    moveByMinutes(60 * 24);
+    moveByMinutes(60 * 25);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 200);
     } catch (Exception e) {

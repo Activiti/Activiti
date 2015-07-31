@@ -33,7 +33,7 @@ public class DueDateBusinessCalendar extends BusinessCalendarImpl {
     try {
       // check if due period was specified
       if(duedate.startsWith("P")){
-        return DateTime.now().plus(Period.parse(duedate)).toDate();
+        return new DateTime(clockReader.getCurrentTime()).plus(Period.parse(duedate)).toDate();
       }
 
       return DateTime.parse(duedate).toDate();

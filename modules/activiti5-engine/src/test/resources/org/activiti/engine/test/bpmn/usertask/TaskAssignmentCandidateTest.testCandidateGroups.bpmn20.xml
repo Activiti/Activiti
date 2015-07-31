@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskCandidateExampleFile"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <resource id="Bpmn_Resource_1" name="management"/>
+  <process id="taskCandidateExample">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+
+    <userTask id="theTask" name="make profit">
+      <potentialOwner id="Bpmn_ResourceRole_1">
+        <resourceRef>Bpmn_Resource_1</resourceRef>
+      </potentialOwner>
+    </userTask>
+    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theOtherTask" />
+    
+    <userTask id="theOtherTask" name="report profit">
+      <potentialOwner id="Bpmn_ResourceRole_2">
+        <resourceRef>Bpmn_Resource_2</resourceRef>
+      </potentialOwner>
+    </userTask>
+    
+    <sequenceFlow id="flow3" sourceRef="theOtherTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+  <resource id="Bpmn_Resource_2" name="accounting"/>
+
+</definitions>
