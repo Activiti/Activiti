@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.18.0-SNAPSHOT</version>
+  <version>5.18.0</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
@@ -1113,11 +1113,11 @@
   </developers>
   <issueManagement>
     <system>JIRA</system>
-    <url>http://jira.codehaus.org/browse/ACT</url>
+    <url>https://activiti.atlassian.net</url>
   </issueManagement>
   <ciManagement>
-    <system>Bamboo</system>
-    <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
+    <system>Jenkins</system>
+    <url>http://ec2-54-217-5-246.eu-west-1.compute.amazonaws.com:8080/jenkins</url>
   </ciManagement>
   <scm>
     <url>git@github.com:Activiti/Activiti.git</url>
