@@ -73,5 +73,6 @@ public class SequenceFlow extends FlowElement {
     setConditionExpression(otherFlow.getConditionExpression());
     setSourceRef(otherFlow.getSourceRef());
     setTargetRef(otherFlow.getTargetRef());
+    setSkipExpression(otherFlow.getSkipExpression());
   }
 }
