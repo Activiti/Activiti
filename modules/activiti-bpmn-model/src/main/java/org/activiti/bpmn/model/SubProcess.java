@@ -120,14 +120,16 @@ public class SubProcess extends Activity implements FlowElementsContainer {
         addFlowElement(clone);
       }
     }
-
-    /*
-     * flowElementList = new ArrayList<FlowElement>(); if (otherElement.getFlowElements() != null && otherElement.getFlowElements().size() > 0) { for (FlowElement element :
-     * otherElement.getFlowElements()) { flowElementList.add(element.clone()); } }
-     * 
-     * artifactList = new ArrayList<Artifact>(); if (otherElement.getArtifacts() != null && otherElement.getArtifacts().size() > 0) { for (Artifact artifact : otherElement.getArtifacts()) {
-     * artifactList.add(artifact.clone()); } }
-     */
+    
+    flowElementList.clear();
+    for (FlowElement flowElement : otherElement.getFlowElements()) {
+      addFlowElement(flowElement);
+    }
+    
+    artifactList.clear();
+    for (Artifact artifact : otherElement.getArtifacts()) {
+      addArtifact(artifact);
+    }
   }
 
   public List<ValuedDataObject> getDataObjects() {
