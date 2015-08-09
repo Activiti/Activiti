@@ -37,7 +37,7 @@ public class ThreadContextAssociationTest extends CdiActivitiTestCase {
     ProcessScopedMessageBean messageBean = (ProcessScopedMessageBean) runtimeService.getVariable(pid, "processScopedMessageBean");
     assertEquals("test", messageBean.getMessage());
 
-    runtimeService.signal(pid);
+    runtimeService.trigger(pid);
 
   }
 

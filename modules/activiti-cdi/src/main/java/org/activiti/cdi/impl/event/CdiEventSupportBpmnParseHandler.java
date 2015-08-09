@@ -15,6 +15,7 @@ package org.activiti.cdi.impl.event;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
@@ -23,6 +24,8 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.ParallelGateway;
@@ -45,9 +48,6 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 
 /**
@@ -94,53 +94,69 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
   }
 
   public void parse(BpmnParse bpmnParse, BaseElement element) {
+    
     if (element instanceof SequenceFlow) {
-       TransitionImpl transition = bpmnParse.getSequenceFlows().get(element.getId());
-       transition.addExecutionListener(new CdiExecutionListener(transition.getId()));
+      
+      SequenceFlow sequenceFlow = (SequenceFlow) element;
+      CdiExecutionListener listener = new CdiExecutionListener(sequenceFlow.getId());
+      createActivitiListener(sequenceFlow, ExecutionListener.EVENTNAME_TAKE, listener);
+      
     } else {
-      ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
+      
       if (element instanceof UserTask) {
-        addCreateListener(activity);
-        addAssignListener(activity);
-        addCompleteListener(activity);
-        addDeleteListener(activity);
+        
+        UserTask userTask = (UserTask) element;
+        
+        addCreateListener(userTask);
+        addAssignListener(userTask);
+        addCompleteListener(userTask);
+        addDeleteListener(userTask);
       }
-      if (activity != null) {
-        addStartEventListener(activity);
-        addEndEventListener(activity);
+      
+
+      if (element instanceof FlowElement) {
+        
+        FlowElement flowElement = (FlowElement) element;
+        
+        addStartEventListener(flowElement);
+        addEndEventListener(flowElement);
       }
+      
     }
   }
 
-  private void addCompleteListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
-    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_COMPLETE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.COMPLETE_TASK));
+  private void addCompleteListener(UserTask userTask) {
+    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(userTask);
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_COMPLETE, new CdiTaskListener(userTask.getId(), BusinessProcessEventType.COMPLETE_TASK));
   }
 
-  private void addAssignListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
-    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new CdiTaskListener(activity.getId(), BusinessProcessEventType.ASSIGN_TASK));
+  private void addAssignListener(UserTask userTask) {
+    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(userTask);
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new CdiTaskListener(userTask.getId(), BusinessProcessEventType.ASSIGN_TASK));
   }
 
-  private void addCreateListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
-    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_CREATE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.CREATE_TASK));
+  private void addCreateListener(UserTask userTask) {
+    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(userTask);
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_CREATE, new CdiTaskListener(userTask.getId(), BusinessProcessEventType.CREATE_TASK));
   }
 
-  protected void addDeleteListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
-    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_DELETE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.DELETE_TASK));
+  protected void addDeleteListener(UserTask userTask) {
+    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(userTask);
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_DELETE, new CdiTaskListener(userTask.getId(), BusinessProcessEventType.DELETE_TASK));
   }
 
-  protected void addEndEventListener(ActivityImpl activity) {
-    activity.addExecutionListener(ExecutionListener.EVENTNAME_END, new CdiExecutionListener(activity.getId(), BusinessProcessEventType.END_ACTIVITY));
+  protected void addEndEventListener(FlowElement flowElement) {
+    CdiExecutionListener listener = new CdiExecutionListener(flowElement.getId(), BusinessProcessEventType.END_ACTIVITY);
+    createActivitiListener(flowElement, ExecutionListener.EVENTNAME_END, listener);
   }
 
-  protected void addStartEventListener(ActivityImpl activity) {
-    activity.addExecutionListener(ExecutionListener.EVENTNAME_START, new CdiExecutionListener(activity.getId(), BusinessProcessEventType.START_ACTIVITY));
+  protected void addStartEventListener(FlowElement flowElement) {
+    CdiExecutionListener listener = new CdiExecutionListener(flowElement.getId(), BusinessProcessEventType.START_ACTIVITY);
+    createActivitiListener(flowElement, ExecutionListener.EVENTNAME_END, listener);
   }
 
-  private UserTaskActivityBehavior getUserTaskActivityBehavior(ActivityBehavior behavior) {
+  private UserTaskActivityBehavior getUserTaskActivityBehavior(UserTask userTask) {
+    Object behavior = userTask.getBehavior();
     if (behavior instanceof UserTaskActivityBehavior) {
       return (UserTaskActivityBehavior) behavior;
     } else if (behavior instanceof MultiInstanceActivityBehavior) {
@@ -149,4 +165,13 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
 
     return null;
   }
+  
+  protected void createActivitiListener(FlowElement flowElement, String event, Object instance) {
+    ActivitiListener listener = new ActivitiListener();
+    listener.setEvent(event);
+    listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_INSTANCE);
+    listener.setInstance(instance);
+    flowElement.getExecutionListeners().add(listener);
+  }
+  
 }

@@ -281,7 +281,7 @@ public class BusinessProcess implements Serializable {
   }
 
   /**
-   * Signals the current execution, see {@link RuntimeService#signal(String)}
+   * Signals the current execution, see {@link RuntimeService#trigger(String)}
    * <p/>
    * Ends the current unit of work (flushes changes to process variables set using {@link #setVariable(String, Object)} or made on {@link BusinessProcessScoped @BusinessProcessScoped} beans).
    * 
@@ -290,19 +290,19 @@ public class BusinessProcess implements Serializable {
    * @throws ActivitiException
    *           if the activiti command fails
    */
-  public void signalExecution() {
+  public void triggerExecution() {
     assertAssociated();
-    processEngine.getRuntimeService().signal(associationManager.getExecutionId(), getAndClearCachedVariables());
+    processEngine.getRuntimeService().trigger(associationManager.getExecutionId(), getAndClearCachedVariables());
     associationManager.disAssociate();
   }
 
   /**
-   * @see #signalExecution()
+   * @see #triggerExecution()
    * 
    *      In addition, this method allows to end the current conversation
    */
-  public void signalExecution(boolean endConversation) {
-    signalExecution();
+  public void triggerExecution(boolean endConversation) {
+    triggerExecution();
     if (endConversation) {
       conversationInstance.get().end();
     }
