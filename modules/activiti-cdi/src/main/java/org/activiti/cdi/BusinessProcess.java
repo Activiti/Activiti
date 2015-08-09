@@ -332,7 +332,7 @@ public class BusinessProcess implements Serializable {
       throw new ActivitiCdiException("Cannot resume task with id '" + taskId + "', no such task.");
     }
     associationManager.setTask(task);
-    associateExecutionById(task.getExecutionId());
+    associateExecutionById(task.getProcessInstanceId());
     return task;
   }
 

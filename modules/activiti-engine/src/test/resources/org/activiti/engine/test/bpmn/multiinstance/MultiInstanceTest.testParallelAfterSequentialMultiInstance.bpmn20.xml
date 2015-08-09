@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Tests">
-  <process id="process1" name="Process1" isExecutable="true">
+  <process id="multiInstance" name="Process1" isExecutable="true">
   
     <startEvent id="startevent1" name="Start"></startEvent>
     <sequenceFlow id="t1" sourceRef="startevent1" targetRef="service1"></sequenceFlow>
@@ -20,9 +20,6 @@
     <sequenceFlow id="t3" sourceRef="service2" targetRef="endevent1"></sequenceFlow>
     
     <endEvent id="endevent1" name="End"></endEvent>
-    
-    
-    
     
   </process>
 </definitions>

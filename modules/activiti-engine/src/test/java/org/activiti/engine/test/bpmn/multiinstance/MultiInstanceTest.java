@@ -1340,6 +1340,15 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 		assertEquals(1, TestEndExecutionListener.countWithoutLoopCounter.get());
   }
   
+  @Deployment
+  public void testParallelAfterSequentialMultiInstance() {
+    
+    // Used to throw a nullpointer exception
+    
+    runtimeService.startProcessInstanceByKey("multiInstance");
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
   protected void resetTestCounts() {
   	TestStartExecutionListener.countWithLoopCounter.set(0);
   	TestStartExecutionListener.countWithoutLoopCounter.set(0);

@@ -38,7 +38,9 @@ import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.common.i18n.UncheckedException;
 import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
+import org.apache.cxf.resource.URIResolver;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceInfo;
@@ -76,8 +78,23 @@ public class CxfWSDLImporter implements XMLImporter {
   
   public void importFrom(Import theImport, BpmnParse parse) {
     this.namespace = theImport.getNamespace() == null ? "" : theImport.getNamespace() + ":";
-    this.importFrom(theImport.getLocation());
+    try {
+      final URIResolver uriResolver = new URIResolver(parse.getSourceSystemId(), theImport.getLocation());
+      if (uriResolver.isResolved()) {
+          if (uriResolver.getURI() != null) {
+              this.importFrom(uriResolver.getURI().toString());
+          } else if (uriResolver.isFile()) {
+              this.importFrom(uriResolver.getFile().getAbsolutePath());
+          } else if (uriResolver.getURL() != null) {
+              this.importFrom(uriResolver.getURL().toString());
+          }
+      } else {
+          throw new UncheckedException(new Exception("Unresolved import against " + parse.getSourceSystemId()));
+      }
     this.transferImportsToParse(parse);
+    } catch (final IOException e) {
+      throw new UncheckedException(e);
+    }
   }
   
   private void transferImportsToParse(BpmnParse parse) {

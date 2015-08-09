@@ -104,6 +104,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     if (resolveNrOfInstances(execution) == 0) {
       // Empty collection, just leave.
+      removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       super.leave(execution);
     }
 
@@ -195,6 +196,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       }
 
     } else {
+      removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       super.leave(executionEntity);
     }
   }

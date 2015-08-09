@@ -108,6 +108,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
         ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionEntity, executionEntity.getParent());
       }
       
+      removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       super.leave(execution);
       
     } else {

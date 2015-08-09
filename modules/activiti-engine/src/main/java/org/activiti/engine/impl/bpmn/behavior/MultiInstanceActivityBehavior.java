@@ -283,6 +283,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return (Integer) execution.getVariableLocal(variableName);
   }
   
+  protected void removeLocalLoopVariable(ActivityExecution execution, String variableName) {
+    execution.removeVariableLocal(variableName);
+  }
+  
   /**
    * Since the first loop of the multi instance is not executed as a regular activity,
    * it is needed to call the start listeners yourself.
