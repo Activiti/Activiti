@@ -180,6 +180,7 @@ public class UserTask extends Task {
     setPriority(otherElement.getPriority());
     setCategory(otherElement.getCategory());
     setExtensionId(otherElement.getExtensionId());
+    setSkipExpression(otherElement.getSkipExpression());
     
     setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
     setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));

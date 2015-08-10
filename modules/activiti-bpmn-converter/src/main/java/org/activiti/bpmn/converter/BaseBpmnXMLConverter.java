@@ -93,9 +93,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       Artifact currentArtifact = (Artifact) parsedElement;
       currentArtifact.setId(elementId);
 
-      if (isInSubProcess(activeSubProcessList)) {
-        final SubProcess currentSubProcess = activeSubProcessList.get(activeSubProcessList.size() - 2);
-        currentSubProcess.addArtifact(currentArtifact);
+      if (!activeSubProcessList.isEmpty()) {
+        activeSubProcessList.get(activeSubProcessList.size() - 1).addArtifact(currentArtifact);
 
       } else {
         activeProcess.addArtifact(currentArtifact);
@@ -312,14 +311,6 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   
   protected List<String> parseDelimitedList(String expression) {
     return BpmnXMLUtil.parseDelimitedList(expression);
-  }
-  
-  private boolean isInSubProcess(List<SubProcess> subProcessList) {
-    if(subProcessList.size() > 1) {
-      return true;
-    } else {
-      return false;
-    }
   }
   
   // To XML converter convenience methods

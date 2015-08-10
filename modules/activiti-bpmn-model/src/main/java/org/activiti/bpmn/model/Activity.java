@@ -111,11 +111,9 @@ public abstract class Activity extends FlowNode {
       }
     }
     
-    boundaryEvents = new ArrayList<BoundaryEvent>();
-    if (otherActivity.getBoundaryEvents() != null && !otherActivity.getBoundaryEvents().isEmpty()) {
-      for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
-        boundaryEvents.add(event.clone());
-      }
+    boundaryEvents.clear();
+    for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
+      boundaryEvents.add(event);
     }
   }
 }

@@ -106,6 +106,7 @@ public class ServiceTask extends Task {
     setType(otherElement.getType());
     setOperationRef(otherElement.getOperationRef());
     setExtensionId(otherElement.getExtensionId());
+    setSkipExpression(otherElement.getSkipExpression());
 
     fieldExtensions = new ArrayList<FieldExtension>();
     if (otherElement.getFieldExtensions() != null && !otherElement.getFieldExtensions().isEmpty()) {

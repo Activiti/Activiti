@@ -232,7 +232,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
-  protected boolean isOptimizeDeleteOperationsEnabled;
+  protected int maxNrOfStatementsInBulkInsert = 100;
 
 
   public Class< ? > getSessionType() {
@@ -309,7 +309,13 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setDatabaseType(String databaseType) {
     this.databaseType = databaseType;
     this.statementMappings = databaseSpecificStatements.get(databaseType);
-    initBulkInsertEnabledMap(databaseType);
+  }
+  
+  public void setBulkInsertEnabled(boolean isBulkInsertEnabled, String databaseType) {
+  	// If false, just keep don't initialize the map. Memory saved.
+  	if (isBulkInsertEnabled) {
+  		initBulkInsertEnabledMap(databaseType);
+  	}
   }
   
   protected void initBulkInsertEnabledMap(String databaseType) {
@@ -326,7 +332,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
   
   public Boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
-  	return bulkInsertableMap.get(persistentObjectClass);
+  	return bulkInsertableMap != null && bulkInsertableMap.get(persistentObjectClass);
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -468,12 +474,12 @@ public class DbSqlSessionFactory implements SessionFactory {
 	  return tablePrefixIsSchema;
   }
 
-	public boolean isOptimizeDeleteOperationsEnabled() {
-		return isOptimizeDeleteOperationsEnabled;
+	public int getMaxNrOfStatementsInBulkInsert() {
+		return maxNrOfStatementsInBulkInsert;
 	}
 
-	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
-		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
+	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
 	
 }
