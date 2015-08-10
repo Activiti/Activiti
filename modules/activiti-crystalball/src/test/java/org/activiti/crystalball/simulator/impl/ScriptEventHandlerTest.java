@@ -29,7 +29,7 @@ public class ScriptEventHandlerTest extends ResourceActivitiTestCase {
     assertThat(simulationRunResult, is("Hello world!"));
 
     // process end
-    runtimeService.signal(simulationExperiment.getId());
+    runtimeService.trigger(simulationExperiment.getId());
     // no process instance is running
     assertEquals( 0, runtimeService.createExecutionQuery().count());
   }

@@ -73,7 +73,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
         return ctx;
       }
     }
-    throw new ActivitiException("Could not find camel context for " + processName + " names are " + names);
+    throw new ActivitiException("Could not find camel context for " + processKey + " names are " + names);
   }
 
   private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
@@ -91,7 +91,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
   }
 
   private String getProcessKey(ActivityExecution execution) {
-    Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
     return process.getId();
   }
 
