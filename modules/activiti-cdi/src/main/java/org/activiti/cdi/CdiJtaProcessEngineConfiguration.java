@@ -12,6 +12,7 @@
  */
 package org.activiti.cdi;
 
+import org.activiti.cdi.impl.CdiCommandInvoker;
 import org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration;
 
 /**
@@ -23,4 +24,12 @@ public class CdiJtaProcessEngineConfiguration extends JtaProcessEngineConfigurat
   protected void initExpressionManager() {
     expressionManager = new CdiExpressionManager();
   }
+  
+  @Override
+  protected void initCommandInvoker() {
+    if (commandInvoker == null) {
+      commandInvoker = new CdiCommandInvoker();
+    }
+  }
+  
 }

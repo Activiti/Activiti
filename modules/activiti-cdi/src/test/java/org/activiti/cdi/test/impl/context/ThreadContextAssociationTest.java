@@ -30,14 +30,12 @@ public class ThreadContextAssociationTest extends CdiActivitiTestCase {
   public void testBusinessProcessScopedWithJobExecutor() throws InterruptedException {
     String pid = runtimeService.startProcessInstanceByKey("processkey").getId();
 
-    waitForJobExecutorToProcessAllJobs(5000l, 25l);
+    waitForJobExecutorToProcessAllJobs(50000000L, 100L);
 
     assertNull(managementService.createJobQuery().singleResult());
 
     ProcessScopedMessageBean messageBean = (ProcessScopedMessageBean) runtimeService.getVariable(pid, "processScopedMessageBean");
     assertEquals("test", messageBean.getMessage());
-
-    runtimeService.trigger(pid);
 
   }
 

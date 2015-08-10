@@ -63,10 +63,16 @@ public class CommandInvoker extends AbstractCommandInterceptor {
   public void executeOperation(Runnable runnable) {
     if (runnable instanceof AbstractOperation) {
       AbstractOperation operation = (AbstractOperation) runnable;
+      
+      // Execute the operation if the operation has no execution (i.e. it's an operation not working on a process instance)
+      // or the operation has an execution and it is not ended
       if (operation.getExecution() == null || !operation.getExecution().isEnded()) {
+        
         logger.debug("Executing operation " + operation.getClass());
         runnable.run();
+        
       }
+      
     } else {
       runnable.run();
     }

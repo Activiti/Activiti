@@ -308,49 +308,35 @@ public class ActivitiEventBuilder {
   }
 
   protected static void populateEventWithCurrentContext(ActivitiEventImpl event) {
-    boolean extractedFromContext = false;
-    if (Context.isExecutionContextActive()) {
-      ExecutionContext executionContext = Context.getExecutionContext();
-      if (executionContext != null) {
-        extractedFromContext = true;
-        event.setExecutionId(executionContext.getExecution().getId());
-        event.setProcessInstanceId(executionContext.getExecution().getProcessInstanceId());
-        event.setProcessDefinitionId(executionContext.getExecution().getProcessDefinitionId());
-      }
-    }
-
-    // Fallback to fetching context from the object itself
-    if (!extractedFromContext) {
-      if (event instanceof ActivitiEntityEvent) {
-        Object persistendObject = ((ActivitiEntityEvent) event).getEntity();
-        if (persistendObject instanceof Job) {
-          event.setExecutionId(((Job) persistendObject).getExecutionId());
-          event.setProcessInstanceId(((Job) persistendObject).getProcessInstanceId());
-          event.setProcessDefinitionId(((Job) persistendObject).getProcessDefinitionId());
-        } else if (persistendObject instanceof DelegateExecution) {
-          event.setExecutionId(((DelegateExecution) persistendObject).getId());
-          event.setProcessInstanceId(((DelegateExecution) persistendObject).getProcessInstanceId());
-          event.setProcessDefinitionId(((DelegateExecution) persistendObject).getProcessDefinitionId());
-        } else if (persistendObject instanceof IdentityLinkEntity) {
-          IdentityLinkEntity idLink = (IdentityLinkEntity) persistendObject;
-          if (idLink.getProcessDefinitionId() != null) {
-            event.setProcessDefinitionId(idLink.getProcessDefId());
-          } else if (idLink.getProcessInstance() != null) {
-            event.setProcessDefinitionId(idLink.getProcessInstance().getProcessDefinitionId());
-            event.setProcessInstanceId(idLink.getProcessInstanceId());
-            event.setExecutionId(idLink.getProcessInstanceId());
-          } else if (idLink.getTask() != null) {
-            event.setProcessDefinitionId(idLink.getTask().getProcessDefinitionId());
-            event.setProcessInstanceId(idLink.getTask().getProcessInstanceId());
-            event.setExecutionId(idLink.getTask().getExecutionId());
-          }
-        } else if (persistendObject instanceof Task) {
-          event.setProcessInstanceId(((Task) persistendObject).getProcessInstanceId());
-          event.setExecutionId(((Task) persistendObject).getExecutionId());
-          event.setProcessDefinitionId(((Task) persistendObject).getProcessDefinitionId());
-        } else if (persistendObject instanceof ProcessDefinition) {
-          event.setProcessDefinitionId(((ProcessDefinition) persistendObject).getId());
+    if (event instanceof ActivitiEntityEvent) {
+      Object persistendObject = ((ActivitiEntityEvent) event).getEntity();
+      if (persistendObject instanceof Job) {
+        event.setExecutionId(((Job) persistendObject).getExecutionId());
+        event.setProcessInstanceId(((Job) persistendObject).getProcessInstanceId());
+        event.setProcessDefinitionId(((Job) persistendObject).getProcessDefinitionId());
+      } else if (persistendObject instanceof DelegateExecution) {
+        event.setExecutionId(((DelegateExecution) persistendObject).getId());
+        event.setProcessInstanceId(((DelegateExecution) persistendObject).getProcessInstanceId());
+        event.setProcessDefinitionId(((DelegateExecution) persistendObject).getProcessDefinitionId());
+      } else if (persistendObject instanceof IdentityLinkEntity) {
+        IdentityLinkEntity idLink = (IdentityLinkEntity) persistendObject;
+        if (idLink.getProcessDefinitionId() != null) {
+          event.setProcessDefinitionId(idLink.getProcessDefId());
+        } else if (idLink.getProcessInstance() != null) {
+          event.setProcessDefinitionId(idLink.getProcessInstance().getProcessDefinitionId());
+          event.setProcessInstanceId(idLink.getProcessInstanceId());
+          event.setExecutionId(idLink.getProcessInstanceId());
+        } else if (idLink.getTask() != null) {
+          event.setProcessDefinitionId(idLink.getTask().getProcessDefinitionId());
+          event.setProcessInstanceId(idLink.getTask().getProcessInstanceId());
+          event.setExecutionId(idLink.getTask().getExecutionId());
         }
+      } else if (persistendObject instanceof Task) {
+        event.setProcessInstanceId(((Task) persistendObject).getProcessInstanceId());
+        event.setExecutionId(((Task) persistendObject).getExecutionId());
+        event.setProcessDefinitionId(((Task) persistendObject).getProcessDefinitionId());
+      } else if (persistendObject instanceof ProcessDefinition) {
+        event.setProcessDefinitionId(((ProcessDefinition) persistendObject).getId());
       }
     }
   }

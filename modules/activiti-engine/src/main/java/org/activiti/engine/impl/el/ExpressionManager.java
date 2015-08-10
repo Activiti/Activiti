@@ -116,9 +116,7 @@ public class ExpressionManager {
     elResolver.add(new ArrayELResolver());
     elResolver.add(new ListELResolver());
     elResolver.add(new MapELResolver());
-    elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue")); // TODO:
-                                                                                                             // needs
-                                                                                                             // verification
+    elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue")); // TODO: needs verification
     elResolver.add(new BeanELResolver());
     return elResolver;
   }

@@ -208,9 +208,6 @@ public class CommandContext {
       this.exception = exception;
 
     } else {
-      if (Context.isExecutionContextActive()) {
-        LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());
-      }
       log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
       LogMDC.clear();
     }
