@@ -317,6 +317,13 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
             executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
           } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            Object executionListenerInstance = activitiListener.getInstance();
+            if (executionListenerInstance instanceof ExecutionListener) {
+              executionListener = (ExecutionListener) executionListenerInstance;
+            } else {
+              LOGGER.warn("Execution listener instance " + executionListenerInstance + " is not of type " + ExecutionListener.class);
+            }
           }
 
           if (executionListener != null) {
@@ -354,6 +361,13 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
             executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
           } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            Object executionListenerInstance = activitiListener.getInstance();
+            if (executionListenerInstance instanceof ExecutionListener) {
+              executionListener = (ExecutionListener) executionListenerInstance;
+            } else {
+              LOGGER.warn("Execution listener instance " + executionListenerInstance + " is not of type " + ExecutionListener.class);
+            }
           }
 
           if (executionListener != null) {

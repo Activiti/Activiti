@@ -57,7 +57,8 @@ public class EventNotificationTest extends CdiActivitiTestCase {
     TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
     listenerBean.reset();
 
-    assertEquals(0, listenerBean.getEndActivityService1());
+    assertEquals(0, listenerBean.getEndActivityService1WithLoopCounter());
+    assertEquals(0, listenerBean.getEndActivityService1WithoutLoopCounter());
     assertEquals(0, listenerBean.getStartActivityService1WithoutLoopCounter());
     assertEquals(0, listenerBean.getTakeTransitiont1());
 
@@ -65,7 +66,7 @@ public class EventNotificationTest extends CdiActivitiTestCase {
     runtimeService.startProcessInstanceByKey("process1");
 
     // assert
-    assertEquals(1, listenerBean.getEndActivityService1());
+    assertEquals(1, listenerBean.getEndActivityService1WithoutLoopCounter());
     assertEquals(1, listenerBean.getStartActivityService1WithoutLoopCounter());
     assertEquals(1, listenerBean.getTakeTransitiont1());
   }

@@ -144,14 +144,14 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
     UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(userTask);
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_DELETE, new CdiTaskListener(userTask.getId(), BusinessProcessEventType.DELETE_TASK));
   }
+  
+  protected void addStartEventListener(FlowElement flowElement) {
+    CdiExecutionListener listener = new CdiExecutionListener(flowElement.getId(), BusinessProcessEventType.START_ACTIVITY);
+    createActivitiListener(flowElement, ExecutionListener.EVENTNAME_START, listener);
+  }
 
   protected void addEndEventListener(FlowElement flowElement) {
     CdiExecutionListener listener = new CdiExecutionListener(flowElement.getId(), BusinessProcessEventType.END_ACTIVITY);
-    createActivitiListener(flowElement, ExecutionListener.EVENTNAME_END, listener);
-  }
-
-  protected void addStartEventListener(FlowElement flowElement) {
-    CdiExecutionListener listener = new CdiExecutionListener(flowElement.getId(), BusinessProcessEventType.START_ACTIVITY);
     createActivitiListener(flowElement, ExecutionListener.EVENTNAME_END, listener);
   }
 
