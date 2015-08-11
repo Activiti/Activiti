@@ -11,7 +11,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.task.IdentityLink;
 
 public interface HistoryManager extends Session {
@@ -70,7 +69,7 @@ public interface HistoryManager extends Session {
   /**
    * Replaces any open historic activityInstances' execution-id's to the id of the replaced execution, if activity history is enabled.
    */
-  public abstract void recordExecutionReplacedBy(ExecutionEntity execution, InterpretableExecution replacedBy);
+  public abstract void recordExecutionReplacedBy(ExecutionEntity execution, ExecutionEntity replacedBy);
 
   /**
    * Record a change of the process-definition id of a process instance, if activity history is enabled.

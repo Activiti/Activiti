@@ -19,7 +19,7 @@ import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Tom Baeyens
@@ -78,7 +78,7 @@ public class Context {
     return stack != null && !stack.isEmpty();
   }
 
-  public static void setExecutionContext(InterpretableExecution execution) {
+  public static void setExecutionContext(ExecutionEntity execution) {
     getStack(executionContextStackThreadLocal).push(new ExecutionContext(execution));
   }
 

@@ -15,7 +15,7 @@ package org.activiti.cdi.impl;
 import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * A customized version of the default {@link CommandInvoker} for use with CDI.
@@ -35,7 +35,7 @@ public class CdiCommandInvoker extends CommandInvoker {
     if (runnable instanceof AbstractOperation) {
       AbstractOperation operation = (AbstractOperation) runnable;
       if (operation.getExecution() != null) {
-        Context.setExecutionContext((InterpretableExecution) operation.getExecution());
+        Context.setExecutionContext((ExecutionEntity) operation.getExecution());
         executionContextSet = true;
       }
     }
