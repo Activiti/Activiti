@@ -46,7 +46,6 @@ import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.ValidateBpmnModelCmd;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
-import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -133,7 +132,7 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return commandExecutor.execute(new GetBpmnModelCmd(processDefinitionId));
   }
 
-  public ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
+  public ProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
   }
 

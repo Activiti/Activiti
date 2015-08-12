@@ -20,7 +20,6 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -45,7 +44,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/db/processOne.bpmn20.xml").deploy().getId();
 
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(procDefId);
+    ProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(procDefId);
 
     assertEquals(procDefId, processDefinition.getId());
     assertEquals("Process One", processDefinition.getName());
