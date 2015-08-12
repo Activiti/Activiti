@@ -26,7 +26,6 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -47,7 +46,7 @@ public class ScopeUtil {
       if (eventSubscription.getConfiguration() != null) {
         compensatingExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(eventSubscription.getConfiguration());
         // move the compensating execution under this execution:
-        compensatingExecution.setParent((InterpretableExecution) execution);
+        compensatingExecution.setParent((ExecutionEntity) execution);
         compensatingExecution.setEventScope(false);
       } else {
         compensatingExecution = (ExecutionEntity) execution.createExecution();

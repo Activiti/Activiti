@@ -22,14 +22,15 @@ public class ScriptEventHandlerTest extends ResourceActivitiTestCase {
   public void testSimpleScriptExecution() throws Exception {
     ProcessInstance simulationExperiment = runtimeService.startProcessInstanceByKey("resultVariableSimulationRun");
     // all simulationManager executions are finished
-    assertEquals(1, runtimeService.createExecutionQuery().count());
+    assertEquals(2, runtimeService.createExecutionQuery().count());
 
     String simulationRunResult = (String) runtimeService.getVariable(simulationExperiment.getProcessInstanceId(), "simulationRunResult");
     // simulation run check - process variable has to be set to the value.
     assertThat(simulationRunResult, is("Hello world!"));
 
     // process end
-    runtimeService.signal(simulationExperiment.getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(simulationExperiment.getId())
+        .onlyChildExecutions().singleResult().getId());
     // no process instance is running
     assertEquals( 0, runtimeService.createExecutionQuery().count());
   }

@@ -32,7 +32,6 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.BitMaskUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -48,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author Saeid Mirzaei
  */
 
-public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, Execution, ProcessInstance, InterpretableExecution, PersistentObject,
+public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, Execution, ProcessInstance, PersistentObject,
     HasRevision {
 
   private static final long serialVersionUID = 1L;
@@ -465,8 +464,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
   }
 
-  public void setProcessInstance(InterpretableExecution processInstance) {
-    this.processInstance = (ExecutionEntity) processInstance;
+  public void setProcessInstance(ExecutionEntity processInstance) {
+    this.processInstance = processInstance;
     if (processInstance != null) {
       this.processInstanceId = this.processInstance.getId();
     }
@@ -491,11 +490,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
   }
 
-  public void setParent(InterpretableExecution parent) {
-    this.parent = (ExecutionEntity) parent;
+  public void setParent(ExecutionEntity parent) {
+    this.parent = parent;
 
     if (parent != null) {
-      this.parentId = ((ExecutionEntity) parent).getId();
+      this.parentId = parent.getId();
     } else {
       this.parentId = null;
     }
@@ -537,8 +536,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return subProcessInstance;
   }
 
-  public void setSubProcessInstance(InterpretableExecution subProcessInstance) {
-    this.subProcessInstance = (ExecutionEntity) subProcessInstance;
+  public void setSubProcessInstance(ExecutionEntity subProcessInstance) {
+    this.subProcessInstance = subProcessInstance;
   }
 
   protected void ensureSubProcessInstanceInitialized() {
@@ -611,8 +610,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
 
     // remove all child executions and sub process instances:
-    List<InterpretableExecution> executions = new ArrayList<InterpretableExecution>(getExecutions());
-    for (InterpretableExecution childExecution : executions) {
+    List<ExecutionEntity> executions = new ArrayList<ExecutionEntity>(getExecutions());
+    for (ExecutionEntity childExecution : executions) {
       if (childExecution.getSubProcessInstance() != null) {
         childExecution.getSubProcessInstance().deleteCascade(reason);
       }
@@ -626,8 +625,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   private void removeEventScopes() {
-    List<InterpretableExecution> childExecutions = new ArrayList<InterpretableExecution>(getExecutions());
-    for (InterpretableExecution childExecution : childExecutions) {
+    List<ExecutionEntity> childExecutions = new ArrayList<ExecutionEntity>(getExecutions());
+    for (ExecutionEntity childExecution : childExecutions) {
       if (childExecution.isEventScope()) {
         log.debug("removing eventScope {}", childExecution);
         childExecution.destroy();
@@ -672,8 +671,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void setReplacedBy(InterpretableExecution replacedBy) {
-    this.replacedBy = (ExecutionEntity) replacedBy;
+  public void setReplacedBy(ExecutionEntity replacedBy) {
+    this.replacedBy = replacedBy;
 
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
@@ -717,13 +716,13 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // update the related jobs
     List<JobEntity> jobs = getJobs();
     for (JobEntity job : jobs) {
-      job.setExecution((ExecutionEntity) replacedBy);
+      job.setExecution(replacedBy);
     }
 
     // update the related event subscriptions
     List<EventSubscriptionEntity> eventSubscriptions = getEventSubscriptions();
     for (EventSubscriptionEntity subscriptionEntity : eventSubscriptions) {
-      subscriptionEntity.setExecution((ExecutionEntity) replacedBy);
+      subscriptionEntity.setExecution(replacedBy);
     }
 
     // update the related process variables

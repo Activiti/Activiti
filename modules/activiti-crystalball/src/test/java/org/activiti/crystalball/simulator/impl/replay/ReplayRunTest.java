@@ -124,7 +124,11 @@ public class ReplayRunTest {
       setHistory("full").
       setDatabaseSchemaUpdate("drop-create").
       setJobExecutorActivate(false);
-    configuration.setCustomDefaultBpmnParseHandlers(Arrays.<BpmnParseHandler>asList(new AddListenerUserTaskParseHandler(TaskListener.EVENTNAME_CREATE, new UserTaskExecutionListener(USER_TASK_COMPLETED_EVENT_TYPE, USER_TASK_COMPLETED_EVENT_TYPE, listener.getSimulationEvents()))));
+    configuration.setCustomDefaultBpmnParseHandlers(
+        Arrays.<BpmnParseHandler>asList(
+            new AddListenerUserTaskParseHandler(TaskListener.EVENTNAME_CREATE, 
+            new UserTaskExecutionListener(USER_TASK_COMPLETED_EVENT_TYPE, USER_TASK_COMPLETED_EVENT_TYPE, listener.getSimulationEvents()))
+        ));
     configuration.setEventListeners(Arrays.<ActivitiEventListener>asList(listener));
     return configuration;
   }

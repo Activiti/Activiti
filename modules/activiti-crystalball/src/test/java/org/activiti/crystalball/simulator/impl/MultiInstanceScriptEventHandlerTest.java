@@ -22,7 +22,7 @@ public class MultiInstanceScriptEventHandlerTest extends ResourceActivitiTestCas
   public void testSequentialSimulationRun() throws Exception {
     ProcessInstance simulationExperiment = runtimeService.startProcessInstanceByKey("multiInstanceResultVariablesSimulationRun");
     // all simulationManager executions are finished
-    assertEquals(1, runtimeService.createExecutionQuery().count());
+    assertEquals(2, runtimeService.createExecutionQuery().count());
 
     // simulation run check - process variables has to be set to the value. "Hello worldX!"
     String simulationRunResult = (String) runtimeService.getVariable(simulationExperiment.getProcessInstanceId(), "simulationRunResult-0");
@@ -37,7 +37,8 @@ public class MultiInstanceScriptEventHandlerTest extends ResourceActivitiTestCas
     assertThat(simulationRunResult, is("Hello world4!"));
 
     // process end
-    runtimeService.signal(simulationExperiment.getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery()
+        .onlyChildExecutions().singleResult().getId());
     // no process instance is running
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }

@@ -16,7 +16,6 @@ package org.activiti.engine.impl.context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
@@ -26,8 +25,8 @@ public class ExecutionContext {
 
   protected ExecutionEntity execution;
 
-  public ExecutionContext(InterpretableExecution execution) {
-    this.execution = (ExecutionEntity) execution;
+  public ExecutionContext(ExecutionEntity execution) {
+    this.execution = execution;
   }
 
   public ExecutionEntity getExecution() {

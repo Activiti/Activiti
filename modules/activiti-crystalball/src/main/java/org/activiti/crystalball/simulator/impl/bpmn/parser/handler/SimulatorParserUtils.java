@@ -13,19 +13,13 @@ package org.activiti.crystalball.simulator.impl.bpmn.parser.handler;
  * limitations under the License.
  */
 
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.ExtensionElement;
-import org.activiti.crystalball.simulator.delegate.AbstractSimulationActivityBehavior;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides basic utilities for other simulation parsers
@@ -43,25 +37,25 @@ final class SimulatorParserUtils {
   private static final String SIMULATION_BEHAVIOR = "behavior";
   private static final String SIMULATION_CLASS_NAME = "className";
 
-  static void setSimulationBehavior(ScopeImpl scope, BaseElement baseElement) {
-
-    String behaviorClassName = getBehaviorClassName(baseElement);
-    if (behaviorClassName != null) {
-      ProcessDefinitionImpl processDefinition = scope.getProcessDefinition();
-      ActivityImpl activity = processDefinition.findActivity(baseElement.getId());
-
-      LOG.debug("Scripting task [" + activity.getId() + "] setting behavior to [" + behaviorClassName + "]");
-      try {
-        @SuppressWarnings("unchecked")
-        Class<AbstractSimulationActivityBehavior> behaviorClass = (Class<AbstractSimulationActivityBehavior>) Class.forName(behaviorClassName);
-        Constructor<AbstractSimulationActivityBehavior> constructor = behaviorClass.getDeclaredConstructor(ScopeImpl.class, ActivityImpl.class);
-        activity.setActivityBehavior(constructor.newInstance(scope, activity));
-      } catch (Throwable t) {
-        LOG.error("unable to set simulation behavior class[" + behaviorClassName + "]", t);
-        throw new ActivitiException("unable to set simulation behavior class[" + behaviorClassName + "]");
-      }
-    }
-  }
+//  static void setSimulationBehavior(ScopeImpl scope, BaseElement baseElement) {
+//
+//    String behaviorClassName = getBehaviorClassName(baseElement);
+//    if (behaviorClassName != null) {
+//      ProcessDefinitionImpl processDefinition = scope.getProcessDefinition();
+//      ActivityImpl activity = processDefinition.findActivity(baseElement.getId());
+//
+//      LOG.debug("Scripting task [" + activity.getId() + "] setting behavior to [" + behaviorClassName + "]");
+//      try {
+//        @SuppressWarnings("unchecked")
+//        Class<AbstractSimulationActivityBehavior> behaviorClass = (Class<AbstractSimulationActivityBehavior>) Class.forName(behaviorClassName);
+//        Constructor<AbstractSimulationActivityBehavior> constructor = behaviorClass.getDeclaredConstructor(ScopeImpl.class, ActivityImpl.class);
+//        activity.setActivityBehavior(constructor.newInstance(scope, activity));
+//      } catch (Throwable t) {
+//        LOG.error("unable to set simulation behavior class[" + behaviorClassName + "]", t);
+//        throw new ActivitiException("unable to set simulation behavior class[" + behaviorClassName + "]");
+//      }
+//    }
+//  }
 
   private static String getBehaviorClassName(BaseElement baseElement) {
     final Map<String, List<ExtensionElement>> extensionElements = baseElement.getExtensionElements();

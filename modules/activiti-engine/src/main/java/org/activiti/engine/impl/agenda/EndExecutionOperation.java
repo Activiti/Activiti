@@ -16,17 +16,13 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -147,7 +143,7 @@ public class EndExecutionOperation extends AbstractOperation {
       String processInstanceId = executionEntity.getId(); // No parent execution == process instance id
       logger.debug("No parent execution found. Verifying if process instance {} can be stopped.", processInstanceId);
 
-      InterpretableExecution superExecution = executionEntity.getSuperExecution();
+      ExecutionEntity superExecution = executionEntity.getSuperExecution();
       SubProcessActivityBehavior subProcessActivityBehavior = null;
 
       // copy variables before destroying the ended sub process instance (call activity)

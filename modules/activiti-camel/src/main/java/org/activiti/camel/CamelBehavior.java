@@ -109,7 +109,11 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     final ActivitiEndpoint endpoint = createEndpoint(execution);
     final Exchange exchange = createExchange(execution, endpoint);
 
-    endpoint.process(exchange);
+    try {
+      endpoint.process(exchange);
+    } catch (Exception e) {
+      throw new ActivitiException("Exception while processing exchange", e);
+    }
     execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     if (!handleCamelException(exchange, execution))
       leave(execution);

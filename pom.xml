@@ -234,11 +234,6 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-diagram-rest</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
         <artifactId>activiti-rest</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -743,7 +738,6 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
-        <module>modules/activiti-diagram-rest</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-spring</module>
@@ -890,7 +884,6 @@
         <!--  <module>modules/activiti-spring-boot</module> -->
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
-        <module>modules/activiti-diagram-rest</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
