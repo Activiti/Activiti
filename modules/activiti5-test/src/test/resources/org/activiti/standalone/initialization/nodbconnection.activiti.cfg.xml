@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  
+    <!-- Database configurations -->
+    <property name="jdbcUrl" value="jdbc:h2:tcp://non-existing-host/non-existing-db;DB_CLOSE_DELAY=1000" />
+    
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="false" />
+    
+  </bean>
+
+</beans>

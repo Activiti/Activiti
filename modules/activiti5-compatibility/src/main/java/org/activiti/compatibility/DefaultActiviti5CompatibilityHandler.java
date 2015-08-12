@@ -22,6 +22,7 @@ import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
@@ -37,8 +38,6 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   protected DefaultProcessEngineFactory processEngineFactory;
   protected ProcessEngine processEngine;
   
-
-  @Override
   public Deployment deploy(DeploymentBuilderImpl activiti6DeploymentBuilder) {
     DeploymentBuilder deploymentBuilder = getProcessEngine().getRepositoryService().createDeployment();
     
@@ -86,7 +85,6 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     return new Activiti5DeploymentWrapper(deploymentBuilder.deploy());
   }
   
-  @Override
   public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, 
       Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
     
@@ -96,9 +94,31 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     
   }
   
-  @Override
   public void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
     getProcessEngine().getTaskService().complete(taskEntity.getId(), variables, localScope);
+  }
+  
+  public void trigger(String executionId, Map<String, Object> processVariables) {
+    getProcessEngine().getRuntimeService().signal(executionId, processVariables);
+  }
+  
+  public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables) {
+    getProcessEngine().getRuntimeService().signalEventReceived(signalName, executionId, processVariables);
+  }
+  
+  public void signalEventReceived(SignalEventSubscriptionEntity signalEventSubscriptionEntity, Object payload, boolean async) {
+    org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity activiti5SignalEvent = new org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity();
+    activiti5SignalEvent.setId(signalEventSubscriptionEntity.getId());
+    activiti5SignalEvent.setExecutionId(signalEventSubscriptionEntity.getId());
+    activiti5SignalEvent.setActivityId(signalEventSubscriptionEntity.getActivityId());
+    activiti5SignalEvent.setEventName(signalEventSubscriptionEntity.getEventName());
+    activiti5SignalEvent.setEventType(signalEventSubscriptionEntity.getEventType());
+    activiti5SignalEvent.setConfiguration(signalEventSubscriptionEntity.getConfiguration());
+    activiti5SignalEvent.setProcessDefinitionId(signalEventSubscriptionEntity.getProcessDefinitionId());
+    activiti5SignalEvent.setProcessInstanceId(signalEventSubscriptionEntity.getProcessInstanceId());
+    activiti5SignalEvent.setTenantId(signalEventSubscriptionEntity.getTenantId());
+    activiti5SignalEvent.setRevision(signalEventSubscriptionEntity.getRevision());
+    activiti5SignalEvent.eventReceived(payload, async);
   }
   
   protected ProcessEngine getProcessEngine() {
@@ -113,7 +133,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
 
   public DefaultProcessEngineFactory getProcessEngineFactory() {
-    if(processEngineFactory == null) {
+    if (processEngineFactory == null) {
       processEngineFactory = new DefaultProcessEngineFactory();
     }
     return processEngineFactory;

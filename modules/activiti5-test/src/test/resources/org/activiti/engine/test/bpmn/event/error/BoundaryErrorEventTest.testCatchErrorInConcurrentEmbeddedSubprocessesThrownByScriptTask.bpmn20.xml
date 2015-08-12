@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
+  
+  <error id="error1" errorCode="1" />
+  <error id="error2" errorCode="2" />
+  
+	<process id="catchErrorInConcurrentEmbeddedSubprocessesThrownByScriptTask">
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow0" sourceRef="theStart" targetRef="outerSubProcess" />
+		
+		<subProcess id="outerSubProcess">
+		
+			<startEvent id="outerSubProcessStart"/>
+			<sequenceFlow id="flow1" sourceRef="outerSubProcessStart" targetRef="fork" />
+			<parallelGateway gatewayDirection="Diverging" id="fork" /> 
+			<sequenceFlow id="flow2" sourceRef="fork" targetRef="innerSubProcess1" />
+			<sequenceFlow id="flow3" sourceRef="fork" targetRef="innerSubProcess2" />
+			
+			<subProcess id="innerSubProcess1">
+				<startEvent id="innerSubProcess1Start" />
+				<sequenceFlow id="flow4" sourceRef="innerSubProcess1Start" targetRef="taskA" />
+				<userTask id="taskA" name="task A" />
+				<sequenceFlow id="flow5" sourceRef="taskA" targetRef="innerSubProcess1ScriptTask" />
+				<scriptTask id="innerSubProcess1ScriptTask" scriptFormat="groovy">
+				  <script>
+				    throw new org.activiti.engine.delegate.BpmnError("1");
+				  </script>
+				</scriptTask>
+			</subProcess>
+			<sequenceFlow id="flow6" sourceRef="innerSubProcess1" targetRef="subProcessEnd1" />
+			<endEvent id="subProcessEnd1" />
+			
+			<subProcess id="innerSubProcess2">
+        <startEvent id="innerSubProcess2Start" />
+        <sequenceFlow id="flow7" sourceRef="innerSubProcess2Start" targetRef="taskB" />
+        <userTask id="taskB" name="task B" />
+        <sequenceFlow id="flow8" sourceRef="taskB" targetRef="innerSubProcess2ScriptTask" />
+        <scriptTask id="innerSubProcess2ScriptTask" scriptFormat="groovy">
+          <script>
+            throw new org.activiti.engine.delegate.BpmnError("2", "Optional Message");
+          </script>
+        </scriptTask>
+      </subProcess>
+      <sequenceFlow id="flow9" sourceRef="innerSubProcess2" targetRef="subProcessEnd2" />
+			<endEvent id="subProcessEnd2" />
+			
+			<boundaryEvent id="catchError2" cancelActivity="true" attachedToRef="innerSubProcess2">
+        <errorEventDefinition errorRef="error2"/>
+      </boundaryEvent>
+      <sequenceFlow id="flow10" sourceRef="catchError2" targetRef="taskC" />
+      <userTask id="taskC" name="task C" />
+      <sequenceFlow id="flow11" sourceRef="taskC" targetRef="subProcessEnd3" />
+      <endEvent id="subProcessEnd3" />
+      
+		</subProcess>
+		
+		<sequenceFlow id="flow12" sourceRef="outerSubProcess" targetRef="end1" />
+    <endEvent id="end1" />
+		
+		<boundaryEvent id="catchError1" cancelActivity="true" attachedToRef="outerSubProcess">
+        <errorEventDefinition errorRef="error1"/>
+    </boundaryEvent>
+    <sequenceFlow id="flow13" sourceRef="catchError1" targetRef="taskD" />
+    <userTask id="taskD" name="task D" />
+    <sequenceFlow id="flow14" sourceRef="taskD" targetRef="end2" />
+    <endEvent id="end2" />
+		
+	</process>
+</definitions>

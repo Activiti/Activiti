@@ -69,7 +69,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   
   // processing /////////////////////////////
   
-  public void eventReceived(Serializable payload, boolean processASync) {
+  public void eventReceived(Object payload, boolean processASync) {
     if(processASync) {
       scheduleEventAsync(payload);
     } else {
@@ -85,7 +85,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     eventHandler.handleEvent(this, payload, Context.getCommandContext());
   }
   
-  protected void scheduleEventAsync(Serializable payload) {
+  protected void scheduleEventAsync(Object payload) {
     
     final CommandContext commandContext = Context.getCommandContext();
 

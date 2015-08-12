@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="processWithSingleExceptionMap" isExecutable="true">
+    <startEvent id="theStart"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask"></sequenceFlow>
+    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.ThrowCustomExceptionDelegate">
+      <extensionElements>
+        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>3</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </serviceTask>
+    <boundaryEvent id="catchError" attachedToRef="serviceTask">
+      <errorEventDefinition errorRef="myErrorCode1"></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd"></sequenceFlow>
+    <endEvent id="theEnd"></endEvent>
+    <serviceTask id="flagTask" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
+    <sequenceFlow id="flow5" sourceRef="catchError" targetRef="flagTask"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="flagTask" targetRef="theEnd"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_processWithSingleExceptionMap">
+    <bpmndi:BPMNPlane bpmnElement="processWithSingleExceptionMap" id="BPMNPlane_processWithSingleExceptionMap">
+      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
+        <omgdc:Bounds height="35.0" width="35.0" x="0.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask" id="BPMNShape_serviceTask">
+        <omgdc:Bounds height="60.0" width="100.0" x="80.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="catchError" id="BPMNShape_catchError">
+        <omgdc:Bounds height="30.0" width="30.0" x="145.0" y="45.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="230.0" y="95.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="flagTask" id="BPMNShape_flagTask">
+        <omgdc:Bounds height="60.0" width="100.0" x="80.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="35.0" y="32.0"></omgdi:waypoint>
+        <omgdi:waypoint x="42.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="42.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="80.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="180.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="230.0" y="112.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="160.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="160.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="190.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="190.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="220.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="180.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="230.0" y="112.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

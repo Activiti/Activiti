@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="asyncService">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    
+    <sequenceFlow sourceRef="fork" targetRef="service" />    
+    <sequenceFlow sourceRef="fork" targetRef="join" />
+    
+    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService" activiti:async="true" />
+    
+    <sequenceFlow sourceRef="service" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    
+    <sequenceFlow sourceRef="join" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

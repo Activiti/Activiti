@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
@@ -38,7 +39,7 @@ public class DefaultProcessEngineFactory {
       activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
 
     } else {
-      throw new RuntimeException("Unsupported process engine configuration");
+      throw new ActivitiException("Unsupported process engine configuration");
     }
     
     convertParseHandlers(activiti6Configuration, activiti5Configuration);

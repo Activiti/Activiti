@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
 
   private static final long serialVersionUID = 1L;
 
-  protected final Serializable payload;
+  protected final Map<String, Object> payload;
   protected final String messageName;
   protected final boolean async;
 
@@ -42,11 +41,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
     this.messageName = messageName;
 
     if (processVariables != null) {
-      if (processVariables instanceof Serializable) {
-        this.payload = (Serializable) processVariables;
-      } else {
-        this.payload = new HashMap<String, Object>(processVariables);
-      }
+      this.payload = new HashMap<String, Object>(processVariables);
 
     } else {
       this.payload = null;

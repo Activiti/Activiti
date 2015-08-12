@@ -13,13 +13,13 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -27,17 +27,18 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 
 /**
- * @author Daniel Meyer
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class SignalEventReceivedCmd implements Command<Void> {
 
   protected final String eventName;
   protected final String executionId;
-  protected final Serializable payload;
+  protected final Map<String, Object> payload;
   protected final boolean async;
   protected String tenantId;
 
@@ -45,11 +46,8 @@ public class SignalEventReceivedCmd implements Command<Void> {
     this.eventName = eventName;
     this.executionId = executionId;
     if (processVariables != null) {
-      if (processVariables instanceof Serializable) {
-        this.payload = (Serializable) processVariables;
-      } else {
-        this.payload = new HashMap<String, Object>(processVariables);
-      }
+      this.payload = new HashMap<String, Object>(processVariables);
+      
     } else {
       this.payload = null;
     }
@@ -66,7 +64,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
   }
 
   public Void execute(CommandContext commandContext) {
-
+    
     List<SignalEventSubscriptionEntity> signalEvents = null;
 
     if (executionId == null) {
@@ -82,6 +80,12 @@ public class SignalEventReceivedCmd implements Command<Void> {
       if (execution.isSuspended()) {
         throw new ActivitiException("Cannot throw signal event '" + eventName + "' because execution '" + executionId + "' is suspended");
       }
+      
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        activiti5CompatibilityHandler.signalEventReceived(eventName, executionId, payload);
+        return null;
+      }
 
       signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
 
@@ -95,12 +99,18 @@ public class SignalEventReceivedCmd implements Command<Void> {
       // Process instance scoped signals must be thrown within the process itself
       if (signalEventSubscriptionEntity.isGlobalScoped()) {
         
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventName, 
-                payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
-                signalEventSubscriptionEntity.getProcessDefinitionId()));
-        
-        signalEventSubscriptionEntity.eventReceived(payload, async);
+        if (executionId == null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, signalEventSubscriptionEntity.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+          activiti5CompatibilityHandler.signalEventReceived(signalEventSubscriptionEntity, payload, async);
+          
+        } else {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventName, 
+                  payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
+                  signalEventSubscriptionEntity.getProcessDefinitionId()));
+          
+          signalEventSubscriptionEntity.eventReceived(payload, async);
+        }
       }
     }
 

@@ -14,6 +14,7 @@ package org.activiti.engine.compatibility;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
@@ -31,5 +32,11 @@ public interface Activiti5CompatibilityHandler {
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
   
   void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
+  
+  void trigger(String executionId, Map<String, Object> processVariables);
+  
+  void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
+  
+  void signalEventReceived(SignalEventSubscriptionEntity signalEventSubscriptionEntity, Object payload, boolean async);
 
 }

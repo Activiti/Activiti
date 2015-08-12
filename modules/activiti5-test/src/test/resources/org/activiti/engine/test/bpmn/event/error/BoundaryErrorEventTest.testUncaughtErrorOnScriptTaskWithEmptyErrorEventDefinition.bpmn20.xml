@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="uncaughtErrorOnScriptTaskWithEmptyErrorEventDefinition">
+
+        <startEvent id="theStart" />
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript" />
+
+        <scriptTask id="theScript" scriptFormat="groovy">
+            <script><![CDATA[
+			import org.activiti.engine.delegate.BpmnError;
+
+			throw new BpmnError("errorUncaught"); // non-defined error code!
+			]]></script>
+        </scriptTask>
+
+        <sequenceFlow id="flow4" sourceRef="theScript" targetRef="theEnd" />
+
+        <boundaryEvent id="catchAnyError" attachedToRef="theScript" cancelActivity="true">
+            <errorEventDefinition /> <!-- no errorCode: catch any error -->
+        </boundaryEvent>
+
+        <sequenceFlow id="errorFlow" sourceRef="catchAnyError" targetRef="theEnd"/>
+
+        <endEvent id="theEnd" />
+
+    </process>
+
+</definitions>

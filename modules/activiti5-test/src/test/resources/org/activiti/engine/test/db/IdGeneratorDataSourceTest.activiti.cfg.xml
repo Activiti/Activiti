@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  
+    <!-- Database configurations -->
+    <property name="history" value="full" />
+    <property name="databaseSchemaUpdate" value="true" />
+    <property name="jdbcMaxActiveConnections" value="2" />
+    <property name="idBlockSize" value="3" />
+    <property name="idGeneratorDataSource" ref="idGeneratorDataSource" />
+    
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="false" />
+    
+  </bean>
+  
+  <bean name="idGeneratorDataSource" class="org.activiti.engine.test.db.IdGeneratorDataSource" />
+
+</beans>
