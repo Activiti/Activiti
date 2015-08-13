@@ -18,18 +18,15 @@ import java.util.List;
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.interceptor.Command;
-import org.activiti5.engine.impl.interceptor.CommandContext;
-import org.activiti5.engine.impl.interceptor.CommandExecutor;
+import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.process.TransitionImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.test.TestHelper;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.test.Deployment;
 
 
 /**
@@ -69,25 +66,17 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParseDiagramInterchangeElements() {
 
-    // Graphical information is not yet exposed publicly, so we need to do some plumbing
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
-      public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return Context
-          .getProcessEngineConfiguration()
-          .getDeploymentManager()
-          .findDeployedLatestProcessDefinitionByKey("myProcess");
-      }
-    });
+    ProcessDefinition processDefinition = processEngineConfiguration.getActiviti5CompatibilityHandler().getProcessDefinitionByKey("myProcess");
+    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) ((Activiti5ProcessDefinitionWrapper) processDefinition).getRawObject();
     
-    assertNotNull(processDefinitionEntity);
-    assertEquals(7, processDefinitionEntity.getActivities().size());
+    assertNotNull(rawEntity);
+    assertEquals(7, rawEntity.getActivities().size());
     
     // Check if diagram has been created based on Diagram Interchange when it's not a headless instance
-    List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
+    List<String> resourceNames = repositoryService.getDeploymentResourceNames(rawEntity.getDeploymentId());
     assertEquals(2, resourceNames.size());
     
-    for (ActivityImpl activity : processDefinitionEntity.getActivities()) {
+    for (ActivityImpl activity : rawEntity.getActivities()) {
       
       if (activity.getId().equals("theStart")) {
         assertActivityBounds(activity, 70, 255, 30, 30);
@@ -131,19 +120,12 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParseNamespaceInConditionExpressionType() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
-      public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return Context
-          .getProcessEngineConfiguration()
-          .getDeploymentManager()
-          .findDeployedLatestProcessDefinitionByKey("resolvableNamespacesProcess");
-      }
-    });
+    ProcessDefinition processDefinition = processEngineConfiguration.getActiviti5CompatibilityHandler().getProcessDefinitionByKey("resolvableNamespacesProcess");
+    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) ((Activiti5ProcessDefinitionWrapper) processDefinition).getRawObject();
     
     // Test that the process definition has been deployed
-    assertNotNull(processDefinitionEntity);
-    ActivityImpl activity = processDefinitionEntity.findActivity("ExclusiveGateway_1");
+    assertNotNull(rawEntity);
+    ActivityImpl activity = rawEntity.findActivity("ExclusiveGateway_1");
     assertNotNull(activity);
     
     // Test that the conditions has been resolved

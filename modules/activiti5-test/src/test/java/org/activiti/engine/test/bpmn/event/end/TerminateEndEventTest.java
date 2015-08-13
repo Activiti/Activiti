@@ -23,16 +23,17 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * @author Nico Rehwaldt
@@ -361,12 +362,13 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   }
 
   public void testParseTerminateEndEventDefinitionWithExtensions() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
     ProcessDefinition processDefinitionQuery = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
-    ProcessDefinitionEntity processDefinition = this.processEngineConfiguration.getProcessDefinitionCache().get(processDefinitionQuery.getId());
-
-    assertThat(processDefinition.getActivities().size(), is(2));
-    ActivityImpl endEvent = processDefinition.getActivities().get(1);
+    ProcessDefinition processDefinition = processEngineConfiguration.getActiviti5CompatibilityHandler().getProcessDefinition(processDefinitionQuery.getId());
+    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) ((Activiti5ProcessDefinitionWrapper) processDefinition).getRawObject();
+    
+    assertThat(rawEntity.getActivities().size(), is(2));
+    ActivityImpl endEvent = rawEntity.getActivities().get(1);
     assertThat(endEvent.getId(), is("terminateEnd"));
     assertThat(endEvent.getActivityBehavior(), instanceOf(TerminateEndEventActivityBehavior.class));
     TerminateEndEventActivityBehavior terminateEndEventBehavior = (TerminateEndEventActivityBehavior) endEvent.getActivityBehavior();
