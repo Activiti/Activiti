@@ -498,7 +498,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
     for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
       variableInstanceEntityManager.delete(variableInstanceEntity);
-      if (variableInstanceEntity.getByteArrayRef() != null) {
+      if (variableInstanceEntity.getByteArrayRef() != null && variableInstanceEntity.getByteArrayRef().getId() != null) {
         commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
       }
     }
