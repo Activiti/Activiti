@@ -22,8 +22,8 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
-import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
+import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
+import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
 /**
  * @author Joram Barrez

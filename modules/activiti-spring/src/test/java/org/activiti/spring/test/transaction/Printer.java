@@ -13,7 +13,7 @@
 
 package org.activiti.spring.test.transaction;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * @author Tom Baeyens

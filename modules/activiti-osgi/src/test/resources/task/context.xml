@@ -6,5 +6,5 @@
 
   <bean id="activityBehaviourBean" class="org.activiti.osgi.blueprint.bean.ActivityBehaviourBean" />
 
-  <service ref="activityBehaviourBean" interface="org.activiti.engine.impl.pvm.delegate.ActivityBehavior" />
+  <service ref="activityBehaviourBean" interface="org.activiti.engine.impl.delegate.ActivityBehavior" />
 </blueprint>

@@ -23,11 +23,11 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
-import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
 /**
  * {@link ActivityBehavior} used when 'delegateExpression' is used for a serviceTask.

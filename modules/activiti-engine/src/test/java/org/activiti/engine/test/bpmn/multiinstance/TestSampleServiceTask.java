@@ -1,7 +1,7 @@
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * @author Andreas Karnahl

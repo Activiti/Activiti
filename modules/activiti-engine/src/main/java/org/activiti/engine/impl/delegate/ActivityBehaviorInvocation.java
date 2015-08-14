@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.delegate;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
+
 
 /**
  * 

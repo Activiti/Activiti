@@ -20,7 +20,7 @@ import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * An activity behavior that allows calling Web services

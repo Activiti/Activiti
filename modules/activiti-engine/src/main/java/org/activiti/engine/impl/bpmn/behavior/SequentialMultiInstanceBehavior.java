@@ -22,9 +22,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.apache.commons.collections.CollectionUtils;
 
 /**

@@ -16,7 +16,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;

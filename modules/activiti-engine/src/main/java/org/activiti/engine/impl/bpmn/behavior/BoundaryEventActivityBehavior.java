@@ -17,10 +17,10 @@ import java.util.Collection;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.apache.commons.collections.CollectionUtils;
 
 /**

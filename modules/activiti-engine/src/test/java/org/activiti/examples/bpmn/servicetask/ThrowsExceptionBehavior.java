@@ -16,8 +16,8 @@ package org.activiti.examples.bpmn.servicetask;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * @author Joram Barrez

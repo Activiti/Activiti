@@ -1,7 +1,7 @@
 package org.activiti.spring.integration;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;

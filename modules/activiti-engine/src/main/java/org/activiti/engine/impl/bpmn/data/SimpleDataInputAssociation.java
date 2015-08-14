@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * A simple data input association between a source and a target with assignments

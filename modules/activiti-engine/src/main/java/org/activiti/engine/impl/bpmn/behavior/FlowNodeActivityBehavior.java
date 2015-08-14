@@ -14,8 +14,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 
 /**
  * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways and events. This means that any subclass can be the source or target of a sequenceflow.

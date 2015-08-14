@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;

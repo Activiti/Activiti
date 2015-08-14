@@ -90,7 +90,7 @@ import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang3.StringUtils;

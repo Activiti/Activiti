@@ -32,13 +32,13 @@ import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
-import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
+import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
+import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**

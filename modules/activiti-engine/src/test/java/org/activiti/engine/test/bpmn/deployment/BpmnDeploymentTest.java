@@ -26,7 +26,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -53,7 +52,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     assertNull(processDefinition.getDiagramResourceName());
     assertFalse(processDefinition.hasStartFormKey());
 
-    ReadOnlyProcessDefinition readOnlyProcessDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinition.getId());
+    ProcessDefinition readOnlyProcessDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinition.getId());
     assertNull(readOnlyProcessDefinition.getDiagramResourceName());
 
     // verify content
@@ -203,7 +202,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   @Deployment
   public void testProcessDefinitionDescription() {
     String id = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(id);
+    ProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(id);
     assertEquals("This is really good process documentation!", processDefinition.getDescription());
   }
 

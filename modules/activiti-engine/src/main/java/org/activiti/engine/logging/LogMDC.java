@@ -1,6 +1,6 @@
 package org.activiti.engine.logging;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.slf4j.MDC;
 
 /**

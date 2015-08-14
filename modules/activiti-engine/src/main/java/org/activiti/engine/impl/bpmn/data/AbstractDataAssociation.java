@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 import java.io.Serializable;
 
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * A data association (Input or Output) between a source and a target

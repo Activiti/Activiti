@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.pvm.delegate;
+package org.activiti.engine.impl.delegate;
 
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 

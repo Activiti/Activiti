@@ -23,9 +23,9 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

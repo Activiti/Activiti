@@ -16,13 +16,13 @@ import java.util.List;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.TimerUtil;
 
 public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
