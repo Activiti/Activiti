@@ -13,12 +13,12 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.task.TaskQuery;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * @author Joram Barrez

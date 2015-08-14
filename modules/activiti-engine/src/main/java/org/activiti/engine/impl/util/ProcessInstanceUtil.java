@@ -59,7 +59,8 @@ public class ProcessInstanceUtil {
     CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
     if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
-      return activiti5CompatibilityHandler.startProcessInstance(processDefinition.getKey(), processDefinition.getId(), variables, businessKey, processDefinition.getTenantId(), processInstanceName);
+      return activiti5CompatibilityHandler.startProcessInstance(processDefinition.getKey(), processDefinition.getId(), 
+          variables, businessKey, processDefinition.getTenantId(), processInstanceName);
     }
 
     // Do not start process a process instance if the process definition is suspended

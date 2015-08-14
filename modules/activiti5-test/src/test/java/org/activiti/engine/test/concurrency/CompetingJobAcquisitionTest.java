@@ -13,10 +13,11 @@
 
 package org.activiti.engine.test.concurrency;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
 import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
+import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.test.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +42,8 @@ public class CompetingJobAcquisitionTest extends PluggableActivitiTestCase {
     }
     public void run() {
       try {
-        processEngineConfiguration
-          .getCommandExecutor()
-          .execute(new ControlledCommand(activeThread, new AcquireTimerJobsCmd("testLockOwner", 60000, 5)));
+        CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+        commandExecutor.execute(new ControlledCommand(activeThread, new AcquireTimerJobsCmd("testLockOwner", 60000, 5)));
 
       } catch (ActivitiOptimisticLockingException e) {
         this.exception = e;

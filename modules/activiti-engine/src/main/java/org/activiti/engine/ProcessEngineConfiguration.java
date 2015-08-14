@@ -104,10 +104,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean asyncExecutorActivate;
 
   protected String mailServerHost = "localhost";
-  protected String mailServerUsername; // by default no name and password are
-                                       // provided, which
-  protected String mailServerPassword; // means no authentication for mail
-                                       // server
+  protected String mailServerUsername; // by default no name and password are provided, which
+  protected String mailServerPassword; // means no authentication for mail server
   protected int mailServerPort = 25;
   protected boolean useSSL;
   protected boolean useTLS;

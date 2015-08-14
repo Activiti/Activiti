@@ -20,8 +20,8 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.test.Deployment;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

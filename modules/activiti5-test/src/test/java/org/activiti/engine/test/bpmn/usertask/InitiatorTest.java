@@ -13,8 +13,8 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.test.Deployment;
 
 
 /**

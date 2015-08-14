@@ -10,10 +10,12 @@
     <property name="history" value="audit" />
     <property name="databaseSchemaUpdate" value="true" />
     
+    <property name="activiti5CompatibilityEnabled" value="true" />
+    
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
     
-    <property name="customDefaultBpmnParseHandlers">
+    <property name="activiti5CustomDefaultBpmnParseHandlers">
       <list>
         <bean class="org.activiti.examples.bpmn.executionlistener.CustomSequenceFlowBpmnParseHandler" />
       </list>

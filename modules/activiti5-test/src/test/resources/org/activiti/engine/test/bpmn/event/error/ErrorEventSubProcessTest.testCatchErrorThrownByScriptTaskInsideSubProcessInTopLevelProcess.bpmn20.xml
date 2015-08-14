@@ -14,7 +14,7 @@
       <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessScriptTask" />
       <scriptTask id="subprocessScriptTask" scriptFormat="groovy">
         <script>
-          throw new org.activiti.engine.delegate.BpmnError("123");
+          throw new org.activiti5.engine.delegate.BpmnError("123");
         </script>
       </scriptTask>
     </subProcess>

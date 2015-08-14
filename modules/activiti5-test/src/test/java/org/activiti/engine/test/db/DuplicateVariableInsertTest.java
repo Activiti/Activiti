@@ -19,14 +19,14 @@ import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
 import org.activiti5.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti5.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 

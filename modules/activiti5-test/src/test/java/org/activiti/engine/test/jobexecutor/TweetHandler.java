@@ -15,10 +15,10 @@ package org.activiti.engine.test.jobexecutor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.impl.interceptor.CommandContext;
-import org.activiti5.engine.impl.jobexecutor.JobHandler;
-import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.junit.Assert;
 
 public class TweetHandler implements JobHandler {

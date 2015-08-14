@@ -10,10 +10,12 @@
     <property name="history" value="audit" />
     <property name="databaseSchemaUpdate" value="true" />
     
+    <property name="activiti5CompatibilityEnabled" value="true" />
+    
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
     
-    <property name="postBpmnParseHandlers">
+    <property name="activiti5PostBpmnParseHandlers">
       <list>
         <bean class="org.activiti.standalone.parsing.TestBPMNParseHandler" />
       </list>

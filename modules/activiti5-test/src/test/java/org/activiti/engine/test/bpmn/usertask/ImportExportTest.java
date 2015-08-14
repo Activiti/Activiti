@@ -1,14 +1,14 @@
 package org.activiti.engine.test.bpmn.usertask;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.runtime.Execution;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti5.engine.impl.util.io.InputStreamSource;
 import org.activiti5.engine.impl.util.io.StreamSource;
-import org.activiti5.engine.runtime.Execution;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 /**
  * Created by p3700487 on 23/02/15.
@@ -25,7 +25,7 @@ public class ImportExportTest extends ResourceActivitiTestCase {
 
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
 
-        org.activiti5.engine.repository.Deployment deployment = processEngine.getRepositoryService().createDeployment().name("test1").addString("test1.bpmn20.xml", new String(xml)).deploy();
+        processEngine.getRepositoryService().createDeployment().name("test1").addString("test1.bpmn20.xml", new String(xml)).deploy();
 
         String processInstanceKey = runtimeService.startProcessInstanceByKey("process").getId();
         Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstanceKey).messageEventSubscriptionName("InterruptMessage").singleResult();
@@ -34,7 +34,7 @@ public class ImportExportTest extends ResourceActivitiTestCase {
     }
 
     protected void tearDown() throws Exception {
-        for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
         super.tearDown();

@@ -16,12 +16,14 @@ package org.activiti.compatibility;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
+import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
 
@@ -39,6 +41,30 @@ public class DefaultProcessEngineFactory {
       activiti5Configuration = new org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration();
 
       activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+      activiti5Configuration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(activiti6Configuration.getHistoryLevel().getKey()));
+      
+      activiti5Configuration.setMailServerDefaultFrom(activiti6Configuration.getMailServerDefaultFrom());
+      activiti5Configuration.setMailServerHost(activiti6Configuration.getMailServerHost());
+      activiti5Configuration.setMailServerPassword(activiti6Configuration.getMailServerPassword());
+      activiti5Configuration.setMailServerPort(activiti6Configuration.getMailServerPort());
+      activiti5Configuration.setMailServerUsername(activiti6Configuration.getMailServerUsername());
+      activiti5Configuration.setMailServerUseSSL(activiti6Configuration.getMailServerUseSSL());
+      activiti5Configuration.setMailServerUseTLS(activiti6Configuration.getMailServerUseTLS());
+      if (activiti6Configuration.getMailServers() != null && activiti6Configuration.getMailServers().size() > 0) {
+        for (String key : activiti6Configuration.getMailServers().keySet()) {
+          MailServerInfo mailServerInfo = activiti6Configuration.getMailServers().get(key);
+          org.activiti5.engine.cfg.MailServerInfo activiti5MailServerInfo = new org.activiti5.engine.cfg.MailServerInfo();
+          activiti5MailServerInfo.setMailServerDefaultFrom(mailServerInfo.getMailServerDefaultFrom());
+          activiti5MailServerInfo.setMailServerHost(mailServerInfo.getMailServerHost());
+          activiti5MailServerInfo.setMailServerPassword(mailServerInfo.getMailServerPassword());
+          activiti5MailServerInfo.setMailServerPort(mailServerInfo.getMailServerPort());
+          activiti5MailServerInfo.setMailServerUsername(mailServerInfo.getMailServerUsername());
+          activiti5MailServerInfo.setMailServerUseSSL(mailServerInfo.isMailServerUseSSL());
+          activiti5MailServerInfo.setMailServerUseTLS(mailServerInfo.isMailServerUseTLS());
+          activiti5Configuration.getMailServers().put(key, activiti5MailServerInfo);
+        }
+      }
+      
       if (activiti6Configuration.isAsyncExecutorEnabled() && activiti6Configuration.getAsyncExecutor() != null) {
         AsyncExecutor activiti5AsyncExecutor = new DefaultAsyncJobExecutor();
         activiti5AsyncExecutor.setAsyncJobLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getAsyncJobLockTimeInMillis());

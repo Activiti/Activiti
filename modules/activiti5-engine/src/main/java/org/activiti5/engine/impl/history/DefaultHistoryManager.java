@@ -654,18 +654,33 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
   // Comment related history
   
   /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
- */
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+   */
   @Override
-public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
+  public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
     createIdentityLinkComment(taskId, userId, groupId, type, create, false);
   }
   
-  /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
- */
   @Override
-public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
+  public void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create) {
+    createIdentityLinkComment(taskId, userId, null, type, create, false);
+  }
+
+  @Override
+  public void createGroupIdentityLinkComment(String taskId, String groupId, String type, boolean create) {
+    createIdentityLinkComment(taskId, null, groupId, type, create, false);
+  }
+  
+  @Override
+  public void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create, boolean forceNullUserId) {
+    createIdentityLinkComment(taskId, userId, null, type, create, forceNullUserId);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
+   */
+  @Override
+  public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
     if(isHistoryEnabled()) {
       String authenticatedUserId = Authentication.getAuthenticatedUserId();
       CommentEntity comment = new CommentEntity();

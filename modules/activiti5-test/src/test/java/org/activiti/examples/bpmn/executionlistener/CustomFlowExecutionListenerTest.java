@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * @author Tijs Rademakers

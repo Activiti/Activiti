@@ -15,8 +15,8 @@ package org.activiti.engine.test.db;
 
 import javax.sql.DataSource;
 
-import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.test.PvmTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 

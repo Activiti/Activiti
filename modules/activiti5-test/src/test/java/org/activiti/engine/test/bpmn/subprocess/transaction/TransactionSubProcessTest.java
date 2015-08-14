@@ -15,14 +15,14 @@ package org.activiti.engine.test.bpmn.subprocess.transaction;
 
 import java.util.List;
 
-import org.activiti5.engine.impl.EventSubscriptionQueryImpl;
-import org.activiti5.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.test.Deployment;
 
 
 /**
@@ -72,7 +72,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertNull(runtimeService.getVariable(processInstance.getId(), "undoChargeCard"));
            
     // end the process instance
-    runtimeService.signal(processInstance.getId());    
+    runtimeService.trigger(processInstance.getId());    
     assertProcessEnded(processInstance.getId());    
     assertEquals(0, runtimeService.createExecutionQuery().count());
     
@@ -124,7 +124,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     }
    
     // end the process instance
-    runtimeService.signal(processInstance.getId());    
+    runtimeService.trigger(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());    
   }
@@ -171,7 +171,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     }
    
     // end the process instance
-    runtimeService.signal(processInstance.getId());    
+    runtimeService.trigger(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());    
   }
@@ -227,7 +227,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     taskService.complete(taskOuter.getId());
     
     // end the process instance (signal the execution still sitting in afterInnerCancellation)
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterInnerCancellation").singleResult().getId());   
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterInnerCancellation").singleResult().getId());   
     
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());    
@@ -269,7 +269,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
     
     // end the process instance (signal the execution still sitting in afterOuterCancellation)
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterOuterCancellation").singleResult().getId());   
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterOuterCancellation").singleResult().getId());   
     
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());  
@@ -316,7 +316,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
     
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterCancellation").singleResult().getId());   
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterCancellation").singleResult().getId());   
     
     assertProcessEnded(processInstance.getId());    
   }
@@ -353,10 +353,10 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     // now complete the inner receive tasks    
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("receive").list();
     for (Execution execution : executions) {
-      runtimeService.signal(execution.getId());      
+      runtimeService.trigger(execution.getId());      
     }
    
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterSuccess").singleResult().getId());   
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterSuccess").singleResult().getId());   
     
     assertEquals(0, createEventSubscriptionQuery().count());
     assertProcessEnded(processInstance.getId());

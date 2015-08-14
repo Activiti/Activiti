@@ -3,12 +3,12 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
-import org.activiti5.engine.impl.interceptor.Command;
-import org.activiti5.engine.impl.interceptor.CommandContext;
-import org.activiti5.engine.impl.interceptor.CommandExecutor;
-import org.activiti5.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens

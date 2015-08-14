@@ -38,11 +38,19 @@ public interface Activiti5CompatibilityHandler {
 
   Deployment deploy(DeploymentBuilderImpl deploymentBuilder);
   
+  void deleteDeployment(String deploymentId, boolean cascade);
+  
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
   
   void deleteProcessInstance(String processInstanceId, String deleteReason);
   
   void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
+  
+  void submitTaskFormData(String taskId, Map<String, String> properties);
+  
+  void saveTask(TaskEntity task);
+  
+  void addIdentityLink(String taskId, String identityId, int identityIdType, String identityType);
   
   void trigger(String executionId, Map<String, Object> processVariables);
   
@@ -55,4 +63,6 @@ public interface Activiti5CompatibilityHandler {
   void executeJobWithLockAndRetry(JobEntity job);
   
   Clock getClock();
+  
+  Object getRawCommandExecutor();
 }

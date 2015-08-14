@@ -6,14 +6,14 @@
 			
 		<sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="endevent1">
 			<extensionElements>
-				<activiti:executionListener event="take" class="org.activiti.engine.impl.bpmn.listener.ScriptExecutionListener">
+				<activiti:executionListener event="take" class="org.activiti5.engine.impl.bpmn.listener.ScriptExecutionListener">
 					<activiti:field name="script">
 						<activiti:string>
-            	def bar = "BAR";  // local variable
-            	foo = "FOO"; // pushes variable to execution context
-              execution.setVariable("var1", "test"); // test access to execution instance
-            	bar // implicit return value
-            </activiti:string>
+            				def bar = "BAR";  // local variable
+            				foo = "FOO"; // pushes variable to execution context
+              				execution.setVariable("var1", "test"); // test access to execution instance
+            				bar // implicit return value
+            		</activiti:string>
 					</activiti:field>
 					<activiti:field name="language" stringValue="groovy" />
 					<activiti:field name="resultVariable" stringValue="myVar" />

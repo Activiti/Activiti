@@ -14,8 +14,10 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
 
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
  * @author Joram Barrez
@@ -38,7 +40,16 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
   }
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables!=null) {
+    // Backwards compatibility
+    if (task.getProcessDefinitionId() != null) {
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        activiti5CompatibilityHandler.completeTask(task, variables, localScope);
+        return null;
+      }
+    }
+    
+    if (variables != null) {
     	if (localScope) {
     		task.setVariablesLocal(variables);
     	} else if (task.getExecutionId() != null) {

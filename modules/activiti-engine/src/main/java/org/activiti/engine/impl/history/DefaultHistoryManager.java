@@ -725,6 +725,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   // Comment related history
 
+  
+  
   /*
    * (non-Javadoc)
    * 
@@ -733,6 +735,21 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
     createIdentityLinkComment(taskId, userId, groupId, type, create, false);
+  }
+
+  @Override
+  public void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create) {
+    createIdentityLinkComment(taskId, userId, null, type, create, false);
+  }
+
+  @Override
+  public void createGroupIdentityLinkComment(String taskId, String groupId, String type, boolean create) {
+    createIdentityLinkComment(taskId, null, groupId, type, create, false);
+  }
+  
+  @Override
+  public void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create, boolean forceNullUserId) {
+    createIdentityLinkComment(taskId, userId, null, type, create, forceNullUserId);
   }
 
   /*

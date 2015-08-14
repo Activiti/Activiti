@@ -25,63 +25,71 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
   
   private static final long serialVersionUID = 1L;
 
-  protected String userId;
+  public static int IDENTITY_USER = 1;
+  public static int IDENTITY_GROUP = 2;
+
+  protected String identityId;
+
+  protected int identityIdType;
+
+  protected String identityType;
   
-  protected String groupId;
-  
-  protected String type;
-  
-  public AddIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
+  public AddIdentityLinkCmd(String taskId, String identityId, int identityIdType, String identityType) {
     super(taskId);
-    validateParams(userId, groupId, type, taskId);
+    validateParams(taskId, identityId, identityIdType, identityType);
     this.taskId = taskId;
-    this.userId = userId;
-    this.groupId = groupId;
-    this.type = type;
+    this.identityId = identityId;
+    this.identityIdType = identityIdType;
+    this.identityType = identityType;
   }
-  
-  protected void validateParams(String userId, String groupId, String type, String taskId) {
-    if(taskId == null) {
+
+  protected void validateParams(String taskId, String identityId, int identityIdType, String identityType) {
+    if (taskId == null) {
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
-    
-    if (type == null) {
+
+    if (identityType == null) {
       throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
     }
+
+    if (identityId == null && identityIdType == IDENTITY_GROUP) {
+      throw new ActivitiIllegalArgumentException("identityId is null");
+    }
     
-    // Special treatment for assignee, group cannot be used an userId may be null
-    if (IdentityLinkType.ASSIGNEE.equals(type)) {
-      if (groupId != null) {
-        throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use ASSIGNEE" 
-                + " together with a groupId");
-      }
-    } else {
-      if (userId == null && groupId == null) {
-        throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
-      }
+    if (identityIdType != IDENTITY_USER && identityIdType != IDENTITY_GROUP) {
+      throw new ActivitiIllegalArgumentException("identityIdType allowed values are 1 and 2");
     }
   }
   
   protected Void execute(CommandContext commandContext, TaskEntity task) {
 
     boolean assignedToNoOne = false;
-    if (IdentityLinkType.ASSIGNEE.equals(type)) {
-      task.setAssignee(userId, true, true);
-      assignedToNoOne = userId == null;
-    } else if (IdentityLinkType.OWNER.equals(type)) {
-      task.setOwner(userId, true);
-    } else {
-      task.addIdentityLink(userId, groupId, type);
+    if (IdentityLinkType.ASSIGNEE.equals(identityType)) {
+      task.setAssignee(identityId, true, true);
+      assignedToNoOne = identityId == null;
+    } else if (IdentityLinkType.OWNER.equals(identityType)) {
+      task.setOwner(identityId, true);
+    } else if (IDENTITY_USER == identityIdType) {
+      task.addUserIdentityLink(identityId, identityType);
+    } else if (IDENTITY_GROUP == identityIdType) {
+      task.addGroupIdentityLink(identityId, identityType);
     }
 
+    boolean forceNullUserId = false;
     if (assignedToNoOne) {
-      // ACT-1317: Special handling when assignee is set to NULL, a CommentEntity notifying of assignee-delete should be created
-      commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false, true);
-    } else {
-      commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
+      // ACT-1317: Special handling when assignee is set to NULL, a
+      // CommentEntity notifying of assignee-delete should be created
+      forceNullUserId = true;
+      
     }
     
-    return null;  
+    if (IDENTITY_USER == identityIdType) {
+      commandContext.getHistoryManager().createUserIdentityLinkComment(taskId, identityId, identityType, true, forceNullUserId);
+    } else {
+      commandContext.getHistoryManager().createGroupIdentityLinkComment(taskId, identityId, identityType, true);
+    }
+
+    return null;
   }
   
 }

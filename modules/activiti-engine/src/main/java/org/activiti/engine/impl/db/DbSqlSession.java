@@ -482,7 +482,7 @@ public class DbSqlSession implements Session {
     return filteredObjects;
   }
 
-  protected CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
+  public CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
     Map<String, CachedObject> classCache = cachedObjects.get(persistentObject.getClass());
     if (classCache == null) {
       classCache = new HashMap<String, CachedObject>();

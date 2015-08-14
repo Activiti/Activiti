@@ -15,11 +15,11 @@ package org.activiti.engine.test.bpmn.usertask;
 import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.test.TestHelper;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.task.TaskQuery;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * Testcase for the non-spec extensions to the task candidate use case.

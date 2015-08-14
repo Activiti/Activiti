@@ -3,8 +3,8 @@ package org.activiti.engine.test.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti5.engine.test.Deployment;
 
 
 public class IdGeneratorDataSourceTest extends ResourceActivitiTestCase {

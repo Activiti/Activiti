@@ -205,13 +205,26 @@ public interface HistoryManager extends Session {
 			String userId, String groupId, String type, boolean create);
 
 	/**
+   * Creates a new comment to indicate a new user {@link IdentityLink} has been created or deleted, if history is enabled.
+   */
+  public abstract void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create);
+  
+  /**
+   * Creates a new comment to indicate a new group {@link IdentityLink} has been created or deleted, if history is enabled.
+   */
+  public abstract void createGroupIdentityLinkComment(String taskId, String groupId, String type, boolean create);
+	
+	/**
 	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
 	 * if history is enabled. 
 	 */
-	public abstract void createIdentityLinkComment(String taskId,
-			String userId, String groupId, String type, boolean create,
-			boolean forceNullUserId);
+	public abstract void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId);
 
+	/**
+   * Creates a new comment to indicate a new user {@link IdentityLink} has been created or deleted, if history is enabled.
+   */
+  public abstract void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create, boolean forceNullUserId);
+	
 	/**
 	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
 	 * if history is enabled. 

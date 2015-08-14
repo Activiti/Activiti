@@ -17,18 +17,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.history.HistoricActivityInstance;
-import org.activiti5.engine.history.HistoricDetail;
-import org.activiti5.engine.history.HistoricVariableInstance;
-import org.activiti5.engine.history.HistoricVariableUpdate;
-import org.activiti5.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.task.TaskQuery;
-import org.activiti5.engine.test.Deployment;
 
 
 /**
@@ -227,7 +227,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={"org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml"})
   public void testVariableUpdatesLinkedToActivity() throws Exception {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance pi = runtimeService.startProcessInstanceByKey("ProcessWithSubProcess");
 	    
 	    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();    
@@ -250,9 +250,9 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 	
 	    Map<String, HistoricVariableUpdate> updatesMap = new HashMap<String, HistoricVariableUpdate>();
 	    HistoricVariableUpdate update = (HistoricVariableUpdate) updates.get(0);
-	    updatesMap.put((String)update.getValue(), update);
+	    updatesMap.put((String) update.getValue(), update);
 	    update = (HistoricVariableUpdate) updates.get(1);
-	    updatesMap.put((String)update.getValue(), update);
+	    updatesMap.put((String) update.getValue(), update);
 	    
 	    HistoricVariableUpdate update1 = updatesMap.get("1");
 	    HistoricVariableUpdate update2 = updatesMap.get("2");

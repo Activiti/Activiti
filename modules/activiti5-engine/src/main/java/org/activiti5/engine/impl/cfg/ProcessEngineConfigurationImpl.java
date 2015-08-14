@@ -1208,7 +1208,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // history //////////////////////////////////////////////////////////////////
   
   public void initHistoryLevel() {
-  	if(historyLevel == null) {
+  	if (historyLevel == null) {
   		historyLevel = HistoryLevel.getHistoryLevelForKey(getHistory());
   	}
   }

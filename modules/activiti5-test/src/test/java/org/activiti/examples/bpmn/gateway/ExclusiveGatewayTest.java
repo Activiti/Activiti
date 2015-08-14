@@ -15,11 +15,11 @@ package org.activiti.examples.bpmn.gateway;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti5.engine.ActivitiException;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * Example of using the exclusive gateway.

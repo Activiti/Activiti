@@ -22,16 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.history.HistoricIdentityLink;
-import org.activiti5.engine.history.HistoricTaskInstance;
-import org.activiti5.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricIdentityLink;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.test.Deployment;
-
 
 /**
  * @author Tom Baeyens
@@ -506,7 +505,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByExecutionId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceId().asc().count());    
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceStartTime().asc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskCreateTime().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessDefinitionId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().asc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDescription().asc().count());    
@@ -519,7 +518,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByExecutionId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceId().desc().count());    
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceStartTime().desc().count());    
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskCreateTime().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessDefinitionId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskDescription().desc().count());    

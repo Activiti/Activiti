@@ -13,16 +13,16 @@
 
 package org.activiti.engine.test.concurrency;
 
+import org.activiti.engine.impl.RuntimeServiceImpl;
+import org.activiti.engine.impl.cfg.CommandExecutorImpl;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.RetryInterceptor;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
-import org.activiti5.engine.impl.RuntimeServiceImpl;
-import org.activiti5.engine.impl.cfg.CommandExecutorImpl;
-import org.activiti5.engine.impl.interceptor.CommandInterceptor;
-import org.activiti5.engine.impl.interceptor.RetryInterceptor;
 import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.test.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class CompetingSignalsTest extends PluggableActivitiTestCase {
 
     public void run() {
       try {
-        runtimeService.signal(executionId);
+        runtimeService.trigger(executionId);
       } catch (ActivitiOptimisticLockingException e) {
         this.exception = e;
       }

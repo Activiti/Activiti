@@ -1,8 +1,8 @@
 package org.activiti.examples.bpmn.shell;
 
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.test.Deployment;
 
 public class ShellTaskTest extends PluggableActivitiTestCase {
 

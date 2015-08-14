@@ -69,7 +69,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       log.debug("Executing job {}", job.getId());
     }
     
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
+    if (job.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
       activiti5CompatibilityHandler.executeJob(job);
       return null;

@@ -14,9 +14,9 @@ package org.activiti.engine.test.bpmn.usertask;
 
 import java.util.List;
 
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * Test case for task candidate use case.

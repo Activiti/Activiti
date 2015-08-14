@@ -16,15 +16,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.history.HistoricProcessInstance;
-import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
 import org.activiti5.engine.impl.util.JvmUtil;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.test.Deployment;
 
 
 /**

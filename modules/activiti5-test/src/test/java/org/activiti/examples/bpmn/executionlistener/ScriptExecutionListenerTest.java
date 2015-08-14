@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.history.HistoricVariableInstance;
-import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * @author Tijs Rademakers

@@ -15,12 +15,14 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
 
 /**
@@ -39,6 +41,12 @@ public class SaveTaskCmd implements Command<Void>, Serializable {
   public Void execute(CommandContext commandContext) {
     if (task == null) {
       throw new ActivitiIllegalArgumentException("task is null");
+    }
+    
+    if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      activiti5CompatibilityHandler.saveTask(task);
+      return null;
     }
 
     if (task.getRevision() == 0) {

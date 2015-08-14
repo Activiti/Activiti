@@ -142,8 +142,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
 
   public void update() {
-    // Needed to make history work: the setter will also update the historic
-    // task
+    // Needed to make history work: the setter will also update the historic task
     setOwner(this.getOwner());
     setAssignee(this.getAssignee(), true, false);
     setDelegationState(this.getDelegationState());
@@ -789,6 +788,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public String getAssignee() {
     return assignee;
+  }
+  
+  public String getInitialAssignee() {
+    return initialAssignee;
   }
 
   public String getTaskDefinitionKey() {

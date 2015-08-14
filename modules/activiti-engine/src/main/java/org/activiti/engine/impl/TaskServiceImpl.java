@@ -119,27 +119,27 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   public void setAssignee(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, IdentityLinkType.ASSIGNEE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.ASSIGNEE));
   }
 
   public void setOwner(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, IdentityLinkType.OWNER));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.OWNER));
   }
 
   public void addCandidateUser(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.CANDIDATE));
   }
 
   public void addCandidateGroup(String taskId, String groupId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, IdentityLinkType.CANDIDATE));
   }
 
   public void addUserIdentityLink(String taskId, String userId, String identityLinkType) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, identityLinkType));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, identityLinkType));
   }
 
   public void addGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, identityLinkType));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, identityLinkType));
   }
 
   public void deleteCandidateGroup(String taskId, String groupId) {

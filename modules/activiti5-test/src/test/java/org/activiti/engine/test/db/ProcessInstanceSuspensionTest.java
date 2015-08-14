@@ -4,6 +4,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.Page;
 import org.activiti5.engine.impl.asyncexecutor.AcquiredJobEntities;
 import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
@@ -13,10 +17,6 @@ import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
 import org.activiti5.engine.impl.persistence.entity.TimerEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.Job;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.test.Deployment;
 
 /**
  * 
@@ -86,7 +86,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
     
     // Check if timer is eligable to be executed, when process in not yet suspended
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(1, jobs.size());
     
@@ -99,22 +99,22 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   }
 
   protected void makeSureJobDue(final Job job) {
-    processEngineConfiguration.getCommandExecutor()
-      .execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          Date currentTime = processEngineConfiguration.getClock().getCurrentTime();
-          commandContext.getJobEntityManager()
-            .findJobById(job.getId())
-            .setDuedate(new Date(currentTime.getTime() - 10000));
-          return null;
-        }
-        
-      });
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    commandExecutor.execute(new Command<Void>() {
+      public Void execute(CommandContext commandContext) {
+        Date currentTime = processEngineConfiguration.getClock().getCurrentTime();
+        commandContext.getJobEntityManager()
+          .findJobById(job.getId())
+          .setDuedate(new Date(currentTime.getTime() - 10000));
+        return null;
+      }
+      
+    });
   }
 
   private AcquiredJobEntities executeAcquireJobsCommand() {
-    return processEngineConfiguration.getCommandExecutor()
-      .execute(new AcquireTimerJobsCmd("testLockOwner", 60000, 5));
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    return commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 60000, 5));
   }
     
 }

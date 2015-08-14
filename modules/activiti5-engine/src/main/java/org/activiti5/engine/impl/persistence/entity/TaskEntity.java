@@ -845,6 +845,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return assignee;
   }
   
+  public void setInitialAssignee(String assignee) {
+    this.initialAssignee = assignee;
+  }
+  
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
