@@ -24,8 +24,17 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 public class Activiti5Util {
   
   public static boolean isActiviti5ProcessDefinitionId(CommandContext commandContext, String processDefinitionId) {
-    ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessDefinitionEntityManager()
-        .findProcessDefinitionById(processDefinitionId);
+    
+    if (processDefinitionId == null) {
+      return false;
+    }
+    
+    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId, false);
+    
+    if (processDefinitionEntity == null) {
+      return false;
+    }
+    
     return isActiviti5ProcessDefinition(commandContext, processDefinitionEntity);
   }
   
