@@ -24,6 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,21 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   public void run() {
+    Boolean isActiviti5ProcessDefinition = commandExecutor.execute(new Command<Boolean>() {
+
+      @Override
+      public Boolean execute(CommandContext commandContext) {
+        boolean isActiviti5 = Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId());
+        if (isActiviti5) {
+          commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().executeJobWithLockAndRetry(job);
+        }
+        return isActiviti5;
+      }
+    });
+    
+    if (isActiviti5ProcessDefinition) {  
+      return;
+    }
     
     try {
       if (job.isExclusive()) {
@@ -64,8 +80,6 @@ public class ExecuteAsyncRunnable implements Runnable {
       return;
       
     }
-
-    
 
     try {
       commandExecutor.execute(new ExecuteAsyncJobCmd(job));

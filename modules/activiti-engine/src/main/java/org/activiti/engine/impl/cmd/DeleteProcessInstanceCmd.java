@@ -12,12 +12,17 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-
-import java.io.Serializable;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
+import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Joram Barrez
@@ -48,7 +53,18 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
         .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
     }
 
-    commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceId, null, deleteReason, true);
+    ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    
+    if (processInstanceEntity == null) {
+      throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
+    }
+    
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processInstanceEntity.getProcessDefinitionId())) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      activiti5CompatibilityHandler.deleteProcessInstance(processInstanceId, deleteReason);
+    } else {
+      commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceEntity, null, deleteReason, false, true);
+    }
 
     // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
     // commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);

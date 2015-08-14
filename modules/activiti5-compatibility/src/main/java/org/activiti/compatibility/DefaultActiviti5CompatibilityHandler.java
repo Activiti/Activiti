@@ -16,27 +16,74 @@ package org.activiti.compatibility;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.compatibility.wrapper.Activiti5ClockWrapper;
 import org.activiti.compatibility.wrapper.Activiti5DeploymentWrapper;
+import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
 import org.activiti.compatibility.wrapper.Activiti5ProcessInstanceWrapper;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti5.engine.ProcessEngine;
+import org.activiti5.engine.impl.asyncexecutor.AsyncJobUtil;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti5.engine.impl.interceptor.Command;
+import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.repository.DeploymentBuilder;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class DefaultActiviti5CompatibilityHandler implements Activiti5CompatibilityHandler {
 
   protected DefaultProcessEngineFactory processEngineFactory;
   protected ProcessEngine processEngine;
+  
+  public ProcessDefinition getProcessDefinition(final String processDefinitionId) {
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    ProcessDefinitionEntity processDefinitionEntity = processEngineConfig.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
+
+      @Override
+      public ProcessDefinitionEntity execute(CommandContext commandContext) {
+        return processEngineConfig.getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+      }
+    });
+    
+    Activiti5ProcessDefinitionWrapper wrapper = null;
+    if (processDefinitionEntity != null) {
+      wrapper = new Activiti5ProcessDefinitionWrapper(processDefinitionEntity);
+    }
+    return wrapper;
+  }
+  
+  public ProcessDefinition getProcessDefinitionByKey(final String processDefinitionKey) {
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    ProcessDefinitionEntity processDefinitionEntity = processEngineConfig.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
+
+      @Override
+      public ProcessDefinitionEntity execute(CommandContext commandContext) {
+        return processEngineConfig.getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+      }
+    });
+    
+    Activiti5ProcessDefinitionWrapper wrapper = null;
+    if (processDefinitionEntity != null) {
+      wrapper = new Activiti5ProcessDefinitionWrapper(processDefinitionEntity);
+    }
+    return wrapper;
+  }
   
   public Deployment deploy(DeploymentBuilderImpl activiti6DeploymentBuilder) {
     DeploymentBuilder deploymentBuilder = getProcessEngine().getRepositoryService().createDeployment();
@@ -89,9 +136,12 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
     
     org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance 
-        = getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey);
+        = getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
     return new Activiti5ProcessInstanceWrapper(activiti5ProcessInstance);
-    
+  }
+  
+  public void deleteProcessInstance(String processInstanceId, String deleteReason) {
+    getProcessEngine().getRuntimeService().deleteProcessInstance(processInstanceId, deleteReason);
   }
   
   public void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
@@ -121,6 +171,29 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     activiti5SignalEvent.eventReceived(payload, async);
   }
   
+  public void executeJob(Job job) {
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
+    processEngineConfig.getCommandExecutor().execute(new Command<Void>() {
+
+      @Override
+      public Void execute(CommandContext commandContext) {
+        activity5Job.execute(commandContext);
+        return null;
+      }
+    });
+  }
+  
+  public void executeJobWithLockAndRetry(JobEntity job) {
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
+    AsyncJobUtil.executeJob(activity5Job, processEngineConfig.getCommandExecutor());
+  }
+  
+  public Clock getClock() {
+    return new Activiti5ClockWrapper(getProcessEngine().getProcessEngineConfiguration().getClock());
+  }
+  
   protected ProcessEngine getProcessEngine() {
     if (processEngine == null) {
       synchronized (this) {
@@ -143,4 +216,32 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     this.processEngineFactory = processEngineFactory;
   }
   
+  protected org.activiti5.engine.impl.persistence.entity.JobEntity convertToActiviti5JobEntity(JobEntity job) {
+    org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = null;
+    if (job instanceof TimerEntity) {
+      TimerEntity timer = (TimerEntity) job;
+      org.activiti5.engine.impl.persistence.entity.TimerEntity tempTimer = new org.activiti5.engine.impl.persistence.entity.TimerEntity();
+      tempTimer.setEndDate(timer.getEndDate());
+      tempTimer.setRepeat(timer.getRepeat());
+      activity5Job = tempTimer;
+    }
+    
+    activity5Job.setDuedate(job.getDuedate());
+    activity5Job.setExclusive(job.isExclusive());
+    activity5Job.setExecutionId(job.getExecutionId());
+    activity5Job.setId(job.getId());
+    activity5Job.setJobHandlerConfiguration(job.getJobHandlerConfiguration());
+    activity5Job.setJobHandlerType(job.getJobHandlerType());
+    activity5Job.setJobType(job.getJobType());
+    activity5Job.setLockExpirationTime(job.getLockExpirationTime());
+    activity5Job.setLockOwner(job.getLockOwner());
+    activity5Job.setProcessDefinitionId(job.getProcessDefinitionId());
+    activity5Job.setProcessInstanceId(job.getProcessInstanceId());
+    activity5Job.setRetries(job.getRetries());
+    activity5Job.setRevision(job.getRevision());
+    activity5Job.setTenantId(job.getTenantId());
+    
+    return activity5Job;
+  }
+   
 }

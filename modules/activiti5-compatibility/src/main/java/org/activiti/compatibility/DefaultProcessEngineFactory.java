@@ -20,6 +20,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
+import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
 
@@ -37,6 +39,15 @@ public class DefaultProcessEngineFactory {
       activiti5Configuration = new org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration();
 
       activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+      if (activiti6Configuration.isAsyncExecutorEnabled() && activiti6Configuration.getAsyncExecutor() != null) {
+        AsyncExecutor activiti5AsyncExecutor = new DefaultAsyncJobExecutor();
+        activiti5AsyncExecutor.setAsyncJobLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
+        activiti5AsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultAsyncJobAcquireWaitTimeInMillis());
+        activiti5AsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultTimerJobAcquireWaitTimeInMillis());
+        activiti5AsyncExecutor.setRetryWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getRetryWaitTimeInMillis());
+        activiti5AsyncExecutor.setTimerLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getTimerLockTimeInMillis());
+        activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
+      }
 
     } else {
       throw new ActivitiException("Unsupported process engine configuration");

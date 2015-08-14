@@ -13,18 +13,18 @@
 
 package org.activiti.engine.test.bpmn.subprocess;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti5.engine.ActivitiException;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti5.engine.impl.util.io.InputStreamSource;
 import org.activiti5.engine.impl.util.io.StreamSource;
-import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-
-import java.io.InputStream;
-import java.util.List;
 
 public class CallActivityTest extends ResourceActivitiTestCase {
 
@@ -39,7 +39,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
   public void testInstantiateProcessByMessage() throws Exception {
     BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
 
-    Deployment messageTriggeredBpmnDeployment = processEngine.getRepositoryService()
+    processEngine.getRepositoryService()
         .createDeployment()
         .name("messageTriggeredProcessDeployment")
         .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
@@ -59,7 +59,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     suspendProcessDefinitions(messageTriggeredBpmnDeployment);
 
     try {
-      ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
+      runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
       fail("Exception expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot start process instance. Process definition Message Triggered Process", ae.getMessage());
@@ -70,7 +70,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
   public void testInstantiateChildProcess() throws Exception {
     BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
 
-    Deployment childDeployment = processEngine.getRepositoryService()
+    processEngine.getRepositoryService()
         .createDeployment()
         .name("childProcessDeployment")
         .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
@@ -90,7 +90,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     suspendProcessDefinitions(childDeployment);
 
     try {
-      ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
+      runtimeService.startProcessInstanceByKey("childProcess");
       fail("Exception expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot start process instance. Process definition Child Process", ae.getMessage());
@@ -108,7 +108,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         .name("childProcessDeployment")
         .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
 
-    Deployment masterDeployment = processEngine.getRepositoryService()
+    processEngine.getRepositoryService()
         .createDeployment()
         .name("masterProcessDeployment")
         .addBpmnModel("masterProcess.bpmn20.xml", mainBpmnModel).deploy();
@@ -116,7 +116,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     suspendProcessDefinitions(childDeployment);
 
     try {
-      ProcessInstance masterProcessInstance = runtimeService.startProcessInstanceByKey("masterProcess");
+      runtimeService.startProcessInstanceByKey("masterProcess");
       fail("Exception expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot start process instance. Process definition Child Process", ae.getMessage());

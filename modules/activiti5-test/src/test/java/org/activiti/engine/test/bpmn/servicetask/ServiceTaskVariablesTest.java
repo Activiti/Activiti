@@ -15,10 +15,10 @@ package org.activiti.engine.test.bpmn.servicetask;
 
 import java.io.Serializable;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.test.Deployment;
 
 
 /**
