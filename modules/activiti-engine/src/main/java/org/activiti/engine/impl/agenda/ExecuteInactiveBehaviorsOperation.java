@@ -5,9 +5,9 @@ import java.util.Collection;
 
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.InactiveActivityBehavior;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

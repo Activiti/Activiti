@@ -10,27 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.delegate;
+package org.activiti.engine.impl.delegate.invocation;
 
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ValueExpression;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 /**
- * Class responsible for handling Expression.getValue invocations
+ * Default implementation, simply proceeding the call.
  * 
  * @author Daniel Meyer
  */
-public class ExpressionGetInvocation extends ExpressionInvocation {
+public class DefaultDelegateInterceptor implements DelegateInterceptor {
 
-  protected final ELContext elContext;
-
-  public ExpressionGetInvocation(ValueExpression valueExpression, ELContext elContext) {
-    super(valueExpression);
-    this.elContext = elContext;
-  }
-
-  protected void invoke() {
-    invocationResult = valueExpression.getValue(elContext);
+  public void handleInvocation(DelegateInvocation invocation) {
+    invocation.proceed();
   }
 
 }

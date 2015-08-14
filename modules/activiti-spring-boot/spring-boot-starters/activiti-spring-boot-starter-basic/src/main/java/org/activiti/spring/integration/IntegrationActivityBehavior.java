@@ -1,7 +1,7 @@
 package org.activiti.spring.integration;
 
 import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 public class IntegrationActivityBehavior extends ReceiveTaskActivityBehavior {
 

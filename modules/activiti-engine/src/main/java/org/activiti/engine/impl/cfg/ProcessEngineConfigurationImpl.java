@@ -111,7 +111,7 @@ import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionConte
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
-import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
+import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;

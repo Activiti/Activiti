@@ -2,7 +2,7 @@ package activiti;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.spring.integration.ActivitiInboundGateway;
 import org.activiti.spring.integration.IntegrationActivityBehavior;
 import org.springframework.boot.CommandLineRunner;

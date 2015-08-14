@@ -22,7 +22,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 
 /**
  * @author Joram Barrez

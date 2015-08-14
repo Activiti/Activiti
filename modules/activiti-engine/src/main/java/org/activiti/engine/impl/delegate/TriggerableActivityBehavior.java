@@ -10,15 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.pvm.delegate;
-
-import java.io.Serializable;
+package org.activiti.engine.impl.delegate;
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ActivityBehavior extends Serializable {
+public interface TriggerableActivityBehavior extends ActivityBehavior {
 
-  void execute(ActivityExecution execution);
+  void trigger(ActivityExecution execution, String signalEvent, Object signalData);
+
 }

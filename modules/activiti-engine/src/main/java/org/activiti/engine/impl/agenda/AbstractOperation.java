@@ -21,9 +21,9 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**

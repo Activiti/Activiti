@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.bpmn.data;
 
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * A transformation based data output association

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -13,7 +14,6 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * @author Joram Barrez

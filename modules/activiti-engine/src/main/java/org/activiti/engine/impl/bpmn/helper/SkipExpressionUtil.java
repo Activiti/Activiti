@@ -14,8 +14,8 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 public class SkipExpressionUtil {
 

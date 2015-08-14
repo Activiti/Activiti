@@ -10,32 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.delegate;
+package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.ExecutionListener;
 
 /**
- * Class handling invocations of JavaDelegates
+ * Class handling invocations of ExecutionListeners
  * 
  * @author Daniel Meyer
  */
-public class JavaDelegateInvocation extends DelegateInvocation {
+public class ExecutionListenerInvocation extends DelegateInvocation {
 
-  protected final JavaDelegate delegateInstance;
+  protected final ExecutionListener executionListenerInstance;
   protected final DelegateExecution execution;
 
-  public JavaDelegateInvocation(JavaDelegate delegateInstance, DelegateExecution execution) {
-    this.delegateInstance = delegateInstance;
+  public ExecutionListenerInvocation(ExecutionListener executionListenerInstance, DelegateExecution execution) {
+    this.executionListenerInstance = executionListenerInstance;
     this.execution = execution;
   }
 
   protected void invoke() {
-    delegateInstance.execute((DelegateExecution) execution);
+    executionListenerInstance.notify(execution);
   }
 
   public Object getTarget() {
-    return delegateInstance;
+    return executionListenerInstance;
   }
 
 }

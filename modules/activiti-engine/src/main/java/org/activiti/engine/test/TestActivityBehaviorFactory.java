@@ -93,8 +93,8 @@ import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.bpmn.parser.factory.AbstractBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.el.FixedValue;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.test.NoOpServiceTask;
 

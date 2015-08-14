@@ -10,31 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.delegate;
+package org.activiti.engine.impl.delegate.invocation;
 
-import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ValueExpression;
 
 /**
- * Class responsible for handling Expression.setValue() invocations.
+ * Baseclass responsible for handling invocations of Expressions
  * 
  * @author Daniel Meyer
  */
-public class ExpressionSetInvocation extends ExpressionInvocation {
+public abstract class ExpressionInvocation extends DelegateInvocation {
 
-  protected final Object value;
-  protected ELContext elContext;
+  protected final ValueExpression valueExpression;
 
-  public ExpressionSetInvocation(ValueExpression valueExpression, ELContext elContext, Object value) {
-    super(valueExpression);
-    this.value = value;
-    this.elContext = elContext;
-    this.invocationParameters = new Object[] { value };
+  public ExpressionInvocation(ValueExpression valueExpression) {
+    this.valueExpression = valueExpression;
   }
 
-  @Override
-  protected void invoke() {
-    valueExpression.setValue(elContext, value);
+  public Object getTarget() {
+    return valueExpression;
   }
 
 }

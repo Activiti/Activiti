@@ -12,7 +12,7 @@
  */
 package org.activiti.spring.test.servicetask;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * @author Joram Barrez

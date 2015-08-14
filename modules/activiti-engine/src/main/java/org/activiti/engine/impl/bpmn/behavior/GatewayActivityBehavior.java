@@ -13,9 +13,9 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * super class for all gateway activity implementations.
