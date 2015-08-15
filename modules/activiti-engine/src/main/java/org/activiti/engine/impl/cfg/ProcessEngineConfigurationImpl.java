@@ -429,7 +429,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 
-  // Can't have a dependency on the activiti5-engine module 
+  // Can't have a dependency on the activiti5-engine module
+  protected Object activiti5ActivityBehaviorFactory;
+  protected Object activiti5ListenerFactory;
   protected List<Object> activiti5PreBpmnParseHandlers;
   protected List<Object> activiti5PostBpmnParseHandlers;
   protected List<Object> activiti5CustomDefaultBpmnParseHandlers; 
@@ -2197,6 +2199,24 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
     this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
+    return this;
+  }
+  
+  public Object getActiviti5ActivityBehaviorFactory() {
+    return activiti5ActivityBehaviorFactory;
+  }
+  
+  public ProcessEngineConfigurationImpl setActiviti5ActivityBehaviorFactory(Object activiti5ActivityBehaviorFactory) {
+    this.activiti5ActivityBehaviorFactory = activiti5ActivityBehaviorFactory;
+    return this;
+  }
+  
+  public Object getActiviti5ListenerFactory() {
+    return activiti5ListenerFactory;
+  }
+  
+  public ProcessEngineConfigurationImpl setActiviti5ListenerFactory(Object activiti5ListenerFactory) {
+    this.activiti5ListenerFactory = activiti5ListenerFactory;
     return this;
   }
 

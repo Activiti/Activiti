@@ -13,6 +13,9 @@
 
 package org.activiti.engine.test.api.task;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
+
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,9 +48,6 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 
 /**
  * @author Frederik Heremans
@@ -772,7 +772,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.addCandidateUser("taskId", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
 
@@ -805,7 +805,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.addCandidateGroup("taskId", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
 
@@ -836,7 +836,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.addGroupIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
 
@@ -869,7 +869,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.addUserIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
 

@@ -16,10 +16,12 @@ package org.activiti.engine.impl.cmd;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.impl.util.ProcessInstanceUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -42,6 +44,11 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
   }
 
   protected ProcessInstance execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
+    if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      return activiti5CompatibilityHandler.submitStartFormData(processDefinition.getId(), businessKey, properties);
+    }
+    
     ExecutionEntity processInstance = null;
     
     // TODO: backwards compatibility? Only create the process instance and not start it? How?

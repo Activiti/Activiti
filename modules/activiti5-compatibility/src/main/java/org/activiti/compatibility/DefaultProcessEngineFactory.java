@@ -23,6 +23,8 @@ import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
+import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
@@ -74,11 +76,25 @@ public class DefaultProcessEngineFactory {
         activiti5AsyncExecutor.setTimerLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getTimerLockTimeInMillis());
         activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
       }
+      
+      activiti5Configuration.setJpaCloseEntityManager(activiti6Configuration.isJpaCloseEntityManager());
+      activiti5Configuration.setJpaHandleTransaction(activiti6Configuration.isJpaHandleTransaction());
+      activiti5Configuration.setJpaPersistenceUnitName(activiti6Configuration.getJpaPersistenceUnitName());
+      
+      if (activiti6Configuration.getBeans() != null) {
+        activiti5Configuration.setBeans(activiti6Configuration.getBeans());
+      }
 
     } else {
       throw new ActivitiException("Unsupported process engine configuration");
     }
     
+    if (activiti6Configuration.getActiviti5ActivityBehaviorFactory() != null) {
+      activiti5Configuration.setActivityBehaviorFactory((ActivityBehaviorFactory) activiti6Configuration.getActiviti5ActivityBehaviorFactory());
+    }
+    if (activiti6Configuration.getActiviti5ListenerFactory() != null) {
+      activiti5Configuration.setListenerFactory((ListenerFactory) activiti6Configuration.getListenerFactory());
+    }
     convertParseHandlers(activiti6Configuration, activiti5Configuration);
 
     return activiti5Configuration.buildProcessEngine();

@@ -53,7 +53,9 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
       throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
     }
 
-    if (identityId == null && identityIdType == IDENTITY_GROUP) {
+    if (identityId == null && (identityIdType == IDENTITY_GROUP || 
+        (IdentityLinkType.ASSIGNEE.equals(identityType) == false && IdentityLinkType.OWNER.equals(identityType) == false))) {
+      
       throw new ActivitiIllegalArgumentException("identityId is null");
     }
     

@@ -20,7 +20,6 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -46,6 +45,8 @@ public interface Activiti5CompatibilityHandler {
   
   void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
   
+  ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
+  
   void submitTaskFormData(String taskId, Map<String, String> properties);
   
   void saveTask(TaskEntity task);
@@ -62,7 +63,13 @@ public interface Activiti5CompatibilityHandler {
   
   void executeJobWithLockAndRetry(JobEntity job);
   
-  Clock getClock();
+  void addEventListener(Object listener);
+  
+  void removeEventListener(Object listener);
+  
+  Object getRawProcessConfiguration();
   
   Object getRawCommandExecutor();
+  
+  Object getRawClock();
 }

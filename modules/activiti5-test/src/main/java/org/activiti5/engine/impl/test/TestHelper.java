@@ -22,11 +22,11 @@ import java.util.Map;
 
 import junit.framework.AssertionFailedError;
 
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
-import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -36,12 +36,12 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.TestActivityBehaviorFactory;
-import org.activiti.engine.test.mock.ActivitiMockSupport;
-import org.activiti.engine.test.mock.MockServiceTask;
-import org.activiti.engine.test.mock.MockServiceTasks;
-import org.activiti.engine.test.mock.NoOpServiceTasks;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
+import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti5.engine.test.TestActivityBehaviorFactory;
+import org.activiti5.engine.test.mock.ActivitiMockSupport;
+import org.activiti5.engine.test.mock.MockServiceTask;
+import org.activiti5.engine.test.mock.MockServiceTasks;
+import org.activiti5.engine.test.mock.NoOpServiceTasks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,23 +225,21 @@ public abstract class TestHelper {
   // Engine startup and shutdown helpers  ///////////////////////////////////////////////////
 
   public static ProcessEngine getProcessEngine(String configurationResource) {
-	ProcessEngine processEngine = processEngines.get(configurationResource);
-	if (processEngine == null) {
-	  log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
-	  processEngine = ProcessEngineConfiguration
-		.createProcessEngineConfigurationFromResource(
-			configurationResource).buildProcessEngine();
-		log.debug("==== PROCESS ENGINE CREATED =========================================================================");
-		processEngines.put(configurationResource, processEngine);
+    ProcessEngine processEngine = processEngines.get(configurationResource);
+    if (processEngine == null) {
+      log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
+      processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(configurationResource).buildProcessEngine();
+      log.debug("==== PROCESS ENGINE CREATED =========================================================================");
+      processEngines.put(configurationResource, processEngine);
 	  }
 	  return processEngine;
 	}
 
   public static void closeProcessEngines() {
     for (ProcessEngine processEngine : processEngines.values()) {
-	  processEngine.close();
-	}
-	processEngines.clear();
+      processEngine.close();
+    }
+    processEngines.clear();
   }
 
   /** 

@@ -104,5 +104,9 @@ public class Activiti5ProcessInstanceWrapper implements ProcessInstance {
   public String getName() {
     return activit5ProcessInstance.getName();
   }
+  
+  public Object getRawObject() {
+    return activit5ProcessInstance;
+  }
 
 }

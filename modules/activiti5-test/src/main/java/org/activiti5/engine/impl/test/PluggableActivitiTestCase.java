@@ -16,6 +16,8 @@ package org.activiti5.engine.impl.test;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,5 +52,6 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
       }
     }
     processEngine = cachedProcessEngine;
+    Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration());
   }
 }
