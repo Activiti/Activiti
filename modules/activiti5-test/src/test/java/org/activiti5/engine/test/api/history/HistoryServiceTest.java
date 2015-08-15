@@ -23,18 +23,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.runtime.ProcessInstanceQueryTest;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.history.HistoricProcessInstance;
-import org.activiti5.engine.history.HistoricProcessInstanceQuery;
-import org.activiti5.engine.history.HistoricTaskInstance;
-import org.activiti5.engine.history.HistoricTaskInstanceQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.task.TaskQuery;
 
 /**
  * @author Frederik Heremans
@@ -69,7 +69,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByExecutionId().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByHistoricActivityInstanceId().asc().list();
-    historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceStartTime().asc().list();
+    historyService.createHistoricTaskInstanceQuery().orderByTaskCreateTime().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceDuration().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByHistoricTaskInstanceEndTime().asc().list();
     historyService.createHistoricTaskInstanceQuery().orderByProcessDefinitionId().asc().list();
@@ -247,7 +247,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricProcessInstanceQueryByDeploymentId() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     HashSet<String> processInstanceIds = new HashSet<String>();
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());
@@ -267,7 +267,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricProcessInstanceQueryByDeploymentIdIn() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     HashSet<String> processInstanceIds = new HashSet<String>();
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());
@@ -292,7 +292,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricTaskInstanceQueryByDeploymentId() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     HashSet<String> processInstanceIds = new HashSet<String>();
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());
@@ -312,7 +312,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricTaskInstanceQueryByDeploymentIdIn() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     HashSet<String> processInstanceIds = new HashSet<String>();
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());
@@ -340,7 +340,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricTaskInstanceOrQueryByDeploymentId() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     HashSet<String> processInstanceIds = new HashSet<String>();
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());
@@ -424,7 +424,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricTaskInstanceOrQueryByDeploymentIdIn() {
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     HashSet<String> processInstanceIds = new HashSet<String>();
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey("oneTaskProcess", i + "").getId());

@@ -15,13 +15,12 @@ package org.activiti5.engine.test.api.identity;
 
 import java.util.List;
 
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.identity.Group;
-import org.activiti5.engine.identity.GroupQuery;
-import org.activiti5.engine.impl.persistence.entity.GroupEntity;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-
 
 /**
  * @author Joram Barrez

@@ -15,11 +15,11 @@ package org.activiti5.engine.test.api.repository;
 
 import java.util.List;
 
-import org.activiti5.engine.impl.persistence.entity.ModelEntity;
+import org.activiti.engine.impl.persistence.entity.ModelEntity;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ModelQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.Model;
-import org.activiti5.engine.repository.ModelQuery;
 import org.junit.Assert;
 
 

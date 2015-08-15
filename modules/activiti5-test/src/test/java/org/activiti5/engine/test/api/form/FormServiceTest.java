@@ -21,18 +21,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.form.FormProperty;
-import org.activiti5.engine.form.StartFormData;
-import org.activiti5.engine.form.TaskFormData;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * @author Joram Barrez
@@ -187,7 +187,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     address.setStreet("broadway");
     runtimeService.setVariable(processInstanceId, "address", address);
     
-    runtimeService.signal(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).singleResult().getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).singleResult().getId());
 
     String taskId = taskService.createTaskQuery().singleResult().getId();
     TaskFormData taskFormData = formService.getTaskFormData(taskId);

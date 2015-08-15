@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.compatibility;
 
+import java.io.InputStream;
+import java.util.Date;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -22,6 +24,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Attachment;
 
 /**
  * @author Joram Barrez
@@ -34,7 +37,11 @@ public interface Activiti5CompatibilityHandler {
   ProcessDefinition getProcessDefinition(String processDefinitionId);
   
   ProcessDefinition getProcessDefinitionByKey(String processDefinitionKey);
+  
+  void suspendProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId);
 
+  void activateProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean activateProcessInstances, Date activationDate, String tenantId);
+  
   Deployment deploy(DeploymentBuilderImpl deploymentBuilder);
   
   void deleteDeployment(String deploymentId, boolean cascade);
@@ -47,13 +54,17 @@ public interface Activiti5CompatibilityHandler {
   
   ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
   
-  void submitTaskFormData(String taskId, Map<String, String> properties);
+  void submitTaskFormData(String taskId, Map<String, String> properties, boolean completeTask);
   
   void saveTask(TaskEntity task);
   
   void addIdentityLink(String taskId, String identityId, int identityIdType, String identityType);
   
+  Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url);
+  
   void trigger(String executionId, Map<String, Object> processVariables);
+  
+  void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables, boolean async);
   
   void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
   

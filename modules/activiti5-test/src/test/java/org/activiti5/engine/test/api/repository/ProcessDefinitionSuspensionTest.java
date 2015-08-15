@@ -16,12 +16,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * @author Daniel Meyer
@@ -449,7 +449,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     
     // Clean DB
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
   }
@@ -510,7 +510,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
     
     // Clean DB
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
   }

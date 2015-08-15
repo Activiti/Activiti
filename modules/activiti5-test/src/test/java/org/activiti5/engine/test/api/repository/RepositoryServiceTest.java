@@ -26,13 +26,13 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Model;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /**
  * @author Frederik Heremans
@@ -152,7 +152,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     Date inThreeDays = new Date(startTime.getTime() + (3 * 24 * 60 * 60 * 1000));
     
     // Deploy process, but activate after three days
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeployment()
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
             .addClasspathResource("org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml")
             .addClasspathResource("org/activiti5/engine/test/api/twoTasksProcess.bpmn20.xml")
             .activateProcessDefinitionsOn(inThreeDays)
@@ -192,7 +192,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testGetResourceAsStreamUnexistingResourceInExistingDeployment() {
     // Get hold of the deployment id
-    org.activiti5.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
     
     try {
       repositoryService.getResourceAsStream(deployment.getId(), "org/activiti5/engine/test/api/unexistingProcess.bpmn.xml");
@@ -211,7 +211,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("deployment does not exist", ae.getMessage());
-      assertEquals(org.activiti5.engine.repository.Deployment.class, ae.getObjectClass());
+      assertEquals(org.activiti.engine.repository.Deployment.class, ae.getObjectClass());
     }
   }
   
@@ -393,7 +393,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 	  
 	  
 	  // Delete
-	  for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+	  for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
 		  repositoryService.deleteDeployment(deployment.getId(), true);
 	  }
   }

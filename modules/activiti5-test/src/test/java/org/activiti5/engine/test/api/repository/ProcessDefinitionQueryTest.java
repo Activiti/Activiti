@@ -17,13 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.repository.ProcessDefinitionQuery;
 
 
 /**

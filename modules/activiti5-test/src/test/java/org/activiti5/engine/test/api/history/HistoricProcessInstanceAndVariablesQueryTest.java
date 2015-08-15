@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.history.HistoricProcessInstance;
-import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.task.Task;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.task.Task;
 
 /**
  * @author Tijs Rademakers
@@ -60,7 +60,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
   }
 
   protected void tearDown() throws Exception {
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
     super.tearDown();

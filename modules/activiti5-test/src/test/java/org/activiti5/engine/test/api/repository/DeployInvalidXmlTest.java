@@ -1,9 +1,9 @@
 package org.activiti5.engine.test.api.repository;
 
 import org.activiti.bpmn.exceptions.XMLException;
-import org.activiti5.engine.RepositoryService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

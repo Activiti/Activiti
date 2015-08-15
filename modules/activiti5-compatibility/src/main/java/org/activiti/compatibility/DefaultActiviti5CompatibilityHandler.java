@@ -13,14 +13,18 @@
 
 package org.activiti.compatibility;
 
+import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.compatibility.wrapper.Activiti5AttachmentWrapper;
 import org.activiti.compatibility.wrapper.Activiti5DeploymentWrapper;
 import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
 import org.activiti.compatibility.wrapper.Activiti5ProcessInstanceWrapper;
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
@@ -39,6 +43,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Attachment;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.asyncexecutor.AsyncJobUtil;
@@ -93,6 +98,30 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     return wrapper;
   }
   
+  public void suspendProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId) {
+    try {
+      if (processDefinitionId != null) {
+        getProcessEngine().getRepositoryService().suspendProcessDefinitionById(processDefinitionId, suspendProcessInstances, suspensionDate);
+      } else {
+        getProcessEngine().getRepositoryService().suspendProcessDefinitionByKey(processDefinitionKey, suspendProcessInstances, suspensionDate, tenantId);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void activateProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean activateProcessInstances, Date activationDate, String tenantId) {
+    try {
+      if (processDefinitionId != null) {
+        getProcessEngine().getRepositoryService().activateProcessDefinitionById(processDefinitionId, activateProcessInstances, activationDate);
+      } else {
+        getProcessEngine().getRepositoryService().activateProcessDefinitionByKey(processDefinitionKey, activateProcessInstances, activationDate, tenantId);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
   public Deployment deploy(DeploymentBuilderImpl activiti6DeploymentBuilder) {
     DeploymentBuilder deploymentBuilder = getProcessEngine().getRepositoryService().createDeployment();
     
@@ -141,8 +170,13 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
-    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
-    processEngineConfig.getRepositoryService().deleteDeployment(deploymentId, cascade);
+    try {
+      final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+      processEngineConfig.getRepositoryService().deleteDeployment(deploymentId, cascade);
+      
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, 
@@ -156,6 +190,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance 
           = getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
       return new Activiti5ProcessInstanceWrapper(activiti5ProcessInstance);
+      
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
       return null;
@@ -168,7 +203,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   
   public void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
     if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     }
     try {
       getProcessEngine().getTaskService().complete(taskEntity.getId(), variables, localScope);
@@ -179,7 +214,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   
   public ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties) {
     if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     }
     try {
       return new Activiti5ProcessInstanceWrapper(getProcessEngine().getFormService().submitStartFormData(processDefinitionId, businessKey, properties));
@@ -189,12 +224,16 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
-  public void submitTaskFormData(String taskId, Map<String, String> properties) {
+  public void submitTaskFormData(String taskId, Map<String, String> properties, boolean completeTask) {
     if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     }
     try {
-      getProcessEngine().getFormService().submitTaskFormData(taskId, properties);
+      if (completeTask) {
+        getProcessEngine().getFormService().submitTaskFormData(taskId, properties);
+      } else {
+        getProcessEngine().getFormService().saveFormData(taskId, properties);
+      }
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
     }
@@ -213,9 +252,39 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url) {
+    try {
+      if (Authentication.getAuthenticatedUserId() != null) {
+        org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
+      }
+      if (content != null) {
+        return new Activiti5AttachmentWrapper(getProcessEngine().getTaskService().
+            createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content));
+      } else {
+        return new Activiti5AttachmentWrapper(getProcessEngine().getTaskService().
+            createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, url));
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
+  }
+  
   public void trigger(String executionId, Map<String, Object> processVariables) {
     try {
       getProcessEngine().getRuntimeService().signal(executionId, processVariables);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables, boolean async) {
+    try {
+      if (async == false) {
+        getProcessEngine().getRuntimeService().messageEventReceived(messageName, executionId, processVariables);
+      } else {
+        getProcessEngine().getRuntimeService().messageEventReceivedAsync(messageName, executionId);
+      }
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
     }
@@ -389,8 +458,15 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     if (e instanceof org.activiti5.engine.delegate.BpmnError) {
       org.activiti5.engine.delegate.BpmnError activiti5BpmnError = (org.activiti5.engine.delegate.BpmnError) e;
       throw new BpmnError(activiti5BpmnError.getErrorCode(), activiti5BpmnError.getMessage());
+      
     } else if (e instanceof org.activiti5.engine.ActivitiClassLoadingException) {
       throw new ActivitiClassLoadingException(e.getMessage(), e.getCause());
+      
+    } else if (e instanceof org.activiti5.engine.ActivitiObjectNotFoundException) {
+      org.activiti5.engine.ActivitiObjectNotFoundException activiti5ObjectNotFoundException = (org.activiti5.engine.ActivitiObjectNotFoundException) e;
+      throw new ActivitiObjectNotFoundException(activiti5ObjectNotFoundException.getMessage(), 
+          activiti5ObjectNotFoundException.getObjectClass(), activiti5ObjectNotFoundException.getCause());
+      
     } else {
       if (e.getCause() instanceof org.activiti5.engine.ActivitiClassLoadingException) {
         throw new ActivitiException(e.getMessage(), new ActivitiClassLoadingException(e.getCause().getMessage(), e.getCause().getCause()));

@@ -46,7 +46,7 @@ public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
     if (task.getProcessDefinitionId() != null) {
       if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
         Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
-        activiti5CompatibilityHandler.submitTaskFormData(taskId, properties);
+        activiti5CompatibilityHandler.submitTaskFormData(taskId, properties, completeTask);
         return null;
       }
     }

@@ -15,9 +15,9 @@ package org.activiti5.engine.test.api.repository;
 import java.util.HashSet;
 import java.util.List;
 
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
@@ -59,7 +59,7 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
     return processDefinitionNames;
   }
   
-  @org.activiti5.engine.test.Deployment
+  @org.activiti.engine.test.Deployment
   public void testSetProcessDefinitionCategory() {
     
     // Verify category and see if we can start a process instance
