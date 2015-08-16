@@ -2,6 +2,7 @@ package org.activiti.osgi.blueprint.bean;
 
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 public class ActivityBehaviourBean implements ActivityBehavior {
 
@@ -10,6 +11,8 @@ public class ActivityBehaviourBean implements ActivityBehavior {
   @Override
   public void execute(ActivityExecution execution) {
     execution.setVariable("visitedActivityBehaviour", true);
-    execution.end();
+    
+    ((ExecutionEntity) execution).setActive(false);
+    ((ExecutionEntity) execution).setEnded(true);
   }
 }

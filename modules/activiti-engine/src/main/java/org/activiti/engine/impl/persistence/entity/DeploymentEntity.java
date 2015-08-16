@@ -27,6 +27,7 @@ import org.activiti.engine.repository.Deployment;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class DeploymentEntity implements Serializable, Deployment, PersistentObject {
 
@@ -48,10 +49,6 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
 
-  public ResourceEntity getResource(String resourceName) {
-    return getResources().get(resourceName);
-  }
-
   public void addResource(ResourceEntity resource) {
     if (resources == null) {
       resources = new HashMap<String, ResourceEntity>();
@@ -59,8 +56,8 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     resources.put(resource.getName(), resource);
   }
 
-  // lazy loading
-  // /////////////////////////////////////////////////////////////
+  // lazy loading ///////////////////////////////////////////////////////////////
+  
   public Map<String, ResourceEntity> getResources() {
     if (resources == null && id != null) {
       List<ResourceEntity> resourcesList = Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
@@ -79,8 +76,8 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     return persistentState;
   }
 
-  // Deployed artifacts manipulation
-  // //////////////////////////////////////////
+  // Deployed artifacts manipulation ////////////////////////////////////////////
+  
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
       deployedArtifacts = new HashMap<Class<?>, List<Object>>();
@@ -101,8 +98,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     return (List<T>) deployedArtifacts.get(clazz);
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
 
   public String getId() {
     return id;

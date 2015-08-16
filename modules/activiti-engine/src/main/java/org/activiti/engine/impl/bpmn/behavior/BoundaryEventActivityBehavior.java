@@ -109,16 +109,18 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // it is completely independent in that regard.
 
     // Note: if the parent of the parent does not exists, this becomes a concurrent execution in the process instance!
+    
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
-    ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager().findExecutionById(executionEntity.getParentId());
+    ExecutionEntity parentExecutionEntity = executionEntityManager.findExecutionById(executionEntity.getParentId());
 
     ExecutionEntity scopeExecution = null;
-    ExecutionEntity currentlyExaminedExecution = commandContext.getExecutionEntityManager().findExecutionById(parentExecutionEntity.getParentId());
+    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(parentExecutionEntity.getParentId());
     while (currentlyExaminedExecution != null && scopeExecution == null) {
       if (currentlyExaminedExecution.isScope()) {
         scopeExecution = currentlyExaminedExecution;
       } else {
-        currentlyExaminedExecution = commandContext.getExecutionEntityManager().findExecutionById(currentlyExaminedExecution.getParentId());
+        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
       }
     }
 
@@ -126,7 +128,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
     }
 
-    ExecutionEntity nonInterruptingExecution = scopeExecution.createExecution();
+    ExecutionEntity nonInterruptingExecution = executionEntityManager.createChildExecution(scopeExecution); 
     nonInterruptingExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
 
     commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);

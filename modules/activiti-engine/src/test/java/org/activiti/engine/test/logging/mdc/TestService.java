@@ -14,7 +14,7 @@ public class TestService implements JavaDelegate {
     TestService.processDefinitionId = execution.getProcessDefinitionId();
     TestService.processInstanceId = execution.getProcessInstanceId();
     TestService.executionId = execution.getId();
-    TestService.businessKey = execution.getProcessBusinessKey();
+    TestService.businessKey = execution.getProcessInstanceBusinessKey();
 
     throw new RuntimeException("test");
 

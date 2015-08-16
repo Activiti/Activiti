@@ -14,6 +14,8 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,9 +25,14 @@ import java.util.Set;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.event.EventHandler;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 
 /**
  * @author Joram Barrez
@@ -36,6 +43,12 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
   /** keep track of subscriptions created in the current command */
   protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();
   protected List<CompensateEventSubscriptionEntity> createdCompensateSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
+  
+  @Override
+  public void insert(EventSubscriptionEntity eventSubScriptionEntity) {
+    super.insert(eventSubScriptionEntity);
+    addToExecution(eventSubScriptionEntity);
+  }
 
   public SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution) {
     SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
@@ -112,12 +125,44 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     }
     return result;
   }
+  
+//  public void delete() {
+//    Context.getCommandContext().getEventSubscriptionEntityManager().deleteEventSubscription(this);
+//    removeFromExecution();
+//  }
 
-  public void deleteEventSubscription(EventSubscriptionEntity persistentObject) {
-    getDbSqlSession().delete(persistentObject);
-    if (persistentObject instanceof SignalEventSubscriptionEntity) {
-      createdSignalSubscriptions.remove(persistentObject);
+  // TODO: shouldn't this be renamed to delete() ?
+  public void deleteEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {
+    getDbSqlSession().delete(eventSubscriptionEntity);
+    
+    if (eventSubscriptionEntity instanceof SignalEventSubscriptionEntity) {
+      createdSignalSubscriptions.remove(eventSubscriptionEntity);
     }
+  }
+  
+  protected void addToExecution(EventSubscriptionEntity eventSubscriptionEntity) {
+    // add reference in execution
+    ExecutionEntity execution = getExecution(eventSubscriptionEntity);
+    if (execution != null) {
+      execution.addEventSubscription(eventSubscriptionEntity);
+    }
+  }
+  
+  protected void removeFromExecution(EventSubscriptionEntity eventSubscriptionEntity) {
+    // remove reference in execution
+    ExecutionEntity execution = getExecution(eventSubscriptionEntity);
+    if (execution != null) {
+      execution.removeEventSubscription(eventSubscriptionEntity);
+    }
+  }
+  
+  public ExecutionEntity getExecution(EventSubscriptionEntity eventSubscriptionEntity) {
+    if (eventSubscriptionEntity.getExecution() != null) {
+      return eventSubscriptionEntity.getExecution();
+    } else if (eventSubscriptionEntity.getExecutionId() != null) {
+      return Context.getCommandContext().getExecutionEntityManager().findExecutionById(eventSubscriptionEntity.getExecutionId());
+    }
+    return null;
   }
 
   public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
@@ -365,5 +410,54 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     params.put("newTenantId", newTenantId);
     getDbSqlSession().update("updateTenantIdOfEventSubscriptions", params);
   }
+  
+  
+  // Processing /////////////////////////////////////////////////////////////
+  
+  public void eventReceived(EventSubscriptionEntity eventSubscriptionEntity, Object payload, boolean processASync) {
+    if (processASync) {
+      scheduleEventAsync(eventSubscriptionEntity, payload);
+    } else {
+      processEventSync(eventSubscriptionEntity, payload);
+    }
+  }
+
+  protected void processEventSync(EventSubscriptionEntity eventSubscriptionEntity, Object payload) {
+    
+    // A compensate event needs to be deleted before the handlers are called
+    if (eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity) {
+      deleteEventSubscription(eventSubscriptionEntity);
+    }
+    
+    EventHandler eventHandler = Context.getProcessEngineConfiguration().getEventHandler(eventSubscriptionEntity.getEventType());
+    if (eventHandler == null) {
+      throw new ActivitiException("Could not find eventhandler for event of type '" + eventSubscriptionEntity.getEventType() + "'.");
+    }
+    eventHandler.handleEvent(eventSubscriptionEntity, payload, Context.getCommandContext());
+  }
+
+  protected void scheduleEventAsync(EventSubscriptionEntity eventSubscriptionEntity, Object payload) {
+
+    final CommandContext commandContext = Context.getCommandContext();
+
+    MessageEntity message = new MessageEntity();
+    message.setJobHandlerType(ProcessEventJobHandler.TYPE);
+    message.setJobHandlerConfiguration(eventSubscriptionEntity.getId());
+    message.setTenantId(eventSubscriptionEntity.getTenantId());
+
+    GregorianCalendar expireCal = new GregorianCalendar();
+    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
+    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
+    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
+    message.setLockExpirationTime(expireCal.getTime());
+
+    // TODO: support payload
+    // if(payload != null) {
+    // message.setEventPayload(payload);
+    // }
+
+    commandContext.getJobEntityManager().send(message);
+  }
+  
 
 }

@@ -13,11 +13,22 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+
 /**
  * @author Joram Barrez
  * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntityManager extends AbstractEntityManager<ByteArrayEntity> {
+  
+  public ByteArrayEntity createAndInsert(byte[] bytes) {
+    return createAndInsert(null, bytes);
+  }
+  
+  public ByteArrayEntity createAndInsert(String name, byte[] bytes) {
+    ByteArrayEntity byteArrayEntity = new ByteArrayEntity(name, bytes);
+    insert(byteArrayEntity);
+    return byteArrayEntity;
+  }
 
   public ByteArrayEntity findById(String byteArrayEntityId) {
     return getDbSqlSession().selectById(ByteArrayEntity.class, byteArrayEntityId);

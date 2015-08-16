@@ -15,11 +15,13 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class ProcessEventJobHandler implements JobHandler {
 
@@ -30,12 +32,15 @@ public class ProcessEventJobHandler implements JobHandler {
   }
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+    
     // lookup subscription:
-    EventSubscriptionEntity eventSubscription = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionbyId(configuration);
+    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findEventSubscriptionbyId(configuration);
 
     // if event subscription is null, ignore
-    if (eventSubscription != null) {
-      eventSubscription.eventReceived(null, false);
+    if (eventSubscriptionEntity != null) {
+      eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, null, false);
     }
 
   }

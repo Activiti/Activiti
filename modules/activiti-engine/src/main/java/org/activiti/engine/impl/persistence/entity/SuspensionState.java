@@ -74,7 +74,7 @@ public interface SuspensionState {
     }
   }
 
-  // ///////////////////////////////////////// helper class
+  // helper class ///////////////////////////////////////// 
 
   public static class SuspensionStateUtil {
 

@@ -53,6 +53,7 @@ import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -319,11 +320,12 @@ public class BpmnDeployer implements Deployer {
     if (latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
 
-      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE,
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+      List<EventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE,
           latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
 
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-        eventSubscriptionEntity.delete();
+        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscriptionEntity);
       }
 
     }
@@ -384,7 +386,7 @@ public class BpmnDeployer implements Deployer {
       newSubscription.setTenantId(processDefinition.getTenantId());
     }
 
-    newSubscription.insert();
+    commandContext.getEventSubscriptionEntityManager().insert(newSubscription);
   }
 
   protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
@@ -392,11 +394,12 @@ public class BpmnDeployer implements Deployer {
     if (latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
 
-      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByConfiguration(SignalEventHandler.EVENT_HANDLER_TYPE,
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+      List<EventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findEventSubscriptionsByConfiguration(SignalEventHandler.EVENT_HANDLER_TYPE,
           latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
 
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-        eventSubscriptionEntity.delete();
+        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscriptionEntity);
       }
 
     }
@@ -423,7 +426,8 @@ public class BpmnDeployer implements Deployer {
               if (processDefinition.getTenantId() != null) {
                 subscriptionEntity.setTenantId(processDefinition.getTenantId());
               }
-              subscriptionEntity.insert();
+              
+              Context.getCommandContext().getEventSubscriptionEntityManager().insert(subscriptionEntity);
             }
           }
         }

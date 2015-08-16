@@ -25,6 +25,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -67,8 +68,9 @@ public class SignalEventReceivedCmd implements Command<Void> {
     
     List<SignalEventSubscriptionEntity> signalEvents = null;
 
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
     if (executionId == null) {
-      signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(eventName, tenantId);
+      signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
     } else {
 
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
@@ -87,7 +89,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
         return null;
       }
 
-      signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
+      signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
 
       if (signalEvents.isEmpty()) {
         throw new ActivitiException("Execution '" + executionId + "' has not subscribed to a signal event with name '" + eventName + "'.");
@@ -109,7 +111,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
                   payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
                   signalEventSubscriptionEntity.getProcessDefinitionId()));
           
-          signalEventSubscriptionEntity.eventReceived(payload, async);
+          eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, payload, async);
         }
       }
     }

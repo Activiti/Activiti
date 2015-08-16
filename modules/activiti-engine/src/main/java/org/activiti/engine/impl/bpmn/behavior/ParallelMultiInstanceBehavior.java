@@ -64,7 +64,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      ActivityExecution concurrentExecution = execution.createExecution();
+      ActivityExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
       concurrentExecution.setConcurrent(true);

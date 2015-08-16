@@ -26,6 +26,7 @@ import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEn
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -38,18 +39,20 @@ public class ScopeUtil {
    */
   public static void throwCompensationEvent(List<CompensateEventSubscriptionEntity> eventSubscriptions, ActivityExecution execution, boolean async) {
 
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    
     // first spawn the compensating executions
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       ExecutionEntity compensatingExecution = null;
       // check whether compensating execution is already created (which is the case when compensating an embedded subprocess,
       // where the compensating execution is created when leaving the subprocess and holds snapshot data).
       if (eventSubscription.getConfiguration() != null) {
-        compensatingExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(eventSubscription.getConfiguration());
+        compensatingExecution = executionEntityManager.findExecutionById(eventSubscription.getConfiguration());
         // move the compensating execution under this execution:
         compensatingExecution.setParent((ExecutionEntity) execution);
         compensatingExecution.setEventScope(false);
       } else {
-        compensatingExecution = (ExecutionEntity) execution.createExecution();
+        compensatingExecution = executionEntityManager.createChildExecution(execution); 
         eventSubscription.setConfiguration(compensatingExecution.getId());
       }
       compensatingExecution.setConcurrent(true);
@@ -63,7 +66,7 @@ public class ScopeUtil {
     });
 
     for (CompensateEventSubscriptionEntity compensateEventSubscriptionEntity : eventSubscriptions) {
-      compensateEventSubscriptionEntity.eventReceived(null, async);
+      Context.getCommandContext().getEventSubscriptionEntityManager().eventReceived(compensateEventSubscriptionEntity, null, async);
     }
   }
   
@@ -82,7 +85,7 @@ public class ScopeUtil {
     }
 
     if (CollectionUtils.isNotEmpty(compensateEventSubscriptions)) {
-      ExecutionEntity eventScopeExecution = parentScopeExecution.createExecution();
+      ExecutionEntity eventScopeExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(parentScopeExecution); 
       eventScopeExecution.setActive(false);
       eventScopeExecution.setConcurrent(false);
       eventScopeExecution.setEventScope(true);

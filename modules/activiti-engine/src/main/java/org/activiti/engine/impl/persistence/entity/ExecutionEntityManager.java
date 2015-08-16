@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
@@ -40,12 +42,16 @@ import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntity> {
+  
+  private static final Logger logger = LoggerFactory.getLogger(ExecutionEntityManager.class);
 
   @Override
   public Class<ExecutionEntity> getManagedPersistentObject() {
@@ -222,6 +228,22 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       }
     });
   }
+  
+  public List<String> findActiveActivityIds(ExecutionEntity executionEntity) {
+    List<String> activeActivityIds = new ArrayList<String>();
+    collectActiveActivityIds(executionEntity, activeActivityIds);
+    return activeActivityIds;
+  }
+
+  protected void collectActiveActivityIds(ExecutionEntity executionEntity, List<String> activeActivityIds) {
+    if (executionEntity.isActive() && executionEntity.getActivityId() != null) {
+      activeActivityIds.add(executionEntity.getActivityId());
+    }
+    
+    for (ExecutionEntity childExecution : executionEntity.getExecutions()) {
+      collectActiveActivityIds(childExecution, activeActivityIds);
+    }
+  }
 
   @SuppressWarnings("unchecked")
   public List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
@@ -242,7 +264,6 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   @Override
   public void insert(ExecutionEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
-
   }
 
   public ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId, String initiatorVariableName) {
@@ -278,6 +299,49 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     }
 
     return processInstanceExecution;
+  }
+  
+  public ExecutionEntity createChildExecution(ActivityExecution parentExecutionEntity) {
+    return createChildExecution( (ExecutionEntity) parentExecutionEntity);
+  }
+  
+  /**
+   * Creates a new execution. properties processDefinition, processInstance and activity will be initialized.
+   */
+  public ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity) {
+    
+    // create the new child execution
+    ExecutionEntity childExecution = new ExecutionEntity();
+
+    // Inherit tenant id (if any)
+    if (parentExecutionEntity.getTenantId() != null) {
+      childExecution.setTenantId(parentExecutionEntity.getTenantId());
+    }
+
+    // Insert the child execution
+    insert(childExecution, false);
+
+    // manage the bidirectional parent-child relation
+    parentExecutionEntity.getExecutions().add(childExecution);
+    childExecution.setParent(parentExecutionEntity);
+
+    // initialize the new execution
+    childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
+    childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
+        ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
+    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
+    childExecution.setScope(false);
+
+    if (logger.isDebugEnabled()) {
+      logger.debug("Child execution {} created with parent {}", childExecution, parentExecutionEntity.getId());
+    }
+
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, childExecution));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, childExecution));
+    }
+
+    return childExecution;
   }
 
   // UPDATE METHODS

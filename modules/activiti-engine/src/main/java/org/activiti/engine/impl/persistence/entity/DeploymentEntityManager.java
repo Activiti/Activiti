@@ -174,10 +174,11 @@ public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEnt
       }
 
       // remove message event subscriptions:
-      List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context.getCommandContext().getEventSubscriptionEntityManager()
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = eventSubscriptionEntityManager 
           .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId(), processDefinition.getTenantId());
       for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
-        eventSubscriptionEntity.delete();
+        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscriptionEntity);
       }
     }
 

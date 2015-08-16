@@ -902,7 +902,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       if (processInstance != null) {
         HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
         if (historicProcessInstance != null) {
-          historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
+          historicProcessInstance.setBusinessKey(processInstance.getProcessInstanceBusinessKey());
           getDbSqlSession().update(historicProcessInstance);
         }
       }

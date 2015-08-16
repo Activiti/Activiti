@@ -23,6 +23,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
@@ -52,11 +53,14 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
 
     CommandContext commandContext = Context.getCommandContext();
 
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
     if (processInstanceScope) {
-      subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalEventName);
+      subscriptionEntities = eventSubscriptionEntityManager
+          .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalEventName);
     } else {
-      subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(signalEventName, execution.getTenantId());
+      subscriptionEntities = eventSubscriptionEntityManager
+          .findSignalEventSubscriptionsByEventName(signalEventName, execution.getTenantId());
     }
 
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
@@ -65,7 +69,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
               null, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
               signalEventSubscriptionEntity.getProcessDefinitionId()));
       
-      signalEventSubscriptionEntity.eventReceived(null, signalEventDefinition.isAsync());
+      eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
     }
 
     commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution);

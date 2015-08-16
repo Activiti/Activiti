@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
+ * @author Joram Barrez
  */
 public class ByteArrayEntity implements Serializable, PersistentObject, HasRevision {
 
@@ -45,18 +45,6 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
 
   public ByteArrayEntity(byte[] bytes) {
     this.bytes = bytes;
-  }
-
-  public static ByteArrayEntity createAndInsert(String name, byte[] bytes) {
-    ByteArrayEntity byteArrayEntity = new ByteArrayEntity(name, bytes);
-
-    Context.getCommandContext().getDbSqlSession().insert(byteArrayEntity);
-
-    return byteArrayEntity;
-  }
-
-  public static ByteArrayEntity createAndInsert(byte[] bytes) {
-    return createAndInsert(null, bytes);
   }
 
   public byte[] getBytes() {
