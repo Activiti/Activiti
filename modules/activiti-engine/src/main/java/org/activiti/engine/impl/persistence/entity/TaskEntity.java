@@ -125,7 +125,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
 
     if (execution != null) {
-      execution.addTask(this);
+      execution.getTasks().add(this);
       setExecutionId(execution.getId());
       setProcessInstanceId(execution.getProcessInstanceId());
       setProcessDefinitionId(execution.getProcessDefinitionId());

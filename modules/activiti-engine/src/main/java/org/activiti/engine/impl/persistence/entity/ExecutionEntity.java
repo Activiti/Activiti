@@ -34,7 +34,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.BitMaskUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +112,6 @@ public class ExecutionEntity extends VariableScopeImpl
 
   // cascade deletion ////////////////////////////////////////////////////////
 
-  protected boolean deleteRoot;
   protected String deleteReason;
   
   protected int revision = 1;
@@ -200,6 +198,30 @@ public class ExecutionEntity extends VariableScopeImpl
 
   public ExecutionEntity() {
   }
+  
+  //persistent state /////////////////////////////////////////////////////////
+
+ public Object getPersistentState() {
+   Map<String, Object> persistentState = new HashMap<String, Object>();
+   persistentState.put("processDefinitionId", this.processDefinitionId);
+   persistentState.put("businessKey", this.businessKey);
+   persistentState.put("activityId", this.activityId);
+   persistentState.put("isActive", this.isActive);
+   persistentState.put("isConcurrent", this.isConcurrent);
+   persistentState.put("isScope", this.isScope);
+   persistentState.put("isEventScope", this.isEventScope);
+   persistentState.put("parentId", parentId);
+   persistentState.put("name", name);
+   persistentState.put("lockTime", lockTime);
+   persistentState.put("superExecution", this.superExecutionId);
+   persistentState.put("rootProcessInstanceId", this.rootProcessInstanceId);
+   if (forcedUpdate) {
+     persistentState.put("forcedUpdate", Boolean.TRUE);
+   }
+   persistentState.put("suspensionState", this.suspensionState);
+   persistentState.put("cachedEntityState", this.cachedEntityState);
+   return persistentState;
+ }
   
   // The current flow element, will be filled during operation execution
 
@@ -410,8 +432,25 @@ public class ExecutionEntity extends VariableScopeImpl
     this.isScope = isScope;
   }
 
-  // variables //////////////////////////////////////////////////////////////////
+  public int getRevisionNext() {
+    return revision + 1;
+  }
 
+  public void forceUpdate() {
+    this.forcedUpdate = true;
+  }
+
+  // process engine convenience access /////////////////////////////////////////////////////////////////
+
+  public EngineServices getEngineServices() {
+    return Context.getProcessEngineConfiguration();
+  }
+  
+  
+ // VariableScopeImpl methods //////////////////////////////////////////////////////////////////
+
+  
+  // TODO: this should ideally move to another place  
   @Override
   protected void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance) {
     if (processInstanceId != null) {
@@ -437,11 +476,6 @@ public class ExecutionEntity extends VariableScopeImpl
    */
   protected ExecutionEntity getSourceActivityExecution() {
     return this;
-  }
-
-  @Override
-  protected boolean isActivityIdUsedForDetails() {
-    return true;
   }
 
   @Override
@@ -496,105 +530,11 @@ public class ExecutionEntity extends VariableScopeImpl
     return commandContext.getVariableInstanceEntityManager().findVariableInstancesByExecutionAndNames(id, variableNames);
   }
 
-  // persistent state
-  // /////////////////////////////////////////////////////////
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("processDefinitionId", this.processDefinitionId);
-    persistentState.put("businessKey", this.businessKey);
-    persistentState.put("activityId", this.activityId);
-    persistentState.put("isActive", this.isActive);
-    persistentState.put("isConcurrent", this.isConcurrent);
-    persistentState.put("isScope", this.isScope);
-    persistentState.put("isEventScope", this.isEventScope);
-    persistentState.put("parentId", parentId);
-    persistentState.put("name", name);
-    persistentState.put("lockTime", lockTime);
-    persistentState.put("superExecution", this.superExecutionId);
-    persistentState.put("rootProcessInstanceId", this.rootProcessInstanceId);
-    if (forcedUpdate) {
-      persistentState.put("forcedUpdate", Boolean.TRUE);
-    }
-    persistentState.put("suspensionState", this.suspensionState);
-    persistentState.put("cachedEntityState", this.cachedEntityState);
-    return persistentState;
-  }
-
-  public void insert() {
-    Context.getCommandContext().getDbSqlSession().insert(this);
-  }
-
-  public void deleteCascade(String deleteReason) {
-    this.deleteReason = deleteReason;
-    this.deleteRoot = true;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public void forceUpdate() {
-    this.forcedUpdate = true;
-  }
-
-  // process engine convenience access
-  // /////////////////////////////////////////////////////////////////
-
-  public EngineServices getEngineServices() {
-    return Context.getProcessEngineConfiguration();
-  }
-
-  // toString
-  // /////////////////////////////////////////////////////////////////
-
-  public String toString() {
-    if (isProcessInstanceType()) {
-      return "ProcessInstance[" + getToStringIdentity() + "]";
-    } else {
-      return (isScope ? "Scope" : "") + "Execution[ id '" + getToStringIdentity() + "'"
-                + (activityId != null ? " - activity '" + activityId + "'" : "") 
-                + (parentId != null ? " - parent '" + parentId + "'" : "") + "] ";
-    }
-  }
-
-  protected String getToStringIdentity() {
-    return id;
-  }
-
   // event subscription support //////////////////////////////////////////////
 
-  public List<EventSubscriptionEntity> getEventSubscriptionsInternal() {
+  public List<EventSubscriptionEntity> getEventSubscriptions() {
     ensureEventSubscriptionsInitialized();
     return eventSubscriptions;
-  }
-
-  public List<EventSubscriptionEntity> getEventSubscriptions() {
-    return new ArrayList<EventSubscriptionEntity>(getEventSubscriptionsInternal());
-  }
-
-  public List<CompensateEventSubscriptionEntity> getCompensateEventSubscriptions() {
-    List<EventSubscriptionEntity> eventSubscriptions = getEventSubscriptionsInternal();
-    List<CompensateEventSubscriptionEntity> result = new ArrayList<CompensateEventSubscriptionEntity>(eventSubscriptions.size());
-    for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptions) {
-      if (eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity) {
-        result.add((CompensateEventSubscriptionEntity) eventSubscriptionEntity);
-      }
-    }
-    return result;
-  }
-
-  public List<CompensateEventSubscriptionEntity> getCompensateEventSubscriptions(String activityId) {
-    List<EventSubscriptionEntity> eventSubscriptions = getEventSubscriptionsInternal();
-    List<CompensateEventSubscriptionEntity> result = new ArrayList<CompensateEventSubscriptionEntity>(eventSubscriptions.size());
-    for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptions) {
-      if (eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity) {
-        if (activityId.equals(eventSubscriptionEntity.getActivityId())) {
-          result.add((CompensateEventSubscriptionEntity) eventSubscriptionEntity);
-        }
-      }
-    }
-    return result;
   }
 
   protected void ensureEventSubscriptionsInitialized() {
@@ -603,77 +543,43 @@ public class ExecutionEntity extends VariableScopeImpl
     }
   }
 
-  public void addEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {
-    getEventSubscriptionsInternal().add(eventSubscriptionEntity);
-  }
+  // referenced job entities //////////////////////////////////////////////////
 
-  public void removeEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {
-    getEventSubscriptionsInternal().remove(eventSubscriptionEntity);
-  }
-
-  // referenced job entities
-  // //////////////////////////////////////////////////
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  protected void ensureJobsInitialized() {
-    if (jobs == null) {
-      jobs = (List) Context.getCommandContext().getJobEntityManager().findJobsByExecutionId(id);
-    }
-  }
-
-  protected List<JobEntity> getJobsInternal() {
+  public List<JobEntity> getJobs() {
     ensureJobsInitialized();
     return jobs;
   }
-
-  public List<JobEntity> getJobs() {
-    return new ArrayList<JobEntity>(getJobsInternal());
-  }
-
-  public void addJob(JobEntity jobEntity) {
-    getJobsInternal().add(jobEntity);
-  }
-
-  public void removeJob(JobEntity job) {
-    getJobsInternal().remove(job);
-  }
-
-  // referenced task entities
-  // ///////////////////////////////////////////////////
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  protected void ensureTasksInitialized() {
-    if (tasks == null) {
-      tasks = (List) Context.getCommandContext().getTaskEntityManager().findTasksByExecutionId(id);
+  
+  protected void ensureJobsInitialized() {
+    if (jobs == null) {
+      jobs = Context.getCommandContext().getJobEntityManager().findJobsByExecutionId(id);
     }
   }
 
-  protected List<TaskEntity> getTasksInternal() {
+  // referenced task entities ///////////////////////////////////////////////////
+
+  protected void ensureTasksInitialized() {
+    if (tasks == null) {
+      tasks = Context.getCommandContext().getTaskEntityManager().findTasksByExecutionId(id);
+    }
+  }
+
+  protected List<TaskEntity> getTasks() {
     ensureTasksInitialized();
     return tasks;
   }
 
-  public List<TaskEntity> getTasks() {
-    return new ArrayList<TaskEntity>(getTasksInternal());
-  }
-
-  public void addTask(TaskEntity taskEntity) {
-    getTasksInternal().add(taskEntity);
-  }
-
-  public void removeTask(TaskEntity task) {
-    getTasksInternal().remove(task);
-  }
-
-  // identity links
-  // ///////////////////////////////////////////////////////////
+  // identity links ///////////////////////////////////////////////////////////
 
   public List<IdentityLinkEntity> getIdentityLinks() {
+    ensureIdentityLinksInitialized();
+    return identityLinks;
+  }
+
+  protected void ensureIdentityLinksInitialized() {
     if (identityLinks == null) {
       identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessInstanceId(id);
     }
-
-    return identityLinks;
   }
 
   public IdentityLinkEntity addIdentityLink(String userId, String groupId, String type) {
@@ -685,6 +591,17 @@ public class ExecutionEntity extends VariableScopeImpl
     identityLinkEntity.setType(type);
     identityLinkEntity.insert();
     return identityLinkEntity;
+  }
+  
+  public void deleteIdentityLink(String userId, String groupId, String type) {
+    List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessInstanceUserGroupAndType(id, userId, groupId, type);
+
+    for (IdentityLinkEntity identityLink : identityLinks) {
+      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, true);
+    }
+
+    getIdentityLinks().removeAll(identityLinks);
+
   }
 
   /**
@@ -816,10 +733,6 @@ public class ExecutionEntity extends VariableScopeImpl
     this.deleteReason = deleteReason;
   }
 
-  public boolean isDeleteRoot() {
-    return deleteRoot;
-  }
-
   public int getSuspensionState() {
     return suspensionState;
   }
@@ -906,17 +819,6 @@ public class ExecutionEntity extends VariableScopeImpl
     return null;
   }
 
-  public void deleteIdentityLink(String userId, String groupId, String type) {
-    List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessInstanceUserGroupAndType(id, userId, groupId, type);
-
-    for (IdentityLinkEntity identityLink : identityLinks) {
-      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, true);
-    }
-
-    getIdentityLinks().removeAll(identityLinks);
-
-  }
-
   public boolean isDeleted() {
     return isDeleted;
   }
@@ -924,5 +826,17 @@ public class ExecutionEntity extends VariableScopeImpl
   public void setDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
   }
+  
+//toString /////////////////////////////////////////////////////////////////
+
+ public String toString() {
+   if (isProcessInstanceType()) {
+     return "ProcessInstance[" + getId() + "]";
+   } else {
+     return (isScope ? "Scope" : "") + "Execution[ id '" + getId() + "'"
+               + (activityId != null ? " - activity '" + activityId + "'" : "") 
+               + (parentId != null ? " - parent '" + parentId + "'" : "") + "] ";
+   }
+ }
 
 }

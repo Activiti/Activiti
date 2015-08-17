@@ -90,7 +90,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     // add link to execution
     if (executionId != null) {
       ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-      execution.addJob(this);
+      execution.getJobs().add(this);
 
       // Inherit tenant if (if applicable)
       if (execution.getTenantId() != null) {
@@ -113,7 +113,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     // remove link to execution
     if (executionId != null) {
       ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-      execution.removeJob(this);
+      execution.getJobs().remove(this);
     }
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -125,7 +125,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
     processDefinitionId = execution.getProcessDefinitionId();
-    execution.addJob(this);
+    execution.getJobs().add(this);
   }
 
   public String getExceptionStacktrace() {

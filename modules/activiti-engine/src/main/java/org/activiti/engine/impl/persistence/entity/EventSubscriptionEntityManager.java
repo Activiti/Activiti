@@ -68,7 +68,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
       subscriptionEntity.setTenantId(execution.getTenantId());
     }
     insert(subscriptionEntity);
-    execution.getEventSubscriptionsInternal().add(subscriptionEntity);
+    execution.getEventSubscriptions().add(subscriptionEntity);
     createdSignalSubscriptions.add(subscriptionEntity);
     return subscriptionEntity;
   }
@@ -84,7 +84,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
       subscriptionEntity.setTenantId(execution.getTenantId());
     }
     insert(subscriptionEntity);
-    execution.getEventSubscriptionsInternal().add(subscriptionEntity);
+    execution.getEventSubscriptions().add(subscriptionEntity);
     return subscriptionEntity;
   }
   
@@ -144,7 +144,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     // add reference in execution
     ExecutionEntity execution = getExecution(eventSubscriptionEntity);
     if (execution != null) {
-      execution.addEventSubscription(eventSubscriptionEntity);
+      execution.getEventSubscriptions().add(eventSubscriptionEntity);
     }
   }
   
@@ -152,7 +152,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     // remove reference in execution
     ExecutionEntity execution = getExecution(eventSubscriptionEntity);
     if (execution != null) {
-      execution.removeEventSubscription(eventSubscriptionEntity);
+      execution.getExecutions().remove(eventSubscriptionEntity);
     }
   }
   

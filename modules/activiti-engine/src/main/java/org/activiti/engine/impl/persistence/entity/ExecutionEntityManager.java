@@ -421,7 +421,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     }
     
     deleteExecutionAndRelatedData(execution);
-    execution.deleteCascade(deleteReason);
+    execution.setDeleteReason(deleteReason);
 
     if (deleteHistory) {
       commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());

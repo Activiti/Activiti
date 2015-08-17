@@ -274,7 +274,7 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
     // remove link to execution
     if (jobEntity.getExecutionId() != null) {
       ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
-      execution.removeJob(jobEntity);
+      execution.getJobs().remove(this);
     }
   }
 
