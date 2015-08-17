@@ -39,7 +39,10 @@ public class VariablesTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testBasicVariableOperations() {
-    processEngineConfiguration.getVariableTypes().addType(CustomVariableType.instance);
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    activiti5ProcessEngineConfig.getVariableTypes().addType(CustomVariableType.instance);
  
     Date now = new Date();
     List<String> serializable = new ArrayList<String>();

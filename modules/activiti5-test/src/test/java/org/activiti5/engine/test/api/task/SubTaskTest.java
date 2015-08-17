@@ -17,10 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti5.engine.history.HistoricTaskInstance;
-import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.task.Task;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.task.Task;
 
 
 /**

@@ -41,6 +41,7 @@ import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
@@ -123,50 +124,59 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public Deployment deploy(DeploymentBuilderImpl activiti6DeploymentBuilder) {
-    DeploymentBuilder deploymentBuilder = getProcessEngine().getRepositoryService().createDeployment();
-    
-    // Copy settings 
-    
-    deploymentBuilder.name(activiti6DeploymentBuilder.getDeployment().getName());
-    deploymentBuilder.category(activiti6DeploymentBuilder.getDeployment().getCategory());
-    deploymentBuilder.tenantId(activiti6DeploymentBuilder.getDeployment().getTenantId());
-    
-    // Copy flags 
-    
-    if (!activiti6DeploymentBuilder.isBpmn20XsdValidationEnabled()) {
-      deploymentBuilder.disableSchemaValidation();
-    }
-    
-    if (!activiti6DeploymentBuilder.isProcessValidationEnabled()) {
-      deploymentBuilder.disableBpmnValidation();
-    }
-    
-    if (activiti6DeploymentBuilder.isDuplicateFilterEnabled()) {
-      deploymentBuilder.enableDuplicateFiltering();
-    }
-    
-    if (activiti6DeploymentBuilder.getProcessDefinitionsActivationDate() != null) {
-      deploymentBuilder.activateProcessDefinitionsOn(activiti6DeploymentBuilder.getProcessDefinitionsActivationDate());
-    }
-
-    // Copy resources
-    DeploymentEntity activiti6DeploymentEntity = activiti6DeploymentBuilder.getDeployment();
-    Map<String, org.activiti5.engine.impl.persistence.entity.ResourceEntity> activiti5Resources = new HashMap<String, org.activiti5.engine.impl.persistence.entity.ResourceEntity>();
-    for (String resourceKey : activiti6DeploymentEntity.getResources().keySet()) {
-      ResourceEntity activiti6ResourceEntity = activiti6DeploymentEntity.getResources().get(resourceKey);
+    try {
+      DeploymentBuilder deploymentBuilder = getProcessEngine().getRepositoryService().createDeployment();
       
-      org.activiti5.engine.impl.persistence.entity.ResourceEntity activiti5ResourceEntity = new org.activiti5.engine.impl.persistence.entity.ResourceEntity();
-      activiti5ResourceEntity.setName(activiti6ResourceEntity.getName());
-      activiti5ResourceEntity.setBytes(activiti6ResourceEntity.getBytes());
-      activiti5Resources.put(resourceKey, activiti5ResourceEntity);
+      // Copy settings 
+      
+      deploymentBuilder.name(activiti6DeploymentBuilder.getDeployment().getName());
+      deploymentBuilder.category(activiti6DeploymentBuilder.getDeployment().getCategory());
+      deploymentBuilder.tenantId(activiti6DeploymentBuilder.getDeployment().getTenantId());
+      
+      // Copy flags 
+      
+      if (!activiti6DeploymentBuilder.isBpmn20XsdValidationEnabled()) {
+        deploymentBuilder.disableSchemaValidation();
+      }
+      
+      if (!activiti6DeploymentBuilder.isProcessValidationEnabled()) {
+        deploymentBuilder.disableBpmnValidation();
+      }
+      
+      if (activiti6DeploymentBuilder.isDuplicateFilterEnabled()) {
+        deploymentBuilder.enableDuplicateFiltering();
+      }
+      
+      if (activiti6DeploymentBuilder.getProcessDefinitionsActivationDate() != null) {
+        deploymentBuilder.activateProcessDefinitionsOn(activiti6DeploymentBuilder.getProcessDefinitionsActivationDate());
+      }
+  
+      // Copy resources
+      DeploymentEntity activiti6DeploymentEntity = activiti6DeploymentBuilder.getDeployment();
+      Map<String, org.activiti5.engine.impl.persistence.entity.ResourceEntity> activiti5Resources = new HashMap<String, org.activiti5.engine.impl.persistence.entity.ResourceEntity>();
+      for (String resourceKey : activiti6DeploymentEntity.getResources().keySet()) {
+        ResourceEntity activiti6ResourceEntity = activiti6DeploymentEntity.getResources().get(resourceKey);
+        
+        org.activiti5.engine.impl.persistence.entity.ResourceEntity activiti5ResourceEntity = new org.activiti5.engine.impl.persistence.entity.ResourceEntity();
+        activiti5ResourceEntity.setName(activiti6ResourceEntity.getName());
+        activiti5ResourceEntity.setBytes(activiti6ResourceEntity.getBytes());
+        activiti5Resources.put(resourceKey, activiti5ResourceEntity);
+      }
+  
+      org.activiti5.engine.impl.persistence.entity.DeploymentEntity activiti5DeploymentEntity 
+        = ((org.activiti5.engine.impl.repository.DeploymentBuilderImpl) deploymentBuilder).getDeployment();
+      activiti5DeploymentEntity.setResources(activiti5Resources);
+      
+      return new Activiti5DeploymentWrapper(deploymentBuilder.deploy());
+      
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
     }
-
-    org.activiti5.engine.impl.persistence.entity.DeploymentEntity activiti5DeploymentEntity 
-      = ((org.activiti5.engine.impl.repository.DeploymentBuilderImpl) deploymentBuilder).getDeployment();
-    activiti5DeploymentEntity.setResources(activiti5Resources);
-    
-    
-    return new Activiti5DeploymentWrapper(deploymentBuilder.deploy());
+  }
+  
+  public void setDeploymentCategory(String deploymentId, String category) {
+    getProcessEngine().getRepositoryService().setDeploymentCategory(deploymentId, category);
   }
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
@@ -195,6 +205,14 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       handleActivitiException(e);
       return null;
     }
+  }
+  
+  public void suspendProcessInstance(String processInstanceId) {
+    getProcessEngine().getRuntimeService().suspendProcessInstanceById(processInstanceId);
+  }
+  
+  public void activateProcessInstance(String processInstanceId) {
+    getProcessEngine().getRuntimeService().activateProcessInstanceById(processInstanceId);
   }
   
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
@@ -361,6 +379,12 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     processEngineConfig.getCommandExecutor().execute(new RemoveEventListenerCommand((ActivitiEventListener) listener));
   }
   
+  public void setClock(Clock clock) {
+    org.activiti5.engine.runtime.Clock activiti5Clock = new org.activiti5.engine.impl.util.DefaultClockImpl();
+    activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
+    getProcessEngine().getProcessEngineConfiguration().setClock(activiti5Clock);
+  }
+  
   public Object getRawProcessConfiguration() {
     return getProcessEngine().getProcessEngineConfiguration();
   }
@@ -368,10 +392,6 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   public Object getRawCommandExecutor() {
     ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     return processEngineConfig.getCommandExecutor();
-  }
-  
-  public Object getRawClock() {
-    return getProcessEngine().getProcessEngineConfiguration().getClock();
   }
   
   protected ProcessEngine getProcessEngine() {

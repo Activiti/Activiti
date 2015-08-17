@@ -6,7 +6,7 @@
   <process id="executionListenersProcess">
   
     <extensionElements>
-      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
+      <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
     </extensionElements>
     
     <startEvent id="theStart" />
@@ -16,7 +16,7 @@
     <userTask id="firstTask" />
     <sequenceFlow sourceRef="firstTask" targetRef="secondTask">
        <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerTwo" />
+        <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.ExampleExecutionListenerTwo" />
       </extensionElements>
     </sequenceFlow>
     

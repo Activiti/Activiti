@@ -16,14 +16,15 @@ package org.activiti5.engine.test.bpmn.event.timer.compatibility;
 import java.util.Calendar;
 import java.util.List;
 
-import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.impl.util.DefaultClockImpl;
-import org.activiti5.engine.runtime.Clock;
-import org.activiti5.engine.runtime.Job;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
+import org.activiti5.engine.test.api.event.TestActivitiEntityEventListener;
 
 public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibilityTest {
 
@@ -32,8 +33,12 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    listener = new TestActivitiEntityEventListener(Job.class);
-    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+    
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
+    activiti5ProcessEngineConfig.getEventDispatcher().addEventListener(listener);
   }
 
   @Override
@@ -41,7 +46,9 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     super.tearDown();
 
     if (listener != null) {
-      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+      org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+          processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+      activiti5ProcessEngineConfig.getEventDispatcher().removeEventListener(listener);
     }
   }
 
@@ -53,15 +60,16 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
 
     Clock testClock = new DefaultClockImpl();
 
-    processEngineConfiguration.setClock(testClock);
-
     Calendar calendar = Calendar.getInstance();
     calendar.set(2025, Calendar.DECEMBER, 10, 0, 0, 0);
     testClock.setCurrentTime(calendar.getTime());
+    
+    processEngineConfiguration.setClock(testClock);
 
     //deploy the process
     repositoryService.createDeployment()
             .addClasspathResource("org/activiti5/engine/test/bpmn/event/timer/StartTimerEventRepeatWithoutEndDateTest.testCycleDateStartTimerEvent.bpmn20.xml")
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
             .deploy();
     assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 

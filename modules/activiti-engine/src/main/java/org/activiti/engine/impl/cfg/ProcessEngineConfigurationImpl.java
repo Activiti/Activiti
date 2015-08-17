@@ -213,6 +213,7 @@ import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
@@ -434,7 +435,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Object activiti5ListenerFactory;
   protected List<Object> activiti5PreBpmnParseHandlers;
   protected List<Object> activiti5PostBpmnParseHandlers;
-  protected List<Object> activiti5CustomDefaultBpmnParseHandlers; 
+  protected List<Object> activiti5CustomDefaultBpmnParseHandlers;
+  protected Set<Class<?>> activiti5CustomMybatisMappers;
+  protected Set<String> activiti5CustomMybatisXMLMappers;
+  protected List<Object> activiti5EventListeners;
+  protected Map<String, List<Object>> activiti5TypedEventListeners;
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -2172,6 +2177,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
   }
   
+  public ProcessEngineConfigurationImpl setClock(Clock clock) {
+    this.clock = clock;
+    if (isActiviti5CompatibilityEnabled) {
+      getActiviti5CompatibilityHandler().setClock(clock);
+    }
+    return this;
+  }
+  
   
   // Activiti 5
   
@@ -2247,4 +2260,39 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public Set<Class<?>> getActiviti5CustomMybatisMappers() {
+    return activiti5CustomMybatisMappers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5CustomMybatisMappers(Set<Class<?>> activiti5CustomMybatisMappers) {
+    this.activiti5CustomMybatisMappers = activiti5CustomMybatisMappers;
+    return this;
+  }
+
+  public Set<String> getActiviti5CustomMybatisXMLMappers() {
+    return activiti5CustomMybatisXMLMappers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5CustomMybatisXMLMappers(Set<String> activiti5CustomMybatisXMLMappers) {
+    this.activiti5CustomMybatisXMLMappers = activiti5CustomMybatisXMLMappers;
+    return this;
+  }
+
+  public List<Object> getActiviti5EventListeners() {
+    return activiti5EventListeners;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5EventListeners(List<Object> activiti5EventListeners) {
+    this.activiti5EventListeners = activiti5EventListeners;
+    return this;
+  }
+
+  public Map<String, List<Object>> getActiviti5TypedEventListeners() {
+    return activiti5TypedEventListeners;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5TypedEventListeners(Map<String, List<Object>> activiti5TypedEventListeners) {
+    this.activiti5TypedEventListeners = activiti5TypedEventListeners;
+    return this;
+  }
 }

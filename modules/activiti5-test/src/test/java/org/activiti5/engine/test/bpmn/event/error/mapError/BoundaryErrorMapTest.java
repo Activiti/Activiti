@@ -18,8 +18,8 @@ import java.util.Map;
 import javax.xml.bind.JAXBException;
 
 import org.activiti.engine.test.Deployment;
-import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti5.standalone.testing.helpers.ServiceTaskTestMock;
 
 /**
  * @author Saeid Mirzaei

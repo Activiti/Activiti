@@ -10,7 +10,7 @@
     
     <startEvent id="theStart" name="Start Event">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
+        <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
           <activiti:field name="parameter" stringValue="Start Event Listener" />
         </activiti:executionListener>
       </extensionElements>
@@ -20,7 +20,7 @@
     
     <intermediateThrowEvent  id="noneEvent" name="None Event">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
+        <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
           <activiti:field name="parameter" stringValue="Intermediate Catch Event Listener" />
         </activiti:executionListener>
       </extensionElements>        
@@ -30,7 +30,7 @@
 
 	<intermediateThrowEvent id="signalEvent" name="Signal Event" >
         <extensionElements>
-          <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
+          <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
             <activiti:field name="parameter" stringValue="Intermediate Throw Event Listener" />
           </activiti:executionListener>
         </extensionElements>        
@@ -41,7 +41,7 @@
 
     <endEvent id="theEnd" name="End Event">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
+        <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
           <activiti:field name="parameter" stringValue="End Event Listener" />
         </activiti:executionListener>
       </extensionElements>    

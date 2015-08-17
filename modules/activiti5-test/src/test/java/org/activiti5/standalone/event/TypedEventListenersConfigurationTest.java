@@ -12,11 +12,11 @@
  */
 package org.activiti5.standalone.event;
 
-import org.activiti.engine.test.api.event.TestActivitiEventListener;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti5.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
@@ -37,9 +37,12 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
   	// Clear any events received (eg. engine initialisation)
   	listener.clearEventsReceived();
   	
+  	org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+  	
   	// Dispath a custom event
   	ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
-  	processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+  	activiti5ProcessEngineConfig.getEventDispatcher().dispatchEvent(event);
   	
   	assertEquals(1, listener.getEventsReceived().size());
   	assertEquals(event, listener.getEventsReceived().get(0));
@@ -47,9 +50,9 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
   	
     // Dispatch another event the listener is registered for
     event = new ActivitiEventImpl(ActivitiEventType.ENTITY_DELETED);
-   	processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+    activiti5ProcessEngineConfig.getEventDispatcher().dispatchEvent(event);
    	event = new ActivitiEventImpl(ActivitiEventType.ENTITY_UPDATED);
-   	processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+   	activiti5ProcessEngineConfig.getEventDispatcher().dispatchEvent(event);
    	
    	assertEquals(2, listener.getEventsReceived().size());
    	assertEquals(ActivitiEventType.ENTITY_DELETED, listener.getEventsReceived().get(0).getType());
@@ -58,7 +61,7 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
   	
   	// Dispatch an event that is NOT part of the types configured
   	event = new ActivitiEventImpl(ActivitiEventType.ENTITY_CREATED);
-  	processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+  	activiti5ProcessEngineConfig.getEventDispatcher().dispatchEvent(event);
   	assertTrue(listener.getEventsReceived().isEmpty());
   }
 }

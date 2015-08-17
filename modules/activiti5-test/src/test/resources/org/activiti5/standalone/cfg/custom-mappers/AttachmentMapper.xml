@@ -16,14 +16,14 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.standalone.cfg.AttachmentMapper">
+<mapper namespace="org.activiti5.standalone.cfg.AttachmentMapper">
 
-  <select id="selectAttachmentCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultType="long">
+  <select id="selectAttachmentCountByQueryCriteria" parameterType="org.activiti5.standalone.cfg.AttachmentQuery" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectAttachmentByQueryCriteriaSql"/>
   </select>
   
-  <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultMap="org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap">
+  <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti5.standalone.cfg.AttachmentQuery" resultMap="org.activiti5.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectAttachmentByQueryCriteriaSql"/> 

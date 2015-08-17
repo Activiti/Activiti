@@ -14,9 +14,10 @@ package org.activiti5.standalone.deploy;
 
 import java.text.MessageFormat;
 
-import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti5.engine.impl.persistence.deploy.DefaultDeploymentCache;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 
 /**
@@ -31,16 +32,19 @@ public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
   public void testDeploymentCacheLimit() {
     int processDefinitionCacheLimit = 3; // This is set in the configuration above
     
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
     DefaultDeploymentCache<ProcessDefinitionEntity> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionEntity>) 
-              processEngineConfiguration.getProcessDefinitionCache();
+        activiti5ProcessEngineConfig.getProcessDefinitionCache();
     assertEquals(0, processDefinitionCache.size());
     
-    
     String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(
-            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
+            "/org/activiti5/standalone/deploy/deploymentCacheTest.bpmn20.xml");
     for (int i = 1; i <= 5; i++) {
       repositoryService.createDeployment()
               .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
+              .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
               .deploy();
       
       if (i < processDefinitionCacheLimit) {

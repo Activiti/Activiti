@@ -14,7 +14,8 @@ package org.activiti5.engine.test.bpmn.event.timer.compatibility;
 
 import java.util.Date;
 
-import org.activiti5.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.runtime.Clock;
 import org.activiti5.engine.impl.db.DbSqlSession;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandConfig;
@@ -26,12 +27,16 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestCase {
 
-  protected void changeConfigurationToPlainText(JobEntity job) {
+  protected void changeConfigurationToPlainText(String jobId) {
 
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    JobEntity job = (JobEntity) activiti5ProcessEngineConfig.getManagementService().createJobQuery().jobId(jobId).singleResult();
+    
     String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
 
     final JobEntity finalJob = job;
-    CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     CommandConfig config = new CommandConfig().transactionNotSupported();
     final String finalActivityId = activityId;
     commandExecutor.execute(config, new Command<Object>() {
@@ -62,6 +67,9 @@ public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestC
   }
 
   protected void moveByMinutes(int minutes) throws Exception {
-    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
+    Date newDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)));
+    Clock newClock = new DefaultClockImpl();
+    newClock.setCurrentTime(newDate);
+    processEngineConfiguration.setClock(newClock);
   }
 }

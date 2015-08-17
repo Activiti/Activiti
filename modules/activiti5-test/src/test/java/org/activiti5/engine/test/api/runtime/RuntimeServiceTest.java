@@ -22,22 +22,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.history.HistoricDetail;
-import org.activiti5.engine.history.HistoricProcessInstance;
-import org.activiti5.engine.history.HistoricTaskInstance;
-import org.activiti5.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.runtime.ProcessInstanceBuilder;
-import org.activiti5.engine.task.Task;
 
 
 /**
@@ -347,7 +347,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     taskService.complete(parallelUserTask.getId());
     
     Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("subprocess1WaitBeforeError").singleResult();
-    runtimeService.signal(execution.getId());
+    runtimeService.trigger(execution.getId());
     
     activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
     assertEquals(2, activeActivities.size());
@@ -402,7 +402,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   
   public void testSignalUnexistingExecututionId() {
     try {
-      runtimeService.signal("unexistingExecutionId");      
+      runtimeService.trigger("unexistingExecutionId");      
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
@@ -412,7 +412,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   
   public void testSignalNullExecutionId() {
     try {
-      runtimeService.signal(null);      
+      runtimeService.trigger(null);      
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("executionId is null", ae.getMessage());
@@ -427,7 +427,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     processVariables.put("variable", "value");
     
     // signal the execution while passing in the variables
-    runtimeService.signal(processInstance.getId(), processVariables);
+    runtimeService.trigger(processInstance.getId(), processVariables);
     
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(variables, processVariables);

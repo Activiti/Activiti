@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.standalone.cfg.TaskMapper">
+<mapper namespace="org.activiti5.standalone.cfg.TaskMapper">
 
   <!-- CUSTOM TASK RESULTMAP -->
   
-  <resultMap id="customTaskResultMap" type="org.activiti.standalone.cfg.CustomTask">
+  <resultMap id="customTaskResultMap" type="org.activiti5.standalone.cfg.CustomTask">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
@@ -27,12 +27,12 @@
 		select <include refid="selectCustomTaskColumns"/> from ACT_RU_TASK RES where RES.ID_ = #{id}
 	</select>
 
-	<select id="selectCustomTaskCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultType="long">
+	<select id="selectCustomTaskCountByQueryCriteria" parameterType="org.activiti5.standalone.cfg.CustomTaskQuery" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectCustomTaskByQueryCriteriaSql"/>
   </select>
   
-  <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultMap="customTaskResultMap">
+  <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti5.standalone.cfg.CustomTaskQuery" resultMap="customTaskResultMap">
     ${limitBefore}
     select distinct <include refid="selectCustomTaskColumns"/> ${limitBetween}
     <include refid="selectCustomTaskByQueryCriteriaSql"/> 

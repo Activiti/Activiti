@@ -12,15 +12,15 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.IdentityLink;
-import org.activiti5.engine.task.Task;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process definitions.
@@ -218,8 +218,10 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 		super.initializeServices();
 
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 		listener = new TestActivitiEntityEventListener(IdentityLink.class);
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -227,8 +229,10 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
+		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+			activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

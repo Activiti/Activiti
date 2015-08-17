@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
 
 /**
  * @author Tijs Rademakers
@@ -54,7 +54,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
   }
 
   protected void tearDown() throws Exception {
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
     super.tearDown();

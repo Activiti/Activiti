@@ -15,15 +15,15 @@ package org.activiti5.engine.test.api.event;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to variables.
@@ -362,8 +362,11 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 		super.initializeServices();
 
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		listener = new TestVariableEventListener();
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -371,8 +374,10 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
+		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+			activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

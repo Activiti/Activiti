@@ -52,10 +52,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, pi.size());
 
     assertEquals(0, jobQuery.count());
-
-
   }
-
 
   @Deployment
   public void testFixedDateStartTimerEvent() throws Exception {

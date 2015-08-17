@@ -14,19 +14,20 @@ package org.activiti5.standalone.event;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiClassLoadingException;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.api.event.StaticTestActivitiEventListener;
-import org.activiti.engine.test.api.event.TestActivitiEventListener;
-import org.activiti5.engine.ActivitiClassLoadingException;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
+import org.activiti5.engine.test.api.event.StaticTestActivitiEventListener;
+import org.activiti5.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test for event-listeners that are registered on a process-definition scope,
@@ -57,7 +58,7 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		
 		// Check if the listener (defined as bean) received events (only creation, not other events)
 		assertFalse(testListenerBean.getEventsReceived().isEmpty());
-		for(ActivitiEvent event : testListenerBean.getEventsReceived()) {
+		for (ActivitiEvent event : testListenerBean.getEventsReceived()) {
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 		}
 		
@@ -100,7 +101,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		// Deploy process with expression which references an unexisting bean
 		try {
 			repositoryService.createDeployment().addClasspathResource("org/activiti5/standalone/event/invalidEventListenerExpression.bpmn20.xml")
-				.deploy();
+				.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+			  .deploy();
 			fail("Exception expected");
 		} catch(ActivitiException ae) {
 			assertEquals("Exception while executing event-listener", ae.getMessage());
@@ -111,7 +113,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 	    // Deploy process with listener which references an unexisting class
 			try {
 				repositoryService.createDeployment().addClasspathResource("org/activiti5/standalone/event/invalidEventListenerClass.bpmn20.xml")
-					.deploy();
+					.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+				  .deploy();
 				fail("Exception expected");
 			} catch(ActivitiException ae) {
 				assertEquals("Exception while executing event-listener", ae.getMessage());
@@ -129,11 +132,12 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 	public void testProcessDefinitionListenerDefinitionIllegalType() throws Exception {
 		// In case deployment doesn't fail, we delete the deployment in the finally block to
 		// ensure clean DB for subsequent tests
-		org.activiti5.engine.repository.Deployment deployment = null;
+		org.activiti.engine.repository.Deployment deployment = null;
 		try {
 			
 			deployment = repositoryService.createDeployment()
 				.addClasspathResource("org/activiti5/standalone/event/invalidEventListenerType.bpmn20.xml")
+				.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 				.deploy();
 			
 			fail("Exception expected");

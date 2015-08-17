@@ -12,9 +12,9 @@
  */
 package org.activiti5.standalone.event;
 
-import org.activiti.engine.test.api.event.TestActivitiEventListener;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti5.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test to verify event-listeners, which are configured in the cfg.xml, are notified.

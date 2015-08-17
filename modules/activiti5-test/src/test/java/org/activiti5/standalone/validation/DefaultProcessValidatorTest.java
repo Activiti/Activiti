@@ -25,12 +25,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.test.util.TestProcessUtil;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorSetNames;
+import org.activiti5.engine.test.util.TestProcessUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

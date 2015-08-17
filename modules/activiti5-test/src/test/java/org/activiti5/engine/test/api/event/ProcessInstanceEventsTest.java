@@ -20,6 +20,8 @@ import static org.junit.Assert.assertNotEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti5.engine.delegate.event.ActivitiCancelledEvent;
@@ -33,8 +35,6 @@ import org.activiti5.engine.delegate.event.impl.ActivitiProcessCancelledEventImp
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process instances.
@@ -470,17 +470,21 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
   @Override
 	protected void initializeServices() {
 	  super.initializeServices();
+	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  this.listener = new TestInitializedEntityEventListener();
-	  processEngineConfiguration.getEventDispatcher().addEventListener(this.listener);
+	  activiti5ProcessConfig.getEventDispatcher().addEventListener(this.listener);
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if(listener != null) {
+	  if (listener != null) {
+	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  	listener.clearEventsReceived();
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+	  	activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 

@@ -41,10 +41,10 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.api.runtime.DummySerializable;
-import org.activiti.engine.test.history.SerializableVariable;
-import org.activiti.standalone.jpa.FieldAccessJPAEntity;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti5.engine.test.api.runtime.DummySerializable;
+import org.activiti5.engine.test.history.SerializableVariable;
+import org.activiti5.standalone.jpa.FieldAccessJPAEntity;
 
 
 /**

@@ -12,15 +12,15 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process definitions.
@@ -139,20 +139,25 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 	  super.initializeServices();
 
-    listener = new TestMultipleActivitiEventListener();
+	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  
+	  listener = new TestMultipleActivitiEventListener();
     listener.setEventClasses(ActivitiEntityEvent.class);
     listener.setEntityClasses(ProcessDefinition.class, TimerEntity.class);
 
-	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+    activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if(listener != null) {
+	  if (listener != null) {
+	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  	listener.clearEventsReceived();
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+	  	activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

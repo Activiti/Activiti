@@ -22,6 +22,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
@@ -44,9 +45,15 @@ public interface Activiti5CompatibilityHandler {
   
   Deployment deploy(DeploymentBuilderImpl deploymentBuilder);
   
+  void setDeploymentCategory(String deploymentId, String category);
+  
   void deleteDeployment(String deploymentId, boolean cascade);
   
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
+  
+  void suspendProcessInstance(String processInstanceId);
+  
+  void activateProcessInstance(String processInstanceId);
   
   void deleteProcessInstance(String processInstanceId, String deleteReason);
   
@@ -78,9 +85,9 @@ public interface Activiti5CompatibilityHandler {
   
   void removeEventListener(Object listener);
   
+  void setClock(Clock clock);
+  
   Object getRawProcessConfiguration();
   
   Object getRawCommandExecutor();
-  
-  Object getRawClock();
 }

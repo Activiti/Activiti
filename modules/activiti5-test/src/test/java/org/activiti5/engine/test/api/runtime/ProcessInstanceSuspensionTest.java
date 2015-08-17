@@ -17,15 +17,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.Job;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.IdentityLinkType;
-import org.activiti5.engine.task.Task;
 
 /**
  * @author Daniel Meyer
@@ -308,7 +308,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     }
     
     try {
-      runtimeService.signal(processInstance.getId());
+      runtimeService.trigger(processInstance.getId());
       fail();
     } catch (ActivitiException e) {
       // This is expected
@@ -316,7 +316,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     }
     
     try {
-      runtimeService.signal(processInstance.getId(), new HashMap<String, Object>());
+      runtimeService.trigger(processInstance.getId(), new HashMap<String, Object>());
       fail();
     } catch (ActivitiException e) {
       // This is expected

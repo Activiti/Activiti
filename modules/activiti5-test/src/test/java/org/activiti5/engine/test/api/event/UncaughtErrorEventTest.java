@@ -47,8 +47,11 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 		super.initializeServices();
 
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		listener = new TestActivitiEventListener();
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -56,8 +59,10 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
+		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+			activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }
