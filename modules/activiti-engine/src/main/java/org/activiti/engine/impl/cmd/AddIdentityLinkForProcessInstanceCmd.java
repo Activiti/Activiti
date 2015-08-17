@@ -19,9 +19,12 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 
 /**
  * @author Marcus Klimstra
+ * @author Joram Barrez
  */
 public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Serializable {
 
@@ -61,14 +64,15 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
 
   public Void execute(CommandContext commandContext) {
 
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntity processInstance = executionEntityManager.findExecutionById(processInstanceId);
 
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
 
-    processInstance.addIdentityLink(userId, groupId, type);
-
+    IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+    identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);
     commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, true);
 
     return null;

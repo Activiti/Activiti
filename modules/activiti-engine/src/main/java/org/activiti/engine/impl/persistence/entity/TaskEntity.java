@@ -325,7 +325,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     identityLinkEntity.setType(type);
     identityLinkEntity.insert();
     if (userId != null && processInstanceId != null) {
-      getProcessInstance().involveUser(userId, IdentityLinkType.PARTICIPANT);
+      Context.getCommandContext().getIdentityLinkEntityManager().involveUser(getProcessInstance(), userId, IdentityLinkType.PARTICIPANT);
     }
     return identityLinkEntity;
   }
@@ -506,7 +506,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       commandContext.getHistoryManager().recordTaskAssigneeChange(id, assignee);
 
       if (assignee != null && processInstanceId != null) {
-        getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
+        Context.getCommandContext().getIdentityLinkEntityManager().involveUser(getProcessInstance(), assignee, IdentityLinkType.PARTICIPANT);
       }
 
       if (!StringUtils.equals(initialAssignee, assignee)) {
@@ -556,7 +556,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       commandContext.getHistoryManager().recordTaskOwnerChange(id, owner);
 
       if (owner != null && processInstanceId != null) {
-        getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
+        Context.getCommandContext().getIdentityLinkEntityManager().involveUser(getProcessInstance(), owner, IdentityLinkType.PARTICIPANT);
       }
 
       if (dispatchUpdateEvent && commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {

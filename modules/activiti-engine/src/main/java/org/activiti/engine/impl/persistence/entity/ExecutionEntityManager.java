@@ -290,7 +290,8 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
     processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
     if (authenticatedUserId != null) {
-      processInstanceExecution.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
+      Context.getCommandContext().getIdentityLinkEntityManager()
+        .addIdentityLink(processInstanceExecution, authenticatedUserId, null, IdentityLinkType.STARTER);
     }
 
     // Fire events
@@ -619,6 +620,20 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     params.put("id", processInstanceId);
 
     getDbSqlSession().update("clearProcessInstanceLockTime", params);
+  }
+  
+  public String updateProcessInstanceBusinessKey(ExecutionEntity executionEntity, String businessKey) {
+    if (executionEntity.isProcessInstanceType() && businessKey != null) {
+      executionEntity.setBusinessKey(businessKey);
+      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory(executionEntity);
+
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, executionEntity));
+      }
+
+      return businessKey;
+    }
+    return null;
   }
 
 }

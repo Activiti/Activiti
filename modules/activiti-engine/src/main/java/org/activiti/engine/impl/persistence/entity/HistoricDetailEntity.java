@@ -17,12 +17,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public abstract class HistoricDetailEntity implements HistoricDetail, PersistentObject, Serializable {
 
@@ -37,19 +36,11 @@ public abstract class HistoricDetailEntity implements HistoricDetail, Persistent
   protected String detailType;
 
   public Object getPersistentState() {
-    // details are not updatable so we always provide the same object as the
-    // state
+    // details are not updatable so we always provide the same object as the state
     return HistoricDetailEntity.class;
   }
 
-  public void delete() {
-    DbSqlSession dbSqlSession = Context.getCommandContext().getDbSqlSession();
-
-    dbSqlSession.delete(this);
-  }
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
@@ -102,7 +93,9 @@ public abstract class HistoricDetailEntity implements HistoricDetail, Persistent
   public String getDetailType() {
     return detailType;
   }
+  
   public void setDetailType(String detailType) {
     this.detailType = detailType;
   }
+  
 }

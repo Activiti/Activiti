@@ -23,6 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>, Serializable {
 
@@ -65,8 +66,7 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
 
-    processInstance.deleteIdentityLink(userId, groupId, type);
-
+    commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processInstance, userId, groupId, type);
     commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
 
     return null;

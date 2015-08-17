@@ -14,10 +14,10 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.impl.context.Context;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class HistoricFormPropertyEntity extends HistoricDetailEntity implements HistoricFormProperty {
 
@@ -28,26 +28,6 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
 
   public HistoricFormPropertyEntity() {
     this.detailType = "FormProperty";
-  }
-
-  public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue) {
-    this(execution, propertyId, propertyValue, null);
-  }
-
-  public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId) {
-    this.processInstanceId = execution.getProcessInstanceId();
-    this.executionId = execution.getId();
-    this.taskId = taskId;
-    this.propertyId = propertyId;
-    this.propertyValue = propertyValue;
-    this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    this.detailType = "FormProperty";
-
-    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true, false);
-    if (historicActivityInstance != null) {
-      this.activityInstanceId = historicActivityInstance.getId();
-    }
-    
   }
 
   public String getPropertyId() {

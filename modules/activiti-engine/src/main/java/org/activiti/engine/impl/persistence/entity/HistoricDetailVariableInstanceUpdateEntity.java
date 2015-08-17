@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
@@ -23,8 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity implements ValueFields, HistoricVariableUpdate, PersistentObject, HasRevision {
+public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity 
+  implements ValueFields, HistoricVariableUpdate, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
 
@@ -44,29 +45,11 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   protected HistoricDetailVariableInstanceUpdateEntity() {
     this.detailType = "VariableUpdate";
   }
-
-  public static HistoricDetailVariableInstanceUpdateEntity copyAndInsert(VariableInstanceEntity variableInstance) {
-    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity();
-    historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
-    historicVariableUpdate.executionId = variableInstance.getExecutionId();
-    historicVariableUpdate.taskId = variableInstance.getTaskId();
-    historicVariableUpdate.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    historicVariableUpdate.revision = variableInstance.getRevision();
-    historicVariableUpdate.name = variableInstance.getName();
-    historicVariableUpdate.variableType = variableInstance.getType();
-    historicVariableUpdate.textValue = variableInstance.getTextValue();
-    historicVariableUpdate.textValue2 = variableInstance.getTextValue2();
-    historicVariableUpdate.doubleValue = variableInstance.getDoubleValue();
-    historicVariableUpdate.longValue = variableInstance.getLongValue();
-
-    if (variableInstance.getBytes() != null) {
-      String byteArrayName = "hist.detail.var-" + variableInstance.getName();
-      historicVariableUpdate.byteArrayRef.setValue(byteArrayName, variableInstance.getBytes());
-    }
-
-    Context.getCommandContext().getDbSqlSession().insert(historicVariableUpdate);
-
-    return historicVariableUpdate;
+  
+  public Object getPersistentState() {
+    // HistoricDetailVariableInstanceUpdateEntity is immutable, so always
+    // the same object is returned
+    return HistoricDetailVariableInstanceUpdateEntity.class;
   }
 
   public Object getValue() {
@@ -74,18 +57,6 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
       cachedValue = variableType.getValue(this);
     }
     return cachedValue;
-  }
-
-  public void delete() {
-    super.delete();
-
-    byteArrayRef.delete();
-  }
-
-  public Object getPersistentState() {
-    // HistoricDetailVariableInstanceUpdateEntity is immutable, so always
-    // the same object is returned
-    return HistoricDetailVariableInstanceUpdateEntity.class;
   }
 
   public String getVariableTypeName() {
@@ -96,12 +67,15 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     return revision + 1;
   }
 
-  // byte array value
-  // /////////////////////////////////////////////////////////
+  // byte array value /////////////////////////////////////////////////////////
 
   @Override
   public byte[] getBytes() {
     return byteArrayRef.getBytes();
+  }
+
+  public ByteArrayRef getByteArrayRef() {
+    return byteArrayRef;
   }
 
   @Override
@@ -109,8 +83,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     throw new UnsupportedOperationException("HistoricDetailVariableInstanceUpdateEntity is immutable");
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
 
   public int getRevision() {
     return revision;
@@ -176,8 +149,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     this.cachedValue = cachedValue;
   }
 
-  // misc methods
-  // /////////////////////////////////////////////////////////////
+  // common methods ///////////////////////////////////////////////////////////////
 
   @Override
   public String toString() {

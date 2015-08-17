@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 
 /**
@@ -26,6 +27,59 @@ import org.activiti.engine.impl.history.HistoryLevel;
  * @author Joram Barrez
  */
 public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricDetailEntity> {
+  
+  public HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, 
+      String propertyId, String propertyValue, String taskId) {
+    
+    HistoricFormPropertyEntity historicFormPropertyEntity = new HistoricFormPropertyEntity();
+    historicFormPropertyEntity.setProcessInstanceId(execution.getProcessInstanceId());
+    historicFormPropertyEntity.setExecutionId(execution.getId());
+    historicFormPropertyEntity.setTaskId(taskId);
+    historicFormPropertyEntity.setPropertyId(propertyId);
+    historicFormPropertyEntity.setPropertyValue(propertyValue);
+    historicFormPropertyEntity.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+
+    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true, false);
+    if (historicActivityInstance != null) {
+      historicFormPropertyEntity.setActivityInstanceId(historicActivityInstance.getId());
+    }
+    
+    insert(historicFormPropertyEntity);
+    
+    return historicFormPropertyEntity;
+  }
+  
+  public HistoricDetailVariableInstanceUpdateEntity copyAndInsertHistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance) {
+    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity();
+    historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
+    historicVariableUpdate.executionId = variableInstance.getExecutionId();
+    historicVariableUpdate.taskId = variableInstance.getTaskId();
+    historicVariableUpdate.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    historicVariableUpdate.revision = variableInstance.getRevision();
+    historicVariableUpdate.name = variableInstance.getName();
+    historicVariableUpdate.variableType = variableInstance.getType();
+    historicVariableUpdate.textValue = variableInstance.getTextValue();
+    historicVariableUpdate.textValue2 = variableInstance.getTextValue2();
+    historicVariableUpdate.doubleValue = variableInstance.getDoubleValue();
+    historicVariableUpdate.longValue = variableInstance.getLongValue();
+
+    if (variableInstance.getBytes() != null) {
+      String byteArrayName = "hist.detail.var-" + variableInstance.getName();
+      historicVariableUpdate.byteArrayRef.setValue(byteArrayName, variableInstance.getBytes());
+    }
+
+    insert(historicVariableUpdate);
+    return historicVariableUpdate;
+  }
+  
+  @Override
+  public void delete(HistoricDetailEntity entity, boolean fireDeleteEvent) {
+    super.delete(entity, fireDeleteEvent);
+    
+    if (entity instanceof HistoricDetailVariableInstanceUpdateEntity) {
+      ((HistoricDetailVariableInstanceUpdateEntity) entity).getByteArrayRef().delete();
+    }
+  }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
@@ -33,7 +87,7 @@ public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricD
       List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession().createHistoricDetailQuery().processInstanceId(historicProcessInstanceId).list();
 
       for (HistoricDetailEntity historicDetail : historicDetails) {
-        historicDetail.delete();
+        delete(historicDetail);
       }
     }
   }
@@ -52,7 +106,7 @@ public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricD
       HistoricDetailQueryImpl detailsQuery = (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
       List<HistoricDetail> details = detailsQuery.list();
       for (HistoricDetail detail : details) {
-        ((HistoricDetailEntity) detail).delete();
+        delete((HistoricDetailEntity) detail);
       }
     }
   }

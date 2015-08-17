@@ -87,6 +87,41 @@ public class IdentityLinkEntityManager extends AbstractEntityManager<IdentityLin
     parameters.put("groupId", groupId);
     return getDbSqlSession().selectList("selectIdentityLinkByProcessDefinitionUserAndGroup", parameters);
   }
+  
+  public IdentityLinkEntity addIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type) {
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
+    executionEntity.getIdentityLinks().add(identityLinkEntity);
+    identityLinkEntity.setProcessInstance(executionEntity.getProcessInstance() != null ? executionEntity.getProcessInstance() : executionEntity);
+    identityLinkEntity.setUserId(userId);
+    identityLinkEntity.setGroupId(groupId);
+    identityLinkEntity.setType(type);
+    identityLinkEntity.insert();
+    return identityLinkEntity;
+  }
+  
+  /**
+   * Adds an IdentityLink for the given user id with the specified type, 
+   * but only if the user is not associated with the execution entity yet.
+   **/
+  public IdentityLinkEntity involveUser(ExecutionEntity executionEntity, String userId, String type) {
+    for (IdentityLinkEntity identityLink : executionEntity.getIdentityLinks()) {
+      if (identityLink.isUser() && identityLink.getUserId().equals(userId)) {
+        return identityLink;
+      }
+    }
+    return addIdentityLink(executionEntity, userId, null, type);
+  }
+  
+  public void deleteIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type) {
+    String id = executionEntity.getProcessInstanceId() != null ? executionEntity.getProcessInstanceId() : executionEntity.getId();
+    List<IdentityLinkEntity> identityLinks = findIdentityLinkByProcessInstanceUserGroupAndType(id, userId, groupId, type);
+
+    for (IdentityLinkEntity identityLink : identityLinks) {
+      deleteIdentityLink(identityLink, true);
+    }
+
+    executionEntity.getIdentityLinks().removeAll(identityLinks);
+  }
 
   public void deleteIdentityLinksByTaskId(String taskId) {
     List<IdentityLinkEntity> identityLinks = findIdentityLinksByTaskId(taskId);
