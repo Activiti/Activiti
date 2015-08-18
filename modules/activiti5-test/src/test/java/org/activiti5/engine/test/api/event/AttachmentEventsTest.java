@@ -190,7 +190,7 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
 	}
 	
 	public void testAttachmentEntityEventsOnHistoricTaskDelete() throws Exception {
-		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+		if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
 			Task task = null;
 			try {
 				task = taskService.newTask();

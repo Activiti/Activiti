@@ -21,6 +21,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -55,6 +56,11 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
     } else if (!processInstance.isProcessInstanceType()) {
       throw new ActivitiIllegalArgumentException("A process instance id is required, but the provided id " + "'" + processInstanceId + "' " + "points to a child execution of process instance " + "'"
           + processInstance.getProcessInstanceId() + "'. " + "Please invoke the " + getClass().getSimpleName() + " with a root execution id.");
+    }
+    
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processInstance.getProcessDefinitionId())) {
+      commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().updateBusinessKey(processInstanceId, businessKey);
+      return null;
     }
 
     processInstance.updateProcessBusinessKey(businessKey);

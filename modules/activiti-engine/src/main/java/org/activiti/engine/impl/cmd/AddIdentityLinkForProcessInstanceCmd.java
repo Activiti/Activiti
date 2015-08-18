@@ -16,9 +16,11 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
  * @author Marcus Klimstra
@@ -65,6 +67,12 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
 
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
+    }
+    
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processInstance.getProcessDefinitionId())) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      activiti5CompatibilityHandler.addIdentityLinkForProcessInstance(processInstanceId, userId, groupId, type);
+      return null;
     }
 
     processInstance.addIdentityLink(userId, groupId, type);

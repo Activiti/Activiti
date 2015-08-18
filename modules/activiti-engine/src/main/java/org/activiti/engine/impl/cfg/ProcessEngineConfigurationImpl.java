@@ -2178,7 +2178,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
   
   public ProcessEngineConfigurationImpl setClock(Clock clock) {
-    this.clock = clock;
+    if (this.clock == null) {
+      this.clock = clock;
+    } else {
+      this.clock.setCurrentCalendar(clock.getCurrentCalendar());
+    }
+    
     if (isActiviti5CompatibilityEnabled) {
       getActiviti5CompatibilityHandler().setClock(clock);
     }

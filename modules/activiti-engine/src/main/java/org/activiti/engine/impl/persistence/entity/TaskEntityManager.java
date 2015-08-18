@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -28,6 +29,7 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
 
 /**
@@ -118,7 +120,6 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
     return (TaskEntity) getDbSqlSession().selectById(TaskEntity.class, id);
   }
 
-  @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByExecutionId(final String executionId) {
     return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
       
@@ -193,11 +194,18 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
   }
 
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
-    TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+    CommandContext commandContext = Context.getCommandContext();
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
     if (task != null) {
       if (task.getExecutionId() != null) {
         throw new ActivitiException("The task cannot be deleted because is part of a running process");
+      }
+      
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        activiti5CompatibilityHandler.deleteTask(taskId, deleteReason, cascade);
+        return;
       }
 
       String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;

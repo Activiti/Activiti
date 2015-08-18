@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.repository.Model;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -25,7 +25,7 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
  */
 public class ModelEventsTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEntityEventListener listener;
+	private TestActiviti6EntityEventListener listener;
 	
 	/**
 	 * Test create, update and delete events of model entities.
@@ -73,7 +73,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 			listener.clearEventsReceived();
 			
 		} finally {
-			if(model != null && repositoryService.getModel(model.getId()) != null) {
+			if (model != null && repositoryService.getModel(model.getId()) != null) {
 				repositoryService.deleteModel(model.getId());
 			}
 		}
@@ -82,10 +82,8 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	  listener = new TestActivitiEntityEventListener(Model.class);
-	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+	  listener = new TestActiviti6EntityEventListener(Model.class);
+	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
@@ -93,9 +91,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	  
 	  if (listener != null) {
-	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	    activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+	    processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

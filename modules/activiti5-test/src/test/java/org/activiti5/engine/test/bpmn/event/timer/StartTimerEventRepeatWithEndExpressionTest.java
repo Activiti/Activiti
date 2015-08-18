@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -68,8 +69,10 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     processEngineConfiguration.setClock(testClock);
 
     //deploy the process
-    repositoryService.createDeployment().addClasspathResource(
-            "org/activiti5/engine/test/bpmn/event/timer/StartTimerEventRepeatWithEndExpressionTest.testCycleDateStartTimerEvent.bpmn20.xml").deploy();
+    repositoryService.createDeployment()
+      .addClasspathResource("org/activiti5/engine/test/bpmn/event/timer/StartTimerEventRepeatWithEndExpressionTest.testCycleDateStartTimerEvent.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+      .deploy();
     assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 
     //AFTER DEPLOYMENT

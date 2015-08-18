@@ -40,6 +40,7 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -66,6 +67,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     repositoryService.createDeployment()
       .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/api/runtime/concurrentExecution.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
 
     concurrentProcessInstanceIds = new ArrayList<String>();

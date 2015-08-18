@@ -14,13 +14,13 @@ package org.activiti5.engine.test.api.event;
 
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti5.engine.task.IdentityLink;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process definitions.
@@ -130,8 +130,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 	public void testTaskIdentityLinks() throws Exception {
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-				.singleResult();
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(task);
 		
 		// Add identity link
@@ -220,7 +219,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
 		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		listener = new TestActivitiEntityEventListener(IdentityLink.class);
+		listener = new TestActivitiEntityEventListener(org.activiti5.engine.task.IdentityLink.class);
 		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 

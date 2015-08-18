@@ -39,9 +39,15 @@ public interface Activiti5CompatibilityHandler {
   
   ProcessDefinition getProcessDefinitionByKey(String processDefinitionKey);
   
+  void addCandidateStarter(String processDefinitionId, String userId, String groupId);
+  
+  void deleteCandidateStarter(String processDefinitionId, String userId, String groupId);
+  
   void suspendProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId);
 
   void activateProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean activateProcessInstances, Date activationDate, String tenantId);
+  
+  void setProcessDefinitionCategory(String processDefinitionId, String category);
   
   Deployment deploy(DeploymentBuilderImpl deploymentBuilder);
   
@@ -51,13 +57,27 @@ public interface Activiti5CompatibilityHandler {
   
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
   
+  void updateBusinessKey(String processInstanceId, String businessKey);
+  
   void suspendProcessInstance(String processInstanceId);
   
   void activateProcessInstance(String processInstanceId);
   
+  void addIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType);
+  
+  void deleteIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType);
+  
   void deleteProcessInstance(String processInstanceId, String deleteReason);
   
   void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
+  
+  void claimTask(String taskId, String userId);
+  
+  void setTaskDueDate(String taskId, Date dueDate);
+  
+  void setTaskPriority(String taskId, int priority);
+  
+  void deleteTask(String taskId, String deleteReason, boolean cascade);
   
   ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
   
@@ -66,6 +86,8 @@ public interface Activiti5CompatibilityHandler {
   void saveTask(TaskEntity task);
   
   void addIdentityLink(String taskId, String identityId, int identityIdType, String identityType);
+  
+  void deleteIdentityLink(String taskId, String userId, String groupId, String identityLinkType);
   
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url);
   
@@ -80,6 +102,10 @@ public interface Activiti5CompatibilityHandler {
   void executeJob(Job job);
   
   void executeJobWithLockAndRetry(JobEntity job);
+  
+  void deleteJob(String jobId);
+  
+  void setJobRetries(String jobId, int retries);
   
   void addEventListener(Object listener);
   

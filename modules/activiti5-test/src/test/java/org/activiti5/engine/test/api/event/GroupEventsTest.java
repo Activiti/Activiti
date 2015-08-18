@@ -12,12 +12,12 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiMembershipEvent;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -27,7 +27,7 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
  */
 public class GroupEventsTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEntityEventListener listener;
+	private TestActiviti6EntityEventListener listener;
 
 	/**
 	 * Test create, update and delete events of Groups.
@@ -94,10 +94,8 @@ public class GroupEventsTest extends PluggableActivitiTestCase {
 	 * Test create, update and delete events of Groups.
 	 */
 	public void testGroupMembershipEvents() throws Exception {
-		TestActivitiEventListener membershipListener = new TestActivitiEventListener();
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		activiti5ProcessConfig.getEventDispatcher().addEventListener(membershipListener);
+		TestActiviti6EventListener membershipListener = new TestActiviti6EventListener();
+		processEngineConfiguration.getEventDispatcher().addEventListener(membershipListener);
 		
 		User user = null;
 		Group group = null;
@@ -151,7 +149,7 @@ public class GroupEventsTest extends PluggableActivitiTestCase {
 			assertNull(event.getProcessInstanceId());
 			membershipListener.clearEventsReceived();
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(membershipListener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(membershipListener);
 			if(user != null) {
 				identityService.deleteUser(user.getId());
 			}
@@ -164,10 +162,8 @@ public class GroupEventsTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		listener = new TestActivitiEntityEventListener(Group.class);
-		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+		listener = new TestActiviti6EntityEventListener(Group.class);
+		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -175,9 +171,7 @@ public class GroupEventsTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
-		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

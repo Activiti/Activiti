@@ -16,7 +16,7 @@
         
     <endEvent id="theEnd" activiti:async="true">
       <extensionElements>
-        <activiti:executionListener event="start" class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne"></activiti:executionListener>
+        <activiti:executionListener event="start" class="org.activiti5.examples.bpmn.executionlistener.ExampleExecutionListenerOne"></activiti:executionListener>
       </extensionElements>
     </endEvent>
     

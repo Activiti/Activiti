@@ -46,10 +46,12 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti5.engine.ProcessEngine;
+import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.asyncexecutor.AsyncJobUtil;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.cmd.AddEventListenerCommand;
+import org.activiti5.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti5.engine.impl.cmd.RemoveEventListenerCommand;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
@@ -99,6 +101,30 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     return wrapper;
   }
   
+  public void addCandidateStarter(String processDefinitionId, String userId, String groupId) {
+    try {
+      if (userId != null) {
+        getProcessEngine().getRepositoryService().addCandidateStarterUser(processDefinitionId, userId);
+      } else {
+        getProcessEngine().getRepositoryService().addCandidateStarterGroup(processDefinitionId, groupId);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void deleteCandidateStarter(String processDefinitionId, String userId, String groupId) {
+    try {
+      if (userId != null) {
+        getProcessEngine().getRepositoryService().deleteCandidateStarterUser(processDefinitionId, userId);
+      } else {
+        getProcessEngine().getRepositoryService().deleteCandidateStarterGroup(processDefinitionId, groupId);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
   public void suspendProcessDefinition(String processDefinitionId, String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId) {
     try {
       if (processDefinitionId != null) {
@@ -118,6 +144,15 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       } else {
         getProcessEngine().getRepositoryService().activateProcessDefinitionByKey(processDefinitionKey, activateProcessInstances, activationDate, tenantId);
       }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void setProcessDefinitionCategory(String processDefinitionId, String category) {
+    try {
+      getProcessEngine().getRepositoryService().setProcessDefinitionCategory(processDefinitionId, category);
+      
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
     }
@@ -176,7 +211,11 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void setDeploymentCategory(String deploymentId, String category) {
-    getProcessEngine().getRepositoryService().setDeploymentCategory(deploymentId, category);
+    try {
+      getProcessEngine().getRepositoryService().setDeploymentCategory(deploymentId, category);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
@@ -207,16 +246,60 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public void updateBusinessKey(String processInstanceId, String businessKey) {
+    try {
+      getProcessEngine().getRuntimeService().updateBusinessKey(processInstanceId, businessKey);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
   public void suspendProcessInstance(String processInstanceId) {
-    getProcessEngine().getRuntimeService().suspendProcessInstanceById(processInstanceId);
+    try {
+      getProcessEngine().getRuntimeService().suspendProcessInstanceById(processInstanceId);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public void activateProcessInstance(String processInstanceId) {
-    getProcessEngine().getRuntimeService().activateProcessInstanceById(processInstanceId);
+    try {
+      getProcessEngine().getRuntimeService().activateProcessInstanceById(processInstanceId);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
-    getProcessEngine().getRuntimeService().deleteProcessInstance(processInstanceId, deleteReason);
+    try {
+      getProcessEngine().getRuntimeService().deleteProcessInstance(processInstanceId, deleteReason);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void addIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType) {
+    try {
+      if (userId != null) {
+        getProcessEngine().getRuntimeService().addUserIdentityLink(processInstanceId, userId, identityLinkType);
+      } else {
+        getProcessEngine().getRuntimeService().addGroupIdentityLink(processInstanceId, groupId, identityLinkType);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void deleteIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType) {
+    try {
+      if (userId != null) {
+        getProcessEngine().getRuntimeService().deleteUserIdentityLink(processInstanceId, userId, identityLinkType);
+      } else {
+        getProcessEngine().getRuntimeService().deleteGroupIdentityLink(processInstanceId, groupId, identityLinkType);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
@@ -225,6 +308,45 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
     try {
       getProcessEngine().getTaskService().complete(taskEntity.getId(), variables, localScope);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void claimTask(String taskId, String userId) {
+    if (Authentication.getAuthenticatedUserId() != null) {
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
+    }
+    try {
+      getProcessEngine().getTaskService().claim(taskId, userId);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void setTaskDueDate(String taskId, Date dueDate) {
+    try {
+      getProcessEngine().getTaskService().setDueDate(taskId, dueDate);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void setTaskPriority(String taskId, int priority) {
+    try {
+      getProcessEngine().getTaskService().setPriority(taskId, priority);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void deleteTask(String taskId, String deleteReason, boolean cascade) {
+    try {
+      if (deleteReason != null) {
+        getProcessEngine().getTaskService().deleteTask(taskId, deleteReason);
+      } else {
+        getProcessEngine().getTaskService().deleteTask(taskId, cascade);
+      }
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
     }
@@ -258,8 +380,12 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void saveTask(TaskEntity task) {
-    org.activiti5.engine.impl.persistence.entity.TaskEntity activiti5Task = convertToActiviti5TaskEntity(task);
-    getProcessEngine().getTaskService().saveTask(activiti5Task);
+    try {
+      org.activiti5.engine.impl.persistence.entity.TaskEntity activiti5Task = convertToActiviti5TaskEntity(task);
+      getProcessEngine().getTaskService().saveTask(activiti5Task);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public void addIdentityLink(String taskId, String identityId, int identityIdType, String identityType) {
@@ -267,6 +393,14 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       getProcessEngine().getTaskService().addUserIdentityLink(taskId, identityId, identityType);
     } else if (identityIdType == AddIdentityLinkCmd.IDENTITY_GROUP) {
       getProcessEngine().getTaskService().addGroupIdentityLink(taskId, identityId, identityType);
+    }
+  }
+  
+  public void deleteIdentityLink(String taskId, String userId, String groupId, String identityLinkType) {
+    if (userId != null) {
+      getProcessEngine().getTaskService().deleteCandidateUser(taskId, userId);
+    } else {
+      getProcessEngine().getTaskService().deleteGroupIdentityLink(taskId, groupId, identityLinkType);
     }
   }
   
@@ -343,15 +477,8 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   public void executeJob(Job job) {
     if (job == null) return;
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
-    final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
-    processEngineConfig.getCommandExecutor().execute(new Command<Void>() {
-
-      @Override
-      public Void execute(CommandContext commandContext) {
-        activity5Job.execute(commandContext);
-        return null;
-      }
-    });
+    final org.activiti5.engine.impl.persistence.entity.JobEntity activiti5Job = convertToActiviti5JobEntity((JobEntity) job);
+    processEngineConfig.getCommandExecutor().execute(new ExecuteJobsCmd(activiti5Job));
   }
   
   public void executeJobWithLockAndRetry(JobEntity job) {
@@ -359,6 +486,22 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
     AsyncJobUtil.executeJob(activity5Job, processEngineConfig.getCommandExecutor());
+  }
+  
+  public void deleteJob(String jobId) {
+    try {
+      getProcessEngine().getManagementService().deleteJob(jobId);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void setJobRetries(String jobId, int retries) {
+    try {
+      getProcessEngine().getManagementService().setJobRetries(jobId, retries);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
   }
   
   public void addEventListener(Object listener) {
@@ -380,9 +523,15 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void setClock(Clock clock) {
-    org.activiti5.engine.runtime.Clock activiti5Clock = new org.activiti5.engine.impl.util.DefaultClockImpl();
-    activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
-    getProcessEngine().getProcessEngineConfiguration().setClock(activiti5Clock);
+    ProcessEngineConfiguration processEngineConfig = getProcessEngine().getProcessEngineConfiguration();
+    if (processEngineConfig.getClock() == null) {
+      org.activiti5.engine.runtime.Clock activiti5Clock = new org.activiti5.engine.impl.util.DefaultClockImpl();
+      activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
+      getProcessEngine().getProcessEngineConfiguration().setClock(activiti5Clock);
+    } else {
+      org.activiti5.engine.runtime.Clock activiti5Clock = processEngineConfig.getClock();
+      activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
+    }
   }
   
   public Object getRawProcessConfiguration() {

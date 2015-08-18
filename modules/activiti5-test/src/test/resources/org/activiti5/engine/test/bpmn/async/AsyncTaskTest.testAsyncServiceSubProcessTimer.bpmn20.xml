@@ -12,7 +12,7 @@
     <subProcess id="subProcess">    
     	<startEvent id="subStart" />
     	<sequenceFlow sourceRef="subStart" targetRef="service" />
-    	<serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService" activiti:async="true" />
+    	<serviceTask id="service" activiti:class="org.activiti5.engine.test.bpmn.async.AsyncService" activiti:async="true" />
     	<sequenceFlow sourceRef="service" targetRef="subEnd" />
     	<endEvent id="subEnd" />    
     </subProcess>
