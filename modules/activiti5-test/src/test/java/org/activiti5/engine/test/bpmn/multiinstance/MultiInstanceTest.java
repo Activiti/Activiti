@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -37,6 +33,10 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti5.engine.delegate.DelegateTask;
+import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti5.engine.delegate.TaskListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
 
@@ -628,7 +628,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Execution waitState = runtimeService.createExecutionQuery().singleResult();
     assertEquals(10, runtimeService.getVariable(waitState.getId(), "sum"));
     
-    runtimeService.signalEventReceived(waitState.getId());
+    runtimeService.trigger(waitState.getId());
     assertProcessEnded(procId);
   }
   
@@ -639,7 +639,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Execution waitState = runtimeService.createExecutionQuery().singleResult();
     assertEquals(12, runtimeService.getVariable(waitState.getId(), "sum"));
     
-    runtimeService.signalEventReceived(waitState.getId());
+    runtimeService.trigger(waitState.getId());
     assertProcessEnded(procId);
   }
   
@@ -934,7 +934,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
     assertEquals(160, result.intValue());
     
-    runtimeService.signalEventReceived(procInst.getId());
+    runtimeService.trigger(procInst.getId());
     assertProcessEnded(procInst.getId());
   }
   
@@ -949,7 +949,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
     assertEquals(720, result.intValue());
     
-    runtimeService.signalEventReceived(procInst.getId());
+    runtimeService.trigger(procInst.getId());
     assertProcessEnded(procInst.getId());
   }
   
@@ -1036,7 +1036,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     // Complete all four of the executions
     for (Execution execution : executions) {
-      runtimeService.signalEventReceived(execution.getId());
+      runtimeService.trigger(execution.getId());
     }
     
     // There is one task after the task
@@ -1057,7 +1057,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals(3, executions.size());
     
     // Signal only one execution. Then the timer will fire
-    runtimeService.signalEventReceived(executions.get(1).getId());
+    runtimeService.trigger(executions.get(1).getId());
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
     waitForJobExecutorToProcessAllJobs(10000L, 1000L);
     
@@ -1078,7 +1078,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     // Complete all four of the executions
     while (execution != null) {
-      runtimeService.signalEventReceived(execution.getId());
+      runtimeService.trigger(execution.getId());
       execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
     }
     
@@ -1179,25 +1179,25 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   public void testInfiniteLoopWithDelegateExpressionFix() {
   	
   	// Add bean temporary to process engine
-  	
-  	Map<Object, Object> originalBeans = processEngineConfiguration.getExpressionManager().getBeans();
+  	final org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+  	    processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+  	Map<Object, Object> originalBeans = activiti5ProcessEngineConfig.getExpressionManager().getBeans();
   	
   	try {
   		
-  		Map<Object, Object> newBeans = new HashMap<Object, Object>();
+  	  Map<Object, Object> newBeans = new HashMap<Object, Object>();
   		newBeans.put("SampleTask", new TestSampleServiceTask());
-  		processEngineConfiguration.getExpressionManager().setBeans(newBeans);
+  		activiti5ProcessEngineConfig.getExpressionManager().setBeans(newBeans);
   	
-	  	 Map<String, Object> params = new HashMap<String, Object>();
-	     params.put("sampleValues", Arrays.asList("eins", "zwei", "drei"));
-	     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("infiniteLoopTest", params);
-	     assertNotNull(processInstance);
+  		Map<String, Object> params = new HashMap<String, Object>();
+  		params.put("sampleValues", Arrays.asList("eins", "zwei", "drei"));
+  		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("infiniteLoopTest", params);
+  		assertNotNull(processInstance);
 	     
   	} finally {
   		
   		// Put beans back
-  		processEngineConfiguration.getExpressionManager().setBeans(originalBeans);
-  		
+  	  activiti5ProcessEngineConfig.getExpressionManager().setBeans(originalBeans);
   	}
   }
   
@@ -1282,7 +1282,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   
   public static class TestStartExecutionListener implements ExecutionListener {
   	
-  	public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
+    private static final long serialVersionUID = 1L;
+    
+    public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
   	public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
 
   	@Override
@@ -1298,6 +1300,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   public static class TestEndExecutionListener implements ExecutionListener {
+    
+    private static final long serialVersionUID = 1L;
   	
   	public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
   	public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
@@ -1315,6 +1319,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   }
   
   public static class TestTaskCompletionListener implements TaskListener {
+    
+    private static final long serialVersionUID = 1L;
   	
   	public static AtomicInteger count = new AtomicInteger(0);
   	

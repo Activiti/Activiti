@@ -13,11 +13,13 @@
     <property name="idBlockSize" value="3" />
     <property name="idGeneratorDataSource" ref="idGeneratorDataSource" />
     
+    <property name="activiti5CompatibilityEnabled" value="true" />
+    
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
     
   </bean>
   
-  <bean name="idGeneratorDataSource" class="org.activiti.engine.test.db.IdGeneratorDataSource" />
+  <bean name="idGeneratorDataSource" class="org.activiti5.engine.test.db.IdGeneratorDataSource" />
 
 </beans>

@@ -12,9 +12,9 @@
     
     <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="kermit_${loopCounter}" >
       <extensionElements>
-        <activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestStartExecutionListener"></activiti:executionListener>
-        <activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestEndExecutionListener"></activiti:executionListener>
-        <activiti:taskListener event="complete" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestTaskCompletionListener" ></activiti:taskListener>
+        <activiti:executionListener event="start" class="org.activiti5.engine.test.bpmn.multiinstance.MultiInstanceTest$TestStartExecutionListener"></activiti:executionListener>
+        <activiti:executionListener event="end" class="org.activiti5.engine.test.bpmn.multiinstance.MultiInstanceTest$TestEndExecutionListener"></activiti:executionListener>
+        <activiti:taskListener event="complete" class="org.activiti5.engine.test.bpmn.multiinstance.MultiInstanceTest$TestTaskCompletionListener" ></activiti:taskListener>
       </extensionElements>
       <multiInstanceLoopCharacteristics isSequential="false">
         <loopCardinality>4</loopCardinality>

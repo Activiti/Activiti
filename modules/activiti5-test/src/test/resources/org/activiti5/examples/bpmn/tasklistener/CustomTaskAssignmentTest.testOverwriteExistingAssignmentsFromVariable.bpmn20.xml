@@ -15,7 +15,7 @@
 		    Schedule a meeting with management.
 		  </documentation>
 		  <extensionElements>
-		    <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.AssigneeOverwriteFromVariable" />
+		    <activiti:taskListener event="create" class="org.activiti5.examples.bpmn.tasklistener.AssigneeOverwriteFromVariable" />
 		  </extensionElements>
 		</userTask>
 		

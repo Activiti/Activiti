@@ -6,6 +6,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.validation.ProcessValidator;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
  
 /**
@@ -21,12 +22,14 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
 	protected ProcessValidator processValidator;
 	
 	private void disableValidation() {
-	  processValidator = processEngineConfiguration.getProcessValidator();
-	  processEngineConfiguration.setProcessValidator(null);
+	  ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  processValidator = activiti5ProcessEngineConfig.getProcessValidator();
+	  activiti5ProcessEngineConfig.setProcessValidator(null);
   }
 	
 	private void enableValidation() {
-	  processEngineConfiguration.setProcessValidator(processValidator);
+	  ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  activiti5ProcessEngineConfig.setProcessValidator(processValidator);
   }
 	
 	private void clearDeploymentCache() {

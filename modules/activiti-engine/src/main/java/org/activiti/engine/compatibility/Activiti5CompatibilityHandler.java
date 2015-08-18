@@ -57,6 +57,8 @@ public interface Activiti5CompatibilityHandler {
   
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
   
+  void setExecutionVariables(String executionId, Map<String, ? extends Object> variables, boolean isLocal);
+  
   void updateBusinessKey(String processInstanceId, String businessKey);
   
   void suspendProcessInstance(String processInstanceId);

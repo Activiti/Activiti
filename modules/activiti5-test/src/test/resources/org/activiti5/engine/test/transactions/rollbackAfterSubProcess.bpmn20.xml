@@ -13,7 +13,7 @@
 
 	<sequenceFlow id="flow2" sourceRef="callactivity" targetRef="buzzz"/>
 	
-	<serviceTask id="buzzz" activiti:class="org.activiti.engine.test.transactions.TransactionRollbackTest$Buzzz" />
+	<serviceTask id="buzzz" activiti:class="org.activiti5.engine.test.transactions.TransactionRollbackTest$Buzzz" />
 	
 	<sequenceFlow id="flow3" sourceRef="buzzz" targetRef="end"/>
     

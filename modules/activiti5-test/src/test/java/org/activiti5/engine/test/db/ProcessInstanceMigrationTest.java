@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -134,6 +135,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     org.activiti.engine.repository.Deployment deployment = repositoryService
       .createDeployment()
       .addClasspathResource(TEST_PROCESS_ACTIVITY_MISSING)
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
@@ -167,6 +169,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     org.activiti.engine.repository.Deployment deployment = repositoryService
       .createDeployment()
       .addClasspathResource(TEST_PROCESS)
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
@@ -182,10 +185,12 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       .createProcessDefinitionQuery()
       .processDefinitionVersion(2)
       .singleResult();
+    
     pi = runtimeService
       .createProcessInstanceQuery()
       .processInstanceId(pi.getId())
       .singleResult();
+    
     assertEquals(newProcessDefinition.getId(), pi.getProcessDefinitionId());
     
     // check history
@@ -213,6 +218,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     org.activiti.engine.repository.Deployment deployment = repositoryService
       .createDeployment()
       .addClasspathResource(TEST_PROCESS_WITH_PARALLEL_GATEWAY)
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
@@ -225,10 +231,12 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       .createProcessDefinitionQuery()
       .processDefinitionVersion(2)
       .singleResult();
+    
     List<Execution> executions = runtimeService
       .createExecutionQuery()
       .processInstanceId(pi.getId())
       .list();
+    
     for (Execution execution : executions) {
       assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
     }
@@ -253,6 +261,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     org.activiti.engine.repository.Deployment deployment = repositoryService
       .createDeployment()
       .addClasspathResource(TEST_PROCESS_CALL_ACTIVITY)
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("parentProcess").count());
 
@@ -280,10 +289,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
       
       // deploy new version of the process definition
-      org.activiti.engine.repository.Deployment deployment = repositoryService
-        .createDeployment()
+      org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
         .addClasspathResource(TEST_PROCESS_USER_TASK_V2)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
+      
       assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").count());
       
       ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
@@ -322,6 +332,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     org.activiti.engine.repository.Deployment deployment = repositoryService
             .createDeployment()
             .addClasspathResource(TEST_PROCESS_NESTED_SUB_EXECUTIONS)
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
             .deploy();
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
@@ -334,6 +345,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
             .createProcessDefinitionQuery()
             .processDefinitionVersion(2)
             .singleResult();
+    
     List<Execution> executions = runtimeService
             .createExecutionQuery()
             .processInstanceId(pi.getId())

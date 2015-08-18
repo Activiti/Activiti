@@ -26,7 +26,7 @@
 
     <scriptTask id="theScript" scriptFormat="groovy">
       <script>
-        org.activiti.examples.bpmn.scripttask.ScriptTaskTestPojo.foo();
+        org.activiti5.examples.bpmn.scripttask.ScriptTaskTestPojo.foo();
       </script>
     </scriptTask>
     

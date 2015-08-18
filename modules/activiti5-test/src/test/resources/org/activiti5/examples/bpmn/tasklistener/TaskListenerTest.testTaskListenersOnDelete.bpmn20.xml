@@ -4,8 +4,8 @@
     <startEvent id="startevent1" name="Start"></startEvent>
     <userTask id="usertask1" name="User Task 1">
       <extensionElements>
-        <activiti:taskListener event="complete" class="org.activiti.examples.bpmn.tasklistener.TaskSimpleCompleteListener" />
-		    <activiti:taskListener event="delete" class="org.activiti.examples.bpmn.tasklistener.TaskDeleteListener" />
+        <activiti:taskListener event="complete" class="org.activiti5.examples.bpmn.tasklistener.TaskSimpleCompleteListener" />
+		    <activiti:taskListener event="delete" class="org.activiti5.examples.bpmn.tasklistener.TaskDeleteListener" />
 		  </extensionElements>    
     </userTask>
     <endEvent id="endevent1" name="End"></endEvent>

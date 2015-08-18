@@ -12,7 +12,7 @@
     <receiveTask id="waitOne" />
     <sequenceFlow id="flow2" sourceRef="waitOne" targetRef="controlledConcurrency" />
     
-    <serviceTask id="controlledConcurrency" activiti:class="org.activiti.engine.test.concurrency.CompetingSignalsTest$ControlledConcurrencyBehavior"/>
+    <serviceTask id="controlledConcurrency" activiti:class="org.activiti5.engine.test.concurrency.CompetingSignalsTest$ControlledConcurrencyBehavior"/>
     <sequenceFlow id="flow3" sourceRef="controlledConcurrency" targetRef="waitTwo" />
 
     <receiveTask id="waitTwo" />

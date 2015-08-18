@@ -12,7 +12,7 @@
     <startEvent id="startevent1" name="Start"></startEvent>
 
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
-    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti.engine.test.helper.PassThroughServiceTask" activiti:async="true" activiti:exclusive="true" />
+    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti5.engine.test.helper.PassThroughServiceTask" activiti:async="true" activiti:exclusive="true" />
 
     <sequenceFlow id="flow2" sourceRef="servicetask1" targetRef="inclusivegateway1"></sequenceFlow>
     <parallelGateway id="inclusivegateway1" name="Inclusive Gateway"></parallelGateway>

@@ -44,8 +44,36 @@ public class DefaultProcessEngineFactory {
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration = null;
     if (activiti6Configuration instanceof StandaloneProcessEngineConfiguration) {
       activiti5Configuration = new org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration();
-
-      activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+      
+      if (activiti6Configuration.getIdGeneratorDataSource() != null) {
+        activiti5Configuration.setIdGeneratorDataSource(activiti6Configuration.getIdGeneratorDataSource());
+      } else if (activiti6Configuration.getIdGeneratorDataSourceJndiName() != null) {
+        activiti5Configuration.setIdGeneratorDataSourceJndiName(activiti6Configuration.getIdGeneratorDataSourceJndiName());
+      } else {
+        activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+      }
+      
+      if (activiti6Configuration.getJdbcDriver() != null) {
+        activiti5Configuration.setJdbcDriver(activiti6Configuration.getJdbcDriver());
+      }
+      if (activiti6Configuration.getJdbcUrl() != null) {
+        activiti5Configuration.setJdbcUrl(activiti6Configuration.getJdbcUrl());
+      }
+      if (activiti6Configuration.getJdbcUsername() != null) {
+        activiti5Configuration.setJdbcUsername(activiti6Configuration.getJdbcUsername());
+      }
+      if (activiti6Configuration.getJdbcPassword() != null) {
+        activiti5Configuration.setJdbcPassword(activiti6Configuration.getJdbcPassword());
+      }
+      
+      if (activiti6Configuration.getIdBlockSize() > 0) {
+        activiti5Configuration.setIdBlockSize(activiti6Configuration.getIdBlockSize());
+      }
+      
+      if (activiti6Configuration.getJdbcMaxActiveConnections() > 0) {
+        activiti5Configuration.setJdbcMaxActiveConnections(activiti6Configuration.getJdbcMaxActiveConnections());
+      }
+      
       activiti5Configuration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(activiti6Configuration.getHistoryLevel().getKey()));
       
       activiti5Configuration.setMailServerDefaultFrom(activiti6Configuration.getMailServerDefaultFrom());

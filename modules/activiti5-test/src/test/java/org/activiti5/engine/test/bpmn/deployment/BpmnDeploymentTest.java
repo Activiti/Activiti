@@ -26,6 +26,7 @@ import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.RepositoryServiceImpl;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.IoUtil;
@@ -154,7 +155,9 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   
   public void testDiagramCreationDisabled() {
     // disable diagram generation
-    processEngineConfiguration.setCreateDiagramOnDeploy(false);
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5ProcessEngineConfig.setCreateDiagramOnDeploy(false);
 
     try {
       repositoryService.createDeployment()
@@ -180,7 +183,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
       repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
     } finally {
-      processEngineConfiguration.setCreateDiagramOnDeploy(true);
+      activiti5ProcessEngineConfig.setCreateDiagramOnDeploy(true);
     }
   }
 

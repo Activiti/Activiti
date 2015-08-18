@@ -27,6 +27,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -113,9 +114,12 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testHistoricTaskInstanceQuery() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
+    
     Calendar start = Calendar.getInstance();
     start.set(Calendar.MILLISECOND, 0);
-    processEngineConfiguration.getClock().setCurrentTime(start.getTime());
+    clock.setCurrentCalendar(start);
+    processEngineConfiguration.setClock(clock);
     
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
@@ -282,9 +286,12 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testHistoricTaskInstanceOrQuery() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
+    
     Calendar start = Calendar.getInstance();
     start.set(Calendar.MILLISECOND, 0);
-    processEngineConfiguration.getClock().setCurrentTime(start.getTime());
+    clock.setCurrentCalendar(start);
+    processEngineConfiguration.setClock(clock);
     
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");

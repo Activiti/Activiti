@@ -11,7 +11,7 @@
     
     <userTask id="UserwithListener" name="User with Listener">
 			<extensionElements>
-				<activiti:taskListener event='create' class='org.activiti.engine.test.bpmn.usertask.UserTaskTestCreateTaskListener'>
+				<activiti:taskListener event='create' class='org.activiti5.engine.test.bpmn.usertask.UserTaskTestCreateTaskListener'>
 					<activiti:field name='expression' stringValue='some expression value' />
 				</activiti:taskListener>
 			</extensionElements>

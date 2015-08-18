@@ -17,7 +17,7 @@
     
     <property name="activiti5CustomDefaultBpmnParseHandlers">
       <list>
-        <bean class="org.activiti.examples.bpmn.executionlistener.CustomSequenceFlowBpmnParseHandler" />
+        <bean class="org.activiti5.examples.bpmn.executionlistener.CustomSequenceFlowBpmnParseHandler" />
       </list>
     </property>
     

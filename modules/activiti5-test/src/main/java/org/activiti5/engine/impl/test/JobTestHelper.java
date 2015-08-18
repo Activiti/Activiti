@@ -96,6 +96,55 @@ public class JobTestHelper {
     	}
     }
   }
+  
+  public static void waitForJobExecutorActiviti5ToProcessAllJobs(org.activiti5.engine.ProcessEngineConfiguration processEngineConfiguration, 
+      org.activiti5.engine.ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
+    
+    org.activiti5.engine.impl.jobexecutor.JobExecutor jobExecutor = null;
+    org.activiti5.engine.impl.asyncexecutor.AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean areJobsAvailable = true;
+      try {
+        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+          try {
+            areJobsAvailable = areJobsAvailable(managementService);
+          } catch(Throwable t) {
+            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
+            // isolation level doesn't allow READ of the table
+          }
+        }
+      } catch (InterruptedException e) {
+        // ignore
+      } finally {
+        timer.cancel();
+      }
+      if (areJobsAvailable) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      if (shutdownExecutorWhenFinished) {
+        if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+          jobExecutor.shutdown();
+        } else {
+          asyncExecutor.shutdown();
+        }
+      }
+    }
+  }
 
   public static void waitForJobExecutorOnCondition(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
     waitForJobExecutorOnCondition(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis, condition);
@@ -191,6 +240,10 @@ public class JobTestHelper {
   }
 
   public static boolean areJobsAvailable(ManagementService managementService) {
+    return !managementService.createJobQuery().list().isEmpty();
+  }
+  
+  public static boolean areJobsAvailable(org.activiti5.engine.ManagementService managementService) {
     return !managementService.createJobQuery().list().isEmpty();
   }
 

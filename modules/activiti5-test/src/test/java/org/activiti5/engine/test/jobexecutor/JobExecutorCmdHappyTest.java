@@ -14,8 +14,10 @@ package org.activiti5.engine.test.jobexecutor;
 
 import java.util.Date;
 
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.asyncexecutor.AcquiredJobEntities;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti5.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti5.engine.impl.interceptor.Command;
@@ -48,7 +50,8 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     
     assertEquals(0, tweetHandler.getMessages().size());
 
-    managementService.executeJob(job.getId());
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5ProcessEngineConfig.getManagementService().executeJob(job.getId());
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());
@@ -59,7 +62,10 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
-    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME));
+    Clock clock = processEngineConfiguration.getClock();
+    Date previousTime = clock.getCurrentTime();
+    clock.setCurrentTime(new Date(SOME_TIME));
+    processEngineConfiguration.setClock(clock);
 
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     
@@ -75,7 +81,8 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 10000, 5));
     assertEquals(0, acquiredJobs.size());
 
-    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+    clock.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+    processEngineConfiguration.setClock(clock);
 
     acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 10000, 5));
     assertEquals(1, acquiredJobs.size());
@@ -90,5 +97,8 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());
+    
+    clock.setCurrentTime(previousTime);
+    processEngineConfiguration.setClock(clock);
   }
 }

@@ -26,7 +26,7 @@
 			</boundaryEvent>		
 			
 			<serviceTask id="undoBookHotel" isForCompensation="true"
-				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.UndoService">
 				<extensionElements>
 					<activiti:field name="counterName" stringValue="undoBookHotel" />
 				</extensionElements>
@@ -43,7 +43,7 @@
 			</boundaryEvent>		
 			
 			<serviceTask id="undoBookFlight" isForCompensation="true"
-				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.UndoService">
 				<extensionElements>
 					<activiti:field name="counterName" stringValue="undoBookFlight" />
 				</extensionElements>

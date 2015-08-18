@@ -12,7 +12,7 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:class="org.activiti.engine.test.db.IdGeneratorDataSourceDoNothing" />
+                 activiti:class="org.activiti5.engine.test.db.IdGeneratorDataSourceDoNothing" />
     
     <sequenceFlow id="flow2" sourceRef="javaService" targetRef="theEnd" />
     

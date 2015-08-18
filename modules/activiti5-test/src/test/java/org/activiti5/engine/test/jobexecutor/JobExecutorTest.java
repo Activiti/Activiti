@@ -19,10 +19,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.activiti.engine.runtime.Clock;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti5.engine.impl.test.JobTestHelper;
 
 /**
  * @author Tom Baeyens
@@ -30,6 +33,8 @@ import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
 public class JobExecutorTest extends JobExecutorTestCase {
 
   public void testBasicJobExecutorOperation() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
+    Date previousTime = clock.getCurrentTime();
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
@@ -48,9 +53,11 @@ public class JobExecutorTest extends JobExecutorTestCase {
     
     GregorianCalendar currentCal = new GregorianCalendar();
     currentCal.add(Calendar.MINUTE, 1);
-    processEngineConfiguration.getClock().setCurrentTime(currentCal.getTime());
+    clock.setCurrentCalendar(currentCal);
+    processEngineConfiguration.setClock(clock);
     
-    waitForJobExecutorToProcessAllJobs(8000L, 200L);
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    JobTestHelper.waitForJobExecutorActiviti5ToProcessAllJobs(activiti5ProcessEngineConfig, activiti5ProcessEngineConfig.getManagementService(), 8000L, 200L, true);
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();
@@ -62,5 +69,8 @@ public class JobExecutorTest extends JobExecutorTestCase {
     expectedMessages.add("timer-two");
     
     assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
+    
+    clock.setCurrentTime(previousTime);
+    processEngineConfiguration.setClock(clock);
   }
 }

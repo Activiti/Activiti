@@ -66,7 +66,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     variables.put("customVar2", null);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
 
-    variables = runtimeService.getVariables(processInstance.getId());
+    variables = activiti5ProcessEngineConfig.getRuntimeService().getVariables(processInstance.getId());
     assertEquals(928374L, variables.get("longVar"));
     assertEquals((short) 123, variables.get("shortVar"));
     assertEquals(1234, variables.get("integerVar"));
@@ -116,7 +116,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "customVar1", new CustomType(bytes2));
     runtimeService.setVariable(processInstance.getId(), "customVar2", new CustomType(bytes1));
 
-    variables = runtimeService.getVariables(processInstance.getId());
+    variables = activiti5ProcessEngineConfig.getRuntimeService().getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
     assertEquals(9987L, variables.get("longVar"));
     assertEquals((short)456, variables.get("shortVar"));
@@ -147,12 +147,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     
     Task task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
-    
-    
-    
   }
-  
- 
   
   // Test case for ACT-1839
   @Deployment(resources = {"org/activiti5/examples/variables/VariablesTest.testChangeTypeSerializable.bpmn20.xml"})
@@ -266,7 +261,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	    } catch (Exception e) {
 		    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
 
-	    	assertEquals("class org.activiti5.engine.ActivitiException", e.getClass().toString());
+	    	assertEquals("class org.activiti.engine.ActivitiException", e.getClass().toString());
 	    }
 	    
 	    	    

@@ -25,6 +25,7 @@ import org.activiti.compatibility.wrapper.Activiti5ProcessInstanceWrapper;
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
@@ -236,13 +237,36 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
     
     try {
-      org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance 
-          = getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
+      org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance = null;
+      if (tenantId != null) { 
+        activiti5ProcessInstance = getProcessEngine().getRuntimeService()
+            .startProcessInstanceByKeyAndTenantId(processDefinitionKey, businessKey, variables, tenantId);
+      } else {
+        activiti5ProcessInstance = getProcessEngine().getRuntimeService()
+            .startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
+      }
+      
+      if (processInstanceName != null) {
+        getProcessEngine().getRuntimeService().setProcessInstanceName(activiti5ProcessInstance.getId(), processInstanceName);
+      }
+      
       return new Activiti5ProcessInstanceWrapper(activiti5ProcessInstance);
       
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
       return null;
+    }
+  }
+  
+  public void setExecutionVariables(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
+    try {
+      if (isLocal) {
+        getProcessEngine().getRuntimeService().setVariablesLocal(executionId, variables);
+      } else {
+        getProcessEngine().getRuntimeService().setVariables(executionId, variables);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
     }
   }
   
@@ -635,6 +659,9 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       org.activiti5.engine.ActivitiObjectNotFoundException activiti5ObjectNotFoundException = (org.activiti5.engine.ActivitiObjectNotFoundException) e;
       throw new ActivitiObjectNotFoundException(activiti5ObjectNotFoundException.getMessage(), 
           activiti5ObjectNotFoundException.getObjectClass(), activiti5ObjectNotFoundException.getCause());
+      
+    } else if (e instanceof org.activiti5.engine.ActivitiOptimisticLockingException) {
+      throw new ActivitiOptimisticLockingException(e.getMessage());
       
     } else {
       if (e.getCause() instanceof org.activiti5.engine.ActivitiClassLoadingException) {

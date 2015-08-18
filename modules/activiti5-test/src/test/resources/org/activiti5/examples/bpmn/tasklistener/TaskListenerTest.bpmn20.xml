@@ -15,13 +15,13 @@
 		    Schedule a meeting with management.
 		  </documentation>
 		  <extensionElements>
-		    <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.TaskCreateListener" />
-		    <activiti:taskListener event="complete" class="org.activiti.examples.bpmn.tasklistener.TaskCompleteListener">
+		    <activiti:taskListener event="create" class="org.activiti5.examples.bpmn.tasklistener.TaskCreateListener" />
+		    <activiti:taskListener event="complete" class="org.activiti5.examples.bpmn.tasklistener.TaskCompleteListener">
 		      <activiti:field name="greeter" stringValue="The Process" />
               <activiti:field name="shortName" expression="${'Activiti'.substring(0,3)}" />
 		    </activiti:taskListener>
-            <activiti:taskListener event="assignment" class="org.activiti.examples.bpmn.tasklistener.TaskAssignmentListener" />
-            <activiti:taskListener event="all" class="org.activiti.examples.bpmn.tasklistener.TaskAllEventsListener" />
+            <activiti:taskListener event="assignment" class="org.activiti5.examples.bpmn.tasklistener.TaskAssignmentListener" />
+            <activiti:taskListener event="all" class="org.activiti5.examples.bpmn.tasklistener.TaskAllEventsListener" />
 		  </extensionElements>
 		</userTask>
 		

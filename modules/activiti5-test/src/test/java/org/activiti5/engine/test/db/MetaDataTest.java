@@ -16,7 +16,7 @@ package org.activiti5.engine.test.db;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
-import org.activiti5.engine.impl.ProcessEngineImpl;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.db.DbSqlSession;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
@@ -34,30 +34,28 @@ public class MetaDataTest extends PluggableActivitiTestCase {
   private static Logger log = LoggerFactory.getLogger(MetaDataTest.class);
 
   public void testMetaData() {
-    ((ProcessEngineImpl)processEngine)
-      .getProcessEngineConfiguration()
-      .getCommandExecutor()
-      .execute(new Command<Object>() {
-        public Object execute(CommandContext commandContext) {
-          // PRINT THE TABLE NAMES TO CHECK IF WE CAN USE METADATA INSTEAD
-          // THIS IS INTENDED FOR TEST THAT SHOULD RUN ON OUR QA INFRASTRUCTURE TO SEE IF METADATA 
-          // CAN BE USED INSTEAD OF PERFORMING A QUERY THAT MIGHT FAIL
-          try {
-            SqlSession sqlSession = commandContext.getSession(DbSqlSession.class).getSqlSession();
-            ResultSet tables = sqlSession.getConnection().getMetaData().getTables(null, null, null, null);
-            while (tables.next()) {
-              ResultSetMetaData resultSetMetaData = tables.getMetaData();
-              int columnCount = resultSetMetaData.getColumnCount();
-              for (int i=1; i<=columnCount; i++) {
-                log.info("result set column {}|{}|{}|{}", i, resultSetMetaData.getColumnName(i), resultSetMetaData.getColumnLabel(i), tables.getString(i));
-              }
-              log.info("-------------------------------------------------------");
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5ProcessEngineConfig.getCommandExecutor().execute(new Command<Object>() {
+      public Object execute(CommandContext commandContext) {
+        // PRINT THE TABLE NAMES TO CHECK IF WE CAN USE METADATA INSTEAD
+        // THIS IS INTENDED FOR TEST THAT SHOULD RUN ON OUR QA INFRASTRUCTURE TO SEE IF METADATA 
+        // CAN BE USED INSTEAD OF PERFORMING A QUERY THAT MIGHT FAIL
+        try {
+          SqlSession sqlSession = commandContext.getSession(DbSqlSession.class).getSqlSession();
+          ResultSet tables = sqlSession.getConnection().getMetaData().getTables(null, null, null, null);
+          while (tables.next()) {
+            ResultSetMetaData resultSetMetaData = tables.getMetaData();
+            int columnCount = resultSetMetaData.getColumnCount();
+            for (int i=1; i<=columnCount; i++) {
+              log.info("result set column {}|{}|{}|{}", i, resultSetMetaData.getColumnName(i), resultSetMetaData.getColumnLabel(i), tables.getString(i));
             }
-          } catch (Exception e) {
-            e.printStackTrace();
+            log.info("-------------------------------------------------------");
           }
-          return null;
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-      });
+        return null;
+      }
+    });
   }
 }

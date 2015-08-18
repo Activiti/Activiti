@@ -12,8 +12,8 @@
     
     <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="kermit_${loopCounter}" >
       <extensionElements>
-        <activiti:taskListener event="complete" class="org.activiti.engine.test.bpmn.multiinstance.TaskCompletionListener" />
-        <activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.multiinstance.ActivityStartListener" />
+        <activiti:taskListener event="complete" class="org.activiti5.engine.test.bpmn.multiinstance.TaskCompletionListener" />
+        <activiti:executionListener event="start" class="org.activiti5.engine.test.bpmn.multiinstance.ActivityStartListener" />
       </extensionElements>
       <multiInstanceLoopCharacteristics isSequential="false">
         <loopCardinality>3</loopCardinality>
