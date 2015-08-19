@@ -93,7 +93,7 @@ public class Activiti5ProcessDefinitionWrapper implements ProcessDefinition {
     return activit5ProcessDefinition.getTenantId();
   }
   
-  public Object getRawObject() {
+  public org.activiti5.engine.repository.ProcessDefinition getRawObject() {
     return activit5ProcessDefinition;
   }
 

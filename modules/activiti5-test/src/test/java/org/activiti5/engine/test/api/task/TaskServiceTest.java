@@ -766,7 +766,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addCandidateUser("taskId", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   
@@ -799,7 +799,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addCandidateGroup("taskId", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   
@@ -830,7 +830,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addGroupIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   
@@ -863,7 +863,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addUserIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   

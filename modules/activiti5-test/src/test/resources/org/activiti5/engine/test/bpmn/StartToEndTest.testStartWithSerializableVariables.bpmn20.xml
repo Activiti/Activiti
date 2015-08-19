@@ -7,7 +7,7 @@
   <process id="startToEnd">
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task" />
-    <serviceTask id="task" activiti:class="org.activiti.engine.test.bpmn.StartToEndTest$SerializableServiceTaskDelegate" />
+    <serviceTask id="task" activiti:class="org.activiti5.engine.test.bpmn.StartToEndTest$SerializableServiceTaskDelegate" />
     <sequenceFlow id="flow2" sourceRef="task" targetRef="theEnd" />
     <endEvent id="theEnd" />
   </process>

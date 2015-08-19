@@ -104,13 +104,12 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 		
 		runtimeService.messageEventReceivedAsync("newMessage", execution.getId());
 		
-		assertEquals(1, managementService
-			      .createJobQuery().messages().count());
+		assertEquals(1, managementService.createJobQuery().messages().count());
 		
 		waitForJobExecutorToProcessAllJobs(8000L, 200L);
 		assertEquals(0, createEventSubscriptionQuery().count());    
-	    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-	    assertEquals(0, managementService.createJobQuery().count()); 
+		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+		assertEquals(0, managementService.createJobQuery().count()); 
 	}
 	
 	private EventSubscriptionQueryImpl createEventSubscriptionQuery() {

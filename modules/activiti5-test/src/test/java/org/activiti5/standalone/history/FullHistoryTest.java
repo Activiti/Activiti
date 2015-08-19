@@ -38,6 +38,7 @@ import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -458,9 +459,11 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
   
   @Deployment
   public void testHistoricFormProperties() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
     Date startedDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS").parse("01/01/2001 01:23:46 000");
     
-    processEngineConfiguration.getClock().setCurrentTime(startedDate);
+    clock.setCurrentTime(startedDate);
+    processEngineConfiguration.setClock(clock);
     
     Map<String, String> formProperties = new HashMap<String, String>();
     formProperties.put("formProp1", "Activiti rocks");
@@ -541,6 +544,9 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertNotNull(historicProperty4.getTaskId());
 
     assertEquals(4, props.size());
+    
+    clock.reset();
+    processEngineConfiguration.setClock(clock);
   }
   
   @Deployment(

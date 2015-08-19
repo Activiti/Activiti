@@ -29,6 +29,8 @@ import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
 
@@ -37,6 +39,7 @@ public class DefaultProcessEngineFactory {
   /**
    * Takes in an Activiti 6 process engine config, gives back an Activiti 5 Process engine.
    */
+  @SuppressWarnings("unchecked")
   public ProcessEngine buildProcessEngine(ProcessEngineConfigurationImpl activiti6Configuration) {
 
     // TODO: jta/spring/custom type
@@ -101,7 +104,9 @@ public class DefaultProcessEngineFactory {
       activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
       activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
       
-      if (activiti6Configuration.isAsyncExecutorEnabled() && activiti6Configuration.getAsyncExecutor() != null) {
+      activiti5Configuration.setAsyncExecutorEnabled(true);
+      activiti5Configuration.setAsyncExecutorActivate(true);
+      if (activiti6Configuration.getAsyncExecutor() != null) {
         AsyncExecutor activiti5AsyncExecutor = new DefaultAsyncJobExecutor();
         activiti5AsyncExecutor.setAsyncJobLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
         activiti5AsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultAsyncJobAcquireWaitTimeInMillis());
@@ -119,11 +124,21 @@ public class DefaultProcessEngineFactory {
         activiti5Configuration.setBeans(activiti6Configuration.getBeans());
       }
       
+      if (activiti6Configuration.getActiviti5ProcessDefinitionCache() != null) {
+        activiti5Configuration.setProcessDefinitionCache((DeploymentCache<ProcessDefinitionEntity>) activiti6Configuration.getActiviti5ProcessDefinitionCache());
+      }
+      activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
+      
+      if (activiti6Configuration.getActiviti5KnowledgeBaseCache() != null) {
+        activiti5Configuration.setKnowledgeBaseCache((DeploymentCache<Object>) activiti6Configuration.getActiviti5KnowledgeBaseCache());
+      }
+      activiti5Configuration.setKnowledgeBaseCacheLimit(activiti6Configuration.getKnowledgeBaseCacheLimit());
+      
       if (activiti6Configuration.getActiviti5ActivityBehaviorFactory() != null) {
         activiti5Configuration.setActivityBehaviorFactory((ActivityBehaviorFactory) activiti6Configuration.getActiviti5ActivityBehaviorFactory());
       }
       if (activiti6Configuration.getActiviti5ListenerFactory() != null) {
-        activiti5Configuration.setListenerFactory((ListenerFactory) activiti6Configuration.getListenerFactory());
+        activiti5Configuration.setListenerFactory((ListenerFactory) activiti6Configuration.getActiviti5ListenerFactory());
       }
       
       convertParseHandlers(activiti6Configuration, activiti5Configuration);

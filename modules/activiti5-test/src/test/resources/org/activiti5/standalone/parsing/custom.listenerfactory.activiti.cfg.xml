@@ -11,7 +11,7 @@
     <property name="activiti5CompatibilityEnabled" value="true" />
   
     <property name="activiti5ListenerFactory">
-        <bean class="org.activiti.standalone.parsing.CustomListenerFactory" />
+        <bean class="org.activiti5.standalone.parsing.CustomListenerFactory" />
     </property>
     
   </bean>

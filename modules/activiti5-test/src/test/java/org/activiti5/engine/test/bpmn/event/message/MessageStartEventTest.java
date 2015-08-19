@@ -15,13 +15,14 @@ package org.activiti5.engine.test.bpmn.event.message;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -34,6 +35,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String deploymentId = repositoryService
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
     
@@ -49,15 +51,17 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String deploymentId = repositoryService
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
     try {
       repositoryService
         .createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
-    }catch (ActivitiException e) {
+    } catch (ActivitiException e) {
       assertTrue(e.getMessage().contains("there already is a message event subscription for the message with name"));
     }
     
@@ -71,6 +75,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
       repositoryService
         .createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope");
     }catch (ActivitiException e) {
@@ -82,6 +87,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String deploymentId = repositoryService
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
     
@@ -94,6 +100,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String newDeploymentId  = repositoryService
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
     
@@ -146,8 +153,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     
     taskService.complete(task.getId());
     
-    assertProcessEnded(processInstance.getId());
-            
+    assertProcessEnded(processInstance.getId());         
   }
  
   

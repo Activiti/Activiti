@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -55,8 +56,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();    
     runtimeService.startProcessInstanceByKey(pd.getKey());    
     // now there is one job:
-    Job job = managementService.createJobQuery()
-      .singleResult();
+    Job job = managementService.createJobQuery().singleResult();
     assertNotNull(job);
     
     makeSureJobDue(job);
@@ -75,6 +75,8 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSuspendedProcessTimerExecution() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
+    
     // Process with boundary timer-event that fires in 1 hour
     ProcessInstance procInst = runtimeService.startProcessInstanceByKey("suspendProcess");
     assertNotNull(procInst);
@@ -83,7 +85,8 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Roll time ahead to be sure timer is due to fire
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-    processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+    clock.setCurrentCalendar(tomorrow);
+    processEngineConfiguration.setClock(clock);
     
     // Check if timer is eligable to be executed, when process in not yet suspended
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
@@ -96,6 +99,9 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Check if the timer is NOT aquired, even though the duedate is reached
     jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(0, jobs.size());
+    
+    clock.reset();
+    processEngineConfiguration.setClock(clock);
   }
 
   protected void makeSureJobDue(final Job job) {

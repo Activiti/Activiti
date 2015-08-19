@@ -18,9 +18,7 @@ import org.activiti5.engine.impl.event.logger.handler.Fields;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -510,33 +508,5 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
 		}
 		
-		
 	}
-	
-	public void testStandaloneTaskEvents() throws JsonParseException, JsonMappingException, IOException {
-		
-		Task task = taskService.newTask();
-		task.setAssignee("kermit");
-		task.setTenantId("myTenant");
-		taskService.saveTask(task);
-		
-		List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
-		assertEquals(2, events.size());
-		assertEquals("TASK_CREATED", events.get(0).getType());
-		assertEquals("TASK_ASSIGNED", events.get(1).getType());
-		
-		for (EventLogEntry eventLogEntry : events) {
-			Map<String, Object> data = objectMapper.readValue(eventLogEntry.getData(), new TypeReference<HashMap<String, Object>>(){});
-			assertEquals("myTenant", data.get(Fields.TENANT_ID));
-		}
-		
-		// Cleanup
-		taskService.deleteTask(task.getId(),true);
-		for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
-			managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
-		}
-		
-	}
-	
-	
 }

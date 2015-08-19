@@ -44,7 +44,6 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   @Deployment(resources = {"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricDataCreatedForProcessExecution() {
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
     
     Calendar calendar = new GregorianCalendar();
     calendar.set(Calendar.YEAR, 2010);
@@ -95,7 +94,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().unfinished().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().finished().count());
     
-    clock.setCurrentTime(previousTime);
+    clock.reset();
     processEngineConfiguration.setClock(clock);
   }
   

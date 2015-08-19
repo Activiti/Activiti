@@ -90,7 +90,7 @@ public class Activiti5AttachmentWrapper implements Attachment {
     activit5Attachment.setTime(time);
   }
 
-  public Object getRawObject() {
+  public org.activiti5.engine.task.Attachment getRawObject() {
     return activit5Attachment;
   }
 

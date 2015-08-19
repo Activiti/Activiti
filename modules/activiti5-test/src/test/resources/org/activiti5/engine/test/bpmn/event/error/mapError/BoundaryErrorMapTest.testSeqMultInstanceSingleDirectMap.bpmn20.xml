@@ -3,9 +3,9 @@
   <process id="processWithSingleExceptionMap" isExecutable="true">
     <startEvent id="theStart"></startEvent>
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask"></sequenceFlow>
-    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.ThrowCustomExceptionDelegate">
+    <serviceTask id="serviceTask" activiti:class="org.activiti5.engine.test.bpmn.event.error.mapError.ThrowCustomExceptionDelegate">
       <extensionElements>
-        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
+        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti5.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
       </extensionElements>
       <multiInstanceLoopCharacteristics isSequential="true">
         <loopCardinality>3</loopCardinality>
@@ -16,7 +16,7 @@
     </boundaryEvent>
     <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd"></sequenceFlow>
     <endEvent id="theEnd"></endEvent>
-    <serviceTask id="flagTask" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
+    <serviceTask id="flagTask" name="Set Flag" activiti:class="org.activiti5.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
     <sequenceFlow id="flow5" sourceRef="catchError" targetRef="flagTask"></sequenceFlow>
     <sequenceFlow id="flow6" sourceRef="flagTask" targetRef="theEnd"></sequenceFlow>
   </process>

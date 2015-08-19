@@ -20,10 +20,10 @@
     <endEvent id="sid-0DCD8F1E-37C8-4F8D-AF19-B705CF07103F"/>
     <sequenceFlow id="sid-A6AC0534-5433-40EF-ACCC-C47C48E8286C" sourceRef="sid-8E05A38C-6F00-4BEC-BE68-F38A72A1AFBD" targetRef="sid-0DCD8F1E-37C8-4F8D-AF19-B705CF07103F"/>
     <sequenceFlow id="sid-20096242-1571-4D68-9FFC-8C6B0A07000B" sourceRef="sid-157D27B4-4E96-47AB-A1BA-ADB350659DDB" targetRef="sid-8AA6253E-EF3E-4F7F-A120-1EDCD83E2EB3"/>
-    <serviceTask id="sid-8AA6253E-EF3E-4F7F-A120-1EDCD83E2EB3" name="service task 1" activiti:class="org.activiti.engine.test.api.variables.VariablesTest$TestJavaDelegate13" />
+    <serviceTask id="sid-8AA6253E-EF3E-4F7F-A120-1EDCD83E2EB3" name="service task 1" activiti:class="org.activiti5.engine.test.api.variables.VariablesTest$TestJavaDelegate13" />
     <sequenceFlow id="sid-550458E7-E271-47D2-9B3E-D21A6CE1704A" sourceRef="sid-8AA6253E-EF3E-4F7F-A120-1EDCD83E2EB3" targetRef="sid-6A4C5B66-2BD8-4D65-B074-8510193AD98D"/>
-    <serviceTask id="sid-6A4C5B66-2BD8-4D65-B074-8510193AD98D" name="service task 2" activiti:class="org.activiti.engine.test.api.variables.VariablesTest$TestJavaDelegate14" />
-    <serviceTask id="sid-90AAEC84-20C3-407E-8B4D-8FCFC252054F" name="service task 3" activiti:class="org.activiti.engine.test.api.variables.VariablesTest$TestJavaDelegate15" />
+    <serviceTask id="sid-6A4C5B66-2BD8-4D65-B074-8510193AD98D" name="service task 2" activiti:class="org.activiti5.engine.test.api.variables.VariablesTest$TestJavaDelegate14" />
+    <serviceTask id="sid-90AAEC84-20C3-407E-8B4D-8FCFC252054F" name="service task 3" activiti:class="org.activiti5.engine.test.api.variables.VariablesTest$TestJavaDelegate15" />
     <sequenceFlow id="sid-AA39E536-60F4-4A64-BE77-EE632A328ED2" sourceRef="sid-6A4C5B66-2BD8-4D65-B074-8510193AD98D" targetRef="sid-90AAEC84-20C3-407E-8B4D-8FCFC252054F"/>
     <sequenceFlow id="sid-19C0E404-8A1C-4806-A37A-320F4404EBF0" sourceRef="sid-90AAEC84-20C3-407E-8B4D-8FCFC252054F" targetRef="sid-D5DF4CD1-DBBC-46DA-92EE-669BCC00CFB5"/>
   </process>

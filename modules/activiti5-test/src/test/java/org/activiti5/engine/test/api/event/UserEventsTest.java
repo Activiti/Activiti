@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.identity.User;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -25,7 +25,7 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
  */
 public class UserEventsTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEntityEventListener listener;
+	private TestActiviti6EntityEventListener listener;
 
 	/**
 	 * Test create, update and delete events of users.
@@ -92,11 +92,8 @@ public class UserEventsTest extends PluggableActivitiTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
-		listener = new TestActivitiEntityEventListener(User.class);
-		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+		listener = new TestActiviti6EntityEventListener(User.class);
+		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -104,9 +101,7 @@ public class UserEventsTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
-		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

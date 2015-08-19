@@ -15,13 +15,13 @@ package org.activiti5.standalone.initialization;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiWrongDbException;
-import org.activiti5.engine.ProcessEngine;
-import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.impl.ProcessEngineImpl;
-import org.activiti5.engine.impl.db.DbSqlSession;
-import org.activiti5.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiWrongDbException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti5.engine.impl.test.PvmTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -34,7 +34,7 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
   public void testNoTables() {
     try {
       ProcessEngineConfiguration
-      .createProcessEngineConfigurationFromResource("org/activiti5/standalone/initialization/notables.activiti.cfg.xml")
+        .createProcessEngineConfigurationFromResource("org/activiti5/standalone/initialization/notables.activiti.cfg.xml")
         .buildProcessEngine();
       fail("expected exception");
     } catch (Exception e) {

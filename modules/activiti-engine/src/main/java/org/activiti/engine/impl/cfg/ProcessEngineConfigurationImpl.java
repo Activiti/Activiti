@@ -431,6 +431,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 
   // Can't have a dependency on the activiti5-engine module
+  protected Object activiti5ProcessDefinitionCache;
+  protected Object activiti5KnowledgeBaseCache;
+  
   protected Object activiti5ActivityBehaviorFactory;
   protected Object activiti5ListenerFactory;
   protected List<Object> activiti5PreBpmnParseHandlers;
@@ -2220,6 +2223,24 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public Object getActiviti5ProcessDefinitionCache() {
+    return activiti5ProcessDefinitionCache;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5ProcessDefinitionCache(Object activiti5ProcessDefinitionCache) {
+    this.activiti5ProcessDefinitionCache = activiti5ProcessDefinitionCache;
+    return this;
+  }
+
+  public Object getActiviti5KnowledgeBaseCache() {
+    return activiti5KnowledgeBaseCache;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5KnowledgeBaseCache(Object activiti5KnowledgeBaseCache) {
+    this.activiti5KnowledgeBaseCache = activiti5KnowledgeBaseCache;
+    return this;
+  }
+
   public Object getActiviti5ActivityBehaviorFactory() {
     return activiti5ActivityBehaviorFactory;
   }

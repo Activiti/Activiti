@@ -21,7 +21,7 @@
       <bpmn2:multiInstanceLoopCharacteristics id="MultiInstanceLoopCharacteristics_1" isSequential="true">
         <bpmn2:loopCardinality xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">5</bpmn2:loopCardinality>
       </bpmn2:multiInstanceLoopCharacteristics>
-      <bpmn2:serviceTask id="checkTerminate" activiti:class="org.activiti.engine.test.bpmn.event.end.TerminateEndEventTest$CountDelegate" name="Service Task" implementation="##unspecified">
+      <bpmn2:serviceTask id="checkTerminate" activiti:class="org.activiti5.engine.test.bpmn.event.end.TerminateEndEventTest$CountDelegate" name="Service Task" implementation="##unspecified">
         <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
         <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
       </bpmn2:serviceTask>
@@ -60,7 +60,7 @@
         <bpmn2:incoming>SequenceFlow_14</bpmn2:incoming>
       </bpmn2:endEvent>
       <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="ParallelGateway_2" targetRef="UserTask_1"/>
-      <bpmn2:serviceTask id="ServiceTask_1" activiti:class="org.activiti.engine.test.bpmn.event.end.TerminateEndEventTest$CountDelegate2" name="Service Task" implementation="##unspecified">
+      <bpmn2:serviceTask id="ServiceTask_1" activiti:class="org.activiti5.engine.test.bpmn.event.end.TerminateEndEventTest$CountDelegate2" name="Service Task" implementation="##unspecified">
         <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
         <bpmn2:outgoing>SequenceFlow_13</bpmn2:outgoing>
       </bpmn2:serviceTask>

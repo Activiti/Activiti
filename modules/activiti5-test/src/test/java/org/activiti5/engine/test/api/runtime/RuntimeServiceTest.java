@@ -144,8 +144,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "var"));
   }
   
-  @Deployment(resources={
-  "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources={"org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceByProcessInstanceBuilder() {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     

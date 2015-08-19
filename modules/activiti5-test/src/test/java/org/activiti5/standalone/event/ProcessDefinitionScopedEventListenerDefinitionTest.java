@@ -14,11 +14,9 @@ package org.activiti5.standalone.event;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.repository.DeploymentProperties;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -65,14 +63,14 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 	// First event received should be creation of Process-definition
 		assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 		ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
-		assertTrue(event.getEntity() instanceof ProcessDefinition);
-		assertEquals(processInstance.getProcessDefinitionId(), ((ProcessDefinition) event.getEntity()).getId());
+		assertTrue(event.getEntity() instanceof org.activiti5.engine.repository.ProcessDefinition);
+		assertEquals(processInstance.getProcessDefinitionId(), ((org.activiti5.engine.repository.ProcessDefinition) event.getEntity()).getId());
 			
 		// First event received should be creation of Process-instance
 		assertTrue(testListenerBean.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
 		event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(1);
-		assertTrue(event.getEntity() instanceof ProcessInstance);
-		assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+		assertTrue(event.getEntity() instanceof org.activiti5.engine.runtime.ProcessInstance);
+		assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.ProcessInstance) event.getEntity()).getId());
 		
 		// Check if listener, defined by classname, received all events
 		List<ActivitiEvent> events = StaticTestActivitiEventListener.getEventsReceived();
@@ -120,8 +118,6 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 				assertEquals("Exception while executing event-listener", ae.getMessage());
 				assertTrue(ae.getCause() instanceof ActivitiException);
 				assertEquals("couldn't instantiate class org.activiti5.engine.test.api.event.UnexistingClass", ae.getCause().getMessage());
-				assertTrue(ae.getCause().getCause() instanceof ActivitiClassLoadingException);
-				assertTrue(ae.getCause().getCause().getCause() instanceof ClassNotFoundException);
 			}
 	}
 	

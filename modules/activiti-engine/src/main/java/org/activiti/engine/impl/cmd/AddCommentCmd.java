@@ -15,12 +15,14 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -51,9 +53,10 @@ public class AddCommentCmd implements Command<Comment> {
 
   public Comment execute(CommandContext commandContext) {
 
+    TaskEntity task = null;
     // Validate task
     if (taskId != null) {
-      TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+      task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
       if (task == null) {
         throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
@@ -64,8 +67,9 @@ public class AddCommentCmd implements Command<Comment> {
       }
     }
 
+    ExecutionEntity execution = null;
     if (processInstanceId != null) {
-      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+      execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
 
       if (execution == null) {
         throw new ActivitiObjectNotFoundException("execution " + processInstanceId + " doesn't exist", Execution.class);
@@ -74,6 +78,18 @@ public class AddCommentCmd implements Command<Comment> {
       if (execution.isSuspended()) {
         throw new ActivitiException(getSuspendedExceptionMessage());
       }
+    }
+    
+    String processDefinitionId = null;
+    if (execution != null) {
+      processDefinitionId = execution.getProcessDefinitionId();
+    } else if (task != null) {
+      processDefinitionId = task.getProcessDefinitionId();
+    }
+    
+    if (processDefinitionId != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processDefinitionId)) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      return activiti5CompatibilityHandler.addComment(taskId, processInstanceId, type, message);
     }
 
     String userId = Authentication.getAuthenticatedUserId();

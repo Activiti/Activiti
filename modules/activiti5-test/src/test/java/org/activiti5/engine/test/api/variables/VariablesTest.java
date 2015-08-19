@@ -6,10 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.task.Task;
+import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -29,6 +30,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	  
 	  repositoryService.createDeployment()
 	  	.addClasspathResource("org/activiti5/engine/test/api/variables/VariablesTest.bpmn20.xml")
+	  	.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 	  	.deploy();
 	  
 	  // Creating 50 vars in total

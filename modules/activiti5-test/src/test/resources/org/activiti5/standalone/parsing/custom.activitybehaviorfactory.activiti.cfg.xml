@@ -11,7 +11,7 @@
     <property name="activiti5CompatibilityEnabled" value="true" />
   
     <property name="activiti5ActivityBehaviorFactory">
-        <bean class="org.activiti.standalone.parsing.CustomActivityBehaviorFactory" />
+        <bean class="org.activiti5.standalone.parsing.CustomActivityBehaviorFactory" />
     </property>
     
   </bean>

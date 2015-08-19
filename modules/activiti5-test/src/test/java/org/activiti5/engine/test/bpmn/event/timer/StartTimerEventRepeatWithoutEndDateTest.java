@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -41,7 +41,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     
-    listener = new TestActivitiEntityEventListener(Job.class);
+    listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
     activiti5ProcessEngineConfig.getEventDispatcher().addEventListener(listener);
   }
 
@@ -60,18 +60,17 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
    * Timer repetition
    */
   public void testCycleDateStartTimerEvent() throws Exception {
-    Clock previousClock = processEngineConfiguration.getClock();
-
-    Clock testClock = new DefaultClockImpl();
+    Clock clock = processEngineConfiguration.getClock();
 
     Calendar calendar = Calendar.getInstance();
     calendar.set(2025, Calendar.DECEMBER, 10, 0, 0, 0);
-    testClock.setCurrentTime(calendar.getTime());
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentCalendar(calendar);
+    processEngineConfiguration.setClock(clock);
 
     //deploy the process
     repositoryService.createDeployment()
             .addClasspathResource("org/activiti5/engine/test/bpmn/event/timer/StartTimerEventRepeatWithoutEndDateTest.testCycleDateStartTimerEvent.bpmn20.xml")
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
             .deploy();
     assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 
@@ -198,17 +197,19 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     assertEquals(0, tasks.size());
 
     listener.clearEventsReceived();
-    processEngineConfiguration.setClock(previousClock);
+    
+    clock.reset();
+    processEngineConfiguration.setClock(clock);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
 
   }
 
   private void moveByMinutes(int minutes) throws Exception {
-    Date newDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)));
-    Clock newClock = new DefaultClockImpl();
-    newClock.setCurrentTime(newDate);
-    processEngineConfiguration.setClock(newClock);
+    Clock clock = processEngineConfiguration.getClock();
+    Date newDate = new Date(clock.getCurrentTime().getTime() + ((minutes * 60 * 1000)));
+    clock.setCurrentTime(newDate);
+    processEngineConfiguration.setClock(clock);
   }
 
 }

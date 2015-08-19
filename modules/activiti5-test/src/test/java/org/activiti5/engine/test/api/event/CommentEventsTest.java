@@ -50,7 +50,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getId(), event.getProcessInstanceId());
 			assertEquals(processInstance.getId(), event.getExecutionId());
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
-			Comment commentFromEvent = (Comment) event.getEntity();
+			org.activiti5.engine.task.Comment commentFromEvent = (org.activiti5.engine.task.Comment) event.getEntity();
 			assertEquals(comment.getId(), commentFromEvent.getId());
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
@@ -65,51 +65,8 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getId(), event.getProcessInstanceId());
 			assertEquals(processInstance.getId(), event.getExecutionId());
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
-			commentFromEvent = (Comment) event.getEntity();
+			commentFromEvent = (org.activiti5.engine.task.Comment) event.getEntity();
 			assertEquals(comment.getId(), commentFromEvent.getId());
-		}
-	}
-	
-	public void testCommentEntityEventsStandaloneTask() throws Exception {
-		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-			Task task = null;
-			try {
-				task = taskService.newTask();
-				taskService.saveTask(task);
-				assertNotNull(task);
-				
-				// Create link-comment
-				Comment comment = taskService.addComment(task.getId(), null, "comment");
-				assertEquals(2, listener.getEventsReceived().size());
-				ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-				assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-				assertNull(event.getProcessInstanceId());
-				assertNull(event.getExecutionId());
-				assertNull(event.getProcessDefinitionId());
-				Comment commentFromEvent = (Comment) event.getEntity();
-				assertEquals(comment.getId(), commentFromEvent.getId());
-				
-				event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-				assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-				listener.clearEventsReceived();
-				
-				// Finally, delete comment
-				taskService.deleteComment(comment.getId());
-				assertEquals(1, listener.getEventsReceived().size());
-				event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-				assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-				assertNull(event.getProcessInstanceId());
-				assertNull(event.getExecutionId());
-				assertNull(event.getProcessDefinitionId());
-				commentFromEvent = (Comment) event.getEntity();
-				assertEquals(comment.getId(), commentFromEvent.getId());
-				
-			} finally {
-				if(task != null && task.getId() != null) {
-					taskService.deleteTask(task.getId());
-					historyService.deleteHistoricTaskInstance(task.getId());
-				}
-			}
 		}
 	}
 	
@@ -120,7 +77,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 		
-		listener = new TestActivitiEntityEventListener(Comment.class);
+		listener = new TestActivitiEntityEventListener(org.activiti5.engine.task.Comment.class);
 		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 

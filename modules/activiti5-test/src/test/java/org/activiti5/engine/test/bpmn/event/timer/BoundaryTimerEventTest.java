@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -57,9 +58,11 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testMultipleTimersOnUserTask() {
-
+    Clock clock = processEngineConfiguration.getClock();
     // Set the clock fixed
     Date startTime = new Date();
+    clock.setCurrentTime(startTime);
+    processEngineConfiguration.setClock(clock);
 
     // After process start, there should be 3 timers created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
@@ -68,13 +71,18 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(3, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    clock.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.setClock(clock);
+    
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
 
     // which means that the third task is reached
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Third Task", task.getName());
+    
+    clock.reset();
+    processEngineConfiguration.setClock(clock);
   }
   
   @Deployment
@@ -99,8 +107,11 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testExpressionOnTimer(){
+    Clock clock = processEngineConfiguration.getClock();
     // Set the clock fixed
     Date startTime = new Date();
+    clock.setCurrentTime(startTime);
+    processEngineConfiguration.setClock(clock);
     
     HashMap<String, Object> variables = new HashMap<String, Object>();
     variables.put("duration", "PT1H");
@@ -113,7 +124,9 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    clock.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.setClock(clock);
+    
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
     
@@ -123,6 +136,9 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // which means the process has ended
     assertProcessEnded(pi.getId());
+    
+    clock.reset();
+    processEngineConfiguration.setClock(clock);
   }
   
 

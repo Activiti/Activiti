@@ -9,7 +9,7 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service" />
     
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.servicetask.StartProcessInstanceTestDelegate" />
+    <serviceTask id="service" activiti:class="org.activiti5.engine.test.bpmn.servicetask.StartProcessInstanceTestDelegate" />
     <sequenceFlow id="flow2" sourceRef="service" targetRef="task" />
     
     <userTask id="task" />

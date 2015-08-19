@@ -14,13 +14,13 @@
    
 
 		<boundaryEvent id="boundaryTimer" cancelActivity="true" attachedToRef="task">
-      <extensionElements>
-        <activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener" />
-        <activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener" />
-      </extensionElements>
-			<timerEventDefinition>
-			  <timeDuration>${duration}</timeDuration>
-			</timerEventDefinition>
+	      <extensionElements>
+	        <activiti:executionListener event="start" class="org.activiti5.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener" />
+	        <activiti:executionListener event="end" class="org.activiti5.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener" />
+	      </extensionElements>
+		  <timerEventDefinition>
+			<timeDuration>${duration}</timeDuration>
+		  </timerEventDefinition>
 		</boundaryEvent>
     
 		<sequenceFlow id="flow3" sourceRef="boundaryTimer" targetRef="theEnd" />

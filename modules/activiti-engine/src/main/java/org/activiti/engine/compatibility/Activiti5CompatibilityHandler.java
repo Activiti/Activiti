@@ -13,6 +13,7 @@
 package org.activiti.engine.compatibility;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Comment;
 
 /**
  * @author Joram Barrez
@@ -57,7 +59,11 @@ public interface Activiti5CompatibilityHandler {
   
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
   
+  ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> variables, String businessKey, String tenantId);
+  
   void setExecutionVariables(String executionId, Map<String, ? extends Object> variables, boolean isLocal);
+  
+  void removeExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal);
   
   void updateBusinessKey(String processInstanceId, String businessKey);
   
@@ -75,11 +81,17 @@ public interface Activiti5CompatibilityHandler {
   
   void claimTask(String taskId, String userId);
   
+  void setTaskVariables(String taskId, Map<String, ? extends Object> variables, boolean isLocal);
+  
+  void removeTaskVariables(String taskId, Collection<String> variableNames, boolean isLocal);
+  
   void setTaskDueDate(String taskId, Date dueDate);
   
   void setTaskPriority(String taskId, int priority);
   
   void deleteTask(String taskId, String deleteReason, boolean cascade);
+  
+  void deleteHistoricTask(String taskId);
   
   ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
   
@@ -91,7 +103,15 @@ public interface Activiti5CompatibilityHandler {
   
   void deleteIdentityLink(String taskId, String userId, String groupId, String identityLinkType);
   
+  Comment addComment(String taskId, String processInstanceId, String type, String message);
+  
+  void deleteComment(String commentId, String taskId, String processInstanceId);
+  
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url);
+  
+  void saveAttachment(Attachment attachment);
+  
+  void deleteAttachment(String attachmentId);
   
   void trigger(String executionId, Map<String, Object> processVariables);
   
@@ -114,6 +134,8 @@ public interface Activiti5CompatibilityHandler {
   void removeEventListener(Object listener);
   
   void setClock(Clock clock);
+  
+  Object getRawProcessEngine();
   
   Object getRawProcessConfiguration();
   
