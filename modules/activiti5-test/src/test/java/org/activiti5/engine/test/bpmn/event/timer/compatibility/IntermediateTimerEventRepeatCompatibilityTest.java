@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -33,7 +32,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
   @Deployment
   public void testRepeatWithEnd() throws Throwable {
-    Clock previousClock = processEngineConfiguration.getClock();
+    Clock clock = processEngineConfiguration.getClock();
     
     Calendar calendar = Calendar.getInstance();
     Date baseTime = calendar.getTime();
@@ -57,9 +56,8 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     //reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
     nextTimeCal.setTime(baseTime);
-    Clock testClock = new DefaultClockImpl();
-    testClock.setCurrentCalendar(nextTimeCal);
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentCalendar(nextTimeCal);
+    processEngineConfiguration.setClock(clock);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
@@ -85,8 +83,8 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     }
 
     nextTimeCal.add(Calendar.HOUR, 1); //after 1 hour the event must be triggered and the flow will go to the next step
-    testClock.setCurrentCalendar(nextTimeCal);
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentCalendar(nextTimeCal);
+    processEngineConfiguration.setClock(clock);
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     //expect to execute because the time is reached.
@@ -102,8 +100,8 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     //Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
     nextTimeCal.add(Calendar.HOUR, 1); //after 1H 40 minutes from process start, the timer will trigger because of the endDate
-    testClock.setCurrentCalendar(nextTimeCal);
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentCalendar(nextTimeCal);
+    processEngineConfiguration.setClock(clock);
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     //expect to execute because the end time is reached.
@@ -128,7 +126,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
 
-    processEngineConfiguration.setClock(previousClock);
+    processEngineConfiguration.resetClock();
   }
 
 }

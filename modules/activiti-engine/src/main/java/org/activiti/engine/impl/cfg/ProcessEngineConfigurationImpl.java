@@ -433,6 +433,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Can't have a dependency on the activiti5-engine module
   protected Object activiti5ProcessDefinitionCache;
   protected Object activiti5KnowledgeBaseCache;
+  protected Object activiti5AsyncExecutor;
   
   protected Object activiti5ActivityBehaviorFactory;
   protected Object activiti5ListenerFactory;
@@ -2193,6 +2194,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public void resetClock() {
+    if (this.clock != null) {
+      clock.reset();
+      if (isActiviti5CompatibilityEnabled) {
+        getActiviti5CompatibilityHandler().resetClock();
+      }
+    }
+  }
+  
   
   // Activiti 5
   
@@ -2238,6 +2248,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setActiviti5KnowledgeBaseCache(Object activiti5KnowledgeBaseCache) {
     this.activiti5KnowledgeBaseCache = activiti5KnowledgeBaseCache;
+    return this;
+  }
+  
+  public Object getActiviti5AsyncExecutor() {
+    return activiti5AsyncExecutor;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5AsyncExecutor(Object activiti5AsyncExecutor) {
+    this.activiti5AsyncExecutor = activiti5AsyncExecutor;
     return this;
   }
 

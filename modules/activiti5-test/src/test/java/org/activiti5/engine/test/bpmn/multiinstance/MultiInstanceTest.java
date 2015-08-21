@@ -27,6 +27,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -956,13 +957,16 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   // ACT-901
   @Deployment
   public void testAct901() {
-    
-    Date startTime = processEngineConfiguration.getClock().getCurrentTime();
+    Clock clock = processEngineConfiguration.getClock();
+    clock.reset();
+    Date startTime = clock.getCurrentTime();
+    processEngineConfiguration.setClock(clock);
     
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
     
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
+    clock.setCurrentTime(new Date(startTime.getTime() + 61000L));
+    processEngineConfiguration.setClock(clock); // timer is set to one minute
     List<Job> timers = managementService.createJobQuery().list();
     assertEquals(5, timers.size());
     
@@ -974,6 +978,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     // All tasks should be canceled
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
     assertEquals(0, tasks.size());
+    
+    processEngineConfiguration.resetClock();
   }
 
   @Deployment(resources = { "org/activiti5/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEvent.bpmn20.xml",
@@ -1049,8 +1055,10 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testMultiInstanceParalelReceiveTaskWithTimer() {
-    Date startTime = new Date();
-    processEngineConfiguration.getClock().setCurrentTime(startTime);
+    Clock clock = processEngineConfiguration.getClock();
+    clock.reset();
+    Date startTime = clock.getCurrentTime();
+    processEngineConfiguration.setClock(clock);
     
     runtimeService.startProcessInstanceByKey("multiInstanceReceiveWithTimer");
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
@@ -1058,7 +1066,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     // Signal only one execution. Then the timer will fire
     runtimeService.trigger(executions.get(1).getId());
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
+    
+    clock.setCurrentTime(new Date(startTime.getTime() + 60000L));
+    processEngineConfiguration.setClock(clock);
     waitForJobExecutorToProcessAllJobs(10000L, 1000L);
     
     // The process should now be in the task after the timer
@@ -1068,6 +1078,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     // Completing it should end the process
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
+    
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment
@@ -1296,7 +1308,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   			countWithoutLoopCounter.incrementAndGet();
   		}
   	}
-
   }
   
   public static class TestEndExecutionListener implements ExecutionListener {
@@ -1315,7 +1326,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   			countWithoutLoopCounter.incrementAndGet();
   		}
   	}
-
   }
   
   public static class TestTaskCompletionListener implements TaskListener {
@@ -1328,8 +1338,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   	public void notify(DelegateTask delegateTask) {
   		count.incrementAndGet();
   	}
-  	
   }
-
 
 }

@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
@@ -48,7 +49,6 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   private CommandExecutor commandExecutor;
   private TimerEntity timerEntity;
   
-  private Date previousTime;
   private Date testStartTime;
   private Date timerOneFireTime;
   private Date timerTwoFireTime;
@@ -71,12 +71,12 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     super.setUp();
     
     Clock clock = processEngineConfiguration.getClock();
-    previousTime = clock.getCurrentTime();
     
     this.commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     
     deploymentId = repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy()
         .getId();
     
@@ -114,9 +114,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     repositoryService.deleteDeployment(deploymentId, true);
     commandExecutor.execute(new CancelJobsCmd(messageId));
     
-    Clock clock = processEngineConfiguration.getClock();
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
     
     super.tearDown();
   }

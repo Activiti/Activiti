@@ -20,6 +20,7 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
@@ -42,7 +43,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     processEngine.getRepositoryService()
         .createDeployment()
         .name("messageTriggeredProcessDeployment")
-        .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
+        .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
 
     ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
     assertNotNull(childProcessInstance);
@@ -54,7 +57,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     Deployment messageTriggeredBpmnDeployment = processEngine.getRepositoryService()
         .createDeployment()
         .name("messageTriggeredProcessDeployment")
-        .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
+        .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
 
     suspendProcessDefinitions(messageTriggeredBpmnDeployment);
 
@@ -73,7 +78,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     processEngine.getRepositoryService()
         .createDeployment()
         .name("childProcessDeployment")
-        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
+        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
 
     ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
     assertNotNull(childProcessInstance);
@@ -85,7 +92,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     Deployment childDeployment = processEngine.getRepositoryService()
         .createDeployment()
         .name("childProcessDeployment")
-        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
+        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
 
     suspendProcessDefinitions(childDeployment);
 
@@ -106,12 +115,16 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     Deployment childDeployment = processEngine.getRepositoryService()
         .createDeployment()
         .name("childProcessDeployment")
-        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
+        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
 
     processEngine.getRepositoryService()
         .createDeployment()
         .name("masterProcessDeployment")
-        .addBpmnModel("masterProcess.bpmn20.xml", mainBpmnModel).deploy();
+        .addBpmnModel("masterProcess.bpmn20.xml", mainBpmnModel)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
 
     suspendProcessDefinitions(childDeployment);
 

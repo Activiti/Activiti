@@ -2,7 +2,6 @@
 <definitions id="definitions"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
 	xmlns:activiti="http://activiti.org/bpmn"
-	xmlns:fox="http://www.camunda.com/fox"
 	targetNamespace="Examples">
 
 	<process id="failedJobRetry">

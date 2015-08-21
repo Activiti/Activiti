@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -30,7 +31,8 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
       .addClasspathResource("org/activiti5/engine/test/api/repository/processCategoryOne.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/api/repository/processCategoryTwo.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/api/repository/processCategoryThree.bpmn20.xml")
-    .deploy();
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+      .deploy();
     
     HashSet<String> processDefinitionNames = getProcessDefinitionNames(repositoryService.createProcessDefinitionQuery()
       .processDefinitionCategoryNotEquals("one")

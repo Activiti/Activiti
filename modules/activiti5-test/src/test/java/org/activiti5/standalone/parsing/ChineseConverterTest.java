@@ -47,7 +47,8 @@ public class ChineseConverterTest extends ResourceActivitiTestCase {
       Deployment deployment = processEngine.getRepositoryService().createDeployment()
           .name("test")
           .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
-          .addString("test.bpmn20.xml", new String(xml)).deploy();
+          .addString("test.bpmn20.xml", new String(xml))
+          .deploy();
       processEngine.getRepositoryService().deleteDeployment(deployment.getId());
     } finally {
       processEngine.close();

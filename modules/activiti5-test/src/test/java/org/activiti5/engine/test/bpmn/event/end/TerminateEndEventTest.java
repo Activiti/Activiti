@@ -24,6 +24,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -362,7 +363,10 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   }
 
   public void testParseTerminateEndEventDefinitionWithExtensions() {
-    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti5/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti5/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
     ProcessDefinition processDefinitionQuery = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
     ProcessDefinition processDefinition = processEngineConfiguration.getActiviti5CompatibilityHandler().getProcessDefinition(processDefinitionQuery.getId());
     ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) ((Activiti5ProcessDefinitionWrapper) processDefinition).getRawObject();

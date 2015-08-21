@@ -83,7 +83,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
       
       if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
         Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
-        activiti5CompatibilityHandler.signalEventReceived(eventName, executionId, payload);
+        activiti5CompatibilityHandler.signalEventReceived(eventName, executionId, payload, async, tenantId);
         return null;
       }
 

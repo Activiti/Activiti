@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -32,7 +31,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
 
   @Deployment
   public void testRepeatWithoutEnd() throws Throwable {
-    Clock previousClock = processEngineConfiguration.getClock();
+    Clock clock = processEngineConfiguration.getClock();
     
     Calendar calendar = Calendar.getInstance();
     Date baseTime = calendar.getTime();
@@ -46,9 +45,8 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     //reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
     nextTimeCal.setTime(baseTime);
-    Clock testClock = new DefaultClockImpl();
-    testClock.setCurrentCalendar(nextTimeCal);
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentCalendar(nextTimeCal);
+    processEngineConfiguration.setClock(clock);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
@@ -82,8 +80,8 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
 
     for (int i = 0; i < 9; i++) {
       nextTimeCal.add(Calendar.SECOND, 2);
-      testClock.setCurrentCalendar(nextTimeCal);
-      processEngineConfiguration.setClock(testClock);
+      clock.setCurrentCalendar(nextTimeCal);
+      processEngineConfiguration.setClock(clock);
       try {
         waitForJobExecutorToProcessAllJobs(2000, 100);
         fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
@@ -93,8 +91,8 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     }
 
     nextTimeCal.add(Calendar.SECOND, 2);
-    testClock.setCurrentCalendar(nextTimeCal);
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentCalendar(nextTimeCal);
+    processEngineConfiguration.setClock(clock);
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
@@ -125,7 +123,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
 
-    processEngineConfiguration.setClock(previousClock);
+    processEngineConfiguration.resetClock();
   }
 
 }

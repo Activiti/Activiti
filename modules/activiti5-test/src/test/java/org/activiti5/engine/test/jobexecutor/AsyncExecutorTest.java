@@ -12,8 +12,14 @@
  */
 package org.activiti5.engine.test.jobexecutor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.Callable;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.activiti.engine.ActivitiException;
@@ -22,7 +28,14 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti5.engine.impl.test.JobTestHelper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -56,7 +69,7 @@ public class AsyncExecutorTest {
 			// Move clock 3 minutes. Nothing should happen
 			addSecondsToCurrentTime(processEngine, 180L);
 			try {
-				waitForAllJobsBeingExecuted(processEngine, 500L);
+				waitForAllJobsBeingExecuted(processEngine, 2000L);
 				Assert.fail();
 			} catch (ActivitiException e) {
 				// Expected
@@ -82,9 +95,7 @@ public class AsyncExecutorTest {
 			if (processEngine != null) {
 				cleanup(processEngine);
 			}
-			
 		}
-		
 	}
 	
 	@Test
@@ -152,7 +163,8 @@ public class AsyncExecutorTest {
 			Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
 			Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
 	
-			Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
+		// first job retry is handled by Activiti 5 job retry so expected value is 1 - 1 = 0
+			Assert.assertEquals(0, getAsyncExecutorJobCount(processEngine));
 			
 		} finally {
 		
@@ -204,38 +216,78 @@ public class AsyncExecutorTest {
 			cleanup(secondProcessEngine);
 			
 		}
-		
-		
 	}
 	
 	@Test
 	public void testAsyncFailingScript() {
-		
 		ProcessEngine processEngine = null;
 		
 		try {
 		
 			// Deploy
-			processEngine = createProcessEngine(true);
-			processEngine.getProcessEngineConfiguration().getClock().reset();
+			processEngine = createProcessEngine(false);
+			ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+			processEngineConfig.resetClock();
 			deploy(processEngine,"AsyncExecutorTest.testAsyncFailingScript.bpmn20.xml");
 	
 			// Start process instance. Wait for all jobs to be done.
-			processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+			ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
 			
-			// There is a back off mechanism for the retry, so need a bit of time
-			// But to be sure, we make the wait time small 
-			processEngine.getProcessEngineConfiguration().setAsyncFailedJobWaitTime(1);
+			Clock clock = processEngineConfig.getClock();
+			clock.reset();
 			
-			final ProcessEngine processEngineCopy = processEngine;
-			JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 2000L, new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					return processEngineCopy.getManagementService().createJobQuery().withRetriesLeft().count() == 0;
-				}
-			});
+			try {
+  			processEngine.getManagementService().executeJob(processEngine.getManagementService().createJobQuery()
+  			    .processInstanceId(processInstance.getId())
+  			    .singleResult().getId());
+  			fail("Job execution should have failed");
+			} catch (ActivitiException e) {
+			  // expected
+			}
 			
-	
+			Job job = findJobsToExecute(processEngineConfig);
+			assertNull(job);
+			
+			// retry should be 2 now
+			Calendar newCal = Calendar.getInstance();
+			newCal.setTime(clock.getCurrentTime());
+			newCal.add(Calendar.SECOND, 15);
+			clock.setCurrentCalendar(newCal);
+			processEngineConfig.setClock(clock);
+			
+			job = findJobsToExecute(processEngineConfig);
+			assertNotNull(job);
+			assertEquals(2, job.getRetries());
+			try {
+			  processEngine.getManagementService().executeJob(job.getId());
+			  fail("Job execution should have failed");
+      } catch (ActivitiException e) {
+        // expected
+      }
+			
+			job = findJobsToExecute(processEngineConfig);
+      assertNull(job);
+      
+      // retry should be 1 now
+      newCal = Calendar.getInstance();
+      newCal.setTime(clock.getCurrentTime());
+      newCal.add(Calendar.MINUTE, 10);
+      clock.setCurrentCalendar(newCal);
+      processEngineConfig.setClock(clock);
+      
+      job = findJobsToExecute(processEngineConfig);
+      assertNotNull(job);
+      assertEquals(1, job.getRetries());
+      try {
+        processEngine.getManagementService().executeJob(job.getId());
+        fail("Job execution should have failed");
+      } catch (ActivitiException e) {
+        // expected
+      }
+      
+      job = processEngine.getManagementService().createJobQuery().processInstanceId(processInstance.getId()).noRetriesLeft().singleResult();
+      assertNotNull(job);
+      
 			// Verify if all is as expected
 			Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
 			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
@@ -243,18 +295,16 @@ public class AsyncExecutorTest {
 			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().noRetriesLeft().count());
 			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().withException().count());
 	
-			Assert.assertEquals(3, getAsyncExecutorJobCount(processEngine));
+			// all job retries are handled by Activiti 5 job retry so expected value is 0
+			Assert.assertEquals(0, getAsyncExecutorJobCount(processEngine));
 			
 		} finally {
 			
 			// Clean up
 			cleanup(processEngine);
-			
 		}
 		
 	}
-	
-	
 	
 	// Helpers
 	
@@ -274,29 +324,52 @@ public class AsyncExecutorTest {
 			processEngineConfiguration.setAsyncExecutorActivate(true);
 			
 			CountingAsyncExecutor countingAsyncExecutor = new CountingAsyncExecutor();
-			countingAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(50); // To avoid waiting too long when a retry happens
-			countingAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(50);
+			countingAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(100); // To avoid waiting too long when a retry happens
+			countingAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(100);
 			processEngineConfiguration.setAsyncExecutor(countingAsyncExecutor);
 		}
 
 		ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
+		ProcessEngineConfigurationImpl createdConfig = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    Context.setProcessEngineConfiguration(createdConfig);
 		
 		if (time != null) {
-			processEngine.getProcessEngineConfiguration().getClock().setCurrentTime(time);
+		  Clock clock = createdConfig.getClock();
+		  clock.setCurrentTime(time);
+		  createdConfig.setClock(clock);
 		}
 		
 		return processEngine;
 	}
 	
+	protected Job findJobsToExecute(ProcessEngineConfigurationImpl processEngineConfig) {
+	  Job job = processEngineConfig.getCommandExecutor().execute(new Command<Job>() {
+
+      @Override
+      public Job execute(CommandContext commandContext) {
+        Job result = null;
+        List<JobEntity> jobs = commandContext.getJobEntityManager().findAsyncJobsDueToExecute(null);
+        if (jobs != null && jobs.size() > 0) {
+          result = jobs.get(0);
+        }
+        return result;
+      }
+      
+    });
+	  return job;
+	}
+	
 	private Date setClockToCurrentTime(ProcessEngine processEngine) {
-		Date date = new Date();
-		processEngine.getProcessEngineConfiguration().getClock().setCurrentTime(date);
+		Clock clock = processEngine.getProcessEngineConfiguration().getClock();
+		((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).resetClock();
+		Date date = clock.getCurrentTime();
 		return date;
 	}
 	
 	private void addSecondsToCurrentTime(ProcessEngine processEngine, long nrOfSeconds) {
-		Date currentTime = processEngine.getProcessEngineConfiguration().getClock().getCurrentTime();
-		processEngine.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(currentTime.getTime() + (nrOfSeconds * 1000L)));
+	  Clock clock = processEngine.getProcessEngineConfiguration().getClock();
+	  clock.setCurrentTime(new Date(clock.getCurrentTime().getTime() + (nrOfSeconds * 1000L)));
+		processEngine.getProcessEngineConfiguration().setClock(clock);
 	}
 	
 	private void cleanup(ProcessEngine processEngine) {
@@ -307,7 +380,10 @@ public class AsyncExecutorTest {
 	}
 	
 	private String deploy(ProcessEngine processEngine, String resource) {
-		return processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti5/engine/test/jobexecutor/" + resource).deploy().getId();
+		return processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti5/engine/test/jobexecutor/" + resource)
+		    .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+		    .deploy()
+		    .getId();
 	}
 
 	private void waitForAllJobsBeingExecuted(ProcessEngine processEngine) {
@@ -319,7 +395,7 @@ public class AsyncExecutorTest {
   }
 	
 	private int getAsyncExecutorJobCount(ProcessEngine processEngine) {
-		AsyncExecutor asyncExecutor = processEngine.getProcessEngineConfiguration().getAsyncExecutor();
+	  AsyncExecutor asyncExecutor = processEngine.getProcessEngineConfiguration().getAsyncExecutor();
 		if (asyncExecutor != null) {
 			return ((CountingAsyncExecutor) asyncExecutor).getCounter().get();
 		}

@@ -91,7 +91,11 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   
   public void testDeploySameFileTwice() {
     String bpmnResourceName = "org/activiti5/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
-    repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").deploy();
+    repositoryService.createDeployment().enableDuplicateFiltering()
+      .addClasspathResource(bpmnResourceName)
+      .name("twice")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+      .deploy();
     
     String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
     List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
@@ -100,7 +104,11 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     assertEquals(1, deploymentResources.size());
     assertEquals(bpmnResourceName, deploymentResources.get(0));
     
-    repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").deploy();
+    repositoryService.createDeployment().enableDuplicateFiltering()
+      .addClasspathResource(bpmnResourceName)
+      .name("twice")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+      .deploy();
     List<org.activiti.engine.repository.Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
     assertEquals(1, deploymentList.size());
     

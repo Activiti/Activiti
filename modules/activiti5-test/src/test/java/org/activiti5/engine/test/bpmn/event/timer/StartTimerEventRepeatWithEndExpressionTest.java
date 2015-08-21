@@ -59,14 +59,12 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
    * Timer repetition
    */
   public void testCycleDateStartTimerEvent() throws Exception {
-    Clock previousClock = processEngineConfiguration.getClock();
-
-    Clock testClock = new DefaultClockImpl();
+    Clock clock = processEngineConfiguration.getClock();
 
     Calendar calendar = Calendar.getInstance();
     calendar.set(2025, Calendar.DECEMBER, 10, 0, 0, 0);
-    testClock.setCurrentTime(calendar.getTime());
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentTime(calendar.getTime());
+    processEngineConfiguration.setClock(clock);
 
     //deploy the process
     repositoryService.createDeployment()
@@ -196,17 +194,17 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     assertEquals(0, tasks.size());
 
     listener.clearEventsReceived();
-    processEngineConfiguration.setClock(previousClock);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
-
+    
+    processEngineConfiguration.resetClock();
   }
 
   private void moveByMinutes(int minutes) throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
     Date newDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)));
-    Clock newClock = new DefaultClockImpl();
-    newClock.setCurrentTime(newDate);
-    processEngineConfiguration.setClock(newClock);
+    clock.setCurrentTime(newDate);
+    processEngineConfiguration.setClock(clock);
   }
 
 }

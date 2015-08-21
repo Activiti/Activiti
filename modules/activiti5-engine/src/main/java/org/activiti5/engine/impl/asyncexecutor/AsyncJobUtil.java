@@ -85,7 +85,7 @@ public class AsyncJobUtil {
     }
   }
   
-  protected static void handleFailedJob(final JobEntity job, final Throwable exception, final CommandExecutor commandExecutor) {
+  public static void handleFailedJob(final JobEntity job, final Throwable exception, final CommandExecutor commandExecutor) {
     commandExecutor.execute(new Command<Void>() {
 
       @Override

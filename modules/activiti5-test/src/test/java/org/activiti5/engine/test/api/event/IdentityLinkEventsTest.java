@@ -19,6 +19,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti5.engine.impl.identity.Authentication;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.task.IdentityLink;
 
@@ -90,6 +91,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 	 */
 	@Deployment(resources = { "org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
 	public void testProcessInstanceIdentityLinkEvents() throws Exception {
+	  Authentication.setAuthenticatedUserId(null);
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
 		// Add identity link
@@ -128,6 +130,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 	 */
 	@Deployment(resources = { "org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
 	public void testTaskIdentityLinks() throws Exception {
+	  Authentication.setAuthenticatedUserId(null);
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -190,7 +193,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 	 */
 	@Deployment(resources = { "org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
 	public void testProcessInstanceIdentityDeleteCandidateGroupEvents() throws Exception {
-	
+	  Authentication.setAuthenticatedUserId(null);
 	  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 	
 	  Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

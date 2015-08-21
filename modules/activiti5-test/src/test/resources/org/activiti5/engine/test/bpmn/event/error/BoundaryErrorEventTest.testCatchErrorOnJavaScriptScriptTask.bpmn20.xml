@@ -14,8 +14,8 @@
         <scriptTask id="theScript" scriptFormat="JavaScript">
             <script><![CDATA[
 
-            var JvmUtil = Packages.org.activiti.engine.impl.util.JvmUtil;
-            var BpmnError = Packages.org.activiti.engine.delegate.BpmnError;
+            var JvmUtil = Packages.org.activiti5.engine.impl.util.JvmUtil;
+            var BpmnError = Packages.org.activiti5.engine.delegate.BpmnError;
 
             if (JvmUtil.isJDK8()) {
             
@@ -24,7 +24,7 @@
             } else {
 
               var Context = Packages.sun.org.mozilla.javascript.internal.Context;
-              Context.throwAsScriptRuntimeEx(new org.activiti.engine.delegate.BpmnError("errorOne"));
+              Context.throwAsScriptRuntimeEx(new org.activiti5.engine.delegate.BpmnError("errorOne"));
 
             }
 

@@ -37,6 +37,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  // Database event logger setup
 	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  processEngineConfiguration.resetClock();
 	  databaseEventLogger = new EventLogger(activiti5ProcessEngineConfig.getClock());
 	  processEngineConfiguration.getActiviti5CompatibilityHandler().addEventListener(databaseEventLogger);
 	}
@@ -52,7 +53,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	
 	@Deployment(resources = {"org/activiti5/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"})
 	public void testDatabaseEvents() throws IOException {
-		
+		Authentication.setAuthenticatedUserId(null);
 		String testTenant = "testTenant";
 		
 		String deploymentId = repositoryService.createDeployment()
@@ -62,8 +63,8 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				.deploy().getId();
 		
 		// Run process to gather data
-		ProcessInstance processInstance = 
-				runtimeService.startProcessInstanceByKeyAndTenantId("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld"), testTenant);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("DatabaseEventLoggerProcess", 
+		    CollectionUtil.singletonMap("testVar", "helloWorld"), testTenant);
 		
 		// Verify event log entries
 		List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);

@@ -19,6 +19,7 @@ import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -38,7 +39,9 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   public void testInvalidProcessDefinition() {
     try {
       String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
-      repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+      repositoryService.createDeployment().name(resource).addClasspathResource(resource)
+          .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+          .deploy();
       fail();
     } catch (XMLException e) {
       // expected exception
@@ -48,6 +51,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   public void testParseWithBpmnNamespacePrefix() {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/parse/BpmnParseTest.testParseWithBpmnNamespacePrefix.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
       
@@ -57,6 +61,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   public void testParseWithMultipleDocumentation() {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/parse/BpmnParseTest.testParseWithMultipleDocumentation.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
       
@@ -152,6 +157,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   public void testParseSwitchedSourceAndTargetRefsForAssociations() {
     repositoryService.createDeployment()
       .addClasspathResource("org/activiti5/engine/test/bpmn/parse/BpmnParseTest.testParseSwitchedSourceAndTargetRefsForAssociations.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     
     assertEquals(1, repositoryService.createProcessDefinitionQuery().count());

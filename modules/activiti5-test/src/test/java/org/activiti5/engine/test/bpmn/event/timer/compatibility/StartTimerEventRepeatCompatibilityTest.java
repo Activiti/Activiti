@@ -16,7 +16,6 @@ package org.activiti5.engine.test.bpmn.event.timer.compatibility;
 import java.util.Calendar;
 import java.util.List;
 
-import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
@@ -56,15 +55,12 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
    * Timer repetition
    */
   public void testCycleDateStartTimerEvent() throws Exception {
-    Clock previousClock = processEngineConfiguration.getClock();
-
-    Clock testClock = new DefaultClockImpl();
+    Clock clock = processEngineConfiguration.getClock();
 
     Calendar calendar = Calendar.getInstance();
     calendar.set(2025, Calendar.DECEMBER, 10, 0, 0, 0);
-    testClock.setCurrentTime(calendar.getTime());
-    
-    processEngineConfiguration.setClock(testClock);
+    clock.setCurrentTime(calendar.getTime());
+    processEngineConfiguration.setClock(clock);
 
     //deploy the process
     repositoryService.createDeployment()
@@ -196,10 +192,10 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     assertEquals(0, tasks.size());
 
     listener.clearEventsReceived();
-    processEngineConfiguration.setClock(previousClock);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
-
+    
+    processEngineConfiguration.resetClock();
   }
 
 }

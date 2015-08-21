@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -25,7 +26,7 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti5.engine.impl.test.JobTestHelper;
+import org.activiti5.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -34,7 +35,8 @@ public class JobExecutorTest extends JobExecutorTestCase {
 
   public void testBasicJobExecutorOperation() throws Exception {
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
+    processEngineConfiguration.resetClock();
+    
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
@@ -57,7 +59,10 @@ public class JobExecutorTest extends JobExecutorTestCase {
     processEngineConfiguration.setClock(clock);
     
     ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    JobTestHelper.waitForJobExecutorActiviti5ToProcessAllJobs(activiti5ProcessEngineConfig, activiti5ProcessEngineConfig.getManagementService(), 8000L, 200L, true);
+    for (int i = 0; i < 7; i++) {
+      List<Job> jobs = activiti5ProcessEngineConfig.getManagementService().createJobQuery().list();
+      activiti5ProcessEngineConfig.getManagementService().executeJob(jobs.get(0).getId());
+    }
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();
@@ -70,7 +75,6 @@ public class JobExecutorTest extends JobExecutorTestCase {
     
     assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
     
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 }

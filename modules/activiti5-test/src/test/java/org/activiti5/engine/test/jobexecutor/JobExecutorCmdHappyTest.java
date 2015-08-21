@@ -33,7 +33,8 @@ import org.activiti5.engine.impl.persistence.entity.TimerEntity;
 public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithMessage() {
-    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    CommandExecutor commandExecutor = activiti5ProcessEngineConfig.getCommandExecutor();
     
     String jobId = commandExecutor.execute(new Command<String>() {
 
@@ -50,7 +51,6 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     
     assertEquals(0, tweetHandler.getMessages().size());
 
-    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     activiti5ProcessEngineConfig.getManagementService().executeJob(job.getId());
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
@@ -63,7 +63,6 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
     clock.setCurrentTime(new Date(SOME_TIME));
     processEngineConfiguration.setClock(clock);
 
@@ -98,7 +97,6 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());
     
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 }

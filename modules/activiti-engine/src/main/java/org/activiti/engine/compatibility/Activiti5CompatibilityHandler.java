@@ -55,11 +55,17 @@ public interface Activiti5CompatibilityHandler {
   
   void setDeploymentCategory(String deploymentId, String category);
   
+  void changeDeploymentTenantId(String deploymentId, String newTenantId);
+  
   void deleteDeployment(String deploymentId, boolean cascade);
   
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
   
   ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> variables, String businessKey, String tenantId);
+  
+  Object getExecutionVariable(String executionId, String variableName, boolean isLocal);
+  
+  Map<String, Object> getExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal);
   
   void setExecutionVariables(String executionId, Map<String, ? extends Object> variables, boolean isLocal);
   
@@ -76,6 +82,8 @@ public interface Activiti5CompatibilityHandler {
   void deleteIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType);
   
   void deleteProcessInstance(String processInstanceId, String deleteReason);
+  
+  void deleteHistoricProcessInstance(String processInstanceId);
   
   void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
   
@@ -117,13 +125,15 @@ public interface Activiti5CompatibilityHandler {
   
   void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables, boolean async);
   
-  void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
+  void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables, boolean async, String tenantId);
   
   void signalEventReceived(SignalEventSubscriptionEntity signalEventSubscriptionEntity, Object payload, boolean async);
 
   void executeJob(Job job);
   
   void executeJobWithLockAndRetry(JobEntity job);
+  
+  void handleFailedJob(JobEntity job, Throwable exception);
   
   void deleteJob(String jobId);
   
@@ -134,6 +144,8 @@ public interface Activiti5CompatibilityHandler {
   void removeEventListener(Object listener);
   
   void setClock(Clock clock);
+  
+  void resetClock();
   
   Object getRawProcessEngine();
   

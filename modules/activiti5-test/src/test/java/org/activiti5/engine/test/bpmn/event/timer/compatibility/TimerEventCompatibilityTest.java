@@ -14,7 +14,6 @@ package org.activiti5.engine.test.bpmn.event.timer.compatibility;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.activiti5.engine.impl.db.DbSqlSession;
 import org.activiti5.engine.impl.interceptor.Command;
@@ -67,9 +66,9 @@ public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestC
   }
 
   protected void moveByMinutes(int minutes) throws Exception {
-    Date newDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)));
-    Clock newClock = new DefaultClockImpl();
-    newClock.setCurrentTime(newDate);
-    processEngineConfiguration.setClock(newClock);
+    Clock clock = processEngineConfiguration.getClock();
+    Date newDate = new Date(clock.getCurrentTime().getTime() + ((minutes * 60 * 1000)));
+    clock.setCurrentTime(newDate);
+    processEngineConfiguration.setClock(clock);
   }
 }

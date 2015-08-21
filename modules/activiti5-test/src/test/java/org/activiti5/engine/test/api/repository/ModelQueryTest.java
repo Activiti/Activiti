@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
@@ -162,7 +163,9 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testByDeploymentId() {
-    Deployment deployment = repositoryService.createDeployment().addString("test", "test").deploy();
+    Deployment deployment = repositoryService.createDeployment().addString("test", "test")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
     
     assertEquals(0, repositoryService.createModelQuery().deploymentId(deployment.getId()).count());
     assertEquals(0, repositoryService.createModelQuery().deployed().count());

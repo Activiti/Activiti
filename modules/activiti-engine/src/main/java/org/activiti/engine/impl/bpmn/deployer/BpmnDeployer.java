@@ -379,6 +379,7 @@ public class BpmnDeployer implements Deployer {
     newSubscription.setEventName(messageEventDefinition.getMessageRef());
     newSubscription.setActivityId(startEvent.getId());
     newSubscription.setConfiguration(processDefinition.getId());
+    newSubscription.setProcessDefinitionId(processDefinition.getId());
 
     if (processDefinition.getTenantId() != null) {
       newSubscription.setTenantId(processDefinition.getTenantId());

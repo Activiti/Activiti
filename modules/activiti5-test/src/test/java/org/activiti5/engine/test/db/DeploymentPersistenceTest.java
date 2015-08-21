@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.IoUtil;
 
@@ -36,6 +37,7 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
       .name("strings")
       .addString("org/activiti5/test/HelloWorld.string", "hello world")
       .addString("org/activiti5/test/TheAnswer.string", "42")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     
     List<Deployment> deployments = repositoryService.createDeploymentQuery().list();

@@ -224,6 +224,14 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public void changeDeploymentTenantId(String deploymentId, String newTenantId) {
+    try {
+      getProcessEngine().getRepositoryService().changeDeploymentTenantId(deploymentId, newTenantId);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
   public void deleteDeployment(String deploymentId, boolean cascade) {
     try {
       final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
@@ -237,9 +245,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, 
       Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
     
-    if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-    }
+    org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     
     try {
       org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance = null;
@@ -278,6 +284,32 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       
       return new Activiti5ProcessInstanceWrapper(activiti5ProcessInstance);
       
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
+  }
+  
+  public Object getExecutionVariable(String executionId, String variableName, boolean isLocal) {
+    try {
+      if (isLocal) {
+        return getProcessEngine().getRuntimeService().getVariableLocal(executionId, variableName);
+      } else {
+        return getProcessEngine().getRuntimeService().getVariable(executionId, variableName);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
+  }
+  
+  public Map<String, Object> getExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal) {
+    try {
+      if (isLocal) {
+        return getProcessEngine().getRuntimeService().getVariablesLocal(executionId, variableNames);
+      } else {
+        return getProcessEngine().getRuntimeService().getVariables(executionId, variableNames);
+      }
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
       return null;
@@ -340,6 +372,14 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public void deleteHistoricProcessInstance(String processInstanceId) {
+    try {
+      getProcessEngine().getHistoryService().deleteHistoricProcessInstance(processInstanceId);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
   public void addIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType) {
     try {
       if (userId != null) {
@@ -365,9 +405,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
-    if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-    }
+    org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     try {
       getProcessEngine().getTaskService().complete(taskEntity.getId(), variables, localScope);
     } catch (org.activiti5.engine.ActivitiException e) {
@@ -376,9 +414,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void claimTask(String taskId, String userId) {
-    if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-    }
+    org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     try {
       getProcessEngine().getTaskService().claim(taskId, userId);
     } catch (org.activiti5.engine.ActivitiException e) {
@@ -448,9 +484,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties) {
-    if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-    }
+    org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     try {
       return new Activiti5ProcessInstanceWrapper(getProcessEngine().getFormService().submitStartFormData(processDefinitionId, businessKey, properties));
     } catch (org.activiti5.engine.ActivitiException e) {
@@ -460,9 +494,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   public void submitTaskFormData(String taskId, Map<String, String> properties, boolean completeTask) {
-    if (Authentication.getAuthenticatedUserId() != null) {
-      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-    }
+    org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
     try {
       if (completeTask) {
         getProcessEngine().getFormService().submitTaskFormData(taskId, properties);
@@ -524,9 +556,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   
   public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url) {
     try {
-      if (Authentication.getAuthenticatedUserId() != null) {
-        org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-      }
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
       if (content != null) {
         return new Activiti5AttachmentWrapper(getProcessEngine().getTaskService().
             createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content));
@@ -542,9 +572,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   
   public void saveAttachment(Attachment attachment) {
     try {
-      if (Authentication.getAuthenticatedUserId() != null) {
-        org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-      }
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
       org.activiti5.engine.task.Attachment activiti5Attachment = getProcessEngine().getTaskService().getAttachment(attachment.getId());
       activiti5Attachment.setName(attachment.getName());
       activiti5Attachment.setDescription(attachment.getDescription());
@@ -558,9 +586,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   
   public void deleteAttachment(String attachmentId) {
     try {
-      if (Authentication.getAuthenticatedUserId() != null) {
-        org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
-      }
+      org.activiti5.engine.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getAuthenticatedUserId());
       getProcessEngine().getTaskService().deleteAttachment(attachmentId);
       
     } catch (org.activiti5.engine.ActivitiException e) {
@@ -588,9 +614,21 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
-  public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables) {
+  public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables, boolean async, String tenantId) {
     try {
-      getProcessEngine().getRuntimeService().signalEventReceived(signalName, executionId, processVariables);
+      if (tenantId != null) {
+        if (async) {
+          getProcessEngine().getRuntimeService().signalEventReceivedAsyncWithTenantId(signalName, tenantId);
+        } else {
+          getProcessEngine().getRuntimeService().signalEventReceivedWithTenantId(signalName, processVariables, tenantId);
+        }
+      } else {
+        if (async) {
+          getProcessEngine().getRuntimeService().signalEventReceivedAsync(signalName, executionId);
+        } else {
+          getProcessEngine().getRuntimeService().signalEventReceived(signalName, executionId, processVariables);
+        }
+      }
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
     }
@@ -632,6 +670,13 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
     AsyncJobUtil.executeJob(activity5Job, processEngineConfig.getCommandExecutor());
+  }
+  
+  public void handleFailedJob(JobEntity job, Throwable exception) {
+    if (job == null) return;
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
+    AsyncJobUtil.handleFailedJob(activity5Job, exception, processEngineConfig.getCommandExecutor());
   }
   
   public void deleteJob(String jobId) {
@@ -677,6 +722,13 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     } else {
       org.activiti5.engine.runtime.Clock activiti5Clock = processEngineConfig.getClock();
       activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
+    }
+  }
+  
+  public void resetClock() {
+    ProcessEngineConfiguration processEngineConfig = getProcessEngine().getProcessEngineConfiguration();
+    if (processEngineConfig.getClock() != null) {
+      processEngineConfig.getClock().reset();
     }
   }
   

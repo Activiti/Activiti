@@ -42,7 +42,6 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 	@Deployment
 	public void testJobEntityEvents() throws Exception {
 	  Clock clock = processEngineConfiguration.getClock();
-	  Date previousTime = clock.getCurrentTime();
 	  
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
 		Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -96,8 +95,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(ActivitiEventType.JOB_EXECUTION_SUCCESS, event.getType());
 		checkEventContext(event, theJob, true);
 	
-		clock.setCurrentTime(previousTime);
-		processEngineConfiguration.setClock(clock);
+		processEngineConfiguration.resetClock();
 	}
 
   /**
@@ -106,10 +104,9 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testRepetitionJobEntityEvents() throws Exception {
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
-
-    Date now = new Date();
-    clock.setCurrentTime(now);
+    
+    clock.reset();
+    Date now = clock.getCurrentTime();
     processEngineConfiguration.setClock(clock);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
@@ -171,16 +168,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     assertEquals(2, timerFiredCount);
     
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 
   @Deployment
   public void testJobCanceledEventOnBoundaryEvent() throws Exception {
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
-
-    clock.setCurrentTime(new Date());
+    clock.reset();
     processEngineConfiguration.setClock(clock);
     runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
@@ -191,8 +185,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     checkEventCount(1, ActivitiEventType.JOB_CANCELED);
     
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 
   @Deployment(resources = "org/activiti5/engine/test/api/event/JobEventsTest.testJobCanceledEventOnBoundaryEvent.bpmn20.xml")
@@ -251,7 +244,6 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testTimerFiredForTimerStart() throws Exception {
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
     
     // there should be one job after process definition deployment
     
@@ -267,8 +259,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertEquals(ActivitiEventType.TIMER_FIRED, listener.getEventsReceived().get(0).getType());
     checkEventCount(0, ActivitiEventType.JOB_CANCELED);
     
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 
   /**
@@ -277,7 +268,6 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testTimerFiredForIntermediateTimer() throws Exception {
     Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
     
     runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
 
@@ -291,8 +281,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     checkEventCount(0, ActivitiEventType.JOB_CANCELED);
     checkEventCount(1, ActivitiEventType.TIMER_FIRED);
     
-    clock.setCurrentTime(previousTime);
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 
   /**
@@ -301,8 +290,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 	@Deployment
 	public void testJobEntityEventsException() throws Exception {
 	  Clock clock = processEngineConfiguration.getClock();
-    Date previousTime = clock.getCurrentTime();
-	  
+    
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
 		Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(theJob);
@@ -352,8 +340,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(0, ((org.activiti5.engine.runtime.Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
 		checkEventContext(event, theJob, true);
 	
-		clock.setCurrentTime(previousTime);
-		processEngineConfiguration.setClock(clock);
+		processEngineConfiguration.resetClock();
 	}
 	
 	protected void checkEventContext(ActivitiEvent event, Job entity, boolean scopeExecutionExpected) {

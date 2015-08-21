@@ -21,11 +21,12 @@ import java.util.Map;
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
-import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti5.engine.impl.history.HistoryLevel;
@@ -104,15 +105,14 @@ public class DefaultProcessEngineFactory {
       activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
       activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
       
-      activiti5Configuration.setAsyncExecutorEnabled(true);
-      activiti5Configuration.setAsyncExecutorActivate(true);
-      if (activiti6Configuration.getAsyncExecutor() != null) {
-        AsyncExecutor activiti5AsyncExecutor = new DefaultAsyncJobExecutor();
-        activiti5AsyncExecutor.setAsyncJobLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
-        activiti5AsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultAsyncJobAcquireWaitTimeInMillis());
-        activiti5AsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultTimerJobAcquireWaitTimeInMillis());
-        activiti5AsyncExecutor.setRetryWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getRetryWaitTimeInMillis());
-        activiti5AsyncExecutor.setTimerLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getTimerLockTimeInMillis());
+      if (activiti6Configuration.isAsyncExecutorEnabled()) {
+        activiti5Configuration.setAsyncExecutorEnabled(true);
+        if (activiti6Configuration.isAsyncExecutorActivate()) {
+          activiti5Configuration.setAsyncExecutorActivate(true);
+        }
+      }
+      if (activiti6Configuration.getActiviti5AsyncExecutor() != null) {
+        AsyncExecutor activiti5AsyncExecutor = (AsyncExecutor) activiti6Configuration.getActiviti5AsyncExecutor();
         activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
       }
       
@@ -152,6 +152,25 @@ public class DefaultProcessEngineFactory {
       }
       
       convertEventListeners(activiti6Configuration, activiti5Configuration);
+      
+      // check if we need to enable rules deployment for Activiti 5
+      if (activiti6Configuration.getCustomPostDeployers() != null) {
+        List<org.activiti5.engine.impl.persistence.deploy.Deployer> activiti5Deployers = new ArrayList<org.activiti5.engine.impl.persistence.deploy.Deployer>();
+        for (Deployer deployer : activiti6Configuration.getCustomPostDeployers()) {
+          if (deployer instanceof RulesDeployer) {
+            activiti5Deployers.add(new org.activiti5.engine.impl.rules.RulesDeployer());
+            break;
+          }
+        }
+        
+        if (activiti5Deployers.size() > 0) {
+          if (activiti5Configuration.getCustomPostDeployers() != null) {
+            activiti5Configuration.getCustomPostDeployers().addAll(activiti5Deployers);
+          } else {
+            activiti5Configuration.setCustomPostDeployers(activiti5Deployers);
+          }
+        }
+      }
 
     } else {
       throw new ActivitiException("Unsupported process engine configuration");

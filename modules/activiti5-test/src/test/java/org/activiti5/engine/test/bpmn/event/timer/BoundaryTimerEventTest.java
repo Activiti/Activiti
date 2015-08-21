@@ -60,8 +60,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   public void testMultipleTimersOnUserTask() {
     Clock clock = processEngineConfiguration.getClock();
     // Set the clock fixed
-    Date startTime = new Date();
-    clock.setCurrentTime(startTime);
+    clock.reset();
+    Date startTime = clock.getCurrentTime();
     processEngineConfiguration.setClock(clock);
 
     // After process start, there should be 3 timers created
@@ -81,8 +81,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Third Task", task.getName());
     
-    clock.reset();
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment
@@ -109,8 +108,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   public void testExpressionOnTimer(){
     Clock clock = processEngineConfiguration.getClock();
     // Set the clock fixed
-    Date startTime = new Date();
-    clock.setCurrentTime(startTime);
+    clock.reset();
+    Date startTime = clock.getCurrentTime();
     processEngineConfiguration.setClock(clock);
     
     HashMap<String, Object> variables = new HashMap<String, Object>();
@@ -137,8 +136,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // which means the process has ended
     assertProcessEnded(pi.getId());
     
-    clock.reset();
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
   
 

@@ -100,8 +100,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(0, jobs.size());
     
-    clock.reset();
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
 
   protected void makeSureJobDue(final Job job) {

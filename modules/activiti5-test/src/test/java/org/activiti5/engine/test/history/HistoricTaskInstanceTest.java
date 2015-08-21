@@ -282,6 +282,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().finished().count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().unfinished().count());
+    
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment
@@ -479,6 +481,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().finished().endOr().count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().unfinished().endOr().count());
+    
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment

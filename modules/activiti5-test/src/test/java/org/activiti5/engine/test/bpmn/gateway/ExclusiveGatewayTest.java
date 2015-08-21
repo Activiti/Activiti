@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -191,7 +192,9 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
             "</definitions>";    
     
     try {
-    	repositoryService.createDeployment().addString("myprocess.bpmn20.xml", defaultFlowWithCondition).deploy();
+    	repositoryService.createDeployment().addString("myprocess.bpmn20.xml", defaultFlowWithCondition)
+    	    .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+    	    .deploy();
     	fail();
     } catch (Exception e) {}
 
@@ -204,7 +207,9 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
             "  </process>" + 
             "</definitions>";    
     try {
-      repositoryService.createDeployment().addString("myprocess.bpmn20.xml", noOutgoingFlow).deploy();
+      repositoryService.createDeployment().addString("myprocess.bpmn20.xml", noOutgoingFlow)
+          .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+          .deploy();
       fail("Could deploy a process definition with a XOR Gateway without outgoing sequence flows.");
     }
     catch (ActivitiException ex) {

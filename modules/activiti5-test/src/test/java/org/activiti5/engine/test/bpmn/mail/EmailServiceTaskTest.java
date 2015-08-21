@@ -30,6 +30,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.util.CollectionUtil;
 import org.subethamail.wiser.WiserMessage;
@@ -58,7 +59,10 @@ public class EmailServiceTaskTest extends EmailTestCase {
     String tenantId = "myEmailTenant";
 
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
-        .addClasspathResource("org/activiti5/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml").tenantId(tenantId).deploy();
+        .addClasspathResource("org/activiti5/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml")
+        .tenantId(tenantId)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
     String procId = runtimeService.startProcessInstanceByKeyAndTenantId("simpleTextOnly", tenantId).getId();
 
     List<WiserMessage> messages = wiser.getMessages();
@@ -75,7 +79,10 @@ public class EmailServiceTaskTest extends EmailTestCase {
   public void testSimpleTextMailForNonExistentTenant() throws Exception {
     String tenantId = "nonExistentTenant";
 
-    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti5/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml").tenantId(tenantId).deploy();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti5/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml")
+        .tenantId(tenantId)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
     String procId = runtimeService.startProcessInstanceByKeyAndTenantId("simpleTextOnly", tenantId).getId();
 
     List<WiserMessage> messages = wiser.getMessages();

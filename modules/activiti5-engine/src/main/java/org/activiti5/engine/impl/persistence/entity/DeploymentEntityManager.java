@@ -24,7 +24,6 @@ import org.activiti5.engine.impl.Page;
 import org.activiti5.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.event.MessageEventHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti5.engine.impl.persistence.AbstractManager;
@@ -89,8 +88,7 @@ public class DeploymentEntityManager extends AbstractManager {
     }
 
     // delete process definitions from db
-    getProcessDefinitionManager()
-      .deleteProcessDefinitionsByDeploymentId(deploymentId);
+    getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
     
     for (ProcessDefinition processDefinition : processDefinitions) {
       
@@ -165,19 +163,9 @@ public class DeploymentEntityManager extends AbstractManager {
     		}
     		
     	}
-    	
-      // remove message event subscriptions:
-      List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context
-        .getCommandContext()
-        .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId(), processDefinition.getTenantId());
-      for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
-        eventSubscriptionEntity.delete();        
-      }
     }
     
-    getResourceManager()
-      .deleteResourcesByDeploymentId(deploymentId);
+    getResourceManager().deleteResourcesByDeploymentId(deploymentId);
     
     getDbSqlSession().delete("deleteDeployment", deploymentId);
   }

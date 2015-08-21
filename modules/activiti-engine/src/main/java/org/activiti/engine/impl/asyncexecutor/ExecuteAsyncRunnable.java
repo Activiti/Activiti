@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
@@ -130,6 +131,12 @@ public class ExecuteAsyncRunnable implements Runnable {
 
       @Override
       public Void execute(CommandContext commandContext) {
+        if (job.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+          activiti5CompatibilityHandler.handleFailedJob(job, exception);
+          return null;
+        }
+        
         CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
         Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);

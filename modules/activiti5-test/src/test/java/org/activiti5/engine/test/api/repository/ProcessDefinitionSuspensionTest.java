@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -418,7 +419,9 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     int nrOfProcessDefinitions = 3;
     for (int i=0; i<nrOfProcessDefinitions; i++) {
       repositoryService.createDeployment()
-        .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
+        .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
     }
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
@@ -464,7 +467,9 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     int nrOfProcessDefinitions = 5;
     for (int i=0; i<nrOfProcessDefinitions; i++) {
       repositoryService.createDeployment()
-        .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
+        .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy();
     }
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());

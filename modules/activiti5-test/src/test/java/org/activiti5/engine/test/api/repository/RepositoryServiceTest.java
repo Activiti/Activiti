@@ -29,6 +29,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -156,6 +157,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
             .addClasspathResource("org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml")
             .addClasspathResource("org/activiti5/engine/test/api/twoTasksProcess.bpmn20.xml")
             .activateProcessDefinitionsOn(inThreeDays)
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
             .deploy();
     
     assertEquals(1, repositoryService.createDeploymentQuery().count());
@@ -387,6 +389,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 	  assertNotNull(zipInputStream);
 	  repositoryService.createDeployment()
 	  	.addZipInputStream(zipInputStream)
+	  	.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 	  	.deploy();
 	  
 	  assertEquals(6, repositoryService.createProcessDefinitionQuery().count());

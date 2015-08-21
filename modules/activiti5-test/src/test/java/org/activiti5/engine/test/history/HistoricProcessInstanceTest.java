@@ -32,6 +32,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.impl.identity.Authentication;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -94,8 +95,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().unfinished().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().finished().count());
     
-    clock.reset();
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment(resources = {"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})
@@ -407,6 +407,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = {"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricIdenityLinksOnProcessInstance() {
+    Authentication.setAuthenticatedUserId(null);
     if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       runtimeService.addUserIdentityLink(pi.getId(), "kermit", "myType");

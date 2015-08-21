@@ -17,6 +17,8 @@ import java.util.Date;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -59,6 +61,8 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
           "org/activiti5/engine/test/bpmn/gateway/EventBasedGatewayTest.testCatchAlertAndTimer.bpmn20.xml"
           })
   public void testCatchTimerCancelsSignal() {
+    Clock clock = processEngineConfiguration.getClock();
+    processEngineConfiguration.resetClock();
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
@@ -66,7 +70,8 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createJobQuery().count());
     
-    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
+    clock.setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
+    processEngineConfiguration.setClock(clock);
     try {
       // wait for timer to fire
       waitForJobExecutorToProcessAllJobs(10000, 100);
@@ -82,13 +87,15 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       assertNotNull(task);
       
       taskService.complete(task.getId());
-    }finally{
-      processEngineConfiguration.getClock().setCurrentTime(new Date());
+    } finally {
+      processEngineConfiguration.resetClock();
     }
   }
   
   @Deployment
   public void testCatchSignalAndMessageAndTimer() {
+    Clock clock = processEngineConfiguration.getClock();
+    processEngineConfiguration.resetClock();
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
@@ -106,7 +113,8 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       .singleResult();
     assertNotNull(execution);
     
-    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
+    clock.setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
+    processEngineConfiguration.setClock(clock);
     try {
      
       EventSubscriptionEntity messageEventSubscription = messageEventSubscriptionQuery.singleResult();
@@ -123,8 +131,8 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       assertNotNull(task);
       
       taskService.complete(task.getId());
-    }finally{
-      processEngineConfiguration.getClock().setCurrentTime(new Date());
+    } finally {
+      processEngineConfiguration.resetClock();
     }
   }
 
@@ -133,6 +141,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {

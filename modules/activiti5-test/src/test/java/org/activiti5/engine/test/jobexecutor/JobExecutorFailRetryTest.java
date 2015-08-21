@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.test.jobexecutor;
 
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -23,6 +24,7 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
 	
 	@Deployment
 	public void testFailedServiceTask() {
+	  processEngineConfiguration.resetClock();
 		
 		// process throws no exception. Service task passes at the first time. 
 		RetryFailingDelegate.shallThrow = false;  // do not throw exception in Service delegate
@@ -37,9 +39,12 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
 		RetryFailingDelegate.resetTimeList();
   	runtimeService.startProcessInstanceByKey("failedJobRetry");
   	
+  	processEngineConfiguration.resetClock();
   	executeJobExecutorForTime(14000, 500);
   	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
   	long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0) ; 
   	assertTrue(timeDiff > 6000 && timeDiff < 12000);  // check time difference between calls. Just roughly
+  	
+  	processEngineConfiguration.resetClock();
   }
 }

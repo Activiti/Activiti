@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -34,7 +35,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
 
   @Deployment
   public void testRepeatWithEnd() throws Throwable {
-
+    Clock clock = processEngineConfiguration.getClock();
     Calendar calendar = Calendar.getInstance();
     Date baseTime = calendar.getTime();
 
@@ -54,11 +55,11 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     dt = new DateTime(calendar.getTime());
     String dateStr2 = fmt.print(dt);
 
-
     //reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
     nextTimeCal.setTime(baseTime);
-    processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
+    clock.setCurrentTime(nextTimeCal.getTime());
+    processEngineConfiguration.setClock(clock);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
@@ -68,13 +69,10 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(1, tasks.size());
 
-
     tasks = taskService.createTaskQuery().list();
     assertEquals(1, tasks.size());
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
-
-
 
     //Test Timer Catch Intermediate Events after completing Task B (endDate not reached but it will be executed accrding to the expression)
     taskService.complete(task.getId());
@@ -87,7 +85,8 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     }
 
     nextTimeCal.add(Calendar.HOUR, 1); //after 1 hour the event must be triggered and the flow will go to the next step
-    processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
+    clock.setCurrentTime(nextTimeCal.getTime());
+    processEngineConfiguration.setClock(clock);
 
     waitForJobExecutorToProcessAllJobs(2000, 200);
     //expect to execute because the time is reached.
@@ -95,17 +94,16 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     List<Job> jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
 
-
     tasks = taskService.createTaskQuery().list();
     assertEquals(1, tasks.size());
     task = tasks.get(0);
     assertEquals("Task C", task.getName());
 
-
     //Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
     nextTimeCal.add(Calendar.MINUTE, 30); //after 1H 30 minutes from process start, the timer will trigger because of the endDate
-    processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
+    clock.setCurrentTime(nextTimeCal.getTime());
+    processEngineConfiguration.setClock(clock);
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     //expect to execute because the end time is reached.
@@ -129,6 +127,8 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     //no tasks
     tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
+    
+    processEngineConfiguration.resetClock();
   }
 
 }

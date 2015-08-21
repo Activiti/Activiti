@@ -69,9 +69,9 @@ public class SignalEventReceivedCmd implements Command<Void> {
     
     List<SignalEventSubscriptionEntity> signalEvents = null;
     
-    if(executionId == null) {
-       signalEvents = commandContext.getEventSubscriptionEntityManager()
-        .findSignalEventSubscriptionsByEventName(eventName, tenantId);              
+    if (executionId == null) {
+       signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(eventName, tenantId);              
+    
     } else {
       
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
@@ -85,10 +85,9 @@ public class SignalEventReceivedCmd implements Command<Void> {
                 + "' because execution '" + executionId + "' is suspended");
       }
       
-      signalEvents = commandContext.getEventSubscriptionEntityManager()
-        .findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
+      signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
       
-      if(signalEvents.isEmpty()) {
+      if (signalEvents.isEmpty()) {
         throw new ActivitiException("Execution '"+executionId+"' has not subscribed to a signal event with name '"+eventName+"'.");      
       }
     }

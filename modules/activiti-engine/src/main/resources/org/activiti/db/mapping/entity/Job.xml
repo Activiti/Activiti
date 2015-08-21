@@ -113,7 +113,9 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap"/>
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap">
+  	<result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
+  </resultMap>
 
   <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.entity.TimerEntity" extends="jobResultMap">
     <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />

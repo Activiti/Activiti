@@ -218,8 +218,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti5/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobThatWasAlreadyAcquired() {
     Clock clock = processEngineConfiguration.getClock();
-    clock.setCurrentTime(new Date());
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -244,8 +243,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     // Clean up
     managementService.executeJob(timerJob.getId());
     
-    clock.setCurrentTime(new Date());
-    processEngineConfiguration.setClock(clock);
+    processEngineConfiguration.resetClock();
   }
   
   // https://activiti.atlassian.net/browse/ACT-1816:

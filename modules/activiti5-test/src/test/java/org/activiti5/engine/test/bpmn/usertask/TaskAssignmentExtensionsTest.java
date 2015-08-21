@@ -15,6 +15,7 @@ package org.activiti5.engine.test.bpmn.usertask;
 import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -63,7 +64,9 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   public void testDuplicateAssigneeDeclaration() {
     try {
       String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
-      repositoryService.createDeployment().addClasspathResource(resource).deploy();
+      repositoryService.createDeployment().addClasspathResource(resource)
+          .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+          .deploy();
       fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
     } catch (XMLException e) {
       // Exception is to be expected

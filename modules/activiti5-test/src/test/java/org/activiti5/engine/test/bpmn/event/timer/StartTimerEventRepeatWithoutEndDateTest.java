@@ -197,12 +197,10 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     assertEquals(0, tasks.size());
 
     listener.clearEventsReceived();
-    
-    clock.reset();
-    processEngineConfiguration.setClock(clock);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
 
+    processEngineConfiguration.resetClock();
   }
 
   private void moveByMinutes(int minutes) throws Exception {
