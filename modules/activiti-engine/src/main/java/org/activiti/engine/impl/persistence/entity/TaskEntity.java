@@ -323,7 +323,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
-    identityLinkEntity.insert();
+    Context.getCommandContext().getIdentityLinkEntityManager().insert(identityLinkEntity);
     if (userId != null && processInstanceId != null) {
       Context.getCommandContext().getIdentityLinkEntityManager().involveUser(getProcessInstance(), userId, IdentityLinkType.PARTICIPANT);
     }

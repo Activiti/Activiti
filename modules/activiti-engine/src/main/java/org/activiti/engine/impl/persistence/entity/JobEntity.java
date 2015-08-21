@@ -26,8 +26,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Nick Burch
  * @author Dave Syer
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public abstract class JobEntity implements Job, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
@@ -72,17 +71,6 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
 
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected String jobType;
-
-  public void execute(CommandContext commandContext) {
-    ExecutionEntity execution = null;
-    if (executionId != null) {
-      execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
-    }
-
-    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
-    JobHandler jobHandler = jobHandlers.get(jobHandlerType);
-    jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
-  }
 
   public void insert() {
     Context.getCommandContext().getDbSqlSession().insert(this);
@@ -165,13 +153,12 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
     return persistentState;
   }
+  
+//getters and setters ////////////////////////////////////////////////////////
 
   public int getRevisionNext() {
     return revision + 1;
   }
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
 
   public String getId() {
     return id;

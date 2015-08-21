@@ -19,22 +19,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -42,6 +59,8 @@ import org.activiti.engine.runtime.Job;
  * @author Joram Barrez
  */
 public class JobEntityManager extends AbstractEntityManager<JobEntity> {
+  
+  private static final Logger logger = LoggerFactory.getLogger(JobEntityManager.class);
   
   protected static final List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = Arrays.asList(TimerEntity.class, MessageEntity.class);
   
@@ -53,6 +72,195 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
   @Override
   public List<Class<? extends JobEntity>> getManagedPersistentObjectSubClasses() {
     return ENTITY_SUBCLASSES;
+  }
+  
+  public void execute(JobEntity jobEntity) {
+    if (jobEntity instanceof MessageEntity) {
+      executeMessageJob(jobEntity);
+    } else if (jobEntity instanceof TimerEntity) {
+      executeTimerJob((TimerEntity) jobEntity);
+    } 
+  }
+
+  protected void executeJobHandler(JobEntity jobEntity) {
+    CommandContext commandContext = Context.getCommandContext();
+    
+    ExecutionEntity execution = null;
+    if (jobEntity.getExecutionId() != null) {
+      execution = commandContext.getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+    }
+
+    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
+    JobHandler jobHandler = jobHandlers.get(jobEntity.getJobHandlerType());
+    jobHandler.execute(jobEntity, jobEntity.getJobHandlerConfiguration(), execution, commandContext);
+  }
+  
+  protected void executeMessageJob(JobEntity jobEntity) {
+    executeJobHandler(jobEntity);
+    jobEntity.delete();
+  }
+  
+  protected void executeTimerJob(TimerEntity timerEntity) {
+
+    CommandContext commandContext = Context.getCommandContext();
+    
+    // set endDate if it was set to the definition
+    restoreExtraData(commandContext, timerEntity);
+
+    if (timerEntity.getDuedate() != null && !isValidTime(timerEntity, timerEntity.getDuedate())) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("Timer {} fired. but the dueDate is after the endDate.  Deleting timer.", timerEntity.getId());
+      }
+      timerEntity.delete();
+      return;
+    }
+
+    executeJobHandler(timerEntity);
+
+    if (logger.isDebugEnabled()) {
+      logger.debug("Timer {} fired. Deleting timer.", timerEntity.getId());
+    }
+    timerEntity.delete();
+
+    if (timerEntity.getRepeat() != null) {
+      int repeatValue = calculateRepeatValue(timerEntity);
+      if (repeatValue != 0) {
+        if (repeatValue > 0) {
+          setNewRepeat(timerEntity, repeatValue);
+        }
+        Date newTimer = calculateNextTimer(timerEntity);
+        if (newTimer != null && isValidTime(timerEntity, newTimer)) {
+          TimerEntity te = new TimerEntity(timerEntity);
+          te.setDuedate(newTimer);
+          Context.getCommandContext().getJobEntityManager().schedule(te);
+        }
+      }
+    }
+  }
+  
+  protected void restoreExtraData(CommandContext commandContext, TimerEntity timerEntity) {
+    String activityId = timerEntity.getJobHandlerConfiguration();
+
+    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
+
+      activityId = TimerEventHandler.getActivityIdFromConfiguration(timerEntity.getJobHandlerConfiguration());
+      String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(timerEntity.getJobHandlerConfiguration());
+
+      if (endDateExpressionString != null) {
+        Expression endDateExpression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
+
+        String endDateString = null;
+
+        BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+
+        VariableScope executionEntity = null;
+        if (timerEntity.getExecutionId() != null) {
+          executionEntity = commandContext.getExecutionEntityManager().findExecutionById(timerEntity.getExecutionId());
+        }
+        
+        if (executionEntity == null) {
+          executionEntity = NoExecutionVariableScope.getSharedInstance();
+        }
+
+        if (endDateExpression != null) {
+          Object endDateValue = endDateExpression.getValue(executionEntity);
+          if (endDateValue instanceof String) {
+            endDateString = (String) endDateValue;
+          } else if (endDateValue instanceof Date) {
+            timerEntity.setEndDate((Date) endDateValue);
+          } else {
+            throw new ActivitiException("Timer '" + ((ExecutionEntity) executionEntity).getActivityId()
+                + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+          }
+
+          if (timerEntity.getEndDate() == null) {
+            timerEntity.setEndDate(businessCalendar.resolveEndDate(endDateString));
+          }
+        }
+      }
+    }
+
+    int maxIterations = 1;
+    if (timerEntity.getProcessDefinitionId() != null) {
+      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(timerEntity.getProcessDefinitionId());
+      maxIterations = getMaxIterations(process, activityId);
+      if (maxIterations <= 1) {
+        maxIterations = getMaxIterations(process, activityId);
+      }
+    }
+    timerEntity.setMaxIterations(maxIterations);
+  }
+  
+  protected int getMaxIterations(org.activiti.bpmn.model.Process process, String activityId) {
+    FlowElement flowElement = process.getFlowElement(activityId, true);
+    if (flowElement != null) {
+      if (flowElement instanceof Event) {
+        
+        Event event = (Event) flowElement;
+        List<EventDefinition> eventDefinitions = event.getEventDefinitions();
+        
+        if (eventDefinitions != null) {
+          
+          for (EventDefinition eventDefinition : eventDefinitions) {
+            if (eventDefinition instanceof TimerEventDefinition) {
+              TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
+              if (timerEventDefinition.getTimeCycle() != null) {
+                return calculateMaxIterationsValue(timerEventDefinition.getTimeCycle());
+              }
+            }
+          }
+          
+        }
+        
+      }
+    }
+    return -1;
+  }
+  
+  protected int calculateMaxIterationsValue(String originalExpression) {
+    int times = Integer.MAX_VALUE;
+    List<String> expression = Arrays.asList(originalExpression.split("/"));
+    if (expression.size() > 1 && expression.get(0).startsWith("R")) {
+      times = Integer.MAX_VALUE;
+      if (expression.get(0).length() > 1) {
+        times = Integer.parseInt(expression.get(0).substring(1));
+      }
+    }
+    return times;
+  }
+  
+  protected int calculateRepeatValue(TimerEntity timerEntity) {
+    int times = -1;
+    List<String> expression = Arrays.asList(timerEntity.getRepeat().split("/"));
+    if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
+      times = Integer.parseInt(expression.get(0).substring(1));
+      if (times > 0) {
+        times--;
+      }
+    }
+    return times;
+  }
+
+  protected void setNewRepeat(TimerEntity timerEntity, int newRepeatValue) {
+    List<String> expression = Arrays.asList(timerEntity.getRepeat().split("/"));
+    expression = expression.subList(1, expression.size());
+    StringBuilder repeatBuilder = new StringBuilder("R");
+    repeatBuilder.append(newRepeatValue);
+    for (String value : expression) {
+      repeatBuilder.append("/");
+      repeatBuilder.append(value);
+    }
+    timerEntity.setRepeat(repeatBuilder.toString());
+  }
+  
+  protected boolean isValidTime(TimerEntity timerEntity, Date newTimerDate) {
+    BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+    return businessCalendar.validateDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations(), timerEntity.getEndDate(), newTimerDate);
+  }
+  
+  protected Date calculateNextTimer(TimerEntity timerEntity) {
+    BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+    return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
   }
 
   public void send(MessageEntity message) {

@@ -27,6 +27,12 @@ import org.activiti.engine.impl.context.Context;
  * @author Joram Barrez
  */
 public class IdentityLinkEntityManager extends AbstractEntityManager<IdentityLinkEntity> {
+  
+  @Override
+  public void insert(IdentityLinkEntity entity, boolean fireCreateEvent) {
+    super.insert(entity, fireCreateEvent);
+    Context.getCommandContext().getHistoryManager().recordIdentityLinkCreated(entity);
+  }
 
   public void deleteIdentityLink(IdentityLinkEntity identityLink, boolean cascadeHistory) {
     getDbSqlSession().delete(identityLink);
@@ -95,7 +101,7 @@ public class IdentityLinkEntityManager extends AbstractEntityManager<IdentityLin
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
-    identityLinkEntity.insert();
+    insert(identityLinkEntity);
     return identityLinkEntity;
   }
   

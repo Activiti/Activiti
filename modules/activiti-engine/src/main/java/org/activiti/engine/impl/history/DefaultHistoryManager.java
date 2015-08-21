@@ -676,7 +676,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity.copyAndInsert(variable);
+      Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
     }
   }
 
@@ -715,9 +715,9 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       }
 
       if (historicProcessVariable != null) {
-        historicProcessVariable.copyValue(variable);
+        Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyVariableValue(historicProcessVariable, variable);
       } else {
-        HistoricVariableInstanceEntity.copyAndInsert(variable);
+        Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
       }
     }
   }

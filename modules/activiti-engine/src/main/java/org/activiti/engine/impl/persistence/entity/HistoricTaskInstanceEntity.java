@@ -75,8 +75,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     }
   }
 
-  // persistence
-  // //////////////////////////////////////////////////////////////
+  // persistence //////////////////////////////////////////////////////////////
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -103,8 +102,8 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     return persistentState;
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
+  
   public String getExecutionId() {
     return executionId;
   }
@@ -147,8 +146,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
 
   @Override
   public Date getCreateTime() {
-    return getStartTime(); // For backwards compatible reason implemented
-                           // with createTime and startTime
+    return getStartTime(); // For backwards compatible reason implemented with createTime and startTime
   }
 
   public String getFormKey() {
@@ -260,4 +258,5 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
+  
 }

@@ -48,7 +48,7 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
       log.debug("Executing async job {}", job.getId());
     }
 
-    job.execute(commandContext);
+    commandContext.getJobEntityManager().execute(job);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));

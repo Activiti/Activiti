@@ -452,7 +452,7 @@ public class BpmnDeployer implements Deployer {
           identityLink.setGroupId(expr.toString());
         }
         identityLink.setType(IdentityLinkType.CANDIDATE);
-        identityLink.insert();
+        Context.getCommandContext().getIdentityLinkEntityManager().insert(identityLink);
       }
     }
   }

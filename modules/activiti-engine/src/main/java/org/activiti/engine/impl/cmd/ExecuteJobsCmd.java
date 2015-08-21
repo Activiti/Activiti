@@ -78,7 +78,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     commandContext.addCloseListener(new ManualJobExecutionCommandContextCloseListener(job));
 
     try {
-      job.execute(commandContext);
+      commandContext.getJobEntityManager().execute(job);
     } catch (Throwable exception) {
       // Finally, Throw the exception to indicate the ExecuteJobCmd failed
       throw new ActivitiException("Job " + jobId + " failed", exception);

@@ -59,8 +59,7 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
     return revision + 1;
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
 
   public String getId() {
     return id;

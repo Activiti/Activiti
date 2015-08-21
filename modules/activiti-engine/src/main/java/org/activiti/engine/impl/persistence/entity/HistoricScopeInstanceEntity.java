@@ -41,8 +41,7 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject, S
     this.durationInMillis = endTime.getTime() - startTime.getTime();
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
 
   public String getProcessInstanceId() {
     return processInstanceId;

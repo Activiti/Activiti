@@ -85,7 +85,7 @@ public class ProcessDefinitionEntity implements ProcessDefinition, PersistentObj
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(IdentityLinkType.CANDIDATE);
-    identityLinkEntity.insert();
+    Context.getCommandContext().getIdentityLinkEntityManager().insert(identityLinkEntity);
     return identityLinkEntity;
   }
 
