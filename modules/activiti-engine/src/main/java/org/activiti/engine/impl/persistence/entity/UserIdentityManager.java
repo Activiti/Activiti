@@ -37,6 +37,8 @@ public interface UserIdentityManager {
   User findUserById(String userId);
 
   void deleteUser(String userId);
+  
+  void deletePicture(User user);
 
   List<User> findUserByQueryCriteria(UserQueryImpl query, Page page);
 

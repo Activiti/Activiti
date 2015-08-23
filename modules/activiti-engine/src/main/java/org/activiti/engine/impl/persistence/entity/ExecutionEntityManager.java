@@ -579,7 +579,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (JobEntity job : jobsForExecution) {
-      job.delete(); // TODO: should be moved to entitymanager!
+      commandContext.getJobEntityManager().delete(job);
       if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
       }

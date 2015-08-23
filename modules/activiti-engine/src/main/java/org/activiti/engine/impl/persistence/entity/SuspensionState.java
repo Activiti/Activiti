@@ -29,8 +29,7 @@ public interface SuspensionState {
 
   int getStateCode();
 
-  // /////////////////////////////////////////////////// default
-  // implementation
+  // default implementation /////////////////////////////////////////////////// 
 
   static class SuspensionStateImpl implements SuspensionState {
 

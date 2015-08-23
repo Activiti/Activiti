@@ -685,7 +685,8 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
     VariableType type = variableTypes.findVariableType(value);
 
-    VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
+    VariableInstanceEntity variableInstance = Context.getCommandContext().getVariableInstanceEntityManager()
+        .createAndInsert(variableName, type, value);
     initializeVariableInstanceBackPointer(variableInstance);
 
     if (variableInstances != null) {

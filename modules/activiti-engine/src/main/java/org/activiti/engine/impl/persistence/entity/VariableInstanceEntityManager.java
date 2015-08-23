@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.variable.VariableType;
 
 /**
  * @author Tom Baeyens
@@ -33,6 +34,21 @@ public class VariableInstanceEntityManager extends AbstractEntityManager<Variabl
   @Override
   public Class<VariableInstanceEntity> getManagedPersistentObject() {
     return VariableInstanceEntity.class;
+  }
+  
+  public VariableInstanceEntity create(String name, VariableType type, Object value) {
+    VariableInstanceEntity variableInstance = new VariableInstanceEntity();
+    variableInstance.name = name;
+    variableInstance.type = type;
+    variableInstance.typeName = type.getTypeName();
+    variableInstance.setValue(value);
+    return variableInstance;
+  }
+  
+  public VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
+    VariableInstanceEntity variableInstance = create(name, type, value);
+    insert(variableInstance);
+    return variableInstance;
   }
 
   @SuppressWarnings("unchecked")

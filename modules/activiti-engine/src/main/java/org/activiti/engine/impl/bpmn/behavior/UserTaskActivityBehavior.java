@@ -56,7 +56,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(ActivityExecution execution) {
-    TaskEntity task = TaskEntity.createAndInsert(execution);
+    TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
     task.setExecution(execution);
     task.setTaskDefinition(taskDefinition);
 

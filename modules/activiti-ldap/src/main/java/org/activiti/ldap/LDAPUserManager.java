@@ -110,6 +110,11 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
   public void deleteUser(String userId) {
     throw new ActivitiException("LDAP user manager doesn't support deleting a user");
   }
+  
+  @Override
+  public void deletePicture(User user) {
+    throw new ActivitiException("LDAP user manager doesn't support deleting a user picture");
+  }
 
   @Override
   public List<User> findUserByQueryCriteria(final UserQueryImpl query, final Page page) {

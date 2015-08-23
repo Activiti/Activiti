@@ -53,7 +53,7 @@ public class CancelJobsCmd implements Command<Void>, Serializable {
           commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
         }
 
-        jobToDelete.delete();
+        commandContext.getJobEntityManager().delete(jobToDelete);
       }
     }
     return null;

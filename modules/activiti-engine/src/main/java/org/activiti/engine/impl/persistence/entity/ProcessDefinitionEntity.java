@@ -31,7 +31,6 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Joram Barrez
@@ -75,27 +74,17 @@ public class ProcessDefinitionEntity implements ProcessDefinition, PersistentObj
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
     eventSupport = new ActivitiEventSupport();
-
+  }
+  
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("suspensionState", this.suspensionState);
+    persistentState.put("category", this.category);
+    return persistentState;
   }
 
-  public IdentityLinkEntity addIdentityLink(String userId, String groupId) {
-    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
-    getIdentityLinks().add(identityLinkEntity);
-    identityLinkEntity.setProcessDef(this);
-    identityLinkEntity.setUserId(userId);
-    identityLinkEntity.setGroupId(groupId);
-    identityLinkEntity.setType(IdentityLinkType.CANDIDATE);
-    Context.getCommandContext().getIdentityLinkEntityManager().insert(identityLinkEntity);
-    return identityLinkEntity;
-  }
-
-  public void deleteIdentityLink(String userId, String groupId) {
-    List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessDefinitionUserAndGroup(id, userId, groupId);
-
-    for (IdentityLinkEntity identityLink : identityLinks) {
-      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, false);
-    }
-  }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public List<IdentityLinkEntity> getIdentityLinks() {
     if (!isIdentityLinksInitialized) {
@@ -104,20 +93,6 @@ public class ProcessDefinitionEntity implements ProcessDefinition, PersistentObj
     }
 
     return definitionIdentityLinkEntities;
-  }
-
-  public String toString() {
-    return "ProcessDefinitionEntity[" + id + "]";
-  }
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("suspensionState", this.suspensionState);
-    persistentState.put("category", this.category);
-    return persistentState;
   }
 
   public String getKey() {
@@ -310,6 +285,10 @@ public class ProcessDefinitionEntity implements ProcessDefinition, PersistentObj
 
   public void setIoSpecification(IOSpecification ioSpecification) {
     this.ioSpecification = ioSpecification;
+  }
+  
+  public String toString() {
+    return "ProcessDefinitionEntity[" + id + "]";
   }
 
 }

@@ -64,6 +64,19 @@ public class UserEntityManager extends AbstractEntityManager<UserEntity> impleme
   public User findUserById(String userId) {
     return (UserEntity) getDbSqlSession().selectOne("selectUserById", userId);
   }
+  
+  public void delete(UserEntity userEntity) {
+    super.delete(userEntity);
+    deletePicture(userEntity);
+  }
+  
+  @Override
+  public void deletePicture(User user) {
+    UserEntity userEntity = (UserEntity) user;
+    if (userEntity.getPictureByteArrayRef() != null) {
+      userEntity.getPictureByteArrayRef().delete();
+    }
+  }
 
   @SuppressWarnings("unchecked")
   public void deleteUser(String userId) {
@@ -75,11 +88,7 @@ public class UserEntityManager extends AbstractEntityManager<UserEntity> impleme
       }
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
 
-      user.delete();
-
-      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, user));
-      }
+      delete(user);
     }
   }
 

@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.engine.impl.variable.JPAEntityListVariableType;
@@ -56,7 +57,7 @@ public class QueryVariableValue implements Serializable {
       } else {
         // Type implementation determines which fields are set on the
         // entity
-        variableInstanceEntity = VariableInstanceEntity.create(name, type, value);
+        variableInstanceEntity = Context.getCommandContext().getVariableInstanceEntityManager().create(name, type, value);
       }
     }
   }

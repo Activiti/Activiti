@@ -15,8 +15,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
@@ -91,5 +89,5 @@ public class TimerEntity extends JobEntity {
   public void setMaxIterations(int maxIterations) {
     this.maxIterations = maxIterations;
   }
-  
+
 }

@@ -30,8 +30,7 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     JobEntity jobToDelete = getJobToDelete(commandContext);
-
-    jobToDelete.delete();
+    commandContext.getJobEntityManager().delete(jobToDelete);
     return null;
   }
 

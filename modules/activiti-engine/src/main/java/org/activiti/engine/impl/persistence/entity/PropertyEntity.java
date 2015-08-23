@@ -57,9 +57,6 @@ public class PropertyEntity implements PersistentObject, HasRevision, Serializab
     this.value = value;
   }
 
-  // persistent object methods
-  // ////////////////////////////////////////////////
-
   public String getId() {
     return name;
   }

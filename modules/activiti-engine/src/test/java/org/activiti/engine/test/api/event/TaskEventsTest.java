@@ -86,8 +86,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
     assertExecutionDetails(event, processInstance);
     listener.clearEventsReceived();
 
-    // Updating detached task and calling saveTask should trigger a single
-    // update-event
+    // Updating detached task and calling saveTask should trigger a single update-event
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
     task.setDueDate(new Date());

@@ -71,43 +71,19 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
 
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected String jobType;
-
-  public void insert() {
-    Context.getCommandContext().getDbSqlSession().insert(this);
-
-    // add link to execution
-    if (executionId != null) {
-      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-      execution.getJobs().add(this);
-
-      // Inherit tenant if (if applicable)
-      if (execution.getTenantId() != null) {
-        setTenantId(execution.getTenantId());
-      }
-    }
-
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
-    }
+  
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("lockOwner", lockOwner);
+    persistentState.put("lockExpirationTime", lockExpirationTime);
+    persistentState.put("retries", retries);
+    persistentState.put("duedate", duedate);
+    persistentState.put("exceptionMessage", exceptionMessage);
+    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
+    return persistentState;
   }
-
-  public void delete() {
-    Context.getCommandContext().getDbSqlSession().delete(this);
-
-    // Also delete the job's exception byte array
-    exceptionByteArrayRef.delete();
-
-    // remove link to execution
-    if (executionId != null) {
-      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-      execution.getJobs().remove(this);
-    }
-
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
-    }
-  }
+  
+  // getters and setters ////////////////////////////////////////////////////////
 
   public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
@@ -142,19 +118,6 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
       throw new ActivitiException("UTF-8 is not a supported encoding");
     }
   }
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("lockOwner", lockOwner);
-    persistentState.put("lockExpirationTime", lockExpirationTime);
-    persistentState.put("retries", retries);
-    persistentState.put("duedate", duedate);
-    persistentState.put("exceptionMessage", exceptionMessage);
-    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
-    return persistentState;
-  }
-  
-//getters and setters ////////////////////////////////////////////////////////
 
   public int getRevisionNext() {
     return revision + 1;

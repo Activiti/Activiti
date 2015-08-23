@@ -35,7 +35,7 @@ public class NewTaskCmd implements Command<Task>, Serializable {
 
   public Task execute(CommandContext commandContext) {
     Date currentTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-    TaskEntity task = TaskEntity.create(currentTime);
+    TaskEntity task = commandContext.getTaskEntityManager().create(currentTime); 
     task.setId(taskId);
     return task;
   }

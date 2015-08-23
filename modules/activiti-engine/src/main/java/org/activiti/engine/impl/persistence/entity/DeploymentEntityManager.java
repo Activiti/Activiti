@@ -102,7 +102,7 @@ public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEnt
                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
           }
 
-          ((JobEntity) timerStartJob).delete();
+          Context.getCommandContext().getJobEntityManager().delete((JobEntity) timerStartJob);
         }
       }
       

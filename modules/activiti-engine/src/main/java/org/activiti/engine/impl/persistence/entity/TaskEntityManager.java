@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.task.Task;
@@ -41,10 +44,72 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
     return TaskEntity.class;
   }
   
+  /**
+   * Creates a new task. This task still will have to be persisted. See {@link #insert(ExecutionEntity))}.
+   */
+  public TaskEntity create(Date createTime) {
+    TaskEntity task = new TaskEntity();
+    task.isIdentityLinksInitialized = true;
+    task.createTime = createTime;
+    return task;
+  }
+  
+  /** creates and initializes a new persistent task. */
+  public TaskEntity createAndInsert(ActivityExecution execution) {
+    TaskEntity task = create(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    insert(task, (ExecutionEntity) execution);
+    return task;
+  }
+  
   @Override
   public void insert(TaskEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
     Context.getCommandContext().getHistoryManager().recordTaskId(entity);
+  }
+  
+  public void insert(TaskEntity taskEntity, ExecutionEntity execution) {
+
+    // Inherit tenant id (if applicable)
+    if (execution != null && execution.getTenantId() != null) {
+      taskEntity.setTenantId(execution.getTenantId());
+    }
+
+    if (execution != null) {
+      execution.getTasks().add(taskEntity);
+      taskEntity.setExecutionId(execution.getId());
+      taskEntity.setProcessInstanceId(execution.getProcessInstanceId());
+      taskEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
+      
+      Context.getCommandContext().getHistoryManager().recordTaskExecutionIdChange(taskEntity.getId(), taskEntity.getExecutionId());
+    }
+    
+    super.insert(taskEntity, true);
+
+    Context.getCommandContext().getHistoryManager().recordTaskCreated(taskEntity, execution);
+  }
+  
+  public void update(TaskEntity taskEntity) {
+    // Needed to make history work: the setter will also update the historic task
+    taskEntity.setOwner(taskEntity.getOwner());
+    taskEntity.setAssignee(taskEntity.getAssignee(), true, false);
+    taskEntity.setDelegationState(taskEntity.getDelegationState());
+    taskEntity.setName(taskEntity.getName());
+    taskEntity.setDescription(taskEntity.getDescription());
+    taskEntity.setPriority(taskEntity.getPriority());
+    taskEntity.setCategory(taskEntity.getCategory());
+    taskEntity.setCreateTime(taskEntity.getCreateTime());
+    taskEntity.setDueDate(taskEntity.getDueDate());
+    taskEntity.setParentTaskId(taskEntity.getParentTaskId());
+    taskEntity.setFormKey(taskEntity.getFormKey());
+
+    CommandContext commandContext = Context.getCommandContext();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    dbSqlSession.update(taskEntity);
+
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      commandContext.getProcessEngineConfiguration().getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, taskEntity));
+    }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -118,7 +183,6 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
     return (TaskEntity) getDbSqlSession().selectById(TaskEntity.class, id);
   }
 
-  @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByExecutionId(final String executionId) {
     return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
       

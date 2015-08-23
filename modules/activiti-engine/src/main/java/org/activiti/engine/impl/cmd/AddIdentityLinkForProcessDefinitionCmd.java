@@ -58,7 +58,7 @@ public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Se
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
 
-    processDefinition.addIdentityLink(userId, groupId);
+    commandContext.getIdentityLinkEntityManager().addIdentityLink(processDefinition, userId, groupId);
 
     return null;
   }

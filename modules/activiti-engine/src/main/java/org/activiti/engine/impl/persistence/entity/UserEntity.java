@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
@@ -44,12 +43,6 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
 
   public UserEntity(String id) {
     this.id = id;
-  }
-
-  public void delete() {
-    Context.getCommandContext().getDbSqlSession().delete(this);
-
-    deletePicture();
   }
 
   public Object getPersistentState() {
@@ -88,7 +81,7 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   protected void deletePicture() {
     pictureByteArrayRef.delete();
   }
-
+  
   public String getId() {
     return id;
   }
@@ -141,4 +134,8 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
     return pictureByteArrayRef.getId() != null;
   }
 
+  public ByteArrayRef getPictureByteArrayRef() {
+    return pictureByteArrayRef;
+  }
+  
 }

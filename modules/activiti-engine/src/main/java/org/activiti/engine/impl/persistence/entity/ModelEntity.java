@@ -60,8 +60,7 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
     return persistentState;
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
 
   public String getId() {
     return id;
