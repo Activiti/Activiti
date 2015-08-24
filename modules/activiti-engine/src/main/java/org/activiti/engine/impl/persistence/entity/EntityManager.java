@@ -26,11 +26,9 @@ public interface EntityManager<Entity extends PersistentObject> {
 
   void insert(Entity entity, boolean fireCreateEvent);
 
-  Entity get(String persistentObjectId);
+  Entity getEntity(String entityId);
 
-  Entity getEntity(Class<? extends Entity> clazz, String entityId, CachedEntityMatcher<Entity> cachedEntityMatcher);
-
-  Entity getEntity(Class<? extends Entity> clazz, String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher);
+  Entity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher);
 
   List<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition);
   

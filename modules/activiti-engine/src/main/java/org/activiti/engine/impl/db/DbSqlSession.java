@@ -757,7 +757,7 @@ public class DbSqlSession implements Session {
       for (CachedObject cachedObject : classCache.values()) {
 
         PersistentObject persistentObject = cachedObject.getPersistentObject();
-        if (!isPersistentObjectDeleted(persistentObject)) {
+        if (!isPersistentObjectToBeDeleted(persistentObject)) {
           Object originalState = cachedObject.getPersistentObjectState();
           if (persistentObject.getPersistentState() != null && !persistentObject.getPersistentState().equals(originalState)) {
             updatedObjects.add(persistentObject);
@@ -772,7 +772,7 @@ public class DbSqlSession implements Session {
     return updatedObjects;
   }
 
-  public boolean isPersistentObjectDeleted(PersistentObject persistentObject) {
+  public boolean isPersistentObjectToBeDeleted(PersistentObject persistentObject) {
     for (DeleteOperation deleteOperation : deleteOperations) {
       if (deleteOperation.sameIdentity(persistentObject)) {
         return true;

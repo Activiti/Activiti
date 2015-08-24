@@ -48,7 +48,7 @@ public class EndExecutionOperation extends AbstractOperation {
     // Find parent execution. If not found, it's the process instance and other logic needs to happen
     ExecutionEntity parentExecution = null;
     if (executionEntity.getParentId() != null) {
-      parentExecution = executionEntityManager.get(executionEntity.getParentId());
+      parentExecution = executionEntityManager.getEntity(executionEntity.getParentId());
     }
     
     if (parentExecution != null) {

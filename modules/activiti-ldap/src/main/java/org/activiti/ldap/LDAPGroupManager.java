@@ -187,17 +187,12 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   }
 
   @Override
-  public GroupEntity get(String persistentObjectId) {
+  public GroupEntity getEntity(String entityId) {
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 
   @Override
-  public GroupEntity getEntity(Class<? extends GroupEntity> clazz, String entityId, CachedEntityMatcher<GroupEntity> cachedEntityMatcher) {
-    throw new ActivitiException("Unsupported by LDAP group manager");
-  }
-
-  @Override
-  public GroupEntity getEntity(Class<? extends GroupEntity> clazz, String selectQuery, Object parameter, CachedEntityMatcher<GroupEntity> cachedEntityMatcher) {
+  public GroupEntity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<GroupEntity> cachedEntityMatcher) {
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 

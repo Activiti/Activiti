@@ -328,17 +328,12 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public UserEntity get(String persistentObjectId) {
+  public UserEntity getEntity(String entityId) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 
   @Override
-  public UserEntity getEntity(Class<? extends UserEntity> clazz, String entityId, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
-    throw new ActivitiException("Unsupported by LDAP user manager");
-  }
-
-  @Override
-  public UserEntity getEntity(Class<? extends UserEntity> clazz, String selectQuery, Object parameter, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
+  public UserEntity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 

@@ -60,7 +60,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
-    return getEntity(ExecutionEntity.class, "selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
+    return getEntity("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
 
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getSuperExecutionId() != null && superExecutionId.equals(executionEntity.getSuperExecutionId());
@@ -91,12 +91,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public ExecutionEntity findExecutionById(final String executionId) {
-    return (ExecutionEntity) getEntity(ExecutionEntity.class, executionId, new CachedEntityMatcher<ExecutionEntity>() {
-      @Override
-      public boolean isRetained(ExecutionEntity entity) {
-        return entity.getId().equals(executionId);
-      }
-    });
+    return getEntity(executionId);
   }
   
   @Override
