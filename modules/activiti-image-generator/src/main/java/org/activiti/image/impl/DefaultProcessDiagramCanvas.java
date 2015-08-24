@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * Some of the icons used are licensed under a Creative Commons Attribution 2.5
  * License, see http://www.famfamfam.com/lab/icons/silk/
  * 
- * @see org.activiti.engine.impl.bpmn.diagram.DefaultProcessDiagramGenerator
+ * @see org.activiti.image.impl.DefaultProcessDiagramGenerator
  * @author Joram Barrez
  */
 public class DefaultProcessDiagramCanvas {
@@ -245,7 +245,7 @@ public class DefaultProcessDiagramCanvas {
   /**
    * Generates an image of what currently is drawn on the canvas.
    * 
-   * Throws an {@link ActivitiException} when {@link #close()} is already
+   * Throws an {@link ActivitiImageException} when {@link #close()} is already
    * called.
    */
   public InputStream generateImage(String imageType) {
@@ -274,7 +274,7 @@ public class DefaultProcessDiagramCanvas {
   /**
    * Generates an image of what currently is drawn on the canvas.
    * 
-   * Throws an {@link ActivitiException} when {@link #close()} is already
+   * Throws an {@link ActivitiImageException} when {@link #close()} is already
    * called.
    */
   public BufferedImage generateBufferedImage(String imageType) {
@@ -675,20 +675,15 @@ public class DefaultProcessDiagramCanvas {
       // Include some padding
       int availableTextSpace = height - 6;
 
-      // Create rotation for derived font
-      AffineTransform transformation = new AffineTransform();
-      transformation.setToIdentity();
-      transformation.rotate(270 * Math.PI/180);
-
-      Font currentFont = g.getFont();
-      Font theDerivedFont = currentFont.deriveFont(transformation);
-      g.setFont(theDerivedFont);
+      AffineTransform originalTransform = g.getTransform();
       
+      g.rotate(270 * Math.PI / 180);
+
       String truncated = fitTextToWidth(name, availableTextSpace);
       int realWidth = fontMetrics.stringWidth(truncated);
-      
-      g.drawString(truncated, x + 2 + fontMetrics.getHeight(), 3 + y + availableTextSpace - (availableTextSpace - realWidth) / 2);
-      g.setFont(currentFont);
+
+      g.drawString(truncated, (availableTextSpace - realWidth) / 2 -(3 + y + availableTextSpace), x + 2 + fontMetrics.getHeight());
+      g.setTransform(originalTransform);
     }
   }
 
