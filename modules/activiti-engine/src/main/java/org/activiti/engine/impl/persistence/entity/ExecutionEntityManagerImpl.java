@@ -386,7 +386,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       }
     }
     
-    IdentityLinkEntityManagerImpl identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
+    IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
     List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(execution.getId());
     for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
       identityLinkEntityManager.delete(identityLinkEntity);
@@ -504,7 +504,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     executionEntity.setActive(false);
     
     if (executionEntity.getId().equals(executionEntity.getProcessInstanceId())) {
-      IdentityLinkEntityManagerImpl identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+      IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
       Collection<IdentityLinkEntity> identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(executionEntity.getProcessInstanceId());
       for (IdentityLinkEntity identityLink : identityLinks) {
         identityLinkEntityManager.delete(identityLink);

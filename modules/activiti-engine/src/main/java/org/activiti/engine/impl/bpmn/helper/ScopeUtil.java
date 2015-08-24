@@ -24,7 +24,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.apache.commons.collections.CollectionUtils;
@@ -74,7 +74,7 @@ public class ScopeUtil {
    * Creates a new event scope execution and moves existing event subscriptions to this new execution
    */
   public static void createCopyOfSubProcessExecutionForCompensation(ExecutionEntity subProcessExecution, ExecutionEntity parentScopeExecution) {
-    EventSubscriptionEntityManagerImpl eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findEventSubscriptionsByExecutionAndType(subProcessExecution.getId(), "compensate");
     
     List<CompensateEventSubscriptionEntity> compensateEventSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();

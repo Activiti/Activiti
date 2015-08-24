@@ -183,7 +183,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     
     // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
 
-    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
 
     // Reuse existing one

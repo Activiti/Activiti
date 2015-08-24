@@ -23,7 +23,6 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ public class EndExecutionOperation extends AbstractOperation {
   @Override
   public void run() {
 
-    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
     // Find parent execution. If not found, it's the process instance and other logic needs to happen

@@ -11,7 +11,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 
@@ -61,7 +61,7 @@ public class DestroyScopeOperation extends AbstractOperation {
     }
 
     // Delete all scope tasks
-    TaskEntityManagerImpl taskEntityManager = commandContext.getTaskEntityManager();
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(parentScopeExecution.getId());
     for (TaskEntity taskEntity : tasksForExecution) {
       taskEntityManager.delete(taskEntity);

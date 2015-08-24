@@ -38,9 +38,12 @@ import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
@@ -57,9 +60,12 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
@@ -69,6 +75,7 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
@@ -280,15 +287,15 @@ public class CommandContext {
     return getSession(ModelEntityManagerImpl.class);
   }
 
-  public ExecutionEntityManagerImpl getExecutionEntityManager() {
+  public ExecutionEntityManager getExecutionEntityManager() {
     return getSession(ExecutionEntityManagerImpl.class);
   }
 
-  public TaskEntityManagerImpl getTaskEntityManager() {
+  public TaskEntityManager getTaskEntityManager() {
     return getSession(TaskEntityManagerImpl.class);
   }
 
-  public IdentityLinkEntityManagerImpl getIdentityLinkEntityManager() {
+  public IdentityLinkEntityManager getIdentityLinkEntityManager() {
     return getSession(IdentityLinkEntityManagerImpl.class);
   }
 
@@ -320,11 +327,11 @@ public class CommandContext {
     return getSession(HistoricIdentityLinkEntityManagerImpl.class);
   }
 
-  public EventLogEntryEntityManagerImpl getEventLogEntryEntityManager() {
+  public EventLogEntryEntityManager getEventLogEntryEntityManager() {
     return getSession(EventLogEntryEntityManagerImpl.class);
   }
 
-  public JobEntityManagerImpl getJobEntityManager() {
+  public JobEntityManager getJobEntityManager() {
     return getSession(JobEntityManagerImpl.class);
   }
 
@@ -360,7 +367,7 @@ public class CommandContext {
     return getSession(PropertyEntityManagerImpl.class);
   }
 
-  public EventSubscriptionEntityManagerImpl getEventSubscriptionEntityManager() {
+  public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
     return getSession(EventSubscriptionEntityManagerImpl.class);
   }
 

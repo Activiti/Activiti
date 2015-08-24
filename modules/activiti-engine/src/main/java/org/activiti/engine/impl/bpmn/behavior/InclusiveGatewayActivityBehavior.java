@@ -20,7 +20,7 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ExecutionGraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
 
   protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
     CommandContext commandContext = Context.getCommandContext();
-    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     
     lockFirstParentScope(execution);
     

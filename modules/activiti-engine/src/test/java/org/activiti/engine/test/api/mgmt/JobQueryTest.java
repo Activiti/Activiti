@@ -27,7 +27,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -416,7 +416,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        JobEntityManagerImpl jobManager = commandContext.getJobEntityManager();
+        JobEntityManager jobManager = commandContext.getJobEntityManager();
 
         timerEntity = new TimerEntity();
         timerEntity.setLockOwner(UUID.randomUUID().toString());
@@ -443,7 +443,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        JobEntityManagerImpl jobManager = commandContext.getJobEntityManager();
+        JobEntityManager jobManager = commandContext.getJobEntityManager();
 
         timerEntity = new TimerEntity();
         timerEntity.setLockOwner(UUID.randomUUID().toString());

@@ -27,7 +27,6 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -126,7 +125,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
   protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {
     // Delete all child executions
-    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtils.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
