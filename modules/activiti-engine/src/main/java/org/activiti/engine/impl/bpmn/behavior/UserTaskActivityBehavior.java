@@ -147,7 +147,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     Expression skipExpression = taskDefinition.getSkipExpression();
     if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
       CommandContext commandContext = Context.getCommandContext();
-      commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false);
+      commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
       leave(execution);
     }
   }

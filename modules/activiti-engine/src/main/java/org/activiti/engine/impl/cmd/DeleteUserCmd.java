@@ -34,7 +34,7 @@ public class DeleteUserCmd implements Command<Void>, Serializable {
     if (userId == null) {
       throw new ActivitiIllegalArgumentException("userId is null");
     }
-    commandContext.getUserIdentityManager().deleteUser(userId);
+    commandContext.getUserEntityManager().deleteUser(userId);
 
     return null;
   }

@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -49,7 +50,23 @@ public class FindActiveActivityIdsCmd implements Command<List<String>>, Serializ
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
 
-    return executionEntityManager.findActiveActivityIds(execution);
+    return findActiveActivityIds(execution);
+  }
+  
+  public List<String> findActiveActivityIds(ExecutionEntity executionEntity) {
+    List<String> activeActivityIds = new ArrayList<String>();
+    collectActiveActivityIds(executionEntity, activeActivityIds);
+    return activeActivityIds;
+  }
+
+  protected void collectActiveActivityIds(ExecutionEntity executionEntity, List<String> activeActivityIds) {
+    if (executionEntity.isActive() && executionEntity.getActivityId() != null) {
+      activeActivityIds.add(executionEntity.getActivityId());
+    }
+    
+    for (ExecutionEntity childExecution : executionEntity.getExecutions()) {
+      collectActiveActivityIds(childExecution, activeActivityIds);
+    }
   }
   
 }

@@ -1171,7 +1171,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     // TODO: Discuss about removing this feature? Or document it properly
     // and maybe recommend to not use it
     // and explain alternatives
-    List<Group> groups = Context.getCommandContext().getGroupIdentityManager().findGroupsByUser(candidateUser);
+    List<Group> groups = Context.getCommandContext().getGroupEntityManager().findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
     for (Group group : groups) {
       groupIds.add(group.getId());

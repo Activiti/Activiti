@@ -13,38 +13,13 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class MembershipEntityManager extends AbstractEntityManager<MembershipEntity> implements MembershipIdentityManager {
+public interface MembershipEntityManager extends EntityManager<MembershipEntity> {
 
-  public void createMembership(String userId, String groupId) {
-    MembershipEntity membershipEntity = new MembershipEntity();
-    membershipEntity.setUserId(userId);
-    membershipEntity.setGroupId(groupId);
-    getDbSqlSession().insert(membershipEntity);
+  void createMembership(String userId, String groupId);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_CREATED, groupId, userId));
-    }
-  }
-
-  public void deleteMembership(String userId, String groupId) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    getDbSqlSession().delete("deleteMembership", parameters);
-
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_DELETED, groupId, userId));
-    }
-  }
+  void deleteMembership(String userId, String groupId);
 
 }

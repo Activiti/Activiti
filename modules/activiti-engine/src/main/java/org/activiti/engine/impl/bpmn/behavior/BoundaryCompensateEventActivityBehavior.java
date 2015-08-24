@@ -102,7 +102,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof CompensateEventSubscriptionEntity && eventSubscription.getActivityId().equals(compensateEventDefinition.getActivityRef())) {
-          eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+          eventSubscriptionEntityManager.delete(eventSubscription);
         }
       }
     }

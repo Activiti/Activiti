@@ -23,11 +23,11 @@ public class NativeGroupQueryImpl extends AbstractNativeQuery<NativeGroupQuery, 
   // results ////////////////////////////////////////////////////////////////
 
   public List<Group> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext.getGroupIdentityManager().findGroupsByNativeQuery(parameterMap, firstResult, maxResults);
+    return commandContext.getGroupEntityManager().findGroupsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext.getGroupIdentityManager().findGroupCountByNativeQuery(parameterMap);
+    return commandContext.getGroupEntityManager().findGroupCountByNativeQuery(parameterMap);
   }
 
 }

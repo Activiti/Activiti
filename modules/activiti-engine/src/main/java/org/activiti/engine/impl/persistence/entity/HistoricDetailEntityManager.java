@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
@@ -19,104 +18,28 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.history.HistoryLevel;
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricDetailEntity> {
+public interface HistoricDetailEntityManager extends EntityManager<HistoricDetailEntity> {
+
+  HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId);
+
+  HistoricDetailVariableInstanceUpdateEntity copyAndInsertHistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance);
+
   
-  public HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, 
-      String propertyId, String propertyValue, String taskId) {
-    
-    HistoricFormPropertyEntity historicFormPropertyEntity = new HistoricFormPropertyEntity();
-    historicFormPropertyEntity.setProcessInstanceId(execution.getProcessInstanceId());
-    historicFormPropertyEntity.setExecutionId(execution.getId());
-    historicFormPropertyEntity.setTaskId(taskId);
-    historicFormPropertyEntity.setPropertyId(propertyId);
-    historicFormPropertyEntity.setPropertyValue(propertyValue);
-    historicFormPropertyEntity.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+  long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery);
 
-    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true, false);
-    if (historicActivityInstance != null) {
-      historicFormPropertyEntity.setActivityInstanceId(historicActivityInstance.getId());
-    }
-    
-    insert(historicFormPropertyEntity);
-    
-    return historicFormPropertyEntity;
-  }
+  List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page);
+
+  void deleteHistoricDetailsByTaskId(String taskId);
+
+  List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+
+  long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap);
   
-  public HistoricDetailVariableInstanceUpdateEntity copyAndInsertHistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance) {
-    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity();
-    historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
-    historicVariableUpdate.executionId = variableInstance.getExecutionId();
-    historicVariableUpdate.taskId = variableInstance.getTaskId();
-    historicVariableUpdate.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    historicVariableUpdate.revision = variableInstance.getRevision();
-    historicVariableUpdate.name = variableInstance.getName();
-    historicVariableUpdate.variableType = variableInstance.getType();
-    historicVariableUpdate.textValue = variableInstance.getTextValue();
-    historicVariableUpdate.textValue2 = variableInstance.getTextValue2();
-    historicVariableUpdate.doubleValue = variableInstance.getDoubleValue();
-    historicVariableUpdate.longValue = variableInstance.getLongValue();
 
-    if (variableInstance.getBytes() != null) {
-      String byteArrayName = "hist.detail.var-" + variableInstance.getName();
-      historicVariableUpdate.byteArrayRef.setValue(byteArrayName, variableInstance.getBytes());
-    }
+  void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId);
 
-    insert(historicVariableUpdate);
-    return historicVariableUpdate;
-  }
-  
-  @Override
-  public void delete(HistoricDetailEntity entity, boolean fireDeleteEvent) {
-    super.delete(entity, fireDeleteEvent);
-    
-    if (entity instanceof HistoricDetailVariableInstanceUpdateEntity) {
-      ((HistoricDetailVariableInstanceUpdateEntity) entity).getByteArrayRef().delete();
-    }
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
-    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession().createHistoricDetailQuery().processInstanceId(historicProcessInstanceId).list();
-
-      for (HistoricDetailEntity historicDetail : historicDetails) {
-        delete(historicDetail);
-      }
-    }
-  }
-
-  public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
-  }
-
-  public void deleteHistoricDetailsByTaskId(String taskId) {
-    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
-      HistoricDetailQueryImpl detailsQuery = (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
-      List<HistoricDetail> details = detailsQuery.list();
-      for (HistoricDetail detail : details) {
-        delete((HistoricDetailEntity) detail);
-      }
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricDetailByNativeQuery", parameterMap, firstResult, maxResults);
-  }
-
-  public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
-  }
 }

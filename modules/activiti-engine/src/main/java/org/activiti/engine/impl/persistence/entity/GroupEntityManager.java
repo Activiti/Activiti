@@ -16,94 +16,36 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Tom Baeyens
- * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class GroupEntityManager extends AbstractEntityManager<GroupEntity> implements GroupIdentityManager {
+public interface GroupEntityManager extends EntityManager<GroupEntity> {
 
-  public Group createNewGroup(String groupId) {
-    return new GroupEntity(groupId);
-  }
+  Group createNewGroup(String groupId);
 
-  public void insertGroup(Group group) {
-    getDbSqlSession().insert((PersistentObject) group);
+  void insertGroup(Group group);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, group));
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, group));
-    }
-  }
+  void updateGroup(Group updatedGroup);
 
-  public void updateGroup(Group updatedGroup) {
-    CommandContext commandContext = Context.getCommandContext();
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update((GroupEntity) updatedGroup);
+  void deleteGroup(String groupId);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
-    }
-  }
+  GroupQuery createNewGroupQuery();
 
-  public void deleteGroup(String groupId) {
-    GroupEntity group = getDbSqlSession().selectById(GroupEntity.class, groupId);
+  List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page);
 
-    if (group != null) {
-      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIPS_DELETED, groupId, null));
-      }
+  long findGroupCountByQueryCriteria(GroupQueryImpl query);
 
-      getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
-      getDbSqlSession().delete(group);
+  List<Group> findGroupsByUser(String userId);
 
-      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, group));
-      }
-    }
-  }
+  List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-  public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
-  }
+  long findGroupCountByNativeQuery(Map<String, Object> parameterMap);
 
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
-    return getDbSqlSession().selectList("selectGroupByQueryCriteria", query, page);
-  }
-
-  public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
-    return (Long) getDbSqlSession().selectOne("selectGroupCountByQueryCriteria", query);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUser(String userId) {
-    return getDbSqlSession().selectList("selectGroupsByUserId", userId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectGroupByNativeQuery", parameterMap, firstResult, maxResults);
-  }
-
-  public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectGroupCountByNativeQuery", parameterMap);
-  }
-
-  @Override
-  public boolean isNewGroup(Group group) {
-    return ((GroupEntity) group).getRevision() == 0;
-  }
+  boolean isNewGroup(Group group);
 
 }

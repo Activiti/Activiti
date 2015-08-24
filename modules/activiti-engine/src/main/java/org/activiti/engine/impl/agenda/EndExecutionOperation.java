@@ -23,6 +23,7 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class EndExecutionOperation extends AbstractOperation {
   @Override
   public void run() {
 
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
     // Find parent execution. If not found, it's the process instance and other logic needs to happen
@@ -55,12 +56,12 @@ public class EndExecutionOperation extends AbstractOperation {
 
       // If the execution is a scope, all the child executions must be deleted first.
       if (executionEntity.isScope()) {
-        executionEntityManager.deleteChildExecutions(executionEntity);
+        executionEntityManager.deleteChildExecutions(executionEntity, null, false);
       }
 
       // Delete current execution
       logger.debug("Ending execution {}", execution.getId());
-      executionEntityManager.deleteExecutionAndRelatedData(executionEntity);
+      executionEntityManager.deleteExecutionAndRelatedData(executionEntity, null, false);
 
       logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
 
@@ -166,7 +167,9 @@ public class EndExecutionOperation extends AbstractOperation {
       int activeExecutions = getNumberOfActiveChildExecutionsForProcessInstance(executionEntityManager, processInstanceId);
       if (activeExecutions == 0) {
         logger.debug("No active executions found. Ending process instance {} ", processInstanceId);
-        executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED");
+        executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, 
+            execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED",
+            false, false, true);
       } else {
         logger.debug("Active executions found. Process instance {} will not be ended.", processInstanceId);
       }
@@ -239,7 +242,7 @@ public class EndExecutionOperation extends AbstractOperation {
     List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     for (ExecutionEntity childExecution : executions) {
       if (childExecution.isEventScope()) {
-        executionEntityManager.deleteExecutionAndRelatedData(childExecution);
+        executionEntityManager.deleteExecutionAndRelatedData(childExecution, null, false);
       } else {
         allEventScopeExecutions = false;
         break;

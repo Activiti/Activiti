@@ -10,48 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.event.EventLogEntry;
 
 /**
  * @author Joram Barrez
  */
-public class EventLogEntryEntityManager extends AbstractEntityManager<EventLogEntryEntity> {
+public interface EventLogEntryEntityManager extends EntityManager<EventLogEntryEntity> {
 
-  public void insert(EventLogEntryEntity eventLogEntryEntity) {
-    getDbSqlSession().insert(eventLogEntryEntity);
-  }
+  List<EventLogEntry> findAllEventLogEntries();
 
-  @SuppressWarnings("unchecked")
-  public List<EventLogEntry> findAllEventLogEntries() {
-    return getDbSqlSession().selectList("selectAllEventLogEntries");
-  }
+  List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize);
 
-  @SuppressWarnings("unchecked")
-  public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("startLogNr", startLogNr);
-    if (pageSize > 0) {
-      params.put("endLogNr", startLogNr + pageSize + 1);
-    }
-    return getDbSqlSession().selectList("selectEventLogEntries", params);
-  }
+  List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId);
 
-  @SuppressWarnings("unchecked")
-  public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("processInstanceId", processInstanceId);
-    return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
-  }
-
-  public void deleteEventLogEntry(long logNr) {
-    getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
-  }
+  void deleteEventLogEntry(long logNr);
 
 }

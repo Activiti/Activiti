@@ -162,7 +162,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
         final List<EventSubscriptionEntity> subscriptions = new EventSubscriptionQueryImpl(commandContext).list();
         for (EventSubscriptionEntity eventSubscriptionEntity : subscriptions) {
           EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-          eventSubscriptionEntityManager.deleteEventSubscription(eventSubscriptionEntity);
+          eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
         }
         return null;
       }

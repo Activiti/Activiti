@@ -247,7 +247,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     // includes the groups the candidate
     // user is part of
     if (authorizationUserId != null) {
-      List<Group> groups = Context.getCommandContext().getGroupIdentityManager().findGroupsByUser(authorizationUserId);
+      List<Group> groups = Context.getCommandContext().getGroupEntityManager().findGroupsByUser(authorizationUserId);
       List<String> groupIds = new ArrayList<String>();
       for (Group group : groups) {
         groupIds.add(group.getId());

@@ -196,7 +196,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         continue;
       }
 
-      ExecutionEntity childExecutionEntity = commandContext.getExecutionEntityManager().createChildExecution(execution); 
+      ExecutionEntity childExecutionEntity = commandContext.getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
       childExecutionEntity.setScope(false);

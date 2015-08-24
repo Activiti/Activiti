@@ -325,7 +325,7 @@ public class BpmnDeployer implements Deployer {
           latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
 
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscriptionEntity);
+        eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
       }
 
     }
@@ -399,7 +399,7 @@ public class BpmnDeployer implements Deployer {
           latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
 
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscriptionEntity);
+        eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
       }
 
     }

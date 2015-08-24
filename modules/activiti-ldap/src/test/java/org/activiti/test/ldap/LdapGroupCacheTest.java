@@ -14,7 +14,7 @@ package org.activiti.test.ldap;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.test.Deployment;
 import org.activiti.ldap.LDAPGroupCache;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
@@ -31,7 +31,7 @@ public class LdapGroupCacheTest extends LDAPTestCase {
     super.setUp();
 
     // Set test cache listener
-    LDAPGroupManagerFactory ldapGroupManagerFactory = (LDAPGroupManagerFactory) processEngineConfiguration.getSessionFactories().get(GroupIdentityManager.class);
+    LDAPGroupManagerFactory ldapGroupManagerFactory = (LDAPGroupManagerFactory) processEngineConfiguration.getSessionFactories().get(GroupEntityManager.class);
     LDAPGroupCache ldapGroupCache = ldapGroupManagerFactory.getLdapGroupCache();
     ldapGroupCache.clear();
 

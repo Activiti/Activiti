@@ -14,8 +14,8 @@ package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
-import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 
 /**
  * @author Joram Barrez
@@ -23,11 +23,11 @@ import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 public class MembershipEntityManagerFactory implements SessionFactory {
 
   public Class<?> getSessionType() {
-    return MembershipIdentityManager.class;
+    return MembershipEntityManager.class;
   }
 
   public Session openSession() {
-    return new MembershipEntityManager();
+    return new MembershipEntityManagerImpl();
   }
 
 }

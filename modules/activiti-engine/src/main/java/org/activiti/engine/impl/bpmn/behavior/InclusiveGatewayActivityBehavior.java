@@ -20,7 +20,7 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.activiti.engine.impl.util.ExecutionGraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
 
   protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
     CommandContext commandContext = Context.getCommandContext();
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
     
     lockFirstParentScope(execution);
     
@@ -85,7 +85,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
       logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
 
       // Kill all executions here (except the incoming)
-      Collection<ExecutionEntity> executionsInGateway = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
+      Collection<ExecutionEntity> executionsInGateway = executionEntityManager.findInactiveExecutionsByActivityId(execution.getCurrentActivityId());
       for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
         if (!executionEntityInGateway.getId().equals(execution.getId())) {
           executionEntityManager.delete(executionEntityInGateway);

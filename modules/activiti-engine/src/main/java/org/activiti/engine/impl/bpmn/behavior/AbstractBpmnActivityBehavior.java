@@ -70,7 +70,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
       }
 
       ExecutionEntity childExecutionEntity = Context.getCommandContext()
-          .getExecutionEntityManager().createChildExecution(execution); 
+          .getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
       childExecutionEntity.setScope(false);

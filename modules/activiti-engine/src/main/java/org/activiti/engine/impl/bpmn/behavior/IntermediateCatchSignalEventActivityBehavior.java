@@ -49,7 +49,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
   @Override
   public void cancelEvent(ActivityExecution execution) {
     deleteSignalEventSubscription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
   protected ExecutionEntity deleteSignalEventSubscription(ActivityExecution execution) {
@@ -67,7 +67,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
 
-        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+        eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
     return executionEntity;

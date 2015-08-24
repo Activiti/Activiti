@@ -27,7 +27,7 @@ public class CreateUserQueryCmd implements Command<UserQuery>, Serializable {
   private static final long serialVersionUID = 1L;
 
   public UserQuery execute(CommandContext commandContext) {
-    return commandContext.getUserIdentityManager().createNewUserQuery();
+    return commandContext.getUserEntityManager().createNewUserQuery();
   }
 
 }

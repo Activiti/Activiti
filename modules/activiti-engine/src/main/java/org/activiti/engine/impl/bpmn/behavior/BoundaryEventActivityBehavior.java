@@ -21,6 +21,7 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -141,7 +142,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // This could be solved by not reusing an execution, but creating a new
     
     // Delete all child executions
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManagerImpl executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtils.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
@@ -154,11 +155,11 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     if (parentExecution.getCurrentFlowElement() instanceof CallActivity) {
       ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(parentExecution.getId());
       if (subProcessExecution != null) {
-        executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution, subProcessExecution.getCurrentActivityId(), "boundary event interrupting", true, false);
+        executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution.getId(), subProcessExecution.getCurrentActivityId(), "boundary event interrupting", true, false, true);
       }
     }
     
-    executionEntityManager.deleteDataRelatedToExecution(parentExecution);
+    executionEntityManager.deleteDataRelatedToExecution(parentExecution, null, false);
     executionEntityManager.delete(parentExecution);
   }
 

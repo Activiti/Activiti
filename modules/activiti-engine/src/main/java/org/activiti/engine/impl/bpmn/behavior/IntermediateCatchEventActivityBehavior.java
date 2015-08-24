@@ -59,7 +59,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
    * For an intermediate catch without type, it's simply leaving the event. 
    */
   public void cancelEvent(ActivityExecution execution) {
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
   
   protected EventGateway getPrecedingEventBasedGateway(ActivityExecution execution) {

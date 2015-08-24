@@ -15,7 +15,7 @@ package org.activiti.ldap;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.runtime.ClockReader;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 
@@ -44,7 +44,7 @@ public class LDAPGroupManagerFactory implements SessionFactory {
 
   @Override
   public Class<?> getSessionType() {
-    return GroupIdentityManager.class;
+    return GroupEntityManager.class;
   }
 
   @Override

@@ -2,7 +2,7 @@ package org.activiti.engine.impl.event.logger;
 
 import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +20,10 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
       return; // Not interested in events about exceptions
     }
     
-    EventLogEntryEntityManager eventLogEntryEntityManager = commandContext.getEventLogEntryEntityManager();
+    EventLogEntryEntityManagerImpl eventLogEntryEntityManager = commandContext.getEventLogEntryEntityManager();
     for (EventLoggerEventHandler eventHandler : eventHandlers) {
       try {
-        eventLogEntryEntityManager.insert(eventHandler.generateEventLogEntry(commandContext));
+        eventLogEntryEntityManager.insert(eventHandler.generateEventLogEntry(commandContext), false);
       } catch (Exception e) {
         logger.warn("Could not create event log", e);
       }

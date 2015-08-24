@@ -37,7 +37,7 @@ public class CreateGroupCmd implements Command<Group>, Serializable {
   }
 
   public Group execute(CommandContext commandContext) {
-    return commandContext.getGroupIdentityManager().createNewGroup(groupId);
+    return commandContext.getGroupEntityManager().createNewGroup(groupId);
   }
 
 }

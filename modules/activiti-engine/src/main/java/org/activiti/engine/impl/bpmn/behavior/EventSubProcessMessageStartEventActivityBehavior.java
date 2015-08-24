@@ -69,7 +69,7 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
       List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(executionEntity.getParentId());
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getId().equals(executionEntity.getId()) == false) {
-          executionEntityManager.deleteExecutionAndRelatedData(childExecution);
+          executionEntityManager.deleteExecutionAndRelatedData(childExecution, null, false);
         }
       }
     }
@@ -79,7 +79,7 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
 
-        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+        eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
     leave(executionEntity);

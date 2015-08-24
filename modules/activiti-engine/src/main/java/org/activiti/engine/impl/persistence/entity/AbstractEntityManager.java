@@ -16,11 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 /**
  * @author Joram Barrez
  */
-public class AbstractEntityManager<Entity extends PersistentObject> extends AbstractManager {
-
-  /*
-   * CRUD operations
-   */
+public class AbstractEntityManager<Entity extends PersistentObject> extends AbstractManager implements EntityManager<Entity> {
 
   public Class<Entity> getManagedPersistentObject() {
     // Cannot make abstract cause some managers don't use db persistence (eg ldap)
@@ -30,11 +26,17 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
   public List<Class<? extends Entity>> getManagedPersistentObjectSubClasses() {
     return null;
   }
+  
+  /*
+   * CRUD operations
+   */
 
+  @Override
   public void insert(Entity entity) {
     insert(entity, true);
   }
 
+  @Override
   public void insert(Entity entity, boolean fireCreateEvent) {
     getDbSqlSession().insert(entity);
 
@@ -43,7 +45,19 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, entity));
     }
   }
+  
+  @Override
+  public void delete(String id) {
+    Entity entity = get(id);
+    delete(entity);
+  }
+  
+  @Override
+  public void delete(Entity entity) {
+    delete(entity, true);
+  }
 
+  @Override
   public void delete(Entity entity, boolean fireDeleteEvent) {
     getDbSqlSession().delete(entity);
 
@@ -53,13 +67,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     }
   }
 
-  public void delete(Entity entity) {
-    delete(entity, true);
-  }
-
-  /**
-   * Will check the cache first before doing the db query.
-   */
+  @Override
   public Entity get(String persistentObjectId) {
     return getDbSqlSession().selectById(getManagedPersistentObject(), persistentObjectId);
   }
@@ -68,6 +76,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
    * Advanced operations
    */
 
+  @Override
   public Entity getEntity(Class<? extends Entity> clazz, String entityId, CachedEntityMatcher<Entity> cachedEntityMatcher) {
 
     // Cache
@@ -81,6 +90,8 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     return getDbSqlSession().selectById(clazz, entityId);
   }
   
+  @Override
+  @SuppressWarnings("unchecked")
   public Entity getEntity(Class<? extends Entity> clazz, String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher) {
     // Cache
     for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
@@ -93,10 +104,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     return (Entity) getDbSqlSession().selectOne(selectQuery, parameter);
   }
 
-  /**
-   * Main way to query a list of objects: 1. Fetches all data from the database using the provided query and parameters 2. Checks the internal entity cache and replaces any found entity with this
-   * newer (potentially changed) entity.
-   */
+  @Override
   @SuppressWarnings("unchecked")
   public List<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition) {
     HashMap<String, Entity> entityMap = new HashMap<String, Entity>();

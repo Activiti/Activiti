@@ -74,7 +74,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-    Collection<ExecutionEntity> joinedExecutions = executionEntityManager.getInactiveExecutionsInActivityAndForProcessInstance(execution.getCurrentActivityId(), execution.getProcessInstanceId());
+    Collection<ExecutionEntity> joinedExecutions = executionEntityManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(execution.getCurrentActivityId(), execution.getProcessInstanceId());
     if (multiInstanceExecution != null) {
       joinedExecutions = cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
     }
@@ -102,7 +102,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
           // The current execution will be reused and not deleted
           if (!joinedExecution.getId().equals(execution.getId())) {
-            executionEntityManager.deleteExecutionAndRelatedData(joinedExecution);
+            executionEntityManager.deleteExecutionAndRelatedData(joinedExecution, null, false);
           }
 
         }

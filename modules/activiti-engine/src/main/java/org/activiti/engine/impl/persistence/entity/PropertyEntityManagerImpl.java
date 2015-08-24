@@ -14,12 +14,14 @@
 package org.activiti.engine.impl.persistence.entity;
 
 /**
+ * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface MembershipIdentityManager {
+public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity> implements PropertyEntityManager {
 
-  void createMembership(String userId, String groupId);
-
-  void deleteMembership(String userId, String groupId);
+  @Override
+  public PropertyEntity findPropertyById(String propertyId) {
+    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
+  }
 
 }

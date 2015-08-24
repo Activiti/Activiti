@@ -28,7 +28,7 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
@@ -780,7 +780,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManager.class).insert(comment);
+      getSession(CommentEntityManagerImpl.class).insert(comment);
     }
   }
 
@@ -813,7 +813,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManager.class).insert(comment);
+      getSession(CommentEntityManagerImpl.class).insert(comment);
     }
   }
 
@@ -838,7 +838,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
       }
       comment.setMessage(attachmentName);
-      getSession(CommentEntityManager.class).insert(comment);
+      getSession(CommentEntityManagerImpl.class).insert(comment);
     }
   }
 
@@ -883,7 +883,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void deleteHistoricIdentityLink(String id) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLink(id);
+      getHistoricIdentityLinkEntityManager().delete(id);
     }
   }
 

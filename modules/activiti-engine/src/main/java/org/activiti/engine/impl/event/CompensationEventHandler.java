@@ -60,7 +60,7 @@ public class CompensationEventHandler implements EventHandler {
     if (flowElement instanceof SubProcess && ((SubProcess) flowElement).isForCompensation() == false) {
 
       // descend into scope:
-      List<CompensateEventSubscriptionEntity> eventsForThisScope = commandContext.getEventSubscriptionEntityManager().getCompensateEventSubscriptions(compensatingExecution.getId());
+      List<CompensateEventSubscriptionEntity> eventsForThisScope = commandContext.getEventSubscriptionEntityManager().findCompensateEventSubscriptionsByExecutionId(compensatingExecution.getId());
       ScopeUtil.throwCompensationEvent(eventsForThisScope, compensatingExecution, false);
 
     } else {

@@ -48,7 +48,7 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
       // TODO: this information could be cached
 
       if (flowNodeIdsWithInactivatedBehavior.size() > 0) {
-        Collection<ExecutionEntity> inactiveExecutions = commandContext.getExecutionEntityManager().getInactiveExecutionsForProcessInstance(executionEntity.getProcessInstanceId());
+        Collection<ExecutionEntity> inactiveExecutions = commandContext.getExecutionEntityManager().findInactiveExecutionsByProcessInstanceId(executionEntity.getProcessInstanceId());
         for (ExecutionEntity inactiveExecution : inactiveExecutions) {
           if (!inactiveExecution.isActive() && flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId())
               && !commandContext.getDbSqlSession().isPersistentObjectDeleted(inactiveExecution)) {

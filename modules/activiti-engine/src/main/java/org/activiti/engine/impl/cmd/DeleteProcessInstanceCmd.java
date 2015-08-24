@@ -63,7 +63,8 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
       activiti5CompatibilityHandler.deleteProcessInstance(processInstanceId, deleteReason);
     } else {
-      commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceEntity, null, deleteReason, false, true);
+      commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(), 
+          null, deleteReason, false, true, true);
     }
 
     // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
