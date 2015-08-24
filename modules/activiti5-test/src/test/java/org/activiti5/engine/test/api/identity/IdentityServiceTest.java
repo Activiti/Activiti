@@ -16,12 +16,12 @@ package org.activiti5.engine.test.api.identity;
 import java.util.Arrays;
 import java.util.List;
 
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiOptimisticLockingException;
-import org.activiti5.engine.identity.Group;
-import org.activiti5.engine.identity.Picture;
-import org.activiti5.engine.identity.User;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.Picture;
+import org.activiti.engine.identity.User;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**

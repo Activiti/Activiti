@@ -17,9 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.DeploymentQuery;
 
 
 /**
@@ -39,6 +40,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
         .createDeployment()
         .name("0")
         .addClasspathResource("org/activiti5/engine/test/service/oneTaskProcess.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy()
         .getId();
 
@@ -47,6 +49,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
         .name("1")
         .category("one")
         .addClasspathResource("org/activiti5/engine/test/repository/one.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy()
         .getId();
 
@@ -55,6 +58,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
         .name("2v1")
         .category("two")
         .addClasspathResource("org/activiti5/engine/test/repository/two.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy()
         .getId();
       
@@ -63,6 +67,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
         .name("2v2")
         .category("two")
         .addClasspathResource("org/activiti5/engine/test/repository/two.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy()
         .getId();
             
@@ -92,6 +97,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
           .createDeployment()
           .name("noCategory")
           .addClasspathResource("org/activiti5/engine/test/repository/two.bpmn20.xml")
+          .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
           .deploy()
           .getId();
       

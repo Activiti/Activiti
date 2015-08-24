@@ -10,7 +10,7 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
     <userTask id="theTask" name="my task">
          <extensionElements>
-            <activiti:taskListener event="complete" class="org.activiti.engine.impl.bpmn.listener.ScriptTaskListener" >
+            <activiti:taskListener event="complete" class="org.activiti5.engine.impl.bpmn.listener.ScriptTaskListener" >
               <activiti:field name="script">
                 <activiti:string>
                   var a = task.getVariableLocal('a');

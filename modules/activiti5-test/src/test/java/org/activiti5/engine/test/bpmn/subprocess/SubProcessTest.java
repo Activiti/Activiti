@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -61,8 +62,9 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSimpleSubProcessWithTimer() {
-    
-    Date startTime = new Date();
+    processEngineConfiguration.resetClock();
+    Clock clock = processEngineConfiguration.getClock();
+    Date startTime = clock.getCurrentTime();
     
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess");
@@ -72,7 +74,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor 
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
+    clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
+    processEngineConfiguration.setClock(clock);
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The subprocess should be left, and the escalated task should be active
@@ -80,6 +83,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
                                                    .processInstanceId(pi.getId())
                                                    .singleResult();
     assertEquals("Fix escalated problem", escalationTask.getName());
+    
+    processEngineConfiguration.resetClock();
   }
   
   /**
@@ -145,7 +150,9 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testNestedSimpleSubprocessWithTimerOnInnerSubProcess() {
-    Date startTime = new Date();
+    processEngineConfiguration.resetClock();
+    Clock clock = processEngineConfiguration.getClock();
+    Date startTime = clock.getCurrentTime();
     
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSubProcessWithTimer");
@@ -153,7 +160,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
+    clock.setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
+    processEngineConfiguration.setClock(clock);
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The inner subprocess should be destoyed, and the escalated task should be active
@@ -164,6 +172,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     taskService.complete(escalationTask.getId());
     Task taskAfterSubProcess = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Task after subprocesses", taskAfterSubProcess.getName());
+    
+    processEngineConfiguration.resetClock();
   }
   
   /**

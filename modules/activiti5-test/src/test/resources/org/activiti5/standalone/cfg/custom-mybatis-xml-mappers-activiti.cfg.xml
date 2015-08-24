@@ -17,11 +17,13 @@
     
     <property name="databaseSchemaUpdate" value="true" />
     
+    <property name="activiti5CompatibilityEnabled" value="true" />
+    
     <!-- The custom mybatis xml mappers -->
-    <property name="customMybatisXMLMappers">
+    <property name="activiti5CustomMybatisXMLMappers">
         <set>
-            <value>org/activiti/standalone/cfg/custom-mappers/CustomTaskMapper.xml</value>
-            <value>org/activiti/standalone/cfg/custom-mappers/AttachmentMapper.xml</value>
+            <value>org/activiti5/standalone/cfg/custom-mappers/CustomTaskMapper.xml</value>
+            <value>org/activiti5/standalone/cfg/custom-mappers/AttachmentMapper.xml</value>
         </set>
     </property>
 

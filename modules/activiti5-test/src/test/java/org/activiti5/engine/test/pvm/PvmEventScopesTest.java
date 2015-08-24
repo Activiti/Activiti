@@ -22,8 +22,10 @@ import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;
 import org.activiti5.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti5.engine.impl.test.PvmTestCase;
+import org.activiti5.engine.test.pvm.activities.Automatic;
 import org.activiti5.engine.test.pvm.activities.EmbeddedSubProcess;
 import org.activiti5.engine.test.pvm.activities.EventScopeCreatingSubprocess;
+import org.activiti5.engine.test.pvm.activities.WaitState;
 
 
 /**

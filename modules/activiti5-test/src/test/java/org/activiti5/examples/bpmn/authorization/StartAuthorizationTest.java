@@ -16,14 +16,14 @@ package org.activiti5.examples.bpmn.authorization;
 
 import java.util.List;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.IdentityService;
-import org.activiti5.engine.identity.Group;
-import org.activiti5.engine.identity.User;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.IdentityLink;
 
 /**
  * @author Saeid Mirzaei

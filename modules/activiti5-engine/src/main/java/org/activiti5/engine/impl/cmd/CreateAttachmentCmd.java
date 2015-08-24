@@ -85,7 +85,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     commandContext.getHistoryManager()
       .createAttachmentComment(taskId, processInstanceId, attachmentName, true);
     
-    if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	// Forced to fetch the process-instance to associate the right process definition
     	String processDefinitionId = null;
     	if(attachment.getProcessInstanceId() != null) {

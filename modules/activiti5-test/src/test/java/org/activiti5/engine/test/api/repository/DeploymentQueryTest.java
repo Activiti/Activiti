@@ -15,12 +15,13 @@ package org.activiti5.engine.test.api.repository;
 
 import java.util.List;
 
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.DeploymentQuery;
 
 
 /**
@@ -38,6 +39,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
       .createDeployment()
       .name("org/activiti5/engine/test/repository/one.bpmn20.xml")
       .category("testCategory")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .addClasspathResource("org/activiti5/engine/test/repository/one.bpmn20.xml")
       .deploy()
       .getId();
@@ -46,6 +48,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
       .createDeployment()
       .name("org/activiti5/engine/test/repository/two.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/repository/two.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
     

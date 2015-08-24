@@ -38,6 +38,7 @@ import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
+import org.activiti5.engine.impl.persistence.entity.MessageEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.persistence.entity.TimerEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
@@ -74,7 +75,7 @@ public class JobRetryCmd implements Command<Object> {
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
       job.setLockExpirationTime(null);
-      if (job.getDuedate() == null) {
+      if (job.getDuedate() == null || job instanceof MessageEntity) {
         // add wait time for failed async job
         job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
       } else {

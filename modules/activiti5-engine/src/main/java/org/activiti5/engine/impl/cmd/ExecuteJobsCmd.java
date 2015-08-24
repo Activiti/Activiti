@@ -79,7 +79,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     FailedJobListener failedJobListener = null;
     try {
       // When transaction is rolled back, decrement retries
-      failedJobListener = new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), jobId);
+      failedJobListener = new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job.getId());
       commandContext.getTransactionContext().addTransactionListener(
               TransactionState.ROLLED_BACK,
               failedJobListener
@@ -107,7 +107,11 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       }
        
       // Finally, Throw the exception to indicate the ExecuteJobCmd failed
-      throw new ActivitiException("Job " + jobId + " failed", exception);
+      if (exception instanceof ActivitiException == false) {
+        throw new ActivitiException("Job " + jobId + " failed", exception);
+      } else {
+        throw (ActivitiException) exception;
+      }
     } finally {
       if (jobExecutorContext != null) {
         jobExecutorContext.setCurrentJob(null);

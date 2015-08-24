@@ -11,7 +11,7 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:class="org.activiti.examples.bpmn.servicetask.ThrowsExceptionBehavior">            
+                 activiti:class="org.activiti5.examples.bpmn.servicetask.ThrowsExceptionBehavior">            
     </serviceTask>
     
     <sequenceFlow id="no-exception" sourceRef="javaService" targetRef="theEnd" />

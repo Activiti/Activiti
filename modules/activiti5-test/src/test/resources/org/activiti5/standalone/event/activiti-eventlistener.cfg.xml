@@ -20,7 +20,7 @@
     <property name="jobExecutorActivate" value="false" />
     
     <!-- Add event listener -->
-    <property name="eventListeners">
+    <property name="activiti5EventListeners">
       <list>
          <ref bean="eventListener" />
       </list>
@@ -44,17 +44,17 @@
   </bean>
   
   <!-- The actual event-listener instance -->
-  <bean id="eventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="eventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
   
    <!-- An event-listener instance used from within an expression in BPMN XML-->
-  <bean id="testEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
   
-  <bean id="testAttachmentEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testCommentEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testExecutionEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testIdentityLinkEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testJobEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testProcessDefinitionEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testProcessInstanceEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
-  <bean id="testTaskEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testAttachmentEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testCommentEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testExecutionEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testIdentityLinkEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testJobEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testProcessDefinitionEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testProcessInstanceEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testTaskEventListener" class="org.activiti5.engine.test.api.event.TestActivitiEventListener" />
 </beans>

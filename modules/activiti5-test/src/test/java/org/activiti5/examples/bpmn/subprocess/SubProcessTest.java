@@ -16,6 +16,7 @@ package org.activiti5.examples.bpmn.subprocess;
 import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
@@ -31,6 +32,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     Deployment deployment = 
       repositoryService.createDeployment()
                   .addClasspathResource("org/activiti5/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml")
+                  .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
                   .deploy();
     
     // After staring the process, both tasks in the subprocess should be active

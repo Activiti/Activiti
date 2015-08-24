@@ -11,7 +11,7 @@
 		<startEvent id="start" />
 		
 		<sequenceFlow id="flow1" sourceRef="start" targetRef="changeVariableType" />
-		<serviceTask id="changeVariableType" activiti:class="org.activiti.examples.variables.ChangeVariableType"/>
+		<serviceTask id="changeVariableType" activiti:class="org.activiti5.examples.variables.ChangeVariableType"/>
 		<sequenceFlow id="flow2" sourceRef="changeVariableType" targetRef="someTask" />
 		<userTask id="someTask" name="Activiti is awesome!" />
 		<sequenceFlow id="flow3" sourceRef="someTask" targetRef="end" />

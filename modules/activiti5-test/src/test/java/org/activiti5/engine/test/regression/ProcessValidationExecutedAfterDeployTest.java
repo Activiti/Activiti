@@ -1,10 +1,13 @@
 package org.activiti5.engine.test.regression;
+
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.validation.ProcessValidator;
-import org.activiti5.engine.ActivitiException;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
  
 /**
  * From http://forums.activiti.org/content/skip-parse-validation-while-fetching-startformdata
@@ -19,12 +22,14 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
 	protected ProcessValidator processValidator;
 	
 	private void disableValidation() {
-	  processValidator = processEngineConfiguration.getProcessValidator();
-	  processEngineConfiguration.setProcessValidator(null);
+	  ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  processValidator = activiti5ProcessEngineConfig.getProcessValidator();
+	  activiti5ProcessEngineConfig.setProcessValidator(null);
   }
 	
 	private void enableValidation() {
-	  processEngineConfiguration.setProcessValidator(processValidator);
+	  ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  activiti5ProcessEngineConfig.setProcessValidator(processValidator);
   }
 	
 	private void clearDeploymentCache() {
@@ -56,6 +61,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
   	disableValidation();
   	repositoryService.createDeployment()
   		.addClasspathResource("org/activiti5/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml")
+  		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   		.deploy();
   	enableValidation();
   	clearDeploymentCache();
@@ -71,7 +77,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
       fail("Error occurred in fetching process model.");
     }
     
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
     	repositoryService.deleteDeployment(deployment.getId());
     }
   }
@@ -81,6 +87,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
   	disableValidation();
   	repositoryService.createDeployment()
   		.addClasspathResource("org/activiti5/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml")
+  		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   		.deploy();
   	enableValidation();
   	clearDeploymentCache();
@@ -96,7 +103,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
       fail("Error occurred in fetching start form data:");
     }
     
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
     	repositoryService.deleteDeployment(deployment.getId());
     }
   }

@@ -16,9 +16,10 @@ package org.activiti5.engine.test.bpmn.event.compensate;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
+import org.activiti5.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -29,7 +30,6 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testCompensateSubprocess() {
-    
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
@@ -41,7 +41,6 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testCompensateMiSubprocess() {
-    
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
@@ -53,7 +52,6 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testCompensateScope() {
-    
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
     
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
@@ -69,10 +67,9 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
           "org/activiti5/engine/test/bpmn/event/compensate/CompensationHandler.bpmn20.xml"          
   })
   public void testCallActivityCompensationHandler() {
-    
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(5, historyService.createHistoricActivityInstanceQuery()
               .activityId("undoBookHotel")
               .count());
@@ -91,7 +88,6 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testCompensateMiSubprocessVariableSnapshots() {
-    
     // see referenced java delegates in the process definition. 
     
     SetVariablesDelegate.variablesMap.clear();    
@@ -110,6 +106,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/compensate/CompensateEventTest.testMultipleCompensationCatchEventsFails.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
@@ -120,6 +117,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/compensate/CompensateEventTest.testInvalidActivityRefFails.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {

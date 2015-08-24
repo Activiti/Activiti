@@ -21,14 +21,14 @@
 			<sequenceFlow sourceRef="startInScope" targetRef="bookHotel" />
 
 			<serviceTask id="bookHotel" 
-				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate" />
+				activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate" />
 				
 			<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
 				<compensateEventDefinition />
 			</boundaryEvent>		
 			
 			<serviceTask id="undoBookHotel" isForCompensation="true" 
-				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.GetVariablesDelegate" />
+				activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.GetVariablesDelegate" />
 			
 			<sequenceFlow sourceRef="bookHotel" targetRef="endInScope" />
 			

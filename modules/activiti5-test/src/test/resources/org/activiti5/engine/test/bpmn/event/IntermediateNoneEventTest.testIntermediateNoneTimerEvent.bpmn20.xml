@@ -11,7 +11,7 @@
 
         <intermediateThrowEvent  id="noneEvent">
           <extensionElements>
-            <activiti:executionListener class="org.activiti.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" />
+            <activiti:executionListener class="org.activiti5.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" />
           </extensionElements>        
         </intermediateThrowEvent>
 

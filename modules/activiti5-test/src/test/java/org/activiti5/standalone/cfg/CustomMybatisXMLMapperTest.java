@@ -2,11 +2,11 @@ package org.activiti5.standalone.cfg;
 
 import java.util.List;
 
+import org.activiti.engine.task.Task;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti5.engine.task.Attachment;
-import org.activiti5.engine.task.Task;
 
 /**
  * @author Bassam Al-Sarori
@@ -25,7 +25,10 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     
     final String taskId = createTask("4", null, null, 0);
     
-    CustomTask customTask = managementService.executeCommand(new Command<CustomTask>() {
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    CustomTask customTask = activiti5ProcessEngineConfig.getManagementService().executeCommand(new Command<CustomTask>() {
       @Override
       public CustomTask execute(CommandContext commandContext) {
         return (CustomTask) commandContext.getDbSqlSession().selectOne("selectOneCustomTask", taskId);
@@ -51,7 +54,10 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, 0);
     }
     
-    List<CustomTask> tasks = managementService.executeCommand(new Command<List<CustomTask>>() {
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    List<CustomTask> tasks = activiti5ProcessEngineConfig.getManagementService().executeCommand(new Command<List<CustomTask>>() {
 
       @SuppressWarnings("unchecked")
       @Override
@@ -73,12 +79,15 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     }
     createTask("Owned task", "kermit", null, 0);
     
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).unOwned().list();
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    List<CustomTask> tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).unOwned().list();
     
     assertEquals(5, tasks.size());
-    assertEquals(5, new CustomTaskQuery(managementService).unOwned().count());
+    assertEquals(5, new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).unOwned().count());
     
-    tasks = new CustomTaskQuery(managementService).list();
+    tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).list();
     
     // Cleanup
     deleteCustomTasks(tasks);
@@ -91,11 +100,14 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     }
     createTask("Owned task", "kermit", null, 0);
     
-    CustomTask task = new CustomTaskQuery(managementService).taskOwner("kermit").singleResult();
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    CustomTask task = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).taskOwner("kermit").singleResult();
     
     assertEquals("kermit", task.getOwner());
     
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).list();
+    List<CustomTask> tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).list();
     // Cleanup
     deleteCustomTasks(tasks);
   }
@@ -106,11 +118,14 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, 0);
     }
     
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).listPage(0, 10);
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    List<CustomTask> tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).listPage(0, 10);
     
     assertEquals(10, tasks.size());
     
-    tasks = new CustomTaskQuery(managementService).list();
+    tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).list();
     
     // Cleanup
     deleteCustomTasks(tasks);
@@ -122,7 +137,10 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, i*20);
     }
     
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    List<CustomTask> tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).orderByTaskPriority().desc().list();
     
     assertEquals(5, tasks.size());
     
@@ -131,7 +149,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       assertEquals(j*20, task.getPriority());
     }
     
-    tasks = new CustomTaskQuery(managementService).orderByTaskPriority().asc().list();
+    tasks = new CustomTaskQuery(activiti5ProcessEngineConfig.getManagementService()).orderByTaskPriority().asc().list();
     
     assertEquals(5, tasks.size());
     
@@ -161,30 +179,33 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       taskService.createAttachment(null, createTask(i + "", null, null, 0), null, "attachmentName"+i, "", "http://activiti.org/"+i);
     }
     
-    assertEquals(attachmentId, new AttachmentQuery(managementService).attachmentId(attachmentId).singleResult().getId());
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     
-    assertEquals("attachment1", new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName());
+    assertEquals(attachmentId, new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).attachmentId(attachmentId).singleResult().getId());
     
-    assertEquals(18, new AttachmentQuery(managementService).count());
-    List<Attachment> attachments = new AttachmentQuery(managementService).list();
+    assertEquals("attachment1", new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).attachmentName("attachment1").singleResult().getName());
+    
+    assertEquals(18, new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).count());
+    List<Attachment> attachments = new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).list();
     assertEquals(18, attachments.size());
     
-    attachments = new AttachmentQuery(managementService).listPage(0, 10);
+    attachments = new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).listPage(0, 10);
     assertEquals(10, attachments.size());
     
-    assertEquals(3, new AttachmentQuery(managementService).taskId(taskId).count());
-    attachments = new AttachmentQuery(managementService).taskId(taskId).list();
+    assertEquals(3, new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).taskId(taskId).count());
+    attachments = new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).taskId(taskId).list();
     assertEquals(3, attachments.size());
     
-    assertEquals(2, new AttachmentQuery(managementService).userId("kermit").count());
-    attachments = new AttachmentQuery(managementService).userId("kermit").list();
+    assertEquals(2, new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).userId("kermit").count());
+    attachments = new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).userId("kermit").list();
     assertEquals(2, attachments.size());
     
-    assertEquals(1, new AttachmentQuery(managementService).attachmentType("image/jpeg").count());
-    attachments = new AttachmentQuery(managementService).attachmentType("image/jpeg").list();
+    assertEquals(1, new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).attachmentType("image/jpeg").count());
+    attachments = new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).attachmentType("image/jpeg").list();
     assertEquals(1, attachments.size());
     
-    assertEquals("zattachment3", new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName());
+    assertEquals("zattachment3", new AttachmentQuery(activiti5ProcessEngineConfig.getManagementService()).orderByAttachmentName().desc().list().get(0).getName());
     
     // Cleanup
     deleteTasks(taskService.createTaskQuery().list());

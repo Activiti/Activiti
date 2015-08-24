@@ -1,6 +1,6 @@
-package org.activiti.rules.deploytest;
+package org.activiti5.rules.deploytest;
  
-import org.activiti.standalone.rules.Order
+import org.activiti5.standalone.rules.Order
  
 rule "OrderItemCountZeroOrLess"
      when

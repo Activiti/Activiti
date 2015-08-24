@@ -13,13 +13,13 @@
 
 package org.activiti5.engine.test.concurrency;
 
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.cfg.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiOptimisticLockingException;
 import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;

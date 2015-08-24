@@ -8,6 +8,8 @@
     
     <property name="databaseSchemaUpdate" value="true" />
     
+    <property name="activiti5CompatibilityEnabled" value="true" />
+    
     <property name="processDefinitionCacheLimit" value="3" />  
     
   </bean>

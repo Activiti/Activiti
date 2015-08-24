@@ -17,7 +17,7 @@
     
     <property name="activiti5PostBpmnParseHandlers">
       <list>
-        <bean class="org.activiti.standalone.parsing.TestBPMNParseHandler" />
+        <bean class="org.activiti5.standalone.parsing.TestBPMNParseHandler" />
       </list>
     </property>
     

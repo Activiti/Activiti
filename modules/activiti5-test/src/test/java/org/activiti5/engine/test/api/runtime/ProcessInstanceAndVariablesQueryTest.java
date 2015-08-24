@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
 
 /**
  * @author Tijs Rademakers
@@ -39,6 +40,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
     repositoryService.createDeployment()
       .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
     
     Map<String, Object> startMap = new HashMap<String, Object>();
@@ -54,7 +56,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
   }
 
   protected void tearDown() throws Exception {
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
     super.tearDown();

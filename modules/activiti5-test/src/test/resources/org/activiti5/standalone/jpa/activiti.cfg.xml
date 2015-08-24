@@ -12,7 +12,7 @@
     
     <property name="activiti5CompatibilityEnabled" value="true" />
 
-    <property name="jpaPersistenceUnitName" value="activiti-jpa-pu" />
+    <property name="jpaPersistenceUnitName" value="activiti5-jpa-pu" />
     <property name="jpaHandleTransaction" value="true" />
     <property name="jpaCloseEntityManager" value="true" />
     

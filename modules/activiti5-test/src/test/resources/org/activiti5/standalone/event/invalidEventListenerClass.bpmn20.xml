@@ -4,7 +4,7 @@
 
 	<process id="testInvalidEventClass">
         <extensionElements>
-          <activiti:eventListener class="org.activiti.engine.test.api.event.UnexistingClass" />
+          <activiti:eventListener class="org.activiti5.engine.test.api.event.UnexistingClass" />
         </extensionElements>
         
 		<startEvent id="theStart" />

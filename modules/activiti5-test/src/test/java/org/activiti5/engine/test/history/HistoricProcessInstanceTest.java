@@ -26,10 +26,13 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.impl.identity.Authentication;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -41,7 +44,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = {"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricDataCreatedForProcessExecution() {
-
+    Clock clock = processEngineConfiguration.getClock();
+    
     Calendar calendar = new GregorianCalendar();
     calendar.set(Calendar.YEAR, 2010);
     calendar.set(Calendar.MONTH, 8);
@@ -52,7 +56,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     calendar.set(Calendar.MILLISECOND, 0);
     Date noon = calendar.getTime();
     
-    processEngineConfiguration.getClock().setCurrentTime(noon);
+    clock.setCurrentCalendar(calendar);
+    processEngineConfiguration.setClock(clock);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
 
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().unfinished().count());
@@ -74,7 +79,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     // in this test scenario we assume that 25 seconds after the process start, the 
     // user completes the task (yes! he must be almost as fast as me)
     Date twentyFiveSecsAfterNoon = new Date(noon.getTime() + 25*1000);
-    processEngineConfiguration.getClock().setCurrentTime(twentyFiveSecsAfterNoon);
+    clock.setCurrentTime(twentyFiveSecsAfterNoon);
+    processEngineConfiguration.setClock(clock);
     taskService.complete(tasks.get(0).getId());
 
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -88,6 +94,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().unfinished().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().finished().count());
+    
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment(resources = {"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})
@@ -399,6 +407,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = {"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricIdenityLinksOnProcessInstance() {
+    Authentication.setAuthenticatedUserId(null);
     if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       runtimeService.addUserIdentityLink(pi.getId(), "kermit", "myType");
@@ -471,6 +480,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   	String deploymentId = repositoryService.createDeployment()
   		.addClasspathResource("org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml")
   		.tenantId(tenantId)
+  		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   		.deploy()
   		.getId();
   	

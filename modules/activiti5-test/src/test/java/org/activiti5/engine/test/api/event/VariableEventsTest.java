@@ -15,15 +15,14 @@ package org.activiti5.engine.test.api.event;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to variables.
@@ -218,8 +217,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 		assertNotNull(processInstance);
 		
-		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-				.singleResult();
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(task);
 		
 		taskService.setVariableLocal(task.getId(), "testVariable", "The value");
@@ -305,65 +303,15 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 		assertEquals(null, event.getVariableValue());
 	}
 
-	/**
-	 * Test to check create, update an delete behavior for variables on a task not related to a process.
-	 */
-	public void testTaskVariableStandalone() throws Exception {
-		Task newTask = taskService.newTask();
-		try {
-			taskService.saveTask(newTask);
-			
-			taskService.setVariable(newTask.getId(), "testVariable", 123);
-			taskService.setVariable(newTask.getId(), "testVariable", 456);
-			taskService.removeVariable(newTask.getId(), "testVariable");
-			
-			assertEquals(3, listener.getEventsReceived().size());
-			ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-			assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
-			assertNull(event.getProcessDefinitionId());
-			assertNull(event.getExecutionId());
-			assertNull(event.getProcessInstanceId());
-			assertEquals(newTask.getId(), event.getTaskId());
-			assertEquals("testVariable", event.getVariableName());
-			assertEquals(123, event.getVariableValue());
-			
-			event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-			assertEquals(ActivitiEventType.VARIABLE_UPDATED, event.getType());
-			assertNull(event.getProcessDefinitionId());
-			assertNull(event.getExecutionId());
-			assertNull(event.getProcessInstanceId());
-			assertEquals(newTask.getId(), event.getTaskId());
-			assertEquals("testVariable", event.getVariableName());
-			assertEquals(456, event.getVariableValue());
-			
-			event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-			assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
-			assertNull(event.getProcessDefinitionId());
-			assertNull(event.getExecutionId());
-			assertNull(event.getProcessInstanceId());
-			assertEquals(newTask.getId(), event.getTaskId());
-			assertEquals("testVariable", event.getVariableName());
-      // deleted variable value is always null
-			assertEquals(null, event.getVariableValue());
-		} finally {
-			
-			// Cleanup task and history to ensure a clean DB after test success/failure
-			if(newTask.getId() != null) {
-				taskService.deleteTask(newTask.getId());
-				if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-					historyService.deleteHistoricTaskInstance(newTask.getId());
-				}
-			}
-		}
-		
-	}
-
 	@Override
 	protected void initializeServices() {
 		super.initializeServices();
 
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		listener = new TestVariableEventListener();
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -371,8 +319,10 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
+		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+			activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

@@ -13,7 +13,7 @@
                       targetRef="delegate"/>
 
         <serviceTask id="delegate"
-                     activiti:class="org.activiti.examples.bpmn.servicetask.BackwardsCompatibleExpressionDelegate">
+                     activiti:class="org.activiti5.examples.bpmn.servicetask.BackwardsCompatibleExpressionDelegate">
 		      <extensionElements>
 		        <activiti:field name="expression">
 		          <activiti:expression>...${var}...</activiti:expression>

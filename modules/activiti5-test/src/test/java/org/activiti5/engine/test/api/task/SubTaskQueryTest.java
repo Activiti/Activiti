@@ -16,9 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.task.Task;
-import org.activiti5.engine.task.TaskQuery;
 
 /**
  * Tests for cub-tasks querying

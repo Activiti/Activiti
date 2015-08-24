@@ -17,7 +17,7 @@
 	    <subProcess id="subProcess1">
 	      <startEvent id="subProcess1Start"/>
 	      <sequenceFlow id="flow5" sourceRef="subProcess1Start" targetRef="serviceTask" />
-		    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
+		    <serviceTask id="serviceTask" activiti:class="org.activiti5.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
 	    </subProcess>
 	    
 	    <boundaryEvent id="signalEvent" attachedToRef="subProcess1">

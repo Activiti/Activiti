@@ -13,8 +13,10 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
  * @author Joram Barrez
@@ -31,7 +33,12 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
   }
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
-
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      activiti5CompatibilityHandler.claimTask(taskId, userId);
+      return null;
+    }
+    
     if (userId != null) {
       if (task.getAssignee() != null) {
         if (!task.getAssignee().equals(userId)) {

@@ -15,16 +15,17 @@ package org.activiti5.engine.test.api.nonpublic;
 
 import java.util.List;
 
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
 
 
 /**
@@ -34,25 +35,25 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByEventName() {
     
-    processEngineConfiguration.getCommandExecutor()
-      .execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity1.setEventName("messageName");
-          messageEventSubscriptionEntity1.insert();
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity2.setEventName("messageName");
-          messageEventSubscriptionEntity2.insert();
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity3 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity3.setEventName("messageName2");
-          messageEventSubscriptionEntity3.insert();
-          
-          return null;
-        }
-      });
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    commandExecutor.execute(new Command<Void>() {
+      public Void execute(CommandContext commandContext) {
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity1.setEventName("messageName");
+        messageEventSubscriptionEntity1.insert();
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity2.setEventName("messageName");
+        messageEventSubscriptionEntity2.insert();
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity3 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity3.setEventName("messageName2");
+        messageEventSubscriptionEntity3.insert();
+        
+        return null;
+      }
+    });
     
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
       .eventName("messageName")
@@ -70,25 +71,25 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByEventType() {
     
-    processEngineConfiguration.getCommandExecutor()
-      .execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity1.setEventName("messageName");          
-          messageEventSubscriptionEntity1.insert();
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity2.setEventName("messageName");
-          messageEventSubscriptionEntity2.insert();
-          
-          SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = new SignalEventSubscriptionEntity();
-          signalEventSubscriptionEntity3.setEventName("messageName2");
-          signalEventSubscriptionEntity3.insert();
-          
-          return null;
-        }
-      });
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    commandExecutor.execute(new Command<Void>() {
+      public Void execute(CommandContext commandContext) {
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity1.setEventName("messageName");          
+        messageEventSubscriptionEntity1.insert();
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity2.setEventName("messageName");
+        messageEventSubscriptionEntity2.insert();
+        
+        SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = new SignalEventSubscriptionEntity();
+        signalEventSubscriptionEntity3.setEventName("messageName2");
+        signalEventSubscriptionEntity3.insert();
+        
+        return null;
+      }
+    });
     
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
       .eventType("signal")
@@ -106,28 +107,28 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByActivityId() {
     
-    processEngineConfiguration.getCommandExecutor()
-      .execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity1.setEventName("messageName");        
-          messageEventSubscriptionEntity1.setActivityId("someActivity");          
-          messageEventSubscriptionEntity1.insert();
-          
-          MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
-          messageEventSubscriptionEntity2.setEventName("messageName");
-          messageEventSubscriptionEntity2.setActivityId("someActivity");
-          messageEventSubscriptionEntity2.insert();
-          
-          SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = new SignalEventSubscriptionEntity();
-          signalEventSubscriptionEntity3.setEventName("messageName2");
-          signalEventSubscriptionEntity3.setActivityId("someOtherActivity");
-          signalEventSubscriptionEntity3.insert();
-          
-          return null;
-        }
-      });
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    commandExecutor.execute(new Command<Void>() {
+      public Void execute(CommandContext commandContext) {
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity1.setEventName("messageName");        
+        messageEventSubscriptionEntity1.setActivityId("someActivity");          
+        messageEventSubscriptionEntity1.insert();
+        
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
+        messageEventSubscriptionEntity2.setEventName("messageName");
+        messageEventSubscriptionEntity2.setActivityId("someActivity");
+        messageEventSubscriptionEntity2.insert();
+        
+        SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = new SignalEventSubscriptionEntity();
+        signalEventSubscriptionEntity3.setEventName("messageName2");
+        signalEventSubscriptionEntity3.setActivityId("someOtherActivity");
+        signalEventSubscriptionEntity3.insert();
+        
+        return null;
+      }
+    });
     
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
       .activityId("someOtherActivity")
@@ -175,12 +176,13 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   }
 
   protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
-    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    return new EventSubscriptionQueryImpl(commandExecutor);
   }
 
   protected void cleanDb() {    
-    processEngineConfiguration.getCommandExecutor()
-    .execute(new Command<Void>() {
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         final List<EventSubscriptionEntity> subscriptions = new EventSubscriptionQueryImpl(commandContext).list();
         for (EventSubscriptionEntity eventSubscriptionEntity : subscriptions) {

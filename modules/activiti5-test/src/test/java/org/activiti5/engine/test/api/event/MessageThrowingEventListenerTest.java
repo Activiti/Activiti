@@ -12,14 +12,14 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.bpmn.helper.MessageThrowingEventListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * Test case for all {@link ActivitiEventListener}s that throw a message BPMN event when an {@link ActivitiEvent}
@@ -32,11 +32,15 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 	@Deployment
 	public void testThrowMessage() throws Exception {
 		MessageThrowingEventListener listener = null;
+		
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		try {
 			listener = new MessageThrowingEventListener();
 			listener.setMessageName("Message");
 			
-			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
 			assertNotNull(processInstance);
@@ -62,7 +66,7 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 			
 			
 		} finally {
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -94,11 +98,15 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 	@Deployment
 	public void testThrowMessageInterrupting() throws Exception {
 		MessageThrowingEventListener listener = null;
+		
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		try {
 			listener = new MessageThrowingEventListener();
 			listener.setMessageName("Message");
 			
-			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
 			assertNotNull(processInstance);
@@ -121,7 +129,7 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 					.singleResult();
 			assertNotNull(boundaryTask);
 		} finally {
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

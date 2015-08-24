@@ -5,7 +5,7 @@
   
   <process id="executionListenersProcess">
     <extensionElements>
-      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleFieldInjectedExecutionListener" event="start">
+      <activiti:executionListener class="org.activiti5.examples.bpmn.executionlistener.ExampleFieldInjectedExecutionListener" event="start">
         <activiti:field name="fixedValue" stringValue="Yes, I am " />
         <activiti:field name="dynamicValue" expression="${myVar}" />
       </activiti:executionListener>

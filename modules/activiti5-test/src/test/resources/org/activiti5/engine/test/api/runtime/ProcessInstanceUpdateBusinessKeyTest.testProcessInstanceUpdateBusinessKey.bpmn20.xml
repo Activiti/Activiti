@@ -6,7 +6,7 @@
 	<process id="businessKeyProcess" name="Update business key Example">
 		<extensionElements>
 			<activiti:executionListener event="start"
-				class="org.activiti.engine.test.api.runtime.ProcessInstanceUpdateBusinessKeyTest$UpdateBusinessKeyExecutionListener" />
+				class="org.activiti5.engine.test.api.runtime.ProcessInstanceUpdateBusinessKeyTest$UpdateBusinessKeyExecutionListener" />
 		</extensionElements>
 
 		<startEvent id="theStart" />

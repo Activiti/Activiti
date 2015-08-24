@@ -222,14 +222,14 @@ public class AsyncExecutorTest {
       processEngine = createProcessEngine(true);
       processEngine.getProcessEngineConfiguration().getClock().reset();
       deploy(processEngine, "AsyncExecutorTest.testAsyncFailingScript.bpmn20.xml");
+      
+      // There is a back off mechanism for the retry, so need a bit of
+      // time. But to be sure, we make the wait time small
+      processEngine.getProcessEngineConfiguration().setAsyncFailedJobWaitTime(1);
+      processEngine.getProcessEngineConfiguration().setDefaultFailedJobWaitTime(1);
 
       // Start process instance. Wait for all jobs to be done.
       processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
-
-      // There is a back off mechanism for the retry, so need a bit of
-      // time
-      // But to be sure, we make the wait time small
-      processEngine.getProcessEngineConfiguration().setAsyncFailedJobWaitTime(1);
 
       final ProcessEngine processEngineCopy = processEngine;
       JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 2000L, new Callable<Boolean>() {

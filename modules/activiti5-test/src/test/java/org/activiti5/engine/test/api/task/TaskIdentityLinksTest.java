@@ -17,13 +17,13 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.task.Event;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.task.Event;
-import org.activiti5.engine.task.IdentityLink;
-import org.activiti5.engine.task.IdentityLinkType;
-import org.activiti5.engine.task.Task;
 
 
 /**

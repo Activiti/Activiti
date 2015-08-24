@@ -37,14 +37,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ExecutionQuery;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ExecutionQuery;
-import org.activiti5.engine.runtime.ProcessInstance;
 
 
 /**
@@ -66,6 +67,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     repositoryService.createDeployment()
       .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/api/runtime/concurrentExecution.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
 
     concurrentProcessInstanceIds = new ArrayList<String>();
@@ -78,7 +80,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   }
 
   protected void tearDown() throws Exception {
-    for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
     super.tearDown();
@@ -1253,19 +1255,19 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     // it finds subscribed instances
     Execution execution = runtimeService.createExecutionQuery()
-      .signalEventSubscription("alert")
+      .signalEventSubscriptionName("alert")
       .singleResult();
     assertNotNull(execution);
 
     // test query for nonexisting subscription
     execution = runtimeService.createExecutionQuery()
-            .signalEventSubscription("nonExisitng")
+            .signalEventSubscriptionName("nonExisitng")
             .singleResult();
     assertNull(execution);
     
     // it finds more than one
     runtimeService.startProcessInstanceByKey("catchSignal");
-    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("alert").count());
+    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count());
   }
   
   @Deployment
@@ -1274,19 +1276,19 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     // it finds subscribed instances
     Execution execution = runtimeService.createExecutionQuery()
-      .signalEventSubscription("Test signal")
+      .signalEventSubscriptionName("Test signal")
       .singleResult();
     assertNotNull(execution);
 
     // test query for nonexisting subscription
     execution = runtimeService.createExecutionQuery()
-            .signalEventSubscription("nonExisitng")
+            .signalEventSubscriptionName("nonExisitng")
             .singleResult();
     assertNull(execution);
     
     // it finds more than one
     runtimeService.startProcessInstanceByKey("signalProces");
-    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscription("Test signal").count());
+    assertEquals(2, runtimeService.createExecutionQuery().signalEventSubscriptionName("Test signal").count());
   }
     
   public void testNativeQuery() {

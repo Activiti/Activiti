@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Execution;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti5.engine.impl.util.io.InputStreamSource;
@@ -25,7 +26,9 @@ public class ImportExportTest extends ResourceActivitiTestCase {
 
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
 
-        processEngine.getRepositoryService().createDeployment().name("test1").addString("test1.bpmn20.xml", new String(xml)).deploy();
+        processEngine.getRepositoryService().createDeployment().name("test1").addString("test1.bpmn20.xml", new String(xml))
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+            .deploy();
 
         String processInstanceKey = runtimeService.startProcessInstanceByKey("process").getId();
         Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstanceKey).messageEventSubscriptionName("InterruptMessage").singleResult();

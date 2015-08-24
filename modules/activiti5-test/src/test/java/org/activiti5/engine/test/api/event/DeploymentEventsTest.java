@@ -12,11 +12,12 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Deployment;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to deployments.
@@ -36,6 +37,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			listener.clearEventsReceived();
 			deployment = repositoryService.createDeployment()
 					.addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+					.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 					.deploy();
 			assertNotNull(deployment);
 			
@@ -45,12 +47,12 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+			assertEquals(deployment.getId(), ((org.activiti5.engine.repository.Deployment) event.getEntity()).getId());
 			
 			assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+			assertEquals(deployment.getId(), ((org.activiti5.engine.repository.Deployment) event.getEntity()).getId());
 			
 			listener.clearEventsReceived();
 			
@@ -61,8 +63,8 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
-			assertEquals("test", ((Deployment) event.getEntity()).getCategory());
+			assertEquals(deployment.getId(), ((org.activiti5.engine.repository.Deployment) event.getEntity()).getId());
+			assertEquals("test", ((org.activiti5.engine.repository.Deployment) event.getEntity()).getCategory());
 			listener.clearEventsReceived();
 			
 		  // Check delete event when category is updated
@@ -72,7 +74,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+			assertEquals(deployment.getId(), ((org.activiti5.engine.repository.Deployment) event.getEntity()).getId());
 			listener.clearEventsReceived();
 			
 		} finally {
@@ -85,16 +87,22 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  listener = new TestActivitiEntityEventListener(Deployment.class);
-	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+	  
+	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  
+	  listener = new TestActivitiEntityEventListener(org.activiti5.engine.repository.Deployment.class);
+	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if(listener != null) {
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+	  if (listener != null) {
+	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	    activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

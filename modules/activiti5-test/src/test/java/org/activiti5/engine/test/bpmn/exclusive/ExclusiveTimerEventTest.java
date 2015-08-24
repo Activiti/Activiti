@@ -14,6 +14,7 @@ package org.activiti5.engine.test.bpmn.exclusive;
 
 import java.util.Date;
 
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -24,9 +25,11 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testCatchingTimerEvent() throws Exception {
-
+    Clock clock = processEngineConfiguration.getClock();
     // Set the clock fixed
     Date startTime = new Date();
+    clock.setCurrentTime(startTime);
+    processEngineConfiguration.setClock(clock);
 
     // After process start, there should be 3 timers created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveTimers");
@@ -34,10 +37,13 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(3, jobQuery.count());
 
     // After setting the clock to time '50minutes and 5 seconds', the timers should fire
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    clock.setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    processEngineConfiguration.setClock(clock);
     waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
     assertEquals(0, jobQuery.count());
     assertProcessEnded(pi.getProcessInstanceId());
+    
+    processEngineConfiguration.resetClock();
   }
 }

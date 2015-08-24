@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.test.api.repository;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**

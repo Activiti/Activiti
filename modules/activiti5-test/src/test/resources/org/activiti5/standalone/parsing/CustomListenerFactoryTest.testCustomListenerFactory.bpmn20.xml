@@ -11,7 +11,7 @@
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
 		<userTask id="theTask" name="my task">
 			<extensionElements>
-				<activiti:taskListener event="create" activiti:expression="${Doesn't matter. Will be overridden}" />
+				<activiti:taskListener event="create" activiti:expression="${'Does not matter. Will be overridden'}" />
 			</extensionElements>
 		</userTask>
 		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />

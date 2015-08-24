@@ -17,7 +17,7 @@
         
     <sequenceFlow id="flow2" sourceRef="intermediate-event" targetRef="noop" />
     
-    <serviceTask id="noop" name="No operation" activiti:class="org.activiti.engine.test.history.Noop" />
+    <serviceTask id="noop" name="No operation" activiti:class="org.activiti5.engine.test.history.Noop" />
     
     <sequenceFlow id="flow3" sourceRef="noop" targetRef="userTask" />
     

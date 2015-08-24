@@ -52,4 +52,8 @@ public class Activiti5DeploymentWrapper implements Deployment {
     return activiti5Deployment.getTenantId();
   }
   
+  public org.activiti5.engine.repository.Deployment getRawObject() {
+    return activiti5Deployment;
+  }
+  
 }

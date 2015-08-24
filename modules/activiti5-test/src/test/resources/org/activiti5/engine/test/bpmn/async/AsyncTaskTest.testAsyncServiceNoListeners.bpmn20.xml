@@ -9,7 +9,7 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service" />
     
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService" activiti:async="true" />
+    <serviceTask id="service" activiti:class="org.activiti5.engine.test.bpmn.async.AsyncService" activiti:async="true" />
     
     <sequenceFlow id="flow2" sourceRef="service" targetRef="theEnd" />
         

@@ -35,16 +35,17 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.impl.variable.EntityManagerSession;
-import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.api.runtime.DummySerializable;
-import org.activiti.engine.test.history.SerializableVariable;
-import org.activiti.standalone.jpa.FieldAccessJPAEntity;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti5.engine.impl.variable.EntityManagerSession;
+import org.activiti5.engine.impl.variable.EntityManagerSessionFactory;
+import org.activiti5.engine.test.api.runtime.DummySerializable;
+import org.activiti5.engine.test.history.SerializableVariable;
+import org.activiti5.standalone.jpa.FieldAccessJPAEntity;
 
 
 /**
@@ -316,7 +317,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
  
   @Deployment
   public void testHistoricVariableUpdatesAllTypes() throws Exception {
-    
+    Clock clock = processEngineConfiguration.getClock();
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS");
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("aVariable", "initial value");
@@ -326,7 +327,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     // In the javaDelegate, the current time is manipulated
     Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
     
-    processEngineConfiguration.getClock().setCurrentTime(startedDate);
+    clock.setCurrentTime(startedDate);
+    processEngineConfiguration.setClock(clock);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricVariableUpdateProcess", variables);
     
@@ -454,13 +456,17 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("hVariable", historicVariable.getVariableName());
     assertEquals(";-)", ";-)", new String((byte[])historicVariable.getValue()));
     assertEquals(processInstance.getId(), historicVariable.getProcessInstanceId());
+    
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment
   public void testHistoricFormProperties() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
     Date startedDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS").parse("01/01/2001 01:23:46 000");
     
-    processEngineConfiguration.getClock().setCurrentTime(startedDate);
+    clock.setCurrentTime(startedDate);
+    processEngineConfiguration.setClock(clock);
     
     Map<String, String> formProperties = new HashMap<String, String>();
     formProperties.put("formProp1", "Activiti rocks");
@@ -541,6 +547,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertNotNull(historicProperty4.getTaskId());
 
     assertEquals(4, props.size());
+    
+    processEngineConfiguration.resetClock();
   }
   
   @Deployment(
@@ -1283,15 +1291,16 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
   }  
   
-  @Deployment(resources = { 
-  "org/activiti5/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml" })
-    public void testReadJpaVariableValueFromHistoricVariableUpdate() {
+  @Deployment(resources = { "org/activiti5/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml" })
+  public void testReadJpaVariableValueFromHistoricVariableUpdate() {
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     
-    EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
+    EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) activiti5ProcessEngineConfig
             .getSessionFactories()
             .get(EntityManagerSession.class);
           
-    EntityManagerFactory  entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+    EntityManagerFactory entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
           
     String executionId = runtimeService.startProcessInstanceByKey("JPAVariableProcess").getProcessInstanceId();
     String variableName = "name";
@@ -1312,15 +1321,15 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     runtimeService.setVariable(executionId, variableName, entity);
     taskService.complete(task.getId());
     
-    List<HistoricDetail> variableUpdates = historyService.createHistoricDetailQuery().processInstanceId(executionId).variableUpdates().list();
+    List<org.activiti5.engine.history.HistoricDetail> variableUpdates = activiti5ProcessEngineConfig.getHistoryService().createHistoricDetailQuery().processInstanceId(executionId).variableUpdates().list();
     
     assertEquals(1, variableUpdates.size());
-    HistoricVariableUpdate update = (HistoricVariableUpdate) variableUpdates.get(0);
+    org.activiti5.engine.history.HistoricVariableUpdate update = (org.activiti5.engine.history.HistoricVariableUpdate) variableUpdates.get(0);
     assertNotNull(update.getValue());
     assertTrue(update.getValue() instanceof FieldAccessJPAEntity);
     
-    assertEquals(entity.getId(), ((FieldAccessJPAEntity)update.getValue()).getId());
-    }
+    assertEquals(entity.getId(), ((FieldAccessJPAEntity) update.getValue()).getId());
+  }
   
   /**
    * Test confirming fix for ACT-1731
@@ -1378,8 +1387,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
    }
    
    // Test for https://activiti.atlassian.net/browse/ACT-2186
-   @Deployment(resources={
-   	"org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml"})
+   @Deployment(resources={"org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml"})
    public void testHistoricVariableRemovedWhenRuntimeVariableIsRemoved() {
    	 Map<String, Object> vars = new HashMap<String, Object>();
       vars.put("var1", "Hello");

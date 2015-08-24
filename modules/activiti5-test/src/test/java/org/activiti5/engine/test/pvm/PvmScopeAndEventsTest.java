@@ -23,7 +23,9 @@ import org.activiti5.engine.impl.pvm.PvmProcessInstance;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti5.engine.impl.test.PvmTestCase;
+import org.activiti5.engine.test.pvm.activities.Automatic;
 import org.activiti5.engine.test.pvm.activities.End;
+import org.activiti5.engine.test.pvm.activities.WaitState;
 
 
 /**

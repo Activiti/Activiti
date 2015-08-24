@@ -15,20 +15,20 @@ package org.activiti5.engine.test.api.mgmt;
 
 import java.util.Date;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.JobNotFoundException;
-import org.activiti5.engine.impl.ProcessEngineImpl;
 import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
-import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.management.TableMetaData;
-import org.activiti5.engine.runtime.Job;
-import org.activiti5.engine.runtime.ProcessInstance;
 
 
 /**
@@ -58,7 +58,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       managementService.executeJob(null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("jobId and job is null", re.getMessage());
+      assertTextPresent("JobId is null", re.getMessage());
     }
   }
   
@@ -217,18 +217,19 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti5/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobThatWasAlreadyAcquired() {
-    processEngineConfiguration.getClock().setCurrentTime(new Date());
+    Clock clock = processEngineConfiguration.getClock();
+    processEngineConfiguration.resetClock();
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     
     // We need to move time at least one hour to make the timer executable
-    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
+    clock.setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
+    processEngineConfiguration.setClock(clock);
 
     // Acquire job by running the acquire command manually
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd("testLockOwner", 60000, 5);
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     commandExecutor.execute(acquireJobsCmd);
     
     // Try to delete the job. This should fail.
@@ -241,6 +242,8 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     
     // Clean up
     managementService.executeJob(timerJob.getId());
+    
+    processEngineConfiguration.resetClock();
   }
   
   // https://activiti.atlassian.net/browse/ACT-1816:

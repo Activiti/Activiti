@@ -8,7 +8,7 @@
  <process id="multiInstanceServiceTask" >
     <startEvent id="startevent1" name="Start"></startEvent>
     <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
-    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceDelegate">
+    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti5.engine.test.bpmn.multiinstance.MultiInstanceDelegate">
       <multiInstanceLoopCharacteristics isSequential="true">
       <loopCardinality>5</loopCardinality>
     </multiInstanceLoopCharacteristics>

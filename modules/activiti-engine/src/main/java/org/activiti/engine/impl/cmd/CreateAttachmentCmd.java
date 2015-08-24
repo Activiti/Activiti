@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -27,6 +28,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
@@ -59,7 +61,21 @@ public class CreateAttachmentCmd implements Command<Attachment> {
 
   public Attachment execute(CommandContext commandContext) {
 
-    verifyParameters(commandContext);
+    if (taskId != null) {
+      TaskEntity task = verifyTaskParameters(commandContext);
+      if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
+      }
+    }
+    
+    if (processInstanceId != null) {
+      ExecutionEntity execution = verifyExecutionParameters(commandContext);
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
+      }
+    }
 
     AttachmentEntity attachment = new AttachmentEntity();
     attachment.setName(attachmentName);
@@ -103,30 +119,32 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     return attachment;
   }
 
-  private void verifyParameters(CommandContext commandContext) {
-    if (taskId != null) {
-      TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+  protected TaskEntity verifyTaskParameters(CommandContext commandContext) {
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
-      if (task == null) {
-        throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
-      }
-
-      if (task.isSuspended()) {
-        throw new ActivitiException("It is not allowed to add an attachment to a suspended task");
-      }
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
     }
 
-    if (processInstanceId != null) {
-      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
-
-      if (execution == null) {
-        throw new ActivitiObjectNotFoundException("Process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
-      }
-
-      if (execution.isSuspended()) {
-        throw new ActivitiException("It is not allowed to add an attachment to a suspended process instance");
-      }
+    if (task.isSuspended()) {
+      throw new ActivitiException("It is not allowed to add an attachment to a suspended task");
     }
+    
+    return task;
+  }
+
+  protected ExecutionEntity verifyExecutionParameters(CommandContext commandContext) {
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+
+    if (execution == null) {
+      throw new ActivitiObjectNotFoundException("Process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
+    }
+
+    if (execution.isSuspended()) {
+      throw new ActivitiException("It is not allowed to add an attachment to a suspended process instance");
+    }
+    
+    return execution;
   }
 
 }

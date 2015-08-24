@@ -3,7 +3,7 @@
      xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
      version="1.0"
 >
-  <persistence-unit name="activiti-jpa-pu">
+  <persistence-unit name="activiti5-jpa-pu">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     
     <class>org.activiti5.standalone.jpa.FieldAccessJPAEntity</class>

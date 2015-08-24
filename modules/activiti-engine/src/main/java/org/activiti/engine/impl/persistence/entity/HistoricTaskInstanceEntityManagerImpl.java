@@ -18,11 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
  * @author Tom Baeyens
@@ -113,6 +115,13 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
       HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
       if (historicTaskInstance != null) {
         CommandContext commandContext = Context.getCommandContext();
+        
+        if (historicTaskInstance.getProcessDefinitionId() != null 
+            && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, historicTaskInstance.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+          activiti5CompatibilityHandler.deleteHistoricTask(taskId);
+          return;
+        }
 
         commandContext.getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(taskId);
 

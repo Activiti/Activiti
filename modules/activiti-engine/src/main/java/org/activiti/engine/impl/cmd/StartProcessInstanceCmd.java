@@ -58,8 +58,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   }
 
   public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
-    this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(), processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(),
-        processInstanceBuilder.getTenantId());
+    this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(), 
+        processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(), processInstanceBuilder.getTenantId());
     this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
   }
 

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
@@ -82,6 +83,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/examples/bpmn/scripttask/ScriptTaskTest.testNoScriptProvided.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
     } catch (ActivitiException e) {
       assertTextPresent("No script provided", e.getMessage());

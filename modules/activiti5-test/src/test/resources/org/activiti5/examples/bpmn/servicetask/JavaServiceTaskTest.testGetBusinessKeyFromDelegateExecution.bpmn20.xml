@@ -13,7 +13,7 @@
     <sequenceFlow sourceRef="fork" targetRef="receivePayment" />
     <sequenceFlow sourceRef="fork" targetRef="shipOrder" />
     
-    <serviceTask id="receivePayment" name="Receive Payment" activiti:class="org.activiti.examples.bpmn.servicetask.BusinessKeyCheckJavaDelegate"/>  
+    <serviceTask id="receivePayment" name="Receive Payment" activiti:class="org.activiti5.examples.bpmn.servicetask.BusinessKeyCheckJavaDelegate"/>  
     <sequenceFlow sourceRef="receivePayment" targetRef="join" />
     
     <userTask id="shipOrder" name="Ship Order" /> 

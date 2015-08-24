@@ -1,9 +1,10 @@
 package org.activiti5.engine.test.api.repository;
 
 import org.activiti.bpmn.exceptions.XMLException;
-import org.activiti5.engine.RepositoryService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +41,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/api/repository/nonSchemaConformantXml.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy()
         .getId();
       fail();
@@ -53,6 +55,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
             .addClasspathResource("org/activiti5/engine/test/api/repository/noWayPointsForSequenceFlowInDiagramInterchange.bpmn20.xml")
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
             .deploy()
             .getId();
       fail();
@@ -122,7 +125,9 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
     
     public void run() {
       try {
-        String deploymentId = repositoryService.createDeployment().addString("test.bpmn20.xml", UNSAFE_XML).deploy().getId();
+        String deploymentId = repositoryService.createDeployment().addString("test.bpmn20.xml", UNSAFE_XML)
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+            .deploy().getId();
         assertEquals(1, repositoryService.createProcessDefinitionQuery().singleResult());
         repositoryService.deleteDeployment(deploymentId, true);
       } catch (Exception e) {
@@ -136,7 +141,10 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
   }
   
   public void testExternalEntityResolvingTest() {
-  	String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti5/engine/test/api/repository/DeployInvalidXmlTest.testExternalEntityResolvingTest.bpmn20.xml").deploy().getId();
+  	String deploymentId = repositoryService.createDeployment()
+  	    .addClasspathResource("org/activiti5/engine/test/api/repository/DeployInvalidXmlTest.testExternalEntityResolvingTest.bpmn20.xml")
+  	    .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+  	    .deploy().getId();
   	try {
   		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
   		assertEquals("Test 1 2 3 null", processDefinition.getDescription());

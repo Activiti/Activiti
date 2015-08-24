@@ -43,11 +43,14 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 		
 		final List<Exception> exceptions = new ArrayList<Exception>();
 		
+		final org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		Thread firstInstertThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					managementService.executeCommand(new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId()));
+				  activiti5ProcessEngineConfig.getManagementService().executeCommand(new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId()));
 				} catch(Exception e) {
 					exceptions.add(e);
 				}
@@ -58,7 +61,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 			@Override
 			public void run() {
 				try {
-					managementService.executeCommand(new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId()));
+				  activiti5ProcessEngineConfig.getManagementService().executeCommand(new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId()));
 				} catch(Exception e) {
 					exceptions.add(e);
 				}
@@ -96,11 +99,14 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 		
 		final List<Exception> exceptions = new ArrayList<Exception>();
 		
+		final org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		Thread firstInstertThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					managementService.executeCommand(new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId()));
+				  activiti5ProcessEngineConfig.getManagementService().executeCommand(new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId()));
 				} catch(Exception e) {
 					exceptions.add(e);
 				}
@@ -111,7 +117,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 			@Override
 			public void run() {
 				try {
-					managementService.executeCommand(new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId()));
+				  activiti5ProcessEngineConfig.getManagementService().executeCommand(new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId()));
 				} catch(Exception e) {
 					exceptions.add(e);
 				}

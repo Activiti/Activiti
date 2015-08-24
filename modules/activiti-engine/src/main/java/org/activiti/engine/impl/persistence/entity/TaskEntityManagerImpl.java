@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -31,6 +32,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
 
 /**
@@ -269,11 +271,19 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
 
   @Override
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
-    TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+    
+    CommandContext commandContext = Context.getCommandContext();
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
     if (task != null) {
       if (task.getExecutionId() != null) {
         throw new ActivitiException("The task cannot be deleted because is part of a running process");
+      }
+      
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        activiti5CompatibilityHandler.deleteTask(taskId, deleteReason, cascade);
+        return;
       }
 
       String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;

@@ -14,9 +14,9 @@
 package org.activiti5.engine.test.bpmn.sequenceflow;
 
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.bpmn.gateway.ExclusiveGatewayTest;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
+import org.activiti5.engine.test.bpmn.gateway.ExclusiveGatewayTest;
 
 
 /**

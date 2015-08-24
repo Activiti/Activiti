@@ -26,7 +26,6 @@ import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -175,13 +174,6 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
         }
       }
 
-      // remove message event subscriptions:
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-      List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = eventSubscriptionEntityManager 
-          .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId(), processDefinition.getTenantId());
-      for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
-        eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
-      }
     }
 
     getResourceManager().deleteResourcesByDeploymentId(deploymentId);

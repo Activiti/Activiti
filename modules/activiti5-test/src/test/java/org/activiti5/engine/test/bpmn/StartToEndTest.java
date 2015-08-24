@@ -16,11 +16,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.compatibility.wrapper.Activiti5ProcessInstanceWrapper;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -41,7 +42,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     varMap.put("test", "hello");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
-    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariableValues();
+    Map<String, Object> returnVarMap = ((ExecutionEntity) ((Activiti5ProcessInstanceWrapper) processInstance).getRawObject()).getVariableValues();
     assertEquals("hello", returnVarMap.get("test"));
   }
   
@@ -51,7 +52,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     varMap.put("test", "hello");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
-    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariableValues();
+    Map<String, Object> returnVarMap = ((ExecutionEntity) ((Activiti5ProcessInstanceWrapper) processInstance).getRawObject()).getVariableValues();
     assertEquals("hello", returnVarMap.get("test"));
     assertEquals("string", returnVarMap.get("string"));
     assertEquals(true, returnVarMap.get("boolean"));
@@ -65,7 +66,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     varMap.put("test", "hello");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
-    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariableValues();
+    Map<String, Object> returnVarMap = ((ExecutionEntity) ((Activiti5ProcessInstanceWrapper) processInstance).getRawObject()).getVariableValues();
     assertEquals("hello", returnVarMap.get("test"));
     Person person1 = (Person) returnVarMap.get("person1");
     assertEquals("1", person1.getId());

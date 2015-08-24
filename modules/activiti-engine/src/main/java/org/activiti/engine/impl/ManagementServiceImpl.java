@@ -21,9 +21,9 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.cmd.CancelJobCmd;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.activiti.engine.impl.cmd.DeleteEventLogEntry;
+import org.activiti.engine.impl.cmd.DeleteJobCmd;
 import org.activiti.engine.impl.cmd.ExecuteCustomSqlCmd;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.cmd.GetEventLogEntriesCmd;
@@ -76,7 +76,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
     try {
       commandExecutor.execute(new ExecuteJobsCmd(jobId));
     }
-    catch(RuntimeException e) {
+    catch (RuntimeException e) {
       if ((e instanceof JobNotFoundException)) {
         throw e;
       } else {
@@ -88,7 +88,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   public void deleteJob(String jobId) {
-    commandExecutor.execute(new CancelJobCmd(jobId));
+    commandExecutor.execute(new DeleteJobCmd(jobId));
   }
 
   public void setJobRetries(String jobId, int retries) {

@@ -16,13 +16,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.activiti.engine.runtime.Clock;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti5.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -30,7 +34,10 @@ import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
 public class JobExecutorTest extends JobExecutorTestCase {
 
   public void testBasicJobExecutorOperation() throws Exception {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    Clock clock = processEngineConfiguration.getClock();
+    processEngineConfiguration.resetClock();
+    
+    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
@@ -48,9 +55,14 @@ public class JobExecutorTest extends JobExecutorTestCase {
     
     GregorianCalendar currentCal = new GregorianCalendar();
     currentCal.add(Calendar.MINUTE, 1);
-    processEngineConfiguration.getClock().setCurrentTime(currentCal.getTime());
+    clock.setCurrentCalendar(currentCal);
+    processEngineConfiguration.setClock(clock);
     
-    waitForJobExecutorToProcessAllJobs(8000L, 200L);
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    for (int i = 0; i < 7; i++) {
+      List<Job> jobs = activiti5ProcessEngineConfig.getManagementService().createJobQuery().list();
+      activiti5ProcessEngineConfig.getManagementService().executeJob(jobs.get(0).getId());
+    }
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();
@@ -62,5 +74,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
     expectedMessages.add("timer-two");
     
     assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
+    
+    processEngineConfiguration.resetClock();
   }
 }

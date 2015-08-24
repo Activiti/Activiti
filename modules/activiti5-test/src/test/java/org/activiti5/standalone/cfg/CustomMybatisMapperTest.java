@@ -36,8 +36,11 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 		
 		};
 		
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		// Verify
-		List<Map<String, Object>> tasks = managementService.executeCustomSql(customSqlExecution);
+		List<Map<String, Object>> tasks = activiti5ProcessEngineConfig.getManagementService().executeCustomSql(customSqlExecution);
 		assertEquals(5, tasks.size());
 		for (int i=0; i<5; i++) {
 			Map<String, Object> task = tasks.get(i);
@@ -77,7 +80,10 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 		};
 		
 		// Verify
-		List<Map<String, Object>> results = managementService.executeCustomSql(customSqlExecution);
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl)
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
+		List<Map<String, Object>> results = activiti5ProcessEngineConfig.getManagementService().executeCustomSql(customSqlExecution);
 		assertEquals(5, results.size());
 		for (int i=0; i<5; i++) {
 			Map<String, Object> result = results.get(i);

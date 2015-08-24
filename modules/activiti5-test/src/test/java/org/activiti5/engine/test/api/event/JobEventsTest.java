@@ -16,16 +16,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.impl.util.DefaultClockImpl;
-import org.activiti5.engine.runtime.Clock;
-import org.activiti5.engine.runtime.Job;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
@@ -41,6 +41,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 	 */
 	@Deployment
 	public void testJobEntityEvents() throws Exception {
+	  Clock clock = processEngineConfiguration.getClock();
+	  
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
 		Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(theJob);
@@ -62,7 +64,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(1, listener.getEventsReceived().size());
 		event = listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-		Job updatedJob = (Job) ((ActivitiEntityEvent) event).getEntity();
+		org.activiti5.engine.runtime.Job updatedJob = (org.activiti5.engine.runtime.Job) ((ActivitiEntityEvent) event).getEntity();
 		assertEquals(5, updatedJob.getRetries());
 		checkEventContext(event, theJob, true);
 		
@@ -71,7 +73,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+		clock.setCurrentCalendar(tomorrow);
+		processEngineConfiguration.setClock(clock);
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched
@@ -91,6 +94,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		event = listener.getEventsReceived().get(2);
 		assertEquals(ActivitiEventType.JOB_EXECUTION_SUCCESS, event.getType());
 		checkEventContext(event, theJob, true);
+	
+		processEngineConfiguration.resetClock();
 	}
 
   /**
@@ -98,14 +103,12 @@ public class JobEventsTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testRepetitionJobEntityEvents() throws Exception {
-    Clock previousClock = processEngineConfiguration.getClock();
-
-    Clock testClock = new DefaultClockImpl();
-
-    processEngineConfiguration.setClock(testClock);
-
-    Date now = new Date();
-    testClock.setCurrentTime(now);
+    Clock clock = processEngineConfiguration.getClock();
+    
+    clock.reset();
+    Date now = clock.getCurrentTime();
+    processEngineConfiguration.setClock(clock);
+    
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
     Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
@@ -123,28 +126,31 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     try {
-     waitForJobExecutorToProcessAllJobs(2000, 100);
-     fail("a new job must be prepared because there are 2 repeats");
-   }catch (Exception ex){
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+      fail("a new job must be prepared because there are 2 repeats");
+    } catch (Exception ex){
      //expected exception because a new job is prepared
-   }
+    }
 
-    testClock.setCurrentTime(new Date(now.getTime() + 10000L));
+    clock.setCurrentTime(new Date(now.getTime() + 10000L));
+    processEngineConfiguration.setClock(clock);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
       fail("a new job must be prepared because there are 2 repeats");
-    }catch (Exception ex){
+    } catch (Exception ex){
       //expected exception because a new job is prepared
     }
 
-    testClock.setCurrentTime(new Date(now.getTime() + 20000L));
+    clock.setCurrentTime(new Date(now.getTime() + 20000L));
+    processEngineConfiguration.setClock(clock);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
     }catch (Exception ex){
       fail("There must be no jobs remaining");
     }
 
-    testClock.setCurrentTime(new Date(now.getTime() + 30000L));
+    clock.setCurrentTime(new Date(now.getTime() + 30000L));
+    processEngineConfiguration.setClock(clock);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
     }catch (Exception ex){
@@ -159,18 +165,17 @@ public class JobEventsTest extends PluggableActivitiTestCase {
       }
     }
     listener.clearEventsReceived();
-    processEngineConfiguration.setClock(previousClock);
 
     assertEquals(2, timerFiredCount);
+    
+    processEngineConfiguration.resetClock();
   }
 
   @Deployment
   public void testJobCanceledEventOnBoundaryEvent() throws Exception {
-    Clock testClock = new DefaultClockImpl();
-
-    processEngineConfiguration.setClock(testClock);
-
-    testClock.setCurrentTime(new Date());
+    Clock clock = processEngineConfiguration.getClock();
+    clock.reset();
+    processEngineConfiguration.setClock(clock);
     runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
 
@@ -179,12 +184,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     checkEventCount(1, ActivitiEventType.JOB_CANCELED);
+    
+    processEngineConfiguration.resetClock();
   }
 
   @Deployment(resources = "org/activiti5/engine/test/api/event/JobEventsTest.testJobCanceledEventOnBoundaryEvent.bpmn20.xml")
   public void testJobCanceledEventByManagementService() throws Exception {
     // GIVEN
-    processEngineConfiguration.getClock().setCurrentTime(new Date());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
 
@@ -200,11 +206,19 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   public void testJobCanceledEventOnProcessRedeploy() throws Exception {
     // GIVEN
     // deploy process definition
-    String deployment1 = repositoryService.createDeployment().addClasspathResource("org/activiti5/engine/test/api/event/JobEventsTest.testTimerFiredForTimerStart.bpmn20.xml").deploy().getId();
+    String deployment1 = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti5/engine/test/api/event/JobEventsTest.testTimerFiredForTimerStart.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy()
+        .getId();
     listener.clearEventsReceived();
 
     // WHEN
-    String deployment2 = repositoryService.createDeployment().addClasspathResource("org/activiti5/engine/test/api/event/JobEventsTest.testTimerFiredForTimerStart.bpmn20.xml").deploy().getId();
+    String deployment2 = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti5/engine/test/api/event/JobEventsTest.testTimerFiredForTimerStart.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy()
+        .getId();
 
     // THEN
     checkEventCount(1, ActivitiEventType.JOB_CANCELED);
@@ -225,48 +239,58 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   }
 
   /**
+   * Test TIMER_FIRED event for timer start bpmn event.
+   */
+  @Deployment
+  public void testTimerFiredForTimerStart() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
+    
+    // there should be one job after process definition deployment
+    
+    // Force timer to start the process
+    Calendar tomorrow = Calendar.getInstance();
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+    clock.setCurrentCalendar(tomorrow);
+    processEngineConfiguration.setClock(clock);
+    waitForJobExecutorToProcessAllJobs(2000, 200);
 
-    /**
-     * Test TIMER_FIRED event for timer start bpmn event.
-     */
-    @Deployment
-    public void testTimerFiredForTimerStart() throws Exception {
-        // there should be one job after process definition deployment
+    // Check Timer fired event has been dispatched
+    assertEquals(3, listener.getEventsReceived().size());
+    assertEquals(ActivitiEventType.TIMER_FIRED, listener.getEventsReceived().get(0).getType());
+    checkEventCount(0, ActivitiEventType.JOB_CANCELED);
+    
+    processEngineConfiguration.resetClock();
+  }
 
-        // Force timer to start the process
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-        waitForJobExecutorToProcessAllJobs(2000, 100);
+  /**
+   * Test TIMER_FIRED event for intermediate timer bpmn event.
+   */
+  @Deployment
+  public void testTimerFiredForIntermediateTimer() throws Exception {
+    Clock clock = processEngineConfiguration.getClock();
+    
+    runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
 
-        // Check Timer fired event has been dispatched
-        assertEquals(3, listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.TIMER_FIRED, listener.getEventsReceived().get(0).getType());
-        checkEventCount(0, ActivitiEventType.JOB_CANCELED);
-    }
+    // Force timer to start the process
+    Calendar tomorrow = Calendar.getInstance();
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+    clock.setCurrentCalendar(tomorrow);
+    processEngineConfiguration.setClock(clock);
+    waitForJobExecutorToProcessAllJobs(2000, 200);
 
-    /**
-     * Test TIMER_FIRED event for intermediate timer bpmn event.
-     */
-    @Deployment
-    public void testTimerFiredForIntermediateTimer() throws Exception {
-        runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
+    checkEventCount(0, ActivitiEventType.JOB_CANCELED);
+    checkEventCount(1, ActivitiEventType.TIMER_FIRED);
+    
+    processEngineConfiguration.resetClock();
+  }
 
-        // Force timer to start the process
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-        waitForJobExecutorToProcessAllJobs(2000, 100);
-
-        checkEventCount(0, ActivitiEventType.JOB_CANCELED);
-        checkEventCount(1, ActivitiEventType.TIMER_FIRED);
-    }
-
-    /**
+  /**
 	 * Test create, update and delete events of jobs entities.
 	 */
 	@Deployment
 	public void testJobEntityEventsException() throws Exception {
+	  Clock clock = processEngineConfiguration.getClock();
+    
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
 		Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(theJob);
@@ -279,7 +303,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+		clock.setCurrentCalendar(tomorrow);
+		processEngineConfiguration.setClock(clock);
 		try {
 		  managementService.executeJob(theJob.getId());
 		  fail("Expected exception");
@@ -312,14 +337,16 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		
 		event = listener.getEventsReceived().get(4);
 		assertEquals(ActivitiEventType.JOB_RETRIES_DECREMENTED, event.getType());
-		assertEquals(0, ((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
+		assertEquals(0, ((org.activiti5.engine.runtime.Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
 		checkEventContext(event, theJob, true);
+	
+		processEngineConfiguration.resetClock();
 	}
 	
 	protected void checkEventContext(ActivitiEvent event, Job entity, boolean scopeExecutionExpected) {
 		assertEquals(entity.getProcessInstanceId(), event.getProcessInstanceId());
 		assertEquals(entity.getProcessDefinitionId(), event.getProcessDefinitionId());
-		if(scopeExecutionExpected) {
+		if (scopeExecutionExpected) {
 			assertEquals(entity.getExecutionId(), event.getExecutionId());
 		} else {
 			assertEquals(entity.getProcessInstanceId(), event.getExecutionId());
@@ -327,23 +354,27 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		
 		assertTrue(event instanceof ActivitiEntityEvent);
 		ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
-		assertTrue(entityEvent.getEntity() instanceof Job);
-		assertEquals(entity.getId(), ((Job) entityEvent.getEntity()).getId());
+		assertTrue(entityEvent.getEntity() instanceof org.activiti5.engine.runtime.Job);
+		assertEquals(entity.getId(), ((org.activiti5.engine.runtime.Job) entityEvent.getEntity()).getId());
 	}
 	
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  listener = new TestActivitiEntityEventListener(Job.class);
-	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
+	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if(listener != null) {
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+	  if (listener != null) {
+	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	    activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

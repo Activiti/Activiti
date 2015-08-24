@@ -36,7 +36,6 @@ import org.activiti5.engine.impl.persistence.entity.MessageEventSubscriptionEnti
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.TimerEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Clock;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.
@@ -55,7 +54,9 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 	  super.setUp();
 	  
 	  // Database event logger setup
-	  databaseEventLogger = new EventLogger((Clock) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawClock());
+	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  databaseEventLogger = new EventLogger(activiti5ProcessConfig.getClock());
 	  processEngineConfiguration.getActiviti5CompatibilityHandler().addEventListener(databaseEventLogger);
 	}
 	

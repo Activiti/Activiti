@@ -7,7 +7,7 @@
     <sequenceFlow sourceRef="theStart" targetRef="userTask" />
     <userTask id="userTask">
       <extensionElements>
-        <activiti:taskListener event="create" class="org.activiti.engine.test.api.event.VariableEventsTaskListener" />
+        <activiti:taskListener event="create" class="org.activiti5.engine.test.api.event.VariableEventsTaskListener" />
       </extensionElements>
     </userTask>
     <sequenceFlow sourceRef="userTask" targetRef="theEnd" />

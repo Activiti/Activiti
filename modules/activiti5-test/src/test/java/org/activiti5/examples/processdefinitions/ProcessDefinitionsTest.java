@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -160,7 +161,9 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
   
   private String deployProcessString(String processString) {
     String resourceName = "xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIXES[0];
-    return repositoryService.createDeployment().addString(resourceName, processString).deploy().getId();
+    return repositoryService.createDeployment().addString(resourceName, processString)
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+        .deploy().getId();
   }
   
   private void deleteDeployments(Collection<String> deploymentIds) {

@@ -16,9 +16,11 @@ package org.activiti5.engine.test.db;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.RepositoryServiceImpl;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.ReadOnlyProcessDefinition;
@@ -36,6 +38,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/db/processOne.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/db/processTwo.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
   
@@ -52,11 +55,13 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     String deploymentId = repositoryService
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/db/processOne.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
   
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(procDefId);
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl) activiti5ProcessEngineConfig.getRepositoryService()).getDeployedProcessDefinition(procDefId);
     
     assertEquals(procDefId, processDefinition.getId());
     assertEquals("Process One", processDefinition.getName());
@@ -91,6 +96,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
       .createDeployment()
       .addClasspathResource("org/activiti5/engine/test/db/processOne.bpmn20.xml")
       .addClasspathResource("org/activiti5/engine/test/db/processTwo.bpmn20.xml")
+      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy()
       .getId();
   
@@ -105,6 +111,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
             .createDeployment()
             .addClasspathResource("org/activiti5/engine/test/db/processOne.bpmn20.xml")
             .addClasspathResource("org/activiti5/engine/test/db/processTwo.bpmn20.xml")
+            .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
             .deploy()
             .getId();    
 
@@ -120,6 +127,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
   	      .createDeployment()
   	      .addClasspathResource("org/activiti5/engine/test/db/process-with-di.bpmn20.xml")
   	      .addClasspathResource("org/activiti5/engine/test/db/process-without-di.bpmn20.xml")
+  	      .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   	      .deploy()
   	      .getId();
   	 

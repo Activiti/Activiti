@@ -26,7 +26,7 @@
 			</boundaryEvent>	
 			
 			<serviceTask id="undoBookFlight" isForCompensation="true"
-				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.UndoService">
 				<extensionElements>
 					<activiti:field name="counterName" stringValue="undoBookFlight" />
 				</extensionElements>
@@ -64,14 +64,14 @@
 				</boundaryEvent>
 
 				<serviceTask id="innerTxundoBookHotel" isForCompensation="true"
-					activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+					activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.UndoService">
 					<extensionElements>
 						<activiti:field name="counterName" stringValue="innerTxundoBookHotel" />
 					</extensionElements>
 				</serviceTask>
 				
 				<serviceTask id="innerTxundoBookFlight" isForCompensation="true"
-					activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+					activiti:class="org.activiti5.engine.test.bpmn.event.compensate.helper.UndoService">
 					<extensionElements>
 						<activiti:field name="counterName" stringValue="innerTxundoBookFlight" />
 					</extensionElements>

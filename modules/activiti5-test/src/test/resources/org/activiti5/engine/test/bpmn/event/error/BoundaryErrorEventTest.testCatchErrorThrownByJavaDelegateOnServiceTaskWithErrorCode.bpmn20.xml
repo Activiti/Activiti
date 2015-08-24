@@ -12,7 +12,7 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
     
-    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
+    <serviceTask id="serviceTask" activiti:class="org.activiti5.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
     
     <boundaryEvent id="ignoreError42" attachedToRef="serviceTask">
       <errorEventDefinition errorRef="error42" />

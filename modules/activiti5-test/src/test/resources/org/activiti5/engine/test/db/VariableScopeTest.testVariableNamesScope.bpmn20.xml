@@ -18,7 +18,7 @@
       
         <startEvent id="subProcess2Start" />
         <sequenceFlow id="flow3" sourceRef="subProcess2Start" targetRef="subProcessServiceTask" />
-        <serviceTask id="subProcessServiceTask" name="Service task in subprocess" activiti:class="org.activiti.engine.test.db.SetLocalVariableTask" />
+        <serviceTask id="subProcessServiceTask" name="Service task in subprocess" activiti:class="org.activiti5.engine.test.db.SetLocalVariableTask" />
         <sequenceFlow id="flow4" sourceRef="subProcessServiceTask" targetRef="subProcessTask" />
         <userTask id="subProcessTask" name="Task in subprocess" />
         <sequenceFlow id="flow5" sourceRef="subProcessTask" targetRef="subProcessEnd2" />

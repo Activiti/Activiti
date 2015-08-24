@@ -12,13 +12,13 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to executions.
@@ -44,11 +44,11 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
             assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-            assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+            assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
             listener.clearEventsReceived();
 			
 			// Check update event when suspended/activated
@@ -57,11 +57,11 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 			
 			assertEquals(2, listener.getEventsReceived().size());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
-			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
 			listener.clearEventsReceived();
 			
 			// Check update event when process-definition is supended (should cascade suspend/activate all process instances)
@@ -70,18 +70,18 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 			
 			assertEquals(2, listener.getEventsReceived().size());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.ProcessInstance) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
-			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
 			listener.clearEventsReceived();
 			
 			// Check update-event when business-key is updated
 			runtimeService.updateBusinessKey(processInstance.getId(), "thekey");
 			assertEquals(1, listener.getEventsReceived().size());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
 			listener.clearEventsReceived();
 			
@@ -89,7 +89,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((org.activiti5.engine.runtime.Execution) event.getEntity()).getId());
 			listener.clearEventsReceived();
 	}
 	
@@ -98,17 +98,22 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 	  super.initializeServices();
 	  
-	  listener = new TestActivitiEntityEventListener(Execution.class);
-	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+	  
+	  listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Execution.class);
+	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if(listener != null) {
+	  if (listener != null) {
+	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  	listener.clearEventsReceived();
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+	  	activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

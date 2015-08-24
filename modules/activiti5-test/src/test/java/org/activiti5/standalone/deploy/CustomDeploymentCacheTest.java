@@ -15,6 +15,8 @@ package org.activiti5.standalone.deploy;
 import java.text.MessageFormat;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 
 /**
@@ -27,16 +29,17 @@ public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
   }
   
   public void testCustomDeploymentCacheUsed() {
-    CustomDeploymentCache customCache = (CustomDeploymentCache)
-              processEngineConfiguration.getProcessDefinitionCache();
+    ProcessEngineConfigurationImpl activiti5Config = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    CustomDeploymentCache customCache = (CustomDeploymentCache) activiti5Config.getProcessDefinitionCache();
     assertNull(customCache.getCachedProcessDefinition());
 
-    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(
-            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
+    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti5/standalone/deploy/deploymentCacheTest.bpmn20.xml");
     for (int i = 1; i <= 5; i++) {
       repositoryService.createDeployment()
               .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
+              .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
               .deploy();
+      
       assertNotNull(customCache.getCachedProcessDefinition());
     }
     

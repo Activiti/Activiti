@@ -51,8 +51,6 @@ private static Logger log = LoggerFactory.getLogger(ManagedAsyncJobExecutor.clas
         executorService = threadPoolExecutor;
         
       }
-      
-      startJobAcquisitionThread();
     }
   }
 }

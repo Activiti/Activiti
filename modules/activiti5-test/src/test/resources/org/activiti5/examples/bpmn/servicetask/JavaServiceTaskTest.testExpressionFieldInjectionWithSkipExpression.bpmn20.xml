@@ -12,7 +12,7 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected"
+                 activiti:class="org.activiti5.examples.bpmn.servicetask.ReverseStringsFieldInjected"
                  activiti:skipExpression="${execution.getVariable('skip')}">
       <extensionElements>
         <activiti:field name="text1">

@@ -17,12 +17,13 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.task.Event;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti5.engine.impl.identity.Authentication;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.task.Event;
-import org.activiti5.engine.task.IdentityLink;
-import org.activiti5.engine.task.IdentityLinkType;
 
 
 /**
@@ -32,6 +33,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
 
   @Deployment(resources="org/activiti5/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testParticipantUserLink() {
+    Authentication.setAuthenticatedUserId(null);
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
     
     String processInstanceId = runtimeService
@@ -58,6 +60,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
 
   @Deployment(resources="org/activiti5/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testCandidateGroupLink() {
+    Authentication.setAuthenticatedUserId(null);
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
     
     String processInstanceId = runtimeService
@@ -115,6 +118,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
 
   @Deployment(resources="org/activiti5/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testCustomTypeUserLink() {
+    Authentication.setAuthenticatedUserId(null);
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
     
     String processInstanceId = runtimeService
@@ -141,6 +145,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
 
   @Deployment(resources="org/activiti5/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testCustomLinkGroupLink() {
+    Authentication.setAuthenticatedUserId(null);
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
     
     String processInstanceId = runtimeService

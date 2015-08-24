@@ -20,11 +20,13 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -122,14 +124,23 @@ public class DeploymentManager {
   }
 
   public void removeDeployment(String deploymentId, boolean cascade) {
-    DeploymentEntityManager deploymentEntityManager = Context.getCommandContext().getDeploymentEntityManager();
+    CommandContext commandContext = Context.getCommandContext();
+    DeploymentEntityManager deploymentEntityManager = commandContext.getDeploymentEntityManager();
 
     DeploymentEntity deployment = deploymentEntityManager.findDeploymentById(deploymentId);
-    if (deployment == null)
+    if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", DeploymentEntity.class);
+    }
+    
+    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
+        Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(deployment.getEngineVersion())) {
+      
+      commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().deleteDeployment(deploymentId, cascade);
+      return;
+    }
 
     // Remove any process definition from the cache
-    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(Context.getCommandContext()).deploymentId(deploymentId).list();
+    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(commandContext).deploymentId(deploymentId).list();
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
 
     for (ProcessDefinition processDefinition : processDefinitions) {

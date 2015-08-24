@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -39,16 +39,16 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 			
 		}
 	}
-	
-	
-	
 
 	@Override
 	protected void initializeServices() {
 		super.initializeServices();
 
+		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+		
 		listener = new TestActivitiEventListener();
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -56,8 +56,10 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
+		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+			activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

@@ -17,12 +17,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.JobQuery;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 
 /**
@@ -83,6 +84,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
       repositoryService
         .createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/message/MessageBoundaryEventTest.testDoubleBoundaryMessageEventSameMessageId.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("Deployment should fail because Activiti cannot handle two boundary message events with same messageId.");
     } catch (Exception e) {

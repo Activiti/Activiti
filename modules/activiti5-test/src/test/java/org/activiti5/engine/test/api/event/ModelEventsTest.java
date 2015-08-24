@@ -12,11 +12,11 @@
  */
 package org.activiti5.engine.test.api.event;
 
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.repository.Model;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.repository.Model;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to models.
@@ -25,7 +25,7 @@ import org.activiti5.engine.repository.Model;
  */
 public class ModelEventsTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEntityEventListener listener;
+	private TestActiviti6EntityEventListener listener;
 	
 	/**
 	 * Test create, update and delete events of model entities.
@@ -73,7 +73,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 			listener.clearEventsReceived();
 			
 		} finally {
-			if(model != null && repositoryService.getModel(model.getId()) != null) {
+			if (model != null && repositoryService.getModel(model.getId()) != null) {
 				repositoryService.deleteModel(model.getId());
 			}
 		}
@@ -82,7 +82,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  listener = new TestActivitiEntityEventListener(Model.class);
+	  listener = new TestActiviti6EntityEventListener(Model.class);
 	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 	
@@ -90,8 +90,8 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if(listener != null) {
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+	  if (listener != null) {
+	    processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

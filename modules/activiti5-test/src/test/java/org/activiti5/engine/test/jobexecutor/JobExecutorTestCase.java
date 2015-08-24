@@ -14,8 +14,9 @@ package org.activiti5.engine.test.jobexecutor;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti5.engine.impl.persistence.entity.MessageEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -26,11 +27,13 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
   protected TweetHandler tweetHandler = new TweetHandler();
 
   public void setUp() throws Exception {
-    processEngineConfiguration.getJobHandlers().put(tweetHandler.getType(), tweetHandler);
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5ProcessEngineConfig.getJobHandlers().put(tweetHandler.getType(), tweetHandler);
   }
 
   public void tearDown() throws Exception {
-    processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5ProcessEngineConfig.getJobHandlers().remove(tweetHandler.getType());
   }
 
   protected MessageEntity createTweetMessage(String msg) {

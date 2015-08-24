@@ -14,18 +14,24 @@
 package org.activiti.compatibility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
+import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
-import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti5.engine.impl.history.HistoryLevel;
+import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
 
@@ -34,6 +40,7 @@ public class DefaultProcessEngineFactory {
   /**
    * Takes in an Activiti 6 process engine config, gives back an Activiti 5 Process engine.
    */
+  @SuppressWarnings("unchecked")
   public ProcessEngine buildProcessEngine(ProcessEngineConfigurationImpl activiti6Configuration) {
 
     // TODO: jta/spring/custom type
@@ -41,8 +48,36 @@ public class DefaultProcessEngineFactory {
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration = null;
     if (activiti6Configuration instanceof StandaloneProcessEngineConfiguration) {
       activiti5Configuration = new org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration();
-
-      activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+      
+      if (activiti6Configuration.getIdGeneratorDataSource() != null) {
+        activiti5Configuration.setIdGeneratorDataSource(activiti6Configuration.getIdGeneratorDataSource());
+      } else if (activiti6Configuration.getIdGeneratorDataSourceJndiName() != null) {
+        activiti5Configuration.setIdGeneratorDataSourceJndiName(activiti6Configuration.getIdGeneratorDataSourceJndiName());
+      } else {
+        activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+      }
+      
+      if (activiti6Configuration.getJdbcDriver() != null) {
+        activiti5Configuration.setJdbcDriver(activiti6Configuration.getJdbcDriver());
+      }
+      if (activiti6Configuration.getJdbcUrl() != null) {
+        activiti5Configuration.setJdbcUrl(activiti6Configuration.getJdbcUrl());
+      }
+      if (activiti6Configuration.getJdbcUsername() != null) {
+        activiti5Configuration.setJdbcUsername(activiti6Configuration.getJdbcUsername());
+      }
+      if (activiti6Configuration.getJdbcPassword() != null) {
+        activiti5Configuration.setJdbcPassword(activiti6Configuration.getJdbcPassword());
+      }
+      
+      if (activiti6Configuration.getIdBlockSize() > 0) {
+        activiti5Configuration.setIdBlockSize(activiti6Configuration.getIdBlockSize());
+      }
+      
+      if (activiti6Configuration.getJdbcMaxActiveConnections() > 0) {
+        activiti5Configuration.setJdbcMaxActiveConnections(activiti6Configuration.getJdbcMaxActiveConnections());
+      }
+      
       activiti5Configuration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(activiti6Configuration.getHistoryLevel().getKey()));
       
       activiti5Configuration.setMailServerDefaultFrom(activiti6Configuration.getMailServerDefaultFrom());
@@ -67,13 +102,17 @@ public class DefaultProcessEngineFactory {
         }
       }
       
-      if (activiti6Configuration.isAsyncExecutorEnabled() && activiti6Configuration.getAsyncExecutor() != null) {
-        AsyncExecutor activiti5AsyncExecutor = new DefaultAsyncJobExecutor();
-        activiti5AsyncExecutor.setAsyncJobLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
-        activiti5AsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultAsyncJobAcquireWaitTimeInMillis());
-        activiti5AsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getDefaultTimerJobAcquireWaitTimeInMillis());
-        activiti5AsyncExecutor.setRetryWaitTimeInMillis(activiti6Configuration.getAsyncExecutor().getRetryWaitTimeInMillis());
-        activiti5AsyncExecutor.setTimerLockTimeInMillis(activiti6Configuration.getAsyncExecutor().getTimerLockTimeInMillis());
+      activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
+      activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
+      
+      if (activiti6Configuration.isAsyncExecutorEnabled()) {
+        activiti5Configuration.setAsyncExecutorEnabled(true);
+        if (activiti6Configuration.isAsyncExecutorActivate()) {
+          activiti5Configuration.setAsyncExecutorActivate(true);
+        }
+      }
+      if (activiti6Configuration.getActiviti5AsyncExecutor() != null) {
+        AsyncExecutor activiti5AsyncExecutor = (AsyncExecutor) activiti6Configuration.getActiviti5AsyncExecutor();
         activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
       }
       
@@ -84,18 +123,58 @@ public class DefaultProcessEngineFactory {
       if (activiti6Configuration.getBeans() != null) {
         activiti5Configuration.setBeans(activiti6Configuration.getBeans());
       }
+      
+      if (activiti6Configuration.getActiviti5ProcessDefinitionCache() != null) {
+        activiti5Configuration.setProcessDefinitionCache((DeploymentCache<ProcessDefinitionEntity>) activiti6Configuration.getActiviti5ProcessDefinitionCache());
+      }
+      activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
+      
+      if (activiti6Configuration.getActiviti5KnowledgeBaseCache() != null) {
+        activiti5Configuration.setKnowledgeBaseCache((DeploymentCache<Object>) activiti6Configuration.getActiviti5KnowledgeBaseCache());
+      }
+      activiti5Configuration.setKnowledgeBaseCacheLimit(activiti6Configuration.getKnowledgeBaseCacheLimit());
+      
+      if (activiti6Configuration.getActiviti5ActivityBehaviorFactory() != null) {
+        activiti5Configuration.setActivityBehaviorFactory((ActivityBehaviorFactory) activiti6Configuration.getActiviti5ActivityBehaviorFactory());
+      }
+      if (activiti6Configuration.getActiviti5ListenerFactory() != null) {
+        activiti5Configuration.setListenerFactory((ListenerFactory) activiti6Configuration.getActiviti5ListenerFactory());
+      }
+      
+      convertParseHandlers(activiti6Configuration, activiti5Configuration);
+      
+      if (activiti6Configuration.getActiviti5CustomMybatisMappers() != null) {
+        activiti5Configuration.setCustomMybatisMappers(activiti6Configuration.getActiviti5CustomMybatisMappers());
+      }
+      
+      if (activiti6Configuration.getActiviti5CustomMybatisXMLMappers() != null) {
+        activiti5Configuration.setCustomMybatisXMLMappers(activiti6Configuration.getActiviti5CustomMybatisXMLMappers());
+      }
+      
+      convertEventListeners(activiti6Configuration, activiti5Configuration);
+      
+      // check if we need to enable rules deployment for Activiti 5
+      if (activiti6Configuration.getCustomPostDeployers() != null) {
+        List<org.activiti5.engine.impl.persistence.deploy.Deployer> activiti5Deployers = new ArrayList<org.activiti5.engine.impl.persistence.deploy.Deployer>();
+        for (Deployer deployer : activiti6Configuration.getCustomPostDeployers()) {
+          if (deployer instanceof RulesDeployer) {
+            activiti5Deployers.add(new org.activiti5.engine.impl.rules.RulesDeployer());
+            break;
+          }
+        }
+        
+        if (activiti5Deployers.size() > 0) {
+          if (activiti5Configuration.getCustomPostDeployers() != null) {
+            activiti5Configuration.getCustomPostDeployers().addAll(activiti5Deployers);
+          } else {
+            activiti5Configuration.setCustomPostDeployers(activiti5Deployers);
+          }
+        }
+      }
 
     } else {
       throw new ActivitiException("Unsupported process engine configuration");
     }
-    
-    if (activiti6Configuration.getActiviti5ActivityBehaviorFactory() != null) {
-      activiti5Configuration.setActivityBehaviorFactory((ActivityBehaviorFactory) activiti6Configuration.getActiviti5ActivityBehaviorFactory());
-    }
-    if (activiti6Configuration.getActiviti5ListenerFactory() != null) {
-      activiti5Configuration.setListenerFactory((ListenerFactory) activiti6Configuration.getListenerFactory());
-    }
-    convertParseHandlers(activiti6Configuration, activiti5Configuration);
 
     return activiti5Configuration.buildProcessEngine();
 
@@ -105,6 +184,30 @@ public class DefaultProcessEngineFactory {
     activiti5Configuration.setPreBpmnParseHandlers(convert(activiti6Configuration.getActiviti5PreBpmnParseHandlers()));
     activiti5Configuration.setPostBpmnParseHandlers(convert(activiti6Configuration.getActiviti5PostBpmnParseHandlers()));
     activiti5Configuration.setCustomDefaultBpmnParseHandlers(convert(activiti6Configuration.getActiviti5CustomDefaultBpmnParseHandlers()));
+  }
+  
+  protected void convertEventListeners(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
+    if (activiti6Configuration.getActiviti5EventListeners() != null) {
+      List<ActivitiEventListener> eventListeners = new ArrayList<ActivitiEventListener>();
+      for (Object eventObject : activiti6Configuration.getActiviti5EventListeners()) {
+        ActivitiEventListener eventListener = (ActivitiEventListener) eventObject;
+        eventListeners.add(eventListener);
+      }
+      activiti5Configuration.setEventListeners(eventListeners);
+    }
+    
+    if (activiti6Configuration.getActiviti5TypedEventListeners() != null) {
+      Map<String, List<ActivitiEventListener>> eventListenerMap = new HashMap<String, List<ActivitiEventListener>>();
+      for (String eventKey : activiti6Configuration.getActiviti5TypedEventListeners().keySet()) {
+        List<ActivitiEventListener> eventListeners = new ArrayList<ActivitiEventListener>();
+        for (Object eventObject : activiti6Configuration.getActiviti5TypedEventListeners().get(eventKey)) {
+          ActivitiEventListener eventListener = (ActivitiEventListener) eventObject;
+          eventListeners.add(eventListener);
+        }
+        eventListenerMap.put(eventKey, eventListeners);
+      }
+      activiti5Configuration.setTypedEventListeners(eventListenerMap);
+    }
   }
   
   protected List<BpmnParseHandler> convert(List<Object> activiti5BpmnParseHandlers) {

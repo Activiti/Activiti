@@ -1,4 +1,5 @@
 package org.activiti5.engine.test.pvm;
+
 import java.util.ArrayList;
 
 import org.activiti5.engine.impl.pvm.ProcessDefinitionBuilder;
@@ -6,7 +7,9 @@ import org.activiti5.engine.impl.pvm.PvmExecution;
 import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;
 import org.activiti5.engine.impl.test.PvmTestCase;
+import org.activiti5.engine.test.pvm.activities.Automatic;
 import org.activiti5.engine.test.pvm.activities.End;
+import org.activiti5.engine.test.pvm.activities.WaitState;
 import org.activiti5.engine.test.pvm.activities.While;
 
 

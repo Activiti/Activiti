@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -119,7 +120,9 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
   public void testIllegalUseOfResultVariableName() {
     try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti5/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml").deploy();
+      repositoryService.createDeployment().addClasspathResource("org/activiti5/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml")
+          .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+          .deploy();
       fail();
     } catch (ActivitiException e) {
       assertTrue(e.getMessage().contains("resultVariable"));

@@ -21,6 +21,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.interceptor.Command;
@@ -32,6 +33,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -66,6 +68,22 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   public Void execute(CommandContext commandContext) {
 
     List<ProcessDefinitionEntity> processDefinitions = findProcessDefinition(commandContext);
+    boolean hasActiviti5ProcessDefinitions = false;
+    for (ProcessDefinitionEntity processDefinitionEntity : processDefinitions) {
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinitionEntity)) {
+        hasActiviti5ProcessDefinitions = true;
+        break;
+      }
+    }
+    
+    if (hasActiviti5ProcessDefinitions) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      if (getProcessDefinitionSuspensionState() == SuspensionState.ACTIVE) {
+        activiti5CompatibilityHandler.activateProcessDefinition(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
+      } else if (getProcessDefinitionSuspensionState() == SuspensionState.SUSPENDED) {
+        activiti5CompatibilityHandler.suspendProcessDefinition(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
+      }
+    }
 
     if (executionDate != null) { // Process definition state change is
                                  // delayed
@@ -79,10 +97,8 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
   protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
 
-    // If process definition is already provided (eg. when command is called
-    // through the DeployCmd)
-    // we don't need to do an extra database fetch and we can simply return
-    // it, wrapped in a list
+    // If process definition is already provided (eg. when command is called through the DeployCmd)
+    // we don't need to do an extra database fetch and we can simply return it, wrapped in a list
     if (processDefinitionEntity != null) {
       return Collections.singletonList(processDefinitionEntity);
     }
@@ -128,6 +144,9 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
   protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) continue;
+      
       TimerEntity timer = new TimerEntity();
       timer.setProcessDefinitionId(processDefinition.getId());
 
@@ -146,6 +165,8 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   protected void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
 
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) continue;
+      
       SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
 
       // Evict cache

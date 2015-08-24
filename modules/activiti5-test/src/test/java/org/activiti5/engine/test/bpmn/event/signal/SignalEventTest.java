@@ -18,16 +18,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.validation.validator.Problems;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.Job;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 
 /**
@@ -86,6 +88,8 @@ public class SignalEventTest extends PluggableActivitiTestCase {
           "org/activiti5/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
           "org/activiti5/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalAsynch.bpmn20.xml"})
   public void testSignalCatchIntermediateAsynch() {
+    Clock clock = processEngineConfiguration.getClock();
+    processEngineConfiguration.resetClock();
     
     runtimeService.startProcessInstanceByKey("catchSignal");
         
@@ -101,14 +105,15 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count()); 
     
     try {
-      processEngineConfiguration.getClock().setCurrentTime(new Date(System.currentTimeMillis() + 1000));
+      clock.setCurrentTime(new Date(System.currentTimeMillis() + 1000));
+      processEngineConfiguration.setClock(clock);
       waitForJobExecutorToProcessAllJobs(10000, 100l);
       
       assertEquals(0, createEventSubscriptionQuery().count());    
       assertEquals(0, runtimeService.createProcessInstanceQuery().count());
       assertEquals(0, managementService.createJobQuery().count());   
-    }finally {
-     processEngineConfiguration.getClock().setCurrentTime(new Date());
+    } finally {
+      processEngineConfiguration.resetClock();
     }
    
   }
@@ -153,6 +158,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTests.duplicateSignalNames.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
@@ -166,6 +172,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTests.noSignalName.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
@@ -179,6 +186,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTests.signalNoId.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
@@ -192,6 +200,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTests.signalNoRef.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
@@ -345,13 +354,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 		
 		runtimeService.signalEventReceivedAsync("The Signal", execution.getId());
 		
-		assertEquals(1, managementService
-			      .createJobQuery().messages().count());
+		assertEquals(1, managementService.createJobQuery().messages().count());
 		
 		waitForJobExecutorToProcessAllJobs(8000L, 200L);
 		assertEquals(0, createEventSubscriptionQuery().count());    
-	    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-	    assertEquals(0, managementService.createJobQuery().count()); 
+		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+		assertEquals(0, managementService.createJobQuery().count()); 
   }
   
   @Deployment
@@ -366,7 +374,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertNotNull(execution);
     
     try {
-      runtimeService.signal(execution.getId());
+      runtimeService.trigger(execution.getId());
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Exception expected
@@ -379,6 +387,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   	// Deploy test processes
   	repositoryService.createDeployment()
   		.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+  		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   		.deploy();
   	
   	// Starting the process that fires the signal should start three process instances that are listening on that signal
@@ -407,7 +416,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
   	
   	// Cleanup
-  	for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+  	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
   		repositoryService.deleteDeployment(deployment.getId(), true);
   	}
   	
@@ -418,6 +427,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   	// Deploy test processes
   	repositoryService.createDeployment()
   		.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEventAsync.bpmn20.xml")
+  		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   		.deploy();
   	
   	// Starting the process that fires the signal should start 1 process instance that are listening on that signal, the others are done async
@@ -458,7 +468,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
   	
   	// Cleanup
-  	for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+  	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
   		repositoryService.deleteDeployment(deployment.getId(), true);
   	}
   	
@@ -469,6 +479,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
  	// Deploy test processes
  	repositoryService.createDeployment()
  		.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+ 		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
  		.deploy();
  	
  	runtimeService.signalEventReceived("The Signal");
@@ -496,7 +507,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
  	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
  	
  	// Cleanup
- 	for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+ 	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
  		repositoryService.deleteDeployment(deployment.getId(), true);
  	}
  	
@@ -507,6 +518,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
  	// Deploy test processes
  	repositoryService.createDeployment()
  		.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEventAsync.bpmn20.xml")
+ 		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
  		.deploy();
  	
  	runtimeService.signalEventReceivedAsync("The Signal");
@@ -542,7 +554,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
  	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
  	
  	// Cleanup
- 	for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+ 	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
  		repositoryService.deleteDeployment(deployment.getId(), true);
  	}
  	
@@ -576,14 +588,17 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 		// Deploy test processes
   	repositoryService.createDeployment()
   		.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+  		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
   		.deploy();
   	
   	// Deploy new versions
   	repositoryService.createDeployment()
 			.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+			.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 			.deploy();
    	repositoryService.createDeployment()
    		.addClasspathResource("org/activiti5/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+   		.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
    		.deploy();
   	
   	// Firing a signal start event should only start ONE process instance
@@ -592,7 +607,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   	assertEquals(3, runtimeService.createProcessInstanceQuery().count());
   	
   	// Cleanup
-  	for (org.activiti5.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+  	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
   		repositoryService.deleteDeployment(deployment.getId(), true);
   	}
 	}

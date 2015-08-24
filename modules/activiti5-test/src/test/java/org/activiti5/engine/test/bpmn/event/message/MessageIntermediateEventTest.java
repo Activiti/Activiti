@@ -15,12 +15,12 @@ package org.activiti5.engine.test.bpmn.event.message;
 
 import java.util.List;
 
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Task;
 
 
 /**
@@ -104,13 +104,12 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 		
 		runtimeService.messageEventReceivedAsync("newMessage", execution.getId());
 		
-		assertEquals(1, managementService
-			      .createJobQuery().messages().count());
+		assertEquals(1, managementService.createJobQuery().messages().count());
 		
 		waitForJobExecutorToProcessAllJobs(8000L, 200L);
 		assertEquals(0, createEventSubscriptionQuery().count());    
-	    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-	    assertEquals(0, managementService.createJobQuery().count()); 
+		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+		assertEquals(0, managementService.createJobQuery().count()); 
 	}
 	
 	private EventSubscriptionQueryImpl createEventSubscriptionQuery() {

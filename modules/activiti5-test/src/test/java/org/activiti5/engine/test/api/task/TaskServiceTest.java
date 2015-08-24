@@ -24,30 +24,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.TaskServiceImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.Event;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.ActivitiOptimisticLockingException;
-import org.activiti5.engine.ActivitiTaskAlreadyClaimedException;
-import org.activiti5.engine.history.HistoricDetail;
-import org.activiti5.engine.history.HistoricTaskInstance;
-import org.activiti5.engine.identity.Group;
-import org.activiti5.engine.identity.User;
-import org.activiti5.engine.impl.TaskServiceImpl;
-import org.activiti5.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.persistence.entity.CommentEntity;
-import org.activiti5.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
-import org.activiti5.engine.runtime.ProcessInstance;
-import org.activiti5.engine.task.Attachment;
-import org.activiti5.engine.task.Comment;
-import org.activiti5.engine.task.DelegationState;
-import org.activiti5.engine.task.Event;
-import org.activiti5.engine.task.IdentityLink;
-import org.activiti5.engine.task.IdentityLinkType;
-import org.activiti5.engine.task.Task;
 
 /**
  * @author Frederik Heremans
@@ -766,7 +766,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addCandidateUser("taskId", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   
@@ -799,7 +799,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addCandidateGroup("taskId", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   
@@ -830,7 +830,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addGroupIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   
@@ -863,7 +863,7 @@ public void testCompleteWithParametersTask2() {
       taskService.addUserIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
+      assertTextPresent("identityId is null", ae.getMessage());
     }
   }
   

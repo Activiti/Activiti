@@ -12,11 +12,11 @@
  */
 package org.activiti5.standalone.event;
 
-import org.activiti.engine.test.api.event.TestActivitiEventListener;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti5.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
@@ -34,12 +34,15 @@ public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
   	TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
   	assertNotNull(listener);
   	
+  	org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+  	
   	// Clear any events received (eg. engine initialisation)
-  	listener.clearEventsReceived();
+    listener.clearEventsReceived();
   	
   	// Dispath a custom event
   	ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
-  	processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+  	activiti5ProcessEngineConfig.getEventDispatcher().dispatchEvent(event);
   	
   	assertEquals(1, listener.getEventsReceived().size());
   	assertEquals(event, listener.getEventsReceived().get(0));
