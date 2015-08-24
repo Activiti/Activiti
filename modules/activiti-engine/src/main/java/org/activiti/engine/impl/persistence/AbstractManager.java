@@ -56,6 +56,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManagerImpl;
 
 /**
  * @author Tom Baeyens
@@ -108,7 +109,7 @@ public abstract class AbstractManager implements Session {
   }
 
   protected VariableInstanceEntityManager getVariableInstanceManager() {
-    return getSession(VariableInstanceEntityManager.class);
+    return getSession(VariableInstanceEntityManagerImpl.class);
   }
 
   protected HistoricProcessInstanceEntityManager getHistoricProcessInstanceManager() {

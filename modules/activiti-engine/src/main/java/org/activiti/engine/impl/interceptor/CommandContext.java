@@ -79,6 +79,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManagerImpl;
 import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -300,7 +301,7 @@ public class CommandContext {
   }
 
   public VariableInstanceEntityManager getVariableInstanceEntityManager() {
-    return getSession(VariableInstanceEntityManager.class);
+    return getSession(VariableInstanceEntityManagerImpl.class);
   }
 
   public HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {

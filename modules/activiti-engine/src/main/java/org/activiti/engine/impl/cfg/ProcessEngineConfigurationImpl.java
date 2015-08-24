@@ -181,7 +181,7 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManagerImpl;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManagerImpl;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
 import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
@@ -871,7 +871,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(ByteArrayEntityManagerImpl.class));
       addSessionFactory(new GenericManagerFactory(TableDataManager.class));
       addSessionFactory(new GenericManagerFactory(TaskEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManagerImpl.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManagerImpl.class));
       addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManagerImpl.class));
 
