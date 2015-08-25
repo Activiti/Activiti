@@ -526,6 +526,14 @@ public class DbSqlSession implements Session {
     }
     classCache.remove(persistentObjectId);
   }
+  
+  public <T> Collection<CachedObject> findInCacheAsCachedObjects(Class<T> entityClass) {
+    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+    if (classCache != null) {
+      return classCache.values();
+    }
+    return null;
+  }
 
   @SuppressWarnings("unchecked")
   public <T> List<T> findInCache(Class<T> entityClass) {

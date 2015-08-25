@@ -9,6 +9,7 @@ import java.util.List;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.DbSqlSession.CachedObject;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
@@ -103,31 +104,39 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
   @SuppressWarnings("unchecked")
   public List<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition) {
 
-    // Database
+    // Database entities
     List<Entity> entitiesFromDb = getDbSqlSession().selectList(dbQueryName, parameter);
     HashMap<String, Entity> entityMap = new HashMap<String, Entity>(entitiesFromDb.size());
     for (Entity entity : entitiesFromDb) {
       entityMap.put(entity.getId(), entity);
     }
 
-    // Cache
-    for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
-      if (retainEntityCondition.isRetained(cachedEntity)) {
-        entityMap.put(cachedEntity.getId(), cachedEntity); // will overwite db version with newer version
+    // Cache entities
+    Collection<CachedObject> cachedObjects = getDbSqlSession().findInCacheAsCachedObjects(getManagedPersistentObject());
+    if (cachedObjects != null) {
+      for (CachedObject cachedObject : cachedObjects) {
+        Entity cachedEntity = (Entity) cachedObject.getPersistentObject();
+        if (retainEntityCondition.isRetained(cachedEntity)) {
+          entityMap.put(cachedEntity.getId(), cachedEntity); // will overwite db version with newer version
+        }
       }
     }
     
     if (getManagedPersistentObjectSubClasses() != null) {
       for (Class<? extends Entity> entitySubClass : getManagedPersistentObjectSubClasses()) {
-        for (Entity cachedEntity : getDbSqlSession().findInCache(entitySubClass)) {
-          if (retainEntityCondition.isRetained(cachedEntity)) {
-            entityMap.put(cachedEntity.getId(), cachedEntity);
+        Collection<CachedObject> subclassCachedObjects = getDbSqlSession().findInCacheAsCachedObjects(entitySubClass);
+        if (subclassCachedObjects != null) {
+          for (CachedObject subclassCachedObject : subclassCachedObjects) {
+            Entity cachedSubclassEntity = (Entity) subclassCachedObject.getPersistentObject();
+            if (retainEntityCondition.isRetained(cachedSubclassEntity)) {
+              entityMap.put(cachedSubclassEntity.getId(), cachedSubclassEntity); // will overwite db version with newer version
+            }
           }
         }
       }
     }
 
-    // Remove any entries which are already deleted
+    // Remove entries which are already deleted
     Collection<Entity> result = entityMap.values();
     if (result.size() > 0) {
       Iterator<Entity> resultIterator = result.iterator();
@@ -140,5 +149,5 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
 
     return new ArrayList<Entity>(result);
   }
-
+  
 }
