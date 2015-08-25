@@ -218,6 +218,8 @@ public interface StencilConstants {
 
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
   final String PROPERTY_SEQUENCEFLOW_ORDER = "sequencefloworder";
+  final String PROPERTY_COLLAPSED_SUBPROCESS_REFERENCE = "subprocessreference";
+  final String PROPERTY_FORM_REFERENCE = "formreference";
   
   final String PROPERTY_MESSAGE_DEFINITIONS = "messagedefinitions";
   final String PROPERTY_MESSAGE_DEFINITION_ID = "id";

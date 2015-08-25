@@ -12,17 +12,20 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -73,9 +76,33 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
     if (StringUtils.isNotEmpty(startEvent.getInitiator())) {
       propertiesNode.put(PROPERTY_NONE_STARTEVENT_INITIATOR, startEvent.getInitiator());
     }
+    
     if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
-      propertiesNode.put(PROPERTY_FORMKEY, startEvent.getFormKey());
-    }
+      List<ExtensionElement> formIdExtensions = startEvent.getExtensionElements().get("form-reference-id");
+      List<ExtensionElement> formNameExtensions = startEvent.getExtensionElements().get("form-reference-name");
+      if (CollectionUtils.isNotEmpty(formIdExtensions) && CollectionUtils.isNotEmpty(formNameExtensions)) {
+          ObjectNode formRefNode = objectMapper.createObjectNode();
+          formRefNode.put("id", Long.valueOf(formIdExtensions.get(0).getElementText()));
+          formRefNode.put("name", formNameExtensions.get(0).getElementText());
+          propertiesNode.put(PROPERTY_FORM_REFERENCE, formRefNode);
+          
+      } else if (startEvent.getFormKey().startsWith("FORM_REFERENCE")) {
+          String formReference = startEvent.getFormKey().replace("FORM_REFERENCE", "");
+          if (formReference.contains("_")) {
+              String formIdString = formReference.substring(0, formReference.indexOf("_"));
+              String formNameString = formReference.substring(formReference.indexOf("_") + 1);
+
+              ObjectNode formRefNode = objectMapper.createObjectNode();
+              formRefNode.put("id", Long.valueOf(formIdString));
+              formRefNode.put("name", formNameString);
+              propertiesNode.put(PROPERTY_FORM_REFERENCE, formRefNode);
+          }
+
+      } else {
+          setPropertyValue(PROPERTY_FORMKEY, startEvent.getFormKey(), propertiesNode);
+      }
+  }
+    
     addFormProperties(startEvent.getFormProperties(), propertiesNode);
     addEventProperties(startEvent, propertiesNode);
   }
@@ -87,7 +114,14 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
     if (STENCIL_EVENT_START_NONE.equals(stencilId)) {
       String formKey = getPropertyValueAsString(PROPERTY_FORMKEY, elementNode);
       if (StringUtils.isNotEmpty(formKey)) {
-        startEvent.setFormKey(formKey);
+          startEvent.setFormKey(formKey);
+      } else {
+          JsonNode formReferenceNode = getProperty(PROPERTY_FORM_REFERENCE, elementNode);
+          if (formReferenceNode != null && formReferenceNode.get("id") != null && formReferenceNode.get("name") != null) {
+              startEvent.setFormKey(formReferenceNode.get("id").asText());
+              addExtensionElement("form-reference-id", formReferenceNode.get("id").asText(), startEvent);
+              addExtensionElement("form-reference-name", formReferenceNode.get("name").asText(), startEvent);
+          }
       }
       convertJsonToFormProperties(elementNode, startEvent);
 
@@ -102,4 +136,13 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
     }
     return startEvent;
   }
+  
+  protected void addExtensionElement(String name, String elementText, Event event) {
+    ExtensionElement extensionElement = new ExtensionElement();
+    extensionElement.setNamespace(NAMESPACE);
+    extensionElement.setNamespacePrefix("modeler");
+    extensionElement.setName(name);
+    extensionElement.setElementText(elementText);
+    event.addExtensionElement(extensionElement);
+}
 }

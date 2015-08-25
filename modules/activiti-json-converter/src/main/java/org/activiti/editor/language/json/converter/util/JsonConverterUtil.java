@@ -13,12 +13,18 @@
 package org.activiti.editor.language.json.converter.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
+import org.activiti.editor.language.json.converter.BpmnJsonConverterUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class JsonConverterUtil implements EditorJsonConstants, StencilConstants {
 
@@ -70,4 +76,141 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     return propertyNode;
   }
 
+  /**
+   * Usable for BPMN 2.0 editor json: traverses all child shapes (also nested), goes into
+   * the properties and sees if there is a matching property in the
+   * 'properties' of the childshape and returns those in a list.
+   * 
+   * Returns a map with said json nodes, with the key the name of the childshape.
+   */
+  
+  public static List<JsonLookupResult> getBpmnProcessModelFormReferences(JsonNode editorJsonNode) {
+    return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "formreference");
+  }
+  
+  protected static List<JsonLookupResult> getBpmnProcessModelChildShapesPropertyValues(JsonNode editorJsonNode, String propertyName) {
+    List<JsonLookupResult> result = new ArrayList<JsonLookupResult>();
+    internalGetBpmnProcessChildShapePropertyValues(editorJsonNode, propertyName, result);
+    return result;
+  }
+  
+  protected static void internalGetBpmnProcessChildShapePropertyValues(JsonNode editorJsonNode, String propertyName, List<JsonLookupResult> result) {
+    JsonNode childShapesNode = editorJsonNode.get("childShapes");
+    if (childShapesNode != null && childShapesNode.isArray()) {
+      ArrayNode childShapesArrayNode = (ArrayNode) childShapesNode;
+      Iterator<JsonNode> childShapeNodeIterator = childShapesArrayNode.iterator();
+      while (childShapeNodeIterator.hasNext()) {
+        JsonNode childShapeNode = childShapeNodeIterator.next();
+
+        // Properties
+        JsonNode properties = childShapeNode.get("properties");
+        if (properties != null && properties.has(propertyName)) {
+          JsonNode nameNode = properties.get("name");
+          JsonNode propertyNode = properties.get(propertyName);
+          result.add(new JsonLookupResult(BpmnJsonConverterUtil.getElementId(childShapeNode), 
+                  nameNode != null ? nameNode.asText() : null, propertyNode));
+        }
+
+        // Potential nested child shapes
+        if (childShapeNode.has("childShapes")) {
+          internalGetBpmnProcessChildShapePropertyValues(childShapeNode, propertyName, result);
+        }
+
+      }
+    }
+  }
+  
+  // APP MODEL
+  
+  public static List<JsonNode> getAppModelReferencedProcessModels(JsonNode appModelJson) {
+    List<JsonNode> result = new ArrayList<JsonNode>();
+    if (appModelJson.has("models")) {
+      ArrayNode modelsArrayNode = (ArrayNode) appModelJson.get("models");
+      Iterator<JsonNode> modelArrayIterator = modelsArrayNode.iterator();
+      while (modelArrayIterator.hasNext()) {
+        result.add(modelArrayIterator.next());
+      }
+    }
+    return result;
+  }
+  
+  public static Set<Long> getAppModelReferencedModelIds(JsonNode appModelJson) {
+    if (appModelJson.has("models")) {
+      return JsonConverterUtil.gatherLongPropertyFromJsonNodes(appModelJson.get("models"), "id");
+    }
+    return Collections.emptySet();
+  }
+  
+  // GENERIC
+  
+  /**
+   * Loops through a list of {@link JsonNode} instances, and stores the given property with given type in the returned list.
+   * 
+   * In Java 8, this probably could be done a lot cooler.
+   */
+  public static Set<Long> gatherLongPropertyFromJsonNodes(Iterable<JsonNode> jsonNodes, String propertyName) {
+    Set<Long> result = new HashSet<Long>(); // Using a Set to filter out doubles
+    for (JsonNode node : jsonNodes) {
+      if (node.has(propertyName)) {
+        Long propertyValue = node.get(propertyName).asLong();
+        if (propertyValue > 0) { // Just to be safe
+          result.add(propertyValue);
+        }
+      }
+    }
+    return result;
+  }
+  
+  public static List<JsonNode> filterOutJsonNodes(List<JsonLookupResult> lookupResults) {
+    List<JsonNode> jsonNodes = new ArrayList<JsonNode>(lookupResults.size());
+    for (JsonLookupResult lookupResult : lookupResults) {
+      jsonNodes.add(lookupResult.getJsonNode());
+    }
+    return jsonNodes;
+  }
+  
+  // Helper classes
+  
+  public static class JsonLookupResult {
+    
+    private String id;
+    private String name;
+    private JsonNode jsonNode;
+    
+    public JsonLookupResult(String id, String name, JsonNode jsonNode) {
+      this(name, jsonNode);
+      this.id = id;
+    }
+    
+    public JsonLookupResult(String name, JsonNode jsonNode) {
+      this.name = name;
+      this.jsonNode = jsonNode;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public JsonNode getJsonNode() {
+      return jsonNode;
+    }
+
+    public void setJsonNode(JsonNode jsonNode) {
+      this.jsonNode = jsonNode;
+    }
+    
+  }
+  
 }

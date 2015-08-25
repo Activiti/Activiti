@@ -269,11 +269,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         if (model.getPools().size() > 0 && poolHasDI) {
             for (Pool pool : model.getPools()) {
-                GraphicInfo graphicInfo = model.getGraphicInfo(pool.getId());
-                if (graphicInfo == null) continue;
+                GraphicInfo poolGraphicInfo = model.getGraphicInfo(pool.getId());
+                if (poolGraphicInfo == null) continue;
                 ObjectNode poolNode = BpmnJsonConverterUtil.createChildShape(pool.getId(), STENCIL_POOL, 
-                        graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight(),
-                        graphicInfo.getX(), graphicInfo.getY());
+                    poolGraphicInfo.getX() + poolGraphicInfo.getWidth(), poolGraphicInfo.getY() + poolGraphicInfo.getHeight(),
+                    poolGraphicInfo.getX(), poolGraphicInfo.getY());
                 shapesArrayNode.add(poolNode);
                 ObjectNode poolPropertiesNode = objectMapper.createObjectNode();
                 poolPropertiesNode.put(PROPERTY_OVERRIDE_ID, pool.getId());
@@ -299,8 +299,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                         GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
                         if (laneGraphicInfo == null) continue;
                         ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
-                                laneGraphicInfo.getX() + laneGraphicInfo.getWidth(), laneGraphicInfo.getY() + 
-                                laneGraphicInfo.getHeight(), laneGraphicInfo.getX(), laneGraphicInfo.getY());
+                            laneGraphicInfo.getX() + laneGraphicInfo.getWidth() - poolGraphicInfo.getX(), 
+                            laneGraphicInfo.getY() + laneGraphicInfo.getHeight() - poolGraphicInfo.getY(), 
+                            laneGraphicInfo.getX() - poolGraphicInfo.getX(), 
+                            laneGraphicInfo.getY() - poolGraphicInfo.getY());
                         laneShapesArrayNode.add(laneNode);
                         ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
                         lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, lane.getId());
@@ -489,11 +491,13 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
               String signalName = signalDefinitionJsonNode.get(PROPERTY_SIGNAL_DEFINITION_NAME).asText();
               String signalScope = signalDefinitionJsonNode.get(PROPERTY_SIGNAL_DEFINITION_SCOPE).asText();
               
-              Signal signal = new Signal();
-              signal.setId(signalId);
-              signal.setName(signalName);
-              signal.setScope((signalScope.toLowerCase().equals("processinstance")) ? Signal.SCOPE_PROCESS_INSTANCE : Signal.SCOPE_GLOBAL);
-              bpmnModel.addSignal(signal);
+              if (StringUtils.isNotEmpty(signalId) && StringUtils.isNotEmpty(signalName)) {
+                Signal signal = new Signal();
+                signal.setId(signalId);
+                signal.setName(signalName);
+                signal.setScope((signalScope.toLowerCase().equals("processinstance")) ? Signal.SCOPE_PROCESS_INSTANCE : Signal.SCOPE_GLOBAL);
+                bpmnModel.addSignal(signal);
+              }
             }
           }
         }
@@ -781,7 +785,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
 
                 ObjectNode childNode = (ObjectNode) jsonChildNode;
                 String stencilId = BpmnJsonConverterUtil.getStencilId(childNode);
-                if (STENCIL_SUB_PROCESS.equals(stencilId)) {
+                if (STENCIL_SUB_PROCESS.equals(stencilId) || STENCIL_POOL.equals(stencilId) || STENCIL_LANE.equals(stencilId)) {
                     filterAllEdges(childNode, edgeMap, sourceAndTargetMap, shapeMap, sourceRefMap);
 
                 } else if (STENCIL_SEQUENCE_FLOW.equals(stencilId) || STENCIL_ASSOCIATION.equals(stencilId)) {
