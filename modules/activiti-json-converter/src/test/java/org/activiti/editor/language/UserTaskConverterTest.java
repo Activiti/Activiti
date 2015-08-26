@@ -49,7 +49,6 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals("2012-11-01", userTask.getDueDate());
     assertEquals("defaultCategory", userTask.getCategory());
 
-    assertEquals("gonzo", userTask.getOwner());
     assertEquals("kermit", userTask.getAssignee());
     assertEquals(2, userTask.getCandidateUsers().size());
     assertTrue(userTask.getCandidateUsers().contains("kermit"));
