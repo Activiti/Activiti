@@ -1,0 +1,6 @@
+
+<span ng-if="property.value && property.value.duedate && property.value.duedate.field || property.value.duedate.field.taskDueDateField" translate>PROPERTY.DUEDATE.DEFINED</span>
+<span ng-if="property.value && property.value.duedate && property.value.duedate.fixed" translate>PROPERTY.DUEDATE.DEFINED</span>
+<span ng-if="property.value && property.value.duedateExpression">{{property.value.duedateExpression}}</span>
+<span ng-if="property.value && property.value.length > 0 && !property.value.duedate && !property.value.duedateExpression">{{property.value}}</span>
+<span ng-if="!property.value || property.value.length === 0" translate>PROPERTY.DUEDATE.EMPTY</span>

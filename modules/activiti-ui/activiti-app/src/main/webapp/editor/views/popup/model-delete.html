@@ -1,0 +1,58 @@
+
+<div class="modal" ng-controller="DeleteModelPopupCrtl">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>{{popup.popupType + '.POPUP.DELETE-TITLE' | translate}}</h2>
+			</div>
+			<div class="modal-body">
+
+                <div ng-show="popup.loadingRelations">
+                    <span class="text-info">{{'PROCESS.POPUP.DELETE-LOADING-RELATIONS' | translate}}</span>
+                </div>
+
+                <div ng-show="popup.relations && popup.relations.length > 0">
+                    <p ng-if="popup.relations.length > 1">{{'PROCESS.POPUP.DELETE-RELATIONS-DESCRIPTION' | translate}}</p>
+                    <p ng-if="popup.relations.length == 1">{{'PROCESS.POPUP.DELETE-RELATIONS-DESCRIPTION-SINGLE' | translate}}</p>
+                    <ul>
+                        <li ng-repeat="relation in popup.relations" style="font-size: 15px">
+                          <span ng-if="relation.type == 0 || relation.type == 1">{{'PROCESS.POPUP.DELETE-PROCESS-RELATION' | translate}}</span>
+                          <span ng-if="relation.type == 2">{{'PROCESS.POPUP.DELETE-FORM-RELATION' | translate}}</span>
+                          <span ng-if="relation.type == 3">{{'PROCESS.POPUP.DELETE-APP-RELATION' | translate}}</span>
+                          <span><i>'{{relation.name}}'</i></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div ng-show="!popup.loadingRelations && (!popup.relations || popup.relations.length == 0)">
+                    <p>{{popup.popupType + '.POPUP.DELETE-DESCRIPTION' | translate:popup.model}}</p>
+
+                    <div class="form-group" ng-if="popup.model.version != 1 && popup.model.createdBy == account.id">
+                        <div class="radio" ng-click="popup.cascade = 'false'">
+                            <input ng-model="popup.cascade" value="false" type="radio" name="cascadeDelete">
+                            <strong style="cursor:pointer">{{popup.popupType + '.POPUP.DELETE-CASCADE-FALSE' | translate:popup.model}}</strong>
+                        </div>
+                        <div class="radio" ng-click="popup.cascade = 'true'">
+                            <input ng-model="popup.cascade" value="true" type="radio" name="cascadeDelete">
+                            <strong style="cursor:pointer">{{popup.popupType + '.POPUP.DELETE-CASCADE-TRUE' | translate}}</strong>
+                        </div>
+                    </div>
+                </div>
+				
+			</div>
+			<div class="modal-footer">
+				<div class="pull-right">
+					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading">
+						{{'GENERAL.ACTION.CANCEL' | translate}}
+					</button>
+					<button type="button" class="btn btn-sm btn-danger" ng-click="ok()" ng-disabled="popup.loading || !popup.model.name || (popup.relations && popup.relations.length > 0)">
+						<span>{{popup.popupType + '.ACTION.DELETE-CONFIRM' | translate}}</span>
+					</button>
+				</div>
+				<div class="loading pull-right" ng-show="popup.loading">
+					<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

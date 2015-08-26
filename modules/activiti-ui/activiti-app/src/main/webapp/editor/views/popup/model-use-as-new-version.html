@@ -1,0 +1,45 @@
+
+<div class="modal" ng-controller="UseAsNewVersionPopupCrtl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            	<h2>{{popup.popupType + '.POPUP.USE-AS-NEW-TITLE' | translate}}</h2>
+            </div>
+            <div class="modal-body" ng-if="!popup.foundUnresolvedModels">
+            	<p>{{popup.popupType + '.POPUP.USE-AS-NEW-DESCRIPTION' | translate:popup.model}}</p>
+            	<div class="form-group">
+            	    <label for="newVersionComment">{{'PROCESS.VERSION-COMMENT' | translate}}</label>
+            		<textarea ng-disabled="popup.loading" class="form-control" id="newVersionComment" rows="5" ng-model="popup.comment"></textarea>
+            	</div>
+            </div>
+            <div class="modal-body" ng-if="popup.foundUnresolvedModels">
+                <p>{{'PROCESS.POPUP.USE-AS-NEW-UNRESOLVED-MODELS-ERROR'| translate}}</p>
+                <ul style="font-size: 15px;">
+                    <li ng-repeat="unresolvedModel in popup.unresolvedModels">
+                        {{'PROCESS.POPUP.USE-AS-NEW-UNRESOLVED-MODEL' | translate:unresolvedModel}}
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer" ng-if="!popup.foundUnresolvedModels">
+            	<div class="pull-right">
+            		<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading">
+            			{{'GENERAL.ACTION.CANCEL' | translate}}
+            		</button>
+            		<button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="popup.loading || !popup.model.name">
+            			{{popup.popupType + '.ACTION.USE-AS-NEW-VERSION-CONFIRM' | translate}}
+            		</button>
+            	</div>
+            	<div class="loading pull-right" ng-show="popup.loading">
+            		<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+            	</div>
+            </div>
+            <div class="modal-footer" ng-if="popup.foundUnresolvedModels">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sm btn-default" ng-disabled="popup.loading" ng-click="close()">
+                        {{'GENERAL.ACTION.CLOSE' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

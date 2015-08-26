@@ -1,0 +1,186 @@
+<div class="main-content" ng-controller="ProcessDetailController">
+
+    <div class="help-container" ng-if="!model.processInstance && !model.loading && state.noProcesses && (newProcessInstance == null || newProcessInstance == undefined)" auto-height ng-cloak>
+        <div>
+            <div class="help-text wide">
+                <div class="description">
+                    {{'PROCESS.MESSAGE.NO-INSTANCES-HELP' | translate}}
+                </div>
+                <div class="help-entry toggle-create-task" ng-class="{'active': newProcessInstance.inline }" ng-click="createProcessInstance()">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    <span translate="PROCESS.MESSAGE.NO-INSTANCES-HELP-START"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="header" ng-if="newProcessInstance != null && newProcessInstance != undefined && newProcessInstance.processDefinition">
+          <h2>
+              <edit-in-place value="newProcessInstance.name"></edit-in-place>
+          </h2>
+    </div>
+
+    <div class="content clearfix" auto-height offset="6" ng-if="newProcessInstance != null && newProcessInstance != undefined && newProcessInstance.processDefinition && newProcessInstance.processDefinition.hasStartForm">
+        <div class="alert error" ng-show="startFormError">
+            {{startFormError}}
+        </div>
+        <div>
+            <activiti-form process-name="newProcessInstance.name" process-definition-id="newProcessInstance.processDefinition.id"></activiti-form>
+        </div>
+    </div>
+
+    <div class="content clearfix" auto-height offset="6" ng-if="newProcessInstance != null && newProcessInstance != undefined && newProcessInstance.processDefinition && !newProcessInstance.processDefinition.hasStartForm">
+        <div class="pull-right">
+            <button class="btn btn-default" style="margin: 10px 15px 0 0"
+                    ng-disabled="newProcessInstance.loading"
+                    ng-click="startProcessInstanceWithoutForm()">{{'FORM.DEFAULT-OUTCOME.START-PROCESS' | translate}}
+            </button>
+        </div>
+    </div>
+
+
+    <div class="header" ng-if="!newProcessInstance && model.processInstance">
+        <div class="btn-group pull-right" ng-show="model.processInstance.startedBy.id == ('' + account.id)">
+            <button ng-if="!model.processInstance.ended" class="btn" ng-click="cancelProcess()" translate="PROCESS.ACTION.CANCEL"></button>
+            <button ng-if="model.processInstance.ended" class="btn" ng-click="deleteProcess()" translate="PROCESS.ACTION.DELETE"></button>
+        </div>
+        <div class="btn-group pull-right" ng-show="model.processInstance.graphicalNotationDefined && !model.processInstance.ended">
+            <button class="btn" id="processDiagramTrigger" translate="PROCESS.ACTION.SHOW-DIAGRAM" ng-click="showDiagram()"></button>
+        </div>
+        <h2> {{model.processInstance.name && model.processInstance.name ||
+            model.processInstance.processDefinitionName}}</h2>
+
+        <div class="detail">
+            <span class="label" ng-show="model.processInstance.startedBy">{{'PROCESS.FIELD.STARTED-BY' | translate}}: </span>
+            <span user-name="model.processInstance.startedBy" ng-show="model.processInstance.startedBy"></span>
+            <span class="label">{{'PROCESS.FIELD.STARTED' | translate}}: </span>
+            <span title="{{model.processInstance.started | dateformat}}">{{model.processInstance.started | dateformat:'fromNow'}}</span>
+            <span class="label" ng-show="model.processInstance.ended">{{'PROCESS.FIELD.ENDED' | translate}}: </span>
+            <span ng-show="model.processInstance.ended" title="{{model.processInstance.ended | dateformat}}">{{model.processInstance.ended | dateformat:'fromNow'}}</span>
+        </div>
+    </div>
+
+    <div class="content clearfix split" auto-height offset="6" ng-if="!newProcessInstance && model.processInstance">
+        <div class="split-right">
+
+            <div class="section">
+                <h3 close-on-select="false" ng-click="toggleCreateComment()" title="{{'PROCESS.ACTION.ADD-COMMENT' | translate}}">{{'PROCESS.SECTION.COMMENTS' | translate}}
+                    <span class="action">
+                        <a>+</a>
+                    </span>
+                </h3>
+
+                <div class="form-group clearfix box"
+                     ng-show="model.addComment"
+                     auto-focus="model.addComment">
+                    <textarea class="form-control focusable" rows="2" ng-disabled="model.commentLoading"
+                              ng-model="model.newComment" id="add-comment-inline"
+                              placeholder="{{'PROCESS.MESSAGE.NEW-COMMENT-PLACEHOLDER' | translate}}">
+                    </textarea>
+
+                    <div class="pull-right">
+                        <button tabindex="-1" class="btn btn-xs" translate="GENERAL.ACTION.CANCEL"
+                                ng-click="toggleCreateComment()" ng-disabled="model.commentLoading"></button>
+                        <button class="btn btn-xs" translate="PROCESS.ACTION.ADD-COMMENT-CONFIRM"
+                                ng-disabled="!model.newComment || model.commentLoading || model.newComment.length > 4000"
+                                ng-click="confirmNewComment()"></button>
+                    </div>
+                </div>
+                <ul class="simple-list comments selectable" ng-show="model.comments.data.length">
+                    <li ng-repeat="comment in model.comments.data">
+                        <div class="title">
+                            <div user-picture="comment.createdBy"></div>
+                            {{'PROCESS.MESSAGE.COMMENT-HEADER' | translate:comment}}
+                        </div>
+                        <div class="message">{{comment.message}}</div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="split-left">
+            <div class="section pack">
+                <h3 translate="PROCESS.SECTION.ACTIVE-TASKS"></h3>
+                <ul class="simple-list checklist">
+                    <li ng-repeat="task in model.processTasks" ng-click="openTask(task)">
+                        <div class="clearfix">
+                            <div class="pull-right">
+                                <span class="badge" ng-if="task.dueDate">
+                                    {{'TASK.MESSAGE.DUE-ON' | translate}} {{(task.dueDate | dateformat:'fromNow')}}
+                                </span>
+                                <span class="badge" ng-if="!task.dueDate">
+                                    {{'TASK.MESSAGE.CREATED-ON' | translate}} {{(task.created | dateformat:'fromNow')}}
+                                </span>
+                            </div>
+                            <div>
+                                <div user-picture="task.assignee"></div>
+                                {{task.name && task.name || ('TASK.MESSAGE.NO-NAME' | translate)}}
+                            </div>
+                            <div class="subtle">
+                                <span ng-if="task.assignee.id">
+                                    {{'TASK.MESSAGE.ASSIGNEE' | translate:task.assignee}}
+                                </span>
+                                <span ng-if="!task.assignee.id" translate="TASK.MESSAGE.NO-ASSIGNEE">
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="nothing-to-see" ng-show="!model.processTasks || model.processTasks.length == 0">
+                    <span translate="PROCESS.MESSAGE.NO-TASKS"></span>
+                </div>
+             </div>
+             <div class="section pack" ng-show="model.processInstance.startFormDefined">
+                <h3 translate="PROCESS.SECTION.START-FORM" id="startForm"></h3>
+                <ul class="simple-list checklist">
+                    <li ng-click="openStartForm()" class="complete">
+                        <div class="clearfix">
+                            <div>
+                                <div user-picture="model.processInstance.startedBy"></div>
+                                <span translate="PROCESS.SECTION.START-FORM"></span>
+                            </div>
+                            <div class="subtle">
+                                <span ng-if="model.processInstance.startedBy.id">
+                                    {{'TASK.MESSAGE.COMPLETED-BY' | translate:model.processInstance.startedBy}}
+                                    {{model.processInstance.started | dateformat:'fromNow'}}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+             </div>
+            <div class="section pack">
+                <h3 translate="PROCESS.SECTION.COMPLETED-TASKS" id="completedTasks"></h3>
+                <ul class="simple-list checklist">
+                    <li ng-repeat="task in model.completedProcessTasks" ng-click="openTask(task)" class="complete">
+                        <div class="clearfix">
+                            <div class="pull-right">
+                                <span class="badge">
+                                    {{'TASK.MESSAGE.DURATION' | translate:task}}
+                                </span>
+                            </div>
+                            <div>
+                                <div user-picture="task.assignee"></div>
+                                {{task.name && task.name || ('TASK.MESSAGE.NO-NAME' | translate)}}
+                            </div>
+                            <div class="subtle">
+                                <span ng-if="task.assignee.id">
+                                    {{'TASK.MESSAGE.COMPLETED-BY' | translate:task.assignee}}
+                                    {{task.endDate | dateformat:'fromNow'}}
+                                </span>
+                                <span ng-if="!task.assignee.id" translate="TASK.MESSAGE.NO-ASSIGNEE">
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="nothing-to-see" ng-show="model.completedProcessTasks.length == 0">
+                    <span translate="PROCESS.MESSAGE.NO-COMPLETED-TASKS"></span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="popover medium" click-anywhere="$hide()" ignore="toggle-icon-select">
+    <div class="arrow"></div>
+    <div class="popover-header">
+        <span class="title">{{'APP.TITLE.SELECT-ICON' | translate}}</span>
+
+        <div class="actions">
+            <a ng-click="$hide()">
+                {{'GENERAL.ACTION.CLOSE' | translate}}</a>
+        </div>
+    </div>
+	<div class="popover-wrapper">
+    	<div class="grid">
+    		<div class="item" ng-repeat="icon in availableIcons" ng-class="{'active': icon == currentAppDefinition.definition.icon}" ng-click="selectIcon(icon); $hide();">
+    			<i class="glyphicon {{icon}}"></i>
+    		</div>
+    	</div>
+	</div>
+</div>

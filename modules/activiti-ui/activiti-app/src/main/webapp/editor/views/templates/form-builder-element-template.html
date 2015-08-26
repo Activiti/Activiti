@@ -1,0 +1,103 @@
+<div class="form-field" ng-switch="formElement.type" ng-class="{'editing': editState.field == formElement}">
+
+  <div class="actions" ng-show="(!formMode || formMode != 'read')">
+    <button class="btn btn-clean" ng-click="openFieldPopover()"><i class="glyphicon glyphicon-pencil"></i></button>
+    <button class="btn btn-clean" ng-click="removeFormElement(formElement)"><i class="icon icon-remove"></i></button>
+  </div>
+
+  <div ng-switch-when="text" ng-class="{'has-error' : formElement.hasValidationError}"  class="form-group">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}}</label><span class="marker" ng-if="formElement.required">*</span>
+      <input type="text" class="form-control" style="cursor:default;background-color:#fff;" value="Text" disabled>
+  </div>
+
+  <div ng-switch-when="multi-line-text" ng-class="{'has-error' : formElement.hasValidationError}"  class="form-group">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}}</label><span class="marker" ng-if="formElement.required">*</span>
+      <textarea rows="4" class="form-control" style="cursor:default;background-color:#fff;" value="Text" disabled></textarea>
+  </div>
+
+  <div ng-switch-when="date" ng-class="{'has-error' : formElement.hasValidationError}"  class="form-group">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label"><i class="glyphicon glyphicon-calendar"></i> {{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+      <input type="text" class="form-control" name="date" disabled>
+  </div>
+
+  <div ng-switch-when="boolean" ng-class="{'has-error' : formElement.hasValidationError}" class="checkbox" style="padding-left:0;">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" style="position: relative; left: -2px;"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label"></label>
+      <div style="padding-left: 20px;">
+          <input type="checkbox" class="checkbox-inline" disabled>{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span>
+      </div>
+  </div>
+
+  <div ng-switch-when="radio-buttons" ng-class="{'has-error' : formElement.hasValidationError}"  class="form-group">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+      <div ng-show="formElement.optionType != 'rest' && formElement.options && formElement.options.length > 0" class="radio" ng-repeat="option in formElement.options">
+          <label>
+              <input type="radio" name="optionsRadios" id="optionsRadios{{$index}}" value="option{{$index}}" ng-checked="formElement.value == option.name" disabled>{{option.name}}</input>
+          </label>
+      </div>
+      <div ng-show="formElement.optionType != 'rest' && !formElement.options && formElement.options.length === 0" class="radio">
+          <label>
+              <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" disabled>
+              Option 1
+          </label>
+      </div>
+      <div ng-show="formElement.optionType == 'rest'" class="radio">
+          <label>
+              <input type="radio" name="optionsRadios" id="optionsRadios1" disabled>
+              {{formElement.restUrl}}
+          </label>
+      </div>
+      <div class="clearfix"></div>
+  </div>
+
+  <div ng-switch-when="integer" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+      <input type="number" class="form-control" style="cursor:default;background-color:#fff;" value="123" disabled>
+  </div>
+  
+  <div ng-switch-when="dropdown"  ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+    <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+    <select class="form-control" style="cursor:default;" disabled>
+          <option>Select...</option>
+    </select>
+  </div>
+
+  <div ng-switch-when="people" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+    <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+    <div class="input-group">
+      <span class="input-group-addon"><i class="icon icon-user-add"></i></span>
+      <input type="text" class="form-control" style="cursor:default;background-color:#fff;" placeholder="{{'FORM-BUILDER.LABEL.PERSON' | translate}}" value="{{formElement.placeholder}}" disabled>
+    </div>
+  </div>
+
+  <div ng-switch-when="functional-group" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+    <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+    <div class="input-group">
+      <span class="input-group-addon"></span>
+      <input type="text" class="form-control" style="cursor:default;background-color:#fff;" placeholder="{{'FORM-BUILDER.LABEL.FUNCTIONAL-GROUP' | translate}}" value="{{formElement.placeholder}}" >
+    </div>
+  </div>
+
+  <div ng-switch-when="upload" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+    <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
+    <div class="input-group clearfix">
+      <span class="input-group-addon"><i class="icon icon-folder"></i></span>
+      <input type="text" class="form-control" style="cursor:default;background-color:#fff;" value="Upload or import content..." disabled>
+    </div>
+  </div>
+
+  <div ng-switch-when="readonly" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+  	<a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a>
+    <div>
+      <div class="message">
+        {{formElement.params.field && ('FORM-BUILDER.MESSAGE.FIELD-VALUE' | translate:formElement.params) || ('FORM-BUILDER.MESSAGE.SELECT-FIELD' | translate)}}
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div ng-switch-when="readonly-text" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+      <a ng-if="formElement.hasValidationError" ng-click="showValidationErrors(formElement)" class="formbuilder-validation-error-icon"><img src="editor-app/images/bpmn-error.png"/></a><div class="message">
+      <pre>{{formElement.value}}</pre>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+
+<div class="subheader editor-toolbar" id="editor-header">
+    <div class="fixed-container">
+        <div class="btn-group">
+            <div class="btn-toolbar pull-left" ng-controller="AppDefinitionToolbarController" ng-cloak>
+                <button id="{{item.id}}"
+                        title="{{item.title | translate}}"
+                        ng-repeat="item in items"
+                        ng-switch on="item.type"
+                        class="btn btn-inverse" ng-class="{'separator': item.type == 'separator'}"
+                        ng-disabled="item.type == 'separator' || item.enabled == false"
+                        ng-click="toolbarButtonClicked($index)">
+                    <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}"></i>
+                    <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                </button>
+              </div>
+            </div>
+            <div class="btn-group pull-right" ng-show="!secondaryItems.length">
+                <div class="btn-toolbar pull-right" ng-controller="AppDefinitionToolbarController">
+                <button title="{{item.title | translate}}" ng-repeat="item in secondaryItems" ng-switch on="item.type" class="btn btn-inverse" ng-class="{'separator': item.type == 'separator'}"
+                    ng-disabled="item.type == 'separator'" ng-click="toolbarSecondaryButtonClicked($index)" id="{{item.id}}">
+                    <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}"></i>
+                    <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid content" ng-if="currentAppDefinition" auto-height offset="40">
+    <h2>{{'APP.DETAILS.TITLE' | translate:currentAppDefinition}}</h2>
+    <div class="content-canvas-wrapper">
+        <div class="content-canvas">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="preview-wrapper active">
+                        <h3>{{'APP.TITLE.PREVIEW' | translate}}</h3>
+                        <div class="app preview {{currentAppDefinition.definition.theme}}">
+                            <div class="app-content">
+                                <h3>{{currentAppDefinition.name}}</h3>
+                                <p>{{currentAppDefinition.description}}</p>
+                            </div>
+                            <div class="backdrop">
+                                <i ng-show="!currentAppDefinition.definition.icon" class="icon icon-choice"></i>
+                                <i ng-show="currentAppDefinition.definition.icon" class="glyphicon {{currentAppDefinition.definition.icon}}"></i>
+                            </div>
+                            <div class="logo">
+                                <i ng-show="!currentAppDefinition.definition.icon" class="icon icon-choice"></i>
+                                <i ng-show="currentAppDefinition.definition.icon" class="glyphicon {{currentAppDefinition.definition.icon}}"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-8">
+                    <div class="form-group">
+                        <label>{{'APP.ICON' | translate}}</label>
+                        <div id="toggle-icon-select" class="selection" ng-click="changeIcon($event)">
+                            <i class="glyphicon {{currentAppDefinition.definition.icon}}"></i> {{'APP.ACTION.SELECT-ICON' | translate}} <i class="icon icon-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-group">
+                        <label>{{'APP.THEME' | translate}}</label>
+                        <div id="toggle-theme-select" class="selection" ng-click="changeTheme($event)">
+                            <span class="app app-swatch {{currentAppDefinition.definition.theme}}"></span> {{'APP.ACTION.SELECT-THEME' | translate}} <i class="icon icon-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>{{'APP.DETAILS.MODELS-TITLE' | translate}}
+
+                    </h3>
+                    <div class="btn-group">
+                        <button id="toggle-included-models" class="btn btn-default" ng-click="editIncludedModels($event)" class="stencil-info-edit-properties">
+                            {{'APP.ACTION.EDIT-MODELS' | translate}}
+                        </button>
+                    </div>
+                    <div class="no-results" ng-show="!currentAppDefinition.definition.models.length">
+                        {{'APP.DETAILS.NO-MODELS-SELECTED' | translate}}
+                    </div>
+                </div>
+
+                <div class="col-xs-12 item-wrapper">
+                    <div class="item fadein" ng-repeat="model in currentAppDefinition.definition.models">
+                        <div class="item-box" ng-style="{'background-image': 'url(\'' + config.contextRoot + '/app/rest/models/' + model.id + '/thumbnail\')'}">
+                            <div class="actions">
+                                <span class="badge">v{{model.version}}</span>
+                            </div>
+                            <div class="details">
+                                <h3 class="truncate" title="{{model.name}}">
+                                    {{model.name}}
+                                </h3>
+                                <p>{{model.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,124 @@
+
+<div class="main-list" id="main-list" ng-if="!missingAppdefinition">
+
+    <div class="proc-inst-list" ng-show="model.mode == 'process-list'" style="height:100%">
+
+        <div class="list-header" id="list-header" click-anywhere="collapseFilter()" ignore-popup-events="true">
+
+            <div class="summary" ng-show="!model.filter.expanded" ng-click="expandFilter()">
+                <span ng-if="model.filter.param.state">{{'PROCESS.FILTER.STATE-SUMMARY' | translate:model.filter.param}}</span>
+                <span ng-if="!model.filter.param.state">{{'PROCESS.MESSAGE.NO-FILTER' | translate}}</span>
+                <span class="pull-right"><span class="glyphicon glyphicon-filter"></span></span>
+            </div>
+
+            <div class="summary" ng-show="model.filter.expanded">
+                <div class="form-group" >
+                    <label translate="PROCESS.FILTER.STATE"></label>
+                    <div class="selection toggle">
+                        <div class="toggle-3" ng-repeat="option in model.stateFilterOptions" ng-class="{'active' : model.filter.param.state.id == option.id}">
+                            <button class="btn btn-xs" ng-click="selectStateFilter(option)">{{option.title | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list-subheader clearfix">
+            <div class="btn-group pull-left">
+                <button id="toggle-create-process" class="btn btn-xs dropdown-toggle" translate="PROCESS.ACTION.CREATE" ng-click="createProcessInstance()">&nbsp;</button>
+            </div>
+            <div class="sort">
+                <div class="dropdown btn-group btn-group-sm">
+                    <a class="dropdown-toggle" trigger="click" placement="bottom-right" ng-model="model.filter.param.sort" ng-change="sortChanged()"
+                       ng-options="sort.id as (sort.title | translate) for sort in model.sorts" bs-select></a>
+                </div>
+            </div>
+        </div>
+
+        <div loading="model.filter.loading"></div>
+        <div class="list-wrapper" ng-show="!model.filter.loading">
+            <ul class="full-list">
+                <li ng-repeat="processInstance in model.processInstances" ng-class="{'active': selectedProcessInstance.id == processInstance.id}" ng-click="selectProcessInstance(processInstance)">
+                    <div>
+                        <div class="pull-right">
+                            <span class="badge" ng-if="!processInstance.ended">
+                                {{'PROCESS.FIELD.STARTED' | translate}} {{(processInstance.started | dateformat:'fromNow')}}
+                            </span>
+                            <span class="badge" ng-if="processInstance.ended">
+                                {{'PROCESS.FIELD.ENDED' | translate}} {{(processInstance.ended | dateformat:'fromNow')}}
+                            </span>
+                        </div>
+                        <div class="title">
+                            {{processInstance.name && processInstance.name || processInstance.processDefinitionName}}
+                        </div>
+                        <div class="summary">
+                             <span ng-if="processInstance.startedBy">
+                                {{'PROCESS.MESSAGE.STARTED-BY' | translate:processInstance.startedBy}}
+                            </span>
+                        </div>
+                        <div class="detail">
+                            {{processInstance.description && processInstance.description || processInstance.processDefinitionName}}
+                        </div>
+                    </div>
+                </li>
+                <li class="more" ng-if="model.hasNextPage && !model.filter.loading" ng-click="nextPage()">
+                    <i class="icon icon-caret-right"></i> {{'GENERAL.ACTION.SHOW-MORE' | translate}}
+                </li>
+            </ul>
+            <div class="nothing-to-see" ng-show="model.processInstances.length == 0">
+                <span  translate="PROCESS.MESSAGE.NO-INSTANCES"></span>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="proc-def-list" ng-if="model.mode == 'process-create'" style="height: 100%">
+
+        <div class="list-header">
+            <div class="summary" translate="PROCESS.MESSAGE.SELECT-DEFINITION" style="cursor: auto"></div>
+        </div>
+
+        <div class="list-subheader clearfix">
+            <div class="btn-group pull-left">
+                <button class="btn btn-xs" ng-click="backToList()">
+                    &lt; {{'PROCESS.ACTION.BACK-TO-LIST' | translate}}</button>
+            </div>
+        </div>
+
+        <div>
+
+            <div class="nothing-to-see" ng-if="root.processDefinitions.length == 0">
+                <span>{{'PROCESS.MESSAGE.NO-PROCESS-DEFINITIONS' | translate}}</span>
+            </div>
+
+            <div class="list-wrapper">
+                <ul class="full-list">
+                    <li ng-repeat="definition in root.processDefinitions"
+                        ng-class="{'active' : newProcessInstance.processDefinitionId == definition.id}"
+                        ng-click="selectProcessDefinition(definition)">
+                        <div>
+                            <div class="title">
+                                {{definition.name}}
+                            </div>
+                            <div class="summary">
+                                {{definition.description}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="main-content-wrapper" ng-if="!root.showStartForm && !missingAppdefinition" ng-include="appResourceRoot + 'views/process-detail.html'" ></div>
+
+<div class="main-content-wrapper" ng-if="root.showStartForm && !missingAppdefinition" ng-include="appResourceRoot + 'views/start-form.html'"></div>
+
+<div ng-if="missingAppdefinition" ng-include="appResourceRoot + 'views/integration-mode-error.html'"></div>

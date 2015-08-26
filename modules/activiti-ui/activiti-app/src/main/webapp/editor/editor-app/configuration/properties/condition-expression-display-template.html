@@ -1,0 +1,3 @@
+<span ng-if="property.value.expression.type != 'variables' && property.value.expression.staticValue">{{property.value.expression.staticValue|limitTo:20}}</span>
+<span ng-if="property.value && !property.value.expression">{{property.value|limitTo:20}}</span>
+<span ng-if="!property.value">{{'PROPERTY.SEQUENCEFLOW.CONDITION.NO-CONDITION-DISPLAY' | translate}}</span>

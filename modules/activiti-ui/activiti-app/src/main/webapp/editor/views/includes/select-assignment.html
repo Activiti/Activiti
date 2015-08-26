@@ -1,0 +1,129 @@
+<div class="detail-group clearfix">
+    <div class="form-group clearfix">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label ng-if="title && title === 'Reassign'">{{'PROCESS-BUILDER.FIELD.TIMER.REASSIGN' | translate}}:</label>
+                <label ng-if="!title || title !== 'Reassign'">{{'PROCESS-BUILDER.FIELD.GENERIC.ASSIGNMENT' | translate}}:</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="btn-group span">
+                    <button class="selection" ng-options="option as (option.title | translate) for option in assignmentOptions"
+                            bs-select ng-model="assignmentOption" activiti-fix-dropdown-bug>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group clearfix" ng-if="assignmentOption.id == 'user'">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label>{{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.ASSIGNEE' | translate}}</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="people-select">
+                    <button class="selection" select-people-popover="assignment.assignee" popover-title="PROCESS-BUILDER.HUMAN-STEP.ASSIGN.TITLE" placement="bottom"
+                            select-people-form-fields="assignmentFormFields" 
+                            on-people-selected="setAssignee(user, userField)"
+                            on-email-selected="assignmentObject.assignee = {email: email}">
+                        <i class="icon icon-user" ng-show="(assignmentObject.assignee && (assignmentObject.assignee.id || assignmentObject.assignee.email)) || assignmentObject.assigneeField"></i>
+                        <span ng-if="(!assignmentObject.assignee || !assignmentObject.assignee.id || !assignmentObject.assignee.email) && (!assignmentObject.assigneeField)">{{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.SELECT-ASSIGNEE' | translate}}</span>
+                        <span ng-if="assignmentObject.assignee && assignmentObject.assignee.id" user-name="assignmentObject.assignee"></span>
+                        <span ng-if="assignmentObject.assigneeField">{{assignmentObject.assigneeField.name}}</span>
+                        <span ng-if="assignmentObject.assigneeField" class="field-type"> - {{assignmentObject.assigneeField.id}}</span>
+                        <i class="icon icon-caret-down"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group clearfix" ng-if="assignmentOption.id == 'users'">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label>{{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.CANDIDATES' | translate}}</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="clearfix selection narrow">
+                    <ul class="simple-list" ng-show="assignmentObject.candidateUsers.length || assignmentObject.candidateUserFields.length">
+                        <li ng-repeat="user in assignmentObject.candidateUsers">
+                            <i class="icon icon-user"></i>
+                            <span user-name="user" />
+                            <div class="actions">
+                                <a ng-click="removeCandidateUser(user)"><i class="icon icon-remove"></i></a>
+                            </div>
+                        </li>
+                        <li ng-repeat="userField in assignmentObject.candidateUserFields">
+                            <i class="icon icon-user"></i>
+                            <span>{{userField.name}}</span>
+                            <span class="field-type"> - {{userField.id}}</span>
+                            <div class="actions">
+                                <a ng-click="removeCandidateUserField(userField)"><i class="icon icon-remove"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="pull-right">
+                        <button class="btn btn-xs" select-people-popover
+                                popover-title="PROCESS-BUILDER.HUMAN-STEP.CANDIDATES.TITLE"
+                                placement="bottom-right"
+                                select-people-form-fields="assignmentFormFields" 
+                                on-people-selected="addCandidateUser(user, userField)"
+                                on-email-selected="addCandidateUserByEmail(email)">
+                            + {{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.ADD-CANDIDATE' | translate}}
+                        </button>
+                    </div>
+                    <div class="no-results" ng-if="(!assignmentObject.candidateUsers || !assignmentObject.candidateUsers.length) && (!assignmentObject.candidateUserFields || !assignmentObject.candidateUserFields.length)">
+                        {{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.NO-CANDIDATES' | translate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group clearfix" ng-if="assignmentOption.id == 'groups'">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label>{{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.GROUPS' | translate}}</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="clearfix selection narrow">
+                    <ul class="simple-list" ng-show="assignmentObject.candidateGroups.length || assignmentObject.candidateGroupFields.length">
+                        <li ng-repeat="group in assignmentObject.candidateGroups">
+                            {{group.name}}
+                            <div class="actions">
+                                <a ng-click="removeCandidateGroup(group)"><i class="icon icon-remove"></i></a>
+                            </div>
+                        </li>
+                        <li ng-repeat="groupField in assignmentObject.candidateGroupFields">
+                            <span>{{groupField.name}}</span>
+                            <span class="field-type"> - {{groupField.id}}</span>
+                            <div class="actions">
+                                <a ng-click="removeCandidateGroupField(groupField)"><i class="icon icon-remove"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="pull-right">
+                        <button class="btn btn-xs" select-group-popover placement="bottom-right"
+                                on-group-selected="addCandidateGroup(group, groupField)" select-group-form-fields="assignmentFormFields" >
+                            + {{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.ADD-GROUP' | translate}}
+                        </button>
+                    </div>
+                    <div class="no-results" ng-if="(!assignmentObject.candidateGroups || !assignmentObject.candidateGroups.length) && (!assignmentObject.candidateGroupFields || !assignmentObject.candidateGroupFields.length)">
+                        {{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.NO-GROUPS' | translate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group clearfix" ng-if="assignmentOption.id == 'user' || assignmentOption.id == 'users' || assignmentOption.id == 'groups'">
+        <div class="col-xs-12">
+            <div class="col-xs-12">
+                <label>
+                    <input type="checkbox" ng-model="assignmentObject.initiatorCanCompleteTask">
+                    &nbsp;{{'PROCESS-BUILDER.HUMAN-STEP.ASSIGNMENT.INITIATOR-CAN-COMPLETE' | translate}}
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

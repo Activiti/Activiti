@@ -1,0 +1,4 @@
+<div class="ui-grid-cell-contents">
+    <img ng-if="!row.entity.customIcon" ng-src="editor-app/stencilsets/bpmn2.0/icons/{{row.entity.icon}}" />
+    <img ng-if="row.entity.customIcon" ng-src="{{config.contextRoot}}/app/rest/image/{{row.entity.icon}}"/>
+</div>

@@ -1,0 +1,408 @@
+/**
+ * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/**
+ Colors:
+ 
+  - Header: #333333
+  - Subheader: #e8edf1
+  - Subheader border: #a4acb9
+  - Highlight buttons/text: #36a7c4
+  - Text color: #1a1a1a
+  - Filter color: #373e48
+  - Dark highlight: #606b7d
+
+*/
+
+body {
+	background-color: #ffffff;
+	padding-bottom: 15px;
+}
+
+.btn .badge {
+	background-color: #ffffff;
+	color: #36a7c4;
+}
+
+.item-wrapper > div {
+	margin-right: 5px;
+}
+
+.filter-list.compact {
+	padding-top: 0px;	
+}
+
+ ul {
+	list-style: none;
+	list-style-position: inside;
+	padding-left: 5px;
+}
+
+.box > div {
+	min-height: 50px;
+}
+.box h2 {
+	margin: 5px;
+	font-size: 18px;
+	color: #606b7d;
+}
+.summaries {
+	width: 50%;
+}
+
+.user-summary {
+	text-align: center;
+	margin: 5px 1%;
+	float: left;
+	width: 23%;
+}
+
+.user-summary .icon {
+	font-size: 30px;
+	height: 30px;
+	padding: 0;
+	margin: 5px 0 0 0;
+	line-height: 30px;
+	color: #606b7d;
+}
+
+
+.user-summary span {
+	line-height: 30px;
+}
+
+.item-wrapper .message a {
+	padding: 0 10px;
+}
+
+.users td {
+	border: 1px solid #f1f1f1;
+	padding: 5px;
+	color: #373e48;
+}
+
+td.control {
+	text-align: center;
+}
+
+.users tr.selected td {
+		background-color: #f4f4f4;
+}
+
+.users tr:hover td{
+	background-color: #e8edf1;
+	border: 1px solid #e8edf1;
+	cursor: pointer;
+}
+
+
+.users th {
+	height: 20px;
+	background-color:#a4acb9;
+	color: #ffffff;
+	padding: 5px;
+}
+
+ul.user-list {
+	padding-left: 10px;
+}
+ul.user-list i {
+	padding-right: 5px;	
+}
+
+ul.user-list li span {
+	color: #666666;
+}
+
+.bar {
+	width: 100%;
+	margin: 5px 5px 5px 0px;
+	padding-right: 10px;
+	height: 10px;
+	overflow: hidden;
+}
+
+.bar > div {
+	height: 10px;
+	float: left;
+}
+
+i.user-active {
+	color: #36a7c4;
+}
+
+div.user-active {
+	background-color: #36a7c4;
+}
+
+i.user-inactive {
+	color: #a4acb9;
+}
+
+div.user-inactive {
+	background-color: #a4acb9;
+}
+
+i.user-deleted {
+	color: #FF5741;
+}
+
+div.user-deleted {
+	background-color: #FF5741;
+}
+
+i.user-pending {
+	color: #FFC541;
+}
+
+div.user-pending {
+	background-color: #FFC541;
+}
+
+i.user-trial {
+	color: #a4acb9;
+}
+
+div.user-trial {
+	background-color: #a4acb9;
+}
+
+i.user-enterprise {
+	color: #36a7c4;
+}
+
+div.user-enterprise {
+	background-color: #36a7c4;
+}
+
+.nopadding > div {
+	padding: 0px;
+}
+
+.nopadding .form-group {
+	padding-right: 5px;
+}
+
+/* List Filter */
+.filter-wrapper {
+    min-height: 400px;
+    margin-top: 10px;
+}
+
+ul.filter-list {
+    list-style: none;
+    list-style-position: inside;
+    padding-left: 0px;
+    padding-top: 10px;
+}
+
+ul.filter-list li a {
+    display: block;
+    color: #373e48;
+    font-size: 17px;
+    margin: 10px 5px 10px 0px;
+    padding-left: 10px;
+}
+
+ul.filter-list li.current a {
+    color: #36a7c4;
+    padding-left: 5px;
+    border-left: 4px solid #36a7c4;
+}
+
+ul.filter-list li a:hover, ul.filter-list li a:focus {
+    text-decoration: none;
+    background-color: #e8edf1;
+}
+
+ul.filter-list li.current a:hover, ul.filter-list li.current a:focus {
+    background-color: transparent;
+    color: #36a7c4;
+    cursor: default;
+    text-decoration: none;
+}
+
+.user-detail {
+    padding: 5px 40px 5px 0;
+}
+
+.users-details .glyphicon {
+    margin-right: 5px;
+}
+
+.subtle-event {
+    color: #606b7d;
+}
+
+/* Groups */
+
+.group-member .glyphicon {
+    margin-right: 5px;
+}
+
+.potential-group-member, .potential-capability {
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.potential-group-member-selected, .potential-capability-selected {
+    color: #36a7c4;
+}
+
+.subgroup {
+    cursor: pointer;
+}
+
+.disabled-group {
+    text-decoration: line-through;
+    color: #808080;
+}
+
+/* Inspired by http://jsfiddle.net/mehmetatas/fXzHS/2/ */
+
+.group-tree li {
+    margin: 0px 0;
+    list-style-type: none;
+    position: relative;
+    padding: 20px 5px 0px 10px;
+}
+
+.group-tree ul {
+    padding-left: 10px;
+}
+
+.group-tree li::before {
+    content:'';
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    right: auto;
+    left: 0px;
+    border-left: 1px solid #ccc;
+    bottom: 50px;
+}
+.group-tree li::after {
+    content:'';
+    position: absolute;
+    top: 35px;
+    width: 10px;
+    height: 20px;
+    right: auto;
+    left: 0px;
+    border-top: 1px solid #ccc;
+}
+.group-tree li a {
+    display: inline-block;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    padding: 5px 16px;
+    text-decoration: none;
+    color: #000;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.group-tree li a.active {
+    background-color: #c8e4f8;
+}
+
+.group-tree .group-icon {
+    font-size: 14px;
+    color: #999;
+    padding-right: 5px;
+}
+
+/*Remove connectors before root*/
+.group-tree > ul > li::before, .group-tree > ul > li::after {
+    border: 0;
+}
+/*Remove connectors after last child*/
+.group-tree li:last-child::before {
+    height: 35px;
+}
+
+/*We will apply the hover effect the the lineage of the element also*/
+.group-tree li a:hover, .group-tree li a:hover+ul li a {
+    background-color: #eeeeee;
+    color: #000;
+}
+/*Connector styles on hover*/
+.group-tree li a:hover+ul li::after, .group-tree li a:hover+ul li::before, .group-tree li a:hover+ul::before, .group-tree li a:hover+ul ul::before {
+    border-color: #94a0b4;
+}
+
+.user-search-field {
+    margin: 20px 0 15px 0;
+    width: 40%;
+}
+
+/* profile */
+
+.profile-detail {
+    padding: 5px 0 5px 5px;
+    margin: 0 0 5px -5px;
+}
+
+.profile-detail:hover {
+    cursor: pointer;
+    background:  #e8edf1;
+}
+
+.profile-detail .nothing-to-see {
+    padding: 0px;
+    color: #999999;
+}
+
+.list-wrapper h4 {
+    font-size: 13px;
+    font-weight: normal;
+    text-transform: uppercase;
+    margin: 20px 0 5px 0;
+    color: #1a1a1a;
+}
+
+.main-content > .nothing-to-see {
+    margin: 20px 15px 10px 30px;
+    text-align: center;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.tenant-logo-preview {
+    margin: 10px;
+}
+
+.table .actions {
+    text-align: right;
+}
+.table .actions > button {
+    padding: 3px 10px;
+    margin: 0px;
+    border: none;
+    background-color: transparent;
+    margin: 0;
+}
+.table .actions > button:hover {
+    background-color: #ffffff;
+    border: none;
+}
+
+.modal.modal-wide .modal-dialog {
+    width: 1000px;
+}
+
+.modal-dialog.modal-wide {
+    width: 1000px;
+}
+
+.modal-dialog.modal-maxheight {
+    max-height: 724px;
+    overflow-y: auto;
+}

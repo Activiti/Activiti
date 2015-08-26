@@ -1,0 +1,48 @@
+
+<div class="modal" ng-controller="AddAppDefinitionPopupCrtl">
+    <div class="modal-dialog wide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h3 class="modal-title" translate="APP.POPUP.ADD-APP-TITLE"></h3>
+                <div class="summary">
+                    {{'APP.POPUP.ADD-APP-SUMMARY' | translate}}
+                </div>
+            </div>
+            <div class="modal-body modal-body-with-overflow">
+                <div class="error-message" ng-if="errorMessage">
+                    <span>{{errorMessage}}</span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-10 item-wrapper">
+                        <div class="item fadein" ng-repeat="app in popup.apps.data">
+                            <div class="app {{app.theme ? app.theme : 'theme-1'}}" ng-click="selectApp(app); $event.stopPropagation();">
+                                <div class="selection-marker" ng-show="isAppSelected(app)">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                </div>
+                                <div class="app-content">
+                                    <h3>{{app.name}}</h3>
+                        
+                                    <p>{{app.description}}</p>
+                                </div>
+                                <div class="backdrop">
+                                    <i ng-show="!app.icon" class="icon icon-choice"></i>
+                                    <i ng-show="app.icon" class="glyphicon {{app.icon}}"></i>
+                                </div>
+                                <div class="logo">
+                                    <i ng-show="!app.icon" class="icon icon-choice"></i>
+                                    <i ng-show="app.icon" class="glyphicon {{app.icon}}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div loading="popup.loading"></div>
+                <button ng-click="cancel()" class="btn btn-primary" translate ng-disabled="popup.loading">GENERAL.ACTION.CANCEL</button>
+                <button ng-disabled="popup.selectedApps.length == 0 || popup.loading" ng-click="deploy()" class="btn btn-primary" translate>GENERAL.ACTION.DEPLOY</button>
+            </div>
+        </div>
+    </div>
+</div>

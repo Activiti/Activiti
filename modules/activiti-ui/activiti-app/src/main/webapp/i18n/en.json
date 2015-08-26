@@ -1,0 +1,101 @@
+{
+   "GENERAL": {
+        "MAIN-TITLE": "Activiti",
+        "ERROR": {
+            "GENERIC": "Sorry, an error occured...",
+            "UNKNOWN": "Sorry, an error occured while performing the requested operation.",
+            "BAD_REQUEST": "An error occured while performing the requested operation",
+            "NOT_FOUND": "The resource you are trying to access does not exist",
+            "UNAUTHORIZED": "You should sign in in order to perform the requested operation.",
+            "FORBIDDEN": "You are not allowed to perform the requested operation",
+            "INTERNAL_SERVER_ERROR": "Sorry, an unexpected error occured while performing the requested operation.",
+            "QUOTA-EXCEEDED-RUNTIME-APPS": "As a trial user, you can only have {{quota}} apps deployed at the same time.",
+            "QUOTA-EXCEEDED-LICENSE-APPS": "The license only permits {{quota}} apps deployed at the same time."
+        },
+        "ACTION": {
+            "LOGOUT": "Sign out",
+            "HELP": "Getting started",
+            "EDIT-PROFILE": "Edit profile",
+            "SAVE": "Save",
+            "CANCEL": "Cancel",
+            "CLOSE": "Close",
+            "DEPLOY": "Deploy",
+            "ABOUT": "About Alfresco Activiti"
+        }
+    },
+    "LOGIN": {
+        "TITLE": "Sign in",
+        "USERNAME": "Username",
+        "USERNAME-PLACEHOLDER": "Enter your username",
+        "PASSWORD": "Password",
+        "PASSWORD-PLACEHOLDER": "Enter your password",
+        "INVALID-CREDENTIALS": "Invalid credentials",
+        "ACTION": {
+            "CONFIRM": "Sign in"
+        }
+    },
+    "ACCOUNT": {
+        "ACTIVATE": {
+          "TITLE": "Activate account",
+          "ACTIVATING-MESSAGE": "Hold on tight {{userFullName}} we're activating your account...",
+          "SUCCESS-MESSAGE": "Your account has been activated. Please sign in below to start designing and running processes",
+          "FAILURE-MESSAGE": "Your account cannot be activated. Either it has already been activated or the activation link has expired."
+        },
+
+        "RESET-PASSWORD-REQUEST": {
+          "MESSAGE": "Forgot your password? Enter your email address below to receive an email to reset your password.",
+          "TITLE": "Reset password",
+          "EMAIL": "Email address",
+          "EMAIL-PLACEHOLDER": "Enter your email",
+          "SECURITY-SECTION": "Security check",
+          "CONFIRM": "Request password reset",
+          "SUCCESS-MESSAGE": "You will receive a mail shortly with a link to reset your password.",
+          "ERROR": {
+              "UNEXISTING-USER": "User with the given email address does not exist."
+          }
+        },
+
+        "RESET-PASSWORD": {
+          "TITLE": "Reset password",
+          "PASSWORD": "Password",
+          "PASSWORD-CONFIRM": "Confirm password",
+          "PASSWORD-PLACEHOLDER": "Enter a new password",
+          "PASSWORD-CONFIRM-PLACEHOLDER": "Confirm the new password",
+          "CONFIRM": "Change password",
+          "LOADING": "Resetting password...",
+          "SUCCESS-MESSAGE": "Your password has been changed.",
+          "LOGIN": "Sign in now",
+          "FAILURE-MESSAGE": "Your password cannot be reset. The reset link is invalid or expired."
+        }
+    },
+    "APP": {
+        "KICKSTART": {
+            "TITLE": "Kickstart App",
+            "DESCRIPTION": "Create process models, forms and app definitions, then share your models and definitions with other people."
+        },
+        "TASKS": {
+            "TITLE": "Task App",
+            "DESCRIPTION": "Access your full task list and work on any tasks assigned to you from any process app. Also, start new processes and tasks."
+        },
+        "IDENTITY-MANAGEMENT": {
+            "TITLE": "Identity management",
+            "TITLE-TENANT-ADMIN": "Identity management",
+            "DESCRIPTION": "Manage your profile: change your picture, name and other settings. As an admin user, manage users and groups.",
+            "DESCRIPTION-TENANT-ADMIN": "Manage the users and groups in your organization."
+        },
+        "CUSTOM-APP" : {
+            "TITLE-TASKS": "tasks",
+            "TITLE-PROCESSES": "processes"
+        },
+        "POPUP" : {
+            "ADD-APP-TITLE": "Add app to landing page",
+            "ADD-APP-SUMMARY": "Add an app to your landing page"
+        },
+        "ACTION": {
+            "DELETE": "Remove app"
+        },
+        "MESSAGE": {
+            "DELETED": "App was successfully removed"
+        }
+    }
+}

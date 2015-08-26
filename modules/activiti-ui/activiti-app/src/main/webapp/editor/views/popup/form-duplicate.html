@@ -1,0 +1,33 @@
+<div class="modal" ng-controller="DuplicateFormCtrl">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header"><h2>{{'FORM.POPUP.DUPLICATE-TITLE' | translate}}</h2></div>
+			<div class="modal-body">
+				<p>{{'FORM.POPUP.DUPLICATE-DESCRIPTION' | translate}}</p>
+				<div class="form-group">
+				    <label for="newFormName">{{'FORM.NAME' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control"
+			               id="newFormName" ng-model="model.form.name" custom-keys enter-pressed="ok()" auto-focus editor-input-check>
+				</div>
+				<div class="form-group">
+				    <label for="newFormDescription">{{'FORM.DESCRIPTION' | translate}}</label>
+					<textarea ng-disabled="model.loading" class="form-control" id="newFormDescription" rows="5" ng-model="model.form.description"></textarea>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="pull-right">
+					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading">
+						{{'GENERAL.ACTION.CANCEL' | translate}}
+					</button>
+					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.form.name">
+						{{'FORM.ACTION.DUPLICATE-CONFIRM' | translate}}
+					</button>
+				</div>
+				<div class="loading pull-right" ng-show="model.loading">
+					<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

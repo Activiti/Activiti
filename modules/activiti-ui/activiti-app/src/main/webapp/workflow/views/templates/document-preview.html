@@ -1,0 +1,17 @@
+<div title="{{content.name}}">
+
+  <i ng-show="content.contentAvailable" class="icon icon-{{content.simpleType}}"
+     ng-if="content.simpleType"></i>
+  {{content.name}}
+
+  <div class="actions">
+    <a ng-show="content.contentAvailable && (!content.source)" target="_blank" download="{{content.name}}"
+       href="{{content.rawUrl}}" ng-click="$event.stopPropagation();"> <i
+            class="icon icon-download"></i></a>
+    <a ng-show="!readOnly" ng-click="deleteContent(content); $event.preventDefault(); $event.stopPropagation();"><i
+              class="icon icon-remove"></i></a>
+  </div>
+  <div class="subtle">{{'TASK.MESSAGE.CONTENT-UPLOADED-BY' | translate}} <span
+          user-name="content.createdBy"></span> , {{content.created | dateformat}}
+  </div>
+</div>

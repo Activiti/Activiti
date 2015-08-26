@@ -1,0 +1,58 @@
+
+<div class="modal" ng-controller="KisBpmFieldsPopupCtrl">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+			<div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+			    <h3>{{'PROPERTY.PROPERTY.EDIT.TITLE' | translate}} "{{property.title | translate}}"</h3>
+			</div>
+			<div class="modal-body">
+
+			    <div class="row row-no-gutter">
+			        <div class="col-xs-6">
+			            <div ng-if="translationsRetrieved" class="kis-listener-grid" ui-grid="gridOptions" ui-grid-selection></div>
+			            <div class="pull-right">
+			                <div class="btn-group">
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.MOVE.UP' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="moveFieldUp()"><i class="glyphicon glyphicon-arrow-up"></i></a>
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.MOVE.DOWN' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="moveFieldDown()"><i class="glyphicon glyphicon-arrow-down"></i></a>
+			                </div>
+			                <div class="btn-group">
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.ADD' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="addNewField()"><i class="glyphicon glyphicon-plus"></i></a>
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.REMOVE' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="removeField()"><i class="glyphicon glyphicon-minus"></i></a>
+			                </div>
+			            </div>
+			        </div>
+
+			        <div class="col-xs-6">
+			             <div ng-show="selectedField">
+
+			                 <div class="form-group">
+			                     <label translate>PROPERTY.FIELDS.NAME</label>
+			                     <input type="text" class="form-control" ng-model="selectedField.name" placeholder="{{'PROPERTY.FIELDS.NAME.PLACEHOLDER' | translate}}" />
+			                 </div>
+			                 <div>
+			                     <label translate>PROPERTY.FIELDS.STRINGVALUE</label>
+			                     <input type="text" class="form-control" ng-model="selectedField.stringValue" ng-change="fieldDetailsChanged()" placeholder="{{'PROPERTY.FIELDS.STRINGVALUE.PLACEHOLDER' | translate}}" />
+			                 </div>
+			                 <div>
+			                     <label translate>PROPERTY.FIELDS.EXPRESSION</label>
+			                     <input type="text" class="form-control" ng-model="selectedField.expression" ng-change="fieldDetailsChanged()" placeholder="{{'PROPERTY.FIELDS.EXPRESSION.PLACEHOLDER' | translate}}" />
+			                 </div>
+			                 <div>
+			                     <label translate>PROPERTY.FIELDS.STRING</label>
+			                     <textarea type="text" class="form-control" ng-model="selectedField.string" ng-change="fieldDetailsChanged()" placeholder="{{'PROPERTY.FIELDS.STRING.PLACEHOLDER' | translate}}"></textarea>
+			                 </div>
+
+			            </div>
+			            <div ng-show="!selectedField" class="muted no-property-selected" translate>PROPERTY.FIELDS.EMPTY</div>
+			        </div>
+			    </div>
+
+			</div>
+			<div class="modal-footer">
+			    <button ng-click="cancel()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+			    <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+			</div>
+		</div>
+	</div>
+</div>

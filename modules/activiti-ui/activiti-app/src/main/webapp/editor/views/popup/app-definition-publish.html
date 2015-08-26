@@ -1,0 +1,66 @@
+
+<div class="modal" ng-controller="PublishAppDefinitionPopupCtrl">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>{{'APP.POPUP.PUBLISH-TITLE' | translate}}</h2>
+			</div>
+			<div class="modal-body">
+
+                <div ng-show="popup.error == undefined || popup.error == null">
+				    <p>{{'APP.POPUP.PUBLISH-DESCRIPTION' | translate:model.app}}</p>
+                </div>
+
+                <div ng-if="popup.error && popup.error.type && popup.error.type == 'conflictingProcDefKey'"
+                     class="alert-danger app-publish-error" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="margin-right: 2px"></span>
+                    <span>{{'APP.POPUP.PUBLISH-ERROR-PROCDEF-KEY-CONFLICT' | translate:popup.error.data}}</span>
+                </div>
+
+                <div ng-if="popup.error && popup.error.type && popup.error.type == 'duplicateProcDefKeys'"
+                     class="alert-danger app-publish-error" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="margin-right: 2px"></span>
+                    <span>{{'APP.POPUP.PUBLISH-ERROR-PROCDEF-DUPLICATE-KEYS' | translate}}</span>
+                    <ul>
+                        <li ng-repeat="entry in popup.error.data.duplicateProcessDefinitionIds">
+                            <span ng-repeat="(id, name) in entry">{{id}} ({{name}})</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div ng-if="popup.error && popup.error.type && popup.error.type == 'processModelAlreadyUsed'"
+                     class="alert-warning app-publish-error" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="margin-right: 2px"></span>
+                    <span>{{'APP.POPUP.PUBLISH-ERROR-PROCESS-ALREADY-USED' | translate}}</span>
+                    <ul>
+                        <li ng-repeat="processName in popup.error.data.conflictingProcessModelNames track by $index">
+                            {{processName}} ({{'APP.POPUP.PUBLISH-ERROR-PROCESS-ALREADY-USED-APP' | translate}} "{{popup.error.data.conflictingAppNames[$index]}}")
+                        </li>
+                    </ul>
+                </div>
+
+			</div>
+			<div class="modal-footer">
+				<div class="pull-right" ng-if="popup.error == undefined || popup.error == null || (popup.error && popup.error.type != 'processModelAlreadyUsed')">
+					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading">
+						{{'GENERAL.ACTION.CANCEL' | translate}}
+					</button>
+					<button type="button" class="btn btn-sm btn-danger" ng-click="ok()" ng-disabled="popup.loading  || (popup.error != null && popup.error != undefined)">
+						<span>{{'APP.ACTION.PUBLISH-CONFIRM' | translate}}</span>
+					</button>
+				</div>
+                <div class="pull-right" ng-if="popup.error.type == 'processModelAlreadyUsed'">
+                    <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading">
+                        {{'GENERAL.ACTION.CANCEL' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success" style="background-color: #5cb85c;border-color: #4cae4c;" ng-click="ok(true)" ng-disabled="popup.loading">
+                        <span>{{'GENERAL.ACTION.CONFIRM' | translate}}</span>
+                    </button>
+                </div>
+                <div class="loading pull-right" ng-show="popup.loading">
+                    <div class="l1"></div><div class="l2"></div><div class="l2"></div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
