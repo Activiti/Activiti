@@ -1,0 +1,334 @@
+{
+    "COMMON" : {
+        "SELECT-FOLDER": "Select folder..."
+    },
+    "GENERAL": {
+        "MAIN-TITLE": "Activiti - My Tasks",
+        "ERROR": {
+            "GENERIC": "Sorry, an error occured...",
+            "UNKNOWN": "Sorry, an error occured while performing the requested operation.",
+            "BAD_REQUEST": "An error occured while performing the requested operation",
+            "NOT_FOUND": "The resource you are trying to access does not exist",
+            "UNAUTHORIZED": "You should sign in in order to perform the requested operation.",
+            "FORBIDDEN": "You are not allowed to perform the requested operation",
+            "INTERNAL_SERVER_ERROR": "Sorry, an unexpected error occured while performing the requested operation.",
+            "UPLOAD-LIMIT-EXCEEDED": "The file you are trying to upload is too large",
+            "UPLOAD-LIMIT-EXCEEDED-TRIAL-USER": "The file you are trying to upload is too large. Upgrade to enterprise to upload files larger than {{quota}}!",
+            "QUOTA-EXCEEDED-RUNTIME-PROCESSES": "As a trial user, you can only have {{quota}} active processes running at the same time.",
+            "QUOTA-EXCEEDED-COMPLETED-PROCESSES": "As a trial user, you can only have {{quota}} completed processes. Delete a completed process in order to start a new one.",
+            "QUOTA-EXCEEDED-TOTAL-CONTENT-SIZE": "As a trial user, you can only store a total of {{quota}} of content. Delete content or complete processes to free up space for new content."
+        },
+        "NAVIGATION": {
+            "TASKS": "Tasks",
+            "PROCESSES": "Processes",
+            "DESIGN": "Design",
+            "CREATE": "+ Create",
+            "LOGIN": "Sign in"
+        },
+        "TITLE": {
+            "ADD-COMMENT": "Create comment",
+            "INVOLVE-PEOPLE": "Select person",
+            "RECENT-PEOPLE": "Recent people",
+            "MATCHING-PEOPLE": "Matching people",
+            "SELECT-GROUP": "Select group",
+            "MATCHING-GROUPS": "Matching groups",
+            "FILTER": "Filter",
+            "SELECT-DATE": "Select a date"
+        },
+        "ACTION": {
+            "LOGOUT": "Sign out",
+            "ADD-COMMENT": "Add comment",
+            "SAVE": "Save",
+            "CANCEL": "Cancel",
+            "CLOSE": "Close",
+            "CONFIRM": "Confirm",
+            "SHOW-MORE": "Show more..."
+        },
+        "MESSAGE": {
+            "SELECT-PEOPLE-HELP": "Use &uparrow; and &downarrow; to select and press Enter to confirm",
+            "SELECT-GROUP-HELP": "Use &uparrow; and &downarrow; to select and press Enter to confirm",
+            "SELECT-GROUP-SEARCH-PLACEHOLDER": "Search group",
+            "SELECT-GROUP-NO-MATCHING-RESULTS": "Use the search box above to find groups.",
+            "UPLOAD-CONTENT": "Select or drop a file",
+            "UPLOAD-CONTENT-NO-DROP": "Select a file to upload",
+            "DROPZONE": "Drop the file to upload",
+            "YES": "Yes",
+            "NO": "No"
+        },
+        "TIME": {
+            "HOURS": "hours",
+            "MINUTES": "minutes",
+            "SECONDS": "seconds"
+        },
+        "ABOUT": {
+            "TYPE": "Type",
+            "LICENSED-TO": "Licensed To",
+            "EXPIRES": "Expires",
+            "COPYRIGHT": "© 2005-2015 Alfresco Software Inc. All rights reserved.",
+            "LEGAL": "Legal and License"
+        }
+    },
+    "LOGIN": {
+        "TITLE": "Sign in",
+        "USERNAME": "Username",
+        "USERNAME-PLACEHOLDER": "Enter your username",
+        "PASSWORD": "Password",
+        "PASSWORD-PLACEHOLDER": "Enter your password",
+        "ACTION": {
+            "CONFIRM": "Sign in"
+        }
+    },
+    "TASK": {
+        "SECTION": {
+            "PEOPLE": "People",
+            "CONTENT": "Content",
+            "COMMENTS": "Comments",
+            "NOTES": "Notes"
+        },
+        "FILTER": {
+            "CREATED-DESC": "Newest first",
+            "CREATED-ASC": "Oldest first",
+            "DUE-DESC": "Due last",
+            "DUE-ASC": "Due first",
+            "TEXT": "Filter",
+            "TEXT-PLACEHOLDER": "Search by task name",
+            "TEXT-SUMMARY": "Filtered by: {{text}}",
+            "PROCESS-DEFINITION": "Process Definition",
+            "PROCESS-DEFINITION-PLACEHOLDER": "Select process definition ...",
+            "STATE": "State",
+            "STATE-OPEN": "open",
+            "STATE-COMPLETED": "completed",
+            "ASSIGNMENT": "Assignment",
+            "ASSIGNMENT-INVOLVED": "Tasks where I am involved",
+            "ASSIGNMENT-ASSIGNEE": "Tasks where I am the assignee",
+            "ASSIGNMENT-CANDIDATE": "Tasks where I am one of the candidates",
+            "ASSIGNMENT-GROUP": "Tasks assigned to the group \"{{name}}\"",
+            "RESET": "Reset filters"
+        },
+        "ALERT": {
+            "COMMENT-ADDED": "Comment was added to \"{{name}}\"",
+            "PERSON-INVOLVED": "{{firstName}} {{lastName}} is now involved in \"{{taskName}}\"",
+            "PERSON-NO-LONGER-INVOLVED": "{{firstName}} {{lastName}} is no longer involved in \"{{taskName}}\"",
+            "CREATED": "Task \"{{name}}\" was created",
+            "COMPLETED": "Task completed",
+            "SAVED": "Task form is saved",
+            "ASSIGNED": "Task \"{{taskName}}\" is now asigned to {{firstName}} {{lastName}}",
+            "RELATED-CONTENT-ADDED": "\"{{name}}\" has been added to the task",
+            "RELATED-CONTENT-ADDED-LOADING": "\"{{name}}\" has been added to the task. The content will be available once retrieved from the external source."
+        },
+        "ACTION": {
+            "COMPLETE-TASK-WITH-FORM": "Complete form",
+            "COMPLETE": "Complete",
+            "CLAIM": "Claim",
+            "ASSIGN": "Assign",
+            "REASSIGN": "Reassign",
+            "CREATE": "+ Create Task",
+            "CREATE-CONFIRM": "Create",
+            "INVOLVE": "+ Involve people",
+            "ADD-COMMENT": "+ Add comment",
+            "ADD-COMMENT-CONFIRM": "Add comment",
+            "ADD-CONTENT": "+ Add content",
+            "CLEAR-DUEDATE": "Clear due date",
+            "DUE-TODAY": "Due today",
+            "CLEAR-DATE": "Clear date",
+            "DATE-TODAY": "Date today",
+            "AUDIT-LOG": "Audit Log"
+        },
+        "TITLE": {
+            "ASSIGN": "Select assignee",
+            "ASSIGNEE": "Assignee",
+            "CONTENT": "Related content",
+            "CREATE-NEW": "New Task",
+            "FORM": "Form",
+            "DETAILS": "Details",
+            "ADD-RELATED-CONTENT": "Add related content",
+            "SELECT-DUEDATE": "Select due date",
+            "SELECT-DATE": "Select date",
+            "NO-CONTENT-ITEMS": "No content items",
+            "NO-PEOPLE-INVOLVED": "No people involved",
+            "NO-COMMENTS": "No comments",
+            "COMMENT-COUNT": "comment",
+            "COMMENTS-COUNT": "comments",
+            "SHOW-DETAILS": "Show details",
+            "SHOW-FORM": "Show form"
+        },
+        "FIELD": {
+            "NAME": "Name",
+            "DESCRIPTION": "Description",
+            "ASSIGNEE": "Assignee",
+            "DUE": "Due",
+            "PROCESS-INSTANCE": "Part of process",
+            "ENDED": "Ended",
+            "DURATION": "Duration"
+        },
+        "MESSAGE": {
+            "NO-NAME": "Nameless task",
+            "NO-ASSIGNEE": "Assigned to nobody",
+            "NO-DUEDATE": "No due date",
+            "DUE-ON": "Due",
+            "CREATED-ON": "Created",
+            "ENDED-ON": "Completed",
+            "COMPLETED-BY": "Completed by {{firstName}} {{lastName}}, ",
+            "NO-DESCRIPTION": "This task has no description",
+            "NO-RELATED-CONTENT": "This task has no related content yet...",
+            "NO-PEOPLE-INVOLVED": "This task has no people involved yet...",
+            "NO-COMMENTS": "This task has no comments yet...",
+            "INVOLVE-PEOPLE-PLACEHOLDER": "+ Add person",
+            "CONTENT-UPLOADED-BY": "Added by ",
+            "ASSIGNEE": "Assigned to {{firstName}} {{lastName}}",
+            "NEW-COMMENT-PLACEHOLDER": "Enter a comment to add to this task",
+            "COMMENT-HEADER": "Added by {{createdBy | username}}, {{created | dateformat:\"fromNow\"}}",
+            "NO-FILTER": "Showing your tasks, no filter applied",
+            "FILTERED": "Showing your tasks, filtered",
+            "NO-TASKS": "No matching tasks found...",
+            "DURATION": "Took {{duration}}",
+            "CLAIM-TASK-FIRST": "To see and fill in the form for this task, you need to claim this task first. You can do that by pressing the blue button in the top right of the page.",
+            "NO-TASKS-HELP": "Well, it looks like there are no tasks for you! To get something started, you can:",
+            "NO-SUCH-TASK-HELP": "The task you are looking for cannot be found! If you want to, you can instead:",
+            "NO-SUCH-TASK-RETURN-TO-LIST": "Return to your list of tasks",
+            "NO-TASKS-CREATE-TASK": "Create a task for yourself or assign it to someone else",
+            "NO-TASKS-CREATE-PROCESS": "Start a new process and then track its progress"
+
+        },
+        "HELP" : {
+            "DESCRIPTION": "This task has no details yet. You can change that by choosing one of these actions:",
+            "COMPLETED-DESCRIPTION": "This completed task has no details.",
+            "DESCRIPTION-WITH-CLAIM": "This task has no details yet. You can change that by choosing one of the following actions. In addition, to complete this task you need to claim it first by pressing the blue button in the top right of the page.",
+            "ADD-PEOPLE": "Involve someone else and start collaborating",
+            "ADD-COMMENT": "Enlighten others by adding a comment",
+            "ADD-CONTENT": "Add a document and share the knowledge"
+        }
+    },
+    "PROCESS": {
+        "ALERT": {
+            "COMMENT-ADDED": "Comment was added",
+            "STARTED": "A new  \"{{processDefinitionName}}\" process was started",
+            "START-PROCESS-CONTENT-ADD-FAILED": "Failed to add {{noOfFiles}} file(s) to the process"
+        },
+        "TITLE": {
+            "DIAGRAM": "Process diagram"
+        },
+        "FILTER": {
+            "CREATED-DESC": "Newest first",
+            "CREATED-ASC": "Oldest first",
+            "ENDED-DESC": "Completed most recently",
+            "ENDED-ASC": "Completed least recently",
+            "STATE-SUMMARY": "Showing {{state.title | translate}} processes",
+            "STATE": "Process State",
+            "STATE-RUNNING": "running",
+            "STATE-COMPLETED": "completed",
+            "STATE-ALL": "all"
+        },
+        "MESSAGE": {
+            "NO-DESCRIPTION": "This process instance has no description",
+            "NO-FILTER": "Showing all process instances, not filtered",
+            "NO-INSTANCES": "No matching process instances found...",
+            "NO-INSTANCES-HELP": "There are no processes that are running now. If your processes have completed, you can find them using the filter for the process list. To get going with something new you can:",
+            "NO-INSTANCES-HELP-START": "Start a new process and track its progress",
+            "NO-TASKS": "No tasks are currently active ...",
+            "NO-COMPLETED-TASKS": "No tasks have been completed yet...",
+            "NO-BUSINESS-KEY": "No business key set",
+            "CATEGORY": "Category: {{processDefinitionCategory}}",
+            "NEW-COMMENT-PLACEHOLDER": "Enter a comment to add to this process",
+            "COMMENT-HEADER": "Added by {{createdBy | username}}, {{created | dateformat:\"fromNow\"}}",
+            "SELECT-DEFINITION": "Select a process to start from the list below",
+            "NO-PROCESS-DEFINITIONS": "You cannot start a process since there are no process definitions available",
+            "START-PROCESS": "Start Process",
+            "STARTED-BY": "Started by {{firstName}} {{lastName}}",
+            "NO-PROCESS-DEFINITION-SELECTED-HELP": "Please select a process definition"
+        },
+        "ACTION" : {
+            "CREATE": "+ Start a process",
+            "BACK-TO-LIST": "Back to process instances",
+            "SHOW-DIAGRAM": "Show diagram",
+            "CANCEL": "Cancel process",
+            "DELETE": "Delete process",
+            "ADD-COMMENT": "+ Add comment",
+            "ADD-COMMENT-CONFIRM": "Add comment",
+            "AUDIT-LOG": "Audit Log"
+        },
+        "FIELD": {
+            "BUSINESS-KEY": "Business key",
+            "CATEGORY": "Category",
+            "PROCESS-DEFINITION": "Process definition",
+            "STARTED": "Started",
+            "STARTED-BY": "Started by",
+            "ENDED": "Ended",
+            "NAME": "Process instance name",
+            "NAME-PLACEHOLDER" : "Enter an optional name for the process being started"
+        },
+        "SECTION": {
+            "ACTIVE-TASKS": "Active tasks",
+            "START-FORM": "Start form",
+            "COMPLETED-TASKS": "Completed tasks",
+            "COMMENTS": "Comments",
+            "CONTENT" : "Content"
+        },
+        "POPUP": {
+            "CANCEL-TITLE": "Cancel the process?",
+            "CANCEL-DESCRIPTION": "Are you sure you want to cancel process {{name}}?",
+            "DELETE-TITLE": "Delete the process?",
+            "DELETE-DESCRIPTION": "Are you sure you want to delete process {{name}}? All tasks, content and comments related to this process will be deleted permanently."
+        }
+    },
+    "INVOLVE-PEOPLE": {
+        "NO-MATCHING-RESULTS": "Use the search box above to find users or ",
+        "SEARCH-PLACEHOLDER": "Search user",
+        "USE-EMAIL": "select someone using an email address",
+        "EMAIL-PLACEHOLDER": "Enter an email address",
+        "EMAIL-HELP": "Press Enter or click the button to continue. This person will be notified by email or invited to sign up",
+        "BACK-TO-SEARCH": "Back to search",
+        "ACTION-SELECT": "Select"
+    },
+    "INTEGRATION": {
+        "ALERT": {
+        }
+    },
+    "CONTENT": {
+        "SIMPLE-TYPE": {
+            "WORD": "Document",
+            "EXCEL": "Spreadsheet",
+            "PDF": "PDF Document",
+            "IMAGE": "Image",
+            "FOLDER": "Folder",
+            "CONTENT": "Content"
+        },
+        "MESSAGE": {
+            "NO-PREVIEW-AVAILABLE": "No preview available",
+            "PREVIEW-PENDING": "Creating preview...",
+            "CONTENT-PENDING": "Getting content...",
+            "NOT-FOUND": "The content can not be found",
+            "DELETE-CONFIRMATION": "Are you sure you want to delete {{name}}?",
+            "DROP": "Drop or ",
+            "SELECT": "Select a file",
+            "DRAGOVER": "Drop file to upload",
+            "EXTERNAL-ONLY": "Select source of content"
+        },
+        "TITLE": {
+            "DELETE": "Delete content",
+            "NOT-FOUND": "File Not Found"
+        },
+        "ACTION":  {
+        }
+    },
+    "FORM" : {
+        "ACTION": {
+            "SAVE": "Save"
+        },
+        "DEFAULT-OUTCOME": {
+            "COMPLETE": "Complete",
+            "START-PROCESS": "Start process"
+        },
+        "MESSAGE" : {
+            "SELECT-PERSON": "No person selected...",
+            "SELECT-GROUP": "No group selected...",
+            "EMPTY": "(empty)"
+        }
+    },
+    "APP-DEFINITION" : {
+        "MESSAGE" : {
+            "NOT-FOUND": "No app definition found with the given id",
+            "MISSING": "Activiti is running in integration mode, but the required app definition is missing"
+        }
+    }
+}

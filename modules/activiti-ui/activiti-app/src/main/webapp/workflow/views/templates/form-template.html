@@ -1,0 +1,49 @@
+<div ng-controller="RenderFormController" id="formsection">
+
+    <div loading="model.loading"></div>
+
+    <div ng-if="!model.loading && formData != null && formData != undefined && (disableForm == null || disableForm == undefined || disableForm == false)"
+         class="form-wrapper container-fluid">
+
+        <div ng-if="!outcomesOnly" >
+            <div ng-form="taskForm">
+                <div ng-repeat="field in formData.fields" id="fieldContainer_{{field.id}}">
+                    <form-element field="field" task-form="taskForm" control-callbacks="controlCallbacks" model="model"></form-element>
+                </div>
+            </div>
+        </div>
+        
+        <div ng-if="!formData.outcomes || formData.outcomes.length === 0" class="clearfix form-actions">
+            <div class="pull-right" ng-if="(hideButtons == undefined || hideButtons == null || hideButtons == false) && (disableForm == undefined || disableForm == null || disableForm == false)">
+                <button id="form_complete_button" class="btn btn-default" ng-disabled="model.completeButtonDisabled || !model.valid || (disableOutcomes != undefined && disableOutcomes != null && disableOutcomes) || model.uploadInProgress"
+                        ng-click="completeForm('complete')">{{getDefaultCompleteButtonText()}}</button>
+            </div>
+        </div>
+
+        <div ng-if="formData.outcomes && formData.outcomes.length > 0" class="clearfix form-actions">
+            <div class="pull-right" ng-if="(hideButtons == undefined || hideButtons == null || hideButtons == false) && (disableForm == undefined || disableForm == null || disableForm == false)">
+                <button id="form_complete_button" class="btn btn-default"
+                        ng-disabled="!model.valid || model.completeButtonDisabled || model.uploadInProgress"
+                        ng-repeat="outcome in formData.outcomes"
+                        ng-click="completeForm(outcome)">{{outcome.name}}</button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div ng-if="disableForm != null && disableForm != undefined && disableForm == true">
+        <div ng-if="disableFormText" class="text-center">
+            <div class="help-container fixed">
+                <div>
+                    <div class="help-text">
+                        <div class="description">
+                            {{disableFormText | translate}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

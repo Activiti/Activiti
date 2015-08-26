@@ -1,0 +1,27 @@
+<div class="popover" click-anywhere="$hide()" ignore-class="toggle-create-task">
+    <div class="arrow"></div>
+    <div class="popover-header">
+        <span translate="TASK.TITLE.CREATE-NEW"></span>
+        <div class="actions">
+            <a ng-click="$hide()" ng-show="!newTask.loading">{{'GENERAL.ACTION.CLOSE' | translate}}</a>
+        </div>
+    </div>
+    <div class="popover-wrapper clearfix">
+        <div class="form-group">
+            <label translate="TASK.FIELD.NAME"></label>
+            <input type="text" class="form-control" ng-model="newTask.name" ng-placeholder="Name" auto-focus
+                   select-text="newTask.name" ng-disabled="newTask.loading"
+                   custom-keys enter-pressed="confirmTaskCreation()">
+        </div>
+        <div class="form-group">
+            <label translate="TASK.FIELD.DESCRIPTION"></label>
+            <textarea class="form-control" rows="3" id="add-comment-input" ng-model="newTask.description" ng-disabled="newTask.loading"></textarea>
+        </div>
+    </div>
+    <div class="popover-footer">
+        <div class="btn-group pull-right">
+        <button class="btn btn-default" ng-click="confirmTaskCreation();" ng-disabled="!newTask.name || newTask.name.length == 0 || newTask.loading" translate="TASK.ACTION.CREATE-CONFIRM" ></button>
+    </div>
+        <div loading="newTask.loading"></div>
+    </div>
+</div>

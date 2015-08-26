@@ -1,0 +1,90 @@
+<div class="modal" ng-controller="ShareModelPopupCrtl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            	<h2>{{popup.popupType + '.POPUP.SHARE-TITLE' | translate}}</h2>
+            </div>
+            <div class="modal-body">
+
+            	<p>{{popup.popupType + '.POPUP.SHARE-DESCRIPTION' | translate:popup.model}}</p>
+
+                <a style="font-size: 15px;"
+                      select-people-popover
+                      close-on-select="true"
+                      exclude-user-id="account.id"
+                      exclude-user-ids="currentlySharedUserIds"
+                      on-people-selected="addRealUser(user)"
+                      on-email-selected="addEmailUser(email)"
+                      ignore-container="true"
+                      placement="bottom-left">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <span>{{'SHARE-INFO.ACTION.ADD' | translate}}</span>
+                </a>
+
+            	<div class="sharing-info">
+
+            		<div class="loading" ng-show="!popup.shareInfo">
+            			<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+            		</div>
+            		
+            		<div class="no-results" style="height: 240px;" ng-show="!popup.shareInfo.data">
+            			<span>{{popup.popupType + '.POPUP.NOT-SHARED' | translate}}</span>
+            		</div>
+
+            		<div class="sharing-list" ng-if="popup.shareInfo.data">
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th style="width:70%">{{'PROCESS.POPUP.SHARED-WITH' | translate}}</th>
+                                <th style="width:15%" class="text-center">{{'PROCESS.POPUP.PERMISSION' | translate}}</th>
+                                <th style="width:15%" class="text-center">{{'PROCESS.POPUP.ACTIONS' | translate}}</th>
+                            </tr>
+                            </thead>
+                        </table>
+
+                        <div class="sharing-list-table-wrapper">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr class="sharing-entry" ng-repeat="info in popup.shareInfo.data">
+                                        <td style="width:70%">
+                                            <i class="glyphicon glyphicon-user" ng-if="info.person"></i>
+                                            <span user-name="info.person" ng-if="info.person"></span>
+                                        </td>
+                                        <td style="width:15%"  class="text-center">
+                                            <i class="glyphicon glyphicon-eye-open"
+                                               ng-class="{'active-permission' : info.permission == 'read', 'not-active-permission' : info.permission != 'read'}"
+                                               ng-click="setPermission(info, 'read')"
+                                               ></i>
+                                            <i class="glyphicon glyphicon-pencil"
+                                               ng-class="{'active-permission' : info.permission == 'write', 'not-active-permission' : info.permission != 'write'}"
+                                               ng-click="setPermission(info, 'write')"></i>
+                                        </td>
+                                        <td style="width:15%" class="text-center">
+                                            <i class="glyphicon glyphicon-remove" ng-click="setPermission(info, undefined)"></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+            		</div>
+            	</div>
+            </div>
+            
+            <div class="modal-footer">
+            	<div class="pull-right">
+            		<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading" auto-focus>
+            			{{'GENERAL.ACTION.CANCEL' | translate}}
+            		</button>
+            		<button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="popup.loading || !popup.shareInfo">
+            			<span>{{popup.popupType + '.ACTION.SHARE-CONFIRM' | translate}}</span>
+            		</button>
+            	</div>
+            	<div class="loading pull-right" ng-show="popup.loading">
+            		<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+            	</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+/**
+ * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+
+/* Process instance / Process definition list */
+
+.slide-animation-proc-def-list.ng-enter
+{
+    -webkit-transition: 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+}
+
+.slide-animation-proc-def-list.ng-enter {
+    left: -100%;
+}
+
+.slide-animation-proc-def-list.ng-enter.slide-animation-proc-def-list.ng-enter-active  {
+    left: 0;
+}
+
+.proc-def-list{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    z-index: 2;
+}
+.proc-def-list {
+    background-color: #ffffff;
+    position: relative;
+    float: left;
+    width: 400px;
+    margin-right: 20px;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(220,220,220,0.50);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(220,220,220,0.50);
+    box-shadow: 2px 2px 2px 0px rgba(220,220,220,0.50);
+}
+
+.proc-inst-list > .list-header {
+    height: 4rem;
+}
+
+.proc-inst-list > .list-subheader {
+    height: 5rem;
+}
+
+/* Using the calc() stuff comes from Erik. Talk with him if you disagree. */
+.proc-inst-list > .list-wrapper {
+    height: calc(100% - 9rem);
+}
+
+/* Process instance details */
+
+.process-instance-name {
+    padding: 10px 3px 0 25px;
+    width: 50%;
+}

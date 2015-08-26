@@ -1,0 +1,86 @@
+
+<div class="modal" ng-controller="ImportNewVersionAppDefinitionCtrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header-wrapper">
+            	<div class="modal-header">
+            		<div class="pull-right">
+                        <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL' | translate}}</a>
+                    </div>
+            		<h2>{{'APP.POPUP.IMPORT-TITLE' | translate}}</h2>
+            	</div>
+            </div>
+            <div class="modal-body">
+
+                <div class="checkbox" ng-show="!error && !error.isConflict">
+                    <label>
+                        <input type="checkbox" ng-disabled="popup.loading" ng-model="popup.renewIdmIds">
+                            {{'APP.POPUP.IMPORT.RENEWIDM-IDS' | translate}}
+                    </label>
+                </div>
+
+                <p>
+                    <i class="glyphicon glyphicon-info-sign"></i>
+                    {{'APP.POPUP.IMPORT-DESCRIPTION' | translate}}
+                </p>
+                <!--[if IE 9]>
+                <div class="import-process-form">
+
+                    <input type="file" ngf-select="" ngf-change="onFileSelect($files,true)" style="font-size: smaller; padding-top:6px;" >
+                    <div class="import-process-dropbox"
+                         ngf-drop="onFileSelect($files)"
+                         ngf-drag-over-class="dragover"
+                         ng-show="dropSupported">
+                        {{'APP.POPUP.IMPORT.DROPZONE' | translate}}
+                    </div>
+                    <div ngf-drop-available="dropSupported=true"
+                         ng-show="!dropSupported">{{'APP.POPUP.IMPORT.NO-DROP' | translate}}</div>
+                    <div class="graph-wrapper" ng-show="popup.loading" style="margin: 10px 0 10px 0">
+                        <div class="graph-bar" ng-style="{width: popup.uploadProgress + '%'}"></div>
+                    </div>
+                    <button class="btn btn-danger btn-sm"
+                            ng-click="upload.abort()"
+                            ng-disabled="!popup.loading"
+                            style="margin-bottom: 20px">
+                        {{'APP.POPUP.IMPORT.CANCEL-UPLOAD' | translate}}
+                    </button>
+
+                </div>
+                <![endif]-->
+                <!--[if gt IE 9]> <!-- -->
+                <div class="import-process-form">
+
+                    <input type="file" ngf-select="" ngf-change="onFileSelect($files)" style="font-size: smaller; padding-top:6px;" >
+                    <div class="import-process-dropbox"
+                         ngf-drop ngf-change="onFileSelect($files)"
+                         ngf-drag-over-class="dragover"
+                         ng-show="dropSupported">
+                        {{'APP.POPUP.IMPORT.DROPZONE' | translate}}
+                    </div>
+                    <div ngf-file-drop-available="dropSupported=true"
+                         ng-show="!dropSupported">{{'APP.POPUP.IMPORT.NO-DROP' | translate}}</div>
+                    <div class="graph-wrapper" ng-show="popup.loading" style="margin: 10px 0 10px 0">
+                        <div class="graph-bar" ng-style="{width: popup.uploadProgress + '%'}"></div>
+                    </div>
+                    <button class="btn btn-danger btn-sm"
+                            ng-click="upload.abort()"
+                            ng-disabled="!popup.loading"
+                            style="margin-bottom: 20px">
+                        {{'APP.POPUP.IMPORT.CANCEL-UPLOAD' | translate}}
+                    </button>
+
+                </div>
+                <!-- <![endif]-->
+            </div>
+
+            <div class="modal-footer-wrapper">
+                <div class="modal-footer">
+                    <loading></loading>
+                    <div class="pull-right modeler-processes-error" ng-if="popup.error">
+                        <span>{{'APP.POPUP.IMPORT.ERROR' | translate}} <span ng-if="popup.errorMessage"> : </span>{{popup.errorMessage}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

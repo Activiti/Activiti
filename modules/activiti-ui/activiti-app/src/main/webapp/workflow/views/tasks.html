@@ -1,0 +1,108 @@
+
+<div class="main-list" id="main-list" ng-if="!missingAppdefinition">
+    <div class="list-header" id="list-header" click-anywhere="collapseFilter()">
+
+        <div class="summary" ng-show="!model.filter.expanded" ng-click="expandFilter()">
+            <span ng-if="model.filter.param.nonDefaultFilter">{{'TASK.MESSAGE.FILTERED' | translate}}</span>
+            <span ng-if="!model.filter.param.nonDefaultFilter">{{'TASK.MESSAGE.NO-FILTER' | translate}}</span>
+            <span class="pull-right"><span class="glyphicon glyphicon-filter"></span></span>
+        </div>
+
+        <div class="summary" ng-show="model.filter.expanded" custom-keys escape-pressed="collapseFilter()">
+            <div class="form-group" >
+                <label translate="TASK.FILTER.TEXT"></label>
+                <input class="form-control" type="text" placeholder="{{'TASK.FILTER.TEXT-PLACEHOLDER' | translate}}"
+                       auto-focus="model.filter.expanded"
+                       ng-model="model.filter.param.text" ng-change="refreshFilter()" ng-debounce="400">
+            </div>
+
+            <div class="form-group">
+                <label translate="TASK.FILTER.STATE"></label>
+                <div class="selection toggle">
+                    <div class="toggle-2" ng-repeat="option in model.stateFilterOptions" ng-class="{'active' : model.filter.param.state.id == option.id}">
+                        <button class="btn btn-xs" ng-click="selectStateFilter(option)">{{option.title | translate}}</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label translate="TASK.FILTER.PROCESS-DEFINITION"></label>
+                <select class="form-control"
+                        ng-options="option.id as option.name for option in model.processDefinitions"
+                        ng-model="model.filter.param.processDefinitionId"
+                        ng-change="collapseFilter();refreshFilter()"
+                        ng-disabled="model.loading">
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label translate="TASK.FILTER.ASSIGNMENT"></label>
+                <select class="form-control"
+                        ng-options="option.id as option.title for option in model.assignmentOptions"
+                        ng-model="model.filter.param.assignment"
+                        ng-change="collapseFilter();refreshFilter()"
+                        ng-disabled="model.loading">
+                </select>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-sm" ng-click="resetFilters(true); refreshFilter();">{{'TASK.FILTER.RESET' | translate}}</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="list-subheader clearfix">
+        <div class="btn-group pull-left">
+            <button id="toggle-create-task" class="btn btn-xs dropdown-toggle toggle-create-task" translate="TASK.ACTION.CREATE" ng-click="createTask()">&nbsp;</button>
+        </div>
+        <div class="sort">
+            <div class="dropdown btn-group btn-group-sm">
+                <a class="dropdown-toggle" trigger="click" placement="bottom-right" ng-model="model.filter.param.sort" ng-change="sortChanged()"
+                   ng-options="sort.id as (sort.title | translate) for sort in model.sorts" bs-select></a>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div loading="model.filter.loading"></div>
+    <div class="list-wrapper" ng-show="!model.filter.loading" auto-height>
+
+        <ul class="full-list" scroll-to-active="selectedTask" use-parent="true" offset-top="100">
+            <li ng-repeat="task in model.tasks" ng-class="{'active': selectedTask.id == task.id}" ng-click="selectTask(task)">
+                <div>
+                    <div class="pull-right">
+                        <span class="badge" ng-if="task.dueDate">
+                            {{'TASK.MESSAGE.DUE-ON' | translate}} {{(task.dueDate | dateformat:'fromNow')}}
+                        </span>
+                        <span class="badge" ng-if="!task.dueDate">
+                            {{'TASK.MESSAGE.CREATED-ON' | translate}} {{(task.created | dateformat:'fromNow')}}
+                        </span>
+                    </div>
+                    <div class="title">
+                        {{task.name && task.name || ('TASK.MESSAGE.NO-NAME' | translate)}}
+                    </div>
+                    <div class="summary">
+                        {{task.description && task.description || ('TASK.MESSAGE.NO-DESCRIPTION' | translate)}}
+                    </div>
+                    <div class="detail">
+                        <span ng-if="task.assignee.id">
+                            {{'TASK.MESSAGE.ASSIGNEE' | translate:task.assignee}}
+                        </span>
+                        <span ng-if="!task.assignee.id" translate="TASK.MESSAGE.NO-ASSIGNEE">
+                        </span>
+                    </div>
+                </div>
+            </li>
+            <li class="more" ng-if="model.hasNextPage && !model.filter.loading" ng-click="nextPage()">
+                <i class="icon icon-caret-right"></i> {{'GENERAL.ACTION.SHOW-MORE' | translate}}
+            </li>
+        </ul>
+        <div class="nothing-to-see" ng-show="model.tasks.length == 0">
+            <span  translate="TASK.MESSAGE.NO-TASKS"></span>
+        </div>
+    </div>
+</div>
+
+<div class="main-content-wrapper" ng-include="appResourceRoot + 'views/task-detail.html'" ng-if="!missingAppdefinition"></div>
+
+<div ng-if="missingAppdefinition" ng-include="appResourceRoot + 'views/integration-mode-error.html'"></div>

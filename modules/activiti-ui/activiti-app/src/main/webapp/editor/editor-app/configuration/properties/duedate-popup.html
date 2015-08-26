@@ -1,0 +1,120 @@
+
+<div class="modal" ng-controller="BpmnEditorDueDatePopupCtrl">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+    <h2 translate>PROPERTY.DUEDATE.TITLE</h2>
+</div>
+<div class="modal-body">
+    
+    <div class="clearfix first">
+        <div class="col-xs-12">
+            <div class="col-xs-12">
+                <div class="btn-group span">
+                    <button class="selection" data-toggle="dropdown" ng-options="option.id as (option.title | translate) for option in taskDueDateOptions"
+                        bs-select ng-model="popup.selectedDueDateOption" ng-change="dueDateOptionChanged()" activiti-fix-dropdown-bug>
+                       <i class="icon icon-caret-down"></i>
+                   </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix first" ng-if="popup.selectedDueDateOption === 'expression'" style="padding-top: 10px">
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                <label>{{'PROPERTY.DUEDATE.EXPRESSION-LABEL' | translate}}: </label>
+            </div>
+            <div class="col-xs-8">
+                <input id="expression" type="text" class="form-control" ng-model="popup.duedateExpression">
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix first" ng-if="popup.selectedDueDateOption === 'field'" style="padding-top: 10px">
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                <label>{{'PROCESS-BUILDER.FIELD.TIMER.DATE-FIELD' | translate}}: </label>
+            </div>
+            <div class="col-xs-8">
+                <div field-select="popup.duedate.field.taskDueDateField" editor-type="bpmn" all-steps="allSteps" step-id="selectedShape.resourceId" field-type-filter="['date']"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix first" ng-if="popup.selectedDueDateOption === 'field'" style="padding-top: 10px">
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                <label>{{'PROCESS-BUILDER.FIELD.DUEDATE.CALCULATION-TYPE' | translate}}: </label>
+            </div>
+            <div class="col-xs-8">
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default" ng-click="setAddCalculationType()" ng-model="popup.duedate.field.taskDueDateCalculationType" ng-class="{'active' : (!popup.duedate.field.taskDueDateCalculationType || popup.duedate.field.taskDueDateCalculationType == 'add')}">{{'PROCESS-BUILDER.FIELD.DUEDATE.CALCULATION-OPTIONS.ADD' | translate}}</button>
+                  </div>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default" ng-click="setSubtractCalculationType()" ng-model="popup.duedate.field.taskDueDateCalculationType" ng-class="{'active' : popup.duedate.field.taskDueDateCalculationType == 'subtract'}">{{'PROCESS-BUILDER.FIELD.DUEDATE.CALCULATION-OPTIONS.SUBTRACT' | translate}}</button>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix first" ng-if="popup.selectedDueDateOption === 'field'" style="padding-top: 10px">
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.YEARS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.field.years">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.MONTHS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.field.months">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.DAYS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.field.days">
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.HOURS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.field.hours">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.MINUTES' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.field.minutes">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.SECONDS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.field.seconds">
+            </div>
+        </div>
+    </div>
+    
+    <div class="clearfix first" ng-if="popup.selectedDueDateOption === 'static'" style="padding-top: 10px">
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.YEARS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.fixed.years">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.MONTHS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.fixed.months">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.DAYS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.fixed.days">
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.HOURS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.fixed.hours">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.MINUTES' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.fixed.minutes">
+            </div>
+            <div class="col-xs-4">
+                {{'PROCESS-BUILDER.FIELD.TIMER.SECONDS' | translate}}:<input type="number" class="form-control" ng-model="popup.duedate.fixed.seconds">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button ng-click="close()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+        <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+    </div>
+</div>
+</div>
+</div>

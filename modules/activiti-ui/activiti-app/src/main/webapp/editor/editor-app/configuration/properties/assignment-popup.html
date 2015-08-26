@@ -1,0 +1,294 @@
+<div class="modal" ng-controller="KisBpmAssignmentPopupCtrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+                <h2 translate>PROPERTY.ASSIGNMENT.TITLE</h2>
+            </div>
+            <div class="modal-body">
+                <div class="detail-group clearfix">
+
+                    <div class="form-group clearfix">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4">{{'PROPERTY.ASSIGNMENT.TYPE' | translate}}</label>
+
+                            <div class="col-xs-8">
+                                <div class="btn-group btn-group-justified">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default" ng-click="popup.assignmentObject.type = 'idm'"
+                                                ng-model="popup.assignmentObject.type" ng-class="{'active' : popup.assignmentObject.type == 'idm'}">
+                                            {{'PROPERTY.ASSIGNMENT.TYPE.IDENTITYSTORE' | translate}}
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default" ng-click="popup.assignmentObject.type = 'static'"
+                                                ng-model="popup.assignmentObject.type" ng-class="{'active' : popup.assignmentObject.type != 'idm'}">
+                                            {{'PROPERTY.ASSIGNMENT.TYPE.STATIC' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type != 'idm'">
+                        <div class="col-xs-12">
+                            <label>{{'PROPERTY.ASSIGNMENT.ASSIGNEE' | translate}}</label>
+                        </div>
+                        <div class="col-xs-12">
+                            <input type="text" id="assigneeField" class="form-control" ng-model="popup.assignmentObject.static.assignee"
+                                   placeholder="{{'PROPERTY.ASSIGNMENT.ASSIGNEE_PLACEHOLDER' | translate}}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type != 'idm'">
+                        <div class="col-xs-12">
+                            <label>{{'PROPERTY.ASSIGNMENT.CANDIDATE_USERS' | translate}}</label>
+                        </div>
+                        <div class="col-xs-12" ng-repeat="candidateUser in popup.assignmentObject.static.candidateUsers">
+                            <input id="userField" class="form-control" type="text" ng-model="candidateUser.value"/>
+                            <i ng-if="popup.assignmentObject.static.candidateUsers.length >1" class="glyphicon glyphicon-minus clickable-property"
+                               ng-click="removeCandidateUserValue($index)"></i>
+                            <i ng-if="$index == (popup.assignmentObject.static.candidateUsers.length - 1)" class="glyphicon glyphicon-plus clickable-property"
+                               ng-click="addCandidateUserValue($index)"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type != 'idm'">
+                        <div class="col-xs-12">
+                            <label>{{'PROPERTY.ASSIGNMENT.CANDIDATE_GROUPS' | translate}}</label>
+                        </div>
+                        <div class="col-xs-12" ng-repeat="candidateGroup in popup.assignmentObject.static.candidateGroups">
+                            <input id="groupField" class="form-control" type="text" ng-model="candidateGroup.value"/>
+                            <i ng-if="popup.assignmentObject.static.candidateGroups.length >1" class="glyphicon glyphicon-minus clickable-property"
+                               ng-click="removeCandidateGroupValue($index)"></i>
+                            <i ng-if="$index == (popup.assignmentObject.static.candidateGroups.length - 1)" class="glyphicon glyphicon-plus clickable-property"
+                               ng-click="addCandidateGroupValue($index)"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type == 'idm'">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>{{'PROPERTY.ASSIGNMENT.IDM.TYPE' | translate}}</label>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="btn-group span">
+                                    <button class="selection" ng-options="option as (option.title | translate) for option in assignmentOptions"
+                                            bs-select ng-model="assignmentOption" activiti-fix-dropdown-bug>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type == 'idm' && assignmentOption.id == 'users'">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>{{'PROPERTY.ASSIGNMENT.CANDIDATE_USERS' | translate}}</label>
+                            </div>
+                            <div class="col-xs-8 clearfix">
+                                <ul class="simple-list"
+                                    ng-show="popup.assignmentObject.idm.candidateUsers.length || popup.assignmentObject.idm.candidateUserFields.length">
+                                    <li ng-repeat="user in popup.assignmentObject.idm.candidateUsers">
+                                        <i class="icon icon-user"></i>
+                                        <span user-name="user"></span>
+
+                                        <div class="actions">
+                                            <a ng-click="removeCandidateUser(user)"><i class="icon icon-remove"></i></a>
+                                        </div>
+                                    </li>
+                                    <li ng-repeat="userField in popup.assignmentObject.idm.candidateUserFields">
+                                        <i class="icon icon-user"></i>
+                                        <span>{{userField.name}}</span>
+                                        <span class="field-type"> - {{userFieldField.id}}</span>
+
+                                        <div class="actions">
+                                            <a ng-click="removeCandidateUserField(userField)"><i class="icon icon-remove"></i></a>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="no-results"
+                                     ng-if="(!popup.assignmentObject.idm.candidateUsers || !popup.assignmentObject.idm.candidateUsers.length) && (!popup.assignmentObject.idm.candidateUserFields || !popup.assignmentObject.idm.candidateUserFields.length)">
+                                    {{'PROPERTY.ASSIGNMENT.IDM.NO_CANDIDATE_USERS' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type == 'idm' && assignmentOption.id == 'groups'">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>{{'PROPERTY.ASSIGNMENT.CANDIDATE_GROUPS' | translate}}</label>
+                            </div>
+                            <div class="col-xs-8 clearfix">
+                                <ul class="simple-list"
+                                    ng-show="popup.assignmentObject.idm.candidateGroups.length || popup.assignmentObject.idm.candidateGroupFields.length">
+                                    <li ng-repeat="group in popup.assignmentObject.idm.candidateGroups">
+                                        {{group.name}}
+                                        <div class="actions">
+                                            <a ng-click="removeCandidateGroup(group)"><i class="icon icon-remove"></i></a>
+                                        </div>
+                                    </li>
+                                    <li ng-repeat="groupField in popup.assignmentObject.idm.candidateGroupFields">
+                                        {{groupField.name}}
+                                        <div class="actions">
+                                            <a ng-click="removeCandidateGroupField(groupField)"><i class="icon icon-remove"></i></a>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="no-results"
+                                     ng-if="(!popup.assignmentObject.idm.candidateGroups || !popup.assignmentObject.idm.candidateGroups.length) && (!popup.assignmentObject.idm.candidateGroupFields || !popup.assignmentObject.idm.candidateGroupFields.length)">
+                                    {{'PROPERTY.ASSIGNMENT.IDM.NO_CANDIDATE_GROUPS' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix" ng-show="popup.assignmentObject.type == 'idm' && assignmentOption.id == 'user'">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>{{'PROPERTY.ASSIGNMENT.ASSIGNEE' | translate}}</label>
+                            </div>
+                            <div class="col-xs-8">
+                                <label ng-if="!popup.assignmentObject.idm.assignee && !popup.assignmentObject.idm.assigneeField">None...</label>
+                                <ul class="simple-list" ng-if="popup.assignmentObject.idm.assignee || popup.assignmentObject.idm.assigneeField">
+                                    <li>
+                                        <i class="icon icon-user"></i>
+                                        <span ng-if="popup.assignmentObject.idm.assignee" user-name="popup.assignmentObject.idm.assignee"></span>
+                                        <span ng-if="popup.assignmentObject.idm.assigneeField">{{popup.assignmentObject.idm.assigneeField.name}}</span>
+                                        <span ng-if="popup.assignmentObject.idm.assigneeField"
+                                              class="field-type"> - {{popup.assignmentObject.idm.assigneeField.id}}</span>
+
+                                        <div class="actions" ng-if="popup.assignmentObject.idm.assignee || popup.assignmentObject.idm.assigneeField">
+                                            <a ng-click="removeAssignee()"><i class="icon icon-remove"></i></a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix"
+                         ng-if="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && (assignmentOption.id == 'user' || assignmentOption.id == 'users')">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>Search:</label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="text" id="people-select-input" placeholder="Search user" auto-focus custom-keys
+                                       up-pressed="previousUser()" down-pressed="nextUser()" enter-pressed="confirmUser()" delayed-model="popup.filter" delay="200"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label></label>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="subtle" style="margin: 2px 0 2px 0">
+                                    <span translate="PROPERTY.ASSIGNMENT.MATCHING"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label></label>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="inline-people-select">
+                                    <ul class="simple-list">
+                                        <li ng-click="confirmUser(user)" ng-repeat="user in popup.userResults" ng-class="{'active': $index == popup.selectedIndex}">
+                                            <div user-picture="user" user-index="$index" user-name="user"></div>
+                                        </li>
+                                    </ul>
+                                    <div class="nothing-to-see" translate="GENERAL.MESSAGE.PEOPLE-NO-MATCHING-RESULTS" ng-show="popup.userResults.length == 0"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix"
+                         ng-show="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && (assignmentOption.id == 'user' || assignmentOption.id == 'users')">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>Email:</label>
+                            </div>
+                            <div class="col-xs-8">
+                                <form name="emailForm" class="form-group">
+                                    <div class="input-group">
+                                        <input name="assignmentEmailInput" class="form-control" type="email" placeholder="Enter an email address"
+                                               ng-model="popup.email"
+                                               field-focus="assignment.type == 'idm'"
+                                               custom-keys enter-pressed="confirmEmail()">
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm" type="button"
+                                    ng-disabled="popup.email == null || popup.email == undefined || popup.email.length == 0 || emailForm.assignmentEmailInput.$error.email"
+                                    ng-click="confirmEmail()">Accept
+                            </button>
+                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group clearfix"
+                         ng-if="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && assignmentOption.id == 'groups'">
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label>Search:</label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="text" id="people-select-input" placeholder="Search group" auto-focus custom-keys
+                                       up-pressed="previousGroup()" down-pressed="nextGroup()" enter-pressed="confirmGroup()" delayed-model="popup.groupFilter"
+                                       delay="200"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label></label>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="subtle">
+                                    <span translate="PROPERTY.ASSIGNMENT.MATCHING"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <label></label>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="inline-people-select">
+                                    <ul class="simple-list">
+                                        <li ng-click="confirmGroup(group);" ng-repeat="group in popup.groupResults"
+                                            ng-class="{'active': $index == popup.selectedGroupIndex}">
+                                            {{group.name}}
+                                        </li>
+                                    </ul>
+                                    <div class="nothing-to-see" translate="GENERAL.MESSAGE.GROUP-NO-MATCHING-RESULTS" ng-show="popup.groupResults.length == 0"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group clearfix">
+                        <div class="col-xs-12">
+                            <div class="col-xs-12">
+                                <label>
+                                    <input type="checkbox" ng-model="assignment.initiatorCanCompleteTask">
+                                    &nbsp;{{'PROPERTY.ASSIGNMENT.INITIATOR-CAN-COMPLETE' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="close()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+                <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+            </div>
+        </div>
+    </div>

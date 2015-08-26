@@ -1,0 +1,326 @@
+<div class="main-content" ng-controller="TaskDetailController">
+
+    <div class="help-container" ng-if="noSuchTask" auto-height ng-cloak>
+        <div>
+            <div class="help-text wide">
+                <div ng-if="noSuchTask" class="description">
+                    {{'TASK.MESSAGE.NO-SUCH-TASK-HELP' | translate}}
+                </div>
+                <div class="help-entry" ng-click="returnToTaskList(); $event.stopPropagation();">
+                    <span class="glyphicon glyphicon-arrow-left"></span>
+                    <span translate="TASK.MESSAGE.NO-SUCH-TASK-RETURN-TO-LIST"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="help-container" ng-if="!model.task && !model.loading && state.noOwnTasks && !noSuchTask" auto-height ng-cloak>
+        <div>
+            <div class="help-text wide">
+                <div ng-if="state.noOwnTasks" class="description">
+                    {{'TASK.MESSAGE.NO-TASKS-HELP' | translate}}
+                </div>
+                <div class="help-entry toggle-create-task" ng-class="{'active': newTask.inline }" ng-click="createTaskInline()" ng-show="!newProcessInstance.inline">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    <span translate="TASK.MESSAGE.NO-TASKS-CREATE-TASK"></span>
+                    <div ng-if="newTask.inline" class="clearfix" style="padding: 5px;">
+                        <div class="form-group">
+                            <label translate="TASK.FIELD.NAME"></label>
+                            <input type="text" class="form-control" ng-model="newTask.name" ng-placeholder="Name" auto-focus="newTask.inline"
+                                   select-text="newTask.name" ng-disabled="newTask.loading"
+                                   custom-keys enter-pressed="confirmTaskCreation(newTask)">
+                        </div>
+                        <div class="form-group">
+                            <label translate="TASK.FIELD.DESCRIPTION"></label>
+                            <textarea class="form-control" rows="2" id="add-comment-input" ng-model="newTask.description" ng-disabled="newTask.loading"></textarea>
+                        </div>
+                        <div class="pull-right">
+                            <button class="btn btn-xs" ng-click="cancelTaskCreation(); closeInlineTaskCreation($event);" ng-disabled="newTask.loading" translate="GENERAL.ACTION.CANCEL" tabindex="-1"></button>
+                            <button class="btn btn-xs" ng-click="confirmTaskCreation(newTask); closeInlineTaskCreation($event);" ng-disabled="!newTask.name || newTask.name.length == 0 || newTask.loading" translate="TASK.ACTION.CREATE-CONFIRM" ></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="help-entry" ng-click="createProcess(); $event.stopPropagation();" ng-show="!newTask.inline" ng-class="{'active': newProcessInstance.inline }">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    <span translate="TASK.MESSAGE.NO-TASKS-CREATE-PROCESS"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header" ng-show="model.task && !noSuchTask">
+        <div class=" pull-right">
+        
+            <button class="btn" ng-if="!model.task.formKey && !model.task.endDate && (model.task.assignee.id == account.id || (model.task.initiatorCanCompleteTask && model.task.processInstanceStartUserId == ('' + account.id)))"
+                    translate="TASK.ACTION.COMPLETE"
+                    ng-disabled="model.completeButtonDisabled || model.uploadInProgress"
+                    ng-click="completeTask()"></button>
+
+            <button class="btn" ng-if="(model.task.assignee == null || model.task.assignee == undefined) &&
+                (model.task.memberOfCandidateGroup || model.task.memberOfCandidateUsers ||
+                (model.task.initiatorCanCompleteTask && model.task.processInstanceStartUserId == ('' + account.id)))"
+                    translate="TASK.ACTION.CLAIM"
+                    ng-disabled="model.claimButtonDisabled || model.uploadInProgress"
+                    ng-click="claimTask()"></button>
+
+            <activiti-form form-definition="model.formData"
+                   task-id="model.task.id"
+                   ng-if="model.task.assignee && model.formData"
+                   outcomes-only="true"
+                   disable-form="(model.task.assignee.id != account.id && (!model.task.initiatorCanCompleteTask || model.task.processInstanceStartUserId != ('' + account.id)))"
+                   hide-buttons="model.task.endDate">
+            </activiti-form>
+
+        </div>
+        <h2>{{model.task.name && model.task.name || ('TASK.MESSAGE.NO-NAME' | translate)}}</h2>
+
+        <div class="detail">
+            <span class="label">{{'TASK.FIELD.ASSIGNEE' | translate}}: </span>
+            <a ng-if="!model.task.endDate && model.task.assignee && (model.task.assignee.id == account.id || (model.task.initiatorCanCompleteTask && model.task.processInstanceStartUserId == ('' + account.id)))" class="subtle-select"
+                    select-people-popover
+                    exclude-user-id="model.task.assignee.id"
+                    on-people-selected="setTaskAssignee(user)"
+                    on-email-selected="setTaskAssigneeByEmail(email)"
+                    close-on-select="true"
+                    placement="bottom-left">
+                <span ng-if="model.task.assignee" user-name="model.task.assignee"></span>
+            </a>
+            <span ng-if="model.task.assignee && (model.task.endDate || (model.task.assignee.id != account.id && (!model.task.initiatorCanCompleteTask || model.task.processInstanceStartUserId != ('' + account.id))))" user-name="model.task.assignee"></span>
+            <span ng-if="(model.task.endDate && !model.task.assignee) || !model.task.assignee" translate="TASK.MESSAGE.NO-ASSIGNEE"></span>
+            <span class="label">{{'TASK.FIELD.DUE' | translate}}: </span>
+            <a ng-if="!model.task.endDate && !model.taskUpdating" id="due-date-select" placement="bottom-left" class="subtle-select" bs-datepicker template="{{appResourceRoot}}views/templates/due-date-picker-template.html" ng-model="model.task.dueDate" trigger="click" autoclose="true" placement="bottom-center" title="{{model.task.dueDate | dateformat}}">
+                {{model.task.dueDate && (model.task.dueDate | dateformat:'fromNow') || ('TASK.MESSAGE.NO-DUEDATE' | translate)}}
+            </a>
+            <span ng-if="model.task.endDate">{{model.task.dueDate && (model.task.dueDate | dateformat:'fromNow') || ('TASK.MESSAGE.NO-DUEDATE' | translate)}}</span>
+            <span ng-if="model.task.processInstanceId && model.processInstance" class="label">{{'TASK.FIELD.PROCESS-INSTANCE' | translate}}: </span>
+            <span ng-if="model.processInstance">
+                <a ng-click="openProcessInstance(model.processInstance.id)">{{model.processInstance.name && model.processInstance.name || model.processInstance.processDefinitionName}}</a>
+            </span>
+
+            <span class="label" ng-if="model.task.endDate != null && model.task.endDate != undefined">{{'TASK.FIELD.ENDED' | translate}}: </span>
+            <span ng-if="model.task.endDate != null && model.task.endDate != undefined">{{model.task.endDate | dateformat:'fromNow'}}</span>
+
+            <span class="label" ng-if="model.task.endDate != null && model.task.endDate != undefined">{{'TASK.FIELD.DURATION' | translate}}: </span>
+            <span ng-if="model.task.endDate != null && model.task.endDate != undefined">{{model.task.duration | duration}}</span>
+        </div>
+
+        <div class="summary-header clearfix" ng-class="{'pack': model.involvementSummary.count == 0 &amp;&amp; model.contentSummary.count == 0}">
+            <div class="clearfix" ng-click="showPeople()">
+                <div class="title title-lg" ng-show="model.involvementSummary.count == 0">
+                    {{'TASK.TITLE.NO-PEOPLE-INVOLVED' | translate}}
+                </div>
+
+                <div user-picture="user" ng-repeat="user in model.involvementSummary.items"></div>
+
+                <div class="user-picture more" ng-show="model.involvementSummary.overflow">
+                    <span>...</span>
+                </div>
+            </div>
+            <div class="clearfix" ng-click="showContent()">
+                <div class="title title-lg" ng-show="model.contentSummary.count == 0">
+                    {{'TASK.TITLE.NO-CONTENT-ITEMS' | translate}}
+                </div>
+
+                <div class="related-content" ng-repeat="content in model.contentSummary.items" title="{{content.name}}">
+                    <i class="icon icon-{{content.simpleType}}"></i>
+                </div>
+
+                <div class="related-content more" ng-show="model.contentSummary.overflow">
+                    <span>...</span>
+                </div>
+            </div>
+            <div class="clearfix" ng-click="showComments()">
+                <div class="title title-lg" ng-show="model.commentSummary.count == 1">
+                   1 {{'TASK.TITLE.COMMENT-COUNT' | translate}}
+                </div>
+                <div class="title title-lg" ng-show="model.commentSummary.count > 1">
+                    <span>{{model.commentSummary.count}}</span> {{'TASK.TITLE.COMMENTS-COUNT' | translate}}
+                </div>
+                <div class="title title-lg" ng-show="model.commentSummary.count == 0">
+                    {{'TASK.TITLE.NO-COMMENTS' | translate}}
+                </div>
+            </div>
+            <div ng-show="model.task.formKey" ng-click="toggleForm()">
+                <button class="btn btn-xs">
+                    <span ng-show="activeTab == 'form'">
+                        {{'TASK.TITLE.SHOW-DETAILS' | translate}}
+                    </span>
+                    <span ng-show="activeTab == 'details'">
+                        {{'TASK.TITLE.SHOW-FORM' | translate}}
+                    </span>
+
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content clearfix scroll-container" auto-height offset="6" ng-if="model.task && !noSuchTask" ng-class="{'split': activeTab == 'details' && hasDetails() == true}">
+
+        <!-- FORM -->
+        <div class="section" ng-show="activeTab == 'form' && model.formData != null && model.formData != undefined">
+
+            <!-- unclaimed task-->
+            <div ng-if="model.task.assignee == null || model.task.assignee == undefined">
+                <activiti-form form-definition="model.formData" task-id="model.task.id"
+                               ng-if="model.formData"
+                               disable-form="model.task.assignee == null || model.task.assignee == undefined"
+                               hide-buttons="model.task.endDate"
+                               disable-form-text="'TASK.MESSAGE.CLAIM-TASK-FIRST'">
+                </activiti-form>
+            </div>
+
+            <!-- task with assignee -->
+            <div ng-if="model.task.assignee && model.task.assignee.id != undefined && model.task.assignee.id != null && model.task.assignee.id != undefined">
+                <activiti-form form-definition="model.formData" task-id="model.task.id"
+                               ng-if="model.formData"
+                               hide-buttons="model.task.endDate || (model.task.assignee.id != account.id && (!model.task.initiatorCanCompleteTask || model.task.processInstanceStartUserId != ('' + account.id)))">
+                </activiti-form>
+            </div>
+        </div>
+
+        <!-- COMMENTS -->
+        <div class="split-right" ng-show="activeTab == 'details' && hasDetails() == true && !model.commentSummary.loading">
+            <div class="section">
+                <h3 close-on-select="false" ng-click="toggleCreateComment()" title="{{'TASK.ACTION.ADD-COMMENT' | translate}}">{{'TASK.SECTION.COMMENTS' | translate}}
+                    <span class="action" ng-if="!model.task.endDate">
+                        <a>+</a>
+                    </span>
+                </h3>
+
+                <div class="form-group clearfix box"
+                     ng-show="model.commentSummary.addComment"
+                     auto-focus="model.commentSummary">
+                    <textarea class="form-control focusable" rows="2" ng-disabled="model.commentSummary.loading"
+                              ng-model="model.commentSummary.newComment" id="add-comment-inline"
+                              placeholder="{{'TASK.MESSAGE.NEW-COMMENT-PLACEHOLDER' | translate}}">
+                    </textarea>
+
+                    <div class="pull-right">
+                        <button tabindex="-1" class="btn btn-xs" translate="GENERAL.ACTION.CANCEL"
+                                ng-click="toggleCreateComment()" ng-disabled="model.commentSummary.loading"></button>
+                        <button class="btn btn-xs" translate="TASK.ACTION.ADD-COMMENT-CONFIRM"
+                                ng-disabled="!model.commentSummary.newComment || model.commentSummary.loading || model.commentSummary.newComment.length > 4000"
+                                ng-click="confirmNewComment()"></button>
+                    </div>
+                </div>
+                <ul class="simple-list comments selectable" ng-show="model.comments.data.length">
+                    <li ng-repeat="comment in model.comments.data">
+                        <div class="title">
+                            <div user-picture="comment.createdBy"></div>
+                            {{'TASK.MESSAGE.COMMENT-HEADER' | translate:comment}}
+                        </div>
+                        <div class="message">{{comment.message}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- INVOLVED PEOPLE AND CONTENT-->
+        <div class="split-left" ng-show="activeTab == 'details' && hasDetails() == true">
+            <div class="section pack" ng-if="!$scope.model.commentSummary.loading">
+                <h3 close-on-select="false" select-people-popover on-people-selected="involvePerson(user)" on-email-selected="involvePersonByEmail(email)"
+                    placement="bottom-left" exclude-task-id="model.task.id" title="{{'TASK.ACTION.INVOLVE' | translate}}">
+
+                    {{'TASK.SECTION.PEOPLE' | translate}}
+                        <span class="action" ng-if="!model.task.endDate">
+                            <a>+</a>
+                        </span>
+                </h3>
+
+                <ul class="simple-list selectable">
+                    <li ng-repeat="person in model.task.involvedPeople" class="clearfix">
+
+                        <div user-picture="person"></div> <span
+                            user-name="person"></span>
+
+                        <div class="actions" ng-if="!model.task.endDate"><a><i class="icon icon-remove"
+                                                   ng-click="removeInvolvedUser(person)"></i></a></div>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="section pack" toggle-dragover="dragOverContent(over)" ng-if="!$scope.model.contentSummary.loading">
+                <h3 class="toggle-content-select" ng-click="toggleCreateContent()" title="{{'TASK.ACTION.ADD-CONTENT' | translate}}">{{'TASK.TITLE.CONTENT' | translate}}
+                    <span class="action" ng-if="!model.task.endDate"><a>+</a></span>
+                </h3>
+
+                <div external-content on-content-upload="onContentUploaded(content)" on-upload-in-progress="uploadInProgress(status)" task-id="model.task.id" ng-if="model.contentSummary.addContent"></div>
+
+                <div class="form-group">
+                    <ul id="related-content-list" class="clearfix simple-list selectable content-list">
+                        <li ng-repeat="content in model.content.data" title="{{content.name}}">
+                            <document-preview content="content" editable="true" read-only="false" on-delete="onContentDeleted(content)"></document-preview>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+         </div>
+
+        <div class="help-container" ng-if="activeTab == 'details' && model.task != null && model.task != undefined && hasDetails() == false && !model.involvementSummary.loading && !model.contentSummary.loading && !model.commentSummary.loading">
+            <div>
+                <div class="help-text">
+
+                    <div class="description" ng-if="!model.task.endDate && model.task.assignee != null && model.task.assignee != undefined">
+                        {{'TASK.HELP.DESCRIPTION' | translate}}
+                    </div>
+
+                    <div class="description" ng-if="model.task.endDate">
+                        {{'TASK.HELP.COMPLETED-DESCRIPTION' | translate}}
+                    </div>
+
+                    <div class="description" ng-if="!model.task.endDate && (model.task.assignee == null || model.task.assignee == undefined)">
+                        {{'TASK.HELP.DESCRIPTION-WITH-CLAIM' | translate}}
+                    </div>
+
+
+                    <div class="help-entry" ng-if="!model.task.endDate">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span select-people-popover
+                              close-on-select="true"
+                              on-people-selected="involvePerson(user)"
+                              on-email-selected="involvePersonByEmail(email)"
+                              placement="bottom"
+                              exclude-task-id="model.task.id"
+                              title="{{'TASK.ACTION.INVOLVE' | translate}}">{{'TASK.HELP.ADD-PEOPLE' | translate}}</span>
+                    </div>
+                    <div ng-if="!model.task.endDate">
+                        <div class="help-entry"
+                             ng-click="toggleCreateContent()"
+                             ng-if="model.contentSummary.addContent == null || model.contentSummary.addContent == undefined || model.contentSummary.addContent == false">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                            <span>{{'TASK.HELP.ADD-CONTENT' | translate}}</span>
+                        </div>
+
+                        <div external-content on-content-upload="onContentUploaded(content)" on-upload-in-progress="uploadInProgress(status)" task-id="model.task.id" ng-if="model.contentSummary.addContent"></div>
+                    </div>
+
+                    <div ng-if="!model.task.endDate">
+                        <div ng-click="toggleCreateComment()" class="help-entry"
+                             ng-if="model.commentSummary.addComment == null || model.commentSummary.addComment == undefined || model.commentSummary.addComment == false">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span>{{'TASK.HELP.ADD-COMMENT' | translate}}</span>
+                        </div>
+
+                        <div class="form-group clearfix box"
+                             ng-if="model.commentSummary.addComment">
+                            <textarea class="form-control focusable" rows="2" ng-disabled="model.commentSummary.loading"
+                                      ng-model="model.commentSummary.newComment" id="add-comment-popup"
+                                      placeholder="{{'TASK.MESSAGE.NEW-COMMENT-PLACEHOLDER' | translate}}"
+                                    auto-focus>
+                            </textarea>
+
+                            <div class="pull-right">
+                                <button tabindex="-1" class="btn btn-xs" translate="GENERAL.ACTION.CANCEL"
+                                        ng-click="toggleCreateComment()" ng-disabled="model.commentSummary.loading"></button>
+                                <button class="btn btn-xs" translate="TASK.ACTION.ADD-COMMENT-CONFIRM"
+                                        ng-disabled="!model.commentSummary.newComment || model.commentSummary.loading || model.commentSummary.newComment.length > 4000"
+                                        ng-click="confirmNewComment()"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

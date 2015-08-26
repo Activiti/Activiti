@@ -1,0 +1,63 @@
+<div class="main-list" id="main-list" ng-if="!missingAppdefinition">
+
+   <div class="form-group">
+      <div class="container-fluid">
+         <h1>Start Workflow</h1>
+         <div class="subtle" translate="PROCESS.MESSAGE.SELECT-DEFINITION"></div>
+         <div>
+            <div class="form-group">
+               <div class="no-results" ng-show="popupModel.userResults.length == 0">
+                  <span>{{'PROCESS.MESSAGE.NO-PROCESS-DEFINITIONS' | translate}}</span>
+               </div>
+
+               <ul class="simple-list selection">
+                  <li ng-if="definition.name != 'Hire' && definition.name != 'Todo'" ng-class="{'active' : processDefinition.id == definition.id}" ng-repeat="definition in processDefinitions" ng-click="selectProcessDefinition(definition)">
+                     {{definition.name}}
+                  </li>
+               </ul>
+            </div>
+         </div>
+
+      </div>
+   </div>
+</div>
+
+<div class="main-content-wrapper" ng-show="!processDefinition.id && !missingAppdefinition">
+   <div class="help-container" auto-height ng-cloak>
+      <div>
+         <div class="help-text wide">
+            <div class="description" ng-show="processDefinitions.length == 0">
+               {{'PROCESS.MESSAGE.NO-PROCESS-DEFINITIONS' | translate}}
+            </div>
+            <div class="description" ng-show="processDefinitions.length > 0">
+               {{'PROCESS.MESSAGE.NO-PROCESS-DEFINITION-SELECTED-HELP' | translate}}
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="main-content-wrapper" ng-show="processDefinition.id && !missingAppdefinition">
+   <div class="main-content">
+      <div class="header">
+         <div class="form-group">
+            <h2>
+                <edit-in-place value="processName"></edit-in-place>
+            </h2>
+         </div>
+         <span>{{processDefinition.description}}</span>
+      </div>
+
+      <activiti-form process-name="processName" process-definition-id="processDefinitionWithStartFormId" form-definition="startFormDefinition" ng-show="processDefinitionWithStartFormId"></activiti-form>
+
+      <div class="form-wrapper container-fluid">
+         <div class="pull-right" ng-show="processDefinitions.length && !processDefinitionWithStartFormId">
+            <button class="btn btn-default" ng-disabled="processName.length == 0"
+                    ng-click="createProcessInstance()">{{'FORM.DEFAULT-OUTCOME.START-PROCESS' | translate}}</button>
+         </div>
+      </div>
+
+   </div>
+</div>
+
+<div ng-if="missingAppdefinition" ng-include="appResourceRoot + 'views/integration-mode-error.html'"></div>

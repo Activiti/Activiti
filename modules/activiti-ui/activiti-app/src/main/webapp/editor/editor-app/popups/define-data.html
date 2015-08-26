@@ -1,0 +1,45 @@
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+    <h3>Data definition</h3>
+</div>
+<div class="kis-modal-body">
+
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="kis-listener-grid" ui-grid="gridOptions"></div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <a href="#" class="btn btn-icon btn-large" rel="tooltip" data-title="{{'ACTION.MOVE.UP' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="moveDataItemUp()"><i class="icon-arrow-up"></i></a>
+                    <a href="#" class="btn btn-icon btn-large" rel="tooltip" data-title="{{'ACTION.MOVE.DOWN' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="moveDataItemDown()"><i class="icon-arrow-down"></i></a>
+                </div>
+                <div class="btn-group">
+                    <a href="#" class="btn btn-icon btn-large" rel="tooltip" data-title="{{'ACTION.ADD' | translate:property}}" data-placement="bottom" data-original-title="" title="" ng-click="addNewDataItem()"><i class="icon-plus"></i></a>
+                    <a href="#" class="btn btn-icon btn-large" rel="tooltip" data-title="{{'ACTION.REMOVE' | translate:property}}" data-placement="bottom" data-original-title="" title="" ng-click="removeDataItem()"><i class="icon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="span6">
+            <div ng-show="selectedDataItems.length > 0">
+
+                <table>
+                    <tr>
+                        <td class="form-property-label">Name</td>
+                        <td><input type="text" ng-model="selectedDataItems[0].name" placeholder="Fill-in a name"></td>
+                    </tr>
+                    <tr>
+                        <td class="form-property-label">Value</td>
+                        <td><input type="text" ng-model="selectedDataItems[0].value" placeholder="Fill-in a value"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div ng-show="selectedDataItems.length == 0" class="muted no-property-selected">No data item selected</div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button ng-click="cancel()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+    <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+</div>

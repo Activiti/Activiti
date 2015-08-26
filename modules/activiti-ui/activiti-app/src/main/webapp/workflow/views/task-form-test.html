@@ -1,0 +1,28 @@
+
+<div>
+    This is just for testing :
+    <div>
+        {{model.form}}
+    </div>
+</div>
+<br/><br/>
+
+<div>Rendered by Angular</div>
+<div style="padding: 20px;">
+    <activiti-form form-data="model.form"></activiti-form>
+</div>
+
+<br/><br/>
+
+<div>The Jquery directly rendered one:</div>
+<div id="someId"></div>
+
+<br/><br/>
+
+<div>Rendered by the Angular wrapper of the jquery code</div>
+<activiti-form2 task-id="model.taskId" form-model="model.form2"></activiti-form2>
+
+<br/>
+<div>The model managed by jquery/angular:</div>
+<div>{{model.form2}}</div>
+

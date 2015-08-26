@@ -1,0 +1,45 @@
+<div class="modal" ng-controller="ModelsIncludedPopupCtrl">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+                <h2>
+                    {{'APP.POPUP.INCLUDE-MODELS-TITLE' | translate}}
+                </h2>
+            </div>
+
+
+            <div class="modal-body modal-body-with-overflow">
+                <div class="item-wrapper clearfix">
+                    <div class="item fadein" ng-repeat="model in popup.models.data">
+                        <div class="item-box" ng-style="{'background-image': 'url(\'' + config.contextRoot + '/app/rest/models/' + model.id + '/thumbnail\')'}" ng-click="selectModel(model); $event.stopPropagation();">
+                            <span class="badge">v{{model.version}}</span>
+                            <div class="btn-group pull-right">
+                                <button type="button" ng-show="isModelSelected(model)" class="btn btn-default" title="{{'PROCESS.ACTION.DETAILS' | translate}}">
+                                    <i class="glyphicon glyphicon-plus-sign"></i>
+                                </button>
+                            </div>
+                            <div class="details">
+                                <h3 class="truncate" title="{{model.name}}">
+                                    {{model.name}}
+                                </h3>
+                                <div class="basic-details truncate">
+                                    <span><i class="glyphicon glyphicon-user"></i> {{model.createdByFullName}}</span> <span title="{{model.lastUpdated | dateformat:'LLLL'}}"><i class="glyphicon glyphicon-pencil"></i> {{model.lastUpdated | dateformat}}</span>
+                                </div>
+                                <p>{{model.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default" ng-click="close()" ng-disabled="popup.loading">
+                        {{'GENERAL.ACTION.CLOSE' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

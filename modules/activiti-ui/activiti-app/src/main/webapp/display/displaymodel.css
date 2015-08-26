@@ -1,0 +1,24 @@
+div[class*='ui-tooltip-kisbpm-'] {
+    background-color: #ffffff;
+    border-color: #c5c5c5;
+    color: #4a4a4a;
+    font-family: Verdana;
+    font-size: 12px;
+}
+
+div[class*='ui-tooltip-kisbpm-'] .qtip-content {
+  color: #4a4a4a;
+  background-color: #ffffff;
+  font-family: Verdana;
+  font-size: 12px;
+}
+
+.ui-tooltip-kisbpm-bpmn .qtip-titlebar {
+  color: #FFFFFF;
+  font-size: 12px;
+  background: #2B414F;
+}
+
+.ui-tooltip-kisbpm-bpmn .qtip-tip {
+  background-color: #2B414F;
+}

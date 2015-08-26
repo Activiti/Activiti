@@ -1,0 +1,80 @@
+<div class="detail-group clearfix">
+    <div class="form-group clearfix">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label>{{'PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.TYPE' | translate}}</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="btn-group span">
+                    <button class="selection" ng-options="option as (option.title | translate) for option in recipientOptions"
+                            bs-select ng-model="recipientOption" activiti-fix-dropdown-bug>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group clearfix" ng-if="recipientOption.id == 'user'">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label>{{'PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.USER' | translate}}</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="people-select">
+                    <button class="selection" select-people-popover="recipient.user" popover-title="PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.POPOVER.USER-TITLE" placement="bottom"
+                            select-people-form-fields="recipientFormFields"
+                            on-people-selected="setRecipient(user,userField)"
+                            on-email-selected="recipientObject.user = {email: email}">
+                        <i class="icon icon-user" ng-show="recipientObject.user || recipientObject.userField"></i>
+                        <span ng-if="!(recipientObject.user || recipientObject.userField)">{{'PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.SELECT-USER' | translate}}</span>
+                        <span ng-if="recipientObject.user && recipientObject.user.id" user-name="recipientObject.user"></span>
+                        <span ng-if="recipientObject.userField">{{recipientObject.userField.name}}</span>
+                        <span ng-if="recipientObject.userField" class="field-type"> - {{recipientObject.userField.id}}</span>
+                        <i class="icon icon-caret-down"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group clearfix" ng-if="recipientOption.id == 'users'">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <label>{{'PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.USERS' | translate}}</label>
+            </div>
+            <div class="col-xs-9">
+                <div class="clearfix selection narrow">
+                    <ul class="simple-list" ng-show="recipientObject.users.length || recipientObject.userFields.length">
+                        <li ng-repeat="user in recipientObject.users">
+                            <i class="icon icon-user"></i>
+                            <span user-name="user" />
+                            <div class="actions">
+                                <a ng-click="removeUser(user)"><i class="icon icon-remove"></i></a>
+                            </div>
+                        </li>
+                        <li ng-repeat="userField in recipientObject.userFields">
+                            <i class="icon icon-user"></i>
+                            <span>{{userField.name}}</span>
+                            <span class="field-type"> - {{userField.id}}</span>
+                            <div class="actions">
+                                <a ng-click="removeUserField(userField)"><i class="icon icon-remove"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="pull-right">
+                        <button class="btn btn-xs" select-people-popover
+                                popover-title="PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.POPOVER.USERS-TITLE"
+                                placement="bottom-right"
+                                select-people-form-fields="recipientFormFields"
+                                on-people-selected="addRecipient(user, userField)"
+                                on-email-selected="addUserByEmail(email)">
+                            {{'PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.ADD' | translate}}
+                        </button>
+                    </div>
+                    <div class="no-results" ng-if="!(recipientObject.users && recipientObject.users.length) && !(recipientObject.userFields && recipientObject.userFields.length)">
+                        {{'PROCESS-BUILDER.EMAIL-STEP.RECIPIENT.USERS-NONE' | translate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

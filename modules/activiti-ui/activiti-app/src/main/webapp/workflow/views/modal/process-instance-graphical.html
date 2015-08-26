@@ -1,0 +1,27 @@
+
+<div class="modal" ng-controller="ShowProcessDiagramCtrl">
+    <div class="modal-dialog wide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="pull-right">
+                    <button type="button" class="close" ng-click="$hide()">&times;</button>
+                </div>
+                <h3 class="modal-title">{{'PROCESS.TITLE.DIAGRAM' | translate}}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="popup-wrapper clearfix">
+                    <div class="model-preview-wrapper">
+                        <div id="bpmnModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sm btn-default" ng-click="$hide()">
+                        {{'GENERAL.ACTION.CLOSE' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

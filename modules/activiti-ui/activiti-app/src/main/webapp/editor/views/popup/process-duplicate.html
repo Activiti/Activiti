@@ -1,0 +1,34 @@
+
+<div class="modal" ng-controller="DuplicateProcessModelCrtl">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header"><h2>{{'PROCESS.POPUP.DUPLICATE-TITLE' | translate}}</h2></div>
+			<div class="modal-body">
+				<p>{{'PROCESS.POPUP.DUPLICATE-DESCRIPTION' | translate}}</p>
+				<div class="form-group">
+				    <label for="newProcessName">{{'PROCESS.NAME' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control"
+			               id="newProcessName" ng-model="model.process.name" ui-keypress="{13:'ok()'}" auto-focus editor-input-check>
+				</div>
+				<div class="form-group">
+				    <label for="newProcessDescription">{{'PROCESS.DESCRIPTION' | translate}}</label>
+					<textarea ng-disabled="model.loading" class="form-control" id="newProcessDescription" rows="5" ng-model="model.process.description"></textarea>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="pull-right">
+					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading">
+						{{'GENERAL.ACTION.CANCEL' | translate}}
+					</button>
+					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.process.name">
+						{{'PROCESS.ACTION.DUPLICATE-CONFIRM' | translate}}
+					</button>
+				</div>
+				<div class="loading pull-right" ng-show="model.loading">
+					<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,42 @@
+<!--[if IE 9]>
+<div class="dropzoneIE9 selectionIE9" ng-if="!folderSelect">
+
+    <div loading="model.uploading"></div>
+    <div class="error" ng-if="errorMessage">
+        {{errorMessage}}
+    </div>
+
+    <div class="clearfix">
+        <div ng-if="!linkOnly" class="select-file">
+            <button class="btn btn-xs" ngf-select="" ngf-change="onFileSelect($files, true)">{{'CONTENT.MESSAGE.SELECT' | translate}}</button>
+        </div>
+    </div>
+</div>
+<![endif]-->
+<!--[if gt IE 9]> <!-- -->
+<div class="dropzone selection" ngf-drop ngf-change="onFileSelect($files, false)"
+     ngf-drop-available="dropSupported=true"
+     ngf-drag-over-class="dragover" ng-class="{'uploading': model.uploading}" ng-if="!folderSelect">
+
+    <div loading="model.uploading"></div>
+    <div class="error" ng-if="errorMessage">
+        {{errorMessage}}
+    </div>
+
+    <input type="file" ngf-select="" ngf-change="onFileSelect($files)" ng-disabled="model.uploading" ng-if="!linkOnly">
+
+    <div class="clearfix">
+        <div class="message" ng-if="!linkOnly">
+            {{'CONTENT.MESSAGE.DRAGOVER' | translate}}
+        </div>
+        <div class="select-file" ng-if="!linkOnly">{{'CONTENT.MESSAGE.DROP' | translate}}
+            <button class="btn btn-xs">{{'CONTENT.MESSAGE.SELECT' | translate}}</button>
+        </div>
+    </div>
+</div>
+<div ng-if="folderSelect">
+    <button class="btn btn-xs" ng-click="selectFolder($event)">
+        {{'COMMON.SELECT-FOLDER' | translate}}
+    </button>
+</div>
+<!-- <![endif]-->

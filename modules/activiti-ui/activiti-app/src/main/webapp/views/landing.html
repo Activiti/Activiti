@@ -1,0 +1,33 @@
+
+<div id={{app.id}} class="app-wrapper" ng-repeat="app in model.apps">
+    <div class="app {{app.theme}}">
+        <a href="{{app.fixedUrl}}">
+            <div class="app-content">
+                <h3>{{app.titleKey && (app.titleKey | translate) || app.name}}</h3>
+
+                <p>{{app.descriptionKey && (app.descriptionKey | translate) || app.description}}</p>
+            </div>
+            <div class="backdrop">
+                <i class="{{app.icon}}"></i>
+            </div>
+            <div class="logo">
+                <i class="{{app.icon}}"></i>
+            </div>
+            <div class="actions" ng-if="app.deletable" ng-click="$event.preventDefault();" bs-dropdown="appActions" placement="bottom-right">
+                <i class="icon icon-caret-down"></i>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="app-wrapper">
+    <div class="app create-app">
+        <a ng-click="addAppDefinition()">
+            <div class="fixed">Add a new app</div>
+            <div class="app-content">
+                <h3>
+                    +
+                </h3>
+            </div>
+        </a>
+    </div>
+</div>

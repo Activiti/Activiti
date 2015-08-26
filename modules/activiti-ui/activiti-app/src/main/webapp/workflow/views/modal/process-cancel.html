@@ -1,0 +1,28 @@
+
+<div class="modal" ng-controller="CancelProcessCtrl">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 ng-if="!finalDelete">{{'PROCESS.POPUP.CANCEL-TITLE' | translate}}</h2>
+				<h2 ng-if="finalDelete">{{'PROCESS.POPUP.DELETE-TITLE' | translate}}</h2>
+			</div>
+			<div class="modal-body">
+				<p ng-if="!finalDelete">{{'PROCESS.POPUP.CANCEL-DESCRIPTION' | translate:model.processInstance}}</p>
+				<p ng-if="finalDelete">{{'PROCESS.POPUP.DELETE-DESCRIPTION' | translate:model.processInstance}}</p>
+			</div>
+			<div class="modal-footer">
+				<div class="pull-right">
+					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading">
+						{{'GENERAL.ACTION.CANCEL' | translate}}
+					</button>
+					<button type="button" class="btn btn-sm btn-danger" ng-click="ok()" ng-disabled="popup.loading">
+						<span>{{'GENERAL.ACTION.CONFIRM' | translate}}</span>
+					</button>
+				</div>
+				<div class="loading pull-right" ng-show="popup.loading">
+					<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

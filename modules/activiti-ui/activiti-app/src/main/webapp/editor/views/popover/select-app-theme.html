@@ -1,0 +1,25 @@
+<div class="popover medium" click-anywhere="$hide()" ignore="toggle-theme-select">
+    <div class="arrow"></div>
+    <div class="popover-header">
+        <span class="title">{{'APP.TITLE.SELECT-THEME' | translate}}</span>
+
+        <div class="actions">
+            <a ng-click="$hide()">
+                {{'GENERAL.ACTION.CLOSE' | translate}}</a>
+        </div>
+    </div>
+	<div class="popover-wrapper">
+    	<div class="grid wide">
+    		<div class="item" ng-repeat="theme in availableThemes" ng-class="{'active': theme == currentAppDefinition.definition.theme}" ng-click="selectTheme(theme); $hide();">
+    			<div class="app preview thumb {{theme}}">
+    				<div class="backdrop">
+    					<i class="glyphicon glyphicon-briefcase"></i>
+    				</div>
+    				<div class="logo">
+    					<i class="glyphicon glyphicon-briefcase"></i>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+	</div>
+</div>

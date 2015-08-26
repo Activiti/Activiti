@@ -1,0 +1,20 @@
+<div class="popover" click-anywhere="$hide()" ignore="toggle-history">
+    <div class="arrow"></div>
+    <div class="popover-header">
+        <span class="title">{{title && (title | translate) || ('GENERAL.TITLE.HISTORY' | translate)}}</span>
+
+        <div class="actions">
+            <a ng-click="$hide()" ng-show="!newTask.loading">
+                {{'GENERAL.ACTION.CLOSE' | translate}}</a>
+        </div>
+    </div>
+
+    <div class="popover-wrapper">
+    	<table class="history" >
+   			<tr ng-class="{'current' : version.version == model.form.version}" ng-repeat="version in model.versions.data" ng-click="showVersion(version); $event.stopPropagation();">
+   				<td><a class="version">{{version.version}}</a></td>
+   				<td><a class="detail"title="{{version.lastUpdated | dateformat:'LLLL'}}">{{version.createdByFullName}} - {{version.lastUpdated | dateformat}}</a>
+   			</td></tr>
+   		</table>
+    </div>
+</div>

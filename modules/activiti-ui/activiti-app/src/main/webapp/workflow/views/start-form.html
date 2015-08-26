@@ -1,0 +1,31 @@
+<div class="main-content" ng-controller="StartFormController">
+
+    <div class="header" ng-show="model.processInstance">
+        
+        <h2> {{model.processInstance.name && model.processInstance.name ||
+            model.processInstance.processDefinitionName}}</h2>
+
+        <div class="detail">
+            <span class="label" ng-show="model.processInstance.startedBy">{{'PROCESS.FIELD.STARTED-BY' | translate}}: </span>
+            <span user-name="model.processInstance.startedBy" ng-show="model.processInstance.startedBy"></span>
+            <span class="label">{{'PROCESS.FIELD.STARTED' | translate}}: </span>
+            <span title="{{model.processInstance.started | dateformat}}">{{model.processInstance.started | dateformat:'fromNow'}}</span>
+            <span class="label" ng-show="model.processInstance.ended">{{'PROCESS.FIELD.ENDED' | translate}}: </span>
+            <span ng-show="model.processInstance.ended" title="{{model.processInstance.ended | dateformat}}">{{model.processInstance.ended | dateformat:'fromNow'}}</span>
+            <span ng-if="model.processInstance.id" class="label">{{'TASK.FIELD.PROCESS-INSTANCE' | translate}}: </span>
+            <span ng-if="model.processInstance.id">
+                <a ng-click="openProcessInstance()">{{model.processInstance.name && model.processInstance.name || model.processInstance.processDefinitionName}}</a>
+            </span>
+        </div>
+    </div>
+
+    <div class="content clearfix" auto-height offset="6" ng-if="model.processInstance && model.formData">
+        <!-- FORM -->
+        <div class="section">
+            <activiti-form form-definition="model.formData"
+                           hide-buttons="true">
+            </activiti-form>
+        </div>
+
+    </div>
+</div>

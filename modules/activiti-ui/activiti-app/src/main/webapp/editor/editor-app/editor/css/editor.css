@@ -1,0 +1,208 @@
+/**
+ * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+body, html {
+    font-family: tahoma,arial,helvetica,sans-serif;
+    font-size: 12px;
+}
+
+/*********
+ * SVG Style
+ */
+
+text,
+text * {
+    cursor:default;
+    -webkit-user-select: none;
+}
+
+/*********
+ * HEADER SECTION
+ *
+ */
+
+#oryx_canvas_htmlContainer {
+    
+}
+
+.ORYX_Editor {
+    background: white;
+    border: none;
+    margin:-5px;
+    margin-top:0px;
+    width:1200px;
+    height:600px;
+}
+
+.icon-large {
+	width:18px !important;
+}
+
+#oryxcanvas {
+	width:1200px;
+	height:600px;
+}
+
+/** Resizer for the Canvas **/
+.canvas_resize_indicator_area {
+	
+	margin		:auto;
+	display		:block;
+	height		:30px;
+	left		:20%;
+	position	:absolute;
+	text-align	:center;
+	top			:0;
+	width		:60%;
+	
+}
+
+.canvas_resize_indicator {
+	
+	width		: 15px;
+	height		: 15px;	
+	position	: absolute;
+	display		: block;
+	margin		: auto;
+	opacity		: 0.6;
+}
+
+.canvas_resize_indicator:hover {
+	
+	opacity		: 1.0;
+}
+/** End Resizer **/
+
+.Oryx_down {
+	
+}
+
+.Oryx_button img {
+	width:16px;
+	height:16px;
+	top:0px;
+	left:0px;
+	line-height: 16px;
+}
+
+.Oryx_Right .Oryx_button,
+.Oryx_Left .Oryx_button,
+.Oryx_Top .Oryx_button,
+.Oryx_Bottom .Oryx_button {
+	opacity: 0.5;
+}
+
+.Oryx_button.x-opacity-0 {
+	opacity: 0;
+	display:none;
+}
+
+.Oryx_button.x-opacity-10 {
+	opacity: 0.1;
+}
+
+.Oryx_button.x-opacity-20 {
+	opacity: 0.2;
+}
+
+.Oryx_button.x-opacity-50 {
+	opacity: 0.5;
+}
+
+.Oryx_Right:hover .Oryx_button,
+.Oryx_Left:hover .Oryx_button,
+.Oryx_Top:hover .Oryx_button,
+.Oryx_Bottom:hover .Oryx_button {
+	opacity: 0.7;
+	display:block;
+}
+
+
+.Oryx_button img {
+	top:0px;
+}
+
+.Oryx_Left img {
+	top:0px;
+}
+
+.Oryx_button {
+	width:24px;
+	height:24px;
+	padding:2px;
+	position:absolute;
+	background-color: #ffffff;
+	background-color: rgba(255,255,255,0.7);
+	cursor: pointer;
+}
+
+.Oryx_button_with_caption {
+	width:inherit;
+	height:16px;
+	padding:4px;
+	position:absolute;
+}
+
+/*** Resizer ***/
+
+.resizer_southeast,
+.resizer_northwest {
+	width:12px; 
+	height:12px; 
+	position:relative;
+	background-color: transparent;
+	background-repeat:no-repeat;
+}
+
+/*** Selection Frame ***/
+
+.Oryx_SelectionFrame{
+	position:absolute;
+	border:1px dotted gray;
+	background:none;
+}
+
+.LoadingIndicator {
+    background-image: url('../../images/loading.gif');
+}
+
+.Oryx_hover, .Oryx_button:hover {
+    background-color: #999999;
+    background-color: rgba(193, 229, 238, 0.7);
+    opacity: 1 !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.ValidateButton {
+    width:24px;
+    height:24px;
+    padding:2px;
+    position:absolute;
+    cursor: pointer;
+}
+
+.ValidateButton:hover {
+    background-color: #999999;
+    background-color: rgba(193, 229, 238, 0.7);
+    opacity: 1 !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.resizer_southeast {
+    background-image:url(../../images/se-handle-dark.gif);
+    cursor: se-resize;
+    background-position: 4px 4px;
+}
+
+.resizer_northwest {
+    background-image:url(../../images/nw-handle-dark.gif);
+    cursor: nw-resize;
+    background-position: -2px -2px;
+}
