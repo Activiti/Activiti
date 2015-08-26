@@ -102,8 +102,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    */
   public void leave(ActivityExecution execution) {
 
+    boolean zeroNrOfInstances = false;
     if (resolveNrOfInstances(execution) == 0) {
       // Empty collection, just leave.
+      zeroNrOfInstances = true;
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       super.leave(execution);
     }
@@ -114,6 +116,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
     
     callActivityEndListeners(execution);
+    
+    if (zeroNrOfInstances) {
+      return;
+    }
 
     if (execution.getParent() != null) { // will be null in case of empty collection
       setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
