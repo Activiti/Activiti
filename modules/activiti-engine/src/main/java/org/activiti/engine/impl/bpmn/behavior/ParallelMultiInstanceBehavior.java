@@ -104,6 +104,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     if (resolveNrOfInstances(execution) == 0) {
     	// Empty collection, just leave.
     	super.leave(execution);
+    	return;
     }
     
     int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());

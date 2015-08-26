@@ -65,6 +65,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     setExecution(executionEntity);
     setActivity(execution.getActivity());
     this.processInstanceId = executionEntity.getProcessInstanceId();
+    this.processDefinitionId = executionEntity.getProcessDefinitionId();
   }
   
   // processing /////////////////////////////

@@ -3,7 +3,9 @@
   <process id="parallelUserTaskMi" name="My process" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <userTask id="theTask">
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${messages}" activiti:elementVariable="msg"></multiInstanceLoopCharacteristics>
+    	<multiInstanceLoopCharacteristics isSequential="false">
+            <loopCardinality>0</loopCardinality>
+        </multiInstanceLoopCharacteristics>
     </userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="theTask"></sequenceFlow>
     <endEvent id="endevent1" name="End"></endEvent>

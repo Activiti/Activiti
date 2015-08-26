@@ -1203,13 +1203,21 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testEmptyCollectionOnParallelUserTask() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 	  	Map<String, Object> vars = new HashMap<String, Object>();
 	    vars.put("messages", Collections.EMPTY_LIST);
-	    runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
+	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
 	    
-	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).finished().count());
   	}
+  }
+  
+  @Deployment
+  public void testZeroLoopCardinalityOnParallelUserTask() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelUserTaskMi");
+      assertEquals(1L, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).finished().count());
+    }
   }
   
   @Deployment
