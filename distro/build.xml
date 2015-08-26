@@ -38,6 +38,10 @@
 			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
 			<arg line="-Pdistro${nodocs.profile} clean install -Dmaven.test.skip=true" />
 		</exec>
+		<exec executable="${mvn.executable}" dir="../modules/activiti-ui/activiti-app" failonerror="true">
+			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
+			<arg line="clean install" />
+		</exec>
 	</target>
 
 	<target name="copy.static.resources">
@@ -66,6 +70,12 @@
 		   	<fileset dir="../modules/activiti-process-validation/target">
 		        <include name="activiti-process-validation-*.jar" />
 		   	</fileset>
+			<fileset dir="../modules/activiti5-compatibility/target">
+		        <include name="activiti5-compatibility-*.jar" />
+		   	</fileset>
+			<fileset dir="../modules/activiti5-engine/target">
+		        <include name="activiti5-engine-*.jar" />
+		   	</fileset>
 			<fileset dir="../modules/activiti-bpmn-layout/target">
 				<include name="activiti-bpmn-layout-*.jar" />
 			</fileset>
@@ -75,23 +85,11 @@
 			<fileset dir="../modules/activiti-json-converter/target">
 				<include name="activiti-json-converter-*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-simple-workflow/target">
-				<include name="activiti-simple-workflow-*.jar" />
-			</fileset>
 			<fileset dir="../modules/activiti-ldap/target">
 				<include name="activiti-ldap*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-explorer/target">
-				<include name="activiti-explorer-*.jar" />
-			</fileset>
 			<fileset dir="../modules/activiti-common-rest/target">
 				<include name="activiti-common-rest-*.jar" />
-			</fileset>
-			<fileset dir="../modules/activiti-modeler/target">
-				<include name="activiti-modeler-*.jar" />
-			</fileset>
-			<fileset dir="../modules/activiti-diagram-rest/target">
-				<include name="activiti-diagram-rest-*.jar" />
 			</fileset>
 			<fileset dir="../modules/activiti-rest/target">
 				<include name="activiti-rest-*.jar" />
@@ -107,6 +105,48 @@
 			</fileset>
 			<fileset dir="../modules/activiti-mule/target">
 				<include name="activiti-mule-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-actuator/target">
+				<include name="activiti-spring-boot-starter-actuator-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-basic/target">
+				<include name="activiti-spring-boot-starter-basic-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-integration/target">
+				<include name="activiti-spring-boot-starter-integration-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-jpa/target">
+				<include name="activiti-spring-boot-starter-jpa-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-rest-api/target">
+				<include name="activiti-spring-boot-starter-rest-api-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-security/target">
+				<include name="activiti-spring-boot-starter-security-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/activiti-app-data/target">
+				<include name="activiti-app-data-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/activiti-app-logic/target">
+				<include name="activiti-app-logic-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/activiti-app-model/target">
+				<include name="activiti-app-model-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/activiti-app-rest/target">
+				<include name="activiti-app-rest-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/activiti-cipher/target">
+				<include name="activiti-cipher-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/content-storage-api/target">
+				<include name="content-storage-api-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/content-storage-fs/target">
+				<include name="content-storage-fs-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-ui/editor-image-generator/target">
+				<include name="editor-image-generator-*.jar" />
 			</fileset>
 			<fileset dir="../modules/activiti-osgi/target">
 				<include name="activiti-osgi-*.jar" />
@@ -124,14 +164,14 @@
 	<target name="copy.webapps">
 		<mkdir dir="${target.distro.root}/wars" />
 		<copy todir="${target.distro.root}/wars">
-			<fileset dir="../modules/activiti-webapp-explorer2/target">
-				<include name="activiti-webapp-explorer*.war" />
+			<fileset dir="../modules/activiti-ui/activiti-app/target">
+				<include name="activiti-app.war" />
 			</fileset>
 			<fileset dir="../modules/activiti-webapp-rest2/target">
 				<include name="activiti-webapp-rest*.war" />
 			</fileset>
 		</copy>
-		<move file="${target.distro.root}/wars/activiti-webapp-explorer2-${activiti.version}.war" tofile="${target.distro.root}/wars/activiti-explorer.war"/>
+		<move file="${target.distro.root}/wars/activiti-app.war" tofile="${target.distro.root}/wars/activiti-app.war"/>
 		<move file="${target.distro.root}/wars/activiti-webapp-rest2-${activiti.version}.war" tofile="${target.distro.root}/wars/activiti-rest.war"/>
 	</target>
 

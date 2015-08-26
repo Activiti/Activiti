@@ -265,6 +265,16 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti5-engine</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti5-compatibility</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-jmx</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -735,15 +745,19 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti5-engine</module>
+        <module>modules/activiti5-compatibility</module>
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
         <module>modules/activiti-camel</module>
+        <module>modules/activiti-ui</module>
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
         <module>modules/activiti-crystalball</module>
+        <module>modules/activiti-ui/activiti-app</module>
       </modules>
       <build>
         <plugins>
@@ -875,17 +889,18 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti5-engine</module>
         <module>modules/activiti5-compatibility</module>
-        <!--  <module>modules/activiti-spring-boot</module> -->
+        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
-        <!-- <module>modules/activiti-camel</module> -->
+        <module>modules/activiti-camel</module>
         <module>modules/activiti-mule</module>
-        <!-- <module>modules/activiti-cdi</module> -->
+        <module>modules/activiti-ui</module>
+        <module>modules/activiti-cdi</module>
         <module>modules/activiti-ldap</module>
-        <!-- <module>modules/activiti-crystalball</module> -->
+        <module>modules/activiti-crystalball</module>
         <module>modules/activiti-jmx</module>
       </modules>
     </profile>
