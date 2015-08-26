@@ -526,6 +526,14 @@ public class DbSqlSession implements Session {
     }
     classCache.remove(persistentObjectId);
   }
+  
+  public <T> Collection<CachedObject> findInCacheAsCachedObjects(Class<T> entityClass) {
+    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+    if (classCache != null) {
+      return classCache.values();
+    }
+    return null;
+  }
 
   @SuppressWarnings("unchecked")
   public <T> List<T> findInCache(Class<T> entityClass) {
@@ -757,7 +765,7 @@ public class DbSqlSession implements Session {
       for (CachedObject cachedObject : classCache.values()) {
 
         PersistentObject persistentObject = cachedObject.getPersistentObject();
-        if (!isPersistentObjectDeleted(persistentObject)) {
+        if (!isPersistentObjectToBeDeleted(persistentObject)) {
           Object originalState = cachedObject.getPersistentObjectState();
           if (persistentObject.getPersistentState() != null && !persistentObject.getPersistentState().equals(originalState)) {
             updatedObjects.add(persistentObject);
@@ -772,7 +780,7 @@ public class DbSqlSession implements Session {
     return updatedObjects;
   }
 
-  public boolean isPersistentObjectDeleted(PersistentObject persistentObject) {
+  public boolean isPersistentObjectToBeDeleted(PersistentObject persistentObject) {
     for (DeleteOperation deleteOperation : deleteOperations) {
       if (deleteOperation.sameIdentity(persistentObject)) {
         return true;

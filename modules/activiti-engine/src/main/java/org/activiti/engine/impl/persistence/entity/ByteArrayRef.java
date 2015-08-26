@@ -61,7 +61,7 @@ public final class ByteArrayRef implements Serializable {
   private void setBytes(byte[] bytes) {
     if (id == null) {
       if (bytes != null) {
-        entity = ByteArrayEntity.createAndInsert(name, bytes);
+        entity = Context.getCommandContext().getByteArrayEntityManager().createAndInsert(name, bytes);
         id = entity.getId();
       }
     } else {

@@ -42,7 +42,7 @@ public class SetUserInfoCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    commandContext.getIdentityInfoEntityManager().setUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
+    commandContext.getIdentityInfoEntityManager().updateUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
     return null;
   }
 }

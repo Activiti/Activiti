@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -77,17 +75,6 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
     }
 
     return persistentState;
-  }
-
-  public void insert() {
-    Context.getCommandContext().getDbSqlSession().insert(this);
-
-    Context.getCommandContext().getHistoryManager().recordIdentityLinkCreated(this);
-
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
-    }
   }
 
   public boolean isUser() {

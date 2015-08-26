@@ -14,19 +14,12 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.event.EventHandler;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 
 /**
  * @author Joram Barrez
@@ -52,82 +45,8 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   // runtime state /////////////////////////////
   protected ExecutionEntity execution;
 
-  // ///////////////////////////////////////////
-
   public EventSubscriptionEntity() {
     this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-  }
-
-  // processing /////////////////////////////
-
-  public void eventReceived(Object payload, boolean processASync) {
-    if (processASync) {
-      scheduleEventAsync(payload);
-    } else {
-      processEventSync(payload);
-    }
-  }
-
-  protected void processEventSync(Object payload) {
-    EventHandler eventHandler = Context.getProcessEngineConfiguration().getEventHandler(eventType);
-    if (eventHandler == null) {
-      throw new ActivitiException("Could not find eventhandler for event of type '" + eventType + "'.");
-    }
-    eventHandler.handleEvent(this, payload, Context.getCommandContext());
-  }
-
-  protected void scheduleEventAsync(Object payload) {
-
-    final CommandContext commandContext = Context.getCommandContext();
-
-    MessageEntity message = new MessageEntity();
-    message.setJobHandlerType(ProcessEventJobHandler.TYPE);
-    message.setJobHandlerConfiguration(id);
-    message.setTenantId(getTenantId());
-
-    GregorianCalendar expireCal = new GregorianCalendar();
-    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
-    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
-    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
-    message.setLockExpirationTime(expireCal.getTime());
-
-    // TODO: support payload
-    // if(payload != null) {
-    // message.setEventPayload(payload);
-    // }
-
-    commandContext.getJobEntityManager().send(message);
-  }
-
-  // persistence behavior /////////////////////
-
-  public void delete() {
-    Context.getCommandContext().getEventSubscriptionEntityManager().deleteEventSubscription(this);
-    removeFromExecution();
-  }
-
-  public void insert() {
-    Context.getCommandContext().getEventSubscriptionEntityManager().insert(this);
-    addToExecution();
-  }
-
-  // referential integrity -> ExecutionEntity
-  // ////////////////////////////////////
-
-  protected void addToExecution() {
-    // add reference in execution
-    ExecutionEntity execution = getExecution();
-    if (execution != null) {
-      execution.addEventSubscription(this);
-    }
-  }
-
-  protected void removeFromExecution() {
-    // remove reference in execution
-    ExecutionEntity execution = getExecution();
-    if (execution != null) {
-      execution.removeEventSubscription(this);
-    }
   }
 
   public Object getPersistentState() {
@@ -138,21 +57,6 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   }
 
   // getters & setters ////////////////////////////
-
-  public ExecutionEntity getExecution() {
-    if (execution == null && executionId != null) {
-      execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-    }
-    return execution;
-  }
-
-  public void setExecution(ExecutionEntity execution) {
-    this.execution = execution;
-    if (execution != null) {
-      this.executionId = execution.getId();
-      this.processInstanceId = execution.getProcessInstanceId();
-    }
-  }
 
   public String getId() {
     return id;
@@ -196,6 +100,21 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
+  }
+  
+  public ExecutionEntity getExecution() {
+    if (execution == null && executionId != null) {
+      execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+    }
+    return execution;
+  }
+
+  public void setExecution(ExecutionEntity execution) {
+    this.execution = execution;
+    if (execution != null) {
+      this.executionId = execution.getId();
+      this.processInstanceId = execution.getProcessInstanceId();
+    }
   }
 
   public String getProcessInstanceId() {

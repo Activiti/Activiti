@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.runtime;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -64,7 +65,7 @@ public class ProcessInstanceUpdateBusinessKeyTest extends PluggableActivitiTestC
     private static final long serialVersionUID = 1L;
 
     public void notify(DelegateExecution delegateExecution) {
-      ((ExecutionEntity) delegateExecution).updateProcessBusinessKey("bzKey");
+      Context.getCommandContext().getExecutionEntityManager().updateProcessInstanceBusinessKey((ExecutionEntity)delegateExecution, "bzKey");
     }
   }
 

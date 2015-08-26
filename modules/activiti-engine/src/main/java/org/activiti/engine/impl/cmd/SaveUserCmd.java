@@ -35,10 +35,10 @@ public class SaveUserCmd implements Command<Void>, Serializable {
     if (user == null) {
       throw new ActivitiIllegalArgumentException("user is null");
     }
-    if (commandContext.getUserIdentityManager().isNewUser(user)) {
-      commandContext.getUserIdentityManager().insertUser(user);
+    if (commandContext.getUserEntityManager().isNewUser(user)) {
+      commandContext.getUserEntityManager().insertUser(user);
     } else {
-      commandContext.getUserIdentityManager().updateUser(user);
+      commandContext.getUserEntityManager().updateUser(user);
     }
 
     return null;

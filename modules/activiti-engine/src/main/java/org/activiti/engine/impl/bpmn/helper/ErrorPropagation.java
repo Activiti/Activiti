@@ -89,7 +89,7 @@ public class ErrorPropagation {
                 ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
                 
                 // Delete
-                executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity, 
+                executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(), 
                     execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null,
                     "ERROR_EVENT " + errorCode, false, false, false);
                 

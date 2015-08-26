@@ -9,6 +9,7 @@ import java.util.List;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.DbSqlSession.CachedObject;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
@@ -16,11 +17,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 /**
  * @author Joram Barrez
  */
-public class AbstractEntityManager<Entity extends PersistentObject> extends AbstractManager {
-
-  /*
-   * CRUD operations
-   */
+public class AbstractEntityManager<Entity extends PersistentObject> extends AbstractManager implements EntityManager<Entity> {
 
   public Class<Entity> getManagedPersistentObject() {
     // Cannot make abstract cause some managers don't use db persistence (eg ldap)
@@ -30,19 +27,38 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
   public List<Class<? extends Entity>> getManagedPersistentObjectSubClasses() {
     return null;
   }
+  
+  /*
+   * CRUD operations
+   */
 
+  @Override
   public void insert(Entity entity) {
     insert(entity, true);
   }
 
+  @Override
   public void insert(Entity entity, boolean fireCreateEvent) {
     getDbSqlSession().insert(entity);
 
     if (fireCreateEvent && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, entity));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, entity));
     }
   }
+  
+  @Override
+  public void delete(String id) {
+    Entity entity = getEntity(id);
+    delete(entity);
+  }
+  
+  @Override
+  public void delete(Entity entity) {
+    delete(entity, true);
+  }
 
+  @Override
   public void delete(Entity entity, boolean fireDeleteEvent) {
     getDbSqlSession().delete(entity);
 
@@ -52,35 +68,27 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     }
   }
 
-  public void delete(Entity entity) {
-    delete(entity, true);
-  }
-
-  /**
-   * Will check the cache first before doing the db query.
-   */
-  public Entity get(String persistentObjectId) {
-    return getDbSqlSession().selectById(getManagedPersistentObject(), persistentObjectId);
-  }
-
   /*
    * Advanced operations
    */
 
-  public Entity getEntity(Class<? extends Entity> clazz, String entityId, CachedEntityMatcher<Entity> cachedEntityMatcher) {
+  @Override
+  public Entity getEntity(String entityId) {
 
     // Cache
     for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
-      if (cachedEntityMatcher.isRetained(cachedEntity)) {
+      if (entityId.equals(cachedEntity.getId())) {
         return cachedEntity;
       }
     }
 
     // Database
-    return getDbSqlSession().selectById(clazz, entityId);
+    return getDbSqlSession().selectById(getManagedPersistentObject(), entityId);
   }
   
-  public Entity getEntity(Class<? extends Entity> clazz, String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher) {
+  @Override
+  @SuppressWarnings("unchecked")
+  public Entity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher) {
     // Cache
     for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
       if (cachedEntityMatcher.isRetained(cachedEntity)) {
@@ -92,43 +100,48 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     return (Entity) getDbSqlSession().selectOne(selectQuery, parameter);
   }
 
-  /**
-   * Main way to query a list of objects: 1. Fetches all data from the database using the provided query and parameters 2. Checks the internal entity cache and replaces any found entity with this
-   * newer (potentially changed) entity.
-   */
+  @Override
   @SuppressWarnings("unchecked")
   public List<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition) {
-    HashMap<String, Entity> entityMap = new HashMap<String, Entity>();
 
-    // Database
+    // Database entities
     List<Entity> entitiesFromDb = getDbSqlSession().selectList(dbQueryName, parameter);
+    HashMap<String, Entity> entityMap = new HashMap<String, Entity>(entitiesFromDb.size());
     for (Entity entity : entitiesFromDb) {
       entityMap.put(entity.getId(), entity);
     }
 
-    // Cache
-    for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
-      if (retainEntityCondition.isRetained(cachedEntity)) {
-        entityMap.put(cachedEntity.getId(), cachedEntity);
+    // Cache entities
+    Collection<CachedObject> cachedObjects = getDbSqlSession().findInCacheAsCachedObjects(getManagedPersistentObject());
+    if (cachedObjects != null) {
+      for (CachedObject cachedObject : cachedObjects) {
+        Entity cachedEntity = (Entity) cachedObject.getPersistentObject();
+        if (retainEntityCondition.isRetained(cachedEntity)) {
+          entityMap.put(cachedEntity.getId(), cachedEntity); // will overwite db version with newer version
+        }
       }
     }
     
     if (getManagedPersistentObjectSubClasses() != null) {
       for (Class<? extends Entity> entitySubClass : getManagedPersistentObjectSubClasses()) {
-        for (Entity cachedEntity : getDbSqlSession().findInCache(entitySubClass)) {
-          if (retainEntityCondition.isRetained(cachedEntity)) {
-            entityMap.put(cachedEntity.getId(), cachedEntity);
+        Collection<CachedObject> subclassCachedObjects = getDbSqlSession().findInCacheAsCachedObjects(entitySubClass);
+        if (subclassCachedObjects != null) {
+          for (CachedObject subclassCachedObject : subclassCachedObjects) {
+            Entity cachedSubclassEntity = (Entity) subclassCachedObject.getPersistentObject();
+            if (retainEntityCondition.isRetained(cachedSubclassEntity)) {
+              entityMap.put(cachedSubclassEntity.getId(), cachedSubclassEntity); // will overwite db version with newer version
+            }
           }
         }
       }
     }
 
-    // Remove any entries which are already deleted
+    // Remove entries which are already deleted
     Collection<Entity> result = entityMap.values();
     if (result.size() > 0) {
       Iterator<Entity> resultIterator = result.iterator();
       while (resultIterator.hasNext()) {
-        if (getDbSqlSession().isPersistentObjectDeleted(resultIterator.next())) {
+        if (getDbSqlSession().isPersistentObjectToBeDeleted(resultIterator.next())) {
           resultIterator.remove();
         }
       }
@@ -136,5 +149,5 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
 
     return new ArrayList<Entity>(result);
   }
-
+  
 }

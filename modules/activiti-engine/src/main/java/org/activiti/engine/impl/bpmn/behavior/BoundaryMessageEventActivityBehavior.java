@@ -54,7 +54,7 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
 
-          eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+          eventSubscriptionEntityManager.delete(eventSubscription);
         }
       }
     }

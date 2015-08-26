@@ -63,7 +63,7 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
       return null;
     }
 
-    processInstance.updateProcessBusinessKey(businessKey);
+    executionManager.updateProcessInstanceBusinessKey(processInstance, businessKey);
 
     return null;
   }

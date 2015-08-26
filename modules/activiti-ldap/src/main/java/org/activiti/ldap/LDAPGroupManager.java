@@ -30,17 +30,18 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 
 /**
- * Implementation of the {@link GroupIdentityManager} interface specifically for LDAP.
+ * Implementation of the {@link GroupEntityManager} interface specifically for LDAP.
  * 
  * Note that only a few methods are actually implemented, as many of the operations (save, update, etc.) are done on the LDAP system directly.
  * 
  * @author Joram Barrez
  */
-public class LDAPGroupManager extends AbstractManager implements GroupIdentityManager {
+public class LDAPGroupManager extends AbstractManager implements GroupEntityManager {
 
   protected LDAPConfigurator ldapConfigurator;
   protected LDAPGroupCache ldapGroupCache;
@@ -173,6 +174,46 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
     searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
     searchControls.setTimeLimit(ldapConfigurator.getSearchTimeLimit());
     return searchControls;
+  }
+
+  @Override
+  public void insert(GroupEntity entity) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+
+  @Override
+  public void insert(GroupEntity entity, boolean fireCreateEvent) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+
+  @Override
+  public GroupEntity getEntity(String entityId) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+
+  @Override
+  public GroupEntity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<GroupEntity> cachedEntityMatcher) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+
+  @Override
+  public List<GroupEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<GroupEntity> retainEntityCondition) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+ 
+  @Override
+  public void delete(String id) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+
+  @Override
+  public void delete(GroupEntity entity, boolean fireDeleteEvent) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
+  }
+
+  @Override
+  public void delete(GroupEntity entity) {
+    throw new ActivitiException("Unsupported by LDAP group manager");
   }
 
 }

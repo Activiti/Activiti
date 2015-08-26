@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
@@ -19,66 +18,28 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.history.HistoryLevel;
 
 /**
- * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
  */
-public class HistoricVariableInstanceEntityManager extends AbstractEntityManager<HistoricVariableInstanceEntity> {
+public interface HistoricVariableInstanceEntityManager extends EntityManager<HistoricVariableInstanceEntity> {
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId) {
-    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+  HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance);
 
-      // Delete entries in DB
-      List<HistoricVariableInstanceEntity> historicProcessVariables = (List) getDbSqlSession().createHistoricVariableInstanceQuery().processInstanceId(historicProcessInstanceId)
-          .excludeVariableInitialization().list();
-      for (HistoricVariableInstanceEntity historicProcessVariable : historicProcessVariables) {
-        historicProcessVariable.delete();
-      }
+  void copyVariableValue(HistoricVariableInstanceEntity historicVariableInstance, VariableInstanceEntity variableInstance);
 
-      // Delete entries in Cache
-      List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
-      for (HistoricVariableInstanceEntity historicProcessVariable : cachedHistoricVariableInstances) {
-        // Make sure we only delete the right ones (as we cannot make a
-        // proper query in the cache)
-        if (historicProcessInstanceId.equals(historicProcessVariable.getProcessInstanceId())) {
-          historicProcessVariable.delete();
-        }
-      }
-    }
-  }
+  List<HistoricVariableInstance> findHistoricVariableInstancesByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery, Page page);
 
-  public long findHistoricVariableInstanceCountByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByQueryCriteria", historicProcessVariableQuery);
-  }
+  HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId);
 
-  @SuppressWarnings("unchecked")
-  public List<HistoricVariableInstance> findHistoricVariableInstancesByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricVariableInstanceByQueryCriteria", historicProcessVariableQuery, page);
-  }
+  long findHistoricVariableInstanceCountByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery);
 
-  public HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId) {
-    return (HistoricVariableInstanceEntity) getDbSqlSession().selectOne("selectHistoricVariableInstanceByVariableInstanceId", variableInstanceId);
-  }
+  List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-  public void deleteHistoricVariableInstancesByTaskId(String taskId) {
-    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      List<HistoricVariableInstance> historicProcessVariables = new HistoricVariableInstanceQueryImpl().taskId(taskId).list();
+  long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap);
+  
+  void deleteHistoricVariableInstancesByTaskId(String taskId);
+  
+  void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId);
 
-      for (HistoricVariableInstance historicProcessVariable : historicProcessVariables) {
-        ((HistoricVariableInstanceEntity) historicProcessVariable).delete();
-      }
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricVariableInstanceByNativeQuery", parameterMap, firstResult, maxResults);
-  }
-
-  public long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByNativeQuery", parameterMap);
-  }
 }

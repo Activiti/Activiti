@@ -171,9 +171,10 @@ public class ProcessInstanceUtil {
     }
 
     // Create the first execution that will visit all the process definition elements
-    ExecutionEntity execution = processInstance.createExecution();
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().createChildExecution(processInstance); 
     execution.setCurrentFlowElement(initialFlowElement);
     
+    // Event sub process handling
     for (FlowElement flowElement : process.getFlowElements()) {
       if (flowElement instanceof EventSubProcess) {
         EventSubProcess eventSubProcess = (EventSubProcess) flowElement;
@@ -188,7 +189,7 @@ public class ProcessInstanceUtil {
                 if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
                   messageEventDefinition.setMessageRef(bpmnModel.getMessage(messageEventDefinition.getMessageRef()).getName());
                 }
-                ExecutionEntity messageExecution = processInstance.createExecution();
+                ExecutionEntity messageExecution = commandContext.getExecutionEntityManager().createChildExecution(processInstance); 
                 messageExecution.setCurrentFlowElement(startEvent);
                 messageExecution.setEventScope(true);
                 commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, messageExecution);

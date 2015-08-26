@@ -111,7 +111,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     // Create the first execution that will visit all the process definition elements
-    ExecutionEntity subProcessInitialExecution = subProcessInstance.createExecution();
+    ExecutionEntity subProcessInitialExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(subProcessInstance); 
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
     Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);

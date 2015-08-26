@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
@@ -28,12 +27,6 @@ public class MessageEntity extends JobEntity {
 
   private String repeat = null;
   
-  @Override
-  public void execute(CommandContext commandContext) {
-    super.execute(commandContext);
-    delete();
-  }
-
   public String getRepeat() {
     return repeat;
   }

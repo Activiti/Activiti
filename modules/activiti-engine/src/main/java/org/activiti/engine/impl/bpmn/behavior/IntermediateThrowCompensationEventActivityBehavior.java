@@ -80,11 +80,11 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
     }
     
     for (String compensationActivity : rootCompensationActivities) {
-      eventSubscriptions.addAll(eventSubscriptionEntityManager.getCompensateEventSubscriptionsForProcessInstanceId(execution.getProcessInstanceId(), compensationActivity));
+      eventSubscriptions.addAll(eventSubscriptionEntityManager.findCompensateEventSubscriptionsByProcessInstanceIdAndActivityId(execution.getProcessInstanceId(), compensationActivity));
     }
     
     if (subProcessExecution != null) {
-      eventSubscriptions.addAll(eventSubscriptionEntityManager.getCompensateEventSubscriptions(subProcessExecution.getParentId()));
+      eventSubscriptions.addAll(eventSubscriptionEntityManager.findCompensateEventSubscriptionsByExecutionId(subProcessExecution.getParentId()));
     }
     
     if (eventSubscriptions.isEmpty()) {
@@ -93,7 +93,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
       // TODO: implement async (waitForCompletion=false in bpmn)
       ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
       if (subProcessExecution != null) {
-        executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution);
+        executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution, null, false);
       }
       leave(execution);
     }

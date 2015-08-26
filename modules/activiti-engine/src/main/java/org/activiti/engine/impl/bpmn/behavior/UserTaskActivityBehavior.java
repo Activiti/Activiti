@@ -56,7 +56,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(ActivityExecution execution) {
-    TaskEntity task = TaskEntity.createAndInsert(execution);
+    TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
     task.setExecution(execution);
     task.setTaskDefinition(taskDefinition);
 
@@ -147,7 +147,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     Expression skipExpression = taskDefinition.getSkipExpression();
     if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
       CommandContext commandContext = Context.getCommandContext();
-      commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false);
+      commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
       leave(execution);
     }
   }

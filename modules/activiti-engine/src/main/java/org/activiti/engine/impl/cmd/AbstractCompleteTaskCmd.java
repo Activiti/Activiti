@@ -54,7 +54,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     fireEvent(commandContext, taskEntity, TaskListener.EVENTNAME_COMPLETE);
     if (Authentication.getAuthenticatedUserId() != null && taskEntity.getProcessInstanceId() != null) {
       ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getProcessInstanceId());
-      processInstanceEntity.involveUser(Authentication.getAuthenticatedUserId(),IdentityLinkType.PARTICIPANT);
+      commandContext.getIdentityLinkEntityManager().involveUser(processInstanceEntity, Authentication.getAuthenticatedUserId(),IdentityLinkType.PARTICIPANT);
     }
 
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
@@ -66,7 +66,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
       }
     }
 
-    commandContext.getTaskEntityManager().deleteTask(taskEntity, TaskEntity.DELETE_REASON_COMPLETED, false);
+    commandContext.getTaskEntityManager().deleteTask(taskEntity, TaskEntity.DELETE_REASON_COMPLETED, false, false);
 
     // Continue process (if not a standalone task)
     if (taskEntity.getExecutionId() != null) {

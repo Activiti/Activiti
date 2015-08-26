@@ -18,8 +18,8 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
 /**
@@ -42,12 +42,12 @@ public class MessageThrowingEventListener extends BaseDelegateEventListener {
         throw new ActivitiIllegalArgumentException("Cannot throw process-instance scoped message, since the dispatched event is not part of an ongoing process instance");
       }
 
-      CommandContext commandContext = Context.getCommandContext();
-      List<MessageEventSubscriptionEntity> subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findMessageEventSubscriptionsByProcessInstanceAndEventName(
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      List<MessageEventSubscriptionEntity> subscriptionEntities = eventSubscriptionEntityManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(
           event.getProcessInstanceId(), messageName);
       
       for (EventSubscriptionEntity messageEventSubscriptionEntity : subscriptionEntities) {
-        messageEventSubscriptionEntity.eventReceived(null, false);
+        eventSubscriptionEntityManager.eventReceived(messageEventSubscriptionEntity, null, false);
       }
     }
   }

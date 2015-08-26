@@ -52,8 +52,7 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
     return persistentState;
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters //////////////////////////////////////////////////////
 
   public String getActivityId() {
     return activityId;

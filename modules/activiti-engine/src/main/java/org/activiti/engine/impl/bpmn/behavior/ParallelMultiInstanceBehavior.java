@@ -64,7 +64,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      ActivityExecution concurrentExecution = execution.createExecution();
+      ActivityExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
+          .createChildExecution((ExecutionEntity)execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
       concurrentExecution.setConcurrent(true);
@@ -191,7 +192,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
             while (iterator.hasNext()) {
               ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
               if (StringUtils.isNotEmpty(childExecutionEntity.getSuperExecutionId()) && callActivityExecutionIds.contains(childExecutionEntity.getSuperExecutionId())) {
-                executionEntityManager.deleteProcessInstanceExecutionEntity(childExecutionEntity, activity.getId(), "call activity completion condition met", true, false);
+                executionEntityManager.deleteProcessInstanceExecutionEntity(childExecutionEntity.getId(), activity.getId(), "call activity completion condition met", true, false, true);
               }
             }
           }
@@ -237,7 +238,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     }
 
     if (deleteExecution) {
-      executionEntityManager.deleteDataRelatedToExecution(parentExecution);
+      executionEntityManager.deleteDataRelatedToExecution(parentExecution, null, false);
       commandContext.getExecutionEntityManager().delete(parentExecution);
     }
   }

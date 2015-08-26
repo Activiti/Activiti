@@ -10,37 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ResourceEntityManager extends AbstractEntityManager<ResourceEntity> {
+public interface ResourceEntityManager extends EntityManager<ResourceEntity> {
 
-  public void insertResource(ResourceEntity resource) {
-    getDbSqlSession().insert(resource);
-  }
-
-  public void deleteResourcesByDeploymentId(String deploymentId) {
-    getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId);
-  }
-
-  public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("resourceName", resourceName);
-    return (ResourceEntity) getDbSqlSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
-    return getDbSqlSession().selectList("selectResourcesByDeploymentId", deploymentId);
-  }
+  List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
+  
+  ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
+  
+  void deleteResourcesByDeploymentId(String deploymentId);
 
 }

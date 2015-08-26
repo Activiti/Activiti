@@ -32,21 +32,22 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
-import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of the {@link UserIdentityManager} interface specifically for LDAP.
+ * Implementation of the {@link UserEntityManager} interface specifically for LDAP.
  * 
  * Note that only a few methods are actually implemented, as many of the operations 
  * (save, update, etc.) are done on the LDAP system directly. 
  * 
  * @author Joram Barrez
  */
-public class LDAPUserManager extends AbstractManager implements UserIdentityManager {
+public class LDAPUserManager extends AbstractManager implements UserEntityManager {
 
   private static Logger logger = LoggerFactory.getLogger(LDAPUserManager.class);
 
@@ -109,6 +110,11 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
   @Override
   public void deleteUser(String userId) {
     throw new ActivitiException("LDAP user manager doesn't support deleting a user");
+  }
+  
+  @Override
+  public void deletePicture(User user) {
+    throw new ActivitiException("LDAP user manager doesn't support deleting a user picture");
   }
 
   @Override
@@ -309,6 +315,46 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
     searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
     searchControls.setTimeLimit(ldapConfigurator.getSearchTimeLimit());
     return searchControls;
+  }
+
+  @Override
+  public void insert(UserEntity entity) {
+    throw new ActivitiException("Unsupported by LDAP user manager");    
+  }
+
+  @Override
+  public void insert(UserEntity entity, boolean fireCreateEvent) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
+  }
+
+  @Override
+  public UserEntity getEntity(String entityId) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
+  }
+
+  @Override
+  public UserEntity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
+  }
+
+  @Override
+  public List<UserEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<UserEntity> retainEntityCondition) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
+  }
+
+  @Override
+  public void delete(String id) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
+  }
+
+  @Override
+  public void delete(UserEntity entity) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
+  }
+
+  @Override
+  public void delete(UserEntity entity, boolean fireDeleteEvent) {
+    throw new ActivitiException("Unsupported by LDAP user manager");
   }
 
 }

@@ -41,22 +41,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   private static final long serialVersionUID = 1L;
 
   // The cache used when fetching all variables
-  protected Map<String, VariableInstanceEntity> variableInstances; // needs
-                                                                          // to
-                                                                          // be
-                                                                          // null,
-                                                                          // the
-                                                                          // logic
-                                                                          // depends
-                                                                          // on
-                                                                          // it
-                                                                          // for
-                                                                          // checking
-                                                                          // if
-                                                                          // vars
-                                                                          // were
-                                                                          // already
-                                                                          // fetched
+  protected Map<String, VariableInstanceEntity> variableInstances; // needs to be null, the logic depends on it for checking if vars were already fetched
 
   // The cache is used when fetching/setting specific variables
   protected Map<String, VariableInstanceEntity> usedVariablesCache = new HashMap<String, VariableInstanceEntity>();
@@ -700,7 +685,8 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
     VariableType type = variableTypes.findVariableType(value);
 
-    VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
+    VariableInstanceEntity variableInstance = Context.getCommandContext().getVariableInstanceEntityManager()
+        .createAndInsert(variableName, type, value);
     initializeVariableInstanceBackPointer(variableInstance);
 
     if (variableInstances != null) {

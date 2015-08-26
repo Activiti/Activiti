@@ -34,7 +34,7 @@ public class DeleteGroupCmd implements Command<Void>, Serializable {
     if (groupId == null) {
       throw new ActivitiIllegalArgumentException("groupId is null");
     }
-    commandContext.getGroupIdentityManager().deleteGroup(groupId);
+    commandContext.getGroupEntityManager().deleteGroup(groupId);
 
     return null;
   }

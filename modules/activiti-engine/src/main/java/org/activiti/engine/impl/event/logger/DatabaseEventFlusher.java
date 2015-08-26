@@ -23,7 +23,7 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
     EventLogEntryEntityManager eventLogEntryEntityManager = commandContext.getEventLogEntryEntityManager();
     for (EventLoggerEventHandler eventHandler : eventHandlers) {
       try {
-        eventLogEntryEntityManager.insert(eventHandler.generateEventLogEntry(commandContext));
+        eventLogEntryEntityManager.insert(eventHandler.generateEventLogEntry(commandContext), false);
       } catch (Exception e) {
         logger.warn("Could not create event log", e);
       }

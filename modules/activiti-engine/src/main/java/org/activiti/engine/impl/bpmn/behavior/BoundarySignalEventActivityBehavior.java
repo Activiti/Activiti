@@ -65,7 +65,7 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
 
-          eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+          eventSubscriptionEntityManager.delete(eventSubscription);
         }
       }
     }

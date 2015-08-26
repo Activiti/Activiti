@@ -22,6 +22,7 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -72,7 +73,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getId());
         for (ExecutionEntity childExecution : childExecutions) {
           if (childExecution.getCurrentFlowElement() == null || notToDeleteEvents.contains(childExecution.getCurrentFlowElement().getId()) == false) {
-            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution);
+            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution, null, false);
           }
         }
       }
@@ -153,20 +154,20 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         if (flowNode.getSubProcess() != null && flowNode.getSubProcess() instanceof EventSubProcess) {
           
           ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-          executionEntityManager.deleteChildExecutions((ExecutionEntity) execution);
-          executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution);
+          executionEntityManager.deleteChildExecutions((ExecutionEntity) execution, null, false);
+          executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
           
           // event sub process nested in sub process
           if (flowNode.getSubProcess().getSubProcess() != null) {
-            executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent());
-            executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution.getParent());
+            executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent(), null, false);
+            executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution.getParent(), null, false);
             ActivityExecution parentExecution = execution.getParent().getParent();
             parentExecution.setCurrentFlowElement(flowNode.getSubProcess().getSubProcess());
             agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution);
           
           // event sub process on process root level
           } else {
-            executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent());
+            executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent(), null, false);
             agenda.planEndExecutionOperation(execution.getParent());
           }
           

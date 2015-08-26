@@ -10,17 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class PropertyEntityManager extends AbstractEntityManager<PropertyEntity> {
+public interface PropertyEntityManager extends EntityManager<PropertyEntity> {
 
-  public PropertyEntity findPropertyById(String propertyId) {
-    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
-  }
+  PropertyEntity findPropertyById(String propertyId);
 
 }

@@ -24,8 +24,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  */
 public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 
-  protected long logNumber; // cant use id here, it would clash with
-                            // persistentObject
+  protected long logNumber; // cant use id here, it would clash with persistentObject
   protected String type;
   protected String processDefinitionId;
   protected String processInstanceId;
@@ -43,8 +42,7 @@ public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 
   @Override
   public String getId() {
-    return "event-log-" + logNumber; // To avoid clashed, prefixing it (it
-                                     // shouldn't be used)
+    return "event-log-" + logNumber; // To avoid clashed, prefixing it (it shouldn't be used)
   }
 
   @Override

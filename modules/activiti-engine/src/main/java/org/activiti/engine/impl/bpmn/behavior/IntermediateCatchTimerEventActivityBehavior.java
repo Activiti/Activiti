@@ -53,7 +53,7 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
       jobEntityManager.delete(jobEntity);
     }
     
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
   @Override

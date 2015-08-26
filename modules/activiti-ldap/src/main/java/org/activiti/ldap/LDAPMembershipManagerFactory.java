@@ -15,7 +15,7 @@ package org.activiti.ldap;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.MembershipEntity;
-import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 
 /**
  * {@link SessionFactory} responsible for creating a {@link Session} that manages {@link MembershipEntity}s.
@@ -34,7 +34,7 @@ public class LDAPMembershipManagerFactory implements SessionFactory {
 
   @Override
   public Class<?> getSessionType() {
-    return MembershipIdentityManager.class;
+    return MembershipEntityManager.class;
   }
 
   @Override

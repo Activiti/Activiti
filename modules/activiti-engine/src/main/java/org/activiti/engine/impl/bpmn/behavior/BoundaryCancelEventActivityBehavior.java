@@ -52,14 +52,14 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
     }
     
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-    List<CompensateEventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.getCompensateEventSubscriptions(subProcessExecution.getParentId());
+    List<CompensateEventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findCompensateEventSubscriptionsByExecutionId(subProcessExecution.getParentId());
 
     if (eventSubscriptions.isEmpty()) {
       leave(execution);
     } else {
       // cancel boundary is always sync
       ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
-      executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution);
+      executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution, null, false);
       if (subProcessExecution.getCurrentFlowElement() instanceof Activity) {
         Activity activity = (Activity) subProcessExecution.getCurrentFlowElement();
         if (activity.getLoopCharacteristics() != null) {
@@ -67,7 +67,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
           List<ExecutionEntity> miChildExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(miExecution.getId());
           for (ExecutionEntity miChildExecution : miChildExecutions) {
             if (subProcessExecution.getId().equals(miChildExecution.getId()) == false && activity.getId().equals(miChildExecution.getCurrentActivityId())) {
-              executionEntityManager.deleteExecutionAndRelatedData(miChildExecution);
+              executionEntityManager.deleteExecutionAndRelatedData(miChildExecution, null, false);
             }
           }
         }

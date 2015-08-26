@@ -37,6 +37,6 @@ public class CreateUserCmd implements Command<User>, Serializable {
   }
 
   public User execute(CommandContext commandContext) {
-    return commandContext.getUserIdentityManager().createNewUser(userId);
+    return commandContext.getUserEntityManager().createNewUser(userId);
   }
 }

@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -27,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
+ * @author Joram Barrez
  */
 public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
@@ -57,34 +57,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected VariableInstanceEntity() {
   }
   
-  public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
-    VariableInstanceEntity variableInstance = create(name, type, value);
-
-    Context.getCommandContext().getDbSqlSession().insert(variableInstance);
-
-    return variableInstance;
-  }
-
-  public static VariableInstanceEntity create(String name, VariableType type, Object value) {
-    VariableInstanceEntity variableInstance = new VariableInstanceEntity();
-    variableInstance.name = name;
-    variableInstance.type = type;
-    variableInstance.typeName = type.getTypeName();
-    variableInstance.setValue(value);
-    return variableInstance;
-  }
-
-  public void setExecution(ExecutionEntity execution) {
-    this.executionId = execution.getId();
-    this.processInstanceId = execution.getProcessInstanceId();
-    forceUpdate();
-  }
-
-  public void forceUpdate() {
-    forcedUpdate = true;
-
-  }
-
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     if (longValue != null) {
@@ -107,6 +79,16 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     }
     return persistentState;
   }
+  
+  public void setExecution(ExecutionEntity execution) {
+    this.executionId = execution.getId();
+    this.processInstanceId = execution.getProcessInstanceId();
+    forceUpdate();
+  }
+
+  public void forceUpdate() {
+    forcedUpdate = true;
+  }
 
   public int getRevisionNext() {
     return revision + 1;
@@ -120,9 +102,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     return deleted;
   }
 
-  // lazy initialized relations
-  // ///////////////////////////////////////////////
-
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
@@ -131,8 +110,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     this.executionId = executionId;
   }
 
-  // byte array value
-  // /////////////////////////////////////////////////////////
+  // byte array value ///////////////////////////////////////////////////////////
 
   @Override
   public byte[] getBytes() {
@@ -148,8 +126,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     return byteArrayRef;
   }
 
-  // value
-  // ////////////////////////////////////////////////////////////////////
+  // value //////////////////////////////////////////////////////////////////////
 
   public Object getValue() {
     if (!type.isCachable() || cachedValue == null) {
@@ -164,8 +141,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     cachedValue = value;
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters ////////////////////////////////////////////////////////
 
   public String getId() {
     return id;
@@ -258,8 +234,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     this.cachedValue = cachedValue;
   }
 
-  // misc methods
-  // /////////////////////////////////////////////////////////////
+  // misc methods ///////////////////////////////////////////////////////////////
 
   @Override
   public String toString() {

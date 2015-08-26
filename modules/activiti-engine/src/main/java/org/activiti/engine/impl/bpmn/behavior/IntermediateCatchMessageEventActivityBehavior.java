@@ -46,7 +46,7 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   @Override
   public void cancelEvent(ActivityExecution execution) {
     deleteMessageEventSubScription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
   protected ExecutionEntity deleteMessageEventSubScription(ActivityExecution execution) {
@@ -56,7 +56,7 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
 
-        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+        eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
     return executionEntity;

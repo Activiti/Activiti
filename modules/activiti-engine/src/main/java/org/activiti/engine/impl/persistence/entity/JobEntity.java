@@ -26,8 +26,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Nick Burch
  * @author Dave Syer
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public abstract class JobEntity implements Job, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
@@ -72,60 +71,25 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
 
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected String jobType;
-
-  public void execute(CommandContext commandContext) {
-    ExecutionEntity execution = null;
-    if (executionId != null) {
-      execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
-    }
-
-    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
-    JobHandler jobHandler = jobHandlers.get(jobHandlerType);
-    jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
+  
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("lockOwner", lockOwner);
+    persistentState.put("lockExpirationTime", lockExpirationTime);
+    persistentState.put("retries", retries);
+    persistentState.put("duedate", duedate);
+    persistentState.put("exceptionMessage", exceptionMessage);
+    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
+    return persistentState;
   }
-
-  public void insert() {
-    Context.getCommandContext().getDbSqlSession().insert(this);
-
-    // add link to execution
-    if (executionId != null) {
-      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-      execution.addJob(this);
-
-      // Inherit tenant if (if applicable)
-      if (execution.getTenantId() != null) {
-        setTenantId(execution.getTenantId());
-      }
-    }
-
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
-    }
-  }
-
-  public void delete() {
-    Context.getCommandContext().getDbSqlSession().delete(this);
-
-    // Also delete the job's exception byte array
-    exceptionByteArrayRef.delete();
-
-    // remove link to execution
-    if (executionId != null) {
-      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-      execution.removeJob(this);
-    }
-
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
-    }
-  }
+  
+  // getters and setters ////////////////////////////////////////////////////////
 
   public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
     processDefinitionId = execution.getProcessDefinitionId();
-    execution.addJob(this);
+    execution.getJobs().add(this);
   }
 
   public String getExceptionStacktrace() {
@@ -155,23 +119,9 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     }
   }
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("lockOwner", lockOwner);
-    persistentState.put("lockExpirationTime", lockExpirationTime);
-    persistentState.put("retries", retries);
-    persistentState.put("duedate", duedate);
-    persistentState.put("exceptionMessage", exceptionMessage);
-    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
-    return persistentState;
-  }
-
   public int getRevisionNext() {
     return revision + 1;
   }
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
 
   public String getId() {
     return id;

@@ -32,11 +32,6 @@ public interface ActivityExecution extends DelegateExecution {
   /* Execution management */
 
   /**
-   * creates a new execution. This execution will be the parent of the newly created execution. properties processDefinition, processInstance and activity will be initialized.
-   */
-  ActivityExecution createExecution();
-
-  /**
    * returns the parent of this execution, or null if there no parent.
    */
   ActivityExecution getParent();
@@ -45,11 +40,6 @@ public interface ActivityExecution extends DelegateExecution {
    * returns the list of execution of which this execution the parent of.
    */
   List<? extends ActivityExecution> getExecutions();
-
-  /**
-   * ends this execution.
-   */
-  void end();
 
   /* State management */
 
@@ -98,10 +88,4 @@ public interface ActivityExecution extends DelegateExecution {
    */
   void setScope(boolean isScope);
 
-  /**
-   * Called when an execution is interrupted.
-   * 
-   * Performs destroy scope behavior: all child executions and sub-process instances and other related resources are removed. The execution itself can continue execution.
-   */
-  void destroyScope(String string);
 }

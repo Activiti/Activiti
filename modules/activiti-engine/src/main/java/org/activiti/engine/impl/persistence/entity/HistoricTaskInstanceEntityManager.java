@@ -10,134 +10,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricTaskInstanceEntityManager extends AbstractEntityManager<HistoricTaskInstanceEntity> {
+public interface HistoricTaskInstanceEntityManager extends EntityManager<HistoricTaskInstanceEntity> {
 
-  @SuppressWarnings("unchecked")
-  public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
-    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      List<String> taskInstanceIds = (List<String>) getDbSqlSession().selectList("selectHistoricTaskInstanceIdsByProcessInstanceId", processInstanceId);
-      for (String taskInstanceId : taskInstanceIds) {
-        deleteHistoricTaskInstanceById(taskInstanceId);
-      }
-    }
-  }
+  long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
 
-  public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
-    }
-    return 0;
-  }
+  List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
 
-  @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
-    }
-    return Collections.EMPTY_LIST;
-  }
+  List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
 
-  @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      // paging doesn't work for combining task instances and variables
-      // due to an outer join, so doing it in-memory
-      if (historicTaskInstanceQuery.getFirstResult() < 0 || historicTaskInstanceQuery.getMaxResults() <= 0) {
-        return Collections.EMPTY_LIST;
-      }
+  HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId);
 
-      int firstResult = historicTaskInstanceQuery.getFirstResult();
-      int maxResults = historicTaskInstanceQuery.getMaxResults();
+  List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-      // setting max results, limit to 20000 results for performance
-      // reasons
-      historicTaskInstanceQuery.setMaxResults(20000);
-      historicTaskInstanceQuery.setFirstResult(0);
+  long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap);
+  
+  void deleteHistoricTaskInstanceById(String taskId);
+  
+  void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId);
 
-      List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", historicTaskInstanceQuery,
-          historicTaskInstanceQuery.getFirstResult(), historicTaskInstanceQuery.getMaxResults());
-
-      if (instanceList != null && !instanceList.isEmpty()) {
-        if (firstResult > 0) {
-          if (firstResult <= instanceList.size()) {
-            int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
-            return instanceList.subList(firstResult, toIndex);
-          } else {
-            return Collections.EMPTY_LIST;
-          }
-        } else {
-          int toIndex = Math.min(maxResults, instanceList.size());
-          return instanceList.subList(0, toIndex);
-        }
-      }
-    }
-    return Collections.EMPTY_LIST;
-  }
-
-  public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId) {
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("Invalid historic task id : null");
-    }
-    if (getHistoryManager().isHistoryEnabled()) {
-      return (HistoricTaskInstanceEntity) getDbSqlSession().selectOne("selectHistoricTaskInstance", taskId);
-    }
-    return null;
-  }
-
-  public void deleteHistoricTaskInstanceById(String taskId) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
-      if (historicTaskInstance != null) {
-        
-        CommandContext commandContext = Context.getCommandContext();
-        
-        if (historicTaskInstance.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, historicTaskInstance.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
-          activiti5CompatibilityHandler.deleteHistoricTask(taskId);
-          return;
-        }
-
-        commandContext.getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(taskId);
-
-        commandContext.getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(taskId);
-
-        commandContext.getCommentEntityManager().deleteCommentsByTaskId(taskId);
-
-        commandContext.getAttachmentEntityManager().deleteAttachmentsByTaskId(taskId);
-
-        commandContext.getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(taskId);
-
-        getDbSqlSession().delete(historicTaskInstance);
-      }
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricTaskInstanceByNativeQuery", parameterMap, firstResult, maxResults);
-  }
-
-  public long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByNativeQuery", parameterMap);
-  }
 }

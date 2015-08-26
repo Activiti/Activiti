@@ -28,11 +28,10 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
@@ -677,7 +676,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity.copyAndInsert(variable);
+      Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
     }
   }
 
@@ -691,7 +690,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
     if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
 
-      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);
+      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = Context.getCommandContext().getHistoricDetailEntityManager().copyAndInsertHistoricDetailVariableInstanceUpdateEntity(variable);
 
       if (useActivityId && sourceActivityExecution != null) {
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, true, false);
@@ -716,9 +715,9 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       }
 
       if (historicProcessVariable != null) {
-        historicProcessVariable.copyValue(variable);
+        Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyVariableValue(historicProcessVariable, variable);
       } else {
-        HistoricVariableInstanceEntity.copyAndInsert(variable);
+        Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
       }
     }
   }
@@ -781,7 +780,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManager.class).insert(comment);
+      getSession(CommentEntityManagerImpl.class).insert(comment);
     }
   }
 
@@ -814,7 +813,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManager.class).insert(comment);
+      getSession(CommentEntityManagerImpl.class).insert(comment);
     }
   }
 
@@ -839,7 +838,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
       }
       comment.setMessage(attachmentName);
-      getSession(CommentEntityManager.class).insert(comment);
+      getSession(CommentEntityManagerImpl.class).insert(comment);
     }
   }
 
@@ -853,8 +852,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       for (String propertyId : properties.keySet()) {
         String propertyValue = properties.get(propertyId);
-        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
-        getDbSqlSession().insert(historicFormProperty);
+        Context.getCommandContext().getHistoricDetailEntityManager()
+          .insertHistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
       }
     }
   }
@@ -884,7 +883,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void deleteHistoricIdentityLink(String id) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLink(id);
+      getHistoricIdentityLinkEntityManager().delete(id);
     }
   }
 
@@ -902,7 +901,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       if (processInstance != null) {
         HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
         if (historicProcessInstance != null) {
-          historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
+          historicProcessInstance.setBusinessKey(processInstance.getProcessInstanceBusinessKey());
           getDbSqlSession().update(historicProcessInstance);
         }
       }

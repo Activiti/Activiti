@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -59,47 +58,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   protected HistoricVariableInstanceEntity() {
   }
 
-  public static HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
-    HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity();
-    historicVariableInstance.id = variableInstance.getId();
-    historicVariableInstance.processInstanceId = variableInstance.getProcessInstanceId();
-    historicVariableInstance.executionId = variableInstance.getExecutionId();
-    historicVariableInstance.taskId = variableInstance.getTaskId();
-    historicVariableInstance.revision = variableInstance.getRevision();
-    historicVariableInstance.name = variableInstance.getName();
-    historicVariableInstance.variableType = variableInstance.getType();
-
-    historicVariableInstance.copyValue(variableInstance);
-
-    Date time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    historicVariableInstance.setCreateTime(time);
-    historicVariableInstance.setLastUpdatedTime(time);
-
-    Context.getCommandContext().getDbSqlSession().insert(historicVariableInstance);
-
-    return historicVariableInstance;
-  }
-
-  public void copyValue(VariableInstanceEntity variableInstance) {
-    this.textValue = variableInstance.getTextValue();
-    this.textValue2 = variableInstance.getTextValue2();
-    this.doubleValue = variableInstance.getDoubleValue();
-    this.longValue = variableInstance.getLongValue();
-
-    this.variableType = variableInstance.getType();
-    if (variableInstance.getByteArrayRef() != null) {
-      setBytes(variableInstance.getBytes());
-    }
-
-    this.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-  }
-
-  public void delete() {
-    Context.getCommandContext().getDbSqlSession().delete(this);
-
-    byteArrayRef.delete();
-  }
-
   public Object getPersistentState() {
     HashMap<String, Object> persistentState = new HashMap<String, Object>();
 
@@ -126,8 +84,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     return cachedValue;
   }
 
-  // byte array value
-  // /////////////////////////////////////////////////////////
+  // byte array value /////////////////////////////////////////////////////////
 
   @Override
   public byte[] getBytes() {
@@ -139,8 +96,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     byteArrayRef.setValue("hist.var-" + name, bytes);
   }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
@@ -157,7 +113,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   public String getVariableName() {
     return name;
   }
-
+  
   public VariableType getVariableType() {
     return variableType;
   }
@@ -172,6 +128,10 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
 
   public String getName() {
     return name;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
   }
 
   public Long getLongValue() {
@@ -261,7 +221,11 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   public Date getTime() {
     return getCreateTime();
   }
-
+  
+  public ByteArrayRef getByteArrayRef() {
+    return byteArrayRef;
+  }
+  
   // common methods //////////////////////////////////////////////////////////
 
   @Override

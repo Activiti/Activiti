@@ -36,10 +36,10 @@ public class SaveGroupCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("group is null");
     }
 
-    if (commandContext.getGroupIdentityManager().isNewGroup(group)) {
-      commandContext.getGroupIdentityManager().insertGroup(group);
+    if (commandContext.getGroupEntityManager().isNewGroup(group)) {
+      commandContext.getGroupEntityManager().insertGroup(group);
     } else {
-      commandContext.getGroupIdentityManager().updateGroup(group);
+      commandContext.getGroupEntityManager().updateGroup(group);
     }
     return null;
   }

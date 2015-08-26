@@ -10,29 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 /**
  * @author Joram Barrez
- * @author Marcus Klimstra (CGI)
  */
-public class ByteArrayEntityManager extends AbstractEntityManager<ByteArrayEntity> {
+public interface ByteArrayEntityManager extends EntityManager<ByteArrayEntity> {
 
-  public ByteArrayEntity findById(String byteArrayEntityId) {
-    return getDbSqlSession().selectById(ByteArrayEntity.class, byteArrayEntityId);
-  }
+  ByteArrayEntity createAndInsert(byte[] bytes);
+
+  ByteArrayEntity createAndInsert(String name, byte[] bytes);
+
+  ByteArrayEntity findById(String byteArrayEntityId);
 
   /**
-   * Deletes the {@link ByteArrayEntity} with the given id from the database. Important: this operation will NOT do any optimistic locking, to avoid loading the bytes in memory. So use this method
+   * Deletes the {@link ByteArrayEntity} with the given id from the database. 
+   * Important: this operation will NOT do any optimistic locking, to avoid loading the bytes in memory. So use this method
    * only in conjunction with an entity that has optimistic locking!.
    */
-  public void deleteByteArrayById(String byteArrayEntityId) {
-    getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
-  }
+  void deleteByteArrayById(String byteArrayEntityId);
 
-  public void deleteByteArray(ByteArrayEntity byteArray) {
-    getDbSqlSession().delete(byteArray);
-  }
+  void deleteByteArray(ByteArrayEntity byteArray);
 
 }

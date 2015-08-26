@@ -467,7 +467,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
 
-        timerEntity.delete();
+        commandContext.getJobEntityManager().delete(timerEntity);
         return null;
       }
     });

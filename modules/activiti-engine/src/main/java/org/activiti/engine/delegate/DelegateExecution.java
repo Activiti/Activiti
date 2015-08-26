@@ -19,6 +19,7 @@ import org.activiti.engine.EngineServices;
  * Execution used in {@link JavaDelegate}s and {@link ExecutionListener}s.
  * 
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface DelegateExecution extends VariableScope {
 
@@ -40,7 +41,7 @@ public interface DelegateExecution extends VariableScope {
   /**
    * The business key for the process instance this execution is associated with.
    */
-  String getProcessBusinessKey();
+  String getProcessInstanceBusinessKey();
 
   /**
    * The process definition key for the process instance this execution is associated with.

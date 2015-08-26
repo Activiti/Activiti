@@ -120,7 +120,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
         }
 
         if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
-          ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+          ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager()
+              .createChildExecution((ExecutionEntity) execution); 
           childExecutionEntity.setParentId(execution.getId());
           childExecutionEntity.setCurrentFlowElement(boundaryEvent);
           childExecutionEntity.setScope(false);

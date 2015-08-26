@@ -48,19 +48,19 @@ public class EndExecutionOperation extends AbstractOperation {
     // Find parent execution. If not found, it's the process instance and other logic needs to happen
     ExecutionEntity parentExecution = null;
     if (executionEntity.getParentId() != null) {
-      parentExecution = executionEntityManager.get(executionEntity.getParentId());
+      parentExecution = executionEntityManager.getEntity(executionEntity.getParentId());
     }
     
     if (parentExecution != null) {
 
       // If the execution is a scope, all the child executions must be deleted first.
       if (executionEntity.isScope()) {
-        executionEntityManager.deleteChildExecutions(executionEntity);
+        executionEntityManager.deleteChildExecutions(executionEntity, null, false);
       }
 
       // Delete current execution
       logger.debug("Ending execution {}", execution.getId());
-      executionEntityManager.deleteExecutionAndRelatedData(executionEntity);
+      executionEntityManager.deleteExecutionAndRelatedData(executionEntity, null, false);
 
       logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
 
@@ -166,7 +166,9 @@ public class EndExecutionOperation extends AbstractOperation {
       int activeExecutions = getNumberOfActiveChildExecutionsForProcessInstance(executionEntityManager, processInstanceId);
       if (activeExecutions == 0) {
         logger.debug("No active executions found. Ending process instance {} ", processInstanceId);
-        executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED");
+        executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, 
+            execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED",
+            false, false, true);
       } else {
         logger.debug("Active executions found. Process instance {} will not be ended.", processInstanceId);
       }
@@ -239,7 +241,7 @@ public class EndExecutionOperation extends AbstractOperation {
     List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     for (ExecutionEntity childExecution : executions) {
       if (childExecution.isEventScope()) {
-        executionEntityManager.deleteExecutionAndRelatedData(childExecution);
+        executionEntityManager.deleteExecutionAndRelatedData(childExecution, null, false);
       } else {
         allEventScopeExecutions = false;
         break;

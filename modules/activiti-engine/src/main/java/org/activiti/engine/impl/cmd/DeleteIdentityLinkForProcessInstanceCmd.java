@@ -25,6 +25,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>, Serializable {
 
@@ -73,8 +74,7 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
       return null;
     }
 
-    processInstance.deleteIdentityLink(userId, groupId, type);
-
+    commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processInstance, userId, groupId, type);
     commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
 
     return null;

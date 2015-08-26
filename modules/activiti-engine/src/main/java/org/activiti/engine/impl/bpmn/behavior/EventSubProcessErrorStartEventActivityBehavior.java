@@ -45,7 +45,8 @@ public class EventSubProcessErrorStartEventActivityBehavior extends AbstractBpmn
       execution.setVariablesLocal(dataObjectVars);
     }
 
-    ExecutionEntity startSubProcessExecution = ((ExecutionEntity) execution).createExecution();
+    ExecutionEntity startSubProcessExecution = Context.getCommandContext()
+        .getExecutionEntityManager().createChildExecution((ExecutionEntity)execution); 
     startSubProcessExecution.setCurrentFlowElement(startEvent);
     Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(startSubProcessExecution);
   }

@@ -15,7 +15,7 @@ package org.activiti.ldap;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 
 /**
  * {@link SessionFactory} responsible for creating the {@link LDAPUserManager}. Is plugged into the {@link ProcessEngineConfiguration} automatically through the {@link LDAPConfigurator}.
@@ -32,7 +32,7 @@ public class LDAPUserManagerFactory implements SessionFactory {
 
   @Override
   public Class<?> getSessionType() {
-    return UserIdentityManager.class;
+    return UserEntityManager.class;
   }
 
   @Override

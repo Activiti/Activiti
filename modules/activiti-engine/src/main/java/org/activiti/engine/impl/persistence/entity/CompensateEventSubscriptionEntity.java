@@ -27,12 +27,4 @@ public class CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
     eventType = CompensationEventHandler.EVENT_HANDLER_TYPE;
   }
 
-  // custom processing behavior
-  // //////////////////////////////////////////////////////////////////////////////
-
-  @Override
-  protected void processEventSync(Object payload) {
-    delete();
-    super.processEventSync(payload);
-  }
 }
