@@ -30,7 +30,6 @@ public class Activiti5Util {
     }
     
     ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId, false);
-    
     if (processDefinitionEntity == null) {
       return false;
     }
@@ -39,6 +38,11 @@ public class Activiti5Util {
   }
   
   public static boolean isActiviti5ProcessDefinition(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity) {
+    
+    if (!commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()) {
+      return false;
+    }
+    
     if (processDefinitionEntity.getEngineVersion() != null) {
       if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinitionEntity.getEngineVersion())) {
         if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()) {
