@@ -88,7 +88,7 @@ In Activiti version 5, all EntityManager (responsible for persistence but also c
 All EntityManager interfaces extend the generic org.activiti.engine.impl.persistence.entity.EntityManager interface. All implementation classes extend a generic _AbstractEntityManager_ interface.
 
 Also, for consistency:
-* The UserIdentityManager interface has been renamed to UserIdentityManager
+* The UserIdentityManager interface has been renamed to UserEntityManager
 * The GroupIdentityManager interface has been renamed to GroupEntityManager
 
 
@@ -115,7 +115,7 @@ To enable this behavior (by default it is _disabled_!), add the following to the
 
 *and* add the *activiti5-compatibility* jar to your classpath (manually or through a dependency mechanism like Maven)..
 
- In case the default implementation _org.activiti.compatibility.DefaultActiviti5CompatibilityHandler_ is insufficient, as custom implementation can be created. Set the _activiti5CompatibilityHandlerFactory_ property of the engine configuration to the fully qualified classname to make that happen. That Factory class should produce an instance of the handler responsible for bridging from version 6 to 5.
+In case the default implementation _org.activiti.compatibility.DefaultActiviti5CompatibilityHandler_ is insufficient, as custom implementation can be created. Set the _activiti5CompatibilityHandlerFactory_ property of the engine configuration to the fully qualified classname to make that happen. That Factory class should produce an instance of the handler responsible for bridging from version 6 to 5.
 
 To move a process definition to run on the version 6 engine, simply redeploy it. New process instances will be running in _version 6 mode_, while existing process instances will run in _version 5 mode).
 
