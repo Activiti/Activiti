@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -36,7 +36,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     SubProcess subProcess = getSubProcessFromExecution(execution);
 
     FlowElement startElement = null;
@@ -72,7 +72,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
   }
 
-  protected SubProcess getSubProcessFromExecution(ActivityExecution execution) {
+  protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {
     FlowElement flowElement = execution.getCurrentFlowElement();
     SubProcess subProcess = null;
     if (flowElement instanceof SubProcess) {

@@ -4,16 +4,16 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Joram Barrez
  */
 public class TriggerExecutionOperation extends AbstractOperation {
 
-  public TriggerExecutionOperation(CommandContext commandContext, ActivityExecution execution) {
+  public TriggerExecutionOperation(CommandContext commandContext, ExecutionEntity execution) {
     super(commandContext, execution);
   }
 

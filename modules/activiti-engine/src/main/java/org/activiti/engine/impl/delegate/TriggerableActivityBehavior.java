@@ -12,11 +12,13 @@
  */
 package org.activiti.engine.impl.delegate;
 
+import org.activiti.engine.delegate.DelegateExecution;
+
 /**
  * @author Joram Barrez
  */
 public interface TriggerableActivityBehavior extends ActivityBehavior {
 
-  void trigger(ActivityExecution execution, String signalEvent, Object signalData);
+  void trigger(DelegateExecution execution, String signalEvent, Object signalData);
 
 }

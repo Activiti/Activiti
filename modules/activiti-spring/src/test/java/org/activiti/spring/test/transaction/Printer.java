@@ -13,14 +13,14 @@
 
 package org.activiti.spring.test.transaction;
 
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * @author Tom Baeyens
  */
 public class Printer {
 
-  public void printMessage(ActivityExecution execution) {
+  public void printMessage(DelegateExecution execution) {
     execution.setVariable("myVar", "Hello from Printer!");
   }
 }

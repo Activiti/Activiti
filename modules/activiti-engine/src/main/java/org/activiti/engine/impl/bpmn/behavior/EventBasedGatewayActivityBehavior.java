@@ -13,16 +13,18 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * @author Daniel Meyer
  * @author Joram Barrez
  */
 public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior {
+  
+  private static final long serialVersionUID = 1L;
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     
     // The event based gateway simply leaves directly, in the default BPMN 2.0 way 
     // (taking all sequence flow in parallel)

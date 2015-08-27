@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -39,7 +39,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
   private static Logger logger = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     // The join in the inclusive gateway works as follows:
     // When an execution enters it, it is inactivated.
     // All the inactivated executions stay in the inclusive gateway

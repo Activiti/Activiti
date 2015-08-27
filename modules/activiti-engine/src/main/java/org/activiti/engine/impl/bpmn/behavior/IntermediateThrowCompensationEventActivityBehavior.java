@@ -22,9 +22,9 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -45,7 +45,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
   }
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ThrowEvent throwEvent = (ThrowEvent) execution.getCurrentFlowElement();
     final String activityRef = compensateEventDefinition.getActivityRef();
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();

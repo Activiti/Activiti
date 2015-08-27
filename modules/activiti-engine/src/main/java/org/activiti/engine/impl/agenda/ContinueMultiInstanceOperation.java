@@ -9,8 +9,8 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.logging.LogMDC;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
   private static Logger logger = LoggerFactory.getLogger(ContinueMultiInstanceOperation.class);
 
-  public ContinueMultiInstanceOperation(CommandContext commandContext, ActivityExecution execution) {
+  public ContinueMultiInstanceOperation(CommandContext commandContext, ExecutionEntity execution) {
     super(commandContext, execution);
   }
 

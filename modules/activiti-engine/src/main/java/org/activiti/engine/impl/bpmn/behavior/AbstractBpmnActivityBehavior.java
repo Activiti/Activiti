@@ -21,9 +21,9 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,7 +43,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
    * Subclasses that call leave() will first pass through this method, before the regular {@link FlowNodeActivityBehavior#leave(ActivityExecution)} is called. This way, we can check if the activity
    * has loop characteristics, and delegate to the behavior if this is the case.
    */
-  public void leave(ActivityExecution execution) {
+  public void leave(DelegateExecution execution) {
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
     Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);
     if (CollectionUtils.isNotEmpty(boundaryEvents)) {
@@ -56,7 +56,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
     }
   }
   
-  protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
+  protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, DelegateExecution execution) {
 
     // The parent execution becomes a scope, and a child execution is created for each of the boundary events
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
@@ -69,8 +69,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
         continue;
       }
 
-      ExecutionEntity childExecutionEntity = Context.getCommandContext()
-          .getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
+      ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
       childExecutionEntity.setScope(false);

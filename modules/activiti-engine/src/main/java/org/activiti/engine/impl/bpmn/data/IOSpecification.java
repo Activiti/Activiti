@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * Implementation of the BPMN 2.0 'ioSpecification'
@@ -41,7 +41,7 @@ public class IOSpecification {
     this.dataOutputRefs = new ArrayList<DataRef>();
   }
 
-  public void initialize(ActivityExecution execution) {
+  public void initialize(DelegateExecution execution) {
     for (Data data : this.dataInputs) {
       execution.setVariable(data.getName(), data.getDefinition().createInstance());
     }

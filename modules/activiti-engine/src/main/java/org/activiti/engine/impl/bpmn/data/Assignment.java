@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * Implementation of the BPMN 2.0 'assignment'
@@ -32,7 +32,7 @@ public class Assignment {
     this.toExpression = toExpression;
   }
 
-  public void evaluate(ActivityExecution execution) {
+  public void evaluate(DelegateExecution execution) {
     VariableScope variableScope = (VariableScope) execution;
     Object value = this.fromExpression.getValue(variableScope);
     this.toExpression.setValue(value, variableScope);

@@ -29,7 +29,6 @@ import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.spring.SpringProcessEngineConfiguration;
@@ -103,7 +102,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     }
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     setAppropriateCamelContext(execution);
 
     final ActivitiEndpoint endpoint = createEndpoint(execution);
@@ -119,7 +118,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
       leave(execution);
   }
 
-  protected ActivitiEndpoint createEndpoint(ActivityExecution execution) {
+  protected ActivitiEndpoint createEndpoint(DelegateExecution execution) {
     String uri = "activiti://" + getProcessDefinitionKey(execution) + ":" + execution.getCurrentActivityId();
     return getEndpoint(uri);
   }
@@ -133,7 +132,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     throw new ActivitiException("Activiti endpoint not defined for " + key);    
   }
 
-  protected Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
+  protected Exchange createExchange(DelegateExecution activityExecution, ActivitiEndpoint endpoint) {
     Exchange ex = new DefaultExchange(camelContextObj);
     ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
     ex.setProperty(ActivitiProducer.EXECUTION_ID_PROPERTY, activityExecution.getId());
@@ -143,7 +142,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     return ex;
   }
 
-  protected boolean handleCamelException(Exchange exchange, ActivityExecution execution) {
+  protected boolean handleCamelException(Exchange exchange, DelegateExecution execution) {
     Exception camelException = exchange.getException();
     boolean notHandledByCamel = exchange.isFailed() && camelException != null;
     if (notHandledByCamel) {
@@ -177,12 +176,12 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     }
   }
 
-  protected String getProcessDefinitionKey(ActivityExecution execution) {
+  protected String getProcessDefinitionKey(DelegateExecution execution) {
     Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
     return process.getId();
   }
 
-  protected boolean isASync(ActivityExecution execution) {
+  protected boolean isASync(DelegateExecution execution) {
     boolean async = false;
     if (execution.getCurrentFlowElement() instanceof Activity) {
       async = ((Activity) execution.getCurrentFlowElement()).isAsynchronous();
@@ -190,7 +189,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     return async;
   }
 
-  protected void setAppropriateCamelContext(ActivityExecution execution) {
+  protected void setAppropriateCamelContext(DelegateExecution execution) {
     // Check to see if the springConfiguration has been set. If not, set it.
     if (springConfiguration == null) {
       // Get the ProcessEngineConfiguration object.

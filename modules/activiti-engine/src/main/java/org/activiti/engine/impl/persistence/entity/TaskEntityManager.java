@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.TaskQueryImpl;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.task.Task;
 
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
@@ -16,7 +16,7 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
   TaskEntity create(Date createTime);
 
   /** creates and initializes a new persistent task. */
-  TaskEntity createAndInsert(ActivityExecution execution);
+  TaskEntity createAndInsert(DelegateExecution execution);
 
   void insert(TaskEntity taskEntity, ExecutionEntity execution);
 

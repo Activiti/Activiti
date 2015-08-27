@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
   private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     // First off all, deactivate the execution
     execution.inactivate();
@@ -68,7 +68,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     
     lockFirstParentScope(execution);
     
-    ActivityExecution multiInstanceExecution = null;
+    DelegateExecution multiInstanceExecution = null;
     if (hasMultiInstanceParent(parallelGateway)) {
       multiInstanceExecution = findMultiInstanceParentExecution(execution);
     }
@@ -109,7 +109,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       }
 
       // TODO: potential optimization here: reuse more then 1 execution, only 1 currently
-      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, false); // false -> ignoring conditions on parallel gw
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, false); // false -> ignoring conditions on parallel gw
 
     } else if (log.isDebugEnabled()) {
       log.debug("parallel gateway '{}' does not activate: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);
@@ -117,7 +117,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
   }
   
-  protected Collection<ExecutionEntity> cleanJoinedExecutions(Collection<ExecutionEntity> joinedExecutions, ActivityExecution multiInstanceExecution) {
+  protected Collection<ExecutionEntity> cleanJoinedExecutions(Collection<ExecutionEntity> joinedExecutions, DelegateExecution multiInstanceExecution) {
     List<ExecutionEntity> cleanedExecutions = new ArrayList<ExecutionEntity>();
     for (ExecutionEntity executionEntity : joinedExecutions) {
       if (isChildOfMultiInstanceExecution(executionEntity, multiInstanceExecution)) {
@@ -127,9 +127,9 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     return cleanedExecutions;
   }
   
-  protected boolean isChildOfMultiInstanceExecution(ActivityExecution executionEntity, ActivityExecution multiInstanceExecution) {
+  protected boolean isChildOfMultiInstanceExecution(DelegateExecution executionEntity, DelegateExecution multiInstanceExecution) {
     boolean isChild = false;
-    ActivityExecution parentExecution = executionEntity.getParent();
+    DelegateExecution parentExecution = executionEntity.getParent();
     if (parentExecution != null) {
       if (parentExecution.getId().equals(multiInstanceExecution.getId())) {
         isChild = true;
@@ -160,9 +160,9 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     return hasMultiInstanceParent;
   }
   
-  protected ActivityExecution findMultiInstanceParentExecution(ActivityExecution execution) {
-    ActivityExecution multiInstanceExecution = null;
-    ActivityExecution parentExecution = execution.getParent();
+  protected DelegateExecution findMultiInstanceParentExecution(DelegateExecution execution) {
+    DelegateExecution multiInstanceExecution = null;
+    DelegateExecution parentExecution = execution.getParent();
     if (parentExecution != null && parentExecution.getCurrentFlowElement() != null) {
       FlowElement flowElement = parentExecution.getCurrentFlowElement();
       if (flowElement instanceof Activity) {
@@ -173,7 +173,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       }
       
       if (multiInstanceExecution == null) {
-        ActivityExecution potentialMultiInstanceExecution = findMultiInstanceParentExecution(parentExecution);
+        DelegateExecution potentialMultiInstanceExecution = findMultiInstanceParentExecution(parentExecution);
         if (potentialMultiInstanceExecution != null) {
           multiInstanceExecution = potentialMultiInstanceExecution;
         }

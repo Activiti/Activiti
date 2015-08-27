@@ -15,9 +15,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -35,7 +35,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   protected boolean destroyProcessInstance;
 	
 	@Override
-	public void execute(ActivityExecution execution) {
+	public void execute(DelegateExecution execution) {
 		
 		CommandContext commandContext = Context.getCommandContext();
 		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
@@ -116,7 +116,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 	    }
     }
 	
-    protected void sendProcessInstanceCancelledEvent(ActivityExecution execution, FlowElement terminateEndEvent) {
+    protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             Context.getProcessEngineConfiguration().getEventDispatcher()
                     .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
@@ -125,12 +125,12 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
         dispatchExecutionCancelled(execution, terminateEndEvent);
     }
 
-    protected void dispatchExecutionCancelled(ActivityExecution execution, FlowElement terminateEndEvent) {
+    protected void dispatchExecutionCancelled(DelegateExecution execution, FlowElement terminateEndEvent) {
       
        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
       
         // subprocesses
-        for (ActivityExecution subExecution : executionEntityManager.findChildExecutionsByParentExecutionId(execution.getId())) {
+        for (DelegateExecution subExecution : executionEntityManager.findChildExecutionsByParentExecutionId(execution.getId())) {
             dispatchExecutionCancelled(subExecution, terminateEndEvent);
         }
 
@@ -147,7 +147,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
         }
     }
 
-    protected void dispatchActivityCancelled(ActivityExecution execution, FlowElement terminateEndEvent) {
+    protected void dispatchActivityCancelled(DelegateExecution execution, FlowElement terminateEndEvent) {
         Context.getProcessEngineConfiguration()
                 .getEventDispatcher()
                 .dispatchEvent(

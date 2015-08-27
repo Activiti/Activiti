@@ -18,9 +18,9 @@ import java.util.List;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -34,7 +34,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     

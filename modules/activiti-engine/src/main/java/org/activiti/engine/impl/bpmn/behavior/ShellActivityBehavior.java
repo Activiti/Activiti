@@ -15,10 +15,11 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected Expression command;
   protected Expression wait;
   protected Expression arg1;
@@ -46,7 +47,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
   Boolean cleanEnvBoolean;
   String directoryStr;
 
-  private void readFields(ActivityExecution execution) {
+  private void readFields(DelegateExecution execution) {
     commandStr = getStringFromField(command, execution);
     arg1Str = getStringFromField(arg1, execution);
     arg2Str = getStringFromField(arg2, execution);
@@ -67,7 +68,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     readFields(execution);
 

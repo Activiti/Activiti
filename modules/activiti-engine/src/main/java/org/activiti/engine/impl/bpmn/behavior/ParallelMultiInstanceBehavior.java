@@ -25,10 +25,10 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -52,7 +52,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   /**
    * Handles the parallel case of spawning the instances. Will create child executions accordingly for every instance needed.
    */
-  protected void createInstances(ActivityExecution execution) {
+  protected void createInstances(DelegateExecution execution) {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances < 0) {
       throw new ActivitiIllegalArgumentException("Invalid number of instances: must be non-negative integer value" + ", but was " + nrOfInstances);
@@ -62,10 +62,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
     setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, nrOfInstances);
 
-    List<ActivityExecution> concurrentExecutions = new ArrayList<ActivityExecution>();
+    List<DelegateExecution> concurrentExecutions = new ArrayList<DelegateExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      ActivityExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
-          .createChildExecution((ExecutionEntity)execution); 
+      DelegateExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
+          .createChildExecution((ExecutionEntity) execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
       concurrentExecution.setConcurrent(true);
@@ -79,7 +79,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     // Do not try to merge this loop with the previous one, as it will lead
     // to bugs, due to possible child execution pruning.
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      ActivityExecution concurrentExecution = concurrentExecutions.get(loopCounter);
+      DelegateExecution concurrentExecution = concurrentExecutions.get(loopCounter);
       // executions can be inactive, if instances are all automatics
       // (no-waitstate) and completionCondition has been met in the meantime
       if (concurrentExecution.isActive() && !concurrentExecution.isEnded() && concurrentExecution.getParent().isActive() && !concurrentExecution.getParent().isEnded()) {
@@ -101,7 +101,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   /**
    * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one of the parallel instances
    */
-  public void leave(ActivityExecution execution) {
+  public void leave(DelegateExecution execution) {
 
     boolean zeroNrOfInstances = false;
     if (resolveNrOfInstances(execution) == 0) {
@@ -208,7 +208,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     }
   }
   
-  protected void lockFirstParentScope(ActivityExecution execution) {
+  protected void lockFirstParentScope(DelegateExecution execution) {
     
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     

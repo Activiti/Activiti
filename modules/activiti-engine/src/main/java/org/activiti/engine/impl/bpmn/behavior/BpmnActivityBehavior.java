@@ -20,7 +20,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
@@ -45,7 +44,7 @@ public class BpmnActivityBehavior implements Serializable {
    * More precisely: every sequence flow that has a condition which evaluates to true (or which doesn't have a condition), is selected for continuation of the process instance. If multiple sequencer
    * flow are selected, multiple, parallel paths of executions are created.
    */
-  public void performDefaultOutgoingBehavior(ActivityExecution activityExecution) {
+  public void performDefaultOutgoingBehavior(ExecutionEntity activityExecution) {
     performOutgoingBehavior(activityExecution, true, false);
   }
 
@@ -54,7 +53,7 @@ public class BpmnActivityBehavior implements Serializable {
    * 
    * @param activityExecution
    */
-  protected void dispatchJobCanceledEvents(ActivityExecution activityExecution) {
+  protected void dispatchJobCanceledEvents(ExecutionEntity activityExecution) {
     if (activityExecution instanceof ExecutionEntity) {
       List<JobEntity> jobs = ((ExecutionEntity) activityExecution).getJobs();
       for (JobEntity job : jobs) {
@@ -71,7 +70,7 @@ public class BpmnActivityBehavior implements Serializable {
    * This means that every outgoing sequence flow is selected for continuing the process instance, regardless of having a condition or not. In case of multiple outgoing sequence flow, multiple
    * parallel paths of executions will be created.
    */
-  public void performIgnoreConditionsOutgoingBehavior(ActivityExecution activityExecution) {
+  public void performIgnoreConditionsOutgoingBehavior(ExecutionEntity activityExecution) {
     performOutgoingBehavior(activityExecution, false, false);
   }
 
@@ -85,7 +84,7 @@ public class BpmnActivityBehavior implements Serializable {
    * @param throwExceptionIfExecutionStuck
    *          If true, an {@link ActivitiException} will be thrown in case no transition could be found to leave the activity.
    */
-  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions, boolean throwExceptionIfExecutionStuck) {
+  protected void performOutgoingBehavior(ExecutionEntity execution, boolean checkConditions, boolean throwExceptionIfExecutionStuck) {
 
     Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
 

@@ -18,11 +18,9 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -38,7 +36,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
   protected boolean evaluateConditions;
 
-  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ActivityExecution activityExecution, boolean evaluateConditions) {
+  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ExecutionEntity activityExecution, boolean evaluateConditions) {
     super(commandContext, activityExecution);
     this.evaluateConditions = evaluateConditions;
   }
@@ -161,7 +159,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
           if (flowNode.getSubProcess().getSubProcess() != null) {
             executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent(), null, false);
             executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution.getParent(), null, false);
-            ActivityExecution parentExecution = execution.getParent().getParent();
+            ExecutionEntity parentExecution = execution.getParent().getParent();
             parentExecution.setCurrentFlowElement(flowNode.getSubProcess().getSubProcess());
             agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution);
           

@@ -14,8 +14,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways and events. This means that any subclass can be the source or target of a sequenceflow.
@@ -33,22 +34,22 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     leave(execution);
   }
 
   /**
    * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the outgoing sequence flow and take those that evaluate to true.
    */
-  public void leave(ActivityExecution execution) {
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+  public void leave(DelegateExecution execution) {
+    bpmnActivityBehavior.performDefaultOutgoingBehavior((ExecutionEntity) execution);
   }
 
-  public void leaveIgnoreConditions(ActivityExecution activityContext) {
-    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
+  public void leaveIgnoreConditions(DelegateExecution execution) {
+    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior((ExecutionEntity) execution);
   }
 
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     // concrete activity behaviours that do accept signals should override
     // this method;
     throw new ActivitiException("this activity isn't waiting for a trigger");

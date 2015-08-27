@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
@@ -37,7 +37,7 @@ public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBeh
   }
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {

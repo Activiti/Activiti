@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -20,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
  */
 public class DestroyScopeOperation extends AbstractOperation {
 
-  public DestroyScopeOperation(CommandContext commandContext, ActivityExecution execution) {
+  public DestroyScopeOperation(CommandContext commandContext, ExecutionEntity execution) {
     super(commandContext, execution);
   }
 

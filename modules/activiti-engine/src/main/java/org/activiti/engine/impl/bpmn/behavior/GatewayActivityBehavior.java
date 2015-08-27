@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
@@ -24,7 +24,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
  */
 public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
 
-  protected void lockFirstParentScope(ActivityExecution execution) {
+  private static final long serialVersionUID = 1L;
+
+  protected void lockFirstParentScope(DelegateExecution execution) {
     
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     

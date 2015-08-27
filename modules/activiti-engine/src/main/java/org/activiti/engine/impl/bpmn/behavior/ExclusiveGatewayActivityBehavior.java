@@ -17,11 +17,11 @@ import java.util.Iterator;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
    * If no sequence flow is selected (ie all conditions evaluate to false), then the default sequence flow is taken (if defined).
    */
   @Override
-  public void leave(ActivityExecution execution) {
+  public void leave(DelegateExecution execution) {
 
     if (log.isDebugEnabled()) {
       log.debug("Leaving exclusive gateway '{}'", execution.getCurrentActivityId());

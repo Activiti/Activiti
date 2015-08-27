@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.List;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -32,24 +32,24 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
     this.messageEventDefinition = messageEventDefinition;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     ExecutionEntity executionEntity = deleteMessageEventSubScription(execution);
     leaveIntermediateCatchEvent(executionEntity);
   }
   
   @Override
-  public void cancelEvent(ActivityExecution execution) {
+  public void cancelEvent(DelegateExecution execution) {
     deleteMessageEventSubScription(execution);
     Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
-  protected ExecutionEntity deleteMessageEventSubScription(ActivityExecution execution) {
+  protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();

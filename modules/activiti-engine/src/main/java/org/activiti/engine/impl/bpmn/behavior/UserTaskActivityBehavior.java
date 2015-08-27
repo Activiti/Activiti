@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -30,7 +31,6 @@ import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
@@ -55,7 +55,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     this.taskDefinition = taskDefinition;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
     task.setExecution(execution);
     task.setTaskDefinition(taskDefinition);
@@ -152,7 +152,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
   }
 
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     
     TaskEntityManager taskEntityManager = Context.getCommandContext().getTaskEntityManager();
     List<TaskEntity> taskEntities = taskEntityManager.findTasksByExecutionId(execution.getId()); // Should be only one
@@ -166,7 +166,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
+  protected void handleAssignments(TaskEntity task, DelegateExecution execution) {
     if (taskDefinition.getAssigneeExpression() != null) {
       Object assigneeExpressionValue = taskDefinition.getAssigneeExpression().getValue(execution);
       String assigneeValue = null;

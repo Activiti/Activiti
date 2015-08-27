@@ -21,4 +21,6 @@ package org.activiti.engine.impl.bpmn.behavior;
  */
 public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+
 }

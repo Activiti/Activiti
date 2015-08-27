@@ -1,8 +1,12 @@
 package activiti;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.integration.ActivitiInboundGateway;
 import org.activiti.spring.integration.IntegrationActivityBehavior;
 import org.springframework.boot.CommandLineRunner;
@@ -13,10 +17,6 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.support.GenericHandler;
 import org.springframework.messaging.support.MessageBuilder;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SpringBootApplication
 public class Application {
@@ -58,9 +58,9 @@ public class Application {
     IntegrationFlow inboundProcess(ActivitiInboundGateway inboundGateway) {
         return IntegrationFlows
                 .from(inboundGateway)
-                .handle(new GenericHandler<ActivityExecution>() {
+                .handle(new GenericHandler<DelegateExecution>() {
                     @Override
-                    public Object handle(ActivityExecution execution, Map<String, Object> headers) {
+                    public Object handle(DelegateExecution execution, Map<String, Object> headers) {
                         return MessageBuilder.withPayload(execution)
                                 .setHeader("projectId", "3243549")
                                 .copyHeaders(headers).build();

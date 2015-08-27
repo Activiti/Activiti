@@ -23,7 +23,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -57,7 +56,7 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
   private Expression username;
   private Expression password;
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     String endpointUrlValue = this.getStringFromField(this.endpointUrl, execution);
     String languageValue = this.getStringFromField(this.language, execution);
     String payloadExpressionValue = this.getStringFromField(this.payloadExpression, execution);

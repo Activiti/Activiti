@@ -33,10 +33,10 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -56,11 +56,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ErrorPropagation {
 
-  public static void propagateError(BpmnError error, ActivityExecution execution) {
+  public static void propagateError(BpmnError error, DelegateExecution execution) {
     propagateError(error.getErrorCode(), execution);
   }
 
-  public static void propagateError(String errorCode, ActivityExecution execution) {
+  public static void propagateError(String errorCode, DelegateExecution execution) {
     Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorCode);
     if (eventMap.size() > 0) {
       executeCatch(eventMap, execution, errorCode);
@@ -115,11 +115,10 @@ public class ErrorPropagation {
     }
   }
 
-  protected static void executeCatch(Map<String, List<Event>> eventMap, ActivityExecution activityExecution, String errorId) {
-    ExecutionEntity currentExecution = (ExecutionEntity) activityExecution;
-
+  protected static void executeCatch(Map<String, List<Event>> eventMap, DelegateExecution delegateExecution, String errorId) {
     Event matchingEvent = null;
-
+    ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
+    
     /*
      * ScopeImpl catchingScope = errorHandler.getParent(); if (catchingScope instanceof ActivityImpl) { ActivityImpl catchingScopeActivity = (ActivityImpl) catchingScope; if
      * (!catchingScopeActivity.isScope()) { // event subprocesses catchingScope = catchingScopeActivity.getParent(); } }

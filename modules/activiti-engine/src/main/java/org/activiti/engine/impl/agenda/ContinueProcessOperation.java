@@ -15,7 +15,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -37,7 +36,7 @@ public class ContinueProcessOperation extends AbstractOperation {
   protected boolean forceSynchronousOperation;
   protected boolean inCompensation;
 
-  public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution, 
+  public ContinueProcessOperation(CommandContext commandContext, ExecutionEntity execution, 
       boolean forceSynchronousOperation, boolean inCompensation) {
     
     super(commandContext, execution);
@@ -45,7 +44,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     this.inCompensation = inCompensation;
   }
 
-  public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution) {
+  public ContinueProcessOperation(CommandContext commandContext, ExecutionEntity execution) {
     this(commandContext, execution, false, false);
   }
 
@@ -183,7 +182,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     commandContext.getJobEntityManager().send(message);
   }
 
-  protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
+  protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ExecutionEntity execution) {
 
     // The parent execution becomes a scope, and a child execution is created for each of the boundary events
     for (BoundaryEvent boundaryEvent : boundaryEvents) {

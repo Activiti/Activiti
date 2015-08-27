@@ -21,7 +21,6 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -33,13 +32,13 @@ public abstract class AbstractOperation implements Runnable {
 
   protected CommandContext commandContext;
   protected Agenda agenda;
-  protected ActivityExecution execution;
+  protected ExecutionEntity execution;
 
   public AbstractOperation() {
 
   }
 
-  public AbstractOperation(CommandContext commandContext, ActivityExecution execution) {
+  public AbstractOperation(CommandContext commandContext, ExecutionEntity execution) {
     this.commandContext = commandContext;
     this.execution = execution;
     this.agenda = commandContext.getAgenda();
@@ -48,7 +47,7 @@ public abstract class AbstractOperation implements Runnable {
   /**
    * Helper method to match the activityId of an execution with a FlowElement of the process definition referenced by the execution.
    */
-  protected FlowElement findCurrentFlowElement(final ActivityExecution execution) {
+  protected FlowElement findCurrentFlowElement(final ExecutionEntity execution) {
     String processDefinitionId = execution.getProcessDefinitionId();
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
     String activityId = execution.getCurrentActivityId();
@@ -64,7 +63,7 @@ public abstract class AbstractOperation implements Runnable {
     executeExecutionListeners(elementWithExecutionListeners, null, eventType, false);
   }
 
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, ActivityExecution executionToUseForListener, String eventType, boolean ignoreType) {
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, ExecutionEntity executionToUseForListener, String eventType, boolean ignoreType) {
     List<ActivitiListener> listeners = elementWithExecutionListeners.getExecutionListeners();
     ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
     if (listeners != null) {
@@ -84,7 +83,7 @@ public abstract class AbstractOperation implements Runnable {
             executionListener = (ExecutionListener) activitiListener.getInstance();
           }
           
-          ActivityExecution executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
+          ExecutionEntity executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
 
           if (executionListener != null) {
             ((ExecutionEntity) executionToUse).setEventName(eventType);
@@ -117,11 +116,11 @@ public abstract class AbstractOperation implements Runnable {
     this.agenda = agenda;
   }
 
-  public ActivityExecution getExecution() {
+  public ExecutionEntity getExecution() {
     return execution;
   }
 
-  public void setExecution(ActivityExecution execution) {
+  public void setExecution(ExecutionEntity execution) {
     this.execution = execution;
   }
 

@@ -18,9 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
@@ -38,7 +39,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
     this.contextProviders = camelContext;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ActivitiEndpoint ae = createEndpoint(execution);
     Exchange ex = createExchange(execution, ae);
     try {
@@ -47,10 +48,10 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
       throw new RuntimeException(e);
     }
     execution.setVariables(ExchangeUtils.prepareVariables(ex, ae));
-    performDefaultOutgoingBehavior(execution);
+    performDefaultOutgoingBehavior((ExecutionEntity) execution);
   }
 
-  private ActivitiEndpoint createEndpoint(ActivityExecution execution) {
+  private ActivitiEndpoint createEndpoint(DelegateExecution execution) {
     String uri = "activiti://" + getProcessKey(execution) + ":" + execution.getCurrentActivityId();
     return getEndpoint(getContext(execution), uri);
   }
@@ -64,7 +65,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
     throw new ActivitiException("Activiti endpoint not defined for " + key);    
   }
 
-  private CamelContext getContext(ActivityExecution execution) {
+  private CamelContext getContext(DelegateExecution execution) {
     String processKey = getProcessKey(execution);
     String names = "";
     for (ContextProvider provider : contextProviders) {
@@ -76,7 +77,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
     throw new ActivitiException("Could not find camel context for " + processKey + " names are " + names);
   }
 
-  private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
+  private Exchange createExchange(DelegateExecution activityExecution, ActivitiEndpoint endpoint) {
     Exchange ex = new DefaultExchange(getContext(activityExecution));
     Map<String, Object> variables = activityExecution.getVariables();
     if (endpoint.isCopyVariablesToProperties()) {
@@ -90,7 +91,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
     return ex;
   }
 
-  private String getProcessKey(ActivityExecution execution) {
+  private String getProcessKey(DelegateExecution execution) {
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
     return process.getId();
   }

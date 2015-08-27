@@ -21,9 +21,9 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -37,7 +37,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     CommandContext commandContext = Context.getCommandContext();

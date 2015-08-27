@@ -20,8 +20,8 @@ import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -30,12 +30,12 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
 
   private static final long serialVersionUID = 1L;
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     // Do nothing: waitstate behavior
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     leaveIntermediateCatchEvent(execution);
   }
   
@@ -45,7 +45,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
    * (we're only supporting the exclusive event based gateway type currently).
    * and the process instance is continued through the triggered event. 
    */
-  public void leaveIntermediateCatchEvent(ActivityExecution execution) {
+  public void leaveIntermediateCatchEvent(DelegateExecution execution) {
     EventGateway eventGateway = getPrecedingEventBasedGateway(execution);
     if (eventGateway != null) {
       deleteOtherEventsRelatedToEventBasedGateway(execution, eventGateway);
@@ -58,11 +58,11 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
    * Should be subclassed by the more specific types.
    * For an intermediate catch without type, it's simply leaving the event. 
    */
-  public void cancelEvent(ActivityExecution execution) {
+  public void cancelEvent(DelegateExecution execution) {
     Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
   
-  protected EventGateway getPrecedingEventBasedGateway(ActivityExecution execution) {
+  protected EventGateway getPrecedingEventBasedGateway(DelegateExecution execution) {
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
     if (currentFlowElement != null && currentFlowElement instanceof IntermediateCatchEvent) {
       IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) currentFlowElement;
@@ -81,7 +81,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
     return null;
   }
   
-  protected void deleteOtherEventsRelatedToEventBasedGateway(ActivityExecution execution, EventGateway eventGateway) {
+  protected void deleteOtherEventsRelatedToEventBasedGateway(DelegateExecution execution, EventGateway eventGateway) {
     
     // To clean up the other events behind the event based gateway, we must gather the 
     // activity ids of said events and check the _sibling_ executions of the incoming execution.

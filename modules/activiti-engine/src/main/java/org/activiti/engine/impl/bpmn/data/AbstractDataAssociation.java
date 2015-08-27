@@ -14,8 +14,8 @@ package org.activiti.engine.impl.bpmn.data;
 
 import java.io.Serializable;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * A data association (Input or Output) between a source and a target
@@ -42,7 +42,7 @@ public abstract class AbstractDataAssociation implements Serializable {
     this.target = target;
   }
 
-  public abstract void evaluate(ActivityExecution execution);
+  public abstract void evaluate(DelegateExecution execution);
 
   public String getSource() {
     return source;

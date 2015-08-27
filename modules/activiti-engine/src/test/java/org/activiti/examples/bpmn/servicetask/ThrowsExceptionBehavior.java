@@ -15,16 +15,17 @@ package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Joram Barrez
  */
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     String var = (String) execution.getVariable("var");
 
     
@@ -38,7 +39,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
     }
     
     execution.setCurrentFlowElement(sequenceFlow);
-    Context.getCommandContext().getAgenda().planContinueProcessOperation(execution);
+    Context.getCommandContext().getAgenda().planContinueProcessOperation((ExecutionEntity) execution);
   }
 
   protected void executeLogic(String value) {
@@ -47,7 +48,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
     }
   }
   
-  protected SequenceFlow findSequenceFlow(ActivityExecution execution, String sequenceFlowId) {
+  protected SequenceFlow findSequenceFlow(DelegateExecution execution, String sequenceFlowId) {
     FlowNode currentFlowNode = (FlowNode) execution.getCurrentFlowElement();
     for (SequenceFlow sequenceFlow : currentFlowNode.getOutgoingFlows()) {
       if (sequenceFlow.getId() != null && sequenceFlow.getId().equals(sequenceFlowId)) {

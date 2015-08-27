@@ -22,6 +22,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -29,7 +30,6 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -59,7 +59,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   
   /** creates and initializes a new persistent task. */
   @Override
-  public TaskEntity createAndInsert(ActivityExecution execution) {
+  public TaskEntity createAndInsert(DelegateExecution execution) {
     TaskEntity task = create(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     insert(task, (ExecutionEntity) execution);
     return task;

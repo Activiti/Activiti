@@ -15,12 +15,12 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * An activity behavior that allows calling Web services
@@ -30,6 +30,8 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
  * @author Joram Barrez
  */
 public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
+
+  private static final long serialVersionUID = 1L;
 
   public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
 
@@ -57,7 +59,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   /**
    * {@inheritDoc}
    */
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     MessageInstance message;
 
     if (ioSpecification != null) {
@@ -90,13 +92,13 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     leave(execution);
   }
 
-  private void returnMessage(MessageInstance message, ActivityExecution execution) {
+  private void returnMessage(MessageInstance message, DelegateExecution execution) {
     for (AbstractDataAssociation dataAssociation : this.dataOutputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }
 
-  private void fillMessage(MessageInstance message, ActivityExecution execution) {
+  private void fillMessage(MessageInstance message, DelegateExecution execution) {
     for (AbstractDataAssociation dataAssociation : this.dataInputAssociations) {
       dataAssociation.evaluate(execution);
     }

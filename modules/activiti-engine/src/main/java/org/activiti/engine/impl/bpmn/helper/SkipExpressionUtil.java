@@ -13,27 +13,27 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 public class SkipExpressionUtil {
 
-  public static boolean isSkipExpressionEnabled(ActivityExecution execution, String skipExpression) {
+  public static boolean isSkipExpressionEnabled(DelegateExecution execution, String skipExpression) {
     if (skipExpression == null) {
       return false;
     }
     return checkSkipExpressionVariable(execution);
   }
 
-  public static boolean isSkipExpressionEnabled(ActivityExecution execution, Expression skipExpression) {
+  public static boolean isSkipExpressionEnabled(DelegateExecution execution, Expression skipExpression) {
     if (skipExpression == null) {
       return false;
     }
     return checkSkipExpressionVariable(execution);
   }
 
-  private static boolean checkSkipExpressionVariable(ActivityExecution execution) {
+  private static boolean checkSkipExpressionVariable(DelegateExecution execution) {
     final String skipExpressionEnabledVariable = "_ACTIVITI_SKIP_EXPRESSION_ENABLED";
     Object isSkipExpressionEnabled = execution.getVariable(skipExpressionEnabledVariable);
 
@@ -48,7 +48,7 @@ public class SkipExpressionUtil {
     }
   }
 
-  public static boolean shouldSkipFlowElement(CommandContext commandContext, ActivityExecution execution, String skipExpressionString) {
+  public static boolean shouldSkipFlowElement(CommandContext commandContext, DelegateExecution execution, String skipExpressionString) {
     Expression skipExpression = commandContext.getProcessEngineConfiguration().getExpressionManager().createExpression(skipExpressionString);
     Object value = skipExpression.getValue(execution);
 
@@ -60,7 +60,7 @@ public class SkipExpressionUtil {
     }
   }
 
-  public static boolean shouldSkipFlowElement(ActivityExecution execution, Expression skipExpression) {
+  public static boolean shouldSkipFlowElement(DelegateExecution execution, Expression skipExpression) {
     Object value = skipExpression.getValue(execution);
 
     if (value instanceof Boolean) {

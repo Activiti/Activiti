@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * A simple data input association between a source and a target with assignments
@@ -41,7 +41,7 @@ public class SimpleDataInputAssociation extends AbstractDataAssociation {
     this.assignments.add(assignment);
   }
 
-  public void evaluate(ActivityExecution execution) {
+  public void evaluate(DelegateExecution execution) {
     for (Assignment assignment : this.assignments) {
       assignment.evaluate(execution);
     }

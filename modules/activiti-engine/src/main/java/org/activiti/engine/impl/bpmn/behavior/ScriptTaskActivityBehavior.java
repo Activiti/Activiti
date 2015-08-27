@@ -14,9 +14,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     this.storeScriptVariables = storeScriptVariables;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 

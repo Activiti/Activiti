@@ -18,7 +18,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -35,7 +34,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
   private static final Logger logger = LoggerFactory.getLogger(EndExecutionOperation.class);
 
-  public EndExecutionOperation(CommandContext commandContext, ActivityExecution execution) {
+  public EndExecutionOperation(CommandContext commandContext, ExecutionEntity execution) {
     super(commandContext, execution);
   }
 

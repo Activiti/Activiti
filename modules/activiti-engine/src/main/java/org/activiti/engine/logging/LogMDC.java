@@ -1,6 +1,6 @@
 package org.activiti.engine.logging;
 
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.MDC;
 
 /**
@@ -27,7 +27,7 @@ public class LogMDC {
     enabled = b;
   }
 
-  public static void putMDCExecution(ActivityExecution e) {
+  public static void putMDCExecution(ExecutionEntity e) {
     if (e.getId() != null)
       MDC.put(LOG_MDC_EXECUTION_ID, e.getId());
     if (e.getProcessDefinitionId() != null)

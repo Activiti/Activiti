@@ -23,12 +23,12 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -43,7 +43,7 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 
 public class ExecutionEntity extends VariableScopeImpl 
-    implements ActivityExecution, Execution, ProcessInstance, PersistentObject, HasRevision {
+    implements DelegateExecution, Execution, ProcessInstance, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

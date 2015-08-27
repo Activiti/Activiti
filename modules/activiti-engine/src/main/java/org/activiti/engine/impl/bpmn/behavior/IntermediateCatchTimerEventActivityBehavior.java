@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.List;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -35,7 +35,7 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
     this.timerEventDefinition = timerEventDefinition;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     TimerEntity timer = TimerUtil
         .createTimerEntityForTimerEventDefinition(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, 
             TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate()));
@@ -45,7 +45,7 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
   }
   
   @Override
-  public void cancelEvent(ActivityExecution execution) {
+  public void cancelEvent(DelegateExecution execution) {
     JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
     List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(execution.getId());
     
@@ -57,7 +57,7 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     leaveIntermediateCatchEvent(execution);
   }
 }

@@ -35,7 +35,6 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -88,7 +87,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     setInnerActivityBehavior(innerActivityBehavior);
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
       try {
         createInstances(execution);
@@ -104,9 +103,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
   }
 
-  protected abstract void createInstances(ActivityExecution execution);
+  protected abstract void createInstances(DelegateExecution execution);
   
-  protected void executeCompensationBoundaryEvents(FlowElement flowElement, ActivityExecution execution) {
+  protected void executeCompensationBoundaryEvents(FlowElement flowElement, DelegateExecution execution) {
 
     //Execute compensation boundary events
     Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowElement);
@@ -152,12 +151,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
 
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     innerActivityBehavior.trigger(execution, signalName, signalData);
   }
 
   // required for supporting embedded subprocesses
-  public void lastExecutionEnded(ActivityExecution execution) {
+  public void lastExecutionEnded(DelegateExecution execution) {
     //ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
     leave(execution);
   }
@@ -167,7 +166,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
 
   // required for supporting external subprocesses
-  public void completed(ActivityExecution execution) throws Exception {
+  public void completed(DelegateExecution execution) throws Exception {
     leave(execution);
   }
 
@@ -175,7 +174,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   // //////////////////////////////////////////////////////////////////////
 
   @SuppressWarnings("rawtypes")
-  protected int resolveNrOfInstances(ActivityExecution execution) {
+  protected int resolveNrOfInstances(DelegateExecution execution) {
     int nrOfInstances = -1;
     if (loopCardinalityExpression != null) {
       nrOfInstances = resolveLoopCardinality(execution);
@@ -201,7 +200,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
 
   @SuppressWarnings("rawtypes")
-  protected void executeOriginalBehavior(ActivityExecution execution, int loopCounter) {
+  protected void executeOriginalBehavior(DelegateExecution execution, int loopCounter) {
     if (usesCollection() && collectionElementVariable != null) {
       Collection collection = null;
       if (collectionExpression != null) {
@@ -227,7 +226,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       innerActivityBehavior.execute(execution);
     } else {
       execution.setCurrentFlowElement(activity);
-      Context.getAgenda().planContinueMultiInstanceOperation(execution);
+      Context.getAgenda().planContinueMultiInstanceOperation((ExecutionEntity) execution);
     }
   }
 
@@ -239,7 +238,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return flowNode.getSubProcess() != null;
   }
 
-  protected int resolveLoopCardinality(ActivityExecution execution) {
+  protected int resolveLoopCardinality(DelegateExecution execution) {
     // Using Number since expr can evaluate to eg. Long (which is also the default for Juel)
     Object value = loopCardinalityExpression.getValue(execution);
     if (value instanceof Number) {
@@ -251,7 +250,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
   }
 
-  protected boolean completionConditionSatisfied(ActivityExecution execution) {
+  protected boolean completionConditionSatisfied(DelegateExecution execution) {
     if (completionConditionExpression != null) {
       Object value = completionConditionExpression.getValue(execution);
       if (!(value instanceof Boolean)) {
@@ -266,13 +265,13 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return false;
   }
 
-  protected void setLoopVariable(ActivityExecution execution, String variableName, Object value) {
+  protected void setLoopVariable(DelegateExecution execution, String variableName, Object value) {
     execution.setVariableLocal(variableName, value);
   }
 
-  protected Integer getLoopVariable(ActivityExecution execution, String variableName) {
+  protected Integer getLoopVariable(DelegateExecution execution, String variableName) {
     Object value = execution.getVariableLocal(variableName);
-    ActivityExecution parent = execution.getParent();
+    DelegateExecution parent = execution.getParent();
     while (value == null && parent != null) {
       value = parent.getVariableLocal(variableName);
       parent = parent.getParent();
@@ -280,11 +279,11 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return (Integer) (value != null ? value : 0);
   }
 
-  protected Integer getLocalLoopVariable(ActivityExecution execution, String variableName) {
+  protected Integer getLocalLoopVariable(DelegateExecution execution, String variableName) {
     return (Integer) execution.getVariableLocal(variableName);
   }
   
-  protected void removeLocalLoopVariable(ActivityExecution execution, String variableName) {
+  protected void removeLocalLoopVariable(DelegateExecution execution, String variableName) {
     execution.removeVariableLocal(variableName);
   }
   
@@ -292,7 +291,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * Since the first loop of the multi instance is not executed as a regular activity,
    * it is needed to call the start listeners yourself.
    */
-  protected void callCustomActivityStartListeners(ActivityExecution execution) {
+  protected void callCustomActivityStartListeners(DelegateExecution execution) {
     
     // TODO: needs to be made generic with callActivityEndListeners and calling activiti listeners in general!
     
@@ -330,9 +329,6 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
           if (executionListener != null) {
             ((ExecutionEntity) execution).setEventName(ExecutionListener.EVENTNAME_START);
             executionListener.notify(execution);
-            
-            // TODO: is this still needed? Is this property still needed?
-            ((ExecutionEntity) execution).setEventName(null);
           }
           
         }
@@ -344,7 +340,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   /**
    * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
    */
-  protected void callActivityEndListeners(ActivityExecution execution) {
+  protected void callActivityEndListeners(DelegateExecution execution) {
     List<ActivitiListener> listeners = activity.getExecutionListeners();
     if (CollectionUtils.isNotEmpty(listeners)) {
       
@@ -374,9 +370,6 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
           if (executionListener != null) {
             ((ExecutionEntity) execution).setEventName(ExecutionListener.EVENTNAME_END);
             executionListener.notify(execution);
-            
-            // TODO: is this still needed? Is this property still needed?
-            ((ExecutionEntity) execution).setEventName(null);
           }
           
         }
@@ -385,7 +378,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     
   }
 
-  protected void logLoopDetails(ActivityExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
+  protected void logLoopDetails(DelegateExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}", execution.getCurrentFlowElement(), custom, loopCounter,
           nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);

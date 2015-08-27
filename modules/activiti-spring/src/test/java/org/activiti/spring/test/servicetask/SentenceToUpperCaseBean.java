@@ -12,7 +12,7 @@
  */
 package org.activiti.spring.test.servicetask;
 
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * @author Joram Barrez
@@ -21,7 +21,7 @@ public class SentenceToUpperCaseBean {
 
   protected SentenceGenerator sentenceGenerator;
 
-  public void setSentence(ActivityExecution execution) {
+  public void setSentence(DelegateExecution execution) {
     execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
   }
 

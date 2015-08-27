@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * A transformation based data output association
@@ -31,7 +31,7 @@ public class TransformationDataOutputAssociation extends AbstractDataAssociation
     this.transformation = transformation;
   }
 
-  public void evaluate(ActivityExecution execution) {
+  public void evaluate(DelegateExecution execution) {
     Object value = this.transformation.getValue(execution);
     execution.setVariable(this.getTarget(), value);
   }

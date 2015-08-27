@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.webservice;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -32,7 +32,7 @@ public class MessageImplicitDataInputAssociation extends AbstractDataAssociation
   }
 
   @Override
-  public void evaluate(ActivityExecution execution) {
+  public void evaluate(DelegateExecution execution) {
     if (StringUtils.isNotEmpty(this.source)) {
       Object value = execution.getVariable(this.source);
       MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);

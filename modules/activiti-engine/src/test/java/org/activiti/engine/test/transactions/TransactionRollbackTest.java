@@ -14,8 +14,8 @@
 package org.activiti.engine.test.transactions;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -25,7 +25,10 @@ import org.activiti.engine.test.Deployment;
 public class TransactionRollbackTest extends PluggableActivitiTestCase {
 
   public static class Buzzz implements ActivityBehavior {
-    public void execute(ActivityExecution execution) {
+    
+    private static final long serialVersionUID = 1L;
+
+    public void execute(DelegateExecution execution) {
       throw new ActivitiException("Buzzz");
     }
   }

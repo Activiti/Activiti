@@ -16,8 +16,8 @@ import java.util.List;
 
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -35,24 +35,24 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
     this.signal = signal;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     ExecutionEntity executionEntity = deleteSignalEventSubscription(execution);
     leaveIntermediateCatchEvent(executionEntity);
   }
   
   @Override
-  public void cancelEvent(ActivityExecution execution) {
+  public void cancelEvent(DelegateExecution execution) {
     deleteSignalEventSubscription(execution);
     Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
-  protected ExecutionEntity deleteSignalEventSubscription(ActivityExecution execution) {
+  protected ExecutionEntity deleteSignalEventSubscription(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
     String eventName = null;

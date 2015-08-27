@@ -14,11 +14,13 @@ package org.activiti.engine.impl.delegate;
 
 import java.io.Serializable;
 
+import org.activiti.engine.delegate.DelegateExecution;
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public interface ActivityBehavior extends Serializable {
 
-  void execute(ActivityExecution execution);
+  void execute(DelegateExecution execution);
 }

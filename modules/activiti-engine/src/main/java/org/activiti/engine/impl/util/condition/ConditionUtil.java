@@ -1,10 +1,10 @@
 package org.activiti.engine.impl.util.condition;
 
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.el.UelExpressionCondition;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ConditionUtil {
 
-  public static boolean hasTrueCondition(SequenceFlow sequenceFlow, ActivityExecution execution) {
+  public static boolean hasTrueCondition(SequenceFlow sequenceFlow, DelegateExecution execution) {
     String conditionExpression = sequenceFlow.getConditionExpression();
     if (StringUtils.isNotEmpty(conditionExpression)) {
 

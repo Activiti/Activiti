@@ -14,7 +14,6 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.LinkedList;
 
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.Logger;
@@ -64,40 +63,40 @@ public class Agenda {
 
   /* SPECIFIC operations */
 
-  public void planContinueProcessOperation(ActivityExecution execution) {
-    planOperation(new ContinueProcessOperation(commandContext, execution), (ExecutionEntity) execution);
+  public void planContinueProcessOperation(ExecutionEntity execution) {
+    planOperation(new ContinueProcessOperation(commandContext, execution), execution);
   }
 
-  public void planContinueProcessSynchronousOperation(ActivityExecution execution) {
-    planOperation(new ContinueProcessOperation(commandContext, execution, true, false), (ExecutionEntity) execution);
+  public void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
+    planOperation(new ContinueProcessOperation(commandContext, execution, true, false), execution);
   }
   
-  public void planContinueProcessInCompensation(ActivityExecution execution) {
-    planOperation(new ContinueProcessOperation(commandContext, execution, false, true), (ExecutionEntity) execution);
+  public void planContinueProcessInCompensation(ExecutionEntity execution) {
+    planOperation(new ContinueProcessOperation(commandContext, execution, false, true), execution);
   }
   
-  public void planContinueMultiInstanceOperation(ActivityExecution execution) {
-    planOperation(new ContinueMultiInstanceOperation(commandContext, execution), (ExecutionEntity) execution);
+  public void planContinueMultiInstanceOperation(ExecutionEntity execution) {
+    planOperation(new ContinueMultiInstanceOperation(commandContext, execution), execution);
   }
 
-  public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution) {
+  public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution) {
     planTakeOutgoingSequenceFlowsOperation(execution, true);
   }
 
-  public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution, boolean evaluateConditions) {
-    planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions), (ExecutionEntity) execution);
+  public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
+    planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions), execution);
   }
 
-  public void planEndExecutionOperation(ActivityExecution execution) {
-    planOperation(new EndExecutionOperation(commandContext, execution), (ExecutionEntity) execution);
+  public void planEndExecutionOperation(ExecutionEntity execution) {
+    planOperation(new EndExecutionOperation(commandContext, execution), execution);
   }
 
-  public void planTriggerExecutionOperation(ActivityExecution execution) {
-    planOperation(new TriggerExecutionOperation(commandContext, execution), (ExecutionEntity) execution);
+  public void planTriggerExecutionOperation(ExecutionEntity execution) {
+    planOperation(new TriggerExecutionOperation(commandContext, execution), execution);
   }
 
-  public void planDestroyScopeOperation(ActivityExecution execution) {
-    planOperation(new DestroyScopeOperation(commandContext, execution), (ExecutionEntity) execution);
+  public void planDestroyScopeOperation(ExecutionEntity execution) {
+    planOperation(new DestroyScopeOperation(commandContext, execution), execution);
   }
   
   public void planExecuteInactiveBehaviorsOperation() {

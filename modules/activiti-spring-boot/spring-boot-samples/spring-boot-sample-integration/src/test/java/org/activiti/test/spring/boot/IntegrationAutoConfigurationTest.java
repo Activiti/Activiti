@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration;
@@ -54,9 +54,9 @@ public class IntegrationAutoConfigurationTest {
        public IntegrationFlow inboundProcess(ActivitiInboundGateway inboundGateway) {
            return IntegrationFlows
                    .from(inboundGateway)
-                   .handle(new GenericHandler<ActivityExecution>() {
+                   .handle(new GenericHandler<DelegateExecution>() {
                        @Override
-                       public Object handle(ActivityExecution execution, Map<String, Object> headers) {
+                       public Object handle(DelegateExecution execution, Map<String, Object> headers) {
                            return MessageBuilder.withPayload(execution)
                                    .setHeader("projectId", projectId)
                                    .setHeader("orderId", "246")

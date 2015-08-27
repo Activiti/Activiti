@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.delegate;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 
 
@@ -23,9 +24,9 @@ public class ActivityBehaviorInvocation extends DelegateInvocation {
 
   protected final ActivityBehavior behaviorInstance;
 
-  protected final ActivityExecution execution;
+  protected final DelegateExecution execution;
 
-  public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, ActivityExecution execution) {
+  public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, DelegateExecution execution) {
     this.behaviorInstance = behaviorInstance;
     this.execution = execution;
   }

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
@@ -25,7 +26,6 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
@@ -39,6 +39,8 @@ import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected Expression expression;
   protected Expression skipExpression;
   private final List<FieldDeclaration> fieldDeclarations;
@@ -50,7 +52,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     Object delegate = expression.getValue(execution);
     if (delegate instanceof TriggerableActivityBehavior) {
       ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
@@ -58,7 +60,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
     }
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);

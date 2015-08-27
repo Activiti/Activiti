@@ -33,7 +33,6 @@ import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBeh
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
@@ -128,7 +127,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Activity Behavior
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
     if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
 
@@ -148,7 +147,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Signallable activity behavior
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     if (activityBehaviorInstance == null) {
       activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
@@ -165,7 +164,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   @Override
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance((ActivityExecution) execution);
+      activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
 
     if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
@@ -176,7 +175,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   @Override
-  public void completed(ActivityExecution execution) throws Exception {
+  public void completed(DelegateExecution execution) throws Exception {
     if (activityBehaviorInstance == null) {
       activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
@@ -188,7 +187,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     }
   }
 
-  protected ActivityBehavior getActivityBehaviorInstance(ActivityExecution execution) {
+  protected ActivityBehavior getActivityBehaviorInstance(DelegateExecution execution) {
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
 
     if (delegateInstance instanceof ActivityBehavior) {
@@ -202,7 +201,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
 
   // Adds properties to the given delegation instance (eg multi instance) if
   // needed
-  protected ActivityBehavior determineBehaviour(ActivityBehavior delegateInstance, ActivityExecution execution) {
+  protected ActivityBehavior determineBehaviour(ActivityBehavior delegateInstance, DelegateExecution execution) {
     if (hasMultiInstanceCharacteristics()) {
       multiInstanceActivityBehavior.setInnerActivityBehavior((AbstractBpmnActivityBehavior) delegateInstance);
       return multiInstanceActivityBehavior;

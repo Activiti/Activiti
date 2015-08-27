@@ -17,8 +17,8 @@ import java.util.List;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -42,13 +42,13 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
   }
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 

@@ -18,12 +18,13 @@ import java.util.List;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
@@ -31,7 +32,7 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
  */
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-  private static final long serialVersionUID = -2961893934810190972L;
+  private static final long serialVersionUID = 1L;
 
   protected final SignalEventDefinition signalEventDefinition;
   protected String signalEventName;
@@ -49,7 +50,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     this.signalEventDefinition = signalEventDefinition;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     CommandContext commandContext = Context.getCommandContext();
 
@@ -72,7 +73,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
     }
 
-    commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution);
+    commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution);
 //    if (execution.getCurrentActivityId() != null) { // don't continue if process has already finished
 //      leave(execution);
 //    }

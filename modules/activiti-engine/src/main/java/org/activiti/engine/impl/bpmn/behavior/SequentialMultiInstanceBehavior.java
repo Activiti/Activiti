@@ -21,9 +21,9 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -42,7 +42,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
   /**
    * Handles the sequential case of spawning the instances. Will only create one instance, since at most one instance can be active.
    */
-  protected void createInstances(ActivityExecution execution) {
+  protected void createInstances(DelegateExecution execution) {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances < 0) {
       throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" + ", but was " + nrOfInstances);
@@ -63,7 +63,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one instance, and executes the logic for
    * the sequential behavior.
    */
-  public void leave(ActivityExecution execution) {
+  public void leave(DelegateExecution execution) {
     int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable()) + 1;
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;

@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -45,7 +45,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
   }
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
     
@@ -93,7 +93,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 

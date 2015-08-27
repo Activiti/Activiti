@@ -27,7 +27,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -59,7 +58,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     this.mapExceptions = mapExceptions;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     String finalProcessDefinitonKey = null;
     if (processDefinitionExpression != null) {
@@ -138,7 +137,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
   }
 
-  public void completed(ActivityExecution execution) throws Exception {
+  public void completed(DelegateExecution execution) throws Exception {
     // only control flow. no sub process instance data available
     leave(execution);
   }

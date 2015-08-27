@@ -13,6 +13,9 @@
 
 package org.activiti.engine.delegate;
 
+import java.util.List;
+
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.EngineServices;
 
 /**
@@ -72,5 +75,68 @@ public interface DelegateExecution extends VariableScope {
    * All Activiti services can be accessed through this interface.
    */
   EngineServices getEngineServices();
+  
+  FlowElement getCurrentFlowElement();
+
+  void setCurrentFlowElement(FlowElement flowElement);
+
+  /* Execution management */
+
+  /**
+   * returns the parent of this execution, or null if there no parent.
+   */
+  DelegateExecution getParent();
+
+  /**
+   * returns the list of execution of which this execution the parent of.
+   */
+  List<? extends DelegateExecution> getExecutions();
+
+  /* State management */
+
+  /**
+   * makes this execution active or inactive.
+   */
+  void setActive(boolean isActive);
+
+  /**
+   * returns whether this execution is currently active.
+   */
+  boolean isActive();
+
+  /**
+   * returns whether this execution has ended or not.
+   */
+  boolean isEnded();
+
+  /**
+   * changes the concurrent indicator on this execution.
+   */
+  void setConcurrent(boolean isConcurrent);
+
+  /**
+   * returns whether this execution is concurrent or not.
+   */
+  boolean isConcurrent();
+
+  /**
+   * returns whether this execution is a process instance or not.
+   */
+  boolean isProcessInstanceType();
+
+  /**
+   * Inactivates this execution. This is useful for example in a join: the execution still exists, but it is not longer active.
+   */
+  void inactivate();
+
+  /**
+   * Returns whether this execution is a scope.
+   */
+  boolean isScope();
+
+  /**
+   * Changes whether this execution is a scope or not
+   */
+  void setScope(boolean isScope);
 
 }

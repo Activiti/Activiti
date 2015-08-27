@@ -15,10 +15,10 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 
 /**
  * ActivityBehavior that evaluates an expression when executed. Optionally, it sets the result of the expression as a variable on the execution.
@@ -31,6 +31,8 @@ import org.activiti.engine.impl.delegate.ActivityExecution;
  */
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected Expression expression;
   protected Expression skipExpression;
   protected String resultVariable;
@@ -41,7 +43,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
     this.resultVariable = resultVariable;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     Object value = null;
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);

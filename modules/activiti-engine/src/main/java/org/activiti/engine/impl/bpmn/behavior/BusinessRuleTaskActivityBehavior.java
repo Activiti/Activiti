@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.ActivityExecution;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
 import org.activiti.engine.impl.rules.RulesHelper;
@@ -45,7 +45,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
   public BusinessRuleTaskActivityBehavior() {
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
     String deploymentId = processDefinitionEntity.getDeploymentId();
 
