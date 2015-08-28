@@ -10,13 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.spring.impl.test;
+package org.activiti5.spring.impl.test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.test.AbstractActivitiTestCase;
+import org.activiti5.engine.impl.test.AbstractActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

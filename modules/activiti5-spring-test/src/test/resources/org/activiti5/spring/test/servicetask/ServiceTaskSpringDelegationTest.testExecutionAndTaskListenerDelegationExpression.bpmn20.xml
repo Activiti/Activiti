@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="executionAndTaskListenerDelegation">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="userTask"/>
+
+        <userTask id="userTask" name="Schedule meeting">
+            <extensionElements>
+                <activiti:executionListener event="start" delegateExpression="${myExecutionListenerBean}">
+                    <activiti:field name="someField" stringValue="executionListenerInjection"/>
+                </activiti:executionListener>
+                <activiti:taskListener event="create" delegateExpression="${myTaskListenerBean}">
+                    <activiti:field name="someField" stringValue="taskListenerInjection"/>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

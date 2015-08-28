@@ -40,18 +40,19 @@ public class DefaultProcessEngineFactory {
   /**
    * Takes in an Activiti 6 process engine config, gives back an Activiti 5 Process engine.
    */
-  @SuppressWarnings("unchecked")
   public ProcessEngine buildProcessEngine(ProcessEngineConfigurationImpl activiti6Configuration) {
-
-    // TODO: jta/spring/custom type
-
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration = null;
     if (activiti6Configuration instanceof StandaloneProcessEngineConfiguration) {
       activiti5Configuration = new org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration();
+      copyConfigItems(activiti6Configuration, activiti5Configuration);
+      return activiti5Configuration.buildProcessEngine();
     } else {
       throw new ActivitiException("Unsupported process engine configuration");
     }
-      
+  }
+   
+  @SuppressWarnings("unchecked")
+  protected void copyConfigItems(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getIdGeneratorDataSource() != null) {
       activiti5Configuration.setIdGeneratorDataSource(activiti6Configuration.getIdGeneratorDataSource());
     } else if (activiti6Configuration.getIdGeneratorDataSourceJndiName() != null) {
@@ -103,6 +104,10 @@ public class DefaultProcessEngineFactory {
         activiti5MailServerInfo.setMailServerUseTLS(mailServerInfo.isMailServerUseTLS());
         activiti5Configuration.getMailServers().put(key, activiti5MailServerInfo);
       }
+    }
+    
+    if (activiti6Configuration.getMailSessionJndi() != null) {
+      activiti5Configuration.setMailSessionJndi(activiti6Configuration.getMailSessionJndi());
     }
     
     activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
@@ -174,9 +179,6 @@ public class DefaultProcessEngineFactory {
         }
       }
     }
-
-    return activiti5Configuration.buildProcessEngine();
-
   }
 
   protected void convertParseHandlers(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {

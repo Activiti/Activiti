@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="taskListenerDelegateExpression">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="task1"/>
+
+        <userTask id="task1" name="task1">
+            <extensionElements>
+                <activiti:taskListener event="complete"
+                                       expression="${myTaskListener.calledInExpression(task, task.eventName)}"/>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow2" sourceRef="task1" targetRef="task2"/>
+
+        <userTask id="task2" name="task2">
+            <extensionElements>
+                <activiti:taskListener event="complete" delegateExpression="${myTaskListener}"/>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow3" sourceRef="task2" targetRef="task3"/>
+
+        <userTask id="task3"/>
+        <sequenceFlow id="flow4" sourceRef="task3" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

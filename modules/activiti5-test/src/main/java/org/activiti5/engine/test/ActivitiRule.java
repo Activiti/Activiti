@@ -207,6 +207,8 @@ public class ActivitiRule implements TestRule {
 			initializeProcessEngine();
     }
 		
+		Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration());
+		
 		if (processEngineConfiguration == null) {
 		  initializeServices();
 		}
@@ -237,7 +239,6 @@ public class ActivitiRule implements TestRule {
 
 	protected void initializeProcessEngine() {
 		processEngine = TestHelper.getProcessEngine(configurationResource);
-		Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration());
 	}
 
 	protected void initializeServices() {
