@@ -1,9 +1,9 @@
 #!/bin/sh
 echo "Dropping DB schema"
-mysql -u activiti -pactiviti -e "DROP SCHEMA activiti-compatibility"
+mysql -u activiti -pactiviti -e "DROP SCHEMA activiticompatibility"
 
 echo "Creating DB schema"
-mysql -u activiti -pactiviti -e "CREATE SCHEMA activiti-compatibility DEFAULT CHARACTER SET utf8 COLLATE utf8_bin"
+mysql -u activiti -pactiviti -e "CREATE SCHEMA activiticompatibility DEFAULT CHARACTER SET utf8 COLLATE utf8_bin"
 
 echo "Building dependencies" 
 cd ..
