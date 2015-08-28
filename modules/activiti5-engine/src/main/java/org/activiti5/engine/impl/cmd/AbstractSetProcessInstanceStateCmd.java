@@ -21,8 +21,8 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
-import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
+import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.runtime.Execution;
 
 /**

@@ -25,7 +25,7 @@ public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactor
   @Override
   public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
     return new NoneStartEventActivityBehavior() {
-      public void execute(ActivityExecution execution) throws Exception {
+      public void execute(ActivityExecution execution) {
         super.execute(execution);
         CustomActivityBehaviorFactoryTest.COUNTER.addAndGet(1);
       }

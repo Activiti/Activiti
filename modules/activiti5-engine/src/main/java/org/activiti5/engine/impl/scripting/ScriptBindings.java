@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.script.Bindings;
 import javax.script.SimpleScriptContext;
 
-import org.activiti5.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.VariableScope;
 
 
 /**

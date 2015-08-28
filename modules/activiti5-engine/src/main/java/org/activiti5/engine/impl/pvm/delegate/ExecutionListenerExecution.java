@@ -12,7 +12,7 @@
  */
 package org.activiti5.engine.impl.pvm.delegate;
 
-import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.PvmProcessElement;
 
 

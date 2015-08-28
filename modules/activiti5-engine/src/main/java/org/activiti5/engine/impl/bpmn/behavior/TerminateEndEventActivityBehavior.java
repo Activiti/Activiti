@@ -35,7 +35,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     this.endEvent = endEvent.clone();
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
     ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
 

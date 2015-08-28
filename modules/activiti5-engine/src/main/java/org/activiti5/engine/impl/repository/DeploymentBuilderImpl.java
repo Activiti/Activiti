@@ -12,6 +12,13 @@
  */
 package org.activiti5.engine.impl.repository;
 
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti5.engine.ActivitiException;
@@ -23,13 +30,6 @@ import org.activiti5.engine.impl.util.IoUtil;
 import org.activiti5.engine.impl.util.ReflectUtil;
 import org.activiti5.engine.repository.Deployment;
 import org.activiti5.engine.repository.DeploymentBuilder;
-
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * @author Tom Baeyens

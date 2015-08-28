@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine;
 
+
 /**
  * Provides access to all the services that expose the BPM and workflow operations.
  * 
@@ -46,7 +47,7 @@ package org.activiti5.engine;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ProcessEngine extends EngineServices {
+public interface ProcessEngine {
 
   /** the version of the activiti library */
   public static String VERSION = "6.0.0.0";
@@ -57,4 +58,20 @@ public interface ProcessEngine extends EngineServices {
   String getName();
 
   void close();
+  
+  RepositoryService getRepositoryService();
+
+  RuntimeService getRuntimeService();
+
+  FormService getFormService();
+
+  TaskService getTaskService();
+
+  HistoryService getHistoryService();
+
+  IdentityService getIdentityService();
+
+  ManagementService getManagementService();
+
+  ProcessEngineConfiguration getProcessEngineConfiguration();
 }

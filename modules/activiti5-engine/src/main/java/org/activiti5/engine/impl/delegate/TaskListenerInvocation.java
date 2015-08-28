@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.impl.delegate;
 
-import org.activiti5.engine.delegate.DelegateTask;
-import org.activiti5.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 
 /**
  * Class handling invocations of {@link TaskListener TaskListeners}
@@ -30,7 +30,7 @@ public class TaskListenerInvocation extends DelegateInvocation {
     this.delegateTask = delegateTask;
   }
 
-  protected void invoke() throws Exception {
+  protected void invoke() {
     executionListenerInstance.notify(delegateTask);
   }
   

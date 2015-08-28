@@ -64,7 +64,7 @@ public class CompetingSignalsTest extends PluggableActivitiTestCase {
   
   public static class ControlledConcurrencyBehavior implements ActivityBehavior {
     private static final long serialVersionUID = 1L;
-    public void execute(ActivityExecution execution) throws Exception {
+    public void execute(ActivityExecution execution) {
       activeThread.returnControlToTestThreadAndWait();
     }
   }

@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -104,7 +105,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
       if (error != null) {
         ErrorPropagation.propagateError(error, execution);
       } else {
-        throw new RuntimeException(exc);
+        throw new ActivitiException(exc.getMessage(), exc);
       }
 
     }

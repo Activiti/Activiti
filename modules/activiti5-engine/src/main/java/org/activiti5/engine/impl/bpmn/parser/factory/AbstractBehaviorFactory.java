@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.bpmn.model.FieldExtension;
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.el.FixedValue;

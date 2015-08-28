@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmException;
 import org.activiti5.engine.impl.pvm.PvmTransition;

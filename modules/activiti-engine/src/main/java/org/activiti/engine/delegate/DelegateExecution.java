@@ -16,7 +16,6 @@ package org.activiti.engine.delegate;
 import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.EngineServices;
 
 /**
  * Execution used in {@link JavaDelegate}s and {@link ExecutionListener}s.
@@ -70,11 +69,6 @@ public interface DelegateExecution extends VariableScope {
    * Returns the tenant id, if any is set before on the process definition or process instance.
    */
   String getTenantId();
-
-  /**
-   * All Activiti services can be accessed through this interface.
-   */
-  EngineServices getEngineServices();
   
   FlowElement getCurrentFlowElement();
 

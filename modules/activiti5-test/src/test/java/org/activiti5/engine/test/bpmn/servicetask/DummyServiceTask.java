@@ -13,8 +13,8 @@
 
 package org.activiti5.engine.test.bpmn.servicetask;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 
 /**
@@ -22,7 +22,7 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class DummyServiceTask implements JavaDelegate {
   
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Integer count = (Integer) execution.getVariable("count");
     count = count+1;
     execution.setVariable("count", count);

@@ -11,22 +11,18 @@
  * limitations under the License.
  */
 
-package org.activiti5.engine.delegate;
-
-import java.io.Serializable;
+package org.activiti5.engine;
 
 
+public class ActivitiActivityExecutionException extends ActivitiException {
 
-
-/**
- * @author Frederik Heremans
- */
-public interface Expression extends Serializable {
-
-   Object getValue(VariableScope variableScope);
-   
-   void setValue(Object value, VariableScope variableScope);
-   
-   String getExpressionText();
-   
+  private static final long serialVersionUID = 1L;
+  
+  public ActivitiActivityExecutionException(String message) {
+    super(message);
+  }
+  
+  public ActivitiActivityExecutionException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.test.bpmn.event;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
@@ -23,7 +23,7 @@ public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
   private static boolean listenerExcecuted = false;
   
   public static class MyExecutionListener implements ExecutionListener {
-    public void notify(DelegateExecution execution) throws Exception {
+    public void notify(DelegateExecution execution) {
       listenerExcecuted = true;
     }    
   }

@@ -14,8 +14,8 @@ package org.activiti.compatibility.test.delegate;
 
 import java.util.Random;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 /**
  * @author Joram Barrez
@@ -23,7 +23,7 @@ import org.activiti5.engine.delegate.JavaDelegate;
 public class SetVariableJavaDelegate implements JavaDelegate {
   
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     execution.setVariable("testVarFromActiviti6", new Random().nextInt(100));
   }
 

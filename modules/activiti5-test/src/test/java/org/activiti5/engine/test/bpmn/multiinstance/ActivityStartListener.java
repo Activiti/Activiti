@@ -13,8 +13,8 @@
 
 package org.activiti5.engine.test.bpmn.multiinstance;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 
 /**
@@ -22,7 +22,7 @@ import org.activiti5.engine.delegate.ExecutionListener;
  */
 public class ActivityStartListener implements ExecutionListener {
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
   	
   	Integer loopCounter = (Integer) execution.getVariable("loopCounter");
   	if (loopCounter != null) {

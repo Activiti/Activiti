@@ -16,8 +16,8 @@ package org.activiti5.engine.test.pvm;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class EventCollector implements ExecutionListener {
   
   public List<String> events = new ArrayList<String>(); 
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     notify((ExecutionListenerExecution)execution);
   }
   

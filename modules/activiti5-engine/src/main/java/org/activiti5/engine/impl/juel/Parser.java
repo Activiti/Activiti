@@ -15,8 +15,30 @@
  */
 package org.activiti5.engine.impl.juel;
 
-import static org.activiti5.engine.impl.juel.Builder.Feature.*;
-import static org.activiti5.engine.impl.juel.Scanner.Symbol.*;
+import static org.activiti5.engine.impl.juel.Builder.Feature.METHOD_INVOCATIONS;
+import static org.activiti5.engine.impl.juel.Builder.Feature.NULL_PROPERTIES;
+import static org.activiti5.engine.impl.juel.Builder.Feature.VARARGS;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.COLON;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.COMMA;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.EMPTY;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.END_EVAL;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.EOF;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.FALSE;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.FLOAT;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.IDENTIFIER;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.INTEGER;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.LPAREN;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.MINUS;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.NOT;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.NULL;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.QUESTION;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.RBRACK;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.RPAREN;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.START_EVAL_DEFERRED;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.START_EVAL_DYNAMIC;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.STRING;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.TEXT;
+import static org.activiti5.engine.impl.juel.Scanner.Symbol.TRUE;
 
 import java.util.ArrayList;
 import java.util.Collections;

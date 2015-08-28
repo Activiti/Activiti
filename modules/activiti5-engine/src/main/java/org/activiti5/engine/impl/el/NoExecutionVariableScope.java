@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti5.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.VariableScope;
 
 
 /**

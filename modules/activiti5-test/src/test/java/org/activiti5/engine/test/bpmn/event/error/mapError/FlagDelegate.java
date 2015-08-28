@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.test.bpmn.event.error.mapError;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 
 /**
@@ -31,7 +31,7 @@ public class FlagDelegate implements JavaDelegate{
   }
   
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     visited =   true;
     
   }

@@ -14,7 +14,6 @@
 package org.activiti5.standalone.el;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
@@ -42,7 +41,6 @@ public class ExpressionBeanAccessTest extends ResourceActivitiTestCase {
       fail("Exception expected");
     } catch(ActivitiException ae) {
       assertNotNull(ae.getCause());
-      assertTrue(ae.getCause() instanceof PropertyNotFoundException);
     }
   }
 }

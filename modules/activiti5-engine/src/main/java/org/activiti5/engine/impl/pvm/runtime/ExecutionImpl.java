@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti5.engine.EngineServices;
-import org.activiti5.engine.impl.context.Context;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmException;
 import org.activiti5.engine.impl.pvm.PvmExecution;
@@ -61,6 +61,8 @@ public class ExecutionImpl implements
 
   /** current activity */
   protected ActivityImpl activity;
+  
+  protected FlowElement currentFlowElement;
   
   /** current transition.  is null when there is no transition being taken. */
   protected TransitionImpl transition = null;
@@ -378,11 +380,15 @@ public class ExecutionImpl implements
     return getProcessInstance().getId();
   }
   
+  public String getRootProcessInstanceId() {
+    return getProcessInstance().getId();
+  }
+  
   public String getBusinessKey() {
     return getProcessInstance().getBusinessKey();
   }
   
-  public String getProcessBusinessKey() {
+  public String getProcessInstanceBusinessKey() {
     return getProcessInstance().getBusinessKey();
   }
   
@@ -395,6 +401,23 @@ public class ExecutionImpl implements
    * can be used by subclasses to provide processInstance member field initialization. */
   protected void ensureProcessInstanceInitialized() {
   }
+  
+  //The current flow element, will be filled during operation execution
+
+  public FlowElement getCurrentFlowElement() {
+    if (currentFlowElement == null) {
+      String processDefinitionId = getProcessDefinitionId();
+      if (processDefinitionId != null) {
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+        currentFlowElement = process.getFlowElement(getCurrentActivityId(), true);
+      }
+    }
+    return currentFlowElement;
+  }
+
+  public void setCurrentFlowElement(FlowElement currentFlowElement) {
+    this.currentFlowElement = currentFlowElement;
+ }
   
   // activity /////////////////////////////////////////////////////////////////
   
@@ -721,12 +744,6 @@ public class ExecutionImpl implements
     if (variables==null) {
       variables = new HashMap<String, Object>();
     }
-  }
-  
-  // process engine convience access /////////////////////////////////////////////////////////////////
-  
-  public EngineServices getEngineServices() {
-    return Context.getProcessEngineConfiguration();
   }
   
   // toString /////////////////////////////////////////////////////////////////

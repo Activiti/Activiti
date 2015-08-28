@@ -12,12 +12,12 @@
  */
 package org.activiti5.engine.impl.cmd;
 
+import java.io.Serializable;
+
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
-
-import java.io.Serializable;
 
 /**
  * @author Joram Barrez

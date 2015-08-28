@@ -13,8 +13,8 @@
 
 package org.activiti5.standalone.history;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 
 /**
@@ -22,7 +22,7 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class VariableUpdateDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     execution.setVariable("zzz", 123456789L);
   }
 

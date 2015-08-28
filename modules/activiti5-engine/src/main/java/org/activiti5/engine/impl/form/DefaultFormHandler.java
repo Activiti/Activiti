@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.form.AbstractFormType;
 import org.activiti5.engine.form.FormProperty;
 import org.activiti5.engine.impl.context.Context;

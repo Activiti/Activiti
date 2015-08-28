@@ -70,7 +70,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
       if (error != null) {
         ErrorPropagation.propagateError(error, execution);
       } else {
-        throw new ActivitiException("Could not execute service task expression",exc);
+        throw new ActivitiException("Could not execute service task expression", exc);
       }
     }
   }

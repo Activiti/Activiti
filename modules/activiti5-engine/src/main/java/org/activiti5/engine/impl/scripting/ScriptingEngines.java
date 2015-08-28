@@ -23,8 +23,8 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.VariableScope;
 
 /**
  * @author Tom Baeyens

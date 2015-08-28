@@ -1,8 +1,8 @@
 package org.activiti5.engine.test.regression;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 
 public class ThrowBpmnError implements JavaDelegate {
 	

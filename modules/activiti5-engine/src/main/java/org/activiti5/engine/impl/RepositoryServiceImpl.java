@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
 import org.activiti5.engine.RepositoryService;
 import org.activiti5.engine.impl.cmd.ActivateProcessDefinitionCmd;
@@ -60,7 +61,6 @@ import org.activiti5.engine.repository.NativeModelQuery;
 import org.activiti5.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.repository.ProcessDefinitionQuery;
-import org.activiti5.engine.task.IdentityLink;
 
 
 /**

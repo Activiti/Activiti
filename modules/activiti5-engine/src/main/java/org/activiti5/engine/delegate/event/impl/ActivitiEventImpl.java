@@ -13,10 +13,8 @@
 package org.activiti5.engine.delegate.event.impl;
 
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.EngineServices;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.impl.context.Context;
 
 /**
  * Base class for all {@link ActivitiEvent} implementations.
@@ -82,9 +80,4 @@ public class ActivitiEventImpl implements ActivitiEvent {
 	public void setProcessInstanceId(String processInstanceId) {
 	  this.processInstanceId = processInstanceId;
   }
-	
-	@Override
-	public EngineServices getEngineServices() {
-		 return Context.getProcessEngineConfiguration();
-	}
 }

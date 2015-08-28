@@ -76,7 +76,7 @@ import org.activiti.image.ProcessDiagramGenerator;
  * @see ProcessEngines
  * @author Tom Baeyens
  */
-public abstract class ProcessEngineConfiguration implements EngineServices {
+public abstract class ProcessEngineConfiguration {
 
   /**
    * Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
@@ -244,6 +244,22 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   // createJtaProcessEngineConfiguration() {
   // return new JtaProcessEngineConfiguration();
   // }
+  
+  public abstract RepositoryService getRepositoryService();
+
+  public abstract RuntimeService getRuntimeService();
+
+  public abstract FormService getFormService();
+
+  public abstract TaskService getTaskService();
+
+  public abstract HistoryService getHistoryService();
+
+  public abstract IdentityService getIdentityService();
+
+  public abstract ManagementService getManagementService();
+
+  public abstract ProcessEngineConfiguration getProcessEngineConfiguration();
 
   // getters and setters
   // //////////////////////////////////////////////////////

@@ -14,6 +14,8 @@ package org.activiti5.engine.task;
 
 import java.util.Date;
 
+import org.activiti.engine.task.DelegationState;
+
 
 
 /** Represents one task for a human user.

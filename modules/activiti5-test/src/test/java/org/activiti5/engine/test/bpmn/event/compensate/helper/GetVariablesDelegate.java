@@ -13,9 +13,9 @@
 
 package org.activiti5.engine.test.bpmn.event.compensate.helper;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 
 
 /**
@@ -23,7 +23,7 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class GetVariablesDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Object nrOfCompletedInstances = execution.getVariable("nrOfCompletedInstances");    
     Integer variable = SetVariablesDelegate.variablesMap.get(nrOfCompletedInstances);
     Object variableLocal = execution.getVariable("variable");

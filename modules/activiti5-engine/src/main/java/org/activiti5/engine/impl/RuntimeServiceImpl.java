@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.task.IdentityLink;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.RuntimeService;
 import org.activiti5.engine.delegate.event.ActivitiEvent;
@@ -56,7 +57,6 @@ import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.runtime.ProcessInstanceBuilder;
 import org.activiti5.engine.runtime.ProcessInstanceQuery;
 import org.activiti5.engine.task.Event;
-import org.activiti5.engine.task.IdentityLink;
 import org.activiti5.engine.task.IdentityLinkType;
 
 /**

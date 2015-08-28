@@ -14,7 +14,7 @@ package org.activiti5.engine.delegate.event.impl;
 
 import java.util.Map;
 
-import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti5.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti5.engine.delegate.event.ActivitiCancelledEvent;

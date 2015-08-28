@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.compatibility.wrapper.Activiti5ProcessInstanceWrapper;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 

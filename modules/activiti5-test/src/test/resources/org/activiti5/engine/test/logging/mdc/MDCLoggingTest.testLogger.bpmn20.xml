@@ -3,7 +3,7 @@
   <process id="testLoggerProcess" name="My process" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <serviceTask id="servicetask1" name="Service Task"   activiti:class="org.activiti5.engine.test.logging.mdc.TestService"></serviceTask>
+    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti5.engine.test.logging.mdc.TestService"></serviceTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
     <sequenceFlow id="flow2" sourceRef="servicetask1" targetRef="endevent1"></sequenceFlow>
   </process>

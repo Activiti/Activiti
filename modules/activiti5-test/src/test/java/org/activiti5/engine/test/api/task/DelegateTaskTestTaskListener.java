@@ -3,9 +3,9 @@ package org.activiti5.engine.test.api.task;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.activiti5.engine.delegate.DelegateTask;
-import org.activiti5.engine.delegate.TaskListener;
-import org.activiti5.engine.task.IdentityLink;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.task.IdentityLink;
 
 
 public class DelegateTaskTestTaskListener implements TaskListener {

@@ -26,7 +26,7 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 public class TransactionRollbackTest extends PluggableActivitiTestCase {
   
   public static class Buzzz implements ActivityBehavior {
-    public void execute(ActivityExecution execution) throws Exception {
+    public void execute(ActivityExecution execution) {
       throw new ActivitiException("Buzzz");
     }
   }

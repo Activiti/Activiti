@@ -14,8 +14,8 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.Iterator;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.Condition;
 import org.activiti5.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;

@@ -13,7 +13,8 @@
 
 package org.activiti5.engine.impl.pvm;
 
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
+
 
 
 

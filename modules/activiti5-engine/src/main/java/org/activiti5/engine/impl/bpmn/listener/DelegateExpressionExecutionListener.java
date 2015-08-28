@@ -14,11 +14,11 @@ package org.activiti5.engine.impl.bpmn.listener;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
-import org.activiti5.engine.delegate.Expression;
-import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti5.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti5.engine.impl.context.Context;
@@ -39,7 +39,7 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
     this.fieldDeclarations = fieldDeclarations;
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     // Note: we can't cache the result of the expression, because the
     // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
     Object delegate = expression.getValue(execution);
