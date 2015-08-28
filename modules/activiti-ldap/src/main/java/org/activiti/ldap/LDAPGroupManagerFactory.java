@@ -13,6 +13,7 @@
 package org.activiti.ldap;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
@@ -48,7 +49,7 @@ public class LDAPGroupManagerFactory implements SessionFactory {
   }
 
   @Override
-  public Session openSession() {
+  public Session openSession(CommandContext commandContext) {
     if (ldapGroupCache == null) {
       return new LDAPGroupManager(ldapConfigurator);
     } else {

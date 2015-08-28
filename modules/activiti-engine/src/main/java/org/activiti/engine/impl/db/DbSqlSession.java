@@ -60,6 +60,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.cache.CachedObject;
+import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -124,21 +126,23 @@ public class DbSqlSession implements Session {
 
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
+  protected PersistentObjectCache persistentObjectCache;
   protected Map<Class<? extends PersistentObject>, List<PersistentObject>> insertedObjects = new HashMap<Class<? extends PersistentObject>, List<PersistentObject>>();
-  protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
   protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
 
-  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
+  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, PersistentObjectCache persistentObjectCache) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
     this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession();
+    this.persistentObjectCache = persistentObjectCache;
   }
 
-  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, Connection connection, String catalog, String schema) {
+  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, PersistentObjectCache persistentObjectCache, Connection connection, String catalog, String schema) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
-    this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession(connection);
+    this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession(connection); // Note the use of connection param here, different from other constructor
+    this.persistentObjectCache = persistentObjectCache;
     this.connectionMetadataDefaultCatalog = catalog;
     this.connectionMetadataDefaultSchema = schema;
   }
@@ -158,14 +162,14 @@ public class DbSqlSession implements Session {
     }
     
     insertedObjects.get(clazz).add(persistentObject);
-    cachePut(persistentObject, false);
+    persistentObjectCache.cachePut(persistentObject, false);
   }
 
   // update
   // ///////////////////////////////////////////////////////////////////
 
   public void update(PersistentObject persistentObject) {
-    cachePut(persistentObject, false);
+    persistentObjectCache.cachePut(persistentObject, false);
   }
 
   public int update(String statement, Object parameters) {
@@ -274,7 +278,7 @@ public class DbSqlSession implements Session {
 
     @Override
     public void clearCache() {
-      cacheRemove(persistentObject.getClass(), persistentObject.getId());
+      persistentObjectCache.cacheRemove(persistentObject.getClass(), persistentObject.getId());
     }
 
     public void execute() {
@@ -335,7 +339,7 @@ public class DbSqlSession implements Session {
     @Override
     public void clearCache() {
       for (PersistentObject persistentObject : persistentObjects) {
-        cacheRemove(persistentObject.getClass(), persistentObject.getId());
+        persistentObjectCache.cacheRemove(persistentObject.getClass(), persistentObject.getId());
       }
     }
 
@@ -370,6 +374,7 @@ public class DbSqlSession implements Session {
       this.persistentObjects = persistentObjects;
     }
     
+    @SuppressWarnings("unchecked")
     public void setPersistentObjectEntities(List<? extends PersistentObject> persistentObjects) {
       this.persistentObjects = (List<PersistentObject>) persistentObjects;
     }
@@ -448,7 +453,7 @@ public class DbSqlSession implements Session {
 
   @SuppressWarnings("unchecked")
   public <T extends PersistentObject> T selectById(Class<T> entityClass, String id) {
-    T persistentObject = cacheGet(entityClass, id);
+    T persistentObject = persistentObjectCache.cacheGet(entityClass, id);
     if (persistentObject != null) {
       return persistentObject;
     }
@@ -458,7 +463,7 @@ public class DbSqlSession implements Session {
     if (persistentObject == null) {
       return null;
     }
-    cachePut(persistentObject, true);
+    persistentObjectCache.cachePut(persistentObject, true);
     return persistentObject;
   }
 
@@ -482,117 +487,17 @@ public class DbSqlSession implements Session {
     return filteredObjects;
   }
 
-  public CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
-    Map<String, CachedObject> classCache = cachedObjects.get(persistentObject.getClass());
-    if (classCache == null) {
-      classCache = new HashMap<String, CachedObject>();
-      cachedObjects.put(persistentObject.getClass(), classCache);
-    }
-    CachedObject cachedObject = new CachedObject(persistentObject, storeState);
-    classCache.put(persistentObject.getId(), cachedObject);
-    return cachedObject;
-  }
-
   /**
    * returns the object in the cache. if this object was loaded before, then the original object is returned. if this is the first time this object is loaded, then the loadedObject is added to the
    * cache.
    */
   protected PersistentObject cacheFilter(PersistentObject persistentObject) {
-    PersistentObject cachedPersistentObject = cacheGet(persistentObject.getClass(), persistentObject.getId());
+    PersistentObject cachedPersistentObject = persistentObjectCache.cacheGet(persistentObject.getClass(), persistentObject.getId());
     if (cachedPersistentObject != null) {
       return cachedPersistentObject;
     }
-    cachePut(persistentObject, true);
+    persistentObjectCache.cachePut(persistentObject, true);
     return persistentObject;
-  }
-
-  @SuppressWarnings("unchecked")
-  protected <T> T cacheGet(Class<T> entityClass, String id) {
-    CachedObject cachedObject = null;
-    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
-    if (classCache != null) {
-      cachedObject = classCache.get(id);
-    }
-    if (cachedObject != null) {
-      return (T) cachedObject.getPersistentObject();
-    }
-    return null;
-  }
-
-  protected void cacheRemove(Class<?> persistentObjectClass, String persistentObjectId) {
-    Map<String, CachedObject> classCache = cachedObjects.get(persistentObjectClass);
-    if (classCache == null) {
-      return;
-    }
-    classCache.remove(persistentObjectId);
-  }
-  
-  public <T> Collection<CachedObject> findInCacheAsCachedObjects(Class<T> entityClass) {
-    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
-    if (classCache != null) {
-      return classCache.values();
-    }
-    return null;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> List<T> findInCache(Class<T> entityClass) {
-    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
-    if (classCache != null) {
-      List<T> entities = new ArrayList<T>(classCache.size());
-      for (CachedObject cachedObject : classCache.values()) {
-        entities.add((T) cachedObject.getPersistentObject());
-      }
-      return entities;
-    }
-    return Collections.emptyList();
-  }
-  
-  @SuppressWarnings("unchecked")
-  public <T> List<T> findInCache(List<Class<T>> entityClasses) {
-    List<T> entities = null;
-    
-    for (Class<T> entityClass : entityClasses) {
-      Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
-      if (classCache != null) {
-        if (entities == null) {
-          entities = new ArrayList<T>(classCache.size());
-        }
-        for (CachedObject cachedObject : classCache.values()) {
-          entities.add((T) cachedObject.getPersistentObject());
-        }
-      }
-    }
-    
-    if (entities != null) {
-      return entities;
-    }
-    
-    return Collections.emptyList();
-  }
-
-  public <T> T findInCache(Class<T> entityClass, String id) {
-    return cacheGet(entityClass, id);
-  }
-
-  public static class CachedObject {
-    protected PersistentObject persistentObject;
-    protected Object persistentObjectState;
-
-    public CachedObject(PersistentObject persistentObject, boolean storeState) {
-      this.persistentObject = persistentObject;
-      if (storeState) {
-        this.persistentObjectState = persistentObject.getPersistentState();
-      }
-    }
-
-    public PersistentObject getPersistentObject() {
-      return persistentObject;
-    }
-
-    public Object getPersistentObjectState() {
-      return persistentObjectState;
-    }
   }
 
   // deserialized objects
@@ -676,7 +581,7 @@ public class DbSqlSession implements Session {
     
     for (Class<? extends PersistentObject> persistentObjectClass : insertedObjects.keySet()) {
     	for (PersistentObject insertedObject : insertedObjects.get(persistentObjectClass)) {
-    		cacheRemove(insertedObject.getClass(), insertedObject.getId());
+    	  persistentObjectCache.cacheRemove(insertedObject.getClass(), insertedObject.getId());
     	}
     }
 
@@ -759,6 +664,7 @@ public class DbSqlSession implements Session {
 
   public List<PersistentObject> getUpdatedObjects() {
     List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
+    Map<Class<?>, Map<String, CachedObject>> cachedObjects = persistentObjectCache.getAllCachedObjects();
     for (Class<?> clazz : cachedObjects.keySet()) {
 
       Map<String, CachedObject> classCache = cachedObjects.get(clazz);
@@ -766,8 +672,7 @@ public class DbSqlSession implements Session {
 
         PersistentObject persistentObject = cachedObject.getPersistentObject();
         if (!isPersistentObjectToBeDeleted(persistentObject)) {
-          Object originalState = cachedObject.getPersistentObjectState();
-          if (persistentObject.getPersistentState() != null && !persistentObject.getPersistentState().equals(originalState)) {
+          if (cachedObject.hasChanged()) {
             updatedObjects.add(persistentObject);
           } else {
             log.trace("loaded object '{}' was not updated", persistentObject);

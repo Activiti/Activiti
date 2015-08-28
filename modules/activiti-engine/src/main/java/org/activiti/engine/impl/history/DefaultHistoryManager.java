@@ -257,7 +257,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
       // Search for the historic activity instance in the dbsqlsession
       // cache, since process hasn't been persisted to db yet
-      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
+      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getPersistentObjectCache().findInCache(HistoricActivityInstanceEntity.class);
       for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
         if (executionId.equals(cachedHistoricActivityInstance.getExecutionId()) && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
             && (cachedHistoricActivityInstance.getEndTime() == null)) {
@@ -278,7 +278,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     String executionId = execution.getId();
 
     // search for the historic activity instance in the DbSqlSession cache
-    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
+    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getPersistentObjectCache().findInCache(HistoricActivityInstanceEntity.class);
 
     // First do a check using the execution id
     List<HistoricActivityInstanceEntity> potentialCandidates = new ArrayList<HistoricActivityInstanceEntity>(1);
@@ -378,7 +378,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
 
       // Update the cached historic activity instances that are open
-      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
+      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getPersistentObjectCache().findInCache(HistoricActivityInstanceEntity.class);
       for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
         if ((cachedHistoricActivityInstance.getEndTime() == null) && (execution.getId().equals(cachedHistoricActivityInstance.getExecutionId()))) {
           cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
@@ -709,7 +709,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordVariableUpdate(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicProcessVariable = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
+      HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache().cacheGet(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
         historicProcessVariable = Context.getCommandContext().getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
@@ -911,8 +911,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordVariableRemoved(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicProcessVariable = getDbSqlSession()
-          .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
+      HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache()
+          .cacheGet(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
         historicProcessVariable = Context.getCommandContext()
             .getHistoricVariableInstanceEntityManager()

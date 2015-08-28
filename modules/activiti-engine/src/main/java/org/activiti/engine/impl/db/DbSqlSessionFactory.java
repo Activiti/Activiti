@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
@@ -233,13 +234,13 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected int maxNrOfStatementsInBulkInsert = 100;
-
+  
   public Class<?> getSessionType() {
     return DbSqlSession.class;
   }
 
-  public Session openSession() {
-    return new DbSqlSession(this);
+  public Session openSession(CommandContext commandContext) {
+    return new DbSqlSession(this, commandContext.getPersistentObjectCache());
   }
 
   // insert, update and delete statements
@@ -254,6 +255,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     return getStatement(clazz, insertStatements, "insert");
   }
   
+  @SuppressWarnings("rawtypes")
   public String getBulkInsertStatement(Class clazz) {
     return getStatement(clazz, bulkInsertStatements, "bulkInsert");
   }
@@ -474,5 +476,5 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
     this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
   }
-  
+
 }

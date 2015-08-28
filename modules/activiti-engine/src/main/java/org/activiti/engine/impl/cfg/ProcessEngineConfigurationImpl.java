@@ -154,6 +154,7 @@ import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.GroupEntityManagerFactory;
 import org.activiti.engine.impl.persistence.MembershipEntityManagerFactory;
 import org.activiti.engine.impl.persistence.UserEntityManagerFactory;
+import org.activiti.engine.impl.persistence.cache.PersistentObjectCacheImpl;
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
@@ -834,7 +835,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initSessionFactories() {
     if (sessionFactories == null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
-
+      
       if (dbSqlSessionFactory == null) {
         dbSqlSessionFactory = new DbSqlSessionFactory();
       }
@@ -851,6 +852,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
       addSessionFactory(dbSqlSessionFactory);
 
+      addSessionFactory(new GenericManagerFactory(PersistentObjectCacheImpl.class));
+      
       addSessionFactory(new GenericManagerFactory(AttachmentEntityManagerImpl.class));
       addSessionFactory(new GenericManagerFactory(CommentEntityManagerImpl.class));
       addSessionFactory(new GenericManagerFactory(DeploymentEntityManagerImpl.class));
@@ -1823,7 +1826,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.dbSqlSessionFactory = dbSqlSessionFactory;
     return this;
   }
-
+  
   public TransactionFactory getTransactionFactory() {
     return transactionFactory;
   }

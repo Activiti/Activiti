@@ -22,12 +22,18 @@ import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
 /**
  * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
  */
 public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceEntityManager {
+  
+  @Override
+  public Class<HistoricVariableInstanceEntity> getManagedPersistentObject() {
+    return HistoricVariableInstanceEntity.class;
+  }
   
   @Override
   public HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
@@ -76,26 +82,23 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
   }
 
   @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId) {
+  public void deleteHistoricVariableInstanceByProcessInstanceId(final String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      
+      List<HistoricVariableInstanceEntity> historicProcessVariables = getList("selectHistoricVariableInstanceByProcessInstanceId", 
+          historicProcessInstanceId, new CachedPersistentObjectMatcher<HistoricVariableInstanceEntity>() {
+        
+        @Override
+        public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity) {
+          return historicVariableInstanceEntity.getProcessInstanceId() != null && historicVariableInstanceEntity.getProcessInstanceId().equals(historicProcessInstanceId);
+        }
+        
+      }, true);
 
-      // Delete entries in DB
-      List<HistoricVariableInstanceEntity> historicProcessVariables = (List) getDbSqlSession().createHistoricVariableInstanceQuery().processInstanceId(historicProcessInstanceId)
-          .excludeVariableInitialization().list();
       for (HistoricVariableInstanceEntity historicProcessVariable : historicProcessVariables) {
         delete(historicProcessVariable);
       }
 
-      // Delete entries in Cache
-      List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
-      for (HistoricVariableInstanceEntity historicProcessVariable : cachedHistoricVariableInstances) {
-        // Make sure we only delete the right ones (as we cannot make a
-        // proper query in the cache)
-        if (historicProcessInstanceId.equals(historicProcessVariable.getProcessInstanceId())) {
-          delete(historicProcessVariable);
-        }
-      }
     }
   }
 

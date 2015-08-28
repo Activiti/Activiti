@@ -7,7 +7,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * @author Joram Barrez
  */
-public interface CachedEntityMatcher<Entity extends PersistentObject> {
+public interface CachedPersistentObjectMatcher<Entity extends PersistentObject> {
 
   boolean isRetained(Entity entity);
 

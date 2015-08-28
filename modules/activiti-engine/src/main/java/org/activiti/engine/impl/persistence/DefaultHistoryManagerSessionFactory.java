@@ -2,6 +2,7 @@ package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryManager;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -15,7 +16,7 @@ public class DefaultHistoryManagerSessionFactory implements SessionFactory {
   }
 
   @Override
-  public Session openSession() {
+  public Session openSession(CommandContext commandContext) {
     return new DefaultHistoryManager();
   }
 

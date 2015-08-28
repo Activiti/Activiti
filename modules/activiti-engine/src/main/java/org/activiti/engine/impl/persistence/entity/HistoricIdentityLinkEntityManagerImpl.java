@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
 /**
  * @author Frederik Heremans
@@ -49,22 +49,21 @@ public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager
   }
 
   @Override
-  public void deleteHistoricIdentityLinksByProcInstance(String processInstanceId) {
+  public void deleteHistoricIdentityLinksByProcInstance(final String processInstanceId) {
 
-    // Identity links from db
-    List<HistoricIdentityLinkEntity> identityLinks = findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
-    // Delete
+    List<HistoricIdentityLinkEntity> identityLinks = getList("selectHistoricIdentityLinksByProcessInstance", processInstanceId, new CachedPersistentObjectMatcher<HistoricIdentityLinkEntity>() {
+      
+      @Override
+      public boolean isRetained(HistoricIdentityLinkEntity historicIdentityLinkEntity) {
+        return historicIdentityLinkEntity.getProcessInstanceId() != null && historicIdentityLinkEntity.getProcessInstanceId().equals(processInstanceId);
+      }
+      
+    }, true);
+    
     for (HistoricIdentityLinkEntity identityLink : identityLinks) {
       delete(identityLink);
     }
 
-    // Identity links from cache
-    List<HistoricIdentityLinkEntity> identityLinksFromCache = Context.getCommandContext().getDbSqlSession().findInCache(HistoricIdentityLinkEntity.class);
-    for (HistoricIdentityLinkEntity identityLinkEntity : identityLinksFromCache) {
-      if (processInstanceId.equals(identityLinkEntity.getProcessInstanceId())) {
-        delete(identityLinkEntity);
-      }
-    }
   }
 
 }
