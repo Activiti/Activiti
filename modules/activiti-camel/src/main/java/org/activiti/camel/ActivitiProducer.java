@@ -20,6 +20,7 @@ package org.activiti.camel;
 
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -37,6 +38,8 @@ public class ActivitiProducer extends DefaultProducer {
   public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
 
   public static final String PROCESS_ID_PROPERTY = "PROCESS_ID_PROPERTY";
+  
+  public static final String EXECUTION_ID_PROPERTY = "EXECUTION_ID_PROPERTY";
   
   private final long timeout;
 
@@ -98,29 +101,40 @@ public class ActivitiProducer extends DefaultProducer {
   
   protected void signal(Exchange exchange) {
     String processInstanceId = findProcessInstanceId(exchange);
+    String executionId = exchange.getProperty(EXECUTION_ID_PROPERTY, String.class);
     
     boolean firstTime = true; 
     long initialTime  = System.currentTimeMillis();
    
     Execution execution = null;
     while (firstTime || (timeout > 0 && (System.currentTimeMillis() - initialTime < timeout))) {
-      execution = runtimeService.createExecutionQuery()
-          .processDefinitionKey(processKey)
-          .processInstanceId(processInstanceId)
-          .activityId(activity).singleResult();
-       
       try {
         Thread.sleep(timeResolution);
       } catch (InterruptedException e) {
-        throw new RuntimeException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
+        throw new ActivitiException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
       }
       firstTime = false;
+      
+      if (executionId != null) {
+        execution = runtimeService.createExecutionQuery()
+            .executionId(executionId)
+            .activityId(activity)
+            .singleResult();
+        
+      } else {
+        execution = runtimeService.createExecutionQuery()
+            .processDefinitionKey(processKey)
+            .processInstanceId(processInstanceId)
+            .activityId(activity)
+            .singleResult();
+      }
+       
       if (execution != null) {
         break;
       }
     }
     if (execution == null) {
-      throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId + " in defined timeout.");
+      throw new ActivitiException("Couldn't find activity "+activity+" for processId " + processInstanceId + " in defined timeout.");
     }
     
     runtimeService.setVariables(execution.getId(), ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
@@ -137,7 +151,7 @@ public class ActivitiProducer extends DefaultProducer {
         .processInstanceBusinessKey(processInstanceKey).singleResult();
 
     if (processInstance == null) {
-      throw new RuntimeException("Could not find activiti with key " + processInstanceKey);
+      throw new ActivitiException("Could not find activiti with key " + processInstanceKey);
     }
     return processInstance.getId();
   }
@@ -165,7 +179,7 @@ public class ActivitiProducer extends DefaultProducer {
   
   protected void setProcessInitiator(String processInitiator) {
     if (identityService == null) {
-      throw new RuntimeException("IdentityService is missing and must be provided to set process initiator.");
+      throw new ActivitiException("IdentityService is missing and must be provided to set process initiator.");
     }
     identityService.setAuthenticatedUserId(processInitiator);
   }

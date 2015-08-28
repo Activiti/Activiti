@@ -32,12 +32,14 @@ import org.activiti.cdi.annotation.event.TakeTransition;
 public class TestEventListener {
   
   public void reset() {
-    startActivityService1 = 0;
+    startActivityService1WithLoopCounter = 0;
+    startActivityService1WithoutLoopCounter = 0;
     endActivityService1 = 0;
     takeTransitiont1 = 0;
     takeTransitiont2 = 0;
     takeTransitiont3 = 0;
-    startActivityService2 = 0;
+    startActivityService2WithLoopCounter = 0;
+    startActivityService2WithoutLoopCounter = 0;
     endActivityService2 = 0;
     createTask1 = 0;
     createTask2 = 0;
@@ -78,9 +80,11 @@ public class TestEventListener {
   
   // ---------------------------------------------------------
   
-  private int startActivityService1 = 0;
+  private int startActivityService1WithLoopCounter = 0;
+  private int startActivityService1WithoutLoopCounter = 0;
   private int endActivityService1 = 0;
-  private int startActivityService2 = 0;
+  private int startActivityService2WithLoopCounter = 0;
+  private int startActivityService2WithoutLoopCounter = 0;
   private int endActivityService2 = 0;
   private int takeTransitiont1 = 0;
   private int takeTransitiont2 = 0;
@@ -94,7 +98,12 @@ public class TestEventListener {
   private int deleteTask3 = 0;
     
   public void onStartActivityService1(@Observes @StartActivity("service1") BusinessProcessEvent businessProcessEvent) {    
-    startActivityService1 += 1;
+  	Integer loopCounter = (Integer) businessProcessEvent.getVariableScope().getVariable("loopCounter");
+  	if (loopCounter != null) {
+  		startActivityService1WithLoopCounter += 1;
+  	} else {
+  		startActivityService1WithoutLoopCounter += 1;
+  	}
   }
 
   public void onEndActivityService1(@Observes @EndActivity("service1") BusinessProcessEvent businessProcessEvent) {
@@ -102,7 +111,12 @@ public class TestEventListener {
   }
   
   public void onStartActivityService2(@Observes @StartActivity("service2") BusinessProcessEvent businessProcessEvent) {    
-    startActivityService2 += 1;
+   	Integer loopCounter = (Integer) businessProcessEvent.getVariableScope().getVariable("loopCounter");
+  	if (loopCounter != null) {
+  		startActivityService2WithLoopCounter += 1;
+  	} else {
+  		startActivityService2WithoutLoopCounter += 1;
+  	}
   }
 
   public void onEndActivityService2(@Observes @EndActivity("service2") BusinessProcessEvent businessProcessEvent) {
@@ -153,10 +167,6 @@ public class TestEventListener {
     return endActivityService1;
   }
     
-  public int getStartActivityService1() {
-    return startActivityService1;
-  }
-    
   public int getTakeTransitiont1() {
     return takeTransitiont1;
   }
@@ -185,10 +195,6 @@ public class TestEventListener {
     return createTask2;
   }
   
-  public int getStartActivityService2() {
-    return startActivityService2;
-  }
-  
   public int getEndActivityService2() {
     return endActivityService2;
   }
@@ -204,4 +210,21 @@ public class TestEventListener {
   public int getDeleteTask3() {
     return deleteTask3;
   }
+
+	public int getStartActivityService1WithLoopCounter() {
+		return startActivityService1WithLoopCounter;
+	}
+
+	public int getStartActivityService1WithoutLoopCounter() {
+		return startActivityService1WithoutLoopCounter;
+	}
+
+	public int getStartActivityService2WithLoopCounter() {
+		return startActivityService2WithLoopCounter;
+	}
+
+	public int getStartActivityService2WithoutLoopCounter() {
+		return startActivityService2WithoutLoopCounter;
+	}
+  
 }

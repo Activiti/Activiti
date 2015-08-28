@@ -436,20 +436,21 @@ public class BaseProcessDefinitionDiagramLayoutResource {
 
         // If active activities nas no instance of this callActivity then add
         // last definition
-        if (processInstanceArray.size() == 0) {
+        if (processInstanceArray.size() == 0 && StringUtils.isNotEmpty(callActivityBehavior.getProcessDefinitonKey())) {
           // Get last definition by key
           ProcessDefinition lastProcessDefinition = repositoryService
               .createProcessDefinitionQuery()
               .processDefinitionKey(callActivityBehavior.getProcessDefinitonKey())
               .latestVersion().singleResult();
 
-          // TODO: unuseful fields there are processDefinitionName,
-          // processDefinitionKey
-          ObjectNode processInstanceJSON = new ObjectMapper().createObjectNode();
-          processInstanceJSON.put("processDefinitionId", lastProcessDefinition.getId());
-          processInstanceJSON.put("processDefinitionKey", lastProcessDefinition.getKey());
-          processInstanceJSON.put("processDefinitionName", lastProcessDefinition.getName());
-          processInstanceArray.add(processInstanceJSON);
+          // TODO: unuseful fields there are processDefinitionName, processDefinitionKey
+          if (lastProcessDefinition != null) {
+            ObjectNode processInstanceJSON = new ObjectMapper().createObjectNode();
+            processInstanceJSON.put("processDefinitionId", lastProcessDefinition.getId());
+            processInstanceJSON.put("processDefinitionKey", lastProcessDefinition.getKey());
+            processInstanceJSON.put("processDefinitionName", lastProcessDefinition.getName());
+            processInstanceArray.add(processInstanceJSON);
+          }
         }
 
         if (processInstanceArray.size() > 0) {

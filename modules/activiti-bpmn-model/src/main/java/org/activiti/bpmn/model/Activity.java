@@ -78,6 +78,12 @@ public abstract class Activity extends FlowNode {
   public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
     this.dataOutputAssociations = dataOutputAssociations;
   }
+  public List<MapExceptionEntry> getMapExceptions() {
+    return mapExceptions;
+  }
+  public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
+    this.mapExceptions = mapExceptions;
+  }
   
   public void setValues(Activity otherActivity) {
     super.setValues(otherActivity);
@@ -105,20 +111,9 @@ public abstract class Activity extends FlowNode {
       }
     }
     
-    boundaryEvents = new ArrayList<BoundaryEvent>();
-    if (otherActivity.getBoundaryEvents() != null && !otherActivity.getBoundaryEvents().isEmpty()) {
-      for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
-        boundaryEvents.add(event.clone());
-      }
+    boundaryEvents.clear();
+    for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
+      boundaryEvents.add(event);
     }
   }
-  
-  public List<MapExceptionEntry> getMapExceptions() {
-    return mapExceptions;
-  }
-  
-  public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
-    this.mapExceptions = mapExceptions;
-  }
-  
 }

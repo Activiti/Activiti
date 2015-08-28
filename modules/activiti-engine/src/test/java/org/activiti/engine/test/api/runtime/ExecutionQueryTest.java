@@ -32,8 +32,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -86,6 +88,17 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     // Concurrent process with 3 executions for each process instance
     assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).list().size());
     assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).list().size());
+  }
+  
+  public void testQueryByProcessDefinitionKeyIn() {
+    Set<String> includeIds = new HashSet<String>();
+    assertEquals(13, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+    includeIds.add(CONCURRENT_PROCESS_KEY);
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+    includeIds.add(SEQUENTIAL_PROCESS_KEY);
+    assertEquals(13, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
+    includeIds.add("invalid");
+    assertEquals(13, runtimeService.createExecutionQuery().processDefinitionKeys(includeIds).list().size());
   }
   
   public void testQueryByInvalidProcessDefinitionKey() {
@@ -1302,7 +1315,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(3, concurrentExecutions.size());
     for (Execution execution : concurrentExecutions) {
       if (!((ExecutionEntity)execution).isProcessInstanceType()) {
-        // only the concurrent executions, not the root one, would be cooler to query that directly, see http://jira.codehaus.org/browse/ACT-1373        
+        // only the concurrent executions, not the root one, would be cooler to query that directly, see https://activiti.atlassian.net/browse/ACT-1373
         runtimeService.setVariableLocal(execution.getId(), "x", "child");
         runtimeService.setVariableLocal(execution.getId(), "xIgnoreCase", "ChILD");
       }      

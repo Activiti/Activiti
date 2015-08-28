@@ -39,7 +39,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 			assertNotNull(processInstance);
 			
 			// Check create-event
-			assertEquals(2, listener.getEventsReceived().size());
+			assertEquals(3, listener.getEventsReceived().size());
 			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);

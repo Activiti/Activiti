@@ -53,6 +53,78 @@
         #{tenantId, jdbcType=VARCHAR}
       )
   </insert>
+  
+  <insert id="bulkInsertHistoricActivityInstance" parameterType="java.util.List">
+      insert into ${prefix}ACT_HI_ACTINST (
+        ID_,
+        PROC_DEF_ID_,
+        PROC_INST_ID_,
+        EXECUTION_ID_,
+        ACT_ID_,
+        TASK_ID_,
+        CALL_PROC_INST_ID_,
+        ACT_NAME_,
+        ACT_TYPE_,
+        ASSIGNEE_,
+        START_TIME_,
+        END_TIME_,
+        DURATION_,
+        TENANT_ID_
+      ) values 
+      <foreach collection="list" item="historicActivityInstance" index="index" separator=",">
+         (#{historicActivityInstance.id ,jdbcType=VARCHAR},
+          #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
+          #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
+          #{historicActivityInstance.executionId, jdbcType=VARCHAR},
+          #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
+          #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
+          #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
+          #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
+          #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
+          #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
+          #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
+          #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
+          #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
+          #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+  
+  <insert id="bulkInsertHistoricActivityInstance_oracle" parameterType="java.util.List">
+      INSERT ALL 
+      <foreach collection="list" item="historicActivityInstance" index="index">
+        INTO ${prefix}ACT_HI_ACTINST (
+          ID_,
+          PROC_DEF_ID_,
+          PROC_INST_ID_,
+          EXECUTION_ID_,
+          ACT_ID_,
+          TASK_ID_,
+          CALL_PROC_INST_ID_,
+          ACT_NAME_,
+          ACT_TYPE_,
+          ASSIGNEE_,
+          START_TIME_,
+          END_TIME_,
+          DURATION_,
+          TENANT_ID_
+        ) VALUES 
+           (#{historicActivityInstance.id ,jdbcType=VARCHAR},
+            #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
+            #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
+            #{historicActivityInstance.executionId, jdbcType=VARCHAR},
+            #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
+            #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
+            #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
+            #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
+            #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
+            #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
+            #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
+            #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
+            #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
+            #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
 
   <!-- HISTORIC ACTIVITY INSTANCE UPDATE -->
   

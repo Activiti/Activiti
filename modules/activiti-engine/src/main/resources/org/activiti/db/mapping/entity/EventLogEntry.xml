@@ -39,6 +39,42 @@
       #{isProcessed, jdbcType=INTEGER} 
     )  
   </insert>
+
+  <insert id="bulkInsertEventLogEntry" parameterType="java.util.List">
+    insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
+    values 
+      <foreach collection="list" item="eventLogEntry" index="index" separator=",">
+        (#{eventLogEntry.type, jdbcType=VARCHAR}, 
+         #{eventLogEntry.processDefinitionId, jdbcType=VARCHAR}, 
+         #{eventLogEntry.processInstanceId, jdbcType=VARCHAR},
+         #{eventLogEntry.executionId, jdbcType=VARCHAR},
+         #{eventLogEntry.taskId, jdbcType=VARCHAR},   
+         #{eventLogEntry.timeStamp, jdbcType=TIMESTAMP}, 
+         #{eventLogEntry.userId, jdbcType=VARCHAR},
+         #{eventLogEntry.data, jdbcType=BLOB},
+         #{eventLogEntry.lockOwner, jdbcType=VARCHAR},
+         #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
+         #{eventLogEntry.isProcessed, jdbcType=INTEGER})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertEventLogEntry_postgres" parameterType="java.util.List">
+    insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
+    values 
+      <foreach collection="list" item="eventLogEntry" index="index" separator=",">
+        (#{eventLogEntry.type, jdbcType=VARCHAR}, 
+         #{eventLogEntry.processDefinitionId, jdbcType=VARCHAR}, 
+         #{eventLogEntry.processInstanceId, jdbcType=VARCHAR},
+         #{eventLogEntry.executionId, jdbcType=VARCHAR},
+         #{eventLogEntry.taskId, jdbcType=VARCHAR},   
+         #{eventLogEntry.timeStamp, jdbcType=TIMESTAMP}, 
+         #{eventLogEntry.userId, jdbcType=VARCHAR},
+         #{eventLogEntry.data, jdbcType=BINARY},
+         #{eventLogEntry.lockOwner, jdbcType=VARCHAR},
+         #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
+         #{eventLogEntry.isProcessed, jdbcType=INTEGER})
+      </foreach>
+  </insert>
   
   <insert id="insertEventLogEntry_oracle" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
     insert into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
@@ -56,6 +92,27 @@
       #{lockTime, jdbcType=TIMESTAMP},
       #{isProcessed, jdbcType=INTEGER} 
     )  
+  </insert>
+
+  <insert id="bulkInsertEventLogEntry_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="eventLogEntry" index="index">
+        into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_,
+        TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_) VALUES 
+            (${prefix}ACT_EVT_LOG_seq.nextVal,
+             #{eventLogEntry.type, jdbcType=VARCHAR}, 
+             #{eventLogEntry.processDefinitionId, jdbcType=VARCHAR}, 
+             #{eventLogEntry.processInstanceId, jdbcType=VARCHAR},
+             #{eventLogEntry.executionId, jdbcType=VARCHAR},
+             #{eventLogEntry.taskId, jdbcType=VARCHAR},   
+             #{eventLogEntry.timeStamp, jdbcType=TIMESTAMP}, 
+             #{eventLogEntry.userId, jdbcType=VARCHAR},
+             #{eventLogEntry.data, jdbcType=BLOB},
+             #{eventLogEntry.lockOwner, jdbcType=VARCHAR},
+             #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
+             #{eventLogEntry.isProcessed, jdbcType=INTEGER})
+      </foreach>
+    SELECT * FROM dual
   </insert>
   
   <!-- RESULTMAP -->

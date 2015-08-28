@@ -18,6 +18,26 @@
       )
   </insert>
 
+  <insert id="bulkInsertProperty" parameterType="java.util.List">
+      INSERT INTO ${prefix}ACT_GE_PROPERTY (NAME_, VALUE_, REV_) VALUES 
+      <foreach collection="list" item="property" index="index" separator=","> 
+        (#{property.name ,jdbcType=VARCHAR},
+         #{property.value, jdbcType=VARCHAR},
+         1)
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertProperty_oracle" parameterType="java.util.List">
+    INSERT ALL 
+    <foreach collection="list" item="property" index="index">
+      INTO ${prefix}ACT_GE_PROPERTY (NAME_, VALUE_, REV_) VALUES
+      (#{property.name ,jdbcType=VARCHAR},
+       #{property.value, jdbcType=VARCHAR},
+       1)
+    </foreach>
+    SELECT * FROM dual
+  </insert>
+
   <!-- PROPERTY UPDATE -->
   
   <update id="updateProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">

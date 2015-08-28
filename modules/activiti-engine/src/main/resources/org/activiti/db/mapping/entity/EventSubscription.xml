@@ -234,8 +234,69 @@
             #{configuration, jdbcType=VARCHAR},
             #{created, jdbcType=TIMESTAMP},
             #{processDefinitionId, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}                  
+            #{tenantId, jdbcType=VARCHAR}
     )
+  </insert>
+  
+  <insert id="bulkInsertMessageEventSubscription" parameterType="java.util.List">
+  insert into ${prefix}ACT_RU_EVENT_SUBSCR (
+            ID_, 
+            REV_,
+            EVENT_TYPE_,
+            EVENT_NAME_,
+            EXECUTION_ID_,
+            PROC_INST_ID_,
+            ACTIVITY_ID_,
+            CONFIGURATION_,
+            CREATED_,
+            PROC_DEF_ID_,
+            TENANT_ID_
+    )
+    values 
+      <foreach collection="list" item="messageEventSubscription" index="index" separator=",">
+          (#{messageEventSubscription.id, jdbcType=VARCHAR},
+           1,
+           #{messageEventSubscription.eventType, jdbcType=VARCHAR},
+           #{messageEventSubscription.eventName, jdbcType=VARCHAR},
+           #{messageEventSubscription.executionId, jdbcType=VARCHAR},
+           #{messageEventSubscription.processInstanceId, jdbcType=VARCHAR},
+           #{messageEventSubscription.activityId, jdbcType=VARCHAR},
+           #{messageEventSubscription.configuration, jdbcType=VARCHAR},
+           #{messageEventSubscription.created, jdbcType=TIMESTAMP},
+           #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
+           #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+  
+  <insert id="bulkInsertMessageEventSubscription_oracle" parameterType="java.util.List">
+  INSERT ALL 
+      <foreach collection="list" item="messageEventSubscription" index="index">
+        into ${prefix}ACT_RU_EVENT_SUBSCR (
+            ID_, 
+            REV_,
+            EVENT_TYPE_,
+            EVENT_NAME_,
+            EXECUTION_ID_,
+            PROC_INST_ID_,
+            ACTIVITY_ID_,
+            CONFIGURATION_,
+            CREATED_,
+            PROC_DEF_ID_,
+            TENANT_ID_
+          ) VALUES 
+          (#{messageEventSubscription.id, jdbcType=VARCHAR},
+           1,
+           #{messageEventSubscription.eventType, jdbcType=VARCHAR},
+           #{messageEventSubscription.eventName, jdbcType=VARCHAR},
+           #{messageEventSubscription.executionId, jdbcType=VARCHAR},
+           #{messageEventSubscription.processInstanceId, jdbcType=VARCHAR},
+           #{messageEventSubscription.activityId, jdbcType=VARCHAR},
+           #{messageEventSubscription.configuration, jdbcType=VARCHAR},
+           #{messageEventSubscription.created, jdbcType=TIMESTAMP},
+           #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
+           #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
   </insert>
 
   <!-- MESSAGE UPDATE -->
@@ -286,6 +347,68 @@
             #{tenantId, jdbcType=VARCHAR}         
     )
   </insert>
+  
+  <insert id="bulkInsertSignalEventSubscription" parameterType="java.util.List">
+   insert into ${prefix}ACT_RU_EVENT_SUBSCR (
+            ID_, 
+            REV_,
+            EVENT_TYPE_,
+            EVENT_NAME_,
+            EXECUTION_ID_,
+            PROC_INST_ID_,
+            ACTIVITY_ID_,
+            CONFIGURATION_,
+            CREATED_,
+            PROC_DEF_ID_,
+            TENANT_ID_
+    )
+    values 
+      <foreach collection="list" item="signalEventSubscription" index="index" separator=",">
+        (#{signalEventSubscription.id, jdbcType=VARCHAR},
+         1,
+         #{signalEventSubscription.eventType, jdbcType=VARCHAR},
+         #{signalEventSubscription.eventName, jdbcType=VARCHAR},
+         #{signalEventSubscription.executionId, jdbcType=VARCHAR},
+         #{signalEventSubscription.processInstanceId, jdbcType=VARCHAR},
+         #{signalEventSubscription.activityId, jdbcType=VARCHAR},
+         #{signalEventSubscription.configuration, jdbcType=VARCHAR},
+         #{signalEventSubscription.created, jdbcType=TIMESTAMP},
+         #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
+         #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
+     </foreach>
+  </insert>
+
+  <insert id="bulkInsertSignalEventSubscription_oracle" parameterType="java.util.List">
+   INSERT ALL 
+      <foreach collection="list" item="signalEventSubscription" index="index">
+         into ${prefix}ACT_RU_EVENT_SUBSCR (
+          ID_, 
+          REV_,
+          EVENT_TYPE_,
+          EVENT_NAME_,
+          EXECUTION_ID_,
+          PROC_INST_ID_,
+          ACTIVITY_ID_,
+          CONFIGURATION_,
+          CREATED_,
+          PROC_DEF_ID_,
+          TENANT_ID_
+          )
+          VALUES 
+          (#{signalEventSubscription.id, jdbcType=VARCHAR},
+           1,
+           #{signalEventSubscription.eventType, jdbcType=VARCHAR},
+           #{signalEventSubscription.eventName, jdbcType=VARCHAR},
+           #{signalEventSubscription.executionId, jdbcType=VARCHAR},
+           #{signalEventSubscription.processInstanceId, jdbcType=VARCHAR},
+           #{signalEventSubscription.activityId, jdbcType=VARCHAR},
+           #{signalEventSubscription.configuration, jdbcType=VARCHAR},
+           #{signalEventSubscription.created, jdbcType=TIMESTAMP},
+           #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
+           #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
+     </foreach>
+    SELECT * FROM dual
+  </insert>
 
   <!-- SIGNAL UPDATE -->
 
@@ -331,8 +454,70 @@
             #{configuration, jdbcType=VARCHAR},
             #{created, jdbcType=TIMESTAMP},
             #{processDefinitionId, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}      
+            #{tenantId, jdbcType=VARCHAR}
     )
+  </insert>
+
+  <insert id="bulkInsertCompensateEventSubscription" parameterType="java.util.List">
+    insert into ${prefix}ACT_RU_EVENT_SUBSCR (
+            ID_, 
+            REV_,
+            EVENT_TYPE_,
+            EVENT_NAME_,
+            EXECUTION_ID_,
+            PROC_INST_ID_,
+            ACTIVITY_ID_,
+            CONFIGURATION_,
+            CREATED_,
+            PROC_DEF_ID_,
+            TENANT_ID_
+    )
+    values 
+      <foreach collection="list" item="compensateEventSubscription" index="index" separator=",">
+        (#{compensateEventSubscription.id, jdbcType=VARCHAR},
+         1,
+         #{compensateEventSubscription.eventType, jdbcType=VARCHAR},
+         #{compensateEventSubscription.eventName, jdbcType=VARCHAR},
+         #{compensateEventSubscription.executionId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.processInstanceId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.activityId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.configuration, jdbcType=VARCHAR},
+         #{compensateEventSubscription.created, jdbcType=TIMESTAMP},
+         #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertCompensateEventSubscription_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="compensateEventSubscription" index="index">
+        into ${prefix}ACT_RU_EVENT_SUBSCR (
+          ID_, 
+          REV_,
+          EVENT_TYPE_,
+          EVENT_NAME_,
+          EXECUTION_ID_,
+          PROC_INST_ID_,
+          ACTIVITY_ID_,
+          CONFIGURATION_,
+          CREATED_,
+          PROC_DEF_ID_,
+          TENANT_ID_
+        )
+        VALUES
+        (#{compensateEventSubscription.id, jdbcType=VARCHAR},
+         1,
+         #{compensateEventSubscription.eventType, jdbcType=VARCHAR},
+         #{compensateEventSubscription.eventName, jdbcType=VARCHAR},
+         #{compensateEventSubscription.executionId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.processInstanceId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.activityId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.configuration, jdbcType=VARCHAR},
+         #{compensateEventSubscription.created, jdbcType=TIMESTAMP},
+         #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
+         #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
   </insert>
   
   <!-- Compensate UPDATE -->

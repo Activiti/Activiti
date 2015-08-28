@@ -128,12 +128,13 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
         return (ActivitiEndpoint) e;
       }
     }
-    throw new RuntimeException("Activiti endpoint not defined for " + key);    
+    throw new ActivitiException("Activiti endpoint not defined for " + key);    
   }
 
   protected Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
     Exchange ex = new DefaultExchange(camelContextObj);
     ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
+    ex.setProperty(ActivitiProducer.EXECUTION_ID_PROPERTY, activityExecution.getId());
     Map<String, Object> variables = activityExecution.getVariables();
     updateTargetVariables(endpoint);
     copyVariables(variables, ex, endpoint);

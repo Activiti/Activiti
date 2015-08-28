@@ -15,6 +15,8 @@ package org.activiti.management.jmx;
 import javax.management.Notification;
 import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
 
+import org.activiti.engine.ActivitiException;
+
 /**
  * @author Saeid Mirzaei
  */
@@ -31,7 +33,7 @@ public final class NotificationSenderAdapter implements NotificationSender {
     try {
       broadcaster.sendNotification(notification);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new ActivitiException("Error sending notification", e);
     }
   }
 }

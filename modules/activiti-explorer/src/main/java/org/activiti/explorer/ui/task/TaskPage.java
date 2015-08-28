@@ -121,6 +121,7 @@ public abstract class TaskPage extends AbstractTablePage {
         } else {
           // Nothing is selected
           setDetailComponent(null);
+          taskEventPanel.setTaskId(null);          
           ExplorerApp.get().setCurrentUriFragment(getUriFragment(null));
         }
       }

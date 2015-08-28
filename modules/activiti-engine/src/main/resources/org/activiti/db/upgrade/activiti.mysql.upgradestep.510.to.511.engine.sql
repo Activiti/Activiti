@@ -4,7 +4,7 @@ alter table ACT_RE_PROCDEF
 alter table ACT_RE_PROCDEF 
     MODIFY VERSION_ integer not null;
     
--- http://jira.codehaus.org/browse/ACT-1424    
+-- https://activiti.atlassian.net/browse/ACT-1424
 alter table ACT_RU_JOB 
     MODIFY LOCK_EXP_TIME_ timestamp null;
     

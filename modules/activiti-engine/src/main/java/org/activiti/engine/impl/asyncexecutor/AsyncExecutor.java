@@ -5,45 +5,50 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 public interface AsyncExecutor {
 
-  public void executeAsyncJob(JobEntity job);
+  void executeAsyncJob(JobEntity job);
   
-  public void setCommandExecutor(CommandExecutor commandExecutor);
+  void setCommandExecutor(CommandExecutor commandExecutor);
   
-  public CommandExecutor getCommandExecutor();
+  CommandExecutor getCommandExecutor();
   
-  public boolean isAutoActivate();
+  boolean isAutoActivate();
 
-  public void setAutoActivate(boolean isAutoActivate);
+  void setAutoActivate(boolean isAutoActivate);
   
-  public boolean isActive();
+  boolean isActive();
   
-  public void start();
+  void start();
   
-  public void shutdown();
+  void shutdown();
   
-  public String getLockOwner();
+  String getLockOwner();
   
-  public int getTimerLockTimeInMillis();
+  int getTimerLockTimeInMillis();
   
-  public void setTimerLockTimeInMillis(int lockTimeInMillis);
+  void setTimerLockTimeInMillis(int lockTimeInMillis);
   
-  public int getAsyncJobLockTimeInMillis();
+  int getAsyncJobLockTimeInMillis();
   
-  public void setAsyncJobLockTimeInMillis(int lockTimeInMillis);
+  void setAsyncJobLockTimeInMillis(int lockTimeInMillis);
   
-  public int getDefaultTimerJobAcquireWaitTimeInMillis();
+  int getDefaultTimerJobAcquireWaitTimeInMillis();
   
-  public void setDefaultTimerJobAcquireWaitTimeInMillis(int waitTimeInMillis);
+  void setDefaultTimerJobAcquireWaitTimeInMillis(int waitTimeInMillis);
   
-  public int getDefaultAsyncJobAcquireWaitTimeInMillis();
+  int getDefaultAsyncJobAcquireWaitTimeInMillis();
   
-  public void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis);
+  void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis);
   
-  public int getMaxAsyncJobsDuePerAcquisition();
+  int getMaxAsyncJobsDuePerAcquisition();
   
-  public void setMaxAsyncJobsDuePerAcquisition(int maxJobs);
+  void setMaxAsyncJobsDuePerAcquisition(int maxJobs);
   
-  public int getMaxTimerJobsPerAcquisition();
+  int getMaxTimerJobsPerAcquisition();
   
-  public void setMaxTimerJobsPerAcquisition(int maxJobs);
+  void setMaxTimerJobsPerAcquisition(int maxJobs);
+  
+  int getRetryWaitTimeInMillis();
+  
+  void setRetryWaitTimeInMillis(int retryWaitTimeInMillis);
+  
 }

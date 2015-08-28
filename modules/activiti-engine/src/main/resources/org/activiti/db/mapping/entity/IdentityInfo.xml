@@ -19,7 +19,38 @@
       #{parentId ,jdbcType=VARCHAR}
     )
   </insert>
-  
+
+  <insert id="bulkInsertIdentityInfo" parameterType="java.util.List">
+    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
+    values 
+      <foreach collection="list" item="identityInfo" index="index" separator=",">
+        (#{identityInfo.id ,jdbcType=VARCHAR},
+         1,
+         #{identityInfo.userId ,jdbcType=VARCHAR},
+         #{identityInfo.type ,jdbcType=VARCHAR},
+         #{identityInfo.key ,jdbcType=VARCHAR},
+         #{identityInfo.value ,jdbcType=VARCHAR},
+         #{identityInfo.passwordBytes ,jdbcType=BLOB},
+         #{identityInfo.parentId ,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertIdentityInfo_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="identityInfo" index="index">
+        INTO ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_) VALUES 
+          (#{identityInfo.id ,jdbcType=VARCHAR},
+           1,
+           #{identityInfo.userId ,jdbcType=VARCHAR},
+           #{identityInfo.type ,jdbcType=VARCHAR},
+           #{identityInfo.key ,jdbcType=VARCHAR},
+           #{identityInfo.value ,jdbcType=VARCHAR},
+           #{identityInfo.passwordBytes ,jdbcType=BLOB},
+           #{identityInfo.parentId ,jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+
    <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
     insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
@@ -32,6 +63,21 @@
       #{passwordBytes ,jdbcType=BINARY},
       #{parentId ,jdbcType=VARCHAR}
     )
+  </insert>
+
+  <insert id="bulkInsertIdentityInfo_postgres" parameterType="java.util.List">
+    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
+    values 
+      <foreach collection="list" item="identityInfo" index="index" separator=",">
+        (#{identityInfo.id ,jdbcType=VARCHAR},
+         1,
+         #{identityInfo.userId ,jdbcType=VARCHAR},
+         #{identityInfo.type ,jdbcType=VARCHAR},
+         #{identityInfo.key ,jdbcType=VARCHAR},
+         #{identityInfo.value ,jdbcType=VARCHAR},
+         #{identityInfo.passwordBytes ,jdbcType=BINARY},
+         #{identityInfo.parentId ,jdbcType=VARCHAR})
+      </foreach>
   </insert>
   
   <!-- INFO UPDATE -->

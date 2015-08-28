@@ -91,7 +91,7 @@ It accepts as value either static values link:$$http://en.wikipedia.org/wiki/ISO
 If both are specified then the endDate specified as attribute will be used by the system.
 
  Currently only the _BoundaryTimerEvents_ and _CatchTimerEvent_ supports _EndDate_ functionality.
- 
+
 Additionally, you can specify time cycle using cron expressions, example below shows trigger firing every 5 minutes, starting at full hour:
 
 
@@ -962,7 +962,7 @@ Since BPMN 2.0 there is the difference between the interrupting and non interrup
 ===== Known issue with boundary events
 
 
-There is a known issue regarding concurrency when using boundary events of any type. Currently, it is not possible to have multiple outgoing sequence flow attached to a boundary event (see issue link:$$http://jira.codehaus.org/browse/ACT-47$$[ACT-47]). A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
+There is a known issue regarding concurrency when using boundary events of any type. Currently, it is not possible to have multiple outgoing sequence flow attached to a boundary event (see issue link:$$https://activiti.atlassian.net/browse/ACT-47$$[ACT-47]). A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
 
 image::images/bpmn.known.issue.boundary.event.png[align="center"]
 
@@ -4239,6 +4239,60 @@ Here, all instances of the subprocess will be destroyed when the timer fires, re
 
 
 [[bpmnCompensationHandlers]]
+
+===== Multi instance and execution listeners
+
+(Valid for Activiti 5.18 and up)
+
+There is a caveat when using execution listeners in combination with multi instance. Take for example the following snippet of BPMN 2.0 xml, which is defined on the same level as the _multiInstanceLoopCharacteristics_ xml element is set:
+
+[source,xml,linenums]
+----
+<extensionElements>
+    <activiti:executionListener event="start" class="org.activiti.MyStartListener"/>
+		<activiti:executionListener event="end" class="org.activiti.MyEndListener"/>
+</extensionElements>
+----
+
+For a normal BPMN activity, there would be an invocation of these listeners when the activity is started and ended.
+
+However, when the activity is multi instance, the behavior is different:
+
+* When the multi instance activity is entered, before any of the _inner_ activities is executed, a start event is thrown. The _loopCounter_ variable is not yet set (is null).
+* For each of the actual activities visited, a start event is thrown. The _loopCounter_ variable is set.
+
+The same reasoning applies for the end event:
+
+* When the actual activity is left, an end even is thrown. The _loopCounter_ variable is set.
+* When the multi instance activity has finised as a whole, an end event is thrown. The _loopCounter_ variable is not set.
+
+For example:
+
+[source,xml,linenums]
+----
+<subProcess id="subprocess1" name="Sub Process">
+  <extensionElements>
+    <activiti:executionListener event="start" class="org.activiti.MyStartListener"/>
+    <activiti:executionListener event="end" class="org.activiti.MyEndListener"/>
+  </extensionElements>
+  <multiInstanceLoopCharacteristics isSequential="false">
+    <loopDataInputRef>assignees</loopDataInputRef>
+    <inputDataItem name="assignee"></inputDataItem>
+  </multiInstanceLoopCharacteristics>
+  <startEvent id="startevent2" name="Start"></startEvent>
+  <endEvent id="endevent2" name="End"></endEvent>
+  <sequenceFlow id="flow3" name="" sourceRef="startevent2" targetRef="endevent2"></sequenceFlow>
+</subProcess>
+----
+
+In this example, suppose the _assignees_ list has three items. The following happens at runtime:
+
+* A start event is thrown for the multi instance as a whole. The _start_ execution listener is invoked. The _loopCounter_ nor the _assignee_ variable will not be set (i.e. they will be null).
+* A start event is thrown for each activity instance. The _start_ execution listener is invoked three times. The _loopCounter_ nor the _assignee_ variable will be set (i.e. different from null).
+* So in total, the start execution listener is invoked four times.
+
+Note that the same applies when the _multiInstanceLoopCharacteristics_ are defined on something else than a subprocess too. For example in case the example above would be a simple userTask, the same reasoning still applies.
+
 
 
 ==== Compensation Handlers

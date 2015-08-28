@@ -13,6 +13,16 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
@@ -38,16 +48,6 @@ import org.activiti.engine.task.Task;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -235,12 +235,29 @@ public class TableDataManager extends AbstractManager {
       if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
         tableName = tableName.toLowerCase();
       }
+      
+      String schema = getProcessEngineConfiguration().getDatabaseSchema();
 
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
-        String name = resultSet.getString("COLUMN_NAME").toUpperCase();
-        String type = resultSet.getString("TYPE_NAME").toUpperCase();
-        result.addColumnMetaData(name, type);
+        boolean wrongSchema = false;
+        if (schema != null && schema.length() > 0) {
+          for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+            String columnName = resultSet.getMetaData().getColumnName(i+1);
+            if ("TABLE_SCHEM".equalsIgnoreCase(columnName) || "TABLE_SCHEMA".equalsIgnoreCase(columnName)) {
+              if (schema.equalsIgnoreCase(resultSet.getString(resultSet.getMetaData().getColumnName(i+1))) == false) {
+                wrongSchema = true;
+              }
+              break;
+            }
+          }
+        }
+        
+        if (wrongSchema == false) {
+          String name = resultSet.getString("COLUMN_NAME").toUpperCase();
+          String type = resultSet.getString("TYPE_NAME").toUpperCase();
+          result.addColumnMetaData(name, type);
+        }
       }
       
     } catch (SQLException e) {

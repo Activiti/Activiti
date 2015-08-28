@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,9 +24,12 @@ import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,8 @@ public class TimerEntity extends JobEntity {
   protected Date endDate;
 
   public TimerEntity() {
+    super();
+    this.jobType = "timer";
   }
 
   public TimerEntity(TimerDeclarationImpl timerDeclaration) {
@@ -55,6 +59,7 @@ public class TimerEntity extends JobEntity {
     isExclusive = timerDeclaration.isExclusive();
     repeat = timerDeclaration.getRepeat();
     retries = timerDeclaration.getRetries();
+    this.jobType = "timer";
   }
 
   private TimerEntity(TimerEntity te) {
@@ -70,6 +75,7 @@ public class TimerEntity extends JobEntity {
 
     // Inherit tenant
     tenantId = te.tenantId;
+    this.jobType = "timer";
   }
 
   @Override
@@ -128,7 +134,11 @@ public class TimerEntity extends JobEntity {
         BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager()
                 .getBusinessCalendar(CycleBusinessCalendar.NAME);
 
-        VariableScope executionEntity = commandContext.getExecutionEntityManager().findExecutionById(this.getExecutionId());
+        VariableScope executionEntity = null;
+        if (executionId != null) {
+          executionEntity = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+        }
+        
         if (executionEntity == null) {
           executionEntity = NoExecutionVariableScope.getSharedInstance();
         }

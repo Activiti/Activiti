@@ -45,6 +45,62 @@
             #{formKey, jdbcType=VARCHAR}
            )
   </insert>
+
+  <insert id="bulkInsertTask" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_)
+    VALUES 
+      <foreach collection="list" item="task" index="index" separator=","> 
+        (#{task.id, jdbcType=VARCHAR},
+         1,
+         #{task.name, jdbcType=VARCHAR},
+         #{task.parentTaskId, jdbcType=VARCHAR},
+         #{task.description, jdbcType=VARCHAR},
+         #{task.priority, jdbcType=INTEGER},
+         #{task.createTime, jdbcType=TIMESTAMP},
+         #{task.owner, jdbcType=VARCHAR},
+         #{task.assignee, jdbcType=VARCHAR},
+         #{task.delegationStateString, jdbcType=VARCHAR},
+         #{task.executionId, jdbcType=VARCHAR},
+         #{task.processInstanceId, jdbcType=VARCHAR},
+         #{task.processDefinitionId, jdbcType=VARCHAR},
+         #{task.taskDefinitionKey, jdbcType=VARCHAR},
+         #{task.dueDate, jdbcType=TIMESTAMP},
+         #{task.category, jdbcType=VARCHAR},
+         #{task.suspensionState, jdbcType=INTEGER},
+         #{task.tenantId, jdbcType=VARCHAR},
+         #{task.formKey, jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertTask_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="task" index="index">
+        INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+             ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
+             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_) VALUES 
+        (#{task.id, jdbcType=VARCHAR},
+         1,
+         #{task.name, jdbcType=VARCHAR},
+         #{task.parentTaskId, jdbcType=VARCHAR},
+         #{task.description, jdbcType=VARCHAR},
+         #{task.priority, jdbcType=INTEGER},
+         #{task.createTime, jdbcType=TIMESTAMP},
+         #{task.owner, jdbcType=VARCHAR},
+         #{task.assignee, jdbcType=VARCHAR},
+         #{task.delegationStateString, jdbcType=VARCHAR},
+         #{task.executionId, jdbcType=VARCHAR},
+         #{task.processInstanceId, jdbcType=VARCHAR},
+         #{task.processDefinitionId, jdbcType=VARCHAR},
+         #{task.taskDefinitionKey, jdbcType=VARCHAR},
+         #{task.dueDate, jdbcType=TIMESTAMP},
+         #{task.category, jdbcType=VARCHAR},
+         #{task.suspensionState, jdbcType=INTEGER},
+         #{task.tenantId, jdbcType=VARCHAR},
+         #{task.formKey, jdbcType=VARCHAR})
+    </foreach>
+    SELECT * FROM dual
+  </insert>
   
   <!-- TASK UPDATE -->
   
@@ -236,7 +292,7 @@
     TEMPRES_PARENT_TASK_ID_ as PARENT_TASK_ID_, TEMPRES_DESCRIPTION_ as DESCRIPTION_,
     TEMPRES_PRIORITY_ as PRIORITY_, TEMPRES_CREATE_TIME_ as CREATE_TIME_,
     TEMPRES_OWNER_ as OWNER_, TEMPRES_ASSIGNEE_ as ASSIGNEE_, TEMPRES_DELEGATION_ as DELEGATION_,
-    TEMPRES_EXECUTION_ID_ as EXECUTION_ID_, TEMPRES_PROC_INST_ID_ as PROC_INST_ID_,
+    TEMPRES_FORM_KEY_ as FORM_KEY_, TEMPRES_EXECUTION_ID_ as EXECUTION_ID_, TEMPRES_PROC_INST_ID_ as PROC_INST_ID_,
     TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_TASK_DEF_KEY_ as TASK_DEF_KEY_,
     TEMPRES_DUE_DATE_ as DUE_DATE_, TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_,
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
@@ -248,7 +304,7 @@
     RES.PARENT_TASK_ID_ as TEMPRES_PARENT_TASK_ID_, RES.DESCRIPTION_ as TEMPRES_DESCRIPTION_,
     RES.PRIORITY_ as TEMPRES_PRIORITY_, RES.CREATE_TIME_ as TEMPRES_CREATE_TIME_,
     RES.OWNER_ as TEMPRES_OWNER_, RES.ASSIGNEE_ as TEMPRES_ASSIGNEE_, RES.DELEGATION_ as TEMPRES_DELEGATION_,
-    RES.EXECUTION_ID_ as TEMPRES_EXECUTION_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
+    RES.FORM_KEY_ as TEMPRES_FORM_KEY_, RES.EXECUTION_ID_ as TEMPRES_EXECUTION_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
     RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.TASK_DEF_KEY_ as TEMPRES_TASK_DEF_KEY_,
     RES.DUE_DATE_ as TEMPRES_DUE_DATE_, RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_,
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
@@ -279,9 +335,9 @@
   </sql>
   
   <sql id="commonSelectTaskByQueryCriteriaSql">
-    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned || (orQueryObject != null &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned))">
+    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned">
       <choose>
-        <when test="bothCandidateAndAssigned || (orQueryObject != null &amp;&amp; orQueryObject.bothCandidateAndAssigned)">left</when>
+        <when test="bothCandidateAndAssigned">left</when>
         <otherwise>inner</otherwise>
       </choose>
       join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
@@ -296,26 +352,45 @@
         </otherwise>
       </choose>       
     </foreach>
-     <if test="orQueryObject != null">
+    <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
+      <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned">
+        <choose>
+          <when test="orQueryObject.bothCandidateAndAssigned">left</when>
+          <otherwise>inner</otherwise>
+        </choose>
+        join ${prefix}ACT_RU_IDENTITYLINK I_OR${orIndex} on I_OR${orIndex}.TASK_ID_ = RES.ID_
+      </if>
       <foreach collection="orQueryObject.queryVariableValues" index="index" item="var">
         <choose>
           <when test="var.local">
-            left outer join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.ID_ = A_OR${index}.TASK_ID_ 
+            left outer join ${prefix}ACT_RU_VARIABLE A_OR${orIndex}_${index} on RES.ID_ = A_OR${orIndex}_${index}.TASK_ID_ 
           </when>
           <otherwise>
-            left outer join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_ 
+            left outer join ${prefix}ACT_RU_VARIABLE A_OR${orIndex}_${index} on RES.PROC_INST_ID_ = A_OR${orIndex}_${index}.PROC_INST_ID_ 
           </otherwise>
         </choose>       
       </foreach>
+      
+      <if test="orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0) || (orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0)">
+        inner join ${prefix}ACT_RE_PROCDEF D_OR${orIndex} on RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_
       </if>
+      
+      <if test="orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
+        inner join ${prefix}ACT_RU_EXECUTION E_OR${orIndex} on RES.PROC_INST_ID_ = E_OR${orIndex}.ID_
+      </if>
+      
+      <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
+        left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
+      </if>
+    </foreach>
     
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null ||  processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0)))">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null ||  processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0)">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
-        inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
+    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || processInstanceBusinessKeyLikeIgnoreCase != null">
+      inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
     </if>
-    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where> 
@@ -438,6 +513,12 @@
       </if>
       <if test="processDefinitionKeyLikeIgnoreCase != null">
         and lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}
+      </if>
+      <if test="processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0">
+        and D.KEY_ in
+        <foreach item="item" index="index" collection="processDefinitionKeys" open="(" separator="," close=")">
+          #{item}
+        </foreach>
       </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
@@ -621,7 +702,7 @@
           </if>
         </when>
       </choose>
-      <if test="orQueryObject != null">
+      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         and 
         <trim prefix="(" prefixOverrides="OR" suffix=")">
             <if test="orQueryObject.taskId != null">
@@ -706,10 +787,10 @@
               </foreach>
             </if>
             <if test="orQueryObject.processInstanceBusinessKey != null">
-              or E.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
+              or E_OR${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
             </if>
             <if test="orQueryObject.processInstanceBusinessKeyLike != null">
-              or E.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}
+              or E_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}
             </if>      
             <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
               or lower(E.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}
@@ -736,39 +817,45 @@
               or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
             </if>
             <if test="orQueryObject.processDefinitionKey != null">
-              or D.KEY_ = #{orQueryObject.processDefinitionKey}
+              or D_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
             </if>
             <if test="orQueryObject.processDefinitionKeyLike != null">
-              or D.KEY_ like #{orQueryObject.processDefinitionKeyLike}
+              or D_OR${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}
             </if>
              <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
-              or lower(D.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}
+              or lower(D_OR${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}
+            </if>
+            <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
+              or D_OR${orIndex}.KEY_ in
+              <foreach item="item" index="index" collection="orQueryObject.processDefinitionKeys" open="(" separator="," close=")">
+                #{item}
+              </foreach>
             </if>
             <if test="orQueryObject.processDefinitionName != null">
-              or D.NAME_ = #{orQueryObject.processDefinitionName}
+              or D_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
             </if>
             <if test="orQueryObject.processDefinitionNameLike != null">
-              or D.NAME_ like #{orQueryObject.processDefinitionNameLike}
+              or D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}
             </if>
             <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
-              or D.CATEGORY_ IN
+              or D_OR${orIndex}.CATEGORY_ IN
               <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryInList"
                        open="(" separator="," close=")">
                 #{processCategory}
               </foreach>
             </if>
             <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
-              or D.CATEGORY_ NOT IN
+              or D_OR${orIndex}.CATEGORY_ NOT IN
               <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryNotInList"
                        open="(" separator="," close=")">
                 #{processCategory}
               </foreach>
             </if>
             <if test="orQueryObject.deploymentId != null">
-              or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+              or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
             </if>
             <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
-              or DEPLOY_P.DEPLOYMENT_ID_ IN
+              or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ IN
               <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
                        open="(" separator="," close=")">
                 #{deployment}
@@ -795,17 +882,17 @@
             
             <if test="!orQueryObject.bothCandidateAndAssigned &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null)">
               or (RES.ASSIGNEE_ is null
-              and I.TYPE_ = 'candidate'
+              and I_OR${orIndex}.TYPE_ = 'candidate'
               and 
               ( 
                 <if test="orQueryObject.candidateUser != null">
-                  I.USER_ID_ = #{orQueryObject.candidateUser}          
+                  I_OR${orIndex}.USER_ID_ = #{orQueryObject.candidateUser}          
                 </if>
                 <if test="orQueryObject.candidateUser != null &amp;&amp; orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
                   or
                 </if>
                 <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
-                  I.GROUP_ID_ IN
+                  I_OR${orIndex}.GROUP_ID_ IN
                   <foreach item="group" index="index" collection="orQueryObject.candidateGroups" 
                            open="(" separator="," close=")">
                     #{group}
@@ -825,26 +912,26 @@
               <trim prefix="(" prefixOverrides="AND" suffix=")">
               <if test="!var.local">
                 <!-- When process instance variable is queried for, taskId should be null -->
-                and A_OR${index}.TASK_ID_ is null
+                and A_OR${orIndex}_${index}.TASK_ID_ is null
               </if>
               <if test="var.name != null">
                 <!-- Match-all variable-names when name is null -->
-                and A_OR${index}.NAME_= #{var.name}
+                and A_OR${orIndex}_${index}.NAME_= #{var.name}
               </if>
               <if test="var.name == null">
-          		and A_OR${index}.NAME_ is not null
+          		and A_OR${orIndex}_${index}.NAME_ is not null
         	  </if>
               <if test="!var.type.equals('null')">
-                and A_OR${index}.TYPE_ = #{var.type}
+                and A_OR${orIndex}_${index}.TYPE_ = #{var.type}
               </if>
               <!-- Variable value -->
               <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
                 <choose>
                   <when test="var.operator.equals('EQUALS_IGNORE_CASE') || var.operator.equals('NOT_EQUALS_IGNORE_CASE')">
-                    and lower(A_OR${index}.TEXT_)
+                    and lower(A_OR${orIndex}_${index}.TEXT_)
                   </when>
                   <otherwise>
-                    and A_OR${index}.TEXT_
+                    and A_OR${orIndex}_${index}.TEXT_
                   </otherwise>
                 </choose> 
                 <choose>
@@ -854,7 +941,7 @@
                 #{var.textValue}
               </if>
               <if test="var.textValue2 != null">
-                and A_OR${index}.TEXT2_ 
+                and A_OR${orIndex}_${index}.TEXT2_ 
                 <choose>
                   <when test="var.operator.equals('LIKE')">LIKE</when>
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
@@ -862,12 +949,12 @@
                 #{var.textValue2}
               </if>
               <if test="var.longValue != null">
-                and A_OR${index}.LONG_
+                and A_OR${orIndex}_${index}.LONG_
                 <include refid="executionVariableOperator" />
                 #{var.longValue}
               </if>
               <if test="var.doubleValue != null">
-                and A_OR${index}.DOUBLE_ 
+                and A_OR${orIndex}_${index}.DOUBLE_ 
                 <include refid="executionVariableOperator" />
                 #{var.doubleValue}
               </if>
@@ -875,10 +962,10 @@
               <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
                 <choose>
                   <when test="var.operator.equals('NOT_EQUALS')">
-                    and (A_OR${index}.TEXT_ is not null or A_OR${index}.TEXT2_ is not null or A_OR${index}.LONG_ is not null or A_OR${index}.DOUBLE_ is not null or A_OR${index}.BYTEARRAY_ID_ is not null)
+                    and (A_OR${orIndex}_${index}.TEXT_ is not null or A_OR${orIndex}_${index}.TEXT2_ is not null or A_OR${orIndex}_${index}.LONG_ is not null or A_OR${orIndex}_${index}.DOUBLE_ is not null or A_OR${orIndex}_${index}.BYTEARRAY_ID_ is not null)
                   </when>
                   <otherwise>
-                    and A_OR${index}.TEXT_ is null and A_OR${index}.TEXT2_ is null and A_OR${index}.LONG_ is null and A_OR${index}.DOUBLE_ is null and A_OR${index}.BYTEARRAY_ID_ is null
+                    and A_OR${orIndex}_${index}.TEXT_ is null and A_OR${orIndex}_${index}.TEXT2_ is null and A_OR${orIndex}_${index}.LONG_ is null and A_OR${orIndex}_${index}.DOUBLE_ is null and A_OR${orIndex}_${index}.BYTEARRAY_ID_ is null
                   </otherwise>
                 </choose>          
               </if>
@@ -906,17 +993,17 @@
                 <!-- if dbIdentityUsed set true in process engine configuration -->
                 <if test="orQueryObject.userIdForCandidateAndAssignee != null">
                   <if test="orQueryObject.candidateGroups == null">
-                    or (RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and (I.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
-                    or I.GROUP_ID_ IN (select g.GROUP_ID_ from ${prefix}ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee} ) ) ) )
+                    or (RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and (I_OR${orIndex}.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                    or I_OR${orIndex}.GROUP_ID_ IN (select g.GROUP_ID_ from ${prefix}ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee} ) ) ) )
                   </if>
                 </if>
                 <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
                 <if test="orQueryObject.candidateGroups != null">
                   or (RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
                   or (RES.ASSIGNEE_ is null
-                  and I.TYPE_ = 'candidate' and (I.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                  and I_OR${orIndex}.TYPE_ = 'candidate' and (I_OR${orIndex}.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
                   <if test="orQueryObject.candidateGroups.size() &gt; 0">
-                    or I.GROUP_ID_ IN
+                    or I_OR${orIndex}.GROUP_ID_ IN
                     <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
                              open="(" separator="," close=")">
                       #{group}
@@ -927,7 +1014,7 @@
               </when>
             </choose>
           </trim>
-        </if>
+        </foreach>
      </where>
   </sql>
   

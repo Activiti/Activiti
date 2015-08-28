@@ -10,6 +10,32 @@
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_)
     values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR}, #{generated, jdbcType=BOOLEAN})  
   </insert>
+
+  <insert id="bulkInsertResource" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES 
+      <foreach collection="list" item="byteArr" index="index" separator=","> 
+        (#{byteArr.id, jdbcType=VARCHAR},
+         1,
+         #{byteArr.name, jdbcType=VARCHAR},
+         #{byteArr.bytes, jdbcType=BLOB},
+         #{byteArr.deploymentId, jdbcType=VARCHAR},
+         #{byteArr.generated, jdbcType=BOOLEAN})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertResource_oracle" parameterType="java.util.List">
+    INSERT ALL
+      <foreach collection="list" item="resource" index="index"> 
+        INTO ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES 
+        (#{resource.id, jdbcType=VARCHAR},
+         1,
+         #{resource.name, jdbcType=VARCHAR},
+         #{resource.bytes, jdbcType=BLOB},
+         #{resource.deploymentId, jdbcType=VARCHAR},
+         #{resource.generated, jdbcType=BOOLEAN})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
   
   <!-- RESOURCE UPDATE -->
 

@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.18.0-SNAPSHOT</version>
+    <version>5.18.1-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -258,7 +258,7 @@
       <repository>
           <id>mulesoft-releases</id>
           <name>MuleSoft Releases Repository</name>
-          <url>http://repository.mulesoft.org/releases/</url>
+          <url>https://repository-master.mulesoft.org/nexus/content/groups/public/</url>
           <layout>default</layout>
       </repository>
   </repositories>

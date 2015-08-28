@@ -162,7 +162,28 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertNotNull(runtimeService.createProcessInstanceQuery().or().processInstanceName("new name").processDefinitionId("undefined").endOr().singleResult());
     assertEquals(1, runtimeService.createProcessInstanceQuery().or().processInstanceName("new name").processDefinitionId("undefined").endOr().list().size());
     
+    assertNotNull(runtimeService.createProcessInstanceQuery()
+        .or()
+          .processInstanceName("new name")
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey(PROCESS_DEFINITION_KEY)
+          .processDefinitionId("undefined")
+        .singleResult());
+    
     assertNull(runtimeService.createProcessInstanceQuery().or().processInstanceName("unexisting").processDefinitionId("undefined").endOr().singleResult());
+    
+    assertNull(runtimeService.createProcessInstanceQuery()
+        .or()
+          .processInstanceName("unexisting")
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey(PROCESS_DEFINITION_KEY)
+          .processDefinitionId("undefined")
+        .endOr()
+        .singleResult());
   }
   
   public void testQueryByProcessInstanceNameLike() {
@@ -333,7 +354,54 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(new Integer(1), processInstance.getProcessDefinitionVersion());
     assertEquals(PROCESS_DEFINITION_KEY, processInstance.getProcessDefinitionKey());
     assertEquals("oneTaskProcessName", processInstance.getProcessDefinitionName());
+    
+    instances = runtimeService.createProcessInstanceQuery()
+        .or()
+          .deploymentId(deployment.getId())
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey(PROCESS_DEFINITION_KEY)
+          .processDefinitionId("undefined")
+        .endOr()
+        .list();
+    assertEquals(4, instances.size());
+    
+    instances = runtimeService.createProcessInstanceQuery()
+        .or()
+          .deploymentId(deployment.getId())
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey("undefined")
+          .processDefinitionId("undefined")
+        .endOr()
+        .list();
+    assertEquals(0, instances.size());
+    
     assertEquals(PROCESS_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().deploymentId(deployment.getId()).processDefinitionId("undefined").endOr().count());
+    
+    assertEquals(4, runtimeService.createProcessInstanceQuery()
+        .or()
+          .deploymentId(deployment.getId())
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey(PROCESS_DEFINITION_KEY)
+          .processDefinitionId("undefined")
+        .endOr()
+        .count());
+    
+    assertEquals(0, runtimeService.createProcessInstanceQuery()
+        .or()
+          .deploymentId(deployment.getId())
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey("undefined")
+          .processDefinitionId("undefined")
+        .endOr()
+        .count());
   }
   
   public void testOrQueryByDeploymentIdIn() {
@@ -911,6 +979,19 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     List<ProcessInstance> processInstances = query.list();
     assertNotNull(processInstances);
     assertEquals(2, processInstances.size());
+    
+    query = runtimeService.createProcessInstanceQuery()
+        .or()
+          .variableValueEquals("integerVar", 12345)
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("undefined")
+        .endOr();
+    processInstances = query.list();
+    assertNotNull(processInstances);
+    assertEquals(2, processInstances.size());
   
     // Query on two integer variables, should result in single value
     query = runtimeService.createProcessInstanceQuery().variableValueEquals("integerVar", 12345).or().variableValueEquals("integerVar2", 67890).processDefinitionId("undefined").endOr();
@@ -929,6 +1010,19 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     // Test GREATER_THAN
     resultInstance = runtimeService.createProcessInstanceQuery().or().variableValueGreaterThan("integerVar", 44444).processDefinitionId("undefined").endOr().singleResult();
+    assertNotNull(resultInstance);
+    assertEquals(processInstance3.getId(), resultInstance.getId());
+    
+    resultInstance = runtimeService.createProcessInstanceQuery()
+        .or()
+          .variableValueGreaterThan("integerVar", 44444)
+          .processDefinitionId("undefined")
+        .endOr()
+        .or()
+          .processDefinitionKey("oneTaskProcess")
+          .processDefinitionId("undefined")
+        .endOr()
+        .singleResult();
     assertNotNull(resultInstance);
     assertEquals(processInstance3.getId(), resultInstance.getId());
     

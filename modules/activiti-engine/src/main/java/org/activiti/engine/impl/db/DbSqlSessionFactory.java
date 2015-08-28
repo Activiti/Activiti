@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 
@@ -40,7 +41,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   static {
     
     String defaultOrderBy = " order by ${orderBy} ";
-
+    
     // h2
     databaseSpecificLimitBeforeStatements.put("h2", "");
     databaseSpecificLimitAfterStatements.put("h2", "LIMIT #{maxResults} OFFSET #{firstResult}");
@@ -55,6 +56,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     databaseOuterJoinLimitBetweenStatements.put("hsql", "");
     databaseSpecificOrderByStatements.put("hsql", defaultOrderBy);
 
+    
 	  //mysql specific
     databaseSpecificLimitBeforeStatements.put("mysql", "");
     databaseSpecificLimitAfterStatements.put("mysql", "LIMIT #{maxResults} OFFSET #{firstResult}");
@@ -77,17 +79,20 @@ public class DbSqlSessionFactory implements SessionFactory {
     databaseOuterJoinLimitBetweenStatements.put("postgres", "");
     databaseSpecificOrderByStatements.put("postgres", defaultOrderBy);
     addDatabaseSpecificStatement("postgres", "insertByteArray", "insertByteArray_postgres");
+    addDatabaseSpecificStatement("postgres", "bulkInsertByteArray", "bulkInsertByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "updateByteArray", "updateByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "selectByteArray", "selectByteArray_postgres");
     addDatabaseSpecificStatement("postgres", "selectResourceByDeploymentIdAndResourceName", "selectResourceByDeploymentIdAndResourceName_postgres");
     addDatabaseSpecificStatement("postgres", "selectResourcesByDeploymentId", "selectResourcesByDeploymentId_postgres");
     addDatabaseSpecificStatement("postgres", "insertIdentityInfo", "insertIdentityInfo_postgres");
+    addDatabaseSpecificStatement("postgres", "bulkInsertIdentityInfo", "bulkInsertIdentityInfo_postgres");
     addDatabaseSpecificStatement("postgres", "updateIdentityInfo", "updateIdentityInfo_postgres");
     addDatabaseSpecificStatement("postgres", "selectIdentityInfoById", "selectIdentityInfoById_postgres");
     addDatabaseSpecificStatement("postgres", "selectIdentityInfoByUserIdAndKey", "selectIdentityInfoByUserIdAndKey_postgres");
     addDatabaseSpecificStatement("postgres", "selectIdentityInfoByUserId", "selectIdentityInfoByUserId_postgres");
     addDatabaseSpecificStatement("postgres", "selectIdentityInfoDetails", "selectIdentityInfoDetails_postgres");
     addDatabaseSpecificStatement("postgres", "insertComment", "insertComment_postgres");
+    addDatabaseSpecificStatement("postgres", "bulkInsertComment", "bulkInsertComment_postgres");
     addDatabaseSpecificStatement("postgres", "selectComment", "selectComment_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskId", "selectCommentsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
@@ -96,6 +101,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskIdAndType", "selectCommentsByTaskIdAndType_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventsByTaskId", "selectEventsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "insertEventLogEntry", "insertEventLogEntry_postgres");
+    addDatabaseSpecificStatement("postgres", "bulkInsertEventLogEntry", "bulkInsertEventLogEntry_postgres");
     addDatabaseSpecificStatement("postgres", "selectAllEventLogEntries", "selectAllEventLogEntries_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventLogEntries", "selectEventLogEntries_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventLogEntriesByProcessInstanceId", "selectEventLogEntriesByProcessInstanceId_postgres");
@@ -109,6 +115,42 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("oracle", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
     addDatabaseSpecificStatement("oracle", "selectUnlockedTimersByDuedate", "selectUnlockedTimersByDuedate_oracle");
     addDatabaseSpecificStatement("oracle", "insertEventLogEntry", "insertEventLogEntry_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertVariableInstance", "bulkInsertVariableInstance_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertUser", "bulkInsertUser_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertTask", "bulkInsertTask_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertResource", "bulkInsertResource_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertProperty", "bulkInsertProperty_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertProcessDefinition", "bulkInsertProcessDefinition_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertModel", "bulkInsertModel_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertMembership", "bulkInsertMembership_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertTimer", "bulkInsertTimer_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertMessage", "bulkInsertMessage_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertIdentityInfo", "bulkInsertIdentityInfo_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertIdentityLink", "bulkInsertIdentityLink_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertMembership", "bulkInsertMembership_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertTimer", "bulkInsertTimer_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertMessage", "bulkInsertMessage_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricVariableInstance", "bulkInsertHistoricVariableInstance_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricTaskInstance", "bulkInsertHistoricTaskInstance_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricProcessInstance", "bulkInsertHistoricProcessInstance_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricIdentityLink", "bulkInsertHistoricIdentityLink_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricDetailVariableInstanceUpdate", "bulkInsertHistoricDetailVariableInstanceUpdate_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricFormProperty", "bulkInsertHistoricFormProperty_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertHistoricActivityInstance", "bulkInsertHistoricActivityInstance_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertGroup", "bulkInsertGroup_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertExecution", "bulkInsertExecution_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertMessageEventSubscription", "bulkInsertMessageEventSubscription_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertSignalEventSubscription", "bulkInsertSignalEventSubscription_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertCompensateEventSubscription", "bulkInsertCompensateEventSubscription_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertEventLogEntry", "bulkInsertEventLogEntry_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertDeployment", "bulkInsertDeployment_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertComment", "bulkInsertComment_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertByteArray", "bulkInsertByteArray_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertEventLogEntry", "bulkInsertEventLogEntry_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertDeployment", "bulkInsertDeployment_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertComment", "bulkInsertComment_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertByteArray", "bulkInsertByteArray_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertAttachment", "bulkInsertAttachment_oracle");
 
     // db2
     databaseSpecificLimitBeforeStatements.put("db2", "SELECT SUB.* FROM (");
@@ -161,6 +203,12 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mssql", "selectHistoricTaskInstancesWithVariablesByQueryCriteria", "selectHistoricTaskInstancesWithVariablesByQueryCriteria_mssql_or_db2");
   }
   
+  
+  /**
+   * A map {class, boolean}, to indicate whether or not a certain {@link PersistentObject} class can be bulk inserted.
+   */
+  protected static Map<Class<? extends PersistentObject>, Boolean> bulkInsertableMap;
+  
   protected String databaseType;
   protected String databaseTablePrefix = "";
   private boolean tablePrefixIsSchema;
@@ -169,21 +217,22 @@ public class DbSqlSessionFactory implements SessionFactory {
   /**
    * In some situations you want to set the schema to use for table checks /
    * generation if the database metadata doesn't return that correctly, see
-   * https://jira.codehaus.org/browse/ACT-1220,
-   * https://jira.codehaus.org/browse/ACT-1062
+   * https://activiti.atlassian.net/browse/ACT-1220,
+   * https://activiti.atlassian.net/browse/ACT-1062
    */
   protected String databaseSchema;
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
   protected Map<Class<?>,String>  insertStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String>  bulkInsertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  updateStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  deleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
-  protected boolean isOptimizeDeleteOperationsEnabled;
+  protected int maxNrOfStatementsInBulkInsert = 100;
 
 
   public Class< ? > getSessionType() {
@@ -198,6 +247,15 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   public String getInsertStatement(PersistentObject object) {
     return getStatement(object.getClass(), insertStatements, "insert");
+  }
+  
+  
+  public String getInsertStatement(Class<? extends PersistentObject> clazz) {
+    return getStatement(clazz, insertStatements, "insert");
+  }
+  
+  public String getBulkInsertStatement(Class clazz) {
+    return getStatement(clazz, bulkInsertStatements, "bulkInsert");
   }
 
   public String getUpdateStatement(PersistentObject object) {
@@ -252,6 +310,30 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.databaseType = databaseType;
     this.statementMappings = databaseSpecificStatements.get(databaseType);
   }
+  
+  public void setBulkInsertEnabled(boolean isBulkInsertEnabled, String databaseType) {
+  	// If false, just keep don't initialize the map. Memory saved.
+  	if (isBulkInsertEnabled) {
+  		initBulkInsertEnabledMap(databaseType);
+  	}
+  }
+  
+  protected void initBulkInsertEnabledMap(String databaseType) {
+  	bulkInsertableMap = new HashMap<Class<? extends PersistentObject>, Boolean>();
+  	
+  	for (Class<? extends PersistentObject> clazz : EntityDependencyOrder.INSERT_ORDER) {
+  		bulkInsertableMap.put(clazz, Boolean.TRUE);
+  	}
+
+  	// Only Oracle is making a fuss in one specific case right now
+		if ("oracle".equals(databaseType)) {
+			bulkInsertableMap.put(EventLogEntryEntity.class, Boolean.FALSE);
+		}
+  }
+  
+  public Boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
+  	return bulkInsertableMap != null && bulkInsertableMap.get(persistentObjectClass);
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -294,6 +376,16 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   public void setInsertStatements(Map<Class< ? >, String> insertStatements) {
     this.insertStatements = insertStatements;
+  }
+
+  
+  public Map<Class< ? >, String> getBulkInsertStatements() {
+    return bulkInsertStatements;
+  }
+
+  
+  public void setBulkInsertStatements(Map<Class< ? >, String> bulkInsertStatements) {
+    this.bulkInsertStatements = bulkInsertStatements;
   }
 
   
@@ -382,12 +474,12 @@ public class DbSqlSessionFactory implements SessionFactory {
 	  return tablePrefixIsSchema;
   }
 
-	public boolean isOptimizeDeleteOperationsEnabled() {
-		return isOptimizeDeleteOperationsEnabled;
+	public int getMaxNrOfStatementsInBulkInsert() {
+		return maxNrOfStatementsInBulkInsert;
 	}
 
-	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
-		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
+	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
 	
 }

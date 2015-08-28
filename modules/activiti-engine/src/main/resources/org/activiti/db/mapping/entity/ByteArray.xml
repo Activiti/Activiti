@@ -16,6 +16,43 @@
       #{deploymentId, jdbcType=VARCHAR}
     )  
   </insert>
+
+  <insert id="bulkInsertByteArray" parameterType="java.util.List">
+    insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values
+      <foreach collection="list" item="byteArray" index="index" separator=","> 
+         (#{byteArray.id, jdbcType=VARCHAR},
+          1, 
+          #{byteArray.name, jdbcType=VARCHAR}, 
+          #{byteArray.bytes, jdbcType=BLOB}, 
+          #{byteArray.deploymentId, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertByteArray_postgres" parameterType="java.util.List">
+    insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values
+      <foreach collection="list" item="byteArray" index="index" separator=","> 
+         (#{byteArray.id, jdbcType=VARCHAR},
+          1, 
+          #{byteArray.name, jdbcType=VARCHAR}, 
+          #{byteArray.bytes, jdbcType=BINARY}, 
+          #{byteArray.deploymentId, jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertByteArray_oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="byteArray" index="index">
+        into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_) VALUES 
+         (#{byteArray.id, jdbcType=VARCHAR},
+          1, 
+          #{byteArray.name, jdbcType=VARCHAR}, 
+          #{byteArray.bytes, jdbcType=BLOB}, 
+          #{byteArray.deploymentId, jdbcType=VARCHAR})
+      </foreach>
+    SELECT * FROM dual
+  </insert>
   
   <!-- BYTE ARRAY UPDATE -->
 
