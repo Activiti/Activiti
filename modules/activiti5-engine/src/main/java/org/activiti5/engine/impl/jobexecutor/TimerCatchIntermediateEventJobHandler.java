@@ -13,14 +13,12 @@
 package org.activiti5.engine.impl.jobexecutor;
 
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
-import org.activiti5.engine.impl.util.json.JSONObject;
 import org.activiti5.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

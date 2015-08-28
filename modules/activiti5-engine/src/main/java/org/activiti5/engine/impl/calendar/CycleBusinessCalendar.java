@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.impl.calendar;
 
+import java.util.Date;
+
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.runtime.ClockReader;
-
-import java.util.Date;
 
 public class CycleBusinessCalendar extends BusinessCalendarImpl {
 

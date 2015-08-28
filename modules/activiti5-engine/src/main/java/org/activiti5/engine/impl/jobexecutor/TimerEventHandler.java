@@ -12,7 +12,7 @@ package org.activiti5.engine.impl.jobexecutor;
  * limitations under the License.
  */
 
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.util.json.JSONException;
 import org.activiti5.engine.impl.util.json.JSONObject;
 

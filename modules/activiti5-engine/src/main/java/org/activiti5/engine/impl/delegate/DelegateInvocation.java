@@ -33,11 +33,11 @@ public abstract class DelegateInvocation {
    * @throws Exception
    *           the exception thrown by the user code
    */
-  public void proceed() throws Exception {
+  public void proceed() {
     invoke();
   }
 
-  protected abstract void invoke() throws Exception;
+  protected abstract void invoke();
 
   /**
    * @return the result of the invocation (can be null if the invocation does

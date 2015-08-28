@@ -16,6 +16,7 @@ package org.activiti5.engine.impl.bpmn.helper;
 import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti5.engine.ActivitiActivityExecutionException;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
@@ -26,7 +27,6 @@ import org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.pvm.PvmActivity;
-import org.activiti5.engine.impl.pvm.PvmException;
 import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.PvmScope;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -56,11 +56,11 @@ public class ErrorPropagation {
 
   private static final Logger LOG = LoggerFactory.getLogger(ErrorPropagation.class);
 
-  public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {    
+  public static void propagateError(BpmnError error, ActivityExecution execution) {    
     propagateError(error.getErrorCode(), execution);
   }
   
-  public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
+  public static void propagateError(String errorCode, ActivityExecution execution) {
 
     while (execution != null) {
       String eventHandlerId = findLocalErrorEventHandler(execution, errorCode);
@@ -194,17 +194,17 @@ public class ErrorPropagation {
     }
   }
 
-  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap) throws Exception {
+  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap) {
     return mapException(e, execution, exceptionMap, false); 
   }
 
-  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap, boolean wrapped) throws Exception {
+  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap, boolean wrapped) {
     if (exceptionMap == null) {
       return false;
     }
     
-    if (wrapped && e instanceof PvmException) {
-      e = (Exception) ((PvmException) e).getCause();
+    if (wrapped && e instanceof ActivitiActivityExecutionException) {
+      e = (Exception) e.getCause();
     }
     
     String defaultMap = null;

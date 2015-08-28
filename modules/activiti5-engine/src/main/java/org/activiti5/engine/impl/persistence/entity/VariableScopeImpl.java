@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.VariableScope;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.javax.el.ELContext;

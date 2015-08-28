@@ -13,10 +13,10 @@
 
 package org.activiti5.engine.impl.cmd;
 
+import java.util.Map;
+
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-
-import java.util.Map;
 
 /**
  * @author Tom Baeyens

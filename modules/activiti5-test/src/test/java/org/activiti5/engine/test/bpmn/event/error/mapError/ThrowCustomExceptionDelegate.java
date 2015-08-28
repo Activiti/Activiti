@@ -12,18 +12,19 @@
  */
 package org.activiti5.engine.test.bpmn.event.error.mapError;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti5.engine.ActivitiException;
 import org.apache.commons.lang3.StringUtils;
 
 
 /**
  * @author Saeid Mirzaei
  */
-public class ThrowCustomExceptionDelegate implements JavaDelegate{
+public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Object exceptionClassVar = execution.getVariable("exceptionClass");
     if (exceptionClassVar == null)
       return;
@@ -31,9 +32,17 @@ public class ThrowCustomExceptionDelegate implements JavaDelegate{
     String exceptionClassName = exceptionClassVar.toString();
     
     if (StringUtils.isNotEmpty(exceptionClassName))  {
-      Class<?> clazz = Class.forName(exceptionClassName);   
-      Exception exception = (Exception) clazz.newInstance();
-      throw  exception;
+      try {
+        Class<?> clazz = Class.forName(exceptionClassName);
+        RuntimeException exception = (RuntimeException) clazz.newInstance();
+        throw exception;
+        
+      } catch (RuntimeException e) {
+        throw e;
+        
+      } catch (Exception e) {
+        throw new ActivitiException(e.getMessage(), e);
+      }   
               
     }
     

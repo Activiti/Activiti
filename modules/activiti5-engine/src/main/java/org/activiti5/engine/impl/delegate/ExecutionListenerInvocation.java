@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.impl.delegate;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 /**
  * Class handling invocations of ExecutionListeners
@@ -30,7 +30,7 @@ public class ExecutionListenerInvocation extends DelegateInvocation {
     this.execution = execution;
   }
 
-  protected void invoke() throws Exception {
+  protected void invoke() {
     executionListenerInstance.notify(execution);
   }
   

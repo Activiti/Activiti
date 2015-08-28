@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti5.engine.delegate.ExecutionListener;
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 
 

@@ -13,8 +13,9 @@
 
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -41,7 +42,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
     this.resultVariable = resultVariable;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     Object value = null;
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
@@ -69,7 +70,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
       if (error != null) {
         ErrorPropagation.propagateError(error, execution);
       } else {
-        throw exc;
+        throw new ActivitiException(exc.getMessage(), exc);
       }
     }
   }

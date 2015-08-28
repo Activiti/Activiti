@@ -13,7 +13,7 @@
 
 package org.activiti5.engine.test.mock;
 
-import org.activiti5.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.el.VariableScopeElResolver;
 import org.activiti5.engine.impl.javax.el.ArrayELResolver;

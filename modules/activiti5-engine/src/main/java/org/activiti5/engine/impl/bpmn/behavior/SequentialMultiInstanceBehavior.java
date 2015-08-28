@@ -34,7 +34,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    * Handles the sequential case of spawning the instances.
    * Will only create one instance, since at most one instance can be active.
    */
-  protected void createInstances(ActivityExecution execution) throws Exception {
+  protected void createInstances(ActivityExecution execution) {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances < 0) {
       throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" 
@@ -86,7 +86,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
   }
   
   @Override
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     super.execute(execution);
     
     if(innerActivityBehavior instanceof SubProcessActivityBehavior) {

@@ -16,6 +16,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-converter</artifactId>
 		</dependency>
 		<dependency>

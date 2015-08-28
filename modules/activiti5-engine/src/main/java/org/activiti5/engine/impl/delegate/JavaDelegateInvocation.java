@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.impl.delegate;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 /**
  * Class handling invocations of JavaDelegates
@@ -30,7 +30,7 @@ public class JavaDelegateInvocation extends DelegateInvocation {
     this.execution = execution;
   }
 
-  protected void invoke() throws Exception {
+  protected void invoke() {
     delegateInstance.execute((DelegateExecution) execution);
   }
   

@@ -18,12 +18,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.context.Context;
@@ -86,7 +86,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     setInnerActivityBehavior(innerActivityBehavior);
   }
   
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
       try {
         createInstances(execution);
@@ -102,7 +102,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
   }
   
-  protected abstract void createInstances(ActivityExecution execution) throws Exception;
+  protected abstract void createInstances(ActivityExecution execution);
   
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
@@ -153,7 +153,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   
   @SuppressWarnings("rawtypes")
-  protected void executeOriginalBehavior(ActivityExecution execution, int loopCounter) throws Exception {
+  protected void executeOriginalBehavior(ActivityExecution execution, int loopCounter) {
     if (usesCollection() && collectionElementVariable != null) {
       Collection collection = null;
       if (collectionExpression != null) {

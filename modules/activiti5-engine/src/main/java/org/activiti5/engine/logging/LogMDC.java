@@ -34,8 +34,8 @@ public class LogMDC {
       MDC.put(LOG_MDC_PROCESSDEFINITION_ID, e.getProcessDefinitionId());
     if (e.getProcessInstanceId() != null)
       MDC.put(LOG_MDC_PROCESSINSTANCE_ID, e.getProcessInstanceId());
-    if (e.getProcessBusinessKey() != null)
-      MDC.put(LOG_MDC_BUSINESS_KEY, e.getProcessBusinessKey());
+    if (e.getProcessInstanceBusinessKey() != null)
+      MDC.put(LOG_MDC_BUSINESS_KEY, e.getProcessInstanceBusinessKey());
     
 
   }

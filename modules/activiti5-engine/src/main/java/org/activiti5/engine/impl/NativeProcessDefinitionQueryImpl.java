@@ -1,12 +1,12 @@
 package org.activiti5.engine.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti5.engine.repository.ProcessDefinition;
-
-import java.util.List;
-import java.util.Map;
 
 public class NativeProcessDefinitionQueryImpl extends AbstractNativeQuery<NativeProcessDefinitionQuery, ProcessDefinition> implements NativeProcessDefinitionQuery {
 

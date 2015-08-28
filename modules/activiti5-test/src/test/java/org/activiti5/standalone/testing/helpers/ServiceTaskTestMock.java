@@ -14,8 +14,8 @@ package org.activiti5.standalone.testing.helpers;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 /**
  * @author Joram Barrez
@@ -25,7 +25,7 @@ public class ServiceTaskTestMock implements JavaDelegate {
 	public static AtomicInteger CALL_COUNT = new AtomicInteger();
 	
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 	  CALL_COUNT.incrementAndGet();
 	}
 

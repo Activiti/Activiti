@@ -12,17 +12,18 @@
  */
 package org.activiti5.engine.test.bpmn.servicetask;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.RuntimeService;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti5.engine.impl.context.Context;
 
 /**
  * @author Joram Barrez
  */
 public class StartProcessInstanceTestDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
-    RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
+  public void execute(DelegateExecution execution) {
+    RuntimeService runtimeService = Context.getProcessEngineConfiguration().getRuntimeService();
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
   }
 

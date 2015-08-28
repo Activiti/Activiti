@@ -15,8 +15,8 @@ package org.activiti5.engine.test.bpmn.event.error;
 
 import java.io.Serializable;
 
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.delegate.JavaDelegate;
 
 /**
  * @author Falko Menge

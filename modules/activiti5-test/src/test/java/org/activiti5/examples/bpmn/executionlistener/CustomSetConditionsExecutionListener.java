@@ -3,8 +3,8 @@ package org.activiti5.examples.bpmn.executionlistener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 
 public class CustomSetConditionsExecutionListener implements ExecutionListener {
 
@@ -14,7 +14,7 @@ public class CustomSetConditionsExecutionListener implements ExecutionListener {
   protected String flowId;
 
   @Override
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execution.setVariable(flowId + "_activiti_conditions", conditions);
   }
 

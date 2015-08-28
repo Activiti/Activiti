@@ -13,8 +13,8 @@
 
 package org.activiti5.engine.impl.bpmn.listener;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.Expression;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
@@ -30,7 +30,7 @@ public class ScriptExecutionListener implements ExecutionListener {
 	private Expression resultVariable = null;
 
 	@Override
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     
 		if (script == null) {
 			throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");

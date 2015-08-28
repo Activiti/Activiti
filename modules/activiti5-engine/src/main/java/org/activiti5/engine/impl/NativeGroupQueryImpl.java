@@ -1,12 +1,12 @@
 package org.activiti5.engine.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.identity.NativeGroupQuery;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
-
-import java.util.List;
-import java.util.Map;
 
 public class NativeGroupQueryImpl extends AbstractNativeQuery<NativeGroupQuery, Group> implements NativeGroupQuery {
 

@@ -35,7 +35,7 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.ValuedDataObject;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.bpmn.data.Data;
 import org.activiti5.engine.impl.bpmn.data.DataRef;
 import org.activiti5.engine.impl.bpmn.data.IOSpecification;

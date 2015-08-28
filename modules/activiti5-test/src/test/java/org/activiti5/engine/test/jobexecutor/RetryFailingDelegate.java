@@ -3,9 +3,9 @@ package org.activiti5.engine.test.jobexecutor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 
 public class RetryFailingDelegate implements JavaDelegate {
 
@@ -19,7 +19,7 @@ public class RetryFailingDelegate implements JavaDelegate {
 	}
 
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 	    	
 	  times.add(System.currentTimeMillis());
 

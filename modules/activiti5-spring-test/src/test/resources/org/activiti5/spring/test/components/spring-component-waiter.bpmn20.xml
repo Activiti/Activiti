@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="component-waiter">
+
+        <startEvent id="n1"/>
+
+        <sequenceFlow id="f1" sourceRef="n1" targetRef="n2"/>
+
+        <serviceTask id="n2" activiti:delegateExpression="${delegate1}"/>
+
+        <sequenceFlow id="f2" sourceRef="n2" targetRef="n3"/>
+
+        <serviceTask id="n3" activiti:delegateExpression="${delegate2}"/>
+
+        <sequenceFlow id="f3" sourceRef="n3" targetRef="n4"/>
+
+        <userTask id="n4" name="user"/>
+
+        <sequenceFlow id="f4" sourceRef="n4" targetRef="n5"/>
+
+        <serviceTask id="n5" activiti:delegateExpression="${delegate2}"/>
+
+        <sequenceFlow id="f5" sourceRef="n5" targetRef="n6"/>
+
+        <userTask id="n6" name="user"/>
+
+        <sequenceFlow id="f6" sourceRef="n6" targetRef="n7"/>
+
+        <endEvent id="n7"/>
+
+    </process>
+
+</definitions>

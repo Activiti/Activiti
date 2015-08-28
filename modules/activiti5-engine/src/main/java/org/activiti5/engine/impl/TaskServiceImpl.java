@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.task.IdentityLink;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.TaskService;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -60,7 +61,6 @@ import org.activiti5.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti5.engine.task.Attachment;
 import org.activiti5.engine.task.Comment;
 import org.activiti5.engine.task.Event;
-import org.activiti5.engine.task.IdentityLink;
 import org.activiti5.engine.task.IdentityLinkType;
 import org.activiti5.engine.task.NativeTaskQuery;
 import org.activiti5.engine.task.Task;

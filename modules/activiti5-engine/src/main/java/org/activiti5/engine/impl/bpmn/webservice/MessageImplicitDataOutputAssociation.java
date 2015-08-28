@@ -12,7 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.webservice;
 
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti5.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti5.engine.impl.bpmn.data.FieldBaseStructureInstance;

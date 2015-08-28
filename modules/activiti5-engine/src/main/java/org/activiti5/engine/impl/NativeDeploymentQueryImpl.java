@@ -1,12 +1,12 @@
 package org.activiti5.engine.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.repository.Deployment;
 import org.activiti5.engine.repository.NativeDeploymentQuery;
-
-import java.util.List;
-import java.util.Map;
 
 public class NativeDeploymentQueryImpl extends AbstractNativeQuery<NativeDeploymentQuery, Deployment> implements NativeDeploymentQuery {
 

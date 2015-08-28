@@ -14,7 +14,7 @@ package org.activiti5.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.Condition;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.el.ExpressionManager;

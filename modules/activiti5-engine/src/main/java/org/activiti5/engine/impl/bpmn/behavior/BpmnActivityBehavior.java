@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.Condition;

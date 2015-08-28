@@ -115,6 +115,7 @@ public class DbSqlSession implements Session {
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.0"));
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.1"));
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.2"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.0"));
 
     // This is the latest version of the 5 branch. It's a 'virtual' version cause it doesn't exist, but it is
     // there to make sure all previous version can upgrade to the 6 version correctly.

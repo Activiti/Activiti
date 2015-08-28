@@ -1,7 +1,7 @@
 package org.activiti5.engine.test.logging.mdc;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 public class TestService implements JavaDelegate{
 	static String processInstanceId = null;
@@ -11,14 +11,13 @@ public class TestService implements JavaDelegate{
 	
 
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 		TestService.processDefinitionId = execution.getProcessDefinitionId();
 		TestService.processInstanceId =  execution.getProcessInstanceId();
 		TestService.executionId = execution.getId();
-		TestService.businessKey = execution.getBusinessKey();
+		TestService.businessKey = execution.getProcessInstanceBusinessKey();
 		
-		throw new Exception("test");
-		
+		throw new RuntimeException("test");
 	}
 	
 	public void clearProcessVariables() {

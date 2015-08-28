@@ -12,6 +12,8 @@
  */
 package org.activiti5.engine;
 
+import java.util.List;
+
 import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.identity.GroupQuery;
 import org.activiti5.engine.identity.NativeGroupQuery;
@@ -19,8 +21,6 @@ import org.activiti5.engine.identity.NativeUserQuery;
 import org.activiti5.engine.identity.Picture;
 import org.activiti5.engine.identity.User;
 import org.activiti5.engine.identity.UserQuery;
-
-import java.util.List;
 
 
 /**

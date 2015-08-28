@@ -13,13 +13,14 @@
 
 package org.activiti5.engine.impl.el;
 
-import org.activiti5.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.VariableScope;
+
 
 
 /**
  * @author Frederik Heremans
  */
-public interface Expression extends org.activiti5.engine.delegate.Expression {
+public interface Expression extends org.activiti.engine.delegate.Expression {
 
    Object getValue(VariableScope variableScope);
    

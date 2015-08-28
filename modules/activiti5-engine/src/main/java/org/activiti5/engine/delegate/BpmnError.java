@@ -13,6 +13,7 @@
 
 package org.activiti5.engine.delegate;
 
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.bpmn.parser.Error;

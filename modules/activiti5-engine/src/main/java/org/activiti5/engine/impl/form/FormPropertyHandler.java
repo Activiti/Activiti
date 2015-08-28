@@ -16,8 +16,8 @@ package org.activiti5.engine.impl.form;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.form.AbstractFormType;
 import org.activiti5.engine.form.FormProperty;
 import org.activiti5.engine.impl.el.NoExecutionVariableScope;

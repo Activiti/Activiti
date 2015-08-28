@@ -12,9 +12,9 @@
  */
 package org.activiti5.engine.test.cmd;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 /**
  * @author Saeid Mirzaei
  */
@@ -22,7 +22,7 @@ public class FailingDelegate implements JavaDelegate {
 
   public static final String EXCEPTION_MESSAGE = "Expected exception.";
     @Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 	  Boolean fail = (Boolean) execution.getVariable("fail");
 
 	  if (fail == null || fail) {

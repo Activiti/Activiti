@@ -17,14 +17,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -38,7 +38,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   public static class MyExecutionListener implements ExecutionListener {
     private static final long serialVersionUID = 1L;
 
-    public void notify(DelegateExecution execution) throws Exception {
+    public void notify(DelegateExecution execution) {
       if ("end".equals(execution.getEventName())) {
         listenerExecutedEndEvent = true;
       } else if ("start".equals(execution.getEventName())) {

@@ -12,6 +12,8 @@
  */
 package org.activiti5.engine.impl;
 
+import java.util.List;
+
 import org.activiti5.engine.IdentityService;
 import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.identity.GroupQuery;
@@ -38,10 +40,7 @@ import org.activiti5.engine.impl.cmd.SaveUserCmd;
 import org.activiti5.engine.impl.cmd.SetUserInfoCmd;
 import org.activiti5.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti5.engine.impl.identity.Authentication;
-import org.activiti5.engine.impl.persistence.entity.GroupEntity;
 import org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity;
-
-import java.util.List;
 
 
 /**

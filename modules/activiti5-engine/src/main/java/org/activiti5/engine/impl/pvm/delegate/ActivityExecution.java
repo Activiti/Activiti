@@ -14,7 +14,7 @@ package org.activiti5.engine.impl.pvm.delegate;
 
 import java.util.List;
 
-import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;

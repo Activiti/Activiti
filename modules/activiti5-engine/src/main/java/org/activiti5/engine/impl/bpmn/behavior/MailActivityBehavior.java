@@ -13,21 +13,29 @@
 
 package org.activiti5.engine.impl.bpmn.behavior;
 
-import java.util.*;
 import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.activation.DataSource;
 import javax.naming.NamingException;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.cfg.MailServerInfo;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
-import org.apache.commons.mail.*;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail.MultiPartEmail;
+import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

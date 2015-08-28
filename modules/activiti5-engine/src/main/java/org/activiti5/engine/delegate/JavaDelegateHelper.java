@@ -13,6 +13,8 @@
 
 package org.activiti5.engine.delegate;
 
+import org.activiti.engine.delegate.JavaDelegate;
+
 /**
  * Class that provides helper operations for use in the {@link JavaDelegate} class.
  * 

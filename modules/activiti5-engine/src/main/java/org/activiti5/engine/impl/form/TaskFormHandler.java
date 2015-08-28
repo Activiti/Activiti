@@ -13,7 +13,7 @@
 
 package org.activiti5.engine.impl.form;
 
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.form.TaskFormData;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 

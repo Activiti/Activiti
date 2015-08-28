@@ -18,9 +18,10 @@ import java.util.Map;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.ExecutionListener;
-import org.activiti5.engine.delegate.TaskListener;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.bpmn.helper.BaseDelegateEventListener;
 import org.activiti5.engine.impl.bpmn.helper.ClassDelegate;
@@ -40,7 +41,6 @@ import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.task.Attachment;
 import org.activiti5.engine.task.Comment;
-import org.activiti5.engine.task.IdentityLink;
 import org.activiti5.engine.task.Task;
 
 /**

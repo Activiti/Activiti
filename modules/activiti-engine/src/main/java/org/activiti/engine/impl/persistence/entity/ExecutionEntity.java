@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.EngineServices;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -428,13 +427,6 @@ public class ExecutionEntity extends VariableScopeImpl
   public void forceUpdate() {
     this.forcedUpdate = true;
   }
-
-  // process engine convenience access /////////////////////////////////////////////////////////////////
-
-  public EngineServices getEngineServices() {
-    return Context.getProcessEngineConfiguration();
-  }
-  
   
  // VariableScopeImpl methods //////////////////////////////////////////////////////////////////
 

@@ -3,6 +3,7 @@ package org.activiti5.engine.impl.history;
 import java.util.Date;
 import java.util.Map;
 
+import org.activiti.engine.task.IdentityLink;
 import org.activiti5.engine.impl.db.DbSqlSession;
 import org.activiti5.engine.impl.interceptor.Session;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -11,7 +12,6 @@ import org.activiti5.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
-import org.activiti5.engine.task.IdentityLink;
 
 public interface HistoryManager extends Session {
 

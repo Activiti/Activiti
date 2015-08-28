@@ -13,9 +13,9 @@
 
 package org.activiti5.examples.bpmn.executionlistener;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 
 /**
  * Example {@link ExecutionListener} which gets 2 fields injected.
@@ -28,7 +28,7 @@ public class ExampleFieldInjectedExecutionListener implements ExecutionListener 
 
   private Expression dynamicValue;
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execution.setVariable("var", fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString());
   }
 }

@@ -24,13 +24,13 @@ import java.util.Map;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
@@ -45,7 +45,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
   public static class CountDelegate implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       serviceTaskInvokedCount++;
 
       // leave only 3 out of n subprocesses
@@ -57,7 +57,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
   public static class CountDelegate2 implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       serviceTaskInvokedCount2++;
     }
   }

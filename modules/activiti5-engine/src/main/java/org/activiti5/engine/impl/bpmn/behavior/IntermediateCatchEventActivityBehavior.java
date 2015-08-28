@@ -18,7 +18,7 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     // Do nothing: waitstate behavior
   }
 

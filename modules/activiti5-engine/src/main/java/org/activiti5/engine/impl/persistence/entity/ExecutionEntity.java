@@ -22,8 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.EngineServices;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -89,6 +90,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   /** current activity */
   protected ActivityImpl activity;
+  
+  protected FlowElement currentFlowElement;
   
   /** current transition.  is null when there is no transition being taken. */
   protected TransitionImpl transition = null;
@@ -737,6 +740,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public String getProcessBusinessKey() {
     return getProcessInstance().getBusinessKey();
   }
+  
+  public String getProcessInstanceBusinessKey() {
+    return getProcessInstance().getBusinessKey();
+  }
 
   // process definition ///////////////////////////////////////////////////////
 
@@ -1242,6 +1249,28 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return persistentState;
   }
   
+  // The current flow element, will be filled during operation execution
+
+  public FlowElement getCurrentFlowElement() {
+    if (currentFlowElement == null) {
+      String processDefinitionId = getProcessDefinitionId();
+      if (processDefinitionId != null) {
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+        currentFlowElement = process.getFlowElement(getCurrentActivityId(), true);
+      }
+    }
+    return currentFlowElement;
+  }
+
+  public void setCurrentFlowElement(FlowElement currentFlowElement) {
+    this.currentFlowElement = currentFlowElement;
+    if (currentFlowElement != null) {
+      this.activityId = currentFlowElement.getId();
+    } else {
+      this.activityId = null;
+    }
+  }
+  
   public void insert() {
     Context
       .getCommandContext()
@@ -1263,12 +1292,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     this.forcedUpdate = true;
   }
   
-  // process engine convience access /////////////////////////////////////////////////////////////////
-  
-  public EngineServices getEngineServices() {
-    return Context.getProcessEngineConfiguration();
-  }
-
   // toString /////////////////////////////////////////////////////////////////
   
   public String toString() {
@@ -1468,6 +1491,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+  public String getRootProcessInstanceId() {
     return processInstanceId;
   }
   public String getParentId() {

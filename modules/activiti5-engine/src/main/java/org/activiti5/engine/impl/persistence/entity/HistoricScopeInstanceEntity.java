@@ -14,11 +14,11 @@
 
 package org.activiti5.engine.impl.persistence.entity;
 
-import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.db.PersistentObject;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.db.PersistentObject;
 
 /**
  * @author Christian Stettler

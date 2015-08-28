@@ -17,22 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti5.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 
 /**
@@ -68,7 +63,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     this.dataOutputAssociations.add(dataOutputAssociation);
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     
 	String processDefinitonKey = this.processDefinitonKey;
     if (processDefinitionExpression != null) {
@@ -110,7 +105,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     
     try {
       subProcessInstance.start();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
         if (!ErrorPropagation.mapException(e, execution, mapExceptions, true))
             throw e;
         

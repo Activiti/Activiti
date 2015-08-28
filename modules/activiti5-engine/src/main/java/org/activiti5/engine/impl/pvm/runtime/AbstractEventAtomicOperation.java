@@ -15,7 +15,7 @@ package org.activiti5.engine.impl.pvm.runtime;
 
 import java.util.List;
 
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.pvm.PvmException;
 import org.activiti5.engine.impl.pvm.process.ScopeImpl;
 

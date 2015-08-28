@@ -14,7 +14,7 @@ package org.activiti5.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.FlowNode;
-import org.activiti5.engine.delegate.Expression;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti5.engine.impl.bpmn.data.Assignment;
 import org.activiti5.engine.impl.bpmn.data.SimpleDataInputAssociation;

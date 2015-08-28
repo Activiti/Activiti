@@ -16,8 +16,8 @@ package org.activiti5.engine.test.bpmn.event.compensate.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 
 /**
@@ -30,7 +30,7 @@ public class SetVariablesDelegate implements JavaDelegate {
   // activiti creates a single instance of the delegate
   protected int lastInt = 0;
 
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Object nrOfCompletedInstances = execution.getVariableLocal("nrOfCompletedInstances");    
     variablesMap.put(nrOfCompletedInstances, lastInt);    
     execution.setVariableLocal("variable", lastInt);    

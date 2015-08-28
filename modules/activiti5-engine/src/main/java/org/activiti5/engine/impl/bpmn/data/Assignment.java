@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.impl.bpmn.data;
 
-import org.activiti5.engine.delegate.Expression;
-import org.activiti5.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**

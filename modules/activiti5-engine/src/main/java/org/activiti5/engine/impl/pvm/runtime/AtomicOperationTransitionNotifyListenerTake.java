@@ -14,7 +14,7 @@ package org.activiti5.engine.impl.pvm.runtime;
 
 import java.util.List;
 
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;

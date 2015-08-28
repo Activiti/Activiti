@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.Condition;
 import org.activiti5.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
@@ -43,7 +43,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
   private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     
     execution.inactivate();
     lockConcurrentRoot(execution);

@@ -19,15 +19,15 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.DelegateTask;
-import org.activiti5.engine.delegate.ExecutionListener;
-import org.activiti5.engine.delegate.Expression;
-import org.activiti5.engine.delegate.JavaDelegate;
-import org.activiti5.engine.delegate.TaskListener;
 import org.activiti5.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti5.engine.impl.bpmn.parser.FieldDeclaration;
@@ -86,7 +86,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Execution listener
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     if (executionListenerInstance == null) {
       executionListenerInstance = getExecutionListenerInstance();
     }
@@ -130,7 +130,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Activity Behavior
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
     if (!isSkipExpressionEnabled || 
             (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
@@ -143,10 +143,9 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
-      } catch (Exception e) {
+      } catch (RuntimeException e) {
         if (!ErrorPropagation.mapException(e, execution, mapExceptions))
             throw e;
-        
       }
       
     }

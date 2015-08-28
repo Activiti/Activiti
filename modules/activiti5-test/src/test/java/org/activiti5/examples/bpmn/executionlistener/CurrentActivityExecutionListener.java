@@ -16,8 +16,9 @@ package org.activiti5.examples.bpmn.executionlistener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * Simple {@link ExecutionListener} that sets the current activity id and name attributes on the execution.
@@ -46,8 +47,8 @@ public class CurrentActivityExecutionListener implements ExecutionListener {
     }
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
-    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), execution.getCurrentActivityName()));
+  public void notify(DelegateExecution execution) {
+    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), ((ExecutionEntity) execution).getCurrentActivityName()));
   }
 
   public static List<CurrentActivity> getCurrentActivities() {

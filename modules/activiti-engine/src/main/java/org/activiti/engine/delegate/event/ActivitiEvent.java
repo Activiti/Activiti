@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.delegate.event;
 
-import org.activiti.engine.EngineServices;
 
 /**
  * Describes an event that occurred in the Activiti Engine which is dispatched to external listeners, if any.
@@ -42,8 +41,4 @@ public interface ActivitiEvent {
    */
   String getProcessDefinitionId();
 
-  /**
-   * @return the {@link EngineServices} associated to the engine this event originated from. Returns null, when not called from within a listener call or when no Activiti context is active.
-   */
-  EngineServices getEngineServices();
 }

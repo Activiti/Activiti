@@ -14,7 +14,7 @@ package org.activiti5.engine.impl.history.parse;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti5.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.UserTaskParseHandler;

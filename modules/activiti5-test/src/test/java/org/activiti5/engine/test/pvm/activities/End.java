@@ -22,7 +22,7 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class End implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     execution.end();
   }
 

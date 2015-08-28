@@ -12,11 +12,12 @@
  */
 package org.activiti5.engine.test.bpmn.servicetask;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti5.engine.IdentityService;
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.identity.User;
+import org.activiti5.engine.impl.context.Context;
 
 /**
  * @author Joram Barrez
@@ -24,9 +25,9 @@ import org.activiti5.engine.identity.User;
 public class CreateUserAndMembershipTestDelegate implements JavaDelegate {
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
 
-    IdentityService identityService = execution.getEngineServices().getIdentityService();
+    IdentityService identityService = Context.getProcessEngineConfiguration().getIdentityService();
     
     String username = "Kermit";
     User user = identityService.newUser(username);

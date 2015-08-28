@@ -16,8 +16,8 @@ package org.activiti5.examples.bpmn.executionlistener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.el.FixedValue;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 
@@ -63,7 +63,7 @@ public class RecorderExecutionListener implements ExecutionListener {
     
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     ExecutionEntity executionCasted = ((ExecutionEntity)execution);
     recordedEvents.add( new RecordedEvent( //
                     executionCasted.getActivityId(), 

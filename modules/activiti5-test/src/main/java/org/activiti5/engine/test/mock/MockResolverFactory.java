@@ -12,7 +12,7 @@
  */
 package org.activiti5.engine.test.mock;
 
-import org.activiti5.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.impl.scripting.Resolver;
 import org.activiti5.engine.impl.scripting.ResolverFactory;
 
