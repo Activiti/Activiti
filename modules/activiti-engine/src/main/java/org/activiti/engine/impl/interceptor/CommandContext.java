@@ -30,6 +30,8 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
+import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
+import org.activiti.engine.impl.persistence.cache.PersistentObjectCacheImpl;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
@@ -65,7 +67,6 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManagerImpl
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
-import org.activiti.engine.impl.persistence.entity.MembershipEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
@@ -257,7 +258,7 @@ public class CommandContext {
       if (sessionFactory == null) {
         throw new ActivitiException("no session factory configured for " + sessionClass.getName());
       }
-      session = sessionFactory.openSession();
+      session = sessionFactory.openSession(this);
       sessions.put(sessionClass, session);
     }
 
@@ -266,6 +267,10 @@ public class CommandContext {
 
   public DbSqlSession getDbSqlSession() {
     return getSession(DbSqlSession.class);
+  }
+  
+  public PersistentObjectCache getPersistentObjectCache() {
+    return getSession(PersistentObjectCacheImpl.class);
   }
 
   public DeploymentEntityManager getDeploymentEntityManager() {

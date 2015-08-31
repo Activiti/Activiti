@@ -13,6 +13,7 @@
 package org.activiti.ldap;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
@@ -36,7 +37,7 @@ public class LDAPUserManagerFactory implements SessionFactory {
   }
 
   @Override
-  public Session openSession() {
+  public Session openSession(CommandContext commandContext) {
     return new LDAPUserManager(ldapConfigurator);
   }
 

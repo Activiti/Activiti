@@ -31,7 +31,7 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
 
@@ -190,13 +190,13 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
 
   @Override
   public List<TaskEntity> findTasksByExecutionId(final String executionId) {
-    return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
+    return getList("selectTasksByExecutionId", executionId, new CachedPersistentObjectMatcher<TaskEntity>() {
       
       public boolean isRetained(TaskEntity taskEntity) {
         return taskEntity.getExecutionId() != null && executionId.equals(taskEntity.getExecutionId());
       }
       
-    });
+    }, true);
   }
 
   @Override

@@ -47,7 +47,7 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -208,12 +208,12 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectJobsByExecutionId", executionId, new CachedEntityMatcher<JobEntity>() {
+    return getList("selectJobsByExecutionId", executionId, new CachedPersistentObjectMatcher<JobEntity>() {
       @Override
       public boolean isRetained(JobEntity jobEntity) {
         return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
       }
-    });
+    }, true);
   }
 
   @Override

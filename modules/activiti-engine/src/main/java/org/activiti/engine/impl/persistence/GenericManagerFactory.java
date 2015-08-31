@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -32,7 +33,7 @@ public class GenericManagerFactory implements SessionFactory {
     return managerImplementation;
   }
 
-  public Session openSession() {
+  public Session openSession(CommandContext commandContext) {
     try {
       return managerImplementation.newInstance();
     } catch (Exception e) {

@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
 /**
  * @author Joram Barrez
@@ -28,9 +28,20 @@ public interface EntityManager<Entity extends PersistentObject> {
 
   Entity getEntity(String entityId);
 
-  Entity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher);
+  Entity getEntity(String selectQuery, Object parameter, CachedPersistentObjectMatcher<Entity> cachedEntityMatcher);
 
-  List<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition);
+  /**
+   * Gets a list by querying the database and the cache using {@link CachedPersistentObjectMatcher}.
+   * First, the entities are fetched from the database using the provided query. 
+   * The cache is then queried for the entities of the same type. If an entity matches
+   * the {@link CachedPersistentObjectMatcher} condition, it replaces the entity from the database (as it is newer).
+   * 
+   * @param dbQueryName The query name that needs to be executed.
+   * @param parameter The parameters for the query.
+   * @param entityMatcher The matcher used to determine which entities from the cache needs to be retained
+   * @param checkCache If false, no cache check will be done, and the returned list will simply be the list from the database.
+   */
+  List<Entity> getList(String dbQueryName, Object parameter, CachedPersistentObjectMatcher<Entity> entityMatcher, boolean checkCache);
   
   void delete(String id);
   

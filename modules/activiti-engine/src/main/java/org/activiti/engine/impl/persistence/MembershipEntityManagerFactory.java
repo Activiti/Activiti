@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.persistence;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManagerImpl;
@@ -26,7 +27,7 @@ public class MembershipEntityManagerFactory implements SessionFactory {
     return MembershipEntityManager.class;
   }
 
-  public Session openSession() {
+  public Session openSession(CommandContext commandContext) {
     return new MembershipEntityManagerImpl();
   }
 

@@ -18,6 +18,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
+import org.activiti.engine.impl.persistence.cache.PersistentObjectCacheImpl;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
@@ -66,6 +68,10 @@ public abstract class AbstractManager implements Session {
 
   protected DbSqlSession getDbSqlSession() {
     return getSession(DbSqlSession.class);
+  }
+  
+  protected PersistentObjectCache getPersistentObjectCache() {
+    return getSession(PersistentObjectCacheImpl.class);
   }
 
   protected <T> T getSession(Class<T> sessionClass) {

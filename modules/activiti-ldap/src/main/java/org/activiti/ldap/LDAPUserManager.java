@@ -32,7 +32,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
@@ -333,12 +333,12 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public UserEntity getEntity(String selectQuery, Object parameter, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
+  public UserEntity getEntity(String selectQuery, Object parameter, CachedPersistentObjectMatcher<UserEntity> cachedEntityMatcher) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 
   @Override
-  public List<UserEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<UserEntity> retainEntityCondition) {
+  public List<UserEntity> getList(String dbQueryName, Object parameter, CachedPersistentObjectMatcher<UserEntity> retainEntityCondition, boolean checkCache) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 

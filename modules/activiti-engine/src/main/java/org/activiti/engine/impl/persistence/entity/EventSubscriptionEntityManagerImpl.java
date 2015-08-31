@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -33,12 +34,27 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
+import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
 public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<EventSubscriptionEntity> implements EventSubscriptionEntityManager {
+  
+  @SuppressWarnings("unchecked")
+  private static final List<Class<? extends EventSubscriptionEntity>> ENTITY_SUBCLASSES = 
+      Arrays.asList(MessageEventSubscriptionEntity.class, SignalEventSubscriptionEntity.class, CompensateEventSubscriptionEntity.class);
+  
+  @Override
+  public Class<EventSubscriptionEntity> getManagedPersistentObject() {
+    return EventSubscriptionEntity.class;
+  }
+  
+  @Override
+  public List<Class<? extends EventSubscriptionEntity>> getManagedPersistentObjectSubClasses() {
+    return ENTITY_SUBCLASSES;
+  }
 
   /** keep track of subscriptions created in the current command */
   protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();
@@ -388,16 +404,32 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId) {
-    final String query = "selectEventSubscriptionsByName";
+  public List<EventSubscriptionEntity> findEventSubscriptionsByName(final String type, final String eventName, final String tenantId) {
+
     Map<String, String> params = new HashMap<String, String>();
     params.put("eventType", type);
     params.put("eventName", eventName);
     if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
       params.put("tenantId", tenantId);
     }
-    return getDbSqlSession().selectList(query, params);
+    
+    return getList("selectEventSubscriptionsByName", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        if (eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
+            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)) {
+          if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+            return eventSubscriptionEntity.getTenantId() != null && eventSubscriptionEntity.getTenantId().equals(tenantId);
+          } else {
+            return ProcessEngineConfiguration.NO_TENANT_ID.equals(eventSubscriptionEntity.getTenantId()) || eventSubscriptionEntity.getTenantId() == null;
+          }
+        }
+        return false;
+      }
+      
+    }, true);
+    
   }
 
   @Override

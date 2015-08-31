@@ -12,6 +12,7 @@
  */
 package org.activiti.ldap;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.MembershipEntity;
@@ -38,7 +39,7 @@ public class LDAPMembershipManagerFactory implements SessionFactory {
   }
 
   @Override
-  public Session openSession() {
+  public Session openSession(CommandContext commandContext) {
     throw new UnsupportedOperationException("Memberships are not supported in ldap");
   }
 
