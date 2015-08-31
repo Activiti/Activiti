@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:activiti="http://activiti.org/bpmn" 
+	xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" 
+	targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:process id="ErrorHandling" name="Camel/Activiti error handling demonstration" isExecutable="true">
+  
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event"/>    
+  
+    <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="LogProcessStart"/>
+    <bpmn2:serviceTask id="LogProcessStart" activiti:async="true" activiti:delegateExpression="${dummyDelegate}" name="Log Process Start"/>  
+    <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="LogProcessStart" targetRef="ExclusiveGateway_1"/>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="Exclusive Gateway" default="SequenceFlow_3"/>
+    
+   	<bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="ExclusiveGateway_1" targetRef="NormalExecution"/>
+   	<bpmn2:serviceTask id="NormalExecution" name="Normal Execution" activiti:type="camel"/>  
+    <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="NormalExecution" targetRef="ExclusiveGateway_2"/>
+    
+    <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="ExclusiveGateway_1" targetRef="ProvokeError"> 
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${routing == 'PROVOKE_ERROR'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="ProvokeError" name="Provoke Error" activiti:type="camel"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="ProvokeError" targetRef="ExclusiveGateway_2"/>
+    
+    <bpmn2:sequenceFlow id="SequenceFlow_9" sourceRef="ExclusiveGateway_1" targetRef="HandleError">
+    	<bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${routing == 'HANDLE_ERROR'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="HandleError" name="Handle Error" activiti:type="camel"/>   
+    <bpmn2:sequenceFlow id="SequenceFlow_10" name="" sourceRef="HandleError" targetRef="ExclusiveGateway_2"/>    
+    
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_2" name="Exclusive Gateway"/> 
+    <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="ExclusiveGateway_2" targetRef="ReceiveResult"/>    
+    <bpmn2:receiveTask id="ReceiveResult" name="Receive Result">
+      <bpmn2:extensionElements>
+        <activiti:executionListener delegateExpression="${dummyListener}" event="end"/>
+      </bpmn2:extensionElements>
+    </bpmn2:receiveTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" sourceRef="ReceiveResult" targetRef="EndEvent_1"/>
+    <bpmn2:endEvent id="EndEvent_1" name="End Event"/>      
+  </bpmn2:process>
+
+</bpmn2:definitions>

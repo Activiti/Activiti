@@ -77,7 +77,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     }
     
     if (hasActiviti5ProcessDefinitions) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       if (getProcessDefinitionSuspensionState() == SuspensionState.ACTIVE) {
         activiti5CompatibilityHandler.activateProcessDefinition(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
       } else if (getProcessDefinitionSuspensionState() == SuspensionState.SUSPENDED) {

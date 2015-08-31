@@ -13,6 +13,8 @@
 
 package org.activiti5.engine.impl.pvm.delegate;
 
+import org.activiti.engine.impl.delegate.ActivityBehavior;
+
 
 
 /**

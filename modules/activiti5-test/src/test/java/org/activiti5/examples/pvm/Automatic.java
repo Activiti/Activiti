@@ -12,8 +12,9 @@
  */
 package org.activiti5.examples.pvm;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.PvmTransition;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -22,8 +23,9 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Automatic implements ActivityBehavior {
 
-  public void execute(ActivityExecution activityContext) {
-    PvmTransition defaultOutgoingTransition = activityContext.getActivity().getOutgoingTransitions().get(0);
-    activityContext.take(defaultOutgoingTransition);
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    PvmTransition defaultOutgoingTransition = activityExecution.getActivity().getOutgoingTransitions().get(0);
+    activityExecution.take(defaultOutgoingTransition);
   }
 }

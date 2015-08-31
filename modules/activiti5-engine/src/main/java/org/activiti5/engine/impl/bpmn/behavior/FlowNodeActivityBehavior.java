@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
@@ -32,8 +33,8 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
-  public void execute(ActivityExecution execution) {
-    leave(execution);
+  public void execute(DelegateExecution execution) {
+    leave((ActivityExecution) execution);
   }
   
   /**

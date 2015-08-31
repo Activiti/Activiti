@@ -18,7 +18,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.SubProcess;
-import org.activiti5.engine.impl.bpmn.data.IOSpecification;
+import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 

@@ -79,7 +79,6 @@ public class JobTestHelper {
         while (areJobsAvailable && !task.isTimeLimitExceeded()) {
           Thread.sleep(intervalMillis);
           try {
-            System.out.println("!!!!!!!!!! " + processEngineConfiguration.getClock().getCurrentTime());
             areJobsAvailable = areJobsAvailable(managementService);
           } catch(Throwable t) {
             // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when

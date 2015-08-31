@@ -37,21 +37,23 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
+import org.activiti.engine.impl.bpmn.data.ItemDefinition;
+import org.activiti.engine.impl.bpmn.data.ItemKind;
+import org.activiti.engine.impl.bpmn.data.StructureDefinition;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseXMLImportHandler;
+import org.activiti.engine.impl.bpmn.parser.XMLImporter;
+import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
+import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
+import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
+import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ValidationError;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.impl.bpmn.data.ClassStructureDefinition;
-import org.activiti5.engine.impl.bpmn.data.ItemDefinition;
-import org.activiti5.engine.impl.bpmn.data.ItemKind;
-import org.activiti5.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
-import org.activiti5.engine.impl.bpmn.webservice.BpmnInterface;
-import org.activiti5.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
-import org.activiti5.engine.impl.bpmn.webservice.MessageDefinition;
-import org.activiti5.engine.impl.bpmn.webservice.Operation;
-import org.activiti5.engine.impl.bpmn.webservice.OperationImplementation;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.ExpressionManager;
@@ -77,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class BpmnParse implements BpmnXMLConstants {
+public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 
@@ -319,7 +321,7 @@ public class BpmnParse implements BpmnXMLConstants {
       if (theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/")) {
         Class< ? > wsdlImporterClass;
         try {
-          wsdlImporterClass = Class.forName("org.activiti5.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
+          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
           XMLImporter newInstance = (XMLImporter) wsdlImporterClass.newInstance();
           this.importers.put(theImport.getImportType(), newInstance);
           return newInstance;

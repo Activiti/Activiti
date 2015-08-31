@@ -14,14 +14,14 @@
 package org.activiti5.engine.test.concurrency;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.cfg.CommandExecutorImpl;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class CompetingSignalsTest extends PluggableActivitiTestCase {
   
   public static class ControlledConcurrencyBehavior implements ActivityBehavior {
     private static final long serialVersionUID = 1L;
-    public void execute(ActivityExecution execution) {
+    public void execute(DelegateExecution execution) {
       activeThread.returnControlToTestThreadAndWait();
     }
   }

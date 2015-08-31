@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.impl.webservice;
 
-import org.activiti5.engine.impl.bpmn.webservice.MessageDefinition;
-import org.activiti5.engine.impl.bpmn.webservice.MessageInstance;
-import org.activiti5.engine.impl.bpmn.webservice.Operation;
-import org.activiti5.engine.impl.bpmn.webservice.OperationImplementation;
+import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
+import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

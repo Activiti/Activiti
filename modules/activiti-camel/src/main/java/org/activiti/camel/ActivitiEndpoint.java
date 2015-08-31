@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Consumer;
@@ -40,6 +41,8 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   protected IdentityService identityService;
 
   protected RuntimeService runtimeService;
+  
+  protected RepositoryService repositoryService;
 
   protected ActivitiConsumer activitiConsumer;
 
@@ -80,6 +83,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     ActivitiProducer producer = new ActivitiProducer(this, getTimeout(), getTimeResolution());
     producer.setRuntimeService(runtimeService);
     producer.setIdentityService(identityService);
+    producer.setRepositoryService(repositoryService);
     return producer;
   }
 
@@ -109,6 +113,10 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   public void setRuntimeService(RuntimeService runtimeService) {
     this.runtimeService = runtimeService;
   }
+  
+  public void setRepositoryService(RepositoryService repositoryService) {
+    this.repositoryService = repositoryService;
+  }
 
   public boolean isCopyVariablesToProperties() {
     return copyVariablesToProperties;
@@ -134,7 +142,6 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
   }
 
-
   public String getCopyVariablesFromProperties() {
     return copyVariablesFromProperties ;
   }
@@ -144,13 +151,11 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
-  
   public String getCopyVariablesFromHeader() {
     return copyVariablesFromHeader;
-    
   }
   
-   public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
+  public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
     this.copyVariablesFromHeader = copyVariablesFromHeader;
   }
   
@@ -163,7 +168,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   }
   
   public boolean isSetProcessInitiator() {
-      return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
+    return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
   }
   
   public Map<String, Object> getReturnVarMap() {
@@ -175,11 +180,11 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   }
   
   public String getProcessInitiatorHeaderName() {
-      return processInitiatorHeaderName;
+    return processInitiatorHeaderName;
   }
   
   public void setProcessInitiatorHeaderName(String processInitiatorHeaderName) {
-      this.processInitiatorHeaderName = processInitiatorHeaderName;
+    this.processInitiatorHeaderName = processInitiatorHeaderName;
   }
   
   @Override

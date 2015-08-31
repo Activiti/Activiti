@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
@@ -30,6 +31,7 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.camel.CamelContext;
@@ -63,7 +65,6 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   private static final long serialVersionUID = 1L;
   protected Expression camelContext;
   protected CamelContext camelContextObj;
-  protected SpringProcessEngineConfiguration springConfiguration;
   protected List<MapExceptionEntry> mapExceptions;
 
   protected abstract void setPropertTargetVariable(ActivitiEndpoint endpoint);
@@ -114,8 +115,22 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
       throw new ActivitiException("Exception while processing exchange", e);
     }
     execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
-    if (!handleCamelException(exchange, execution))
+    
+    boolean isActiviti5Execution = false;
+    if ((Context.getCommandContext() != null && Activiti5Util.isActiviti5ProcessDefinitionId(Context.getCommandContext(), execution.getProcessDefinitionId())) ||
+        (Context.getCommandContext() == null && Activiti5Util.getActiviti5CompatibilityHandler() != null)) {
+      
+      isActiviti5Execution = true;
+    }
+    
+    if (!handleCamelException(exchange, execution, isActiviti5Execution)) {
+      if (isActiviti5Execution) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
+        activiti5CompatibilityHandler.leaveExecution(execution);
+        return;
+      }
       leave(execution);
+    }
   }
 
   protected ActivitiEndpoint createEndpoint(DelegateExecution execution) {
@@ -142,18 +157,33 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     return ex;
   }
 
-  protected boolean handleCamelException(Exchange exchange, DelegateExecution execution) {
+  protected boolean handleCamelException(Exchange exchange, DelegateExecution execution, boolean isActiviti5Execution) {
     Exception camelException = exchange.getException();
     boolean notHandledByCamel = exchange.isFailed() && camelException != null;
     if (notHandledByCamel) {
       if (camelException instanceof BpmnError) {
+        if (isActiviti5Execution) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
+          activiti5CompatibilityHandler.propagateError((BpmnError) camelException, execution);
+          return true;
+        }
         ErrorPropagation.propagateError((BpmnError) camelException, execution);
         return true;
       } else {
-        if (ErrorPropagation.mapException(camelException, (ExecutionEntity) execution, mapExceptions))
+        if (isActiviti5Execution) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
+          if (activiti5CompatibilityHandler.mapException(camelException, execution, mapExceptions)) {
+            return true;
+          } else {
+            throw new ActivitiException("Unhandled exception on camel route", camelException);
+          }
+        }
+        
+        if (ErrorPropagation.mapException(camelException, (ExecutionEntity) execution, mapExceptions)) {
           return true;
-        else
+        } else {
           throw new ActivitiException("Unhandled exception on camel route", camelException);
+        }
       }
     }
     return false;
@@ -190,41 +220,42 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   }
 
   protected void setAppropriateCamelContext(DelegateExecution execution) {
-    // Check to see if the springConfiguration has been set. If not, set it.
-    if (springConfiguration == null) {
-      // Get the ProcessEngineConfiguration object.
-      ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
-
-      // Convert it to a SpringProcessEngineConfiguration. If this doesn't
-      // work, throw a RuntimeException.
-      // (ActivitiException extends RuntimeException.)
-      try {
-        springConfiguration = (SpringProcessEngineConfiguration) engineConfiguration;
-      } catch (Exception e) {
-        throw new ActivitiException("Expecting a SpringProcessEngineConfiguration for the Activiti Camel module.", e);
-      }
-    }
-
     // Get the appropriate String representation of the CamelContext object
     // from ActivityExecution (if available).
     String camelContextValue = getStringFromField(camelContext, execution);
-
-    // If the String representation of the CamelContext object from
-    // ActivityExecution is empty, use the default.
+    
+    // If the String representation of the CamelContext object from ActivityExecution is empty, use the default.
     if (StringUtils.isEmpty(camelContextValue) && camelContextObj != null) {
-      // No processing required. No custom CamelContext & the default is
-      // already set.
+      // No processing required. No custom CamelContext & the default is already set.
+      
     } else {
-      if (StringUtils.isEmpty(camelContextValue) && camelContextObj == null) {
-        camelContextValue = springConfiguration.getDefaultCamelContext();
-      }
+      // Get the ProcessEngineConfiguration object.
+      ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
+      if ((Context.getCommandContext() != null && Activiti5Util.isActiviti5ProcessDefinitionId(Context.getCommandContext(), execution.getProcessDefinitionId())) ||
+            (Context.getCommandContext() == null && Activiti5Util.getActiviti5CompatibilityHandler() != null)) {
+        
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
+        camelContextObj = (CamelContext) activiti5CompatibilityHandler.getCamelContextObject(camelContextValue);
+        
+      } else {
+        // Convert it to a SpringProcessEngineConfiguration. If this doesn't work, throw a RuntimeException. (ActivitiException extends RuntimeException.)
+        try {
+          SpringProcessEngineConfiguration springConfiguration = (SpringProcessEngineConfiguration) engineConfiguration;
+          if (StringUtils.isEmpty(camelContextValue) && camelContextObj == null) {
+            camelContextValue = springConfiguration.getDefaultCamelContext();
+          }
 
-      // Get the CamelContext object and set the super's member variable.
-      Object ctx = springConfiguration.getApplicationContext().getBean(camelContextValue);
-      if (ctx == null || ctx instanceof CamelContext == false) {
-        throw new ActivitiException("Could not find CamelContext named " + camelContextValue + ".");
+          // Get the CamelContext object and set the super's member variable.
+          Object ctx = springConfiguration.getApplicationContext().getBean(camelContextValue);
+          if (ctx == null || ctx instanceof CamelContext == false) {
+            throw new ActivitiException("Could not find CamelContext named " + camelContextValue + ".");
+          }
+          camelContextObj = (CamelContext) ctx;
+          
+        } catch (Exception e) {
+          throw new ActivitiException("Expecting a SpringProcessEngineConfiguration for the Activiti Camel module.", e);
+        }
       }
-      camelContextObj = (CamelContext) ctx;
     }
   }
 

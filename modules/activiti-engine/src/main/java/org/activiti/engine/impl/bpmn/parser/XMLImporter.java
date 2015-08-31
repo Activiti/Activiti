@@ -29,5 +29,5 @@ public interface XMLImporter {
    * @param parse
    *          the parse who called this importer
    */
-  void importFrom(Import theImport, BpmnParse parse);
+  void importFrom(Import theImport, BpmnParseXMLImportHandler parseHandler);
 }

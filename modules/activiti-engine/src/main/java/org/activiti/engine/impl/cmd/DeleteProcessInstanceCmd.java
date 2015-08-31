@@ -60,7 +60,7 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     }
     
     if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processInstanceEntity.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.deleteProcessInstance(processInstanceId, deleteReason);
     } else {
       commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(), 

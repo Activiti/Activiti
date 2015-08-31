@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class BpmnParse implements BpmnXMLConstants {
+public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" 
+  targetNamespace="org.activiti.engine.test.bpmn.servicetask"
+  xmlns:tns="org.activiti.engine.test.bpmn.servicetask"
+  xmlns:counter="http://webservice.activiti.org/">
+  <!--
+    XML Schema is used as type language for the model whereas
+    XPath serves as language for Expressions.
+  -->
+
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+          location="http://localhost:63081/counter?wsdl"
+          namespace="http://webservice.activiti.org/" />
+          
+  <process id="webServiceInvocationWithDataFlowUEL">
+
+	<!--
+		The Data Inputs and Outputs of a Process have to be explicitly
+		declared with their type to be valid BPMN 2.0
+	-->
+  	<ioSpecification>
+  		<dataInput id="dataInputOfProcess" itemSubjectRef="tns:prettyPrintCountRequestItem" />
+  		<dataOutput id="dataOutputOfProcess" itemSubjectRef="xsd:string" />
+  		<inputSet>
+  			<dataInputRefs>dataInputOfProcess</dataInputRefs>
+  		</inputSet>
+  		<outputSet>
+  			<dataOutputRefs>dataOutputOfProcess</dataOutputRefs>
+  		</outputSet>
+  	</ioSpecification>
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="webService" />
+    
+    <serviceTask id="webService" 
+                 name="Web service invocation"
+                 implementation="##WebService"
+                 operationRef="tns:prettyPrintCountOperation">
+            <!-- The BPMN 2.0 Meta Model requires an Input/Output Specification -->
+            <ioSpecification>
+                <dataInput itemSubjectRef="tns:prettyPrintCountRequestItem" id="dataInputOfServiceTask" />
+                <dataOutput itemSubjectRef="tns:prettyPrintCountResponseItem" id="dataOutputOfServiceTask" />
+                <inputSet>
+                    <dataInputRefs>dataInputOfServiceTask</dataInputRefs>
+                </inputSet>
+                <outputSet>
+                	<dataOutputRefs>dataOutputOfServiceTask</dataOutputRefs>
+                </outputSet>
+            </ioSpecification>
+            <!--
+                 getDataObject, getDataInput, and getDataOutput are custom
+                 XPath functions defined in the BPMN specification
+            -->
+            <dataInputAssociation>
+                <sourceRef>dataInputOfProcess</sourceRef>
+                <targetRef>dataInputOfServiceTask</targetRef>
+   				<assignment>
+   					<from>bpmn:getDataObject("dataInputOfProcess")/prefix</from>
+   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:prefix</to>
+   				</assignment>
+   				<assignment>
+   					<from>bpmn:getDataObject("dataInputOfProcess")/suffix</from>
+   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:suffix</to>
+   				</assignment>
+            </dataInputAssociation>
+            <dataOutputAssociation>
+            	<targetRef>dataOutputOfProcess</targetRef>
+            	<transformation>bpmn:getDataOutput("dataOutputOfServiceTask")/counter:prettyPrint</transformation>
+            </dataOutputAssociation>
+    </serviceTask>
+    
+    <sequenceFlow id="flow2" sourceRef="webService" targetRef="waitState" />
+    
+    <receiveTask id="waitState" />
+    
+    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+  <!-- Interface: implementationRef = QName of WSDL Port Type -->
+  <interface name="Counter Interface" implementationRef="counter:Counter">
+    <!-- Operation: implementationRef = QName of WSDL Operation -->
+    <operation id="prettyPrintCountOperation" name="prettyPrintCount Operation" implementationRef="counter:prettyPrintCount">
+      <inMessageRef>tns:prettyPrintCountRequestMessage</inMessageRef>
+      <outMessageRef>tns:prettyPrintCountResponseMessage</outMessageRef>
+    </operation>
+  </interface>
+  
+  <message id="prettyPrintCountRequestMessage" itemRef="tns:prettyPrintCountRequestItem" />
+  <message id="prettyPrintCountResponseMessage" itemRef="tns:prettyPrintCountResponseItem" />
+  
+  <itemDefinition id="prettyPrintCountRequestItem" structureRef="counter:prettyPrintCount" /><!-- QName of input element -->
+  <itemDefinition id="prettyPrintCountResponseItem" structureRef="counter:prettyPrintCountResponse" /><!-- QName of output element -->
+  
+</definitions>

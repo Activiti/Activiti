@@ -67,9 +67,9 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
   }
 
-  public void execute(ActivityExecution execution) {
-
-    readFields(execution);
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    readFields(activityExecution);
 
     List<String> argList = new ArrayList<String>();
     argList.add(commandStr);
@@ -116,7 +116,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
       throw new ActivitiException("Could not execute shell command ", e);
     }
 
-    leave(execution);
+    leave(activityExecution);
   }
 
   public static String convertStreamToStr(InputStream is) throws IOException {

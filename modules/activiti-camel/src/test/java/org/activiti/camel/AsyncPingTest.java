@@ -50,7 +50,7 @@ public class AsyncPingTest extends SpringActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncPingProcess");
 
     List<Execution> executionList = runtimeService.createExecutionQuery().list();
-    Assert.assertEquals(1, executionList.size());
+    Assert.assertEquals(2, executionList.size());
 
     managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
     Thread.sleep(1500);

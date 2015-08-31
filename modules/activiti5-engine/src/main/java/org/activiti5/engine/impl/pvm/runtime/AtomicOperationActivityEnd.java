@@ -15,11 +15,11 @@ package org.activiti5.engine.impl.pvm.runtime;
 
 import java.util.List;
 
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;

@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
@@ -52,7 +53,8 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     this.storeScriptVariables = storeScriptVariables;
   }
   
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     ScriptingEngines scriptingEngines = Context
       .getProcessEngineConfiguration()
       .getScriptingEngines();
@@ -67,19 +69,19 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
 
     } catch (ActivitiException e) {
       
-      LOGGER.warn("Exception while executing " + execution.getActivity().getId() + " : " + e.getMessage());
+      LOGGER.warn("Exception while executing " + activityExecution.getActivity().getId() + " : " + e.getMessage());
       
       noErrors = false;
       Throwable rootCause = ExceptionUtils.getRootCause(e);
       if (rootCause instanceof BpmnError) {
-        ErrorPropagation.propagateError((BpmnError) rootCause, execution);
+        ErrorPropagation.propagateError((BpmnError) rootCause, activityExecution);
       } else {
         throw e;
       }
     }
-     if (noErrors) {
-       leave(execution);
-     }
+    if (noErrors) {
+      leave(activityExecution);
+    }
   }
   
 }

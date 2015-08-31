@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
@@ -28,8 +29,9 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
     this.errorCode = errorCode;
   }
   
-  public void execute(ActivityExecution execution) {    
-    ErrorPropagation.propagateError(errorCode, execution);    
+  public void execute(DelegateExecution execution) { 
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    ErrorPropagation.propagateError(errorCode, activityExecution);    
   }
 
   public String getErrorCode() {

@@ -14,6 +14,7 @@
 package org.activiti5.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
@@ -42,19 +43,20 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
     this.resultVariable = resultVariable;
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     Object value = null;
     try {
-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression);
       if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression))) {
         value = expression.getValue(execution);
         if (resultVariable != null) {
           execution.setVariable(resultVariable, value);
         }
       }
 
-      leave(execution);
+      leave(activityExecution);
     } catch (Exception exc) {
 
       Throwable cause = exc;
@@ -68,7 +70,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
       }
 
       if (error != null) {
-        ErrorPropagation.propagateError(error, execution);
+        ErrorPropagation.propagateError(error, activityExecution);
       } else {
         throw new ActivitiException(exc.getMessage(), exc);
       }

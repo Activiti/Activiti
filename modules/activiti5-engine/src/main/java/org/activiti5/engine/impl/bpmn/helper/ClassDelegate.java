@@ -25,6 +25,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.BpmnError;
@@ -34,7 +35,6 @@ import org.activiti5.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti5.engine.impl.delegate.TaskListenerInvocation;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
@@ -130,21 +130,22 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Activity Behavior
-  public void execute(ActivityExecution execution) {
-    boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression);
     if (!isSkipExpressionEnabled || 
-            (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+            (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression))) {
       
       if (activityBehaviorInstance == null) {
-        activityBehaviorInstance = getActivityBehaviorInstance(execution);
+        activityBehaviorInstance = getActivityBehaviorInstance(activityExecution);
       }
       
       try {
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {
-        ErrorPropagation.propagateError(error, execution);
+        ErrorPropagation.propagateError(error, activityExecution);
       } catch (RuntimeException e) {
-        if (!ErrorPropagation.mapException(e, execution, mapExceptions))
+        if (!ErrorPropagation.mapException(e, activityExecution, mapExceptions))
             throw e;
       }
       

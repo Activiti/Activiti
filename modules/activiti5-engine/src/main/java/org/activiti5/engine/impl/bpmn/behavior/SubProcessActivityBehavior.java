@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.Map;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
@@ -33,19 +34,20 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior implements CompositeActivityBehavior {
   
-  public void execute(ActivityExecution execution) {
-    PvmActivity activity = execution.getActivity();
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    PvmActivity activity = activityExecution.getActivity();
     ActivityImpl initialActivity = (ActivityImpl) activity.getProperty(BpmnParse.PROPERTYNAME_INITIAL);
     
     if (initialActivity == null) {
       throw new ActivitiException("No initial activity found for subprocess " 
-              + execution.getActivity().getId());
+              + activityExecution.getActivity().getId());
     }
 
     // initialize the template-defined data objects as variables
-    initializeDataObjects(execution, activity);
+    initializeDataObjects(activityExecution, activity);
 
-    execution.executeActivity(initialActivity);
+    activityExecution.executeActivity(initialActivity);
   }
   
   public void lastExecutionEnded(ActivityExecution execution) {

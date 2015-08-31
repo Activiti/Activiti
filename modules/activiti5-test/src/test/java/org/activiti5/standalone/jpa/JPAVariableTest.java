@@ -32,7 +32,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.AbstractActivitiTestCase;
@@ -79,7 +78,6 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         .createProcessEngineConfigurationFromResource("org/activiti5/standalone/jpa/activiti.cfg.xml");
       
       cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
-      Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration()); 
       
       org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
           ((ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration()).getActiviti5CompatibilityHandler().getRawProcessConfiguration();

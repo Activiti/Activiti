@@ -12,10 +12,11 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
@@ -86,12 +87,12 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
   }
   
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     super.execute(execution);
     
-    if(innerActivityBehavior instanceof SubProcessActivityBehavior) {
+    if (innerActivityBehavior instanceof SubProcessActivityBehavior) {
       // ACT-1185: end-event in subprocess may have inactivated execution
-      if(!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
+      if (!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
         execution.setActive(true);
       }
     }

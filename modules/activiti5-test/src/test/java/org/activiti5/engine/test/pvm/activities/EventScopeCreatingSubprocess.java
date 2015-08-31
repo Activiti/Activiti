@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -30,16 +31,17 @@ import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class EventScopeCreatingSubprocess implements CompositeActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     List<PvmActivity> startActivities = new ArrayList<PvmActivity>();
-    for (PvmActivity activity: execution.getActivity().getActivities()) {
+    for (PvmActivity activity: activityExecution.getActivity().getActivities()) {
       if (activity.getIncomingTransitions().isEmpty()) {
         startActivities.add(activity);
       }
     }
     
     for (PvmActivity startActivity: startActivities) {
-      execution.executeActivity(startActivity);
+      activityExecution.executeActivity(startActivity);
     }
   }
 

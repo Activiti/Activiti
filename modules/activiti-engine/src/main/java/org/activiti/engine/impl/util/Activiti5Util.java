@@ -14,6 +14,7 @@ package org.activiti.engine.impl.util;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
@@ -23,7 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public class Activiti5Util {
   
-  public static boolean isActiviti5ProcessDefinitionId(CommandContext commandContext, String processDefinitionId) {
+  public static boolean isActiviti5ProcessDefinitionId(CommandContext commandContext, final String processDefinitionId) {
     
     if (processDefinitionId == null) {
       return false;
@@ -55,8 +56,12 @@ public class Activiti5Util {
     return false;
   }
   
-  public static Activiti5CompatibilityHandler getActiviti5CompatibilityHandler(CommandContext commandContext) {
-    Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
+  public static Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
+    Activiti5CompatibilityHandler activiti5CompatibilityHandler = Context.getActiviti5CompatibilityHandler();
+    if (activiti5CompatibilityHandler == null) {
+      activiti5CompatibilityHandler = Context.getFallbackActiviti5CompatibilityHandler();
+    }
+    
     if (activiti5CompatibilityHandler == null) {
       throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
     }

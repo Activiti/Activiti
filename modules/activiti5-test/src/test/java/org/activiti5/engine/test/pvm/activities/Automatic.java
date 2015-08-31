@@ -15,8 +15,9 @@ package org.activiti5.engine.test.pvm.activities;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.PvmTransition;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -25,12 +26,13 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Automatic implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    if(outgoingTransitions.isEmpty()) {
-      execution.end();
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    List<PvmTransition> outgoingTransitions = activityExecution.getActivity().getOutgoingTransitions();
+    if (outgoingTransitions.isEmpty()) {
+      activityExecution.end();
     } else {
-      execution.take(outgoingTransitions.get(0));
+      activityExecution.take(outgoingTransitions.get(0));
     }
   }
 

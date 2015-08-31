@@ -42,7 +42,7 @@ import org.activiti.image.ProcessDiagramGenerator;
  * </p>
  * 
  * <p>
- * To create a process engine programatic, without a configuration file, the first option is {@link #createStandaloneProcessEngineConfiguration()}
+ * To create a process engine programmatic, without a configuration file, the first option is {@link #createStandaloneProcessEngineConfiguration()}
  * 
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration().buildProcessEngine();

@@ -13,9 +13,9 @@
 package org.activiti5.standalone.parsing;
 
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti5.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
-import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * @author Joram Barrez
@@ -25,7 +25,7 @@ public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactor
   @Override
   public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
     return new NoneStartEventActivityBehavior() {
-      public void execute(ActivityExecution execution) {
+      public void execute(DelegateExecution execution) {
         super.execute(execution);
         CustomActivityBehaviorFactoryTest.COUNTER.addAndGet(1);
       }

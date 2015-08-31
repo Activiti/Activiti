@@ -15,8 +15,13 @@ package org.activiti.engine.compatibility;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -40,6 +45,10 @@ public interface Activiti5CompatibilityHandler {
   ProcessDefinition getProcessDefinition(String processDefinitionId);
   
   ProcessDefinition getProcessDefinitionByKey(String processDefinitionKey);
+  
+  org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(String processDefinitionId);
+  
+  BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
   
   void addCandidateStarter(String processDefinitionId, String userId, String groupId);
   
@@ -139,6 +148,14 @@ public interface Activiti5CompatibilityHandler {
   
   void setJobRetries(String jobId, int retries);
   
+  void leaveExecution(DelegateExecution execution);
+  
+  void propagateError(BpmnError bpmnError, DelegateExecution execution);
+  
+  boolean mapException(Exception camelException, DelegateExecution execution, List<MapExceptionEntry> mapExceptions);
+  
+  Map<String, Object> getVariableValues(ProcessInstance processInstance);
+  
   void addEventListener(Object listener);
   
   void removeEventListener(Object listener);
@@ -152,4 +169,6 @@ public interface Activiti5CompatibilityHandler {
   Object getRawProcessConfiguration();
   
   Object getRawCommandExecutor();
+  
+  Object getCamelContextObject(String camelContextValue);
 }

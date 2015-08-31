@@ -108,6 +108,7 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
@@ -450,7 +451,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngine buildProcessEngine() {
     init();
-    return new ProcessEngineImpl(this);
+    ProcessEngineImpl processEngine = new ProcessEngineImpl(this);
+    if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
+      // trigger build of Activiti 5 Engine
+      Context.setProcessEngineConfiguration(processEngine.getProcessEngineConfiguration());
+      activiti5CompatibilityHandler.getRawProcessEngine();
+    }
+    return processEngine;
   }
 
   // init

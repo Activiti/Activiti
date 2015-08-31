@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -20,8 +21,9 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
-  public void execute(ActivityExecution execution) {
-    execution.end();
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    activityExecution.end();
   }
 
 }

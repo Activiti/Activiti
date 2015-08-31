@@ -13,6 +13,7 @@
 package org.activiti5.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.EndEvent;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.context.Context;
@@ -35,14 +36,19 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     this.endEvent = endEvent.clone();
   }
 
-  public void execute(ActivityExecution execution) {
-    ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
-    ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    ActivityImpl terminateEndEventActivity = (ActivityImpl) activityExecution.getActivity();
+    ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(activityExecution);
 
     boolean loop = true;
     // get top superexecution to terminate
     while (scopeExecution.getSuperExecutionId() != null && loop) {
-      ActivityExecution superExecution = (ActivityExecution) Context.getProcessEngineConfiguration().getRuntimeService().createExecutionQuery().executionId(scopeExecution.getSuperExecutionId()).singleResult();
+      ActivityExecution superExecution = (ActivityExecution) Context.getProcessEngineConfiguration().getRuntimeService()
+          .createExecutionQuery()
+          .executionId(scopeExecution.getSuperExecutionId())
+          .singleResult();
+      
       if (superExecution != null) {
         // superExecution can be null in the case when no wait state was reached between super start event and TerminateEndEvent
         while (superExecution.getParent() != null) {
@@ -54,7 +60,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       }
     }
     
-    terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+    terminateExecution(activityExecution, terminateEndEventActivity, scopeExecution);
   }
 
   protected void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {

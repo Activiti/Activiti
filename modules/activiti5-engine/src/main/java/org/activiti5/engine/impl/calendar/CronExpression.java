@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import org.activiti5.engine.runtime.ClockReader;
+import org.activiti.engine.runtime.ClockReader;
 
 /**
  * Provides a parser and evaluator for unix-like cron expressions. Cron

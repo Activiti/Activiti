@@ -17,8 +17,11 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.compatibility.wrapper.Activiti5AttachmentWrapper;
 import org.activiti.compatibility.wrapper.Activiti5CommentWrapper;
 import org.activiti.compatibility.wrapper.Activiti5DeploymentWrapper;
@@ -31,6 +34,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
@@ -54,14 +58,18 @@ import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.asyncexecutor.AsyncJobUtil;
+import org.activiti5.engine.impl.bpmn.behavior.BpmnActivityBehavior;
+import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.cmd.AddEventListenerCommand;
 import org.activiti5.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti5.engine.impl.cmd.RemoveEventListenerCommand;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.repository.DeploymentBuilder;
 
 /**
@@ -105,6 +113,33 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       wrapper = new Activiti5ProcessDefinitionWrapper(processDefinitionEntity);
     }
     return wrapper;
+  }
+  
+  public org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(final String processDefinitionId) {
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    org.activiti.bpmn.model.Process process = processEngineConfig.getCommandExecutor().execute(new Command<org.activiti.bpmn.model.Process>() {
+
+      @Override
+      public org.activiti.bpmn.model.Process execute(CommandContext commandContext) {
+        org.activiti.bpmn.model.Process process = null;
+        DeploymentManager deploymentManager = processEngineConfig.getDeploymentManager();
+        ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+        if (processDefinition != null) {
+          BpmnModel bpmnModel = deploymentManager.getBpmnModelById(processDefinitionId);
+          if (bpmnModel != null) {
+            process = bpmnModel.getProcessById(processDefinition.getKey());
+          }
+        }
+        return process;
+      }
+    });
+    
+    return process;
+  }
+  
+  public BpmnModel getProcessDefinitionBpmnModel(final String processDefinitionId) {
+    final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+    return processEngineConfig.getDeploymentManager().getBpmnModelById(processDefinitionId);
   }
   
   public void addCandidateStarter(String processDefinitionId, String userId, String groupId) {
@@ -669,6 +704,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     if (job == null) return;
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
+    org.activiti.engine.ProcessEngineConfiguration engineConfig = Context.getProcessEngineConfiguration();
     AsyncJobUtil.executeJob(activity5Job, processEngineConfig.getCommandExecutor());
   }
   
@@ -695,6 +731,38 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public void leaveExecution(DelegateExecution execution) {
+    try {
+      BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
+      bpmnActivityBehavior.performDefaultOutgoingBehavior((ActivityExecution) execution);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public void propagateError(BpmnError bpmnError, DelegateExecution execution) {
+    try {
+      org.activiti5.engine.delegate.BpmnError activiti5BpmnError = new org.activiti5.engine.delegate.BpmnError(bpmnError.getErrorCode(), bpmnError.getMessage());
+      ErrorPropagation.propagateError(activiti5BpmnError, (ActivityExecution) execution);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public boolean mapException(Exception camelException, DelegateExecution execution, List<MapExceptionEntry> mapExceptions) {
+    try {
+      return ErrorPropagation.mapException(camelException, (ExecutionEntity) execution, mapExceptions);
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return false;
+    }
+  }
+  
+  public Map<String, Object> getVariableValues(ProcessInstance processInstance) {
+    org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance = ((Activiti5ProcessInstanceWrapper) processInstance).getRawObject();
+    return ((ExecutionEntity) activiti5ProcessInstance).getVariableValues();
+  }
+  
   public void addEventListener(Object listener) {
     if (listener instanceof ActivitiEventListener == false) {
       throw new ActivitiException("listener does not implement org.activiti5.engine.delegate.event.ActivitiEventListener interface");
@@ -716,11 +784,9 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   public void setClock(Clock clock) {
     ProcessEngineConfiguration processEngineConfig = getProcessEngine().getProcessEngineConfiguration();
     if (processEngineConfig.getClock() == null) {
-      org.activiti5.engine.runtime.Clock activiti5Clock = new org.activiti5.engine.impl.util.DefaultClockImpl();
-      activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
-      getProcessEngine().getProcessEngineConfiguration().setClock(activiti5Clock);
+      getProcessEngine().getProcessEngineConfiguration().setClock(clock);
     } else {
-      org.activiti5.engine.runtime.Clock activiti5Clock = processEngineConfig.getClock();
+      Clock activiti5Clock = processEngineConfig.getClock();
       activiti5Clock.setCurrentCalendar(clock.getCurrentCalendar());
     }
   }
@@ -743,6 +809,10 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   public Object getRawCommandExecutor() {
     ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     return processEngineConfig.getCommandExecutor();
+  }
+  
+  public Object getCamelContextObject(String camelContextValue) {
+    throw new ActivitiException("Getting the Camel context is not support in this engine configuration");
   }
   
   protected ProcessEngine getProcessEngine() {

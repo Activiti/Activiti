@@ -36,6 +36,7 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
@@ -75,7 +76,6 @@ import org.activiti5.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti5.engine.impl.bpmn.parser.CompensateEventDefinition;
 import org.activiti5.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.task.TaskDefinition;
 

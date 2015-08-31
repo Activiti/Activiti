@@ -41,9 +41,8 @@ public class DefaultSpringProcessEngineFactory extends DefaultProcessEngineFacto
   }
   
   protected void copySpringConfigItems(SpringProcessEngineConfiguration activiti6Configuration, org.activiti5.spring.SpringProcessEngineConfiguration activiti5Configuration) {
+    activiti5Configuration.setApplicationContext(activiti6Configuration.getApplicationContext());
     activiti5Configuration.setTransactionManager(activiti6Configuration.getTransactionManager());
-    activiti5Configuration.setDeploymentName(activiti6Configuration.getDeploymentName());
-    activiti5Configuration.setDeploymentResources(activiti6Configuration.getDeploymentResources());
   }
   
 }

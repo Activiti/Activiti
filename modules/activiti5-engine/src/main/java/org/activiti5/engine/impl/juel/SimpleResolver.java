@@ -18,7 +18,7 @@ package org.activiti5.engine.impl.juel;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import org.activiti5.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti5.engine.impl.javax.el.ArrayELResolver;
 import org.activiti5.engine.impl.javax.el.BeanELResolver;
 import org.activiti5.engine.impl.javax.el.CompositeELResolver;

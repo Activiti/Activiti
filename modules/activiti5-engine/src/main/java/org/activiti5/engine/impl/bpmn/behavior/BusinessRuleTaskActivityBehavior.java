@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -41,8 +42,9 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
 
   public BusinessRuleTaskActivityBehavior() {}
   
-  public void execute(ActivityExecution execution) {
-    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    PvmProcessDefinition processDefinition = activityExecution.getActivity().getProcessDefinition();
     String deploymentId = processDefinition.getDeploymentId();
     
     KnowledgeBase knowledgeBase = RulesHelper.findKnowledgeBaseByDeploymentId(deploymentId); 
@@ -79,7 +81,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
       execution.setVariable(resultVariable, outputVariables);
     }
     ksession.dispose();
-    leave(execution);
+    leave(activityExecution);
   }
   
   public void addRuleVariableInputIdExpression(Expression inputId) {

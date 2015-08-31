@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.pvm.PvmTransition;
-import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
 
@@ -40,7 +40,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
   }
   
   @SuppressWarnings("unchecked")
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     ActivityImpl boundaryActivity = executionEntity.getProcessDefinition().findActivity(activityId);
     ActivityImpl interruptedActivity = executionEntity.getActivity();
@@ -57,10 +57,10 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       
       interruptedExecutions = new ArrayList<ExecutionEntity>(executionEntity.getExecutions());
       for (ExecutionEntity interruptedExecution: interruptedExecutions) {
-        interruptedExecution.deleteCascade("interrupting boundary event '"+execution.getActivity().getId()+"' fired");
+        interruptedExecution.deleteCascade("interrupting boundary event '"+executionEntity.getActivity().getId()+"' fired");
       }
       
-      execution.takeAll(outgoingTransitions, (List) interruptedExecutions);
+      executionEntity.takeAll(outgoingTransitions, (List) interruptedExecutions);
     }
     else {
       // non interrupting event, introduced with BPMN 2.0, we need to create a new execution in this case

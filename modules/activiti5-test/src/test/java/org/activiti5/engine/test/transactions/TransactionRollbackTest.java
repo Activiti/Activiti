@@ -13,10 +13,10 @@
 
 package org.activiti5.engine.test.transactions;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -26,7 +26,7 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 public class TransactionRollbackTest extends PluggableActivitiTestCase {
   
   public static class Buzzz implements ActivityBehavior {
-    public void execute(ActivityExecution execution) {
+    public void execute(DelegateExecution execution) {
       throw new ActivitiException("Buzzz");
     }
   }

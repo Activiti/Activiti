@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
@@ -53,6 +52,8 @@ public class DefaultProcessEngineFactory {
    
   @SuppressWarnings("unchecked")
   protected void copyConfigItems(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
+    activiti5Configuration.setActiviti5CompatibilityHandler(activiti6Configuration.getActiviti5CompatibilityHandler());
+    
     if (activiti6Configuration.getIdGeneratorDataSource() != null) {
       activiti5Configuration.setIdGeneratorDataSource(activiti6Configuration.getIdGeneratorDataSource());
     } else if (activiti6Configuration.getIdGeneratorDataSourceJndiName() != null) {
@@ -92,18 +93,7 @@ public class DefaultProcessEngineFactory {
     activiti5Configuration.setMailServerUseSSL(activiti6Configuration.getMailServerUseSSL());
     activiti5Configuration.setMailServerUseTLS(activiti6Configuration.getMailServerUseTLS());
     if (activiti6Configuration.getMailServers() != null && activiti6Configuration.getMailServers().size() > 0) {
-      for (String key : activiti6Configuration.getMailServers().keySet()) {
-        MailServerInfo mailServerInfo = activiti6Configuration.getMailServers().get(key);
-        org.activiti5.engine.cfg.MailServerInfo activiti5MailServerInfo = new org.activiti5.engine.cfg.MailServerInfo();
-        activiti5MailServerInfo.setMailServerDefaultFrom(mailServerInfo.getMailServerDefaultFrom());
-        activiti5MailServerInfo.setMailServerHost(mailServerInfo.getMailServerHost());
-        activiti5MailServerInfo.setMailServerPassword(mailServerInfo.getMailServerPassword());
-        activiti5MailServerInfo.setMailServerPort(mailServerInfo.getMailServerPort());
-        activiti5MailServerInfo.setMailServerUsername(mailServerInfo.getMailServerUsername());
-        activiti5MailServerInfo.setMailServerUseSSL(mailServerInfo.isMailServerUseSSL());
-        activiti5MailServerInfo.setMailServerUseTLS(mailServerInfo.isMailServerUseTLS());
-        activiti5Configuration.getMailServers().put(key, activiti5MailServerInfo);
-      }
+      activiti5Configuration.getMailServers().putAll(activiti6Configuration.getMailServers());
     }
     
     if (activiti6Configuration.getMailSessionJndi() != null) {

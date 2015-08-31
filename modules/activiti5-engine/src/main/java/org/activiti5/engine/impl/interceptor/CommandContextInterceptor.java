@@ -53,6 +53,7 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
       // Push on stack
       Context.setCommandContext(context);
       Context.setProcessEngineConfiguration(processEngineConfiguration);
+      org.activiti.engine.impl.context.Context.setFallbackActiviti5CompatibilityHandler(processEngineConfiguration.getActiviti5CompatibilityHandler());
       
       return next.execute(config, command);
       
@@ -69,6 +70,8 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
     	  // Pop from stack
     	  Context.removeCommandContext();
     	  Context.removeProcessEngineConfiguration();
+    	  // don't remove the fallback because it's needed in Activiti 6 code like the Camel module
+    	  //org.activiti.engine.impl.context.Context.removeFallbackActiviti5CompatibilityHandler();
       }
     }
     

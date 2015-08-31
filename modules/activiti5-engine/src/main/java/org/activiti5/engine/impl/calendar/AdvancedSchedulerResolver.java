@@ -3,7 +3,7 @@ package org.activiti5.engine.impl.calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.activiti5.engine.runtime.ClockReader;
+import org.activiti.engine.runtime.ClockReader;
 
 /**
  * Provides an interface for versioned due date resolvers.

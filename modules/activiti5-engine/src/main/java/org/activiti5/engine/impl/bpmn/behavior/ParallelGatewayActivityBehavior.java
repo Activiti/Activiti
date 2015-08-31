@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.pvm.PvmActivity;
@@ -57,16 +58,16 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
   
   private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
-  public void execute(ActivityExecution execution) { 
-    
+  public void execute(DelegateExecution execution) { 
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     // Join
-    PvmActivity activity = execution.getActivity();
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    PvmActivity activity = activityExecution.getActivity();
+    List<PvmTransition> outgoingTransitions = activityExecution.getActivity().getOutgoingTransitions();
     execution.inactivate();
-    lockConcurrentRoot(execution);
+    lockConcurrentRoot(activityExecution);
     
-    List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
-    int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
+    List<ActivityExecution> joinedExecutions = activityExecution.findInactiveConcurrentExecutions(activity);
+    int nbrOfExecutionsToJoin = activityExecution.getActivity().getIncomingTransitions().size();
     int nbrOfExecutionsJoined = joinedExecutions.size();
     Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
@@ -75,7 +76,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       if(log.isDebugEnabled()) {
         log.debug("parallel gateway '{}' activates: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
       }
-      execution.takeAll(outgoingTransitions, joinedExecutions);
+      activityExecution.takeAll(outgoingTransitions, joinedExecutions);
       
     } else if (log.isDebugEnabled()){
       log.debug("parallel gateway '{}' does not activate: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);

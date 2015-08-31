@@ -28,7 +28,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.TestHelper;
 import org.activiti5.engine.test.mock.ActivitiMockSupport;
@@ -206,8 +205,6 @@ public class ActivitiRule implements TestRule {
 		if (processEngine == null) {
 			initializeProcessEngine();
     }
-		
-		Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration());
 		
 		if (processEngineConfiguration == null) {
 		  initializeServices();

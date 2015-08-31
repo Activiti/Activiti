@@ -13,6 +13,7 @@
 
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -28,14 +29,14 @@ import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
 public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
   @Override
-  public void execute(ActivityExecution execution) {
-    
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     // find cancel boundary event:
     ActivityImpl cancelBoundaryEvent = ScopeUtil
-      .findInParentScopesByBehaviorType((ActivityImpl) execution.getActivity(), CancelBoundaryEventActivityBehavior.class);
+      .findInParentScopesByBehaviorType((ActivityImpl) activityExecution.getActivity(), CancelBoundaryEventActivityBehavior.class);
     
     if(cancelBoundaryEvent == null) {
-      throw new ActivitiException("Could not find cancel boundary event for cancel end event "+execution.getActivity());
+      throw new ActivitiException("Could not find cancel boundary event for cancel end event "+ activityExecution.getActivity());
     }
     
     ActivityExecution scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, cancelBoundaryEvent.getParentActivity());    

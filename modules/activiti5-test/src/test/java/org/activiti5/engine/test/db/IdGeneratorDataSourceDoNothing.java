@@ -1,12 +1,12 @@
 package org.activiti5.engine.test.db;
 
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 
 
 public class IdGeneratorDataSourceDoNothing implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
   }
 
 }
