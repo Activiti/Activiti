@@ -180,7 +180,7 @@ public class BpmnDeployer implements Deployer {
 
     CommandContext commandContext = Context.getCommandContext();
     ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
-    DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       List<TimerEntity> timers = new ArrayList<TimerEntity>();
       if (deployment.isNew()) {

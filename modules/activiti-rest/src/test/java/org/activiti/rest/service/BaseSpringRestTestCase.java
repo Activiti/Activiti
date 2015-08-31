@@ -321,7 +321,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
       commandExecutor.execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
-          DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+          DbSqlSession session = commandContext.getDbSqlSession();
           session.dbSchemaDrop();
           session.dbSchemaCreate();
           return null;

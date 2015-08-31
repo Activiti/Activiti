@@ -780,7 +780,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManagerImpl.class).insert(comment);
+      
+      getCommentEntityManager().insert(comment);
     }
   }
 
@@ -813,7 +814,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManagerImpl.class).insert(comment);
+      getCommentEntityManager().insert(comment);
     }
   }
 
@@ -838,7 +839,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
       }
       comment.setMessage(attachmentName);
-      getSession(CommentEntityManagerImpl.class).insert(comment);
+      getCommentEntityManager().insert(comment);
     }
   }
 

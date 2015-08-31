@@ -15,12 +15,13 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
 /**
  * @author Joram Barrez
  */
-public interface EntityManager<Entity extends PersistentObject> {
+public interface EntityManager<Entity extends PersistentObject> extends Session {
 
   void insert(Entity entity);
 

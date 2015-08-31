@@ -247,7 +247,7 @@ public abstract class TestHelper {
 
       ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
-          DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+          DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
           dbSqlSession.dbSchemaDrop();
           dbSqlSession.dbSchemaCreate();
           return null;

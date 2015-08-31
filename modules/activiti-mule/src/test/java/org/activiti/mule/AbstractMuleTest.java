@@ -51,7 +51,7 @@ public abstract class AbstractMuleTest extends FunctionalTestCase {
       CommandConfig config = new CommandConfig().transactionNotSupported();
       commandExecutor.execute(config, new Command<Object>() {
         public Object execute(CommandContext commandContext) {
-          DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+          DbSqlSession session = commandContext.getDbSqlSession();
           session.dbSchemaDrop();
           session.dbSchemaCreate();
           return null;
