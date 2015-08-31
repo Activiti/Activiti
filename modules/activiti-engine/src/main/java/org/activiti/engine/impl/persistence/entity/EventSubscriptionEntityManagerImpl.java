@@ -18,10 +18,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Signal;
@@ -35,6 +33,7 @@ import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Joram Barrez
@@ -56,10 +55,6 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     return ENTITY_SUBCLASSES;
   }
 
-  /** keep track of subscriptions created in the current command */
-  protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();
-  protected List<CompensateEventSubscriptionEntity> createdCompensateSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
-  
   @Override
   public void insert(EventSubscriptionEntity eventSubScriptionEntity) {
     super.insert(eventSubScriptionEntity);
@@ -86,7 +81,6 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     }
     insert(subscriptionEntity);
     execution.getEventSubscriptions().add(subscriptionEntity);
-    createdSignalSubscriptions.add(subscriptionEntity);
     return subscriptionEntity;
   }
 
@@ -115,7 +109,6 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
       eventSubscription.setTenantId(execution.getTenantId());
     }
     insert(eventSubscription);
-    createdCompensateSubscriptions.add(eventSubscription);
     return eventSubscription;
   }
   
@@ -148,50 +141,14 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     return result;
   }
   
-  @Override
-  public void delete(EventSubscriptionEntity eventSubscriptionEntity) {
-    super.delete(eventSubscriptionEntity);
-    
-    if (eventSubscriptionEntity instanceof SignalEventSubscriptionEntity) {
-      createdSignalSubscriptions.remove(eventSubscriptionEntity);
-    }
-  }
-  
   protected void addToExecution(EventSubscriptionEntity eventSubscriptionEntity) {
     // add reference in execution
-    ExecutionEntity execution = getExecution(eventSubscriptionEntity);
+    ExecutionEntity execution = eventSubscriptionEntity.getExecution();
     if (execution != null) {
       execution.getEventSubscriptions().add(eventSubscriptionEntity);
     }
   }
   
-  protected void removeFromExecution(EventSubscriptionEntity eventSubscriptionEntity) {
-    // remove reference in execution
-    ExecutionEntity execution = getExecution(eventSubscriptionEntity);
-    if (execution != null) {
-      execution.getExecutions().remove(eventSubscriptionEntity);
-    }
-  }
-  
-  protected ExecutionEntity getExecution(EventSubscriptionEntity eventSubscriptionEntity) {
-    if (eventSubscriptionEntity.getExecution() != null) {
-      return eventSubscriptionEntity.getExecution();
-    } else if (eventSubscriptionEntity.getExecutionId() != null) {
-      return Context.getCommandContext().getExecutionEntityManager().findExecutionById(eventSubscriptionEntity.getExecutionId());
-    }
-    return null;
-  }
-
-  @Override
-  public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
-    getDbSqlSession().delete("deleteEventSubscriptionsForProcessDefinition", processDefinitionId);
-  }
-
-  @Override
-  public EventSubscriptionEntity findEventSubscriptionbyId(String id) {
-    return (EventSubscriptionEntity) getDbSqlSession().selectOne("selectEventSubscription", id);
-  }
-
   @Override
   public long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl) {
     final String query = "selectEventSubscriptionCountByQueryCriteria";
@@ -207,176 +164,144 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   
   @Override
   @SuppressWarnings("unchecked")
-  public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName) {
-    final String query = "selectMessageEventSubscriptionsByProcessInstanceAndEventName";
+  public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(final String processInstanceId, final String eventName) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
     params.put("eventName", eventName);
-    Set<MessageEventSubscriptionEntity> selectList = new HashSet<MessageEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
-
-    // add events created in this command (not visible yet in query)
-    /*for (MessageEventSubscriptionEntity entity : created) {
-      if (processInstanceId.equals(entity.getProcessInstanceId()) && eventName.equals(entity.getEventName())) {
-        selectList.add(entity);
+    return toMessageEventSubscriptionEntityList(getList("selectMessageEventSubscriptionsByProcessInstanceAndEventName", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE)
+            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
+            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
       }
-    }*/
-
-    return new ArrayList<MessageEventSubscriptionEntity>(selectList);
+      
+    }, true));
+    
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(String eventName, String tenantId) {
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(final String eventName, final String tenantId) {
     final String query = "selectSignalEventSubscriptionsByEventName";
 
-    Set<SignalEventSubscriptionEntity> selectList = null;
-    Map<String, String> params = new HashMap<String, String>();
+    final Map<String, String> params = new HashMap<String, String>();
     params.put("eventName", eventName);
     if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
       params.put("tenantId", tenantId);
-      selectList = new HashSet<SignalEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
-    } else {
-      selectList = new HashSet<SignalEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
     }
-
-    // add events created in this command (not visible yet in query)
-    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if (eventName.equals(entity.getEventName())) {
-        selectList.add(entity);
+    
+    List<EventSubscriptionEntity> result = getList(query, params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
+            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
+            && (eventSubscriptionEntity.getExecutionId() == null || (eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecution() != null && eventSubscriptionEntity.getExecution().getSuspensionState() == SuspensionState.ACTIVE.getStateCode()) )
+            && ( (params.containsKey("tenantId") && tenantId.equals(eventSubscriptionEntity.getTenantId())) || (!params.containsKey("tenantId") && StringUtils.isEmpty(eventSubscriptionEntity.getTenantId())) );
       }
-    }
-
-    return new ArrayList<SignalEventSubscriptionEntity>(selectList);
+    }, true);
+    
+    return toSignalEventSubscriptionEntityList(result);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName) {
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByProcessInstanceAndEventName(final String processInstanceId, final String eventName) {
     final String query = "selectSignalEventSubscriptionsByProcessInstanceAndEventName";
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
     params.put("eventName", eventName);
-    Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
-
-    // add events created in this command (not visible yet in query)
-    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if (processInstanceId.equals(entity.getProcessInstanceId()) && eventName.equals(entity.getEventName())) {
-        selectList.add(entity);
+    
+    return toSignalEventSubscriptionEntityList(getList(query, params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
+            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
+            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
       }
-    }
-
-    return new ArrayList<SignalEventSubscriptionEntity>(selectList);
+      
+    }, true));
+    
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(String executionId) {
-    final String query = "selectSignalEventSubscriptionsByExecution";
-    Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>(getDbSqlSession().selectList(query, executionId));
-
-    // add events created in this command (not visible yet in query)
-    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if (executionId.equals(entity.getExecutionId())) {
-        selectList.add((SignalEventSubscriptionEntity) entity);
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(final String executionId) {
+    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByExecution", executionId, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
+            &&  eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
       }
-    }
-
-    return new ArrayList<SignalEventSubscriptionEntity>(selectList);
+      
+    }, true));
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(String name, String executionId) {
-    final String query = "selectSignalEventSubscriptionsByNameAndExecution";
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(final String name, final String executionId) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventName", name);
-    Set<SignalEventSubscriptionEntity> selectList = new HashSet<SignalEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
-
-    // add events created in this command (not visible yet in query)
-    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if (executionId.equals(entity.getExecutionId()) && name.equals(entity.getEventName())) {
-        selectList.add(entity);
+    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByNameAndExecution", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
+            && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId)
+            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(name);
       }
-    }
-
-    return new ArrayList<SignalEventSubscriptionEntity>(selectList);
+      
+    }, true));
+    
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(String executionId, String type) {
-    final String query = "selectEventSubscriptionsByExecutionAndType";
+  public List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(final String executionId, final String type) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventType", type);
-    Set<EventSubscriptionEntity> selectList = new HashSet<EventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
     
-    // add events created in this command (not visible yet in query)
-    if ("signal".equals(type)) {
-      for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-        if (executionId.equals(entity.getExecutionId())) {
-          selectList.add(entity);
-        }
+    return getList("selectEventSubscriptionsByExecutionAndType", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
+            && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
       }
-    } else if ("compensate".equals(type)) {
-      for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
-        if (executionId.equals(entity.getExecutionId())) {
-          selectList.add(entity);
-        }
-      }
-    }
-
-    return new ArrayList<EventSubscriptionEntity>(selectList);
+      
+    }, true);
   }
   
   @Override
-  @SuppressWarnings("unchecked")
-  public List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(String processInstanceId, String activityId, String type) {
-    final String query = "selectEventSubscriptionsByProcessInstanceTypeAndActivity";
+  public List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(final String processInstanceId, final String activityId, final String type) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
     params.put("eventType", type);
     params.put("activityId", activityId);
-    Set<EventSubscriptionEntity> selectList = new HashSet<EventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
     
-    // add events created in this command (not visible yet in query)
-    if ("signal".equals(type)) {
-      for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-        if (processInstanceId.equals(entity.getProcessInstanceId()) && activityId.equals(entity.getActivityId())) {
-          selectList.add(entity);
-        }
+    return getList("selectEventSubscriptionsByProcessInstanceTypeAndActivity", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
+            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId)
+            && eventSubscriptionEntity.getActivityId() != null && eventSubscriptionEntity.getActivityId().equals(activityId);
       }
-    } else if ("compensate".equals(type)) {
-      for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
-        if (processInstanceId.equals(entity.getProcessInstanceId()) && activityId.equals(entity.getActivityId())) {
-          selectList.add(entity);
-        }
-      }
-    }
-
-    return new ArrayList<EventSubscriptionEntity>(selectList);
+      
+    }, true);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(String executionId) {
-    final String query = "selectEventSubscriptionsByExecution";
-    Set<EventSubscriptionEntity> selectList = new HashSet<EventSubscriptionEntity>(getDbSqlSession().selectList(query, executionId));
-    
-    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
-      if (executionId.equals(entity.getExecutionId())) {
-        selectList.add(entity);
+  public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId) {
+    return getList("selectEventSubscriptionsByExecution", executionId, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+      
+      @Override
+      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
+        return eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
       }
-    }
-    
-    for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
-      if (executionId.equals(entity.getExecutionId())) {
-        selectList.add(entity);
-      }
-    }
-    
-    return new ArrayList<EventSubscriptionEntity>(selectList);
+      
+    }, true);
   }
 
   @Override
@@ -509,6 +434,27 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     // }
 
     commandContext.getJobEntityManager().send(message);
+  }
+  
+  @Override
+  public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
+    getDbSqlSession().delete("deleteEventSubscriptionsForProcessDefinition", processDefinitionId);
+  }
+  
+  protected List<SignalEventSubscriptionEntity> toSignalEventSubscriptionEntityList(List<EventSubscriptionEntity> result) {
+    List<SignalEventSubscriptionEntity> signalEventSubscriptionEntities = new ArrayList<SignalEventSubscriptionEntity>(result.size());
+    for (EventSubscriptionEntity eventSubscriptionEntity : result ) {
+      signalEventSubscriptionEntities.add((SignalEventSubscriptionEntity) eventSubscriptionEntity);
+    }
+    return signalEventSubscriptionEntities;
+  }
+  
+  protected List<MessageEventSubscriptionEntity> toMessageEventSubscriptionEntityList(List<EventSubscriptionEntity> result) {
+    List<MessageEventSubscriptionEntity> messageEventSubscriptionEntities = new ArrayList<MessageEventSubscriptionEntity>(result.size());
+    for (EventSubscriptionEntity eventSubscriptionEntity : result ) {
+      messageEventSubscriptionEntities.add((MessageEventSubscriptionEntity) eventSubscriptionEntity);
+    }
+    return messageEventSubscriptionEntities;
   }
   
 
