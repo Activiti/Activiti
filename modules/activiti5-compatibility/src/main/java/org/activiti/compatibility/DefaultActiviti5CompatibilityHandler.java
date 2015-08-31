@@ -70,6 +70,7 @@ import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti5.engine.impl.scripting.ScriptingEngines;
 import org.activiti5.engine.repository.DeploymentBuilder;
 
 /**
@@ -761,6 +762,18 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   public Map<String, Object> getVariableValues(ProcessInstance processInstance) {
     org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance = ((Activiti5ProcessInstanceWrapper) processInstance).getRawObject();
     return ((ExecutionEntity) activiti5ProcessInstance).getVariableValues();
+  }
+  
+  public Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution) {
+    try {
+      final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
+      ScriptingEngines scriptingEngines = processEngineConfig.getScriptingEngines();
+      return scriptingEngines.evaluate(payloadExpressionValue, languageValue, execution);
+      
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
   }
   
   public void addEventListener(Object listener) {

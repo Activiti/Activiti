@@ -156,6 +156,8 @@ public interface Activiti5CompatibilityHandler {
   
   Map<String, Object> getVariableValues(ProcessInstance processInstance);
   
+  Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution);
+  
   void addEventListener(Object listener);
   
   void removeEventListener(Object listener);

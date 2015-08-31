@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -64,8 +65,18 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
     String usernameValue = this.getStringFromField(this.username, execution);
     String passwordValue = this.getStringFromField(this.password, execution);
 
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-    Object payload = scriptingEngines.evaluate(payloadExpressionValue, languageValue, execution);
+    boolean isActiviti5Execution = false;
+    Object payload = null;
+    if ((Context.getCommandContext() != null && Activiti5Util.isActiviti5ProcessDefinitionId(Context.getCommandContext(), execution.getProcessDefinitionId())) ||
+        (Context.getCommandContext() == null && Activiti5Util.getActiviti5CompatibilityHandler() != null)) {
+      
+      payload = Activiti5Util.getActiviti5CompatibilityHandler().getScriptingEngineValue(payloadExpressionValue, languageValue, execution);
+      isActiviti5Execution = true;
+      
+    } else {
+      ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+      payload = scriptingEngines.evaluate(payloadExpressionValue, languageValue, execution);
+    }
 
     if (endpointUrlValue.startsWith("vm:")) {
       LocalMuleClient client = this.getMuleContext().getClient();
@@ -136,7 +147,12 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
       }
     }
 
-    this.leave(execution);
+    if (isActiviti5Execution) {
+      Activiti5Util.getActiviti5CompatibilityHandler().leaveExecution(execution);
+      
+    } else {
+      this.leave(execution);
+    }
   }
 
   protected MuleContext getMuleContext() {
