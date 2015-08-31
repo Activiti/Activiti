@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,6 @@ import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -43,7 +42,7 @@ import org.activiti.engine.task.Task;
 
 /**
  * Builder class used to create {@link ActivitiEvent} implementations.
- * 
+ *
  * @author Frederik Heremans
  */
 public class ActivitiEventBuilder {
@@ -82,7 +81,7 @@ public class ActivitiEventBuilder {
     populateEventWithCurrentContext(newEvent);
     return newEvent;
   }
-  
+
   /**
    * @param entity
    *            the entity this event targets
@@ -122,10 +121,10 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ExecutionEntity executionEntity, ActivitiEventType type, 
-      String sequenceFlowId, String sourceActivityId, String sourceActivityName, String sourceActivityType, Object sourceActivityBehavior, 
+  public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ExecutionEntity executionEntity, ActivitiEventType type,
+      String sequenceFlowId, String sourceActivityId, String sourceActivityName, String sourceActivityType, Object sourceActivityBehavior,
       String targetActivityId, String targetActivityName, String targetActivityType, Object targetActivityBehavior) {
-    
+
     ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(type);
 
     if (executionEntity != null) {
@@ -200,16 +199,16 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String activityName, String executionId, 
+  public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String activityName, String executionId,
       String processInstanceId, String processDefinitionId, FlowElement flowElement) {
-    
+
     ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(type);
     newEvent.setActivityId(activityId);
     newEvent.setActivityName(activityName);
     newEvent.setExecutionId(executionId);
     newEvent.setProcessDefinitionId(processDefinitionId);
     newEvent.setProcessInstanceId(processInstanceId);
-    
+
     if (flowElement instanceof FlowNode) {
       FlowNode flowNode = (FlowNode) flowElement;
       newEvent.setActivityType(parseActivityType(flowNode));
@@ -218,10 +217,10 @@ public class ActivitiEventBuilder {
         newEvent.setBehaviorClass(behaviour.getClass().getCanonicalName());
       }
     }
-    
+
     return newEvent;
   }
-  
+
   protected static String parseActivityType(FlowNode flowNode) {
     String elementType = flowNode.getClass().getSimpleName();
     elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
@@ -230,7 +229,7 @@ public class ActivitiEventBuilder {
 
   public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId, String processInstanceId, String processDefinitionId,
       String activityType, String behaviourClass, Object cause) {
-    
+
     ActivitiActivityCancelledEventImpl newEvent = new ActivitiActivityCancelledEventImpl();
     newEvent.setActivityId(activityId);
     newEvent.setActivityName(activityName);
@@ -275,7 +274,7 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorId, String errorCode, 
+  public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorId, String errorCode,
       String executionId, String processInstanceId, String processDefinitionId) {
     ActivitiErrorEventImpl newEvent = new ActivitiErrorEventImpl(type);
     newEvent.setActivityId(activityId);
