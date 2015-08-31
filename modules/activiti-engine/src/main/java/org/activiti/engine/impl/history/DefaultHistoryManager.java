@@ -369,33 +369,6 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   /*
    * (non-Javadoc)
    * 
-   * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordExecutionReplacedBy (org.activiti.engine.impl.persistence.entity.ExecutionEntity,
-   * org.activiti.engine.impl.pvm.runtime.InterpretableExecution)
-   */
-  @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void recordExecutionReplacedBy(ExecutionEntity execution, ExecutionEntity replacedBy) {
-    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-
-      // Update the cached historic activity instances that are open
-      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getPersistentObjectCache().findInCache(HistoricActivityInstanceEntity.class);
-      for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
-        if ((cachedHistoricActivityInstance.getEndTime() == null) && (execution.getId().equals(cachedHistoricActivityInstance.getExecutionId()))) {
-          cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
-        }
-      }
-
-      // Update the persisted historic activity instances that are open
-      List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(Context.getCommandContext()).executionId(execution.getId()).unfinished().list();
-      for (HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstances) {
-        historicActivityInstance.setExecutionId(replacedBy.getId());
-      }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessDefinitionChange(java.lang.String, java.lang.String)
    */
   @Override

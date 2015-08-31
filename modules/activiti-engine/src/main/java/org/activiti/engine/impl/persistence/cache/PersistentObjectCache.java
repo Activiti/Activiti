@@ -54,12 +54,6 @@ public interface PersistentObjectCache extends Session {
   <T> List<T> findInCache(Class<T> entityClass);
 
   /**
-   * Returns all cached {@link PersistentObject} instances of a given types.
-   * Returns an empty list if no instances of the given type exist.
-   */
-  <T> List<T> findInCache(List<Class<T>> entityClasses);
-
-  /**
    * Returns all {@link CachedPersistentObject} instances for the given type.
    * The difference with {@link #findInCache(Class)} is that here the whole {@link CachedPersistentObject}
    * is returned, which gives access to the persistent state at the moment of putting it in the cache.  

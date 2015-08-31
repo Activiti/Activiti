@@ -86,30 +86,6 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
     return Collections.emptyList();
   }
   
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> List<T> findInCache(List<Class<T>> entityClasses) {
-    List<T> entities = null;
-    
-    for (Class<T> entityClass : entityClasses) {
-      Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
-      if (classCache != null) {
-        if (entities == null) {
-          entities = new ArrayList<T>(classCache.size());
-        }
-        for (CachedPersistentObject cachedObject : classCache.values()) {
-          entities.add((T) cachedObject.getPersistentObject());
-        }
-      }
-    }
-    
-    if (entities != null) {
-      return entities;
-    }
-    
-    return Collections.emptyList();
-  }
-
   public Map<Class<?>, Map<String, CachedPersistentObject>> getAllCachedPersistentObjects() {
     return cachedObjects;
   }
