@@ -22,8 +22,11 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.camel.Exchange;
@@ -34,6 +37,8 @@ public class ActivitiProducer extends DefaultProducer {
   protected IdentityService identityService;
 
   protected RuntimeService runtimeService;
+  
+  protected RepositoryService repositoryService;
 
   public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
 
@@ -69,14 +74,6 @@ public class ActivitiProducer extends DefaultProducer {
     }
   }
 
-  public void setIdentityService(IdentityService identityService) {
-    this.identityService = identityService;
-  }
-
-  public void setRuntimeService(RuntimeService runtimeService) {
-    this.runtimeService = runtimeService;
-  }
-
   protected void copyResultToCamel(Exchange exchange, ProcessInstance pi) {
     exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
 
@@ -84,7 +81,14 @@ public class ActivitiProducer extends DefaultProducer {
 
     if (returnVars != null && returnVars.size() > 0) {
 
-      Map<String, Object> processVariables = ((ExecutionEntity) pi).getVariableValues();
+      Map<String, Object> processVariables = null;
+      if (repositoryService.isActiviti5ProcessDefinition(pi.getProcessDefinitionId())) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
+        processVariables = activiti5CompatibilityHandler.getVariableValues(pi);
+      } else {
+        processVariables = ((ExecutionEntity) pi).getVariableValues();
+      }
+      
       if (processVariables != null) {
         for (String variableName : returnVars.keySet()) {
           if (processVariables.containsKey(variableName)) {
@@ -185,5 +189,17 @@ public class ActivitiProducer extends DefaultProducer {
 
   protected ActivitiEndpoint getActivitiEndpoint() {
     return (ActivitiEndpoint) getEndpoint();
+  }
+  
+  public void setIdentityService(IdentityService identityService) {
+    this.identityService = identityService;
+  }
+
+  public void setRuntimeService(RuntimeService runtimeService) {
+    this.runtimeService = runtimeService;
+  }
+  
+  public void setRepositoryService(RepositoryService repositoryService) {
+    this.repositoryService = repositoryService;
   }
 }

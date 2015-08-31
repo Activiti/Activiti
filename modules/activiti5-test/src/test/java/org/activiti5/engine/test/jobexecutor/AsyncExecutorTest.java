@@ -28,7 +28,6 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -331,8 +330,7 @@ public class AsyncExecutorTest {
 
 		ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();
 		ProcessEngineConfigurationImpl createdConfig = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
-    Context.setProcessEngineConfiguration(createdConfig);
-		
+    
 		if (time != null) {
 		  Clock clock = createdConfig.getClock();
 		  clock.setCurrentTime(time);

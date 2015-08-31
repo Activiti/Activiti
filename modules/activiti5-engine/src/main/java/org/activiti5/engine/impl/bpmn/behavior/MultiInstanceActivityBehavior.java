@@ -21,6 +21,7 @@ import java.util.List;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.BpmnError;
@@ -30,7 +31,6 @@ import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti5.engine.impl.history.handler.ActivityInstanceStartHandler;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
@@ -86,16 +86,17 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     setInnerActivityBehavior(innerActivityBehavior);
   }
   
-  public void execute(ActivityExecution execution) {
-    if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    if (getLocalLoopVariable(activityExecution, getCollectionElementIndexVariable()) == null) {
       try {
-        createInstances(execution);
+        createInstances(activityExecution);
       } catch (BpmnError error) {
-        ErrorPropagation.propagateError(error, execution);
+        ErrorPropagation.propagateError(error, activityExecution);
       }
 
-      if (resolveNrOfInstances(execution) == 0) {
-        leave(execution);
+      if (resolveNrOfInstances(activityExecution) == 0) {
+        leave(activityExecution);
       }
     } else {
         innerActivityBehavior.execute(execution);

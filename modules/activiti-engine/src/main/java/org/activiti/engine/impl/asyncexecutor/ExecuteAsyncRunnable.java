@@ -132,7 +132,7 @@ public class ExecuteAsyncRunnable implements Runnable {
       @Override
       public Void execute(CommandContext commandContext) {
         if (job.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.handleFailedJob(job, exception);
           return null;
         }

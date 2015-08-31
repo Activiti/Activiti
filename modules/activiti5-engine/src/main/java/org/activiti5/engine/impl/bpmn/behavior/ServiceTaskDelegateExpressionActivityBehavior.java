@@ -15,8 +15,10 @@ package org.activiti5.engine.impl.bpmn.behavior;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.impl.bpmn.helper.ClassDelegate;
@@ -26,7 +28,6 @@ import org.activiti5.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.delegate.ActivityBehaviorInvocation;
 import org.activiti5.engine.impl.delegate.JavaDelegateInvocation;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
@@ -61,12 +62,12 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
     }
   }
 
-	public void execute(ActivityExecution execution) {
-
+	public void execute(DelegateExecution execution) {
+	  ActivityExecution activityExecution = (ActivityExecution) execution;
     try {
-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression); 
+      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression); 
       if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression))) {
         
         // Note: we can't cache the result of the expression, because the
         // execution can change: eg.
@@ -81,18 +82,18 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
           }
 
           Context.getProcessEngineConfiguration().getDelegateInterceptor()
-                  .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
+                  .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, activityExecution));
 
         } else if (delegate instanceof JavaDelegate) {
           Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
-          leave(execution);
+          leave(activityExecution);
 
         } else {
           throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of "
                   + ActivityBehavior.class + " nor " + JavaDelegate.class);
         }
       } else {
-        leave(execution);
+        leave(activityExecution);
       }
     } catch (Exception exc) {
 
@@ -107,7 +108,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
       }
 
       if (error != null) {
-        ErrorPropagation.propagateError(error, execution);
+        ErrorPropagation.propagateError(error, activityExecution);
       } else {
         throw new ActivitiException(exc.getMessage(), exc);
       }

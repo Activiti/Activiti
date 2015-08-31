@@ -12,6 +12,7 @@
  */
 package org.activiti5.examples.pvm;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
@@ -23,7 +24,7 @@ import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
  */
 public class WaitState implements SignallableActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     // By default, the execution will not propagate.
     // So if no method like take(Transition) is called on execution
     // then the activity will behave as a wait state.  The execution is currently 

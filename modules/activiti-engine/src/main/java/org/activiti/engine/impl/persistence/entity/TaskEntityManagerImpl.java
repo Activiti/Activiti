@@ -281,7 +281,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       }
       
       if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
         activiti5CompatibilityHandler.deleteTask(taskId, deleteReason, cascade);
         return;
       }

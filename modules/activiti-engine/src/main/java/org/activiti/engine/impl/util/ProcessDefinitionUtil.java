@@ -44,17 +44,24 @@ public class ProcessDefinitionUtil {
   }
 
   public static Process getProcess(String processDefinitionId) {
-    return getCacheEntry(processDefinitionId).getProcess();
+    if (Context.getProcessEngineConfiguration() == null) {
+      return Activiti5Util.getActiviti5CompatibilityHandler().getProcessDefinitionProcessObject(processDefinitionId);
+      
+    } else {
+      DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+      ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+      return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getProcess();
+    }
   }
 
   public static BpmnModel getBpmnModel(String processDefinitionId) {
-    return getCacheEntry(processDefinitionId).getBpmnModel();
+    if (Context.getProcessEngineConfiguration() == null) {
+      return Activiti5Util.getActiviti5CompatibilityHandler().getProcessDefinitionBpmnModel(processDefinitionId);
+      
+    } else {
+      DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+      ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+      return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getBpmnModel();
+    }
   }
-
-  public static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
-    DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
-    ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
-    return deploymentManager.resolveProcessDefinition(processDefinitionEntity);
-  }
-
 }

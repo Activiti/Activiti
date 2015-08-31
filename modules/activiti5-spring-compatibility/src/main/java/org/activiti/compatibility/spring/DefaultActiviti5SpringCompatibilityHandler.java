@@ -15,6 +15,8 @@ package org.activiti.compatibility.spring;
 
 import org.activiti.compatibility.DefaultActiviti5CompatibilityHandler;
 import org.activiti.compatibility.DefaultProcessEngineFactory;
+import org.activiti5.spring.SpringProcessEngineConfiguration;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -29,5 +31,16 @@ public class DefaultActiviti5SpringCompatibilityHandler extends DefaultActiviti5
       processEngineFactory = new DefaultSpringProcessEngineFactory();
     }
     return processEngineFactory;
+  }
+  
+  public Object getCamelContextObject(String camelContextValue) {
+    SpringProcessEngineConfiguration springConfiguration = (SpringProcessEngineConfiguration) getProcessEngine().getProcessEngineConfiguration();
+    if (StringUtils.isEmpty(camelContextValue)) {
+      camelContextValue = springConfiguration.getDefaultCamelContext();
+    }
+
+    // Get the CamelContext object and set the super's member variable.
+    Object ctx = springConfiguration.getApplicationContext().getBean(camelContextValue);
+    return ctx;
   }
 }

@@ -39,7 +39,7 @@ import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseXMLImportHandler;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.w3c.dom.Document;
@@ -77,10 +77,10 @@ public class WSDLImporter implements XMLImporter {
     this.namespace = "";
   }
 
-  public void importFrom(Import theImport, BpmnParse parse) {
+  public void importFrom(Import theImport, BpmnParseXMLImportHandler parseHandler) {
     this.namespace = theImport.getNamespace() == null ? "" : theImport.getNamespace() + ":";
     this.importFrom(theImport.getLocation());
-    this.transferImportsToParse(parse);
+    this.transferImportsToParse(parseHandler);
   }
 
   public void importFrom(String url) {
@@ -222,16 +222,16 @@ public class WSDLImporter implements XMLImporter {
     }
   }
 
-  private void transferImportsToParse(BpmnParse parse) {
-    if (parse != null) {
+  private void transferImportsToParse(BpmnParseXMLImportHandler parseHandler) {
+    if (parseHandler != null) {
       for (StructureDefinition structure : this.structures.values()) {
-        parse.addStructure(structure);
+        parseHandler.addStructure(structure);
       }
       for (WSService service : this.wsServices.values()) {
-        parse.addService(service);
+        parseHandler.addService(service);
       }
       for (WSOperation operation : this.wsOperations.values()) {
-        parse.addOperation(operation);
+        parseHandler.addOperation(operation);
       }
     }
   }

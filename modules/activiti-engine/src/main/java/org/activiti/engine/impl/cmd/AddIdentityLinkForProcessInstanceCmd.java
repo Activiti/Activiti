@@ -75,7 +75,7 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
     }
     
     if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processInstance.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.addIdentityLinkForProcessInstance(processInstanceId, userId, groupId, type);
       return null;
     }

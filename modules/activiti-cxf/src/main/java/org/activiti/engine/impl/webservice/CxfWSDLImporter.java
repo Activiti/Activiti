@@ -33,7 +33,7 @@ import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseXMLImportHandler;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.cxf.Bus;
@@ -76,10 +76,10 @@ public class CxfWSDLImporter implements XMLImporter {
     this.namespace = "";
   }
   
-  public void importFrom(Import theImport, BpmnParse parse) {
+  public void importFrom(Import theImport, BpmnParseXMLImportHandler parseHandler) {
     this.namespace = theImport.getNamespace() == null ? "" : theImport.getNamespace() + ":";
     try {
-      final URIResolver uriResolver = new URIResolver(parse.getSourceSystemId(), theImport.getLocation());
+      final URIResolver uriResolver = new URIResolver(parseHandler.getSourceSystemId(), theImport.getLocation());
       if (uriResolver.isResolved()) {
           if (uriResolver.getURI() != null) {
               this.importFrom(uriResolver.getURI().toString());
@@ -89,24 +89,24 @@ public class CxfWSDLImporter implements XMLImporter {
               this.importFrom(uriResolver.getURL().toString());
           }
       } else {
-          throw new UncheckedException(new Exception("Unresolved import against " + parse.getSourceSystemId()));
+          throw new UncheckedException(new Exception("Unresolved import against " + parseHandler.getSourceSystemId()));
       }
-    this.transferImportsToParse(parse);
+      this.transferImportsToParse(parseHandler);
     } catch (final IOException e) {
       throw new UncheckedException(e);
     }
   }
   
-  private void transferImportsToParse(BpmnParse parse) {
-    if (parse != null) {
+  private void transferImportsToParse(BpmnParseXMLImportHandler parseHandler) {
+    if (parseHandler != null) {
       for (StructureDefinition structure : this.structures.values()) {
-        parse.addStructure(structure);
+        parseHandler.addStructure(structure);
       }
       for (WSService service : this.wsServices.values()) {
-        parse.addService(service);
+        parseHandler.addService(service);
       }
       for (WSOperation operation : this.wsOperations.values()) {
-        parse.addOperation(operation);
+        parseHandler.addOperation(operation);
       }
     }
   }

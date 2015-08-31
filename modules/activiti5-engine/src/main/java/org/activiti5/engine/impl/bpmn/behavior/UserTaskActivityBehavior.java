@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti5.engine.ActivitiException;
@@ -54,8 +55,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     this.taskDefinition = taskDefinition;
   }
 
-  public void execute(ActivityExecution execution) {
-    TaskEntity task = TaskEntity.createAndInsert(execution);
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    TaskEntity task = TaskEntity.createAndInsert(activityExecution);
     task.setExecution(execution);
     task.setTaskDefinition(taskDefinition);
 
@@ -141,7 +143,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     	}
     }
     
-    handleAssignments(task, execution);
+    handleAssignments(task, activityExecution);
    
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -152,8 +154,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     task.fireEvent(TaskListener.EVENTNAME_CREATE);
 
     Expression skipExpression = taskDefinition.getSkipExpression();
-    if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) &&
-        SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
+    if (SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression) &&
+        SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression)) {
       
       task.complete(null, false);
     }

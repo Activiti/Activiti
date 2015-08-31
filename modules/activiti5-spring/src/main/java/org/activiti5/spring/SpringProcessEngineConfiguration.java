@@ -31,9 +31,7 @@ import org.activiti5.spring.autodeployment.AutoDeploymentStrategy;
 import org.activiti5.spring.autodeployment.DefaultAutoDeploymentStrategy;
 import org.activiti5.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
 import org.activiti5.spring.autodeployment.SingleResourceAutoDeploymentStrategy;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -44,7 +42,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author Joram Barrez
  * @author Tiese Barrell
  */
-public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl implements ApplicationContextAware {
+public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected PlatformTransactionManager transactionManager;
   protected String deploymentName = "SpringAutoDeployment";
@@ -149,9 +147,8 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   public ApplicationContext getApplicationContext() {
     return applicationContext;
   }
-
-  @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+  
+  public void setApplicationContext(ApplicationContext applicationContext) {
     this.applicationContext = applicationContext;
   }
 

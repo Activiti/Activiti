@@ -47,7 +47,7 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
       if (process != null) {
         processDefinitionId = process.getProcessDefinitionId();
         if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, process.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.saveAttachment(attachment);
           return null;
         }

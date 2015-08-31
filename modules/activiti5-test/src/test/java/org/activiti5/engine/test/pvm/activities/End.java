@@ -13,7 +13,8 @@
 
 package org.activiti5.engine.test.pvm.activities;
 
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -22,8 +23,9 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class End implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
-    execution.end();
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    activityExecution.end();
   }
 
 }

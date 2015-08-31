@@ -51,7 +51,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
     }
 
     if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, instance.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.deleteHistoricProcessInstance(processInstanceId);
       return null;
     }

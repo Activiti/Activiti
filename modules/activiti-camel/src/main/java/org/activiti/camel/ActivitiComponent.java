@@ -15,6 +15,7 @@ package org.activiti.camel;
 import java.util.Map;
 
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
@@ -33,6 +34,8 @@ public class ActivitiComponent extends DefaultComponent {
   protected IdentityService identityService;
 
   protected RuntimeService runtimeService;
+  
+  protected RepositoryService repositoryService;
 
   protected boolean copyVariablesToProperties;
 
@@ -48,6 +51,7 @@ public class ActivitiComponent extends DefaultComponent {
     super.setCamelContext(context);
     identityService = getByType(context, IdentityService.class);
     runtimeService = getByType(context, RuntimeService.class);
+    repositoryService = getByType(context, RepositoryService.class);
   }
 
   private <T> T getByType(CamelContext ctx, Class<T> kls) {
@@ -64,6 +68,7 @@ public class ActivitiComponent extends DefaultComponent {
     ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext());
     ae.setIdentityService(identityService);
     ae.setRuntimeService(runtimeService);
+    ae.setRepositoryService(repositoryService);
 
     ae.setCopyVariablesToProperties(this.copyVariablesToProperties);
     ae.setCopyVariablesToBodyAsMap(this.copyVariablesToBodyAsMap);

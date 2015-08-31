@@ -50,8 +50,7 @@ public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase im
 
   @Override
   public void runBare() throws Throwable {
-    testContextManager.prepareTestInstance(this); // this will initialize
-                                                  // all dependencies
+    testContextManager.prepareTestInstance(this); // this will initialize all dependencies
     super.runBare();
   }
 
@@ -62,7 +61,7 @@ public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase im
     boolean hasOneArg = value != null && value.length == 1;
     String key = hasOneArg ? value[0] : ProcessEngine.class.getName();
     ProcessEngine engine = this.cachedProcessEngines.containsKey(key) ? this.cachedProcessEngines.get(key) : this.applicationContext.getBean(ProcessEngine.class);
-
+    
     this.cachedProcessEngines.put(key, engine);
     this.processEngine = engine;
   }

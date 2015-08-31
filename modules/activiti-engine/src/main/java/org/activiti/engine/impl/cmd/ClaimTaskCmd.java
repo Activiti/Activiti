@@ -34,7 +34,7 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
     if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.claimTask(taskId, userId);
       return null;
     }

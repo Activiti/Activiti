@@ -13,6 +13,7 @@
 
 package org.activiti5.engine.test.pvm.activities;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
@@ -23,7 +24,7 @@ import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
  */
 public class WaitState implements SignallableActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {

@@ -16,9 +16,9 @@ package org.activiti5.engine.impl.bpmn.behavior;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.delegate.JavaDelegateInvocation;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -36,18 +36,14 @@ public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavio
     this.javaDelegate = javaDelegate;
   }
 
-  public void execute(ActivityExecution execution) {
-    execute((DelegateExecution) execution);
-    leave(execution);
-  }
-  
-  public void notify(DelegateExecution execution) {
-    execute((DelegateExecution) execution);
-  }
-  
   public void execute(DelegateExecution execution) {
     Context.getProcessEngineConfiguration()
       .getDelegateInterceptor()
-      .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));    
+      .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
+    leave((ActivityExecution) execution);
+  }
+  
+  public void notify(DelegateExecution execution) {
+    execute(execution);
   }
 }

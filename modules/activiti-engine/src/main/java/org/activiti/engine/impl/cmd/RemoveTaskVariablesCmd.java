@@ -27,7 +27,7 @@ public class RemoveTaskVariablesCmd extends NeedsActiveTaskCmd<Void> {
   protected Void execute(CommandContext commandContext, TaskEntity task) {
 
     if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.removeTaskVariables(taskId, variableNames, isLocal);
       return null;
     }

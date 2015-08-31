@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.event;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -22,7 +23,6 @@ import org.activiti5.engine.impl.bpmn.behavior.EventSubProcessStartEventActivity
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
 /**

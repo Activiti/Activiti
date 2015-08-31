@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
@@ -39,7 +40,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     this.signalDefinition = signalDefinition;
   }
   
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     
     CommandContext commandContext = Context.getCommandContext();
     
@@ -58,8 +59,9 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());
     }
     
-    if (execution.getActivity() != null) { // dont continue if process has already finished
-      leave(execution);
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    if (activityExecution.getActivity() != null) { // dont continue if process has already finished
+      leave(activityExecution);
     }
   }
  

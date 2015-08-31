@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.bpmn.parser.CompensateEventDefinition;
 import org.activiti5.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
@@ -35,10 +36,10 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
   }
   
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     final String activityRef = compensateEventDefinition.getActivityRef();
-            
-    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, (ActivityImpl)execution.getActivity());
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, (ActivityImpl) activityExecution.getActivity());
     
     List<CompensateEventSubscriptionEntity> eventSubscriptions;
     
@@ -48,11 +49,11 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
       eventSubscriptions = scopeExecution.getCompensateEventSubscriptions();
     }
         
-    if(eventSubscriptions.isEmpty()) {
-      leave(execution);
+    if (eventSubscriptions.isEmpty()) {
+      leave(activityExecution);
     } else {
       // TODO: implement async (waitForCompletion=false in bpmn)
-      ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false );
+      ScopeUtil.throwCompensationEvent(eventSubscriptions, activityExecution, false );
     }
         
   }

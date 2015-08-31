@@ -19,9 +19,9 @@ import java.util.List;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -63,7 +63,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     this.dataOutputAssociations.add(dataOutputAssociation);
   }
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     
 	String processDefinitonKey = this.processDefinitonKey;
     if (processDefinitionExpression != null) {
@@ -89,7 +89,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
           + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }
     
-    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    PvmProcessInstance subProcessInstance = activityExecution.createSubProcessInstance(processDefinition);
     
     // copy process variables
     for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
@@ -106,7 +107,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     try {
       subProcessInstance.start();
     } catch (RuntimeException e) {
-        if (!ErrorPropagation.mapException(e, execution, mapExceptions, true))
+        if (!ErrorPropagation.mapException(e, activityExecution, mapExceptions, true))
             throw e;
         
       }

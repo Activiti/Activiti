@@ -16,10 +16,10 @@ package org.activiti5.standalone.calendar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.runtime.Clock;
 import org.activiti5.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti5.engine.impl.test.PvmTestCase;
-import org.activiti5.engine.impl.util.DefaultClockImpl;
-import org.activiti5.engine.runtime.Clock;
 
 /**
  * @author Tom Baeyens

@@ -51,7 +51,7 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
     }
     
     if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.setProcessDefinitionCategory(processDefinitionId, category);
       return null;
     }

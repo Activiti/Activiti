@@ -14,6 +14,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.Collections;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
@@ -39,17 +40,17 @@ public class EventSubProcessStartEventActivityBehavior extends NoneStartEventAct
   }
   
   @Override
-  public void execute(ActivityExecution execution) {
-
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     InterpretableExecution interpretableExecution = (InterpretableExecution) execution;
     ActivityImpl activity = interpretableExecution.getProcessDefinition().findActivity(activityId);
     
-    ActivityExecution outgoingExecution = execution;
+    ActivityExecution outgoingExecution = activityExecution;
     
     if(isInterrupting) {
-      execution.destroyScope("Event subprocess triggered using activity "+ activityId);
+      activityExecution.destroyScope("Event subprocess triggered using activity "+ activityId);
     } else{ 
-      outgoingExecution = execution.createExecution();
+      outgoingExecution = activityExecution.createExecution();
       outgoingExecution.setActive(true);
       outgoingExecution.setScope(false);
       outgoingExecution.setConcurrent(true);

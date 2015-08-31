@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+             http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+
+
+    <process id="asyncCamelProcess">
+
+        <startEvent id="start"/>
+        <sequenceFlow sourceRef="start" targetRef="parallelSplit"/>
+        <parallelGateway id="parallelSplit"/>
+        <sequenceFlow sourceRef="parallelSplit" targetRef="serviceTaskAsync1"/>
+        <sequenceFlow sourceRef="parallelSplit" targetRef="serviceTaskAsync2"/>
+        <serviceTask id="serviceTaskAsync1" activiti:type="camel"/>
+        <sequenceFlow sourceRef="serviceTaskAsync1" targetRef="receive1"/>
+        <receiveTask id="receive1" name="Wait State" />
+        <sequenceFlow sourceRef="receive1" targetRef="parallelJoin"/>
+        <serviceTask id="serviceTaskAsync2" activiti:type="camel"/>
+        <sequenceFlow sourceRef="serviceTaskAsync2" targetRef="receive2"/>
+        <receiveTask id="receive2" name="Wait State" />
+        <sequenceFlow sourceRef="receive2" targetRef="parallelJoin"/>
+        <parallelGateway id="parallelJoin"/>
+        <sequenceFlow sourceRef="parallelJoin" targetRef="end"/>
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

@@ -15,8 +15,8 @@ package org.activiti5.engine.impl.webservice;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti5.engine.impl.bpmn.webservice.BpmnInterface;
-import org.activiti5.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
+import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
+import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.util.ReflectUtil;
 

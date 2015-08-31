@@ -15,11 +15,12 @@ package org.activiti5.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.impl.bpmn.data.AbstractDataAssociation;
-import org.activiti5.engine.impl.bpmn.data.IOSpecification;
-import org.activiti5.engine.impl.bpmn.data.ItemInstance;
-import org.activiti5.engine.impl.bpmn.webservice.MessageInstance;
-import org.activiti5.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
+import org.activiti.engine.impl.bpmn.data.IOSpecification;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -57,11 +58,12 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   /**
    * {@inheritDoc}
    */
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     MessageInstance message;
     
     if (ioSpecification != null) {
-      this.ioSpecification.initialize(execution);
+      this.ioSpecification.initialize(activityExecution);
       ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
       message = new MessageInstance(this.operation.getInMessage(), inputItem);
     } else {
@@ -70,7 +72,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     
     execution.setVariable(CURRENT_MESSAGE, message);
     
-    this.fillMessage(message, execution);
+    this.fillMessage(message, activityExecution);
     
     MessageInstance receivedMessage = this.operation.sendMessage(message);
 
@@ -84,10 +86,10 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
       }
     }
     
-    this.returnMessage(receivedMessage, execution);
+    this.returnMessage(receivedMessage, activityExecution);
     
     execution.setVariable(CURRENT_MESSAGE, null);
-    leave(execution);
+    leave(activityExecution);
   }
   
   private void returnMessage(MessageInstance message, ActivityExecution execution) {

@@ -35,6 +35,10 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
@@ -64,7 +68,6 @@ import org.activiti5.engine.impl.RuntimeServiceImpl;
 import org.activiti5.engine.impl.ServiceImpl;
 import org.activiti5.engine.impl.TaskServiceImpl;
 import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
-import org.activiti5.engine.impl.bpmn.data.ItemInstance;
 import org.activiti5.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParser;
@@ -102,7 +105,6 @@ import org.activiti5.engine.impl.bpmn.parser.handler.TaskParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.TimerEventDefinitionParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.TransactionParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
-import org.activiti5.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti5.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti5.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti5.engine.impl.calendar.DueDateBusinessCalendar;
@@ -192,7 +194,6 @@ import org.activiti5.engine.impl.scripting.ResolverFactory;
 import org.activiti5.engine.impl.scripting.ScriptBindingsFactory;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
 import org.activiti5.engine.impl.scripting.VariableScopeResolverFactory;
-import org.activiti5.engine.impl.util.DefaultClockImpl;
 import org.activiti5.engine.impl.util.IoUtil;
 import org.activiti5.engine.impl.util.ReflectUtil;
 import org.activiti5.engine.impl.variable.BooleanType;
@@ -419,6 +420,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
    */
   protected int maxLengthStringVariableType = 4000;
+  
+  // Activiti 5 backwards compatibility handler
+  protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -2123,5 +2127,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
-	
+
+  public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
+    return activiti5CompatibilityHandler;
+  }
+
+  public void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+    this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
+  }
 }

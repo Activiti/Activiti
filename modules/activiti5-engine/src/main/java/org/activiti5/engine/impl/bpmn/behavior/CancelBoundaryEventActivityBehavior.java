@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -27,24 +28,22 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 public class CancelBoundaryEventActivityBehavior  extends FlowNodeActivityBehavior {
     
   @Override
-  public void execute(ActivityExecution execution) {
-           
-      List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity)execution).getCompensateEventSubscriptions();
-      
-      if(eventSubscriptions.isEmpty()) {
-        leave(execution);                
-      } else {
-        // cancel boundary is always sync
-        ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);        
-      }
-        
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity)execution).getCompensateEventSubscriptions();
     
+    if (eventSubscriptions.isEmpty()) {
+      leave(activityExecution);                
+    } else {
+      // cancel boundary is always sync
+      ScopeUtil.throwCompensationEvent(eventSubscriptions, activityExecution, false);        
+    }
   }
   
   @Override
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     // join compensating executions    
-    if(execution.getExecutions().isEmpty()) {
+    if (execution.getExecutions().isEmpty()) {
       leave(execution);   
     } else {      
       ((ExecutionEntity)execution).forceUpdate();  

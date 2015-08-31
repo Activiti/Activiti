@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="InheritedElement" targetNamespace="http://webservice.activiti.org/counter" xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.activiti.org/counter" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <wsdl:types>
+      <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.activiti.org/counter"
+         xmlns:tns="http://webservice.activiti.org/counter" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+         <xsd:complexType name="rootAbstractRequestType">
+            <xsd:sequence>
+               <xsd:element name="root-elt" minOccurs="1" maxOccurs="1" type="xsd:short" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="abstractRequestType">
+            <xsd:complexContent>
+               <xsd:extension base="tns:rootAbstractRequestType">
+                  <xsd:sequence>
+                     <xsd:element name="inherited-elt" minOccurs="1" maxOccurs="1" type="xsd:int" />
+                  </xsd:sequence>
+               </xsd:extension>
+            </xsd:complexContent>
+         </xsd:complexType>
+
+         <xsd:complexType name="structureType">
+            <xsd:complexContent>
+               <xsd:extension base="tns:rootAbstractRequestType">
+                  <xsd:sequence>
+                     <xsd:element name="boolean-elt" minOccurs="1" maxOccurs="1" type="xsd:boolean" />
+                     <xsd:element name="date-elt" minOccurs="1" maxOccurs="1" type="xsd:date" />
+                  </xsd:sequence>
+               </xsd:extension>
+            </xsd:complexContent>
+         </xsd:complexType>
+
+         <xsd:element name="inheritedRequest">
+            <xsd:complexType>
+               <xsd:complexContent>
+                  <xsd:extension base="tns:abstractRequestType">
+                     <xsd:sequence>
+                        <xsd:element name="new-simple-elt" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                        <xsd:element name="new-structured-elt" minOccurs="1" maxOccurs="1" type="tns:structureType" />
+                     </xsd:sequence>
+                  </xsd:extension>
+               </xsd:complexContent>
+            </xsd:complexType>
+         </xsd:element>
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="inheritedRequest">
+      <wsdl:part element="tns:inheritedRequest" name="inheritedRequest" />
+   </wsdl:message>
+   <wsdl:portType name="Inherited">
+      <wsdl:operation name="op1">
+         <wsdl:input message="tns:inheritedRequest" name="inheritedRequest" />
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="InheritedSoapBinding" type="tns:Inherited">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+      <wsdl:operation name="op1">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="inheritedRequest">
+            <soap:body use="literal" />
+         </wsdl:input>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="Inherited">
+      <wsdl:port binding="tns:InheritedSoapBinding" name="InheritedImplPort">
+         <soap:address location="http://localhost:63081/inherited" />
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

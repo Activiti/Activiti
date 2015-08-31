@@ -12,8 +12,9 @@
  */
 package org.activiti5.examples.pvm;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.PvmTransition;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -22,17 +23,18 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Decision implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     PvmTransition transition;
+    ActivityExecution activityExecution = (ActivityExecution) execution;
     String creditRating = (String) execution.getVariable("creditRating");
     if (creditRating.equals("AAA+")) {
-      transition = execution.getActivity().findOutgoingTransition("wow");
+      transition = activityExecution.getActivity().findOutgoingTransition("wow");
     } else if (creditRating.equals("Aaa-")) {
-      transition = execution.getActivity().findOutgoingTransition("nice");
+      transition = activityExecution.getActivity().findOutgoingTransition("nice");
     } else {
-      transition = execution.getActivity().findOutgoingTransition("default");
+      transition = activityExecution.getActivity().findOutgoingTransition("default");
     }
 
-    execution.take(transition);
+    activityExecution.take(transition);
   }
 }

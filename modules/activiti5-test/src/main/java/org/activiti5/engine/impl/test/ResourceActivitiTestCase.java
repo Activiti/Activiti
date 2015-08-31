@@ -15,8 +15,6 @@ package org.activiti5.engine.impl.test;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 
 
 /**
@@ -43,7 +41,6 @@ public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase 
     processEngine = ProcessEngineConfiguration
             .createProcessEngineConfigurationFromResource(activitiConfigurationResource)
             .buildProcessEngine();
-    Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration());
   }
 
 }

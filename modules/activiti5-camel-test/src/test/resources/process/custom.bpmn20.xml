@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+             http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+
+
+    <process id="camelProcess">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask1"/>
+
+        <serviceTask id="serviceTask1" activiti:type="camel">
+          <extensionElements>
+            <activiti:field name="camelContext" stringValue="camelContext" />
+          </extensionElements>
+        </serviceTask>
+        <sequenceFlow id="flow2" sourceRef="serviceTask1" targetRef="receive"/>
+
+        <receiveTask id="receive" name="Wait State" />
+
+        <sequenceFlow id="flow3" sourceRef="receive" targetRef="serviceTask2"/>
+
+        <serviceTask id="serviceTask2" activiti:type="camel" />
+
+        <sequenceFlow id="flow4" sourceRef="serviceTask2" targetRef="end"/>
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

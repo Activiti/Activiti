@@ -52,7 +52,7 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
     if (job != null) {
       
       if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
         activiti5CompatibilityHandler.setJobRetries(job.getId(), retries);
         return null;
       }

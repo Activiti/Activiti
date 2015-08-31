@@ -23,11 +23,11 @@ import java.util.Map;
 import javax.activation.DataSource;
 import javax.naming.NamingException;
 
+import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.cfg.MailServerInfo;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -69,7 +69,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected Expression attachments;
 
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
 
     boolean doIgnoreException = Boolean.parseBoolean(getStringFromField(ignoreException, execution));
     String exceptionVariable = getStringFromField(exceptionVariableName, execution);
@@ -107,7 +107,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
       handleException(execution, "Could not send e-mail in execution " + execution.getId(), e, doIgnoreException, exceptionVariable);
     }
 
-    leave(execution);
+    leave((ActivityExecution) execution);
   }
 
   private boolean attachmentsExist(List<File> files, List<DataSource> dataSources) {
@@ -393,12 +393,12 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     return file != null && file.exists() && file.isFile() && file.canRead();
   }
 
-  protected Expression getExpression(ActivityExecution execution, Expression var) {
+  protected Expression getExpression(DelegateExecution execution, Expression var) {
     String variable = (String) execution.getVariable(var.getExpressionText());
     return Context.getProcessEngineConfiguration().getExpressionManager().createExpression(variable);
   }
 
-  protected void handleException(ActivityExecution execution, String msg, Exception e, boolean doIgnoreException, String exceptionVariable) {
+  protected void handleException(DelegateExecution execution, String msg, Exception e, boolean doIgnoreException, String exceptionVariable) {
     if (doIgnoreException) {
       LOG.info("Ignoring email send error: " + msg, e);
       if (exceptionVariable != null && exceptionVariable.length() > 0) {

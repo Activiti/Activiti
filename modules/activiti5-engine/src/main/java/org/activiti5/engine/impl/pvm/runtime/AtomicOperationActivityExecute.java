@@ -12,13 +12,13 @@
  */
 package org.activiti5.engine.impl.pvm.runtime;
 
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiActivityExecutionException;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.pvm.PvmException;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.logging.LogMDC;
 import org.slf4j.Logger;
@@ -60,6 +60,7 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
       }
     	
       activityBehavior.execute(execution);
+      
     } catch (ActivitiException e) {
       throw e;
     } catch (Throwable t) {

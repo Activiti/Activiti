@@ -88,7 +88,7 @@ public class AddCommentCmd implements Command<Comment> {
     }
     
     if (processDefinitionId != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processDefinitionId)) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       return activiti5CompatibilityHandler.addComment(taskId, processInstanceId, type, message);
     }
 

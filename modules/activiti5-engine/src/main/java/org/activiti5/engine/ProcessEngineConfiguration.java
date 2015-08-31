@@ -19,15 +19,15 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.cfg.MailServerInfo;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti5.engine.cfg.MailServerInfo;
 import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti5.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti5.engine.impl.history.HistoryLevel;
 import org.activiti5.engine.impl.jobexecutor.JobExecutor;
-import org.activiti5.engine.runtime.Clock;
 
 
 /** Configuration information from which a process engine can be build.

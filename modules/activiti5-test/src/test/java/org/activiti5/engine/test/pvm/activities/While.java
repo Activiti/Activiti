@@ -13,8 +13,9 @@
 
 package org.activiti5.engine.test.pvm.activities;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.PvmTransition;
-import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -33,25 +34,26 @@ public class While implements ActivityBehavior {
     this.to = to;
   }
 
-  public void execute(ActivityExecution execution) {
-    PvmTransition more = execution.getActivity().findOutgoingTransition("more");
-    PvmTransition done = execution.getActivity().findOutgoingTransition("done");
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    PvmTransition more = activityExecution.getActivity().findOutgoingTransition("more");
+    PvmTransition done = activityExecution.getActivity().findOutgoingTransition("done");
     
     Integer value = (Integer) execution.getVariable(variableName);
 
     if (value==null) {
       execution.setVariable(variableName, from);
-      execution.take(more);
+      activityExecution.take(more);
       
     } else {
       value = value+1;
       
       if (value<to) {
         execution.setVariable(variableName, value);
-        execution.take(more);
+        activityExecution.take(more);
         
       } else {
-        execution.take(done);
+        activityExecution.take(done);
       }
     }
   }

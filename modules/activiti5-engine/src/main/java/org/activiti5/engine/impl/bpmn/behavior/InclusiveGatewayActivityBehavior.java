@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.Condition;
@@ -43,26 +44,26 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
   private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
+    ActivityExecution activityExecution = (ActivityExecution) execution;
+    activityExecution.inactivate();
+    lockConcurrentRoot(activityExecution);
     
-    execution.inactivate();
-    lockConcurrentRoot(execution);
-    
-    PvmActivity activity = execution.getActivity();
-    if (!activeConcurrentExecutionsExist(execution)) {
+    PvmActivity activity = activityExecution.getActivity();
+    if (!activeConcurrentExecutionsExist(activityExecution)) {
 
       if (log.isDebugEnabled()) {
         log.debug("inclusive gateway '{}' activates", activity.getId());
       }
 
-      List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
-      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
+      List<ActivityExecution> joinedExecutions = activityExecution.findInactiveConcurrentExecutions(activity);
+      String defaultSequenceFlow = (String) activityExecution.getActivity().getProperty("default");
       List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
-      for (PvmTransition outgoingTransition : execution.getActivity().getOutgoingTransitions()) {
+      for (PvmTransition outgoingTransition : activityExecution.getActivity().getOutgoingTransitions()) {
         
         Expression skipExpression = outgoingTransition.getSkipExpression();
-        if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+        if (!SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression)) {
           if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
             Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
             if (condition == null || condition.evaluate(execution)) {
@@ -70,20 +71,20 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
             }
           }
         }
-        else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
+        else if (SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression)){
           transitionsToTake.add(outgoingTransition);
         }
       }
 
       if (!transitionsToTake.isEmpty()) {
-        execution.takeAll(transitionsToTake, joinedExecutions);
+        activityExecution.takeAll(transitionsToTake, joinedExecutions);
 
       } else {
 
         if (defaultSequenceFlow != null) {
-          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+          PvmTransition defaultTransition = activityExecution.getActivity().findOutgoingTransition(defaultSequenceFlow);
           if (defaultTransition != null) {
-            execution.take(defaultTransition);
+            activityExecution.take(defaultTransition);
           } else {
             throw new ActivitiException("Default sequence flow '"
                 + defaultSequenceFlow + "' could not be not found");
@@ -92,7 +93,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
           // No sequence flow could be found, not even a default one
           throw new ActivitiException(
               "No outgoing sequence flow of the inclusive gateway '"
-                  + execution.getActivity().getId()
+                  + activityExecution.getActivity().getId()
                   + "' could be selected for continuing the process");
         }
       }

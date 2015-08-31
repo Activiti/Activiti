@@ -37,7 +37,7 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
     JobEntity jobToDelete = getJobToDelete(commandContext);
     
     if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, jobToDelete.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.deleteJob(jobToDelete.getId());
       return null;
     }

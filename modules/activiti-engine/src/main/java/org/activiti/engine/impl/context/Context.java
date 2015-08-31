@@ -15,6 +15,7 @@ package org.activiti.engine.impl.context;
 
 import java.util.Stack;
 
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -32,7 +33,9 @@ public class Context {
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
   protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
   protected static ThreadLocal<JobExecutorContext> jobExecutorContextThreadLocal = new ThreadLocal<JobExecutorContext>();
-
+  protected static ThreadLocal<Activiti5CompatibilityHandler> activiti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
+  protected static ThreadLocal<Activiti5CompatibilityHandler> fallbackActiviti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
+  
   public static CommandContext getCommandContext() {
     Stack<CommandContext> stack = getStack(commandContextThreadLocal);
     if (stack.isEmpty()) {
@@ -105,5 +108,29 @@ public class Context {
 
   public static void removeJobExecutorContext() {
     jobExecutorContextThreadLocal.remove();
+  }
+  
+  public static Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
+    return activiti5CompatibilityHandlerThreadLocal.get();
+  }
+
+  public static void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+    activiti5CompatibilityHandlerThreadLocal.set(activiti5CompatibilityHandler);
+  }
+
+  public static void removeActiviti5CompatibilityHandler() {
+    activiti5CompatibilityHandlerThreadLocal.remove();
+  }
+  
+  public static Activiti5CompatibilityHandler getFallbackActiviti5CompatibilityHandler() {
+    return fallbackActiviti5CompatibilityHandlerThreadLocal.get();
+  }
+
+  public static void setFallbackActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+    fallbackActiviti5CompatibilityHandlerThreadLocal.set(activiti5CompatibilityHandler);
+  }
+
+  public static void removeFallbackActiviti5CompatibilityHandler() {
+    fallbackActiviti5CompatibilityHandlerThreadLocal.remove();
   }
 }

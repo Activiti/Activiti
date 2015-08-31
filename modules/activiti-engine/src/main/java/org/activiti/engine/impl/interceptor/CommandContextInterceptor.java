@@ -52,6 +52,9 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
       // Push on stack
       Context.setCommandContext(context);
       Context.setProcessEngineConfiguration(processEngineConfiguration);
+      if (processEngineConfiguration.getActiviti5CompatibilityHandler() != null) {
+        Context.setActiviti5CompatibilityHandler(processEngineConfiguration.getActiviti5CompatibilityHandler());
+      }
 
       return next.execute(config, command);
 
@@ -69,6 +72,7 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
         // Pop from stack
         Context.removeCommandContext();
         Context.removeProcessEngineConfiguration();
+        Context.removeActiviti5CompatibilityHandler();
       }
     }
 

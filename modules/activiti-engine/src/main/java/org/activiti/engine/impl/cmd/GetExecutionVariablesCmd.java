@@ -56,7 +56,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
     }
     
     if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       return activiti5CompatibilityHandler.getExecutionVariables(executionId, variableNames, isLocal);
     }
 

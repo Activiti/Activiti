@@ -118,7 +118,7 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
         
         if (historicTaskInstance.getProcessDefinitionId() != null 
             && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, historicTaskInstance.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.deleteHistoricTask(taskId);
           return;
         }

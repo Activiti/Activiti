@@ -13,7 +13,7 @@
 
 package org.activiti5.engine.impl.bpmn.behavior;
 
-import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 
 /**
@@ -22,7 +22,7 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior {
   
   @Override
-  public void execute(ActivityExecution execution) {
+  public void execute(DelegateExecution execution) {
     // the event based gateway doesn't really do anything
     // ignoring outgoing sequence flows (they're only parsed for the diagram)
   }
