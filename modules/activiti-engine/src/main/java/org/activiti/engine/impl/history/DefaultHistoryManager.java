@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,6 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
@@ -45,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Manager class that centralises recording of all history-related operations that are originated from inside the engine.
- * 
+ *
  * @author Frederik Heremans
  */
 public class DefaultHistoryManager extends AbstractManager implements HistoryManager {
@@ -60,7 +59,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# isHistoryLevelAtLeast(org.activiti.engine.impl.history.HistoryLevel)
    */
   @Override
@@ -75,7 +74,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryEnabled ()
    */
   @Override
@@ -90,7 +89,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
@@ -119,7 +118,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessInstanceStart (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
   @Override
@@ -162,7 +161,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordSubProcessInstanceStart (org.activiti.engine.impl.persistence.entity.ExecutionEntity,
    * org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
@@ -207,27 +206,27 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityStart (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
   @Override
   public void recordActivityStart(ExecutionEntity executionEntity) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       if (executionEntity.getCurrentActivityId() != null && executionEntity.getCurrentFlowElement() != null) {
-        
+
         createHistoricActivityInstanceEntity(executionEntity);
 //        HistoricActivityInstanceEntity historicActivityInstanceEntity = findActivityInstance(executionEntity, false);
 //        if (historicActivityInstanceEntity == null) {
 //          createHistoricActivityInstanceEntity(executionEntity);
 //        }
-        
+
       }
     }
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityEnd (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
   @Override
@@ -242,7 +241,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordStartEventEnded(java.lang.String, java.lang.String)
    */
   @Override
@@ -272,8 +271,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull) {
     return findActivityInstance(execution, execution.getActivityId(), createOnNotFound, validateEndTimeNull);
   }
-    
-    
+
+
   public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean createOnNotFound, boolean validateEndTimeNull) {
     String executionId = execution.getId();
 
@@ -303,7 +302,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       .listPage(0, 1);
 
     if (!historicActivityInstances.isEmpty()) {
-      
+
       // Need to check if the historicActivityInstanceEntity is not in the cache yet (eg a loop back in the process),
       // in that case the endTime is updated for the cached version, but still not flushed to the db and it will show up in the query above.
       boolean foundInCache = false;
@@ -314,12 +313,12 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
           break;
         }
       }
-      
+
       // if it's found in the cache, we already checked it above, the endTime was not null. Otherwise, we can return the result from the db
       if (!foundInCache) {
         return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
       }
-      
+
     }
 
     if (execution.getParentId() != null) {
@@ -328,8 +327,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         return historicActivityInstanceFromParent;
       }
     }
-    
-    if (createOnNotFound 
+
+    if (createOnNotFound
         && activityId != null
         && ( (execution.getCurrentFlowElement() != null && execution.getCurrentFlowElement() instanceof FlowNode) || execution.getCurrentFlowElement() == null)) {
       return createHistoricActivityInstanceEntity(execution);
@@ -340,10 +339,10 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   protected HistoricActivityInstanceEntity createHistoricActivityInstanceEntity(ExecutionEntity execution) {
     IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-    
+
     String processDefinitionId = execution.getProcessDefinitionId();
     String processInstanceId = execution.getProcessInstanceId();
-      
+
     HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
     historicActivityInstance.setId(idGenerator.getNextId());
     historicActivityInstance.setProcessDefinitionId(processDefinitionId);
@@ -356,19 +355,19 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     }
     Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     historicActivityInstance.setStartTime(now);
- 
+
     // Inherit tenant id (if applicable)
     if (execution.getTenantId() != null) {
       historicActivityInstance.setTenantId(execution.getTenantId());
     }
-    
+
     getHistoricActivityInstanceManager().insert(historicActivityInstance);
     return historicActivityInstance;
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessDefinitionChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -385,7 +384,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCreated (org.activiti.engine.impl.persistence.entity.TaskEntity,
    * org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
@@ -395,13 +394,13 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricTaskInstanceEntity historicTaskInstance = new HistoricTaskInstanceEntity(task, execution);
       getDbSqlSession().insert(historicTaskInstance);
     }
-    
+
     recordTaskId(task);
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskAssignment (org.activiti.engine.impl.persistence.entity.TaskEntity)
    */
   @Override
@@ -419,7 +418,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskClaim (java.lang.String)
    */
 
@@ -435,7 +434,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskId (org.activiti.engine.impl.persistence.entity.TaskEntity)
    */
   @Override
@@ -453,7 +452,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskEnd (java.lang.String, java.lang.String)
    */
   @Override
@@ -468,7 +467,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskAssigneeChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -483,7 +482,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskOwnerChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -498,7 +497,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskNameChange (java.lang.String, java.lang.String)
    */
   @Override
@@ -513,7 +512,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskDescriptionChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -528,7 +527,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskDueDateChange(java.lang.String, java.util.Date)
    */
   @Override
@@ -543,7 +542,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskPriorityChange(java.lang.String, int)
    */
   @Override
@@ -558,7 +557,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskCategoryChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -583,7 +582,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskParentTaskIdChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -598,7 +597,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskExecutionIdChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -613,7 +612,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskDefinitionKeyChange (org.activiti.engine.impl.persistence.entity.TaskEntity, java.lang.String)
    */
   @Override
@@ -642,7 +641,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableCreate (org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
    */
   @Override
@@ -655,7 +654,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordHistoricDetailVariableCreate (org.activiti.engine.impl.persistence.entity.VariableInstanceEntity,
    * org.activiti.engine.impl.persistence.entity.ExecutionEntity, boolean)
    */
@@ -676,7 +675,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableUpdate (org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
    */
   @Override
@@ -697,11 +696,11 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   // Comment related history
 
-  
-  
+
+
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
    */
   @Override
@@ -718,7 +717,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void createGroupIdentityLinkComment(String taskId, String groupId, String type, boolean create) {
     createIdentityLinkComment(taskId, null, groupId, type, create, false);
   }
-  
+
   @Override
   public void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create, boolean forceNullUserId) {
     createIdentityLinkComment(taskId, userId, null, type, create, forceNullUserId);
@@ -726,7 +725,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
    */
   @Override
@@ -753,7 +752,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      
+
       getCommentEntityManager().insert(comment);
     }
   }
@@ -793,7 +792,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# createAttachmentComment(java.lang.String, java.lang.String, java.lang.String, boolean)
    */
   @Override
@@ -818,7 +817,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# reportFormPropertiesSubmitted (org.activiti.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
    */
   @Override
@@ -835,7 +834,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   // Identity link related history
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordIdentityLinkCreated (org.activiti.engine.impl.persistence.entity.IdentityLinkEntity)
    */
   @Override
@@ -851,7 +850,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# deleteHistoricIdentityLink(java.lang.String)
    */
   @Override
@@ -863,7 +862,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# updateProcessBusinessKeyInHistory (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
   @Override
@@ -897,7 +896,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         Context.getCommandContext()
         .getHistoricVariableInstanceEntityManager()
         .delete(historicProcessVariable);
-      } 
+      }
     }
   }
 
