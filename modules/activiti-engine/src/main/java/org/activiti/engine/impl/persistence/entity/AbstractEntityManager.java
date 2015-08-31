@@ -12,7 +12,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
-import org.activiti.engine.impl.persistence.cache.CachedObject;
+import org.activiti.engine.impl.persistence.cache.CachedPersistentObject;
 
 /**
  * @author Joram Barrez
@@ -108,7 +108,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     
     if (checkCache) {
       
-      Collection<CachedObject> cachedObjects = getPersistentObjectCache().findInCacheAsCachedObjects(getManagedPersistentObject());
+      Collection<CachedPersistentObject> cachedObjects = getPersistentObjectCache().findInCacheAsCachedObjects(getManagedPersistentObject());
       
       if ( (cachedObjects != null && cachedObjects.size() > 0) || getManagedPersistentObjectSubClasses() != null) {
         
@@ -121,7 +121,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
 
         // Cache entities
         if (cachedObjects != null) {
-          for (CachedObject cachedObject : cachedObjects) {
+          for (CachedPersistentObject cachedObject : cachedObjects) {
             Entity cachedEntity = (Entity) cachedObject.getPersistentObject();
             if (retainEntityCondition.isRetained(cachedEntity)) {
               entityMap.put(cachedEntity.getId(), cachedEntity); // will overwite db version with newer version
@@ -131,9 +131,9 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
         
         if (getManagedPersistentObjectSubClasses() != null) {
           for (Class<? extends Entity> entitySubClass : getManagedPersistentObjectSubClasses()) {
-            Collection<CachedObject> subclassCachedObjects = getPersistentObjectCache().findInCacheAsCachedObjects(entitySubClass);
+            Collection<CachedPersistentObject> subclassCachedObjects = getPersistentObjectCache().findInCacheAsCachedObjects(entitySubClass);
             if (subclassCachedObjects != null) {
-              for (CachedObject subclassCachedObject : subclassCachedObjects) {
+              for (CachedPersistentObject subclassCachedObject : subclassCachedObjects) {
                 Entity cachedSubclassEntity = (Entity) subclassCachedObject.getPersistentObject();
                 if (retainEntityCondition.isRetained(cachedSubclassEntity)) {
                   entityMap.put(cachedSubclassEntity.getId(), cachedSubclassEntity); // will overwite db version with newer version

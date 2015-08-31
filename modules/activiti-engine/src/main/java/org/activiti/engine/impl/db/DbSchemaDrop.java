@@ -31,7 +31,7 @@ public class DbSchemaDrop {
     CommandConfig config = new CommandConfig().transactionNotSupported();
     commandExecutor.execute(config, new Command<Object>() {
       public Object execute(CommandContext commandContext) {
-        commandContext.getSession(DbSqlSession.class).dbSchemaDrop();
+        commandContext.getDbSqlSession().dbSchemaDrop();
         return null;
       }
     });

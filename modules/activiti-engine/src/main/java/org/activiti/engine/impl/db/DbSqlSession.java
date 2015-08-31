@@ -60,7 +60,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.cache.CachedObject;
+import org.activiti.engine.impl.persistence.cache.CachedPersistentObject;
 import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
@@ -163,14 +163,14 @@ public class DbSqlSession implements Session {
     }
     
     insertedObjects.get(clazz).add(persistentObject);
-    persistentObjectCache.cachePut(persistentObject, false);
+    persistentObjectCache.put(persistentObject, false);
   }
 
   // update
   // ///////////////////////////////////////////////////////////////////
 
   public void update(PersistentObject persistentObject) {
-    persistentObjectCache.cachePut(persistentObject, false);
+    persistentObjectCache.put(persistentObject, false);
   }
 
   public int update(String statement, Object parameters) {
@@ -454,7 +454,7 @@ public class DbSqlSession implements Session {
 
   @SuppressWarnings("unchecked")
   public <T extends PersistentObject> T selectById(Class<T> entityClass, String id) {
-    T persistentObject = persistentObjectCache.cacheGet(entityClass, id);
+    T persistentObject = persistentObjectCache.findInCache(entityClass, id);
     if (persistentObject != null) {
       return persistentObject;
     }
@@ -464,7 +464,7 @@ public class DbSqlSession implements Session {
     if (persistentObject == null) {
       return null;
     }
-    persistentObjectCache.cachePut(persistentObject, true);
+    persistentObjectCache.put(persistentObject, true);
     return persistentObject;
   }
 
@@ -493,11 +493,11 @@ public class DbSqlSession implements Session {
    * cache.
    */
   protected PersistentObject cacheFilter(PersistentObject persistentObject) {
-    PersistentObject cachedPersistentObject = persistentObjectCache.cacheGet(persistentObject.getClass(), persistentObject.getId());
+    PersistentObject cachedPersistentObject = persistentObjectCache.findInCache(persistentObject.getClass(), persistentObject.getId());
     if (cachedPersistentObject != null) {
       return cachedPersistentObject;
     }
-    persistentObjectCache.cachePut(persistentObject, true);
+    persistentObjectCache.put(persistentObject, true);
     return persistentObject;
   }
 
@@ -665,11 +665,11 @@ public class DbSqlSession implements Session {
 
   public List<PersistentObject> getUpdatedObjects() {
     List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
-    Map<Class<?>, Map<String, CachedObject>> cachedObjects = persistentObjectCache.getAllCachedObjects();
+    Map<Class<?>, Map<String, CachedPersistentObject>> cachedObjects = persistentObjectCache.getAllCachedPersistentObjects();
     for (Class<?> clazz : cachedObjects.keySet()) {
 
-      Map<String, CachedObject> classCache = cachedObjects.get(clazz);
-      for (CachedObject cachedObject : classCache.values()) {
+      Map<String, CachedPersistentObject> classCache = cachedObjects.get(clazz);
+      for (CachedPersistentObject cachedObject : classCache.values()) {
 
         PersistentObject persistentObject = cachedObject.getPersistentObject();
         if (!isPersistentObjectToBeDeleted(persistentObject)) {

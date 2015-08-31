@@ -74,7 +74,7 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
   }
 
   private DbSqlSession getDbSqlSession() {
-    return commandContext.getSession(DbSqlSession.class);
+    return commandContext.getDbSqlSession();
   }
 
   public void rollback() {

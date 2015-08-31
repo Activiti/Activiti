@@ -20,24 +20,31 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class GenericManagerFactory implements SessionFactory {
 
-  protected Class<? extends Session> managerImplementation;
+  protected Class<? extends Session> typeClass;
+  protected Class<? extends Session> implementationClass;
+  
+  public GenericManagerFactory(Class<? extends Session> typeClass, Class<? extends Session> implementationClass) {
+    this.typeClass = typeClass;
+    this.implementationClass = implementationClass;
+  }
 
-  public GenericManagerFactory(Class<? extends Session> managerImplementation) {
-    this.managerImplementation = managerImplementation;
+  public GenericManagerFactory(Class<? extends Session> implementationClass) {
+    this(implementationClass, implementationClass);
   }
 
   public Class<?> getSessionType() {
-    return managerImplementation;
+    return typeClass;
   }
 
   public Session openSession(CommandContext commandContext) {
     try {
-      return managerImplementation.newInstance();
+      return implementationClass.newInstance();
     } catch (Exception e) {
-      throw new ActivitiException("couldn't instantiate " + managerImplementation.getName() + ": " + e.getMessage(), e);
+      throw new ActivitiException("couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(), e);
     }
   }
 }

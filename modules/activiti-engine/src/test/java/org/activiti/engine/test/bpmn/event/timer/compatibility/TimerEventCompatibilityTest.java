@@ -38,7 +38,7 @@ public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestC
     commandExecutor.execute(config, new Command<Object>() {
 
       public Object execute(CommandContext commandContext) {
-        DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+        DbSqlSession session = commandContext.getDbSqlSession();
         session.delete(finalJob);
         session.flush();
         session.commit();
@@ -49,7 +49,7 @@ public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestC
     commandExecutor.execute(config, new Command<Object>() {
 
       public Object execute(CommandContext commandContext) {
-        DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+        DbSqlSession session = commandContext.getDbSqlSession();
 
         finalJob.setJobHandlerConfiguration(finalActivityId);
         finalJob.setId(null);

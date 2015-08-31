@@ -12,17 +12,17 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 final class SchemaOperationProcessEngineClose implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
-    commandContext.getSession(DbSqlSession.class).performSchemaOperationsProcessEngineClose();
+    commandContext.getDbSqlSession().performSchemaOperationsProcessEngineClose();
     return null;
   }
 }

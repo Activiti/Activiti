@@ -17,7 +17,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 /**
  * @author Joram Barrez
  */
-public class CachedObject {
+public class CachedPersistentObject {
 
   /**
    * The actual {@link PersistentObject} instance. 
@@ -25,13 +25,13 @@ public class CachedObject {
   protected PersistentObject persistentObject;
   
   /**
-   * Represents the 'persistence state' at the moment this {@link CachedObject} instance was created.
+   * Represents the 'persistence state' at the moment this {@link CachedPersistentObject} instance was created.
    * It is used later on to determine if a {@link PersistentObject} has been updated, by comparing
    * the 'persistent state' at that moment with this instance here.
    */
   protected Object originalPersistentState;
 
-  public CachedObject(PersistentObject persistentObject, boolean storeState) {
+  public CachedPersistentObject(PersistentObject persistentObject, boolean storeState) {
     this.persistentObject = persistentObject;
     if (storeState) {
       this.originalPersistentState = persistentObject.getPersistentState();

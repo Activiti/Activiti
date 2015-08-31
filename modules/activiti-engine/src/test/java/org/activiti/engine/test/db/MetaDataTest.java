@@ -40,7 +40,7 @@ public class MetaDataTest extends PluggableActivitiTestCase {
         // INFRASTRUCTURE TO SEE IF METADATA
         // CAN BE USED INSTEAD OF PERFORMING A QUERY THAT MIGHT FAIL
         try {
-          SqlSession sqlSession = commandContext.getSession(DbSqlSession.class).getSqlSession();
+          SqlSession sqlSession = commandContext.getDbSqlSession().getSqlSession();
           ResultSet tables = sqlSession.getConnection().getMetaData().getTables(null, null, null, null);
           while (tables.next()) {
             ResultSetMetaData resultSetMetaData = tables.getMetaData();

@@ -369,33 +369,6 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   /*
    * (non-Javadoc)
    * 
-   * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordExecutionReplacedBy (org.activiti.engine.impl.persistence.entity.ExecutionEntity,
-   * org.activiti.engine.impl.pvm.runtime.InterpretableExecution)
-   */
-  @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void recordExecutionReplacedBy(ExecutionEntity execution, ExecutionEntity replacedBy) {
-    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-
-      // Update the cached historic activity instances that are open
-      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getPersistentObjectCache().findInCache(HistoricActivityInstanceEntity.class);
-      for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
-        if ((cachedHistoricActivityInstance.getEndTime() == null) && (execution.getId().equals(cachedHistoricActivityInstance.getExecutionId()))) {
-          cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
-        }
-      }
-
-      // Update the persisted historic activity instances that are open
-      List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(Context.getCommandContext()).executionId(execution.getId()).unfinished().list();
-      for (HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstances) {
-        historicActivityInstance.setExecutionId(replacedBy.getId());
-      }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessDefinitionChange(java.lang.String, java.lang.String)
    */
   @Override
@@ -709,7 +682,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordVariableUpdate(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache().cacheGet(HistoricVariableInstanceEntity.class, variable.getId());
+      HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
         historicProcessVariable = Context.getCommandContext().getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
@@ -780,7 +753,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManagerImpl.class).insert(comment);
+      
+      getCommentEntityManager().insert(comment);
     }
   }
 
@@ -813,7 +787,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
         comment.setMessage(new String[] { groupId, type });
       }
-      getSession(CommentEntityManagerImpl.class).insert(comment);
+      getCommentEntityManager().insert(comment);
     }
   }
 
@@ -838,7 +812,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         comment.setAction(Event.ACTION_DELETE_ATTACHMENT);
       }
       comment.setMessage(attachmentName);
-      getSession(CommentEntityManagerImpl.class).insert(comment);
+      getCommentEntityManager().insert(comment);
     }
   }
 
@@ -912,7 +886,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordVariableRemoved(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache()
-          .cacheGet(HistoricVariableInstanceEntity.class, variable.getId());
+          .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
         historicProcessVariable = Context.getCommandContext()
             .getHistoricVariableInstanceEntityManager()
