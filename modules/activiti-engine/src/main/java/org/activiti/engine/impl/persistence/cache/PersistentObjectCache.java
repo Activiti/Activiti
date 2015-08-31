@@ -27,18 +27,48 @@ import org.activiti.engine.impl.interceptor.Session;
  */
 public interface PersistentObjectCache extends Session {
   
-  Map<Class<?>, Map<String, CachedObject>> getAllCachedObjects();
+  /**
+   * Returns all cached {@link PersistentObject} instances as a map 
+   * with following structure: { entityClassName, {entityId, PersistentObject} }
+   */
+  Map<Class<?>, Map<String, CachedPersistentObject>> getAllCachedPersistentObjects();
   
-  <T> T cacheGet(Class<T> entityClass, String id);
+  /**
+   * Adds the gives {@link PersistentObject} to the cache.
+   * 
+   * @param persistentObject The {@link PersistentObject} instance
+   * @param storeState If true, the current state {@link PersistentObject#getPersistentState()} will be stored for future diffing.
+   */
+  CachedPersistentObject put(PersistentObject persistentObject, boolean storeState);
   
-  CachedObject cachePut(PersistentObject persistentObject, boolean storeState);
-
-  <T> List<T> findInCache(List<Class<T>> entityClasses);
-
+  /**
+   * Returns the cached {@link PersistentObject} instance of the given class with the provided id.
+   * Returns null if such a {@link PersistentObject} cannot be found. 
+   */
+  <T> T findInCache(Class<T> entityClass, String id);
+  
+  /**
+   * Returns all cached {@link PersistentObject} instances of a given type.
+   * Returns an empty list if no instances of the given type exist.
+   */
   <T> List<T> findInCache(Class<T> entityClass);
 
-  <T> Collection<CachedObject> findInCacheAsCachedObjects(Class<T> entityClass);
+  /**
+   * Returns all cached {@link PersistentObject} instances of a given types.
+   * Returns an empty list if no instances of the given type exist.
+   */
+  <T> List<T> findInCache(List<Class<T>> entityClasses);
+
+  /**
+   * Returns all {@link CachedPersistentObject} instances for the given type.
+   * The difference with {@link #findInCache(Class)} is that here the whole {@link CachedPersistentObject}
+   * is returned, which gives access to the persistent state at the moment of putting it in the cache.  
+   */
+  <T> Collection<CachedPersistentObject> findInCacheAsCachedObjects(Class<T> entityClass);
   
+  /**
+   * Removes the {@link PersistentObject} of the given type with the given id from the cache. 
+   */
   void cacheRemove(Class<?> persistentObjectClass, String persistentObjectId);
 
 }

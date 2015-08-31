@@ -26,25 +26,25 @@ import org.activiti.engine.impl.db.PersistentObject;
  */
 public class PersistentObjectCacheImpl implements PersistentObjectCache {
   
-  protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
+  protected Map<Class<?>, Map<String, CachedPersistentObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedPersistentObject>>();
   
   @Override
-  public CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
-    Map<String, CachedObject> classCache = cachedObjects.get(persistentObject.getClass());
+  public CachedPersistentObject put(PersistentObject persistentObject, boolean storeState) {
+    Map<String, CachedPersistentObject> classCache = cachedObjects.get(persistentObject.getClass());
     if (classCache == null) {
-      classCache = new HashMap<String, CachedObject>();
+      classCache = new HashMap<String, CachedPersistentObject>();
       cachedObjects.put(persistentObject.getClass(), classCache);
     }
-    CachedObject cachedObject = new CachedObject(persistentObject, storeState);
+    CachedPersistentObject cachedObject = new CachedPersistentObject(persistentObject, storeState);
     classCache.put(persistentObject.getId(), cachedObject);
     return cachedObject;
   }
   
   @Override
   @SuppressWarnings("unchecked")
-  public <T> T cacheGet(Class<T> entityClass, String id) {
-    CachedObject cachedObject = null;
-    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+  public <T> T findInCache(Class<T> entityClass, String id) {
+    CachedPersistentObject cachedObject = null;
+    Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
     if (classCache != null) {
       cachedObject = classCache.get(id);
     }
@@ -56,7 +56,7 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
 
   @Override
   public void cacheRemove(Class<?> persistentObjectClass, String persistentObjectId) {
-    Map<String, CachedObject> classCache = cachedObjects.get(persistentObjectClass);
+    Map<String, CachedPersistentObject> classCache = cachedObjects.get(persistentObjectClass);
     if (classCache == null) {
       return;
     }
@@ -64,8 +64,8 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
   }
   
   @Override
-  public <T> Collection<CachedObject> findInCacheAsCachedObjects(Class<T> entityClass) {
-    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+  public <T> Collection<CachedPersistentObject> findInCacheAsCachedObjects(Class<T> entityClass) {
+    Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
     if (classCache != null) {
       return classCache.values();
     }
@@ -75,10 +75,10 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
   @Override
   @SuppressWarnings("unchecked")
   public <T> List<T> findInCache(Class<T> entityClass) {
-    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+    Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
     if (classCache != null) {
       List<T> entities = new ArrayList<T>(classCache.size());
-      for (CachedObject cachedObject : classCache.values()) {
+      for (CachedPersistentObject cachedObject : classCache.values()) {
         entities.add((T) cachedObject.getPersistentObject());
       }
       return entities;
@@ -92,12 +92,12 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
     List<T> entities = null;
     
     for (Class<T> entityClass : entityClasses) {
-      Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+      Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
       if (classCache != null) {
         if (entities == null) {
           entities = new ArrayList<T>(classCache.size());
         }
-        for (CachedObject cachedObject : classCache.values()) {
+        for (CachedPersistentObject cachedObject : classCache.values()) {
           entities.add((T) cachedObject.getPersistentObject());
         }
       }
@@ -110,7 +110,7 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
     return Collections.emptyList();
   }
 
-  public Map<Class<?>, Map<String, CachedObject>> getAllCachedObjects() {
+  public Map<Class<?>, Map<String, CachedPersistentObject>> getAllCachedPersistentObjects() {
     return cachedObjects;
   }
   

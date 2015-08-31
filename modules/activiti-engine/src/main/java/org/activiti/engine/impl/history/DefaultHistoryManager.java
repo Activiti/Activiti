@@ -709,7 +709,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordVariableUpdate(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache().cacheGet(HistoricVariableInstanceEntity.class, variable.getId());
+      HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
         historicProcessVariable = Context.getCommandContext().getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
@@ -912,7 +912,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordVariableRemoved(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache()
-          .cacheGet(HistoricVariableInstanceEntity.class, variable.getId());
+          .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
         historicProcessVariable = Context.getCommandContext()
             .getHistoricVariableInstanceEntityManager()
