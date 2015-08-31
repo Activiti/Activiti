@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -66,8 +66,9 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
   /* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
   @Override
   public String toString() {
-    StringBuilder strb = new StringBuilder();
-    strb.append(getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n");
+    StringBuilder strb = new StringBuilder(100);
+    strb.append(getExecutionEntity().getId()).append(" : ").append(getExecutionEntity().getActivityId()).append(", parent id ")
+            .append(getExecutionEntity().getParentId()).append("\r\n");
     if (children != null) {
       for (ExecutionTreeNode childNode : children) {
         childNode.internalToString(strb, "", true);
@@ -77,10 +78,9 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
   }
 
   protected void internalToString(StringBuilder strb, String prefix, boolean isTail) {
-    strb.append(prefix + (isTail ? "└── " : "├── ") + getExecutionEntity().getId() + " : " 
-        + getExecutionEntity().getActivityId() + ", parent id " 
-        + getExecutionEntity().getParentId() 
-        + (getExecutionEntity().isScope() ? " (scope)" : "") + "\r\n");
+    strb.append(prefix).append(isTail ? "└── " : "├── ").append(getExecutionEntity().getId()).append(" : ")
+            .append(getExecutionEntity().getActivityId()).append(", parent id ").append(getExecutionEntity().getParentId())
+            .append(getExecutionEntity().isScope() ? " (scope)" : "").append("\r\n");
     if (children != null) {
       for (int i = 0; i < children.size() - 1; i++) {
         children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
