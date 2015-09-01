@@ -36,7 +36,7 @@ public class ProcessEventJobHandler implements JobHandler {
     EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
     
     // lookup subscription:
-    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.getEntity(configuration);
+    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(configuration);
 
     // if event subscription is null, ignore
     if (eventSubscriptionEntity != null) {

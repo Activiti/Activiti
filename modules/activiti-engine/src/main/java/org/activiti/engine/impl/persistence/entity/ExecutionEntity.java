@@ -318,7 +318,7 @@ public class ExecutionEntity extends VariableScopeImpl
 
   protected void ensureProcessInstanceInitialized() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      processInstance = Context.getCommandContext().getExecutionEntityManager().findExecutionById(processInstanceId);
+      processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
   }
 
@@ -343,7 +343,7 @@ public class ExecutionEntity extends VariableScopeImpl
 
   protected void ensureParentInitialized() {
     if (parent == null && parentId != null) {
-      parent = Context.getCommandContext().getExecutionEntityManager().findExecutionById(parentId);
+      parent = Context.getCommandContext().getExecutionEntityManager().findById(parentId);
     }
   }
 
@@ -383,7 +383,7 @@ public class ExecutionEntity extends VariableScopeImpl
 
   protected void ensureSuperExecutionInitialized() {
     if (superExecution == null && superExecutionId != null) {
-      superExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(superExecutionId);
+      superExecution = Context.getCommandContext().getExecutionEntityManager().findById(superExecutionId);
     }
   }
 

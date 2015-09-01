@@ -16,8 +16,10 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 /**
  * @author Joram Barrez
@@ -36,7 +38,11 @@ public class SaveUserCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("user is null");
     }
     if (commandContext.getUserEntityManager().isNewUser(user)) {
-      commandContext.getUserEntityManager().insertUser(user);
+      if (user instanceof UserEntity) {
+        commandContext.getUserEntityManager().insert((UserEntity) user,true);
+      } else {
+        commandContext.getDbSqlSession().insert((PersistentObject) user);
+      }
     } else {
       commandContext.getUserEntityManager().updateUser(user);
     }

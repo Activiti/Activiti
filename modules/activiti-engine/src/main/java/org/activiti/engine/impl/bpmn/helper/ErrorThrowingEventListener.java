@@ -35,7 +35,7 @@ public class ErrorThrowingEventListener extends BaseDelegateEventListener {
 
       if (event.getExecutionId() != null) {
         // Get the execution based on the event's execution ID instead
-        execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(event.getExecutionId());
+        execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
       }
 
       if (execution == null) {

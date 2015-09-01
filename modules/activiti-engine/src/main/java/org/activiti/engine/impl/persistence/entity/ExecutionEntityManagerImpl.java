@@ -58,7 +58,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
-    return getEntity("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return findByQuery("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
 
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getSuperExecutionId() != null && superExecutionId.equals(executionEntity.getSuperExecutionId());
@@ -87,11 +87,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     }, true);
   }
 
-  @Override
-  public ExecutionEntity findExecutionById(final String executionId) {
-    return getEntity(executionId);
-  }
-  
   @Override
   public List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds) {
     
@@ -362,7 +357,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade) {
-    ExecutionEntity execution = findExecutionById(processInstanceId);
+    ExecutionEntity execution = findById(processInstanceId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
@@ -408,7 +403,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     deleteExecutionAndRelatedData(execution, deleteReason, false);
 
     if (deleteHistory) {
-      getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());
+      getHistoricProcessInstanceEntityManager().delete(execution.getId());
     }
   }
   
@@ -422,7 +417,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   public void deleteProcessInstanceExecutionEntity(String processInstanceId, 
       String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel, boolean fireEvent) {
     
-    ExecutionEntity processInstanceEntity = findExecutionById(processInstanceId);
+    ExecutionEntity processInstanceEntity = findById(processInstanceId);
     
     if (processInstanceEntity == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);

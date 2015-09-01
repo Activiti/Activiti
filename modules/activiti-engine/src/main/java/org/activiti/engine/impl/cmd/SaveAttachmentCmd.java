@@ -43,7 +43,7 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
     String processInstanceId = updateAttachment.getProcessInstanceId();
     String processDefinitionId = null;
     if (updateAttachment.getProcessInstanceId() != null) {
-      ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+      ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
       if (process != null) {
         processDefinitionId = process.getProcessDefinitionId();
         if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, process.getProcessDefinitionId())) {

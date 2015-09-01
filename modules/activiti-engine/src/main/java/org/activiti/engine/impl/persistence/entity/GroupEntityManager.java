@@ -28,11 +28,7 @@ public interface GroupEntityManager extends EntityManager<GroupEntity> {
 
   Group createNewGroup(String groupId);
 
-  void insertGroup(Group group);
-
   void updateGroup(Group updatedGroup);
-
-  void deleteGroup(String groupId);
 
   GroupQuery createNewGroupQuery();
 

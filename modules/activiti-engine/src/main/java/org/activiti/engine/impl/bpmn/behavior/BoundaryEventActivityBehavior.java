@@ -74,15 +74,15 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // Which is what we need.
 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity attachedRefScopeExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
+    ExecutionEntity attachedRefScopeExecution = executionEntityManager.findById(executionEntity.getParentId());
 
     ExecutionEntity parentScopeExecution = null;
-    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(attachedRefScopeExecution.getParentId());
+    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(attachedRefScopeExecution.getParentId());
     while (currentlyExaminedExecution != null && parentScopeExecution == null) {
       if (currentlyExaminedExecution.isScope()) {
         parentScopeExecution = currentlyExaminedExecution;
       } else {
-        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+        currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
       }
     }
 
@@ -112,15 +112,15 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
-    ExecutionEntity parentExecutionEntity = executionEntityManager.findExecutionById(executionEntity.getParentId());
+    ExecutionEntity parentExecutionEntity = executionEntityManager.findById(executionEntity.getParentId());
 
     ExecutionEntity scopeExecution = null;
-    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(parentExecutionEntity.getParentId());
+    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(parentExecutionEntity.getParentId());
     while (currentlyExaminedExecution != null && scopeExecution == null) {
       if (currentlyExaminedExecution.isScope()) {
         scopeExecution = currentlyExaminedExecution;
       } else {
-        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+        currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
       }
     }
 

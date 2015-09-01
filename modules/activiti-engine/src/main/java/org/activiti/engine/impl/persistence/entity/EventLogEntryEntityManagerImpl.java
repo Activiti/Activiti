@@ -25,6 +25,11 @@ import org.activiti.engine.event.EventLogEntry;
 public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventLogEntryEntity> implements EventLogEntryEntityManager {
 
   @Override
+  public Class<EventLogEntryEntity> getManagedPersistentObject() {
+    return EventLogEntryEntity.class;
+  }
+  
+  @Override
   @SuppressWarnings("unchecked")
   public List<EventLogEntry> findAllEventLogEntries() {
     return getDbSqlSession().selectList("selectAllEventLogEntries");

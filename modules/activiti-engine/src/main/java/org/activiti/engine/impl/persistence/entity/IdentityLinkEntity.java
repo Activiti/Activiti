@@ -149,7 +149,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
 
   public TaskEntity getTask() {
     if ((task == null) && (taskId != null)) {
-      this.task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+      this.task = Context.getCommandContext().getTaskEntityManager().findById(taskId);
     }
     return task;
   }
@@ -161,7 +161,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
 
   public ExecutionEntity getProcessInstance() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findExecutionById(processInstanceId);
+      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }
@@ -173,7 +173,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
 
   public ProcessDefinitionEntity getProcessDef() {
     if ((processDef == null) && (processDefId != null)) {
-      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findProcessDefinitionById(processDefId);
+      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
     }
     return processDef;
   }

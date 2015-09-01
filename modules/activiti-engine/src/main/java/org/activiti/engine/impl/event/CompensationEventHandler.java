@@ -45,7 +45,7 @@ public class CompensationEventHandler implements EventHandler {
       throw new ActivitiException("Compensating execution not set for compensate event subscription with id " + eventSubscription.getId());
     }
 
-    ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findExecutionById(configuration);
+    ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findById(configuration);
 
     String processDefinitionId = compensatingExecution.getProcessDefinitionId();
     Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);

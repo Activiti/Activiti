@@ -95,7 +95,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     deployment.setNew(true);
 
     // Save the data
-    commandContext.getDeploymentEntityManager().insertDeployment(deployment);
+    commandContext.getDeploymentEntityManager().insert(deployment);
 
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));

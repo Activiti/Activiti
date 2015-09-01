@@ -40,10 +40,6 @@ public interface VariableInstanceEntityManager extends EntityManager<VariableIns
 
   List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names);
 
-  void delete(VariableInstanceEntity entity);
-
-  void delete(VariableInstanceEntity entity, boolean fireDeleteEvent);
-
   void deleteVariableInstanceByTask(TaskEntity task);
 
 }

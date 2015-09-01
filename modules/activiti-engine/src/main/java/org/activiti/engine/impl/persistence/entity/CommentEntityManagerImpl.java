@@ -30,6 +30,11 @@ import org.activiti.engine.task.Event;
 public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity> implements CommentEntityManager {
 
   @Override
+  public Class<CommentEntity> getManagedPersistentObject() {
+    return CommentEntity.class;
+  }
+  
+  @Override
   public void insert(CommentEntity commentEntity) {
     checkHistoryEnabled();
     super.insert(commentEntity, false);
@@ -41,7 +46,7 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
       String processDefinitionId = null;
       String processInstanceId = comment.getProcessInstanceId();
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity process = getExecutionEntityManager().findExecutionById(comment.getProcessInstanceId());
+        ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (process != null) {
           processDefinitionId = process.getProcessDefinitionId();
         }
@@ -142,7 +147,7 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
       String processDefinitionId = null;
       String processInstanceId = comment.getProcessInstanceId();
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity process = getExecutionEntityManager().findExecutionById(comment.getProcessInstanceId());
+        ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (process != null) {
           processDefinitionId = process.getProcessDefinitionId();
         }

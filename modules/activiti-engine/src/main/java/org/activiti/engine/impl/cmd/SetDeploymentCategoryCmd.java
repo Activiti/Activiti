@@ -41,7 +41,7 @@ public class SetDeploymentCategoryCmd implements Command<Void> {
       throw new ActivitiIllegalArgumentException("Deployment id is null");
     }
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
+    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
 
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);

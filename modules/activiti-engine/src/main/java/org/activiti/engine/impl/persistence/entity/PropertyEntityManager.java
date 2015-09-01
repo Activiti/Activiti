@@ -17,6 +17,4 @@ package org.activiti.engine.impl.persistence.entity;
  */
 public interface PropertyEntityManager extends EntityManager<PropertyEntity> {
 
-  PropertyEntity findPropertyById(String propertyId);
-
 }

@@ -26,9 +26,9 @@ public interface EntityManager<Entity extends PersistentObject> {
 
   void insert(Entity entity, boolean fireCreateEvent);
 
-  Entity getEntity(String entityId);
+  Entity findById(String entityId);
 
-  Entity getEntity(String selectQuery, Object parameter, CachedPersistentObjectMatcher<Entity> cachedEntityMatcher);
+  Entity findByQuery(String selectQuery, Object parameter, CachedPersistentObjectMatcher<Entity> cachedEntityMatcher);
 
   /**
    * Gets a list by querying the database and the cache using {@link CachedPersistentObjectMatcher}.

@@ -96,7 +96,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
 
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findById(processInstanceId);
 
       if (historicProcessInstance != null) {
         historicProcessInstance.markEnded(deleteReason);
@@ -108,7 +108,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordProcessInstanceNameChange(String processInstanceId, String newName) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findById(processInstanceId);
 
       if (historicProcessInstance != null) {
         historicProcessInstance.setName(newName);
@@ -373,7 +373,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordProcessDefinitionChange(String processInstanceId, String processDefinitionId) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findById(processInstanceId);
       if (historicProcessInstance != null) {
         historicProcessInstance.setProcessDefinitionId(processDefinitionId);
       }

@@ -33,8 +33,6 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
   void retryAsyncJob(JobEntity job);
   
 
-  JobEntity findJobById(String jobId);
-
   List<JobEntity> findNextJobsToExecute(Page page);
 
   List<JobEntity> findNextTimerJobsToExecute(Page page);

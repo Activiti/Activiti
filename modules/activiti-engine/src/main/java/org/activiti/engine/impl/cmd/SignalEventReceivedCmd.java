@@ -73,7 +73,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
       signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
     } else {
 
-      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+      ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
       if (execution == null) {
         throw new ActivitiObjectNotFoundException("Cannot find execution with id '" + executionId + "'", Execution.class);

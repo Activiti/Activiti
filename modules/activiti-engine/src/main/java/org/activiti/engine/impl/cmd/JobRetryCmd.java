@@ -56,7 +56,7 @@ public class JobRetryCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
+    JobEntity job = commandContext.getJobEntityManager().findById(jobId);
     if (job == null) {
       return null;
     }
@@ -152,7 +152,7 @@ public class JobRetryCmd implements Command<Object> {
     if (executionId == null) {
       return null;
     }
-    return commandContext.getExecutionEntityManager().findExecutionById(executionId);
+    return commandContext.getExecutionEntityManager().findById(executionId);
   }
 
 }

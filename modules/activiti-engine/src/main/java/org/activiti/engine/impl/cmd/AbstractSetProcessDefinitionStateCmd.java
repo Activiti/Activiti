@@ -113,7 +113,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
     if (processDefinitionId != null) {
 
-      ProcessDefinitionEntity processDefinitionEntity = processDefinitionManager.findProcessDefinitionById(processDefinitionId);
+      ProcessDefinitionEntity processDefinitionEntity = processDefinitionManager.findById(processDefinitionId);
       if (processDefinitionEntity == null) {
         throw new ActivitiObjectNotFoundException("Cannot find process definition for id '" + processDefinitionId + "'", ProcessDefinition.class);
       }

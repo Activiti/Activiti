@@ -62,7 +62,7 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
   }
 
   public Void execute(CommandContext commandContext) {
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);

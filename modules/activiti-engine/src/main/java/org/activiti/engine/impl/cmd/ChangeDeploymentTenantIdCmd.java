@@ -46,7 +46,7 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
 
     // Update all entities
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
+    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
     }

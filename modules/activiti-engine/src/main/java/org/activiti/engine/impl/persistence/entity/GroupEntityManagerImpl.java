@@ -22,7 +22,6 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.db.PersistentObject;
 
 /**
  * @author Tom Baeyens
@@ -31,17 +30,13 @@ import org.activiti.engine.impl.db.PersistentObject;
  */
 public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> implements GroupEntityManager {
 
+  @Override
+  public Class<GroupEntity> getManagedPersistentObject() {
+    return GroupEntity.class;
+  }
+  
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);
-  }
-
-  public void insertGroup(Group group) {
-    getDbSqlSession().insert((PersistentObject) group);
-
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, group));
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, group));
-    }
   }
 
   public void updateGroup(Group updatedGroup) {
@@ -51,8 +46,9 @@ public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> i
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
     }
   }
-
-  public void deleteGroup(String groupId) {
+  
+  @Override
+  public void delete(String groupId) {
     GroupEntity group = getDbSqlSession().selectById(GroupEntity.class, groupId);
 
     if (group != null) {

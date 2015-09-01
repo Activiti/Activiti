@@ -120,7 +120,7 @@
     select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
   </select>
   
-  <select id="selectDeploymentById" parameterType="string" resultMap="deploymentResultMap">
+  <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
   </select>
 

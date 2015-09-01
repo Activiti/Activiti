@@ -30,15 +30,7 @@ public interface UserEntityManager extends EntityManager<UserEntity> {
 
   User createNewUser(String userId);
 
-  void insertUser(User user);
-
   void updateUser(User updatedUser);
-
-  User findUserById(String userId);
-
-  void deleteUser(String userId);
-  
-  void deletePicture(User user);
 
   List<User> findUserByQueryCriteria(UserQueryImpl query, Page page);
 
@@ -65,5 +57,7 @@ public interface UserEntityManager extends EntityManager<UserEntity> {
   Picture getUserPicture(String userId);
 
   void setUserPicture(String userId, Picture picture);
+  
+  void deletePicture(User user);
 
 }

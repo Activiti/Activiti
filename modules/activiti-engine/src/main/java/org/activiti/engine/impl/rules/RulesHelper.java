@@ -31,7 +31,7 @@ public class RulesHelper {
 
     KnowledgeBase knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
     if (knowledgeBase == null) {
-      DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
+      DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
       if (deployment == null) {
         throw new ActivitiObjectNotFoundException("no deployment with id " + deploymentId, Deployment.class);
       }

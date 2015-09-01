@@ -42,7 +42,12 @@ import org.apache.commons.collections.CollectionUtils;
 public class DeploymentEntityManagerImpl extends AbstractEntityManager<DeploymentEntity> implements DeploymentEntityManager {
 
   @Override
-  public void insertDeployment(DeploymentEntity deployment) {
+  public Class<DeploymentEntity> getManagedPersistentObject() {
+    return DeploymentEntity.class;
+  }
+  
+  @Override
+  public void insert(DeploymentEntity deployment) {
     getDbSqlSession().insert(deployment);
 
     for (ResourceEntity resource : deployment.getResources().values()) {
@@ -185,11 +190,6 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       return (DeploymentEntity) list.get(0);
     }
     return null;
-  }
-
-  @Override
-  public DeploymentEntity findDeploymentById(String deploymentId) {
-    return (DeploymentEntity) getDbSqlSession().selectOne("selectDeploymentById", deploymentId);
   }
 
   @Override

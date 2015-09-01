@@ -47,7 +47,7 @@ public class ScopeUtil {
       // check whether compensating execution is already created (which is the case when compensating an embedded subprocess,
       // where the compensating execution is created when leaving the subprocess and holds snapshot data).
       if (eventSubscription.getConfiguration() != null) {
-        compensatingExecution = executionEntityManager.findExecutionById(eventSubscription.getConfiguration());
+        compensatingExecution = executionEntityManager.findById(eventSubscription.getConfiguration());
         // move the compensating execution under this execution:
         compensatingExecution.setParent((ExecutionEntity) execution);
         compensatingExecution.setEventScope(false);

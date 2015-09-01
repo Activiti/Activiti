@@ -31,6 +31,11 @@ import org.activiti.engine.task.IdentityLinkType;
 public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<IdentityLinkEntity> implements IdentityLinkEntityManager {
   
   @Override
+  public Class<IdentityLinkEntity> getManagedPersistentObject() {
+    return IdentityLinkEntity.class;
+  }
+  
+  @Override
   public void insert(IdentityLinkEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
     getHistoryManager().recordIdentityLinkCreated(entity);

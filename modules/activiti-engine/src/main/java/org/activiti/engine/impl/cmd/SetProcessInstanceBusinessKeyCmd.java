@@ -50,7 +50,7 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
 
   public Void execute(CommandContext commandContext) {
     ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity processInstance = executionManager.findExecutionById(processInstanceId);
+    ExecutionEntity processInstance = executionManager.findById(processInstanceId);
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id = '" + processInstanceId + "'.", ProcessInstance.class);
     } else if (!processInstance.isProcessInstanceType()) {

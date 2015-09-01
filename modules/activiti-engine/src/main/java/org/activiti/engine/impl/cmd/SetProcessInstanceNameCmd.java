@@ -40,7 +40,7 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);

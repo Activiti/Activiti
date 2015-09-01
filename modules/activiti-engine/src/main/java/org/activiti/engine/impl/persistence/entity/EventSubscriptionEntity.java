@@ -104,7 +104,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   
   public ExecutionEntity getExecution() {
     if (execution == null && executionId != null) {
-      execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+      execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
     }
     return execution;
   }

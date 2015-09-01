@@ -28,6 +28,11 @@ import org.activiti.engine.task.Task;
 public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity> implements AttachmentEntityManager {
 
   @Override
+  public Class<AttachmentEntity> getManagedPersistentObject() {
+    return AttachmentEntity.class;
+  }
+  
+  @Override
   @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
@@ -55,7 +60,7 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
     if (dispatchEvents && attachments != null && !attachments.isEmpty()) {
       // Forced to fetch the task to get hold of the process definition
       // for event-dispatching, if available
-      Task task = getTaskEntityManager().findTaskById(taskId);
+      Task task = getTaskEntityManager().findById(taskId);
       if (task != null) {
         processDefinitionId = task.getProcessDefinitionId();
         processInstanceId = task.getProcessInstanceId();

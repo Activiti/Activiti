@@ -25,6 +25,11 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
  */
 public class MembershipEntityManagerImpl extends AbstractEntityManager<MembershipEntity> implements MembershipEntityManager {
 
+  @Override
+  public Class<MembershipEntity> getManagedPersistentObject() {
+    return MembershipEntity.class;
+  }
+  
   public void createMembership(String userId, String groupId) {
     MembershipEntity membershipEntity = new MembershipEntity();
     membershipEntity.setUserId(userId);

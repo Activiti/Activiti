@@ -46,7 +46,7 @@ public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serial
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
 
-    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
     if (task == null) {
       throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.TaskListener;
@@ -148,7 +147,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
 
       if (cascade) {
-        getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
+        getHistoricTaskInstanceEntityManager().delete(taskId);
       } else {
         getHistoryManager().recordTaskEnd(taskId, deleteReason);
       }
@@ -166,14 +165,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }
     }
-  }
-
-  @Override
-  public TaskEntity findTaskById(String id) {
-    if (id == null) {
-      throw new ActivitiIllegalArgumentException("Invalid task id : null");
-    }
-    return (TaskEntity) getDbSqlSession().selectById(TaskEntity.class, id);
   }
 
   @Override
@@ -260,7 +251,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   @Override
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
     
-    TaskEntity task = getTaskEntityManager().findTaskById(taskId);
+    TaskEntity task = getTaskEntityManager().findById(taskId);
 
     if (task != null) {
       if (task.getExecutionId() != null) {
@@ -276,7 +267,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
       deleteTask(task, reason, cascade, false);
     } else if (cascade) {
-      getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
+      getHistoricTaskInstanceEntityManager().delete(taskId);
     }
   }
 

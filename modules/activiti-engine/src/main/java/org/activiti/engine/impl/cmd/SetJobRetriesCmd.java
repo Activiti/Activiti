@@ -48,7 +48,7 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) {
-    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
+    JobEntity job = commandContext.getJobEntityManager().findById(jobId);
     if (job != null) {
       
       if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {

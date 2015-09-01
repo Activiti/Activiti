@@ -22,6 +22,11 @@ import java.util.Map;
  * @author Joram Barrez
  */
 public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEntity> implements ResourceEntityManager {
+  
+  @Override
+  public Class<ResourceEntity> getManagedPersistentObject() {
+    return ResourceEntity.class;
+  }
 
   @Override
   public void deleteResourcesByDeploymentId(String deploymentId) {

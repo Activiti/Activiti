@@ -39,8 +39,6 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
   List<ExecutionEntity> findChildExecutionsByProcessInstanceId(String processInstanceId);
 
-  ExecutionEntity findExecutionById(String executionId);
-
   List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(String parentExecutionId, Collection<String> activityIds);
 
   long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery);

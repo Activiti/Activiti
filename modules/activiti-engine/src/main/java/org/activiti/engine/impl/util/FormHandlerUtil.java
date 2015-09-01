@@ -39,7 +39,7 @@ public class FormHandlerUtil {
       
       List<FormProperty> formProperties = startEvent.getFormProperties();
       String formKey = startEvent.getFormKey();
-      DeploymentEntity deploymentEntity = commandContext.getDeploymentEntityManager().findDeploymentById(processDefinitionEntity.getDeploymentId());
+      DeploymentEntity deploymentEntity = commandContext.getDeploymentEntityManager().findById(processDefinitionEntity.getDeploymentId());
       
       startFormHandler.parseConfiguration(formProperties, formKey, deploymentEntity, processDefinitionEntity);
       return startFormHandler;

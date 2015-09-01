@@ -27,13 +27,10 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceEntityManager {
 
   @Override
-  public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return (HistoricProcessInstanceEntity) getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
-    }
-    return null;
+  public Class<HistoricProcessInstanceEntity> getManagedPersistentObject() {
+    return HistoricProcessInstanceEntity.class;
   }
-
+  
   @Override
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
@@ -41,16 +38,15 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
       List<String> historicProcessInstanceIds = getDbSqlSession().selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
 
       for (String historicProcessInstanceId : historicProcessInstanceIds) {
-        deleteHistoricProcessInstanceById(historicProcessInstanceId);
+        delete(historicProcessInstanceId);
       }
     }
   }
-
+  
   @Override
-  @SuppressWarnings("unchecked")
-  public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
+  public void delete(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryEnabled()) {
-      HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = findById(historicProcessInstanceId);
 
       getHistoricDetailEntityManager().deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
       getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
@@ -67,7 +63,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
 
       List<HistoricProcessInstance> selectList = getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", subProcessesQueryImpl);
       for (HistoricProcessInstance child : selectList) {
-        deleteHistoricProcessInstanceById(child.getId());
+        delete(child.getId());
       }
     }
   }

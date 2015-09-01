@@ -17,12 +17,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
@@ -32,12 +30,17 @@ import org.activiti.engine.impl.util.Activiti5Util;
 public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceEntityManager {
 
   @Override
+  public Class<HistoricTaskInstanceEntity> getManagedPersistentObject() {
+    return HistoricTaskInstanceEntity.class;
+  }
+  
+  @Override
   @SuppressWarnings("unchecked")
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       List<String> taskInstanceIds = (List<String>) getDbSqlSession().selectList("selectHistoricTaskInstanceIdsByProcessInstanceId", processInstanceId);
       for (String taskInstanceId : taskInstanceIds) {
-        deleteHistoricTaskInstanceById(taskInstanceId);
+        delete(taskInstanceId);
       }
     }
   }
@@ -98,34 +101,23 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   }
 
   @Override
-  public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId) {
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("Invalid historic task id : null");
-    }
+  public void delete(String id) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return (HistoricTaskInstanceEntity) getDbSqlSession().selectOne("selectHistoricTaskInstance", taskId);
-    }
-    return null;
-  }
-
-  @Override
-  public void deleteHistoricTaskInstanceById(String taskId) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
+      HistoricTaskInstanceEntity historicTaskInstance = findById(id);
       if (historicTaskInstance != null) {
         
         if (historicTaskInstance.getProcessDefinitionId() != null 
             && Activiti5Util.isActiviti5ProcessDefinitionId(getCommandContext(), historicTaskInstance.getProcessDefinitionId())) {
           Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-          activiti5CompatibilityHandler.deleteHistoricTask(taskId);
+          activiti5CompatibilityHandler.deleteHistoricTask(id);
           return;
         }
 
-        getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(taskId);
-        getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(taskId);
-        getCommentEntityManager().deleteCommentsByTaskId(taskId);
-        getAttachmentEntityManager().deleteAttachmentsByTaskId(taskId);
-        getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(taskId);
+        getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(id);
+        getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(id);
+        getCommentEntityManager().deleteCommentsByTaskId(id);
+        getAttachmentEntityManager().deleteAttachmentsByTaskId(id);
+        getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(id);
         
         getDbSqlSession().delete(historicTaskInstance);
       }

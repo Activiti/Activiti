@@ -34,18 +34,14 @@ import org.activiti.engine.impl.db.PersistentObject;
  * @author Joram Barrez
  */
 public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> implements UserEntityManager {
+  
+  @Override
+  public Class<UserEntity> getManagedPersistentObject() {
+    return UserEntity.class;
+  }
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);
-  }
-
-  public void insertUser(User user) {
-    getDbSqlSession().insert((PersistentObject) user);
-
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
-    }
   }
 
   public void updateUser(User updatedUser) {
@@ -56,10 +52,6 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
     }
   }
 
-  public User findUserById(String userId) {
-    return (UserEntity) getDbSqlSession().selectOne("selectUserById", userId);
-  }
-  
   public void delete(UserEntity userEntity) {
     super.delete(userEntity);
     deletePicture(userEntity);
@@ -74,8 +66,8 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   }
 
   @SuppressWarnings("unchecked")
-  public void deleteUser(String userId) {
-    UserEntity user = (UserEntity) findUserById(userId);
+  public void delete(String userId) {
+    UserEntity user = findById(userId);
     if (user != null) {
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo : identityInfos) {
@@ -121,7 +113,7 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   }
 
   public Boolean checkPassword(String userId, String password) {
-    User user = findUserById(userId);
+    User user = findById(userId);
     if ((user != null) && (password != null) && (password.equals(user.getPassword()))) {
       return true;
     }
@@ -152,13 +144,13 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
 
   @Override
   public Picture getUserPicture(String userId) {
-    UserEntity user = (UserEntity) findUserById(userId);
+    UserEntity user = findById(userId);
     return user.getPicture();
   }
 
   @Override
   public void setUserPicture(String userId, Picture picture) {
-    UserEntity user = (UserEntity) findUserById(userId);
+    UserEntity user = findById(userId);
     if (user == null) {
       throw new ActivitiObjectNotFoundException("user " + userId + " doesn't exist", User.class);
     }

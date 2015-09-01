@@ -37,7 +37,7 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public List<IdentityLink> execute(CommandContext commandContext) {
-    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
     List<IdentityLink> identityLinks = (List) task.getIdentityLinks();
 

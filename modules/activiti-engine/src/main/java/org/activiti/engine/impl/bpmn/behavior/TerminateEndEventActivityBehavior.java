@@ -71,7 +71,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 				  executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), 
 				      execution.getCurrentFlowElement().getId(), "terminate end event", 
 				      false, false, true);
-					ExecutionEntity superExecutionEntity = executionEntityManager.findExecutionById(scopeExecutionEntity.getSuperExecutionId());
+					ExecutionEntity superExecutionEntity = executionEntityManager.findById(scopeExecutionEntity.getSuperExecutionId());
 					commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
 					
 				} else {

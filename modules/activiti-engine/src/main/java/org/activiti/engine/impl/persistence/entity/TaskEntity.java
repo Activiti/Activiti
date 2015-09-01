@@ -215,7 +215,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public ExecutionEntity getExecution() {
     if ((execution == null) && (executionId != null)) {
-      this.execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+      this.execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
     }
     return execution;
   }
@@ -681,7 +681,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public ExecutionEntity getProcessInstance() {
     if (processInstance == null && processInstanceId != null) {
-      processInstance = Context.getCommandContext().getExecutionEntityManager().findExecutionById(processInstanceId);
+      processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }

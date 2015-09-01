@@ -61,11 +61,6 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   }
 
   @Override
-  public void insertGroup(Group group) {
-    throw new ActivitiException("LDAP group manager doesn't support inserting a group");
-  }
-
-  @Override
   public void updateGroup(Group updatedGroup) {
     throw new ActivitiException("LDAP group manager doesn't support updating a group");
   }
@@ -73,11 +68,6 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   @Override
   public boolean isNewGroup(Group group) {
     throw new ActivitiException("LDAP group manager doesn't support inserting or updating a group");
-  }
-
-  @Override
-  public void deleteGroup(String groupId) {
-    throw new ActivitiException("LDAP group manager doesn't support deleting a group");
   }
 
   @Override
@@ -187,12 +177,12 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   }
 
   @Override
-  public GroupEntity getEntity(String entityId) {
+  public GroupEntity findById(String entityId) {
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 
   @Override
-  public GroupEntity getEntity(String selectQuery, Object parameter, CachedPersistentObjectMatcher<GroupEntity> cachedEntityMatcher) {
+  public GroupEntity findByQuery(String selectQuery, Object parameter, CachedPersistentObjectMatcher<GroupEntity> cachedEntityMatcher) {
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 

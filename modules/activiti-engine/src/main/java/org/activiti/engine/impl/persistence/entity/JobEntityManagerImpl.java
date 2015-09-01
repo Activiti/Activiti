@@ -75,7 +75,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     // add link to execution
     if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
       execution.getJobs().add(jobEntity);
 
       // Inherit tenant if (if applicable)
@@ -160,11 +160,6 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     // notify job executor:
     TransactionListener transactionListener = new JobAddedNotification(getJobExecutor());
     getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
-  }
-
-  @Override
-  public JobEntity findJobById(String jobId) {
-    return (JobEntity) getDbSqlSession().selectOne("selectJob", jobId);
   }
 
   @Override
@@ -298,7 +293,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     // remove link to execution
     if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
       execution.getJobs().remove(this);
     }
     
@@ -323,7 +318,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     
     ExecutionEntity execution = null;
     if (jobEntity.getExecutionId() != null) {
-      execution = getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+      execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
     }
 
     Map<String, JobHandler> jobHandlers = getProcessEngineConfiguration().getJobHandlers();
@@ -389,7 +384,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
         VariableScope executionEntity = null;
         if (timerEntity.getExecutionId() != null) {
-          executionEntity = getExecutionEntityManager().findExecutionById(timerEntity.getExecutionId());
+          executionEntity = getExecutionEntityManager().findById(timerEntity.getExecutionId());
         }
         
         if (executionEntity == null) {

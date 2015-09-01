@@ -53,7 +53,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 
     fireEvent(commandContext, taskEntity, TaskListener.EVENTNAME_COMPLETE);
     if (Authentication.getAuthenticatedUserId() != null && taskEntity.getProcessInstanceId() != null) {
-      ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getProcessInstanceId());
+      ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(taskEntity.getProcessInstanceId());
       commandContext.getIdentityLinkEntityManager().involveUser(processInstanceEntity, Authentication.getAuthenticatedUserId(),IdentityLinkType.PARTICIPANT);
     }
 
@@ -70,7 +70,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 
     // Continue process (if not a standalone task)
     if (taskEntity.getExecutionId() != null) {
-      ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getExecutionId());
+      ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(taskEntity.getExecutionId());
       commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
     }
   }
@@ -82,7 +82,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
       List<TaskListener> taskEventListeners = taskDefinition.getTaskListener(taskEventName);
       if (taskEventListeners != null) {
         for (TaskListener taskListener : taskEventListeners) {
-          ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getExecutionId());
+          ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(taskEntity.getExecutionId());
           if (execution != null) {
             taskEntity.setEventName(taskEventName);
           }

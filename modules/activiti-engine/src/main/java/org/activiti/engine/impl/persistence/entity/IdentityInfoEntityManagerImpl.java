@@ -26,6 +26,11 @@ import java.util.Set;
 public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<IdentityInfoEntity> implements IdentityInfoEntityManager {
 
   @Override
+  public Class<IdentityInfoEntity> getManagedPersistentObject() {
+    return IdentityInfoEntity.class;
+  }
+  
+  @Override
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
     IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
     if (identityInfoEntity != null) {

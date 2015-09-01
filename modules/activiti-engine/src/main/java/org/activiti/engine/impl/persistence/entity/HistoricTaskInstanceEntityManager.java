@@ -29,13 +29,9 @@ public interface HistoricTaskInstanceEntityManager extends EntityManager<Histori
 
   List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
 
-  HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId);
-
   List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-  
-  void deleteHistoricTaskInstanceById(String taskId);
   
   void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId);
 

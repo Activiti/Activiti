@@ -50,7 +50,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
   
   @Override
   public void delete(String id) {
-    Entity entity = getEntity(id);
+    Entity entity = findById(id);
     delete(entity);
   }
   
@@ -73,22 +73,21 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
    */
 
   @Override
-  public Entity getEntity(String entityId) {
+  public Entity findById(String entityId) {
 
     // Cache
-    for (Entity cachedEntity : getPersistentObjectCache().findInCache(getManagedPersistentObject())) {
-      if (entityId.equals(cachedEntity.getId())) {
-        return cachedEntity;
-      }
+    Entity cachedEntity = getPersistentObjectCache().findInCache(getManagedPersistentObject(), entityId);
+    if (cachedEntity != null) {
+      return cachedEntity;
     }
-
+    
     // Database
     return getDbSqlSession().selectById(getManagedPersistentObject(), entityId);
   }
   
   @Override
   @SuppressWarnings("unchecked")
-  public Entity getEntity(String selectQuery, Object parameter, CachedPersistentObjectMatcher<Entity> cachedEntityMatcher) {
+  public Entity findByQuery(String selectQuery, Object parameter, CachedPersistentObjectMatcher<Entity> cachedEntityMatcher) {
     // Cache
     for (Entity cachedEntity : getPersistentObjectCache().findInCache(getManagedPersistentObject())) {
       if (cachedEntityMatcher.isRetained(cachedEntity)) {

@@ -20,8 +20,6 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   void insert(TaskEntity taskEntity, ExecutionEntity execution);
 
-  TaskEntity findTaskById(String id);
-
   List<TaskEntity> findTasksByExecutionId(String executionId);
 
   List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId);
