@@ -28,7 +28,7 @@ import org.activiti.engine.task.Task;
 public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity> implements AttachmentEntityManager {
 
   @Override
-  public Class<AttachmentEntity> getManagedPersistentObject() {
+  public Class<AttachmentEntity> getManagedEntity() {
     return AttachmentEntity.class;
   }
   

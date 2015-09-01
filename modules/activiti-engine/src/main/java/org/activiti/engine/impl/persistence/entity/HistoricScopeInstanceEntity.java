@@ -15,7 +15,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -23,7 +23,7 @@ import java.util.Date;
 /**
  * @author Christian Stettler
  */
-public abstract class HistoricScopeInstanceEntity implements PersistentObject, Serializable {
+public abstract class HistoricScopeInstanceEntity implements Entity, Serializable {
 
   private static final long serialVersionUID = 1L;
 

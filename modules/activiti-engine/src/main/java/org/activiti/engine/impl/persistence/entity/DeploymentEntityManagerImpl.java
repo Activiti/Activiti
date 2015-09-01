@@ -42,7 +42,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class DeploymentEntityManagerImpl extends AbstractEntityManager<DeploymentEntity> implements DeploymentEntityManager {
 
   @Override
-  public Class<DeploymentEntity> getManagedPersistentObject() {
+  public Class<DeploymentEntity> getManagedEntity() {
     return DeploymentEntity.class;
   }
   

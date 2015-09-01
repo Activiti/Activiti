@@ -21,7 +21,7 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 
 /**
  * @author Christian Lipphardt (camunda)
@@ -30,7 +30,7 @@ import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceEntityManager {
   
   @Override
-  public Class<HistoricVariableInstanceEntity> getManagedPersistentObject() {
+  public Class<HistoricVariableInstanceEntity> getManagedEntity() {
     return HistoricVariableInstanceEntity.class;
   }
   
@@ -85,7 +85,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       
       List<HistoricVariableInstanceEntity> historicProcessVariables = getList("selectHistoricVariableInstanceByProcessInstanceId", 
-          historicProcessInstanceId, new CachedPersistentObjectMatcher<HistoricVariableInstanceEntity>() {
+          historicProcessInstanceId, new CachedEntityMatcher<HistoricVariableInstanceEntity>() {
         
         @Override
         public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity) {

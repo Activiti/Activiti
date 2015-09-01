@@ -19,53 +19,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Joram Barrez
  */
-public class PersistentObjectCacheImpl implements PersistentObjectCache {
+public class EntityCacheImpl implements EntityCache {
   
-  protected Map<Class<?>, Map<String, CachedPersistentObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedPersistentObject>>();
+  protected Map<Class<?>, Map<String, CachedEntity>> cachedObjects = new HashMap<Class<?>, Map<String,CachedEntity>>();
   
   @Override
-  public CachedPersistentObject put(PersistentObject persistentObject, boolean storeState) {
-    Map<String, CachedPersistentObject> classCache = cachedObjects.get(persistentObject.getClass());
+  public CachedEntity put(Entity entity, boolean storeState) {
+    Map<String, CachedEntity> classCache = cachedObjects.get(entity.getClass());
     if (classCache == null) {
-      classCache = new HashMap<String, CachedPersistentObject>();
-      cachedObjects.put(persistentObject.getClass(), classCache);
+      classCache = new HashMap<String, CachedEntity>();
+      cachedObjects.put(entity.getClass(), classCache);
     }
-    CachedPersistentObject cachedObject = new CachedPersistentObject(persistentObject, storeState);
-    classCache.put(persistentObject.getId(), cachedObject);
+    CachedEntity cachedObject = new CachedEntity(entity, storeState);
+    classCache.put(entity.getId(), cachedObject);
     return cachedObject;
   }
   
   @Override
   @SuppressWarnings("unchecked")
   public <T> T findInCache(Class<T> entityClass, String id) {
-    CachedPersistentObject cachedObject = null;
-    Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
+    CachedEntity cachedObject = null;
+    Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
     if (classCache != null) {
       cachedObject = classCache.get(id);
     }
     if (cachedObject != null) {
-      return (T) cachedObject.getPersistentObject();
+      return (T) cachedObject.getEntity();
     }
     return null;
   }
 
   @Override
-  public void cacheRemove(Class<?> persistentObjectClass, String persistentObjectId) {
-    Map<String, CachedPersistentObject> classCache = cachedObjects.get(persistentObjectClass);
+  public void cacheRemove(Class<?> entityClass, String entityId) {
+    Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
     if (classCache == null) {
       return;
     }
-    classCache.remove(persistentObjectId);
+    classCache.remove(entityId);
   }
   
   @Override
-  public <T> Collection<CachedPersistentObject> findInCacheAsCachedObjects(Class<T> entityClass) {
-    Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
+  public <T> Collection<CachedEntity> findInCacheAsCachedObjects(Class<T> entityClass) {
+    Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
     if (classCache != null) {
       return classCache.values();
     }
@@ -75,18 +75,18 @@ public class PersistentObjectCacheImpl implements PersistentObjectCache {
   @Override
   @SuppressWarnings("unchecked")
   public <T> List<T> findInCache(Class<T> entityClass) {
-    Map<String, CachedPersistentObject> classCache = cachedObjects.get(entityClass);
+    Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
     if (classCache != null) {
       List<T> entities = new ArrayList<T>(classCache.size());
-      for (CachedPersistentObject cachedObject : classCache.values()) {
-        entities.add((T) cachedObject.getPersistentObject());
+      for (CachedEntity cachedObject : classCache.values()) {
+        entities.add((T) cachedObject.getEntity());
       }
       return entities;
     }
     return Collections.emptyList();
   }
   
-  public Map<Class<?>, Map<String, CachedPersistentObject>> getAllCachedPersistentObjects() {
+  public Map<Class<?>, Map<String, CachedEntity>> getAllCachedEntities() {
     return cachedObjects;
   }
   

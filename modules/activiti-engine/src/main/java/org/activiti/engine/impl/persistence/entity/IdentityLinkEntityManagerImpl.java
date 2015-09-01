@@ -31,7 +31,7 @@ import org.activiti.engine.task.IdentityLinkType;
 public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<IdentityLinkEntity> implements IdentityLinkEntityManager {
   
   @Override
-  public Class<IdentityLinkEntity> getManagedPersistentObject() {
+  public Class<IdentityLinkEntity> getManagedEntity() {
     return IdentityLinkEntity.class;
   }
   

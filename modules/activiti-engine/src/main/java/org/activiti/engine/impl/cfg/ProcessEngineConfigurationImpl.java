@@ -153,8 +153,8 @@ import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
-import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
-import org.activiti.engine.impl.persistence.cache.PersistentObjectCacheImpl;
+import org.activiti.engine.impl.persistence.cache.EntityCache;
+import org.activiti.engine.impl.persistence.cache.EntityCacheImpl;
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
@@ -948,7 +948,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
       addSessionFactory(dbSqlSessionFactory);
 
-      addSessionFactory(new GenericManagerFactory(PersistentObjectCache.class, PersistentObjectCacheImpl.class));
+      addSessionFactory(new GenericManagerFactory(EntityCache.class, EntityCacheImpl.class));
     }
 
     if (customSessionFactories != null) {

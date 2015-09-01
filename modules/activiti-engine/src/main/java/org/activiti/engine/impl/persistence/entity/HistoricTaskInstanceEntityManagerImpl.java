@@ -30,7 +30,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceEntityManager {
 
   @Override
-  public Class<HistoricTaskInstanceEntity> getManagedPersistentObject() {
+  public Class<HistoricTaskInstanceEntity> getManagedEntity() {
     return HistoricTaskInstanceEntity.class;
   }
   

@@ -14,39 +14,39 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 
 /**
  * @author Joram Barrez
  */
-public interface EntityManager<Entity extends PersistentObject> {
+public interface EntityManager<EntityImpl extends Entity> {
 
-  void insert(Entity entity);
+  void insert(EntityImpl entity);
 
-  void insert(Entity entity, boolean fireCreateEvent);
+  void insert(EntityImpl entity, boolean fireCreateEvent);
 
-  Entity findById(String entityId);
+  EntityImpl findById(String entityId);
 
-  Entity findByQuery(String selectQuery, Object parameter, CachedPersistentObjectMatcher<Entity> cachedEntityMatcher);
+  EntityImpl findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<EntityImpl> cachedEntityMatcher);
 
   /**
-   * Gets a list by querying the database and the cache using {@link CachedPersistentObjectMatcher}.
+   * Gets a list by querying the database and the cache using {@link CachedEntityMatcher}.
    * First, the entities are fetched from the database using the provided query. 
    * The cache is then queried for the entities of the same type. If an entity matches
-   * the {@link CachedPersistentObjectMatcher} condition, it replaces the entity from the database (as it is newer).
+   * the {@link CachedEntityMatcher} condition, it replaces the entity from the database (as it is newer).
    * 
    * @param dbQueryName The query name that needs to be executed.
    * @param parameter The parameters for the query.
    * @param entityMatcher The matcher used to determine which entities from the cache needs to be retained
    * @param checkCache If false, no cache check will be done, and the returned list will simply be the list from the database.
    */
-  List<Entity> getList(String dbQueryName, Object parameter, CachedPersistentObjectMatcher<Entity> entityMatcher, boolean checkCache);
+  List<EntityImpl> getList(String dbQueryName, Object parameter, CachedEntityMatcher<EntityImpl> entityMatcher, boolean checkCache);
   
   void delete(String id);
   
-  void delete(Entity entity);
+  void delete(EntityImpl entity);
   
-  void delete(Entity entity, boolean fireDeleteEvent);
+  void delete(EntityImpl entity, boolean fireDeleteEvent);
   
 }

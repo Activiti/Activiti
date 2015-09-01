@@ -17,13 +17,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public abstract class HistoricDetailEntity implements HistoricDetail, PersistentObject, Serializable {
+public abstract class HistoricDetailEntity implements HistoricDetail, Entity, Serializable {
 
   private static final long serialVersionUID = 1L;
 

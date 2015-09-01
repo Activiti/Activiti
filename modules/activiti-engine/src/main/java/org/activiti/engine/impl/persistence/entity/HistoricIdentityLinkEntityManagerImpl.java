@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 
 /**
  * @author Frederik Heremans
@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkEntityManager {
 
   @Override
-  public Class<HistoricIdentityLinkEntity> getManagedPersistentObject() {
+  public Class<HistoricIdentityLinkEntity> getManagedEntity() {
     return HistoricIdentityLinkEntity.class;
   }
   
@@ -51,7 +51,7 @@ public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager
   @Override
   public void deleteHistoricIdentityLinksByProcInstance(final String processInstanceId) {
 
-    List<HistoricIdentityLinkEntity> identityLinks = getList("selectHistoricIdentityLinksByProcessInstance", processInstanceId, new CachedPersistentObjectMatcher<HistoricIdentityLinkEntity>() {
+    List<HistoricIdentityLinkEntity> identityLinks = getList("selectHistoricIdentityLinksByProcessInstance", processInstanceId, new CachedEntityMatcher<HistoricIdentityLinkEntity>() {
       
       @Override
       public boolean isRetained(HistoricIdentityLinkEntity historicIdentityLinkEntity) {

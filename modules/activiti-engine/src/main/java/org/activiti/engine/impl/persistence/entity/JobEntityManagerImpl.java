@@ -42,7 +42,7 @@ import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -61,12 +61,12 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   protected static final List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = Arrays.asList(TimerEntity.class, MessageEntity.class);
   
   @Override
-  public Class<JobEntity> getManagedPersistentObject() {
+  public Class<JobEntity> getManagedEntity() {
     return JobEntity.class;
   }
   
   @Override
-  public List<Class<? extends JobEntity>> getManagedPersistentObjectSubClasses() {
+  public List<Class<? extends JobEntity>> getManagedEntitySubClasses() {
     return ENTITY_SUBCLASSES;
   }
   
@@ -192,7 +192,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectJobsByExecutionId", executionId, new CachedPersistentObjectMatcher<JobEntity>() {
+    return getList("selectJobsByExecutionId", executionId, new CachedEntityMatcher<JobEntity>() {
       @Override
       public boolean isRetained(JobEntity jobEntity) {
         return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);

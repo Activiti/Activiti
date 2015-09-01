@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -42,7 +42,7 @@ public class SaveGroupCmd implements Command<Void>, Serializable {
       if (group instanceof GroupEntity) {
         commandContext.getGroupEntityManager().insert((GroupEntity) group);
       } else {
-        commandContext.getDbSqlSession().insert((PersistentObject) group);
+        commandContext.getDbSqlSession().insert((Entity) group);
       }
     } else {
       commandContext.getGroupEntityManager().updateGroup(group);

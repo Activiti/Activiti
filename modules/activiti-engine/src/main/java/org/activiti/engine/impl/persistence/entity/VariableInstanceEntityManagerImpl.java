@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
@@ -31,7 +31,7 @@ import org.activiti.engine.impl.variable.VariableType;
 public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<VariableInstanceEntity> implements VariableInstanceEntityManager {
 
   @Override
-  public Class<VariableInstanceEntity> getManagedPersistentObject() {
+  public Class<VariableInstanceEntity> getManagedEntity() {
     return VariableInstanceEntity.class;
   }
   
@@ -60,7 +60,7 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
   
   @Override
   public Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
-    return getList("selectVariablesByExecutionId", executionId, new CachedPersistentObjectMatcher<VariableInstanceEntity>() {
+    return getList("selectVariablesByExecutionId", executionId, new CachedEntityMatcher<VariableInstanceEntity>() {
       public boolean isRetained(VariableInstanceEntity variableInstanceEntity) {
         return variableInstanceEntity.getExecutionId() != null && variableInstanceEntity.getExecutionId().equals(executionId);
       }

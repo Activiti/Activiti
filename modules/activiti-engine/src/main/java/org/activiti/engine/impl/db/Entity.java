@@ -15,7 +15,7 @@ package org.activiti.engine.impl.db;
 /**
  * @author Tom Baeyens
  */
-public interface PersistentObject {
+public interface Entity {
 
   String getId();
 

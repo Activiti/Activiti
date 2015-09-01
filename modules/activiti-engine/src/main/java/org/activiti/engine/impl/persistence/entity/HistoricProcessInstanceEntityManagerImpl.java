@@ -27,7 +27,7 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceEntityManager {
 
   @Override
-  public Class<HistoricProcessInstanceEntity> getManagedPersistentObject() {
+  public Class<HistoricProcessInstanceEntity> getManagedEntity() {
     return HistoricProcessInstanceEntity.class;
   }
   

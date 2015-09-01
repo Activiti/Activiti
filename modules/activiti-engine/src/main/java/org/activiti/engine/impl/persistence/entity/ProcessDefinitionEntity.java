@@ -28,7 +28,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -36,7 +36,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionEntity implements ProcessDefinition, PersistentObject, HasRevision, Serializable {
+public class ProcessDefinitionEntity implements ProcessDefinition, Entity, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 

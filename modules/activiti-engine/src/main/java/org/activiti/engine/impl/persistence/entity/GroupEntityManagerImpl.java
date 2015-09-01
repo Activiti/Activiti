@@ -31,7 +31,7 @@ import org.activiti.engine.impl.Page;
 public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> implements GroupEntityManager {
 
   @Override
-  public Class<GroupEntity> getManagedPersistentObject() {
+  public Class<GroupEntity> getManagedEntity() {
     return GroupEntity.class;
   }
   

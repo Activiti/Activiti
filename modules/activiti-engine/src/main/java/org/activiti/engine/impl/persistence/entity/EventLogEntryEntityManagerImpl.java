@@ -25,7 +25,7 @@ import org.activiti.engine.event.EventLogEntry;
 public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventLogEntryEntity> implements EventLogEntryEntityManager {
 
   @Override
-  public Class<EventLogEntryEntity> getManagedPersistentObject() {
+  public Class<EventLogEntryEntity> getManagedEntity() {
     return EventLogEntryEntity.class;
   }
   

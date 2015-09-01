@@ -21,7 +21,7 @@ package org.activiti.engine.impl.persistence.entity;
 public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity> implements ByteArrayEntityManager {
    
   @Override
-  public Class<ByteArrayEntity> getManagedPersistentObject() {
+  public Class<ByteArrayEntity> getManagedEntity() {
     return ByteArrayEntity.class;
   }
   

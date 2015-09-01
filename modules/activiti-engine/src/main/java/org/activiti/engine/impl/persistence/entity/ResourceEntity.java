@@ -15,12 +15,12 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  */
-public class ResourceEntity implements PersistentObject, Serializable {
+public class ResourceEntity implements Entity, Serializable {
 
   private static final long serialVersionUID = 1L;
 

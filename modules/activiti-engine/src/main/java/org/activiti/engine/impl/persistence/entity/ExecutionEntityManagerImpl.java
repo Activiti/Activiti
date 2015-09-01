@@ -31,7 +31,7 @@ import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
 import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
@@ -50,7 +50,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   private static final Logger logger = LoggerFactory.getLogger(ExecutionEntityManagerImpl.class);
 
   @Override
-  public Class<ExecutionEntity> getManagedPersistentObject() {
+  public Class<ExecutionEntity> getManagedEntity() {
     return ExecutionEntity.class;
   }
 
@@ -58,7 +58,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
-    return findByQuery("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return findByQuery("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
 
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getSuperExecutionId() != null && superExecutionId.equals(executionEntity.getSuperExecutionId());
@@ -69,7 +69,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {
-    return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity entity) {
         return entity.getParentId() != null && entity.getParentId().equals(parentExecutionId);
@@ -79,7 +79,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
-    return getList("selectChildExecutionsByProcessInstanceId", processInstanceId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectChildExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && executionEntity.getParentId() != null;
@@ -94,7 +94,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     parameters.put("parentExecutionId", parentExecutionId);
     parameters.put("activityIds", activityIds);
     
-    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, new CachedEntityMatcher<ExecutionEntity>() {
       
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getParentId() != null && executionEntity.getParentId().equals(parentExecutionId)
@@ -128,7 +128,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   @Override
   public ExecutionTree findExecutionTree(final String rootProcessInstanceId) {
-    List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity entity) {
         return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId().equals(rootProcessInstanceId);
@@ -142,7 +142,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
    * (i.e. does not treat the id as the root process instance id and fetches everything for that root process instance id) 
    */
   protected ExecutionTree findExecutionTreeInCurrentProcessInstance(final String processInstanceId) {
-    List<ExecutionEntity> executions = getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    List<ExecutionEntity> executions = getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity entity) {
         return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals(processInstanceId);
@@ -201,7 +201,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     HashMap<String, Object> params = new HashMap<String, Object>(2);
     params.put("activityId", activityId);
     params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivity", params, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
       public boolean isRetained(ExecutionEntity entity) {
         return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
       }
@@ -213,7 +213,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     HashMap<String, Object> params = new HashMap<String, Object>(2);
     params.put("processInstanceId", processInstanceId);
     params.put("isActive", false);
-    return getList("selectInactiveExecutionsForProcessInstance", params, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectInactiveExecutionsForProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive();
       }
@@ -226,7 +226,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     params.put("activityId", activityId);
     params.put("processInstanceId", processInstanceId);
     params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive() &&
             executionEntity.getActivityId() != null && executionEntity.getActivityId().equals(activityId);

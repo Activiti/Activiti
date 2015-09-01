@@ -30,7 +30,7 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -44,12 +44,12 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
       Arrays.asList(MessageEventSubscriptionEntity.class, SignalEventSubscriptionEntity.class, CompensateEventSubscriptionEntity.class);
   
   @Override
-  public Class<EventSubscriptionEntity> getManagedPersistentObject() {
+  public Class<EventSubscriptionEntity> getManagedEntity() {
     return EventSubscriptionEntity.class;
   }
   
   @Override
-  public List<Class<? extends EventSubscriptionEntity>> getManagedPersistentObjectSubClasses() {
+  public List<Class<? extends EventSubscriptionEntity>> getManagedEntitySubClasses() {
     return ENTITY_SUBCLASSES;
   }
 
@@ -165,7 +165,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
     params.put("eventName", eventName);
-    return toMessageEventSubscriptionEntityList(getList("selectMessageEventSubscriptionsByProcessInstanceAndEventName", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return toMessageEventSubscriptionEntityList(getList("selectMessageEventSubscriptionsByProcessInstanceAndEventName", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -188,7 +188,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
       params.put("tenantId", tenantId);
     }
     
-    List<EventSubscriptionEntity> result = getList(query, params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    List<EventSubscriptionEntity> result = getList(query, params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -209,7 +209,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     params.put("processInstanceId", processInstanceId);
     params.put("eventName", eventName);
     
-    return toSignalEventSubscriptionEntityList(getList(query, params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return toSignalEventSubscriptionEntityList(getList(query, params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -224,7 +224,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
 
   @Override
   public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(final String executionId) {
-    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByExecution", executionId, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByExecution", executionId, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -240,7 +240,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventName", name);
-    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByNameAndExecution", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByNameAndExecution", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -259,7 +259,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     params.put("executionId", executionId);
     params.put("eventType", type);
     
-    return getList("selectEventSubscriptionsByExecutionAndType", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return getList("selectEventSubscriptionsByExecutionAndType", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -277,7 +277,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     params.put("eventType", type);
     params.put("activityId", activityId);
     
-    return getList("selectEventSubscriptionsByProcessInstanceTypeAndActivity", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return getList("selectEventSubscriptionsByProcessInstanceTypeAndActivity", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -291,7 +291,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
 
   @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId) {
-    return getList("selectEventSubscriptionsByExecution", executionId, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return getList("selectEventSubscriptionsByExecution", executionId, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
@@ -324,7 +324,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
       params.put("tenantId", tenantId);
     }
     
-    return getList("selectEventSubscriptionsByName", params, new CachedPersistentObjectMatcher<EventSubscriptionEntity>() {
+    return getList("selectEventSubscriptionsByName", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
       
       @Override
       public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {

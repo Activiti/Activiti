@@ -25,7 +25,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public abstract class JobEntity implements Job, PersistentObject, HasRevision, BulkDeleteable, Serializable {
+public abstract class JobEntity implements Job, Entity, HasRevision, BulkDeleteable, Serializable {
 
   public static final boolean DEFAULT_EXCLUSIVE = true;
   public static final int DEFAULT_RETRIES = 3;

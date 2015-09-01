@@ -30,7 +30,7 @@ import org.activiti.engine.task.Event;
 public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity> implements CommentEntityManager {
 
   @Override
-  public Class<CommentEntity> getManagedPersistentObject() {
+  public Class<CommentEntity> getManagedEntity() {
     return CommentEntity.class;
   }
   

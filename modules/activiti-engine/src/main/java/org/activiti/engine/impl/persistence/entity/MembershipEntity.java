@@ -14,13 +14,13 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class MembershipEntity implements PersistentObject, Serializable {
+public class MembershipEntity implements Entity, Serializable {
 
   private static final long serialVersionUID = 1L;
 

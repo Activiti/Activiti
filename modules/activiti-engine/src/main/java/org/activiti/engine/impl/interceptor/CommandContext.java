@@ -30,7 +30,7 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
-import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
+import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -250,8 +250,8 @@ public class CommandContext {
     return getSession(DbSqlSession.class);
   }
   
-  public PersistentObjectCache getPersistentObjectCache() {
-    return getSession(PersistentObjectCache.class);
+  public EntityCache getEntityCache() {
+    return getSession(EntityCache.class);
   }
 
   public DeploymentEntityManager getDeploymentEntityManager() {

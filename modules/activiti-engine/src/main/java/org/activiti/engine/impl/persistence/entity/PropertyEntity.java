@@ -16,12 +16,12 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  */
-public class PropertyEntity implements PersistentObject, HasRevision, Serializable {
+public class PropertyEntity implements Entity, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 

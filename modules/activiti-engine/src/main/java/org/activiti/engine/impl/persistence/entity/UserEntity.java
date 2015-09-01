@@ -19,13 +19,13 @@ import java.util.Map;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  * @author Arkadiy Gornovoy
  */
-public class UserEntity implements User, Serializable, PersistentObject, HasRevision {
+public class UserEntity implements User, Serializable, Entity, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

@@ -22,7 +22,7 @@ import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
+import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -72,8 +72,8 @@ public abstract class AbstractManager {
     return getSession(DbSqlSession.class);
   }
   
-  protected PersistentObjectCache getPersistentObjectCache() {
-    return getSession(PersistentObjectCache.class);
+  protected EntityCache getEntityCache() {
+    return getSession(EntityCache.class);
   }
   
   // Engine scoped

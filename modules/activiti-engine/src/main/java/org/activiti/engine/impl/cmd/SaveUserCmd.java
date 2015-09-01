@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
@@ -41,7 +41,7 @@ public class SaveUserCmd implements Command<Void>, Serializable {
       if (user instanceof UserEntity) {
         commandContext.getUserEntityManager().insert((UserEntity) user,true);
       } else {
-        commandContext.getDbSqlSession().insert((PersistentObject) user);
+        commandContext.getDbSqlSession().insert((Entity) user);
       }
     } else {
       commandContext.getUserEntityManager().updateUser(user);

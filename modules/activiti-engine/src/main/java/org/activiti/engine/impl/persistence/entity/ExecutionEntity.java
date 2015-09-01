@@ -27,7 +27,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -42,7 +42,7 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 
 public class ExecutionEntity extends VariableScopeImpl 
-    implements DelegateExecution, Execution, ProcessInstance, PersistentObject, HasRevision {
+    implements DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
 
   private static final long serialVersionUID = 1L;
 
@@ -182,7 +182,7 @@ public class ExecutionEntity extends VariableScopeImpl
 
   protected List<VariableInstanceEntity> queryVariables;
   
-  protected boolean isDeleted; // TODO: should be in PersistentObject probably
+  protected boolean isDeleted; // TODO: should be in entity superclass probably
 
   public ExecutionEntity() {
   }

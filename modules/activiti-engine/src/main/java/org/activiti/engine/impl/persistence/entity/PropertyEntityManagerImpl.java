@@ -20,7 +20,7 @@ package org.activiti.engine.impl.persistence.entity;
 public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity> implements PropertyEntityManager {
 
   @Override
-  public Class<PropertyEntity> getManagedPersistentObject() {
+  public Class<PropertyEntity> getManagedEntity() {
     return PropertyEntity.class;
   }
   

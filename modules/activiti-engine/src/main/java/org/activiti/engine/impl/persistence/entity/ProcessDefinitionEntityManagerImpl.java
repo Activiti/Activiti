@@ -31,7 +31,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<ProcessDefinitionEntity> implements ProcessDefinitionEntityManager {
 
   @Override
-  public Class<ProcessDefinitionEntity> getManagedPersistentObject() {
+  public Class<ProcessDefinitionEntity> getManagedEntity() {
     return ProcessDefinitionEntity.class;
   }
   

@@ -30,7 +30,7 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 
@@ -182,12 +182,12 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   }
 
   @Override
-  public GroupEntity findByQuery(String selectQuery, Object parameter, CachedPersistentObjectMatcher<GroupEntity> cachedEntityMatcher) {
+  public GroupEntity findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<GroupEntity> cachedEntityMatcher) {
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 
   @Override
-  public List<GroupEntity> getList(String dbQueryName, Object parameter, CachedPersistentObjectMatcher<GroupEntity> retainEntityCondition, boolean checkCache) {
+  public List<GroupEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<GroupEntity> retainEntityCondition, boolean checkCache) {
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
  

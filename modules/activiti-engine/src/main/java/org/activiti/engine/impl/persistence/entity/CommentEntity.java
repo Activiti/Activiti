@@ -19,14 +19,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 /**
  * @author Tom Baeyens
  */
-public class CommentEntity implements Comment, Event, PersistentObject, Serializable {
+public class CommentEntity implements Comment, Event, Entity, Serializable {
 
   private static final long serialVersionUID = 1L;
 

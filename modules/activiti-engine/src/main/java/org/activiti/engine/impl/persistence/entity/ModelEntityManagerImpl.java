@@ -29,7 +29,7 @@ import org.activiti.engine.repository.Model;
 public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> implements ModelEntityManager {
   
   @Override
-  public Class<ModelEntity> getManagedPersistentObject() {
+  public Class<ModelEntity> getManagedEntity() {
     return ModelEntity.class;
   }
 

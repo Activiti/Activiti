@@ -19,13 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.task.Attachment;
 
 /**
  * @author Tom Baeyens
  */
-public class AttachmentEntity implements Attachment, PersistentObject, HasRevision, Serializable {
+public class AttachmentEntity implements Attachment, Entity, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 

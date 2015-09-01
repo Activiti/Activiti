@@ -20,7 +20,7 @@ import java.util.HashMap;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
  */
-public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, PersistentObject, HasRevision, BulkDeleteable, Serializable {
+public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, Entity, HasRevision, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 

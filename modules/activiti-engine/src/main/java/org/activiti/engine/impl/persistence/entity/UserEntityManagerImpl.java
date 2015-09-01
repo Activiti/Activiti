@@ -26,7 +26,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
@@ -36,7 +36,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> implements UserEntityManager {
   
   @Override
-  public Class<UserEntity> getManagedPersistentObject() {
+  public Class<UserEntity> getManagedEntity() {
     return UserEntity.class;
   }
 
@@ -45,7 +45,7 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   }
 
   public void updateUser(User updatedUser) {
-    getDbSqlSession().update((PersistentObject) updatedUser);
+    getDbSqlSession().update((Entity) updatedUser);
 
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));

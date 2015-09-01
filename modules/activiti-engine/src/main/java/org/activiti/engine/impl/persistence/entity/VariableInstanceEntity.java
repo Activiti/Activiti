@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marcus Klimstra (CGI)
  * @author Joram Barrez
  */
-public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
+public class VariableInstanceEntity implements ValueFields, Entity, HasRevision, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 

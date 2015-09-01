@@ -15,16 +15,16 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * An event log entry can only be inserted (and maybe deleted).
  * 
  * @author Joram Barrez
  */
-public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
+public class EventLogEntryEntity implements Entity, EventLogEntry {
 
-  protected long logNumber; // cant use id here, it would clash with persistentObject
+  protected long logNumber; // cant use id here, it would clash with entity
   protected String type;
   protected String processDefinitionId;
   protected String processInstanceId;

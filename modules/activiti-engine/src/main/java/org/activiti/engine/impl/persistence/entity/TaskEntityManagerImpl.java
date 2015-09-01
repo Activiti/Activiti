@@ -27,7 +27,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
 
@@ -38,7 +38,7 @@ import org.activiti.engine.task.Task;
 public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> implements TaskEntityManager {
   
   @Override
-  public Class<TaskEntity> getManagedPersistentObject() {
+  public Class<TaskEntity> getManagedEntity() {
     return TaskEntity.class;
   }
   
@@ -169,7 +169,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
 
   @Override
   public List<TaskEntity> findTasksByExecutionId(final String executionId) {
-    return getList("selectTasksByExecutionId", executionId, new CachedPersistentObjectMatcher<TaskEntity>() {
+    return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
       
       public boolean isRetained(TaskEntity taskEntity) {
         return taskEntity.getExecutionId() != null && executionId.equals(taskEntity.getExecutionId());
