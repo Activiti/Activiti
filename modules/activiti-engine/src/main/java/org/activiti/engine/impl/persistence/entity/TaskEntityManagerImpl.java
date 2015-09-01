@@ -28,9 +28,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
@@ -60,7 +57,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   /** creates and initializes a new persistent task. */
   @Override
   public TaskEntity createAndInsert(DelegateExecution execution) {
-    TaskEntity task = create(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    TaskEntity task = create(getClock().getCurrentTime());
     insert(task, (ExecutionEntity) execution);
     return task;
   }
@@ -68,7 +65,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   @Override
   public void insert(TaskEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
-    Context.getCommandContext().getHistoryManager().recordTaskId(entity);
+    getHistoryManager().recordTaskId(entity);
   }
   
   @Override
@@ -85,12 +82,12 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       taskEntity.setProcessInstanceId(execution.getProcessInstanceId());
       taskEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
       
-      Context.getCommandContext().getHistoryManager().recordTaskExecutionIdChange(taskEntity.getId(), taskEntity.getExecutionId());
+      getHistoryManager().recordTaskExecutionIdChange(taskEntity.getId(), taskEntity.getExecutionId());
     }
     
     super.insert(taskEntity, true);
 
-    Context.getCommandContext().getHistoryManager().recordTaskCreated(taskEntity, execution);
+    getHistoryManager().recordTaskCreated(taskEntity, execution);
   }
   
   @Override
@@ -108,13 +105,10 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     taskEntity.setParentTaskId(taskEntity.getParentTaskId());
     taskEntity.setFormKey(taskEntity.getFormKey());
 
-    CommandContext commandContext = Context.getCommandContext();
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update(taskEntity);
+    getDbSqlSession().update(taskEntity);
 
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, taskEntity));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, taskEntity));
     }
   }
 
@@ -125,14 +119,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
 
     String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
 
-    CommandContext commandContext = Context.getCommandContext();
-
     for (TaskEntity task : tasks) {
-      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        commandContext
-            .getProcessEngineConfiguration()
-            .getEventDispatcher()
-            .dispatchEvent(
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(
                 ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
                     task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
       }
@@ -147,7 +136,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       task.fireEvent(TaskListener.EVENTNAME_DELETE);
       task.setDeleted(true);
 
-      CommandContext commandContext = Context.getCommandContext();
       String taskId = task.getId();
 
       List<Task> subTasks = findTasksByParentTaskId(taskId);
@@ -155,27 +143,27 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         deleteTask((TaskEntity) subTask, deleteReason, cascade, cancel);
       }
 
-      commandContext.getIdentityLinkEntityManager().deleteIdentityLinksByTaskId(taskId);
+      getIdentityLinkEntityManager().deleteIdentityLinksByTaskId(taskId);
 
-      commandContext.getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
+      getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
 
       if (cascade) {
-        commandContext.getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
+        getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
       } else {
-        commandContext.getHistoryManager().recordTaskEnd(taskId, deleteReason);
+        getHistoryManager().recordTaskEnd(taskId, deleteReason);
       }
 
       getDbSqlSession().delete(task);
 
-      if (commandContext.getEventDispatcher().isEnabled()) {
+      if (getEventDispatcher().isEnabled()) {
         
         if (cancel) {
-          commandContext.getEventDispatcher().dispatchEvent(
+          getEventDispatcher().dispatchEvent(
                   ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
                       task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
         }
         
-        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }
     }
   }
@@ -272,15 +260,14 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   @Override
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
     
-    CommandContext commandContext = Context.getCommandContext();
-    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    TaskEntity task = getTaskEntityManager().findTaskById(taskId);
 
     if (task != null) {
       if (task.getExecutionId() != null) {
         throw new ActivitiException("The task cannot be deleted because is part of a running process");
       }
       
-      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(getCommandContext(), task.getProcessDefinitionId())) {
         Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
         activiti5CompatibilityHandler.deleteTask(taskId, deleteReason, cascade);
         return;
@@ -289,7 +276,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
       deleteTask(task, reason, cascade, false);
     } else if (cascade) {
-      Context.getCommandContext().getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
+      getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
     }
   }
 

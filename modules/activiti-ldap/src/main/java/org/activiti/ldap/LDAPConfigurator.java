@@ -24,8 +24,7 @@ import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.runtime.Clock;
-import org.activiti.engine.runtime.ClockReader;
+import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 
 /**
  * A {@link ProcessEngineConfigurator} that integrates a LDAP system with the Activiti process engine. The LDAP system will be consulted primarily for getting user information and in particular for
@@ -71,11 +70,6 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   protected String groupNameAttribute;
   protected String groupTypeAttribute;
 
-  // Pluggable factories
-  protected LDAPUserManagerFactory ldapUserManagerFactory;
-  protected LDAPGroupManagerFactory ldapGroupManagerFactory;
-  protected LDAPMembershipManagerFactory ldapMembershipManagerFactory;
-
   // Pluggable query helper bean
   protected LDAPQueryBuilder ldapQueryBuilder = new LDAPQueryBuilder();
 
@@ -83,47 +77,34 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   protected int groupCacheSize = -1;
   protected long groupCacheExpirationTime = 3600000L; // default: one hour
 
-  // Cache clock
-  private Clock clock;
+  // Cache listener (experimental)
+  protected LDAPGroupCacheListener groupCacheListener;
 
   public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
     // Nothing to do
   }
 
   public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    clock = processEngineConfiguration.getClock();
-    LDAPUserManagerFactory ldapUserManagerFactory = getLdapUserManagerFactory();
-    processEngineConfiguration.getSessionFactories().put(ldapUserManagerFactory.getSessionType(), ldapUserManagerFactory);
-
-    LDAPGroupManagerFactory ldapGroupManagerFactory = getLdapGroupManagerFactory(clock);
-    processEngineConfiguration.getSessionFactories().put(ldapGroupManagerFactory.getSessionType(), ldapGroupManagerFactory);
-
-  }
-
-  // Can be overwritten for custom factories
-  // //////////////////////////////////////////////////
-
-  protected LDAPUserManagerFactory getLdapUserManagerFactory() {
-    if (this.ldapUserManagerFactory != null) {
-      this.ldapUserManagerFactory.setLdapConfigurator(this);
-      return this.ldapUserManagerFactory;
+    
+    // User 
+    processEngineConfiguration.setUserEntityManager(new LDAPUserManager(this));
+    
+    // Groups
+    LDAPGroupCache ldapGroupCache = null;
+    if (getGroupCacheSize() > 0) {
+      ldapGroupCache = new LDAPGroupCache(getGroupCacheSize(), getGroupCacheExpirationTime(), processEngineConfiguration.getClock());
+      if (groupCacheListener != null) {
+        ldapGroupCache.setLdapCacheListener(groupCacheListener);
+      }
     }
-    return new LDAPUserManagerFactory(this);
-  }
-
-  protected LDAPGroupManagerFactory getLdapGroupManagerFactory(ClockReader clockReader) {
-    if (this.ldapGroupManagerFactory != null) {
-      this.ldapGroupManagerFactory.setLdapConfigurator(this);
-      return this.ldapGroupManagerFactory;
+    
+    LDAPGroupManager ldapGroupManager = null;
+    if (ldapGroupCache == null) {
+      ldapGroupManager = new LDAPGroupManager(this);
+    } else {
+      ldapGroupManager = new LDAPGroupManager(this, ldapGroupCache);
     }
-    return new LDAPGroupManagerFactory(this, clockReader);
-  }
-
-  protected LDAPMembershipManagerFactory getLdapMembershipManagerFactory() {
-    if (this.ldapMembershipManagerFactory != null) {
-      this.ldapMembershipManagerFactory.setLdapConfigurator(this);
-    }
-    return new LDAPMembershipManagerFactory(this);
+    processEngineConfiguration.setGroupEntityManager(ldapGroupManager);
   }
 
   // Getters and Setters //////////////////////////////////////////////////
@@ -412,27 +393,6 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   }
 
   /**
-   * Set a custom implementation of the {@link LDAPUserManagerFactory} if the default implementation is not suitable.
-   */
-  public void setLdapUserManagerFactory(LDAPUserManagerFactory ldapUserManagerFactory) {
-    this.ldapUserManagerFactory = ldapUserManagerFactory;
-  }
-
-  /**
-   * Set a custom implementation of the {@link LDAPGroupManagerFactory} if the default implementation is not suitable.
-   */
-  public void setLdapGroupManagerFactory(LDAPGroupManagerFactory ldapGroupManagerFactory) {
-    this.ldapGroupManagerFactory = ldapGroupManagerFactory;
-  }
-
-  /**
-   * Set a custom implementation of the {@link LDAPMembershipManagerFactory} if the default implementation is not suitable.
-   */
-  public void setLdapMembershipManagerFactory(LDAPMembershipManagerFactory ldapMembershipManagerFactory) {
-    this.ldapMembershipManagerFactory = ldapMembershipManagerFactory;
-  }
-
-  /**
    * Set a custom {@link LDAPQueryBuilder} if the default implementation is not suitable. The {@link LDAPQueryBuilder} instance is used when the {@link LDAPUserManager} or {@link LDAPGroupManager}
    * does an actual query against the LDAP system.
    * 
@@ -477,4 +437,12 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
     this.groupCacheExpirationTime = groupCacheExpirationTime;
   }
 
+  public LDAPGroupCacheListener getGroupCacheListener() {
+    return groupCacheListener;
+  }
+
+  public void setGroupCacheListener(LDAPGroupCacheListener groupCacheListener) {
+    this.groupCacheListener = groupCacheListener;
+  }
+  
 }

@@ -23,12 +23,10 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
@@ -47,6 +45,7 @@ import org.slf4j.LoggerFactory;
  * Manager class that centralises recording of all history-related operations that are originated from inside the engine.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class DefaultHistoryManager extends AbstractManager implements HistoryManager {
 
@@ -54,8 +53,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   private HistoryLevel historyLevel;
 
-  public DefaultHistoryManager() {
-    this.historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
+  public DefaultHistoryManager(HistoryLevel historyLevel) {
+    this.historyLevel = historyLevel;
   }
 
   /*
@@ -97,7 +96,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
 
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager().findHistoricProcessInstance(processInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
 
       if (historicProcessInstance != null) {
         historicProcessInstance.markEnded(deleteReason);
@@ -109,7 +108,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordProcessInstanceNameChange(String processInstanceId, String newName) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager().findHistoricProcessInstance(processInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
 
       if (historicProcessInstance != null) {
         historicProcessInstance.setName(newName);
@@ -298,7 +297,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     }
 
     // Check the database
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(getCommandContext())
       .executionId(executionId).activityId(activityId).unfinished()
       .listPage(0, 1);
 
@@ -339,7 +338,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   }
 
   protected HistoricActivityInstanceEntity createHistoricActivityInstanceEntity(ExecutionEntity execution) {
-    IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+    IdGenerator idGenerator = getProcessEngineConfiguration().getIdGenerator();
     
     String processDefinitionId = execution.getProcessDefinitionId();
     String processInstanceId = execution.getProcessInstanceId();
@@ -354,7 +353,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       historicActivityInstance.setActivityName(execution.getCurrentFlowElement().getName());
       historicActivityInstance.setActivityType(parseActivityType(execution.getCurrentFlowElement()));
     }
-    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    Date now = getClock().getCurrentTime();
     historicActivityInstance.setStartTime(now);
  
     // Inherit tenant id (if applicable)
@@ -362,7 +361,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       historicActivityInstance.setTenantId(execution.getTenantId());
     }
     
-    getHistoricActivityInstanceManager().insert(historicActivityInstance);
+    getHistoricActivityInstanceEntityManager().insert(historicActivityInstance);
     return historicActivityInstance;
   }
 
@@ -374,7 +373,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordProcessDefinitionChange(String processInstanceId, String processDefinitionId) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager().findHistoricProcessInstance(processInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
       if (historicProcessInstance != null) {
         historicProcessInstance.setProcessDefinitionId(processDefinitionId);
       }
@@ -428,7 +427,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance != null) {
-        historicTaskInstance.setClaimTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+        historicTaskInstance.setClaimTime(getClock().getCurrentTime());
       }
     }
   }
@@ -649,7 +648,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
+     getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
     }
   }
 
@@ -663,7 +662,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
     if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
 
-      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = Context.getCommandContext().getHistoricDetailEntityManager().copyAndInsertHistoricDetailVariableInstanceUpdateEntity(variable);
+      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = getHistoricDetailEntityManager().copyAndInsertHistoricDetailVariableInstanceUpdateEntity(variable);
 
       if (useActivityId && sourceActivityExecution != null) {
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, true, false);
@@ -684,13 +683,13 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
-        historicProcessVariable = Context.getCommandContext().getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceByVariableInstanceId(variable.getId());
+        historicProcessVariable = getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
 
       if (historicProcessVariable != null) {
-        Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyVariableValue(historicProcessVariable, variable);
+        getHistoricVariableInstanceEntityManager().copyVariableValue(historicProcessVariable, variable);
       } else {
-        Context.getCommandContext().getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
+        getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
       }
     }
   }
@@ -736,7 +735,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       CommentEntity comment = new CommentEntity();
       comment.setUserId(authenticatedUserId);
       comment.setType(CommentEntity.TYPE_EVENT);
-      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      comment.setTime(getClock().getCurrentTime());
       comment.setTaskId(taskId);
       if (userId != null || forceNullUserId) {
         if (create) {
@@ -770,7 +769,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       CommentEntity comment = new CommentEntity();
       comment.setUserId(authenticatedUserId);
       comment.setType(CommentEntity.TYPE_EVENT);
-      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      comment.setTime(getClock().getCurrentTime());
       comment.setProcessInstanceId(processInstanceId);
       if (userId != null || forceNullUserId) {
         if (create) {
@@ -803,7 +802,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       CommentEntity comment = new CommentEntity();
       comment.setUserId(userId);
       comment.setType(CommentEntity.TYPE_EVENT);
-      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      comment.setTime(getClock().getCurrentTime());
       comment.setTaskId(taskId);
       comment.setProcessInstanceId(processInstanceId);
       if (create) {
@@ -826,8 +825,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       for (String propertyId : properties.keySet()) {
         String propertyValue = properties.get(propertyId);
-        Context.getCommandContext().getHistoricDetailEntityManager()
-          .insertHistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
+        getHistoricDetailEntityManager().insertHistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
       }
     }
   }
@@ -888,15 +886,12 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricVariableInstanceEntity historicProcessVariable = getPersistentObjectCache()
           .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable == null) {
-        historicProcessVariable = Context.getCommandContext()
-            .getHistoricVariableInstanceEntityManager()
+        historicProcessVariable = getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
 
       if (historicProcessVariable != null) {
-        Context.getCommandContext()
-        .getHistoricVariableInstanceEntityManager()
-        .delete(historicProcessVariable);
+        getHistoricVariableInstanceEntityManager().delete(historicProcessVariable);
       } 
     }
   }

@@ -28,9 +28,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.event.EventHandler;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 import org.apache.commons.lang3.StringUtils;
@@ -163,7 +161,6 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(final String processInstanceId, final String eventName) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
@@ -306,17 +303,6 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<EventSubscriptionEntity> findEventSubscriptions(String executionId, String type, String activityId) {
-    final String query = "selectEventSubscriptionsByExecutionTypeAndActivity";
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("executionId", executionId);
-    params.put("eventType", type);
-    params.put("activityId", activityId);
-    return getDbSqlSession().selectList(query, params);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId) {
     final String query = "selectEventSubscriptionsByConfiguration";
     Map<String, String> params = new HashMap<String, String>();
@@ -406,16 +392,14 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
       delete(eventSubscriptionEntity);
     }
     
-    EventHandler eventHandler = Context.getProcessEngineConfiguration().getEventHandler(eventSubscriptionEntity.getEventType());
+    EventHandler eventHandler = getProcessEngineConfiguration().getEventHandler(eventSubscriptionEntity.getEventType());
     if (eventHandler == null) {
       throw new ActivitiException("Could not find eventhandler for event of type '" + eventSubscriptionEntity.getEventType() + "'.");
     }
-    eventHandler.handleEvent(eventSubscriptionEntity, payload, Context.getCommandContext());
+    eventHandler.handleEvent(eventSubscriptionEntity, payload, getCommandContext());
   }
 
   protected void scheduleEventAsync(EventSubscriptionEntity eventSubscriptionEntity, Object payload) {
-
-    final CommandContext commandContext = Context.getCommandContext();
 
     MessageEntity message = new MessageEntity();
     message.setJobHandlerType(ProcessEventJobHandler.TYPE);
@@ -423,7 +407,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     message.setTenantId(eventSubscriptionEntity.getTenantId());
 
     GregorianCalendar expireCal = new GregorianCalendar();
-    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
+    ProcessEngineConfiguration processEngineConfig = getProcessEngineConfiguration();
     expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
     expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
     message.setLockExpirationTime(expireCal.getTime());
@@ -433,7 +417,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     // message.setEventPayload(payload);
     // }
 
-    commandContext.getJobEntityManager().send(message);
+    getJobEntityManager().send(message);
   }
   
   @Override

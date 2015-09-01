@@ -26,10 +26,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
@@ -45,19 +42,17 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   public void insertUser(User user) {
     getDbSqlSession().insert((PersistentObject) user);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
     }
   }
 
   public void updateUser(User updatedUser) {
-    CommandContext commandContext = Context.getCommandContext();
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update((PersistentObject) updatedUser);
+    getDbSqlSession().update((PersistentObject) updatedUser);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
     }
   }
 
@@ -84,7 +79,7 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
     if (user != null) {
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo : identityInfos) {
-        getIdentityInfoManager().delete(identityInfo);
+        getIdentityInfoEntityManager().delete(identityInfo);
       }
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
 
@@ -107,7 +102,7 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   }
 
   public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
+    return new UserQueryImpl(getCommandExecutor());
   }
 
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {

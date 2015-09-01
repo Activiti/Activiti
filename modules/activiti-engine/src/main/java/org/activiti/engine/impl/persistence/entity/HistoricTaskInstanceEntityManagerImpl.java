@@ -21,7 +21,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -114,25 +113,20 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
     if (getHistoryManager().isHistoryEnabled()) {
       HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
       if (historicTaskInstance != null) {
-        CommandContext commandContext = Context.getCommandContext();
         
         if (historicTaskInstance.getProcessDefinitionId() != null 
-            && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, historicTaskInstance.getProcessDefinitionId())) {
+            && Activiti5Util.isActiviti5ProcessDefinitionId(getCommandContext(), historicTaskInstance.getProcessDefinitionId())) {
           Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.deleteHistoricTask(taskId);
           return;
         }
 
-        commandContext.getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(taskId);
-
-        commandContext.getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(taskId);
-
-        commandContext.getCommentEntityManager().deleteCommentsByTaskId(taskId);
-
-        commandContext.getAttachmentEntityManager().deleteAttachmentsByTaskId(taskId);
-
-        commandContext.getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(taskId);
-
+        getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(taskId);
+        getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(taskId);
+        getCommentEntityManager().deleteCommentsByTaskId(taskId);
+        getAttachmentEntityManager().deleteAttachmentsByTaskId(taskId);
+        getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(taskId);
+        
         getDbSqlSession().delete(historicTaskInstance);
       }
     }

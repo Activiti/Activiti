@@ -216,4 +216,20 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 
+  public LDAPConfigurator getLdapConfigurator() {
+    return ldapConfigurator;
+  }
+
+  public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
+    this.ldapConfigurator = ldapConfigurator;
+  }
+
+  public LDAPGroupCache getLdapGroupCache() {
+    return ldapGroupCache;
+  }
+
+  public void setLdapGroupCache(LDAPGroupCache ldapGroupCache) {
+    this.ldapGroupCache = ldapGroupCache;
+  }
+
 }

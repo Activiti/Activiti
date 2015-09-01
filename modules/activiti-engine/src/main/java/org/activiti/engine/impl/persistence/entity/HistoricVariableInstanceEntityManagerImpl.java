@@ -20,7 +20,6 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
@@ -48,7 +47,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
 
     copyVariableValue(historicVariableInstance, variableInstance);
 
-    Date time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    Date time = getClock().getCurrentTime();
     historicVariableInstance.setCreateTime(time);
     historicVariableInstance.setLastUpdatedTime(time);
 
@@ -69,7 +68,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
       historicVariableInstance.setBytes(variableInstance.getBytes());
     }
 
-    historicVariableInstance.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    historicVariableInstance.lastUpdatedTime = getClock().getCurrentTime();
   }
   
   @Override

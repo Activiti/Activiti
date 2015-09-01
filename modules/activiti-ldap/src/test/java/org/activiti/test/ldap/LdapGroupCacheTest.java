@@ -14,11 +14,10 @@ package org.activiti.test.ldap;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.test.Deployment;
 import org.activiti.ldap.LDAPGroupCache;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
-import org.activiti.ldap.LDAPGroupManagerFactory;
+import org.activiti.ldap.LDAPGroupManager;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:activiti-context-ldap-group-cache.xml")
@@ -31,8 +30,7 @@ public class LdapGroupCacheTest extends LDAPTestCase {
     super.setUp();
 
     // Set test cache listener
-    LDAPGroupManagerFactory ldapGroupManagerFactory = (LDAPGroupManagerFactory) processEngineConfiguration.getSessionFactories().get(GroupEntityManager.class);
-    LDAPGroupCache ldapGroupCache = ldapGroupManagerFactory.getLdapGroupCache();
+    LDAPGroupCache ldapGroupCache = ((LDAPGroupManager) processEngineConfiguration.getGroupEntityManager()).getLdapGroupCache();
     ldapGroupCache.clear();
 
     cacheListener = new TestLDAPGroupCacheListener();

@@ -15,13 +15,12 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 
 /**
  * @author Joram Barrez
  */
-public interface EntityManager<Entity extends PersistentObject> extends Session {
+public interface EntityManager<Entity extends PersistentObject> {
 
   void insert(Entity entity);
 
@@ -49,5 +48,5 @@ public interface EntityManager<Entity extends PersistentObject> extends Session 
   void delete(Entity entity);
   
   void delete(Entity entity, boolean fireDeleteEvent);
-
+  
 }

@@ -25,25 +25,20 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -62,6 +57,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   private static final Logger logger = LoggerFactory.getLogger(JobEntityManagerImpl.class);
   
+  @SuppressWarnings("unchecked")
   protected static final List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = Arrays.asList(TimerEntity.class, MessageEntity.class);
   
   @Override
@@ -79,7 +75,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     // add link to execution
     if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+      ExecutionEntity execution = getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
       execution.getJobs().add(jobEntity);
 
       // Inherit tenant if (if applicable)
@@ -94,7 +90,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   @Override
   public void send(MessageEntity message) {
 
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    ProcessEngineConfigurationImpl processEngineConfiguration = getProcessEngineConfiguration();
 
     if (processEngineConfiguration.isAsyncExecutorEnabled()) {
 
@@ -104,7 +100,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
       // process engine goes down
       // before executing the job. This way, other async job executors can
       // pick the job up after the max lock time.
-      Date dueDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
+      Date dueDate = new Date(getClock().getCurrentTime().getTime() + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
       message.setDuedate(dueDate);
       message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
 
@@ -133,8 +129,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     insert(timer);
 
-    ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
-    if (engineConfiguration.isAsyncExecutorEnabled() == false && timer.getDuedate().getTime() <= (engineConfiguration.getClock().getCurrentTime().getTime())) {
+    if (getProcessEngineConfiguration().isAsyncExecutorEnabled() == false && timer.getDuedate().getTime() <= (getClock().getCurrentTime().getTime())) {
 
       hintJobExecutor(timer);
     }
@@ -142,32 +137,29 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
   @Override
   public void retryAsyncJob(JobEntity job) {
-    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
     try {
     	
     	// If a job has to be retried, we wait for a certain amount of time,
     	// otherwise the job will be continuously be retried without delay (and thus seriously stressing the database).
-	    Thread.sleep(asyncExecutor.getRetryWaitTimeInMillis());
+	    Thread.sleep(getAsyncExecutor().getRetryWaitTimeInMillis());
 	    
     } catch (InterruptedException e) {
     }
-    asyncExecutor.executeAsyncJob(job);
+    getAsyncExecutor().executeAsyncJob(job);
   }
 
   protected void hintAsyncExecutor(JobEntity job) {
-    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
 
     // notify job executor:
-    TransactionListener transactionListener = new AsyncJobAddedNotification(job, asyncExecutor);
-    Context.getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    TransactionListener transactionListener = new AsyncJobAddedNotification(job, getAsyncExecutor());
+    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
 
   protected void hintJobExecutor(JobEntity job) {
-    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
 
     // notify job executor:
-    TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
-    Context.getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    TransactionListener transactionListener = new JobAddedNotification(getJobExecutor());
+    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
 
   @Override
@@ -178,24 +170,21 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
-    Date now = processEngineConfig.getClock().getCurrentTime();
+    Date now = getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextTimerJobsToExecute(Page page) {
-    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
-    Date now = processEngineConfig.getClock().getCurrentTime();
+    Date now = getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
-    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
-    Date now = processEngineConfig.getClock().getCurrentTime();
+    Date now = getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
   }
 
@@ -221,7 +210,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("pid", processInstanceId);
-    params.put("now", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    params.put("now", getClock().getCurrentTime());
     return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
   }
 
@@ -309,13 +298,13 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     // remove link to execution
     if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+      ExecutionEntity execution = getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
       execution.getJobs().remove(this);
     }
     
     // Send event
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
     }
   }
   
@@ -331,16 +320,15 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
 
   protected void executeJobHandler(JobEntity jobEntity) {
-    CommandContext commandContext = Context.getCommandContext();
     
     ExecutionEntity execution = null;
     if (jobEntity.getExecutionId() != null) {
-      execution = commandContext.getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+      execution = getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
     }
 
-    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
+    Map<String, JobHandler> jobHandlers = getProcessEngineConfiguration().getJobHandlers();
     JobHandler jobHandler = jobHandlers.get(jobEntity.getJobHandlerType());
-    jobHandler.execute(jobEntity, jobEntity.getJobHandlerConfiguration(), execution, commandContext);
+    jobHandler.execute(jobEntity, jobEntity.getJobHandlerConfiguration(), execution, getCommandContext());
   }
   
   protected void executeMessageJob(JobEntity jobEntity) {
@@ -350,10 +338,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   protected void executeTimerJob(TimerEntity timerEntity) {
 
-    CommandContext commandContext = Context.getCommandContext();
-    
     // set endDate if it was set to the definition
-    restoreExtraData(commandContext, timerEntity);
+    restoreExtraData(timerEntity);
 
     if (timerEntity.getDuedate() != null && !isValidTime(timerEntity, timerEntity.getDuedate())) {
       if (logger.isDebugEnabled()) {
@@ -380,13 +366,13 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
         if (newTimer != null && isValidTime(timerEntity, newTimer)) {
           TimerEntity te = new TimerEntity(timerEntity);
           te.setDuedate(newTimer);
-          Context.getCommandContext().getJobEntityManager().schedule(te);
+          getJobEntityManager().schedule(te);
         }
       }
     }
   }
   
-  protected void restoreExtraData(CommandContext commandContext, TimerEntity timerEntity) {
+  protected void restoreExtraData(TimerEntity timerEntity) {
     String activityId = timerEntity.getJobHandlerConfiguration();
 
     if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
@@ -395,15 +381,15 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
       String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(timerEntity.getJobHandlerConfiguration());
 
       if (endDateExpressionString != null) {
-        Expression endDateExpression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
+        Expression endDateExpression = getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
 
         String endDateString = null;
 
-        BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+        BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
 
         VariableScope executionEntity = null;
         if (timerEntity.getExecutionId() != null) {
-          executionEntity = commandContext.getExecutionEntityManager().findExecutionById(timerEntity.getExecutionId());
+          executionEntity = getExecutionEntityManager().findExecutionById(timerEntity.getExecutionId());
         }
         
         if (executionEntity == null) {
@@ -502,12 +488,12 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   protected boolean isValidTime(TimerEntity timerEntity, Date newTimerDate) {
-    BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
     return businessCalendar.validateDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations(), timerEntity.getEndDate(), newTimerDate);
   }
   
   protected Date calculateNextTimer(TimerEntity timerEntity) {
-    BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
     return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
   }
 

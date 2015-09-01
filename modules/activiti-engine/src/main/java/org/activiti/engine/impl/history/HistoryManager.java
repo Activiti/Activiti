@@ -13,7 +13,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.IdentityLink;
 
-public interface HistoryManager extends Session {
+public interface HistoryManager {
 
   /**
    * @return true, if the configured history-level is equal to OR set to a higher value than the given level.

@@ -20,9 +20,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.Model;
 
 /**
@@ -38,21 +35,19 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
 
   @Override
   public void insert(ModelEntity model) {
-    ((ModelEntity) model).setCreateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    ((ModelEntity) model).setLastUpdateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    ((ModelEntity) model).setCreateTime(getClock().getCurrentTime());
+    ((ModelEntity) model).setLastUpdateTime(getClock().getCurrentTime());
     
     super.insert(model);
   }
 
   @Override
   public void updateModel(ModelEntity updatedModel) {
-    CommandContext commandContext = Context.getCommandContext();
-    updatedModel.setLastUpdateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update(updatedModel);
+    updatedModel.setLastUpdateTime(getClock().getCurrentTime());
+    getDbSqlSession().update(updatedModel);
 
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
     }
   }
   

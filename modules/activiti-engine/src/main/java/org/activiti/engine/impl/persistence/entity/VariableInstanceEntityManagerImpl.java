@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 import org.activiti.engine.impl.variable.VariableType;
 
@@ -116,8 +115,8 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     }
     entity.setDeleted(true);
 
-    if (fireDeleteEvent && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+    if (fireDeleteEvent && getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
     }
 
   }

@@ -127,7 +127,9 @@ import org.activiti.engine.impl.form.FormTypes;
 import org.activiti.engine.impl.form.JuelFormEngine;
 import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
+import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.history.parse.FlowNodeHistoryParseHandler;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
@@ -150,7 +152,6 @@ import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandle
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
-import org.activiti.engine.impl.persistence.DefaultHistoryManagerSessionFactory;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
 import org.activiti.engine.impl.persistence.cache.PersistentObjectCacheImpl;
@@ -204,6 +205,7 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
+import org.activiti.engine.impl.persistence.entity.TableDataManagerImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
@@ -275,8 +277,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/db/mapping/mappings.xml";
 
-  // SERVICES
-  // /////////////////////////////////////////////////////////////////
+  // SERVICES /////////////////////////////////////////////////////////////////
 
   protected RepositoryService repositoryService = new RepositoryServiceImpl();
   protected RuntimeService runtimeService = new RuntimeServiceImpl();
@@ -286,8 +287,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
 
-  // COMMAND EXECUTORS
-  // ////////////////////////////////////////////////////////
+  // COMMAND EXECUTORS ////////////////////////////////////////////////////////
 
   protected CommandConfig defaultCommandConfig;
   protected CommandConfig schemaCommandConfig;
@@ -304,23 +304,53 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutor;
+  
+  // ENTITY MANAGERS ///////////////////////////////////////////////////////////
+  
+  protected AttachmentEntityManager attachmentEntityManager;
+  protected ByteArrayEntityManager byteArrayEntityManager;
+  protected CommentEntityManager commentEntityManager;
+  protected DeploymentEntityManager deploymentEntityManager;
+  protected EventLogEntryEntityManager eventLogEntryEntityManager;
+  protected EventSubscriptionEntityManager eventSubscriptionEntityManager;
+  protected ExecutionEntityManager executionEntityManager;
+  protected GroupEntityManager groupEntityManager;
+  protected HistoricActivityInstanceEntityManager historicActivityInstanceEntityManager;
+  protected HistoricDetailEntityManager historicDetailEntityManager;
+  protected HistoricIdentityLinkEntityManager historicIdentityLinkEntityManager;
+  protected HistoricProcessInstanceEntityManager historicProcessInstanceEntityManager;
+  protected HistoricTaskInstanceEntityManager historicTaskInstanceEntityManager;
+  protected HistoricVariableInstanceEntityManager historicVariableInstanceEntityManager;
+  protected IdentityInfoEntityManager identityInfoEntityManager;
+  protected IdentityLinkEntityManager identityLinkEntityManager;
+  protected JobEntityManager jobEntityManager;
+  protected MembershipEntityManager membershipEntityManager;
+  protected ModelEntityManager modelEntityManager;
+  protected ProcessDefinitionEntityManager processDefinitionEntityManager;
+  protected PropertyEntityManager propertyEntityManager;
+  protected ResourceEntityManager resourceEntityManager;
+  protected TableDataManager tableDataManager;
+  protected TaskEntityManager taskEntityManager;
+  protected UserEntityManager userEntityManager;
+  protected VariableInstanceEntityManager variableInstanceEntityManager;
+  
+  // History Manager
+  
+  protected HistoryManager historyManager;
 
-  // SESSION FACTORIES
-  // ////////////////////////////////////////////////////////
+  // SESSION FACTORIES /////////////////////////////////////////////////////////
 
   protected List<SessionFactory> customSessionFactories;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected Map<Class<?>, SessionFactory> sessionFactories;
 
-  // Configurators
-  // ////////////////////////////////////////////////////////////
+  // CONFIGURATORS ////////////////////////////////////////////////////////////
 
   protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
   protected List<ProcessEngineConfigurator> configurators; // The injected configurators
   protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
 
-  // DEPLOYERS
-  // ////////////////////////////////////////////////////////////////
+  // DEPLOYERS //////////////////////////////////////////////////////////////////
 
   protected BpmnDeployer bpmnDeployer;
   protected BpmnParser bpmnParser;
@@ -335,14 +365,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int knowledgeBaseCacheLimit = -1;
   protected DeploymentCache<Object> knowledgeBaseCache;
 
-  // JOB EXECUTOR
-  // /////////////////////////////////////////////////////////////
+  // JOB EXECUTOR /////////////////////////////////////////////////////////////
 
   protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
 
-  // MYBATIS SQL SESSION FACTORY
-  // //////////////////////////////////////////////
+  // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
 
   protected SqlSessionFactory sqlSessionFactory;
   protected TransactionFactory transactionFactory;
@@ -350,15 +378,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Set<Class<?>> customMybatisMappers;
   protected Set<String> customMybatisXMLMappers;
 
-  // ID GENERATOR
-  // /////////////////////////////////////////////////////////////
+  // ID GENERATOR ///////////////////////////////////////////////////////////////
 
   protected IdGenerator idGenerator;
   protected DataSource idGeneratorDataSource;
   protected String idGeneratorDataSourceJndiName;
 
-  // BPMN PARSER
-  // //////////////////////////////////////////////////////////////
+  // BPMN PARSER //////////////////////////////////////////////////////////////
 
   protected List<BpmnParseHandler> preBpmnParseHandlers;
   protected List<BpmnParseHandler> postBpmnParseHandlers;
@@ -371,8 +397,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected ProcessValidator processValidator;
 
-  // OTHER
-  // ////////////////////////////////////////////////////////////////////
+  // OTHER //////////////////////////////////////////////////////////////////////
 
   protected List<FormEngine> customFormEngines;
   protected Map<String, FormEngine> formEngines;
@@ -516,6 +541,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initTransactionFactory();
     initSqlSessionFactory();
     initSessionFactories();
+    initEntityManagers();
+    initHistoryManager();
     initJpa();
     initDelegateInterceptor();
     initEventHandlers();
@@ -861,9 +888,45 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setCustomMybatisXMLMappers(Set<String> customMybatisXMLMappers) {
     this.customMybatisXMLMappers = customMybatisXMLMappers;
   }
+  
+  // Entity managers //////////////////////////////////////////////////////////
+  
+  protected void initEntityManagers() {
+    attachmentEntityManager = new AttachmentEntityManagerImpl();
+    byteArrayEntityManager = new ByteArrayEntityManagerImpl();
+    commentEntityManager = new CommentEntityManagerImpl();
+    deploymentEntityManager = new DeploymentEntityManagerImpl();
+    eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl();
+    eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl();
+    executionEntityManager = new ExecutionEntityManagerImpl();
+    groupEntityManager = new GroupEntityManagerImpl();
+    historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl();
+    historicDetailEntityManager = new HistoricDetailEntityManagerImpl();
+    historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl();
+    historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl();
+    historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl();
+    historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl();
+    identityInfoEntityManager = new IdentityInfoEntityManagerImpl();
+    identityLinkEntityManager = new IdentityLinkEntityManagerImpl();
+    jobEntityManager = new JobEntityManagerImpl();
+    membershipEntityManager = new MembershipEntityManagerImpl();
+    modelEntityManager = new ModelEntityManagerImpl();
+    processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl();
+    propertyEntityManager = new PropertyEntityManagerImpl();
+    resourceEntityManager = new ResourceEntityManagerImpl();
+    tableDataManager = new TableDataManagerImpl();
+    taskEntityManager = new TaskEntityManagerImpl();
+    userEntityManager = new UserEntityManagerImpl();
+    variableInstanceEntityManager = new VariableInstanceEntityManagerImpl();
+  }
+  
+  // History manager ///////////////////////////////////////////////////////////
+  
+  protected void initHistoryManager() {
+    historyManager = new DefaultHistoryManager(historyLevel);
+  }
 
-  // session factories
-  // ////////////////////////////////////////////////////////
+  // session factories ////////////////////////////////////////////////////////
 
   protected void initSessionFactories() {
     if (sessionFactories == null) {
@@ -886,36 +949,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(dbSqlSessionFactory);
 
       addSessionFactory(new GenericManagerFactory(PersistentObjectCache.class, PersistentObjectCacheImpl.class));
-      
-      addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class, AttachmentEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(CommentEntityManager.class, CommentEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(DeploymentEntityManager.class, DeploymentEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(ModelEntityManager.class, ModelEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(ExecutionEntityManager.class, ExecutionEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceEntityManager.class, HistoricActivityInstanceEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(HistoricDetailEntityManager.class, HistoricDetailEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class, HistoricProcessInstanceEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class, HistoricVariableInstanceEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class, HistoricTaskInstanceEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(HistoricIdentityLinkEntityManager.class, HistoricIdentityLinkEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class, IdentityInfoEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class, IdentityLinkEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(JobEntityManager.class, JobEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(ProcessDefinitionEntityManager.class, ProcessDefinitionEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(PropertyEntityManager.class, PropertyEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(ResourceEntityManager.class, ResourceEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class, ByteArrayEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(TaskEntityManager.class, TaskEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class, VariableInstanceEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class, EventSubscriptionEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class, EventLogEntryEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(UserEntityManager.class, UserEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(GroupEntityManager.class, GroupEntityManagerImpl.class));
-      addSessionFactory(new GenericManagerFactory(MembershipEntityManager.class, MembershipEntityManagerImpl.class));
-      
-      addSessionFactory(new GenericManagerFactory(TableDataManager.class));
-
-      addSessionFactory(new DefaultHistoryManagerSessionFactory());
     }
 
     if (customSessionFactories != null) {
@@ -2217,6 +2250,222 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
   }
   
+  public AttachmentEntityManager getAttachmentEntityManager() {
+    return attachmentEntityManager;
+  }
+
+  public void setAttachmentEntityManager(AttachmentEntityManager attachmentEntityManager) {
+    this.attachmentEntityManager = attachmentEntityManager;
+  }
+
+  public ByteArrayEntityManager getByteArrayEntityManager() {
+    return byteArrayEntityManager;
+  }
+
+  public void setByteArrayEntityManager(ByteArrayEntityManager byteArrayEntityManager) {
+    this.byteArrayEntityManager = byteArrayEntityManager;
+  }
+
+  public CommentEntityManager getCommentEntityManager() {
+    return commentEntityManager;
+  }
+
+  public void setCommentEntityManager(CommentEntityManager commentEntityManager) {
+    this.commentEntityManager = commentEntityManager;
+  }
+
+  public DeploymentEntityManager getDeploymentEntityManager() {
+    return deploymentEntityManager;
+  }
+
+  public void setDeploymentEntityManager(DeploymentEntityManager deploymentEntityManager) {
+    this.deploymentEntityManager = deploymentEntityManager;
+  }
+
+  public EventLogEntryEntityManager getEventLogEntryEntityManager() {
+    return eventLogEntryEntityManager;
+  }
+
+  public void setEventLogEntryEntityManager(EventLogEntryEntityManager eventLogEntryEntityManager) {
+    this.eventLogEntryEntityManager = eventLogEntryEntityManager;
+  }
+
+  public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
+    return eventSubscriptionEntityManager;
+  }
+
+  public void setEventSubscriptionEntityManager(EventSubscriptionEntityManager eventSubscriptionEntityManager) {
+    this.eventSubscriptionEntityManager = eventSubscriptionEntityManager;
+  }
+
+  public ExecutionEntityManager getExecutionEntityManager() {
+    return executionEntityManager;
+  }
+
+  public void setExecutionEntityManager(ExecutionEntityManager executionEntityManager) {
+    this.executionEntityManager = executionEntityManager;
+  }
+
+  public GroupEntityManager getGroupEntityManager() {
+    return groupEntityManager;
+  }
+
+  public void setGroupEntityManager(GroupEntityManager groupEntityManager) {
+    this.groupEntityManager = groupEntityManager;
+  }
+
+  public HistoricActivityInstanceEntityManager getHistoricActivityInstanceEntityManager() {
+    return historicActivityInstanceEntityManager;
+  }
+
+  public void setHistoricActivityInstanceEntityManager(HistoricActivityInstanceEntityManager historicActivityInstanceEntityManager) {
+    this.historicActivityInstanceEntityManager = historicActivityInstanceEntityManager;
+  }
+
+  public HistoricDetailEntityManager getHistoricDetailEntityManager() {
+    return historicDetailEntityManager;
+  }
+
+  public void setHistoricDetailEntityManager(HistoricDetailEntityManager historicDetailEntityManager) {
+    this.historicDetailEntityManager = historicDetailEntityManager;
+  }
+
+  public HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
+    return historicIdentityLinkEntityManager;
+  }
+
+  public void setHistoricIdentityLinkEntityManager(HistoricIdentityLinkEntityManager historicIdentityLinkEntityManager) {
+    this.historicIdentityLinkEntityManager = historicIdentityLinkEntityManager;
+  }
+
+  public HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {
+    return historicProcessInstanceEntityManager;
+  }
+
+  public void setHistoricProcessInstanceEntityManager(HistoricProcessInstanceEntityManager historicProcessInstanceEntityManager) {
+    this.historicProcessInstanceEntityManager = historicProcessInstanceEntityManager;
+  }
+
+  public HistoricTaskInstanceEntityManager getHistoricTaskInstanceEntityManager() {
+    return historicTaskInstanceEntityManager;
+  }
+
+  public void setHistoricTaskInstanceEntityManager(HistoricTaskInstanceEntityManager historicTaskInstanceEntityManager) {
+    this.historicTaskInstanceEntityManager = historicTaskInstanceEntityManager;
+  }
+
+  public HistoricVariableInstanceEntityManager getHistoricVariableInstanceEntityManager() {
+    return historicVariableInstanceEntityManager;
+  }
+
+  public void setHistoricVariableInstanceEntityManager(HistoricVariableInstanceEntityManager historicVariableInstanceEntityManager) {
+    this.historicVariableInstanceEntityManager = historicVariableInstanceEntityManager;
+  }
+
+  public IdentityInfoEntityManager getIdentityInfoEntityManager() {
+    return identityInfoEntityManager;
+  }
+
+  public void setIdentityInfoEntityManager(IdentityInfoEntityManager identityInfoEntityManager) {
+    this.identityInfoEntityManager = identityInfoEntityManager;
+  }
+
+  public IdentityLinkEntityManager getIdentityLinkEntityManager() {
+    return identityLinkEntityManager;
+  }
+
+  public void setIdentityLinkEntityManager(IdentityLinkEntityManager identityLinkEntityManager) {
+    this.identityLinkEntityManager = identityLinkEntityManager;
+  }
+
+  public JobEntityManager getJobEntityManager() {
+    return jobEntityManager;
+  }
+
+  public void setJobEntityManager(JobEntityManager jobEntityManager) {
+    this.jobEntityManager = jobEntityManager;
+  }
+
+  public MembershipEntityManager getMembershipEntityManager() {
+    return membershipEntityManager;
+  }
+
+  public void setMembershipEntityManager(MembershipEntityManager membershipEntityManager) {
+    this.membershipEntityManager = membershipEntityManager;
+  }
+
+  public ModelEntityManager getModelEntityManager() {
+    return modelEntityManager;
+  }
+
+  public void setModelEntityManager(ModelEntityManager modelEntityManager) {
+    this.modelEntityManager = modelEntityManager;
+  }
+
+  public ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
+    return processDefinitionEntityManager;
+  }
+
+  public void setProcessDefinitionEntityManager(ProcessDefinitionEntityManager processDefinitionEntityManager) {
+    this.processDefinitionEntityManager = processDefinitionEntityManager;
+  }
+
+  public PropertyEntityManager getPropertyEntityManager() {
+    return propertyEntityManager;
+  }
+
+  public void setPropertyEntityManager(PropertyEntityManager propertyEntityManager) {
+    this.propertyEntityManager = propertyEntityManager;
+  }
+
+  public ResourceEntityManager getResourceEntityManager() {
+    return resourceEntityManager;
+  }
+
+  public void setResourceEntityManager(ResourceEntityManager resourceEntityManager) {
+    this.resourceEntityManager = resourceEntityManager;
+  }
+
+  public TaskEntityManager getTaskEntityManager() {
+    return taskEntityManager;
+  }
+
+  public void setTaskEntityManager(TaskEntityManager taskEntityManager) {
+    this.taskEntityManager = taskEntityManager;
+  }
+
+  public UserEntityManager getUserEntityManager() {
+    return userEntityManager;
+  }
+
+  public void setUserEntityManager(UserEntityManager userEntityManager) {
+    this.userEntityManager = userEntityManager;
+  }
+
+  public VariableInstanceEntityManager getVariableInstanceEntityManager() {
+    return variableInstanceEntityManager;
+  }
+
+  public void setVariableInstanceEntityManager(VariableInstanceEntityManager variableInstanceEntityManager) {
+    this.variableInstanceEntityManager = variableInstanceEntityManager;
+  }
+  
+  public TableDataManager getTableDataManager() {
+    return tableDataManager;
+  }
+
+  public void setTableDataManager(TableDataManager tableDataManager) {
+    this.tableDataManager = tableDataManager;
+  }
+
+  public HistoryManager getHistoryManager() {
+    return historyManager;
+  }
+
+  public void setHistoryManager(HistoryManager historyManager) {
+    this.historyManager = historyManager;
+  }
+
   public ProcessEngineConfigurationImpl setClock(Clock clock) {
     if (this.clock == null) {
       this.clock = clock;
