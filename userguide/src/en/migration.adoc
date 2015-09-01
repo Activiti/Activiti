@@ -92,6 +92,13 @@ Also, for consistency:
 * The GroupIdentityManager interface has been renamed to GroupEntityManager
 
 
+=== PersistentObject renamed to Entity
+
+The class _org.activiti.engine.impl.db.PersistentObject_ has been renamed to _Entity_ to be consistent with all the other classes (EntityManagers and such)..
+
+All related classes that used the term 'persistent object' have been refactored to 'entity' too.
+
+
 === Future breaking changes
 
 The following changes will most likely be applied in a next beta release of Activiti v6:
