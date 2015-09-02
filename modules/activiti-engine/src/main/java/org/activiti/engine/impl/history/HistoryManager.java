@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -83,7 +82,7 @@ public interface HistoryManager {
 
   /**
    * record task instance claim time, if audit history is enabled
-   * 
+   *
    * @param taskId
    */
 
@@ -178,12 +177,12 @@ public interface HistoryManager {
    * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, if history is enabled.
    */
   void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create);
-  
+
   /**
    * Creates a new comment to indicate a new user {@link IdentityLink} has been created or deleted, if history is enabled.
    */
   void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create);
-  
+
   /**
    * Creates a new comment to indicate a new group {@link IdentityLink} has been created or deleted, if history is enabled.
    */
@@ -193,7 +192,7 @@ public interface HistoryManager {
    * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, if history is enabled.
    */
   void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId);
-  
+
   /**
    * Creates a new comment to indicate a new user {@link IdentityLink} has been created or deleted, if history is enabled.
    */
