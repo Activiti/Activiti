@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>6.0.0-SNAPSHOT</version>
+  <version>6.0.0.Beta2-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
@@ -767,6 +767,8 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti5-engine</module>
         <module>modules/activiti5-compatibility</module>
+        <module>modules/activiti5-spring</module>
+        <module>modules/activiti5-spring-compatibility</module>
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
@@ -908,6 +910,8 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti5-engine</module>
         <module>modules/activiti5-compatibility</module>
+        <module>modules/activiti5-spring</module>
+        <module>modules/activiti5-spring-compatibility</module>
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>
@@ -972,6 +976,9 @@
     </profile>
     <profile>
         <id>java8</id>
+        <activation>
+            <jdk>1.8</jdk>                
+        </activation>
         <build>
             <plugins>
               <plugin>

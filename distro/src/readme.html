@@ -34,11 +34,171 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
-<h3>Release Notes - Activiti - 6.0.0-SNAPSHOT</h3>
+<h3>Release Notes - Activiti - 6.0.0.Beta1</h3>
 
+<p>First public release of the new major version of Activiti. We are looking for feedback from the community, particularly to test the Activiti 5 compatibility.
+We removed the Vaadin based Activiti Explorer from this release and it's replaced with a fully new Angular UI application.
+For more details about the Activiti 5 to 6 migration you can read the migration.html file in the docs/userguide folder.</p>
+
+<h3>Release Notes - Activiti - Version 5.18.0</h3>
+
+<h4>Highlights</h4>
+<ul>
+    <li>We introduced bulk inserts. For more information you can read more about it in this blog post <a href="http://www.jorambarrez.be/blog/2015/07/20/the-activiti-performance-showdown-2015/">http://www.jorambarrez.be/blog/2015/07/20/the-activiti-performance-showdown-2015/</a></li>
+    <li>We enhanced the OR query support, it's now possible to use multiple OR parts in one query</li>
+    <li>Improvements to the async executor we introduced in Activiti 5.17.0. There were some cases that could result in deadlock exceptions and that's resolved in this version.</li>
+    <li>Improvements to the Activiti Modeler with terminate end events, cancel event and transaction support, and more intermediate catch and throw event support. 
+    Also, improvements to interrupting and non-interrupting solid and dashed line for boundary events.</li>
+    <li>Upgraded Spring dependency version to 4.1. Activiti is still working with Spring 4.0.x and 3.x as well</li>
+    <li>Various bug fixes</li>
+</ul>
+
+<h4>Known issues</h4>
+<ul>
+	<li>There's a known issue with Chrome and the Activiti Explorer / Vaadin 6. You can get a blank screen in the details part of the Explorer.
+	This is a known issue for Vaadin 6 and Chrome 43 and 44. There are bug fixes under way with Chrome 45, so that might fix it. Other browsers like Firefox work fine.</li>
+</ul>
+  
 <h4>Backwards incompatible changes</h4>
 <ul>
-    <li><a href="https://activiti.atlassian.net/browse/ACT-2186">https://activiti.atlassian.net/browse/ACT-2186</a> : When variables are removed, the historic variable entry is also removed. In earlier versions, the value of the historic variable was set to <i>null</i>.</li>
+	<li><a href="https://activiti.atlassian.net/browse/ACT-2186">https://activiti.atlassian.net/browse/ACT-2186</a> : When variables are removed, the historic variable entry is also removed. In earlier versions, the value of the historic variable was set to <i>null</i>.</li>
+	<li><a href="https://activiti.atlassian.net/browse/ACT-4036">https://activiti.atlassian.net/browse/ACT-4036</a> : when using an execution listener for the <i>start</i> event, in combination with multi instance, the behavior is changed. In 5.18, there will be one extra invocation of the execution listener (when entering the multi instance, without the loopCounter variable being said). For more information, check the section <i>Multi instance and execution listeners</i> in the user guide.</li>
+</ul>
+
+<h4>Bug fixes and various smaller improvements</h4>
+
+<p>Check out the <a href="https://activiti.atlassian.net/jira/secure/ReleaseNote.jspa?projectId=10000&version=10016">Release notes</a> for more details</p>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2100'>ACT-2100</a>] -         Compensation event endTime is not logged
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2173'>ACT-2173</a>] -         Add support of import relative to the BPMN description
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2175'>ACT-2175</a>] -         NPE when retrieving a local variable with a null value multiple times
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2176'>ACT-2176</a>] -         SkipExpression support is not completing skipped user tasks
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2179'>ACT-2179</a>] -         unable to use Date process variable in timeDuration
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2182'>ACT-2182</a>] -         Historic process instance query is missing columns for MS SQL
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2185'>ACT-2185</a>] -         Unexpected behavior calling a suspended process as a called activity
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2186'>ACT-2186</a>] -         Historic variable is not removed when variable is removed
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2188'>ACT-2188</a>] -         New Modeler - Missing &quot;cancelActivity&quot; in the BoundaryMessageEvent
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2194'>ACT-2194</a>] -         NPE when using parallel multi-instance on embedded subprocess
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2195'>ACT-2195</a>] -         Int type for data object not working in Activiti Designer
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2198'>ACT-2198</a>] -         Exporting/importing model changes name of Message
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2199'>ACT-2199</a>] -         Boundary Signal Event ignores &quot;cancel activity&quot; flag
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2203'>ACT-2203</a>] -         Fix potential null pointer deferences and other
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2210'>ACT-2210</a>] -         Add support for terminate event in Modeler
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2217'>ACT-2217</a>] -         JPAEntityScanner / EntityMetaData cannot deal with Id methods defined in generic super classes
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2219'>ACT-2219</a>] -         Wrong redirected URI when converting a deployed process to editable model
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2220'>ACT-2220</a>] -         An enum type form property in model designed in Activiti modeler does not show during execution
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2221'>ACT-2221</a>] -         Admin completed instances &gt; show variable id instead of name
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2231'>ACT-2231</a>] -         type ENUM not supported in Activti 5.17
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2232'>ACT-2232</a>] -         Activiti REST not support Groovy script
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2236'>ACT-2236</a>] -         Import of process model corrupts boundary events
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-3999'>ACT-3999</a>] -         ClassCastException when importing a WSDL
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4001'>ACT-4001</a>] -         CxfWsdlImporter does not import correctly inherited types
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4011'>ACT-4011</a>] -         Duplicate event when deleting a candidate group
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4012'>ACT-4012</a>] -         IllegalArgumentException when invoking a service task requiring a date
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4021'>ACT-4021</a>] -         Asynchronous tasks on model created via the AngularJS modeler are handled as synchronous ones
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4022'>ACT-4022</a>] -         TimerStartEvent with Time Cycle fires erratically
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4025'>ACT-4025</a>] -         Problem import / export task listeners in Alfresco Modeler
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4026'>ACT-4026</a>] -         DB2/LINUXPPC64 not supported by the Activiti workflow engine
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4032'>ACT-4032</a>] -         Activiti Explorer fails to render this process when uploaded
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4034'>ACT-4034</a>] -         ProcessDefinitionQuery doesn&#39;t account for tenantId
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4035'>ACT-4035</a>] -         async executor with all jobs set to exclusive executes in parallel
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4036'>ACT-4036</a>] -         Multi instance: loopCounter is null in the first iteration
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4038'>ACT-4038</a>] -         Database product name support for DB2 for z/OS
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4041'>ACT-4041</a>] -         formKey return value is null when using taskQuery with includeProcessVariables()
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4042'>ACT-4042</a>] -         BulkInsert fails on DB2 (zos)
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2066'>ACT-2066</a>] -         Add index on ACT_HI_TASKINST(PROC_INST_ID_)
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2135'>ACT-2135</a>] -         Limit copied camel properties to activiti
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2189'>ACT-2189</a>] -         Extension elements are not parsed from Lane definition
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2200'>ACT-2200</a>] -         &quot;call-activity&quot; element click to related diagram in Eclipse activiti designer.(solved)
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2233'>ACT-2233</a>] -         Unable to override DbSqlSessionFactory via spring config
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4013'>ACT-4013</a>] -         Support for TerminateEndEvent in AngularJS Modeler
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4014'>ACT-4014</a>] -         Handle the bulk insert queries at db level
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-1662'>ACT-1662</a>] -         New methods processDefinitionIds(Set&lt;String&gt; processDefinitionIds) and processDefinitionKeys(Set&lt;String&gt; processDefinitionKeys)
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-1832'>ACT-1832</a>] -         Provide full support for TerminateEndEvent
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2008'>ACT-2008</a>] -         Support Attachments in MailActivityBehavior
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2196'>ACT-2196</a>] -         Query Tasks by multiple process instance ids
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2205'>ACT-2205</a>] -         Query historical processes by multiple process definition keys
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4004'>ACT-4004</a>] -         Add support for conditional events
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4005'>ACT-4005</a>] -         Add support for compensation boundary events, compensation intermediate throwing Events and compensation handlers
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4029'>ACT-4029</a>] -         Allow tasks, historic task instances and executions to be queried by a list of process definition keys
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4033'>ACT-4033</a>] -         Add execution id to Camel exchange for calling specific instance of a task
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4000'>ACT-4000</a>] -         HistoricVariableInstanceQuery does not support filtering by executionId
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4017'>ACT-4017</a>] -         Display BPMNs correctly when coordinates are negative
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4028'>ACT-4028</a>] -         Issue with DrawMultilineText method
+</li>
 </ul>
 
 <h3>Release Notes - Activiti - Version 5.17.0</h3>

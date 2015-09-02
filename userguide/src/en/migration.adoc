@@ -1,5 +1,5 @@
 = Activiti Migraton Guide : Activiti v5 to Activiti v6
-v  6.0.0-SNAPSHOT
+v  6.0.0.Beta2-SNAPSHOT
 :doctype: book
 :toc: left
 :toclevels: 5
@@ -58,6 +58,12 @@ ProcessDefinitionUtil.getBpmnModel(String processDefinitionId);
 ProcessDefinitionUtil.getProcess(String processDefinitionId);
 ----
 
+=== ActivityExecution is replaced by DelegateExecution
+
+We removed ActivityExecution and replaced it where used with the DelegateExecution class.
+
+All methods from the ActivityExecution class are copied to the DelegateExecution class. 
+
 === Signaling an execution
 
 In version 5, there always was confusion about _signaling an execution_, when using for example _runtimeService.signal(executionI);_. As a _signal_ is a valid BPMN 2.0 concept and feature, it conflicts conceptually.
@@ -74,7 +80,7 @@ In version 5, the delegate classes like _JavaDelegate_ and _ActivityBevior_ had 
 
 _org.activiti.engine.impl.pvm.delegate.ActivityBehavior_ has changed package and lives now in _org.activiti.engine.impl.delegate_.
 
-The following methods have been removed from _ActivityExecution_:
+The following methods have been removed from _DelegateExecution_:
 
 * end()
 * createdExecution()
@@ -103,7 +109,6 @@ All related classes that used the term 'persistent object' have been refactored 
 
 The following changes will most likely be applied in a next beta release of Activiti v6:
 
-* _org.activiti.engine.impl.delegate.ActivityExecution_ (which is passed for example in ActivityBehaviour) will be removed and replaced by _org.activiti.engine.delegate.DelegateExecution_. The original idea was that ActivityBehavior and JavaDelegate would have different use cases and thus the need for different interfaces, but practice has shown that this does not matter.
 * The entity cache that is created and used during the execution of a command will be moved up the hierarchy, to be at the same level as the entity managers.
 * The persistence operations will be moved to a separate interface out of the EntityManager classes to allow pluggability.
 
@@ -134,3 +139,16 @@ repositoryService.createDeployment()
       .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
       .deploy();
 ----
+
+If you are using the Activiti Spring module additional configuration is needed if you want Activiti 5 compatibility:
+
+----
+<property name="activiti5CompatibilityEnabled" value="true" />
+<property name="activiti5CompatibilityHandlerFactory" ref="activiti5CompabilityFactory" />
+
+....
+
+<bean id="activiti5CompabilityFactory" class="org.activiti.compatibility.spring.SpringActiviti5CompatibilityHandlerFactory" />
+----
+
+*and* add the *activiti5-spring* and *activiti5-spring-compatibility* jars to your classpath (manually or through a dependency mechanism like Maven)..
