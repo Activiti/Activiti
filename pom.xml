@@ -972,9 +972,6 @@
     </profile>
     <profile>
         <id>java8</id>
-        <activation>
-            <jdk>1.8</jdk>                
-        </activation>
         <build>
             <plugins>
               <plugin>
