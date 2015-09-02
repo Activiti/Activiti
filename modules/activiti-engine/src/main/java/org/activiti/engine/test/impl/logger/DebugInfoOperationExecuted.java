@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,21 +58,22 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
   }
 
   protected void printOperationInfo(Logger logger) {
-    StringBuilder strb = new StringBuilder();
+    StringBuilder strb = new StringBuilder(35);
 
     // Timing info
-    strb.append("[" + dateFormat.format(new Date(getPreExecutionTime())) + " - " + dateFormat.format(new Date(getPostExecutionTime())) + " (" + (getPostExecutionTime() - getPreExecutionTime())
-        + "ms)]");
+    strb.append("[").append(dateFormat.format(new Date(getPreExecutionTime()))).append(" - ")
+            .append(dateFormat.format(new Date(getPostExecutionTime()))).append(" (")
+            .append(getPostExecutionTime() - getPreExecutionTime()).append("ms)]");
 
     // Operation info
-    strb.append(" " + getOperation().getClass().getSimpleName() + " ");
+    strb.append(" ").append(getOperation().getClass().getSimpleName()).append(" ");
 
     // Execution info
     if (getExecutionId() != null) {
-      strb.append("with execution " + getExecutionId());
+      strb.append("with execution ").append(getExecutionId());
 
       if (getFlowElementId() != null) {
-        strb.append(" at flow element " + getFlowElementId() + " (" + getFlowElementClass().getSimpleName() + ")");
+        strb.append(" at flow element ").append(getFlowElementId()).append(" (").append(getFlowElementClass().getSimpleName()).append(")");
       }
     }
 
