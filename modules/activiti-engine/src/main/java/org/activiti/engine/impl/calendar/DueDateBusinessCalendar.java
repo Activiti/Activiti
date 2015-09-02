@@ -15,7 +15,6 @@ package org.activiti.engine.impl.calendar;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.runtime.ClockReader;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
