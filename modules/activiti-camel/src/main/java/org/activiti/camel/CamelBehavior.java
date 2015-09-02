@@ -37,7 +37,6 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
-import org.apache.camel.impl.DefaultExchange;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -148,7 +147,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   }
 
   protected Exchange createExchange(DelegateExecution activityExecution, ActivitiEndpoint endpoint) {
-    Exchange ex = new DefaultExchange(camelContextObj);
+    Exchange ex = endpoint.createExchange();
     ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
     ex.setProperty(ActivitiProducer.EXECUTION_ID_PROPERTY, activityExecution.getId());
     Map<String, Object> variables = activityExecution.getVariables();
