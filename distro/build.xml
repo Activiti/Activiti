@@ -86,6 +86,12 @@
 			<fileset dir="../modules/activiti5-engine/target">
 				<include name="activiti5-engine-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti5-spring-compatibility/target">
+				<include name="activiti5-spring-compatibility-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti5-spring/target">
+				<include name="activiti5-spring-*.jar" />
+			</fileset>
 			<fileset dir="../modules/activiti-bpmn-layout/target">
 				<include name="activiti-bpmn-layout-*.jar" />
 			</fileset>
