@@ -121,7 +121,7 @@
   </select>
   
   <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
-    select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
+    select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
   <!-- mysql specific -->

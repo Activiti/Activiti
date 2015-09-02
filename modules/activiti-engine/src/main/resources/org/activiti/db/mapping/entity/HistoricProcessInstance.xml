@@ -207,7 +207,7 @@
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
   
   <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
-    select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+    select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
   </select>
 
   <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
