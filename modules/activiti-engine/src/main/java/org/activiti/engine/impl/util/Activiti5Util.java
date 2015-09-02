@@ -30,7 +30,7 @@ public class Activiti5Util {
       return false;
     }
     
-    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId, false);
+    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
     if (processDefinitionEntity == null) {
       return false;
     }

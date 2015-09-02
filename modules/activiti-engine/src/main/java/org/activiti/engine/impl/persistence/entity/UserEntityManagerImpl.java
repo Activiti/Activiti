@@ -113,7 +113,12 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   }
 
   public Boolean checkPassword(String userId, String password) {
-    User user = findById(userId);
+    User user = null;
+    
+    if (userId != null) {
+      user = findById(userId);
+    }
+    
     if ((user != null) && (password != null) && (password.equals(user.getPassword()))) {
       return true;
     }

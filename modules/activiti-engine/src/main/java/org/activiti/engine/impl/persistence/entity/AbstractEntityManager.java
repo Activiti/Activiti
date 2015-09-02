@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -74,6 +75,10 @@ public class AbstractEntityManager<EntityImpl extends Entity> extends AbstractMa
 
   @Override
   public EntityImpl findById(String entityId) {
+    
+    if (entityId == null) {
+      throw new ActivitiIllegalArgumentException("Invalid entity id : null");
+    }
 
     // Cache
     EntityImpl cachedEntity = getEntityCache().findInCache(getManagedEntity(), entityId);

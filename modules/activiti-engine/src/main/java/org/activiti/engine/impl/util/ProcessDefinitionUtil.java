@@ -39,6 +39,7 @@ public class ProcessDefinitionUtil {
       }
       return null;
     } else {
+      // This will check the cache in the findDeployedProcessDefinitionById method
       return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
     }
   }
@@ -49,6 +50,8 @@ public class ProcessDefinitionUtil {
       
     } else {
       DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+      
+      // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
       ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
       return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getProcess();
     }
@@ -60,6 +63,8 @@ public class ProcessDefinitionUtil {
       
     } else {
       DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+      
+      // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
       ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
       return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getBpmnModel();
     }
