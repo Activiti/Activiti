@@ -36,7 +36,7 @@ public class GetIdentityLinksForProcessInstanceCmd implements Command<List<Ident
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public List<IdentityLink> execute(CommandContext commandContext) {
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);

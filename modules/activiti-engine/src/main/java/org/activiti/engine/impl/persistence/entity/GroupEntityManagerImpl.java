@@ -22,10 +22,6 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
@@ -34,48 +30,43 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> implements GroupEntityManager {
 
+  @Override
+  public Class<GroupEntity> getManagedEntity() {
+    return GroupEntity.class;
+  }
+  
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);
   }
 
-  public void insertGroup(Group group) {
-    getDbSqlSession().insert((PersistentObject) group);
-
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, group));
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, group));
-    }
-  }
-
   public void updateGroup(Group updatedGroup) {
-    CommandContext commandContext = Context.getCommandContext();
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update((GroupEntity) updatedGroup);
+    getDbSqlSession().update((GroupEntity) updatedGroup);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
     }
   }
-
-  public void deleteGroup(String groupId) {
+  
+  @Override
+  public void delete(String groupId) {
     GroupEntity group = getDbSqlSession().selectById(GroupEntity.class, groupId);
 
     if (group != null) {
-      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIPS_DELETED, groupId, null));
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIPS_DELETED, groupId, null));
       }
 
       getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
       getDbSqlSession().delete(group);
 
-      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, group));
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, group));
       }
     }
   }
 
   public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
+    return new GroupQueryImpl(getCommandExecutor());
   }
 
   @SuppressWarnings("unchecked")

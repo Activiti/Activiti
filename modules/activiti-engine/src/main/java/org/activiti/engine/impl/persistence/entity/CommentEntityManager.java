@@ -22,8 +22,6 @@ import org.activiti.engine.task.Event;
  */
 public interface CommentEntityManager extends EntityManager<CommentEntity> {
 
-  void insert(CommentEntity commentEntity);
-
   List<Comment> findCommentsByTaskId(String taskId);
 
   List<Comment> findCommentsByTaskIdAndType(String taskId, String type);
@@ -45,7 +43,5 @@ public interface CommentEntityManager extends EntityManager<CommentEntity> {
   Comment findComment(String commentId);
 
   Event findEvent(String commentId);
-
-  void delete(CommentEntity commentEntity);
 
 }

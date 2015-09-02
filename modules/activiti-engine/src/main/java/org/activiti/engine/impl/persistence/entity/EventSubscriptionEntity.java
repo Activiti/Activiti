@@ -19,13 +19,13 @@ import java.util.HashMap;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public abstract class EventSubscriptionEntity implements PersistentObject, HasRevision, Serializable {
+public abstract class EventSubscriptionEntity implements Entity, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -104,7 +104,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   
   public ExecutionEntity getExecution() {
     if (execution == null && executionId != null) {
-      execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+      execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
     }
     return execution;
   }

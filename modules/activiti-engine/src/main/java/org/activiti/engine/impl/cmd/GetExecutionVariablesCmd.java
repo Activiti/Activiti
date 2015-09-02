@@ -49,7 +49,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       throw new ActivitiIllegalArgumentException("executionId is null");
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);

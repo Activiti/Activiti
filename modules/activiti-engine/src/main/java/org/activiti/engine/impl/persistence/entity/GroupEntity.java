@@ -18,12 +18,12 @@ import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  */
-public class GroupEntity implements Group, Serializable, PersistentObject, HasRevision {
+public class GroupEntity implements Group, Serializable, Entity, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

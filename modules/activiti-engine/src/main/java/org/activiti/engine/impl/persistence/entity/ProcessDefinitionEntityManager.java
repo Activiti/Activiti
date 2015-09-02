@@ -24,8 +24,6 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public interface ProcessDefinitionEntityManager extends EntityManager<ProcessDefinitionEntity> {
 
-  ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId);
-  
   ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey);
 
   ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId);

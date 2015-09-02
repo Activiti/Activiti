@@ -50,7 +50,7 @@
   <!-- SELECT -->  
 
   <select id="selectEventSubscription" parameterType="string" resultMap="eventSubscriptionResultMap">
-    select * from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+    select * from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
   <select id="selectEventSubscriptionByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultMap="eventSubscriptionResultMap">

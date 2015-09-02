@@ -84,7 +84,7 @@
   <!-- HISTORIC IDENTITY LINK SELECT -->
 
   <select id="selectHistoricIdentityLink" parameterType="string" resultMap="historicIdentityLinkResultMap">
-    select * from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id}
+    select * from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id, jdbcType=VARCHAR}
   </select>
   
   <select id="selectHistoricIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">

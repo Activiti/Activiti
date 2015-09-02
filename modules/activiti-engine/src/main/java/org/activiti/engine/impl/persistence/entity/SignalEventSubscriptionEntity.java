@@ -24,12 +24,14 @@ import org.activiti.bpmn.model.Signal;
 public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
 
   private static final long serialVersionUID = 1L;
+  
+  public static final String EVENT_TYPE = "signal";
 
   // Using json here, but not worth of adding json dependency lib for this
   private static final String CONFIGURATION_TEMPLATE = "'{'\"scope\":\"{0}\"'}'";
 
   public SignalEventSubscriptionEntity() {
-    eventType = "signal";
+    eventType = EVENT_TYPE;
   }
   
   @Override

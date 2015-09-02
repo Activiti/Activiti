@@ -70,7 +70,7 @@
   </select>
 
   <select id="selectProperty" parameterType="string" resultMap="propertyResultMap">
-    select * from ${prefix}ACT_GE_PROPERTY where NAME_ = #{name}
+    select * from ${prefix}ACT_GE_PROPERTY where NAME_ = #{name, jdbcType=VARCHAR}
   </select>
   
   <select id="selectProperties" resultMap="propertyResultMap">

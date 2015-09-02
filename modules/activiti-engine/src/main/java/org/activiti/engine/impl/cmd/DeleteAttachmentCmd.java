@@ -43,7 +43,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
     String processInstanceId = attachment.getProcessInstanceId();
     String processDefinitionId = null;
     if (attachment.getProcessInstanceId() != null) {
-      ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+      ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
       if (process != null) {
         processDefinitionId = process.getProcessDefinitionId();
         if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, process.getProcessDefinitionId())) {

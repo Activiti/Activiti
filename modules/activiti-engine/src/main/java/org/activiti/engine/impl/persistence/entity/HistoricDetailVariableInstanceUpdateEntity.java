@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Joram Barrez
  */
 public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity 
-  implements ValueFields, HistoricVariableUpdate, PersistentObject, HasRevision {
+  implements ValueFields, HistoricVariableUpdate, Entity, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

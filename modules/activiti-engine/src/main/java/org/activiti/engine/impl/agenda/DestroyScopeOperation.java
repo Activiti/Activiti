@@ -39,12 +39,12 @@ public class DestroyScopeOperation extends AbstractOperation {
     if (execution.isScope()) {
       parentScopeExecution = executionEntity;
     } else {
-      ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(execution.getParentId());
+      ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(execution.getParentId());
       while (currentlyExaminedExecution != null && parentScopeExecution == null) {
         if (currentlyExaminedExecution.isScope()) {
           parentScopeExecution = currentlyExaminedExecution;
         } else {
-          currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+          currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
         }
       }
     }

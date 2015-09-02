@@ -25,14 +25,19 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
  */
 public class MembershipEntityManagerImpl extends AbstractEntityManager<MembershipEntity> implements MembershipEntityManager {
 
+  @Override
+  public Class<MembershipEntity> getManagedEntity() {
+    return MembershipEntity.class;
+  }
+  
   public void createMembership(String userId, String groupId) {
     MembershipEntity membershipEntity = new MembershipEntity();
     membershipEntity.setUserId(userId);
     membershipEntity.setGroupId(groupId);
     getDbSqlSession().insert(membershipEntity);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_CREATED, groupId, userId));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_CREATED, groupId, userId));
     }
   }
 
@@ -42,8 +47,8 @@ public class MembershipEntityManagerImpl extends AbstractEntityManager<Membershi
     parameters.put("groupId", groupId);
     getDbSqlSession().delete("deleteMembership", parameters);
 
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_DELETED, groupId, userId));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_DELETED, groupId, userId));
     }
   }
 

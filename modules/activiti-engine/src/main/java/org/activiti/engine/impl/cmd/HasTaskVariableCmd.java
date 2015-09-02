@@ -46,7 +46,7 @@ public class HasTaskVariableCmd implements Command<Boolean>, Serializable {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
 
-    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
     if (task == null) {
       throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);

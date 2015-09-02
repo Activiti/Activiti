@@ -32,7 +32,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
@@ -63,11 +63,6 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public void insertUser(User user) {
-    throw new ActivitiException("LDAP user manager doesn't support inserting a new user");
-  }
-
-  @Override
   public void updateUser(User updatedUser) {
     throw new ActivitiException("LDAP user manager doesn't support updating a user");
   }
@@ -78,7 +73,7 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public UserEntity findUserById(final String userId) {
+  public UserEntity findById(final String userId) {
     LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
     return ldapTemplate.execute(new LDAPCallBack<UserEntity>() {
 
@@ -108,11 +103,6 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public void deleteUser(String userId) {
-    throw new ActivitiException("LDAP user manager doesn't support deleting a user");
-  }
-  
-  @Override
   public void deletePicture(User user) {
     throw new ActivitiException("LDAP user manager doesn't support deleting a user picture");
   }
@@ -122,7 +112,7 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
 
     if (query.getId() != null) {
       List<User> result = new ArrayList<User>();
-      result.add(findUserById(query.getId()));
+      result.add(findById(query.getId()));
       return result;
     } else if (query.getFullNameLike() != null){
       
@@ -328,17 +318,12 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public UserEntity getEntity(String entityId) {
+  public UserEntity findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 
   @Override
-  public UserEntity getEntity(String selectQuery, Object parameter, CachedPersistentObjectMatcher<UserEntity> cachedEntityMatcher) {
-    throw new ActivitiException("Unsupported by LDAP user manager");
-  }
-
-  @Override
-  public List<UserEntity> getList(String dbQueryName, Object parameter, CachedPersistentObjectMatcher<UserEntity> retainEntityCondition, boolean checkCache) {
+  public List<UserEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<UserEntity> retainEntityCondition, boolean checkCache) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 

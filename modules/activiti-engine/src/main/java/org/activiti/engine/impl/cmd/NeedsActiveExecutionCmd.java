@@ -40,7 +40,7 @@ public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializ
       throw new ActivitiIllegalArgumentException("executionId is null");
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);

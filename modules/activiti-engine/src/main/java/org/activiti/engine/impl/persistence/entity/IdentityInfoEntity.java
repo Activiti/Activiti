@@ -18,12 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoEntity implements PersistentObject, HasRevision, Serializable {
+public class IdentityInfoEntity implements Entity, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 

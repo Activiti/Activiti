@@ -32,7 +32,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -48,7 +48,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Falko Menge
  * @author Tijs Rademakers
  */
-public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision, BulkDeleteable {
+public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, Entity, HasRevision, BulkDeleteable {
 
   public static final String DELETE_REASON_COMPLETED = "completed";
   public static final String DELETE_REASON_DELETED = "deleted";
@@ -215,7 +215,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public ExecutionEntity getExecution() {
     if ((execution == null) && (executionId != null)) {
-      this.execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+      this.execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
     }
     return execution;
   }
@@ -681,7 +681,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public ExecutionEntity getProcessInstance() {
     if (processInstance == null && processInstanceId != null) {
-      processInstance = Context.getCommandContext().getExecutionEntityManager().findExecutionById(processInstanceId);
+      processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }

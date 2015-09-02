@@ -46,8 +46,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
  */
 public class EntityDependencyOrder {
 	
-	public static List<Class<? extends PersistentObject>> DELETE_ORDER = new ArrayList<Class<? extends PersistentObject>>();
-	public static List<Class<? extends PersistentObject>> INSERT_ORDER = new ArrayList<Class<? extends PersistentObject>>();
+	public static List<Class<? extends Entity>> DELETE_ORDER = new ArrayList<Class<? extends Entity>>();
+	public static List<Class<? extends Entity>> INSERT_ORDER = new ArrayList<Class<? extends Entity>>();
 	
 	static {
 		
@@ -207,7 +207,7 @@ public class EntityDependencyOrder {
 		DELETE_ORDER.add(HistoricFormPropertyEntity.class);
 		DELETE_ORDER.add(HistoricDetailEntity.class);
 		
-		INSERT_ORDER = new ArrayList<Class<? extends PersistentObject>>(DELETE_ORDER);
+		INSERT_ORDER = new ArrayList<Class<? extends Entity>>(DELETE_ORDER);
 		Collections.reverse(INSERT_ORDER);
 
 	}

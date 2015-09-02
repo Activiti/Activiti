@@ -53,7 +53,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
       }
       
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity execution = (ExecutionEntity) commandContext.getExecutionEntityManager().findExecutionById(comment.getProcessInstanceId());
+        ExecutionEntity execution = (ExecutionEntity) commandContext.getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
           Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
@@ -61,7 +61,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
         }
       
       } else if (comment.getTaskId() != null) {
-        Task task = commandContext.getTaskEntityManager().findTaskById(comment.getTaskId());
+        Task task = commandContext.getTaskEntityManager().findById(comment.getTaskId());
         if (task != null && task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
           Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
@@ -76,7 +76,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
       ArrayList<Comment> comments = new ArrayList<Comment>();
       if (processInstanceId != null) {
         
-        ExecutionEntity execution = (ExecutionEntity) commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+        ExecutionEntity execution = (ExecutionEntity) commandContext.getExecutionEntityManager().findById(processInstanceId);
         if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
           Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
@@ -87,7 +87,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
       }
       if (taskId != null) {
         
-        Task task = commandContext.getTaskEntityManager().findTaskById(taskId);
+        Task task = commandContext.getTaskEntityManager().findById(taskId);
         if (task != null && task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
           Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
           activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);

@@ -19,13 +19,13 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.task.IdentityLink;
 
 /**
  * @author Joram Barrez
  */
-public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDeleteable, PersistentObject {
+public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDeleteable, Entity {
 
   private static final long serialVersionUID = 1L;
 
@@ -149,7 +149,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
 
   public TaskEntity getTask() {
     if ((task == null) && (taskId != null)) {
-      this.task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+      this.task = Context.getCommandContext().getTaskEntityManager().findById(taskId);
     }
     return task;
   }
@@ -161,7 +161,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
 
   public ExecutionEntity getProcessInstance() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findExecutionById(processInstanceId);
+      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }
@@ -173,7 +173,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDelet
 
   public ProcessDefinitionEntity getProcessDef() {
     if ((processDef == null) && (processDefId != null)) {
-      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findProcessDefinitionById(processDefId);
+      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
     }
     return processDef;
   }

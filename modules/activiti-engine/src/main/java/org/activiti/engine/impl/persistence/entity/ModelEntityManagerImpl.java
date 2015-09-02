@@ -20,9 +20,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.Model;
 
 /**
@@ -30,6 +27,11 @@ import org.activiti.engine.repository.Model;
  * @author Joram Barrez
  */
 public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> implements ModelEntityManager {
+  
+  @Override
+  public Class<ModelEntity> getManagedEntity() {
+    return ModelEntity.class;
+  }
 
   @Override
   public Model createNewModel() {
@@ -38,21 +40,19 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
 
   @Override
   public void insert(ModelEntity model) {
-    ((ModelEntity) model).setCreateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    ((ModelEntity) model).setLastUpdateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    ((ModelEntity) model).setCreateTime(getClock().getCurrentTime());
+    ((ModelEntity) model).setLastUpdateTime(getClock().getCurrentTime());
     
     super.insert(model);
   }
 
   @Override
   public void updateModel(ModelEntity updatedModel) {
-    CommandContext commandContext = Context.getCommandContext();
-    updatedModel.setLastUpdateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update(updatedModel);
+    updatedModel.setLastUpdateTime(getClock().getCurrentTime());
+    getDbSqlSession().update(updatedModel);
 
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
     }
   }
   
@@ -66,7 +66,7 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
 
   @Override
   public void insertEditorSourceForModel(String modelId, byte[] modelSource) {
-    ModelEntity model = findModelById(modelId);
+    ModelEntity model = findById(modelId);
     if (model != null) {
       ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
       ref.setValue("source", modelSource);
@@ -96,7 +96,7 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
 
   @Override
   public void insertEditorSourceExtraForModel(String modelId, byte[] modelSource) {
-    ModelEntity model = findModelById(modelId);
+    ModelEntity model = findById(modelId);
     if (model != null) {
       ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
       ref.setValue("source-extra", modelSource);
@@ -120,13 +120,8 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   }
 
   @Override
-  public ModelEntity findModelById(String modelId) {
-    return (ModelEntity) getDbSqlSession().selectOne("selectModel", modelId);
-  }
-
-  @Override
   public byte[] findEditorSourceByModelId(String modelId) {
-    ModelEntity model = findModelById(modelId);
+    ModelEntity model = findById(modelId);
     if (model == null || model.getEditorSourceValueId() == null) {
       return null;
     }
@@ -137,7 +132,7 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
 
   @Override
   public byte[] findEditorSourceExtraByModelId(String modelId) {
-    ModelEntity model = findModelById(modelId);
+    ModelEntity model = findById(modelId);
     if (model == null || model.getEditorSourceExtraValueId() == null) {
       return null;
     }

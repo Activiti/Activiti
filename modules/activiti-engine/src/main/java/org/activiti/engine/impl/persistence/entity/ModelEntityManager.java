@@ -30,8 +30,6 @@ public interface ModelEntityManager extends EntityManager<ModelEntity> {
 
   void insertEditorSourceExtraForModel(String modelId, byte[] modelSource);
 
-  ModelEntity findModelById(String modelId);
-  
   List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page);
 
   long findModelCountByQueryCriteria(ModelQueryImpl query);

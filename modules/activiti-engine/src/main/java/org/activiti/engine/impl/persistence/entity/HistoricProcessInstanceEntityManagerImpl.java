@@ -19,8 +19,6 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
@@ -29,13 +27,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceEntityManager {
 
   @Override
-  public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return (HistoricProcessInstanceEntity) getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstanceId);
-    }
-    return null;
+  public Class<HistoricProcessInstanceEntity> getManagedEntity() {
+    return HistoricProcessInstanceEntity.class;
   }
-
+  
   @Override
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
@@ -43,29 +38,22 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
       List<String> historicProcessInstanceIds = getDbSqlSession().selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
 
       for (String historicProcessInstanceId : historicProcessInstanceIds) {
-        deleteHistoricProcessInstanceById(historicProcessInstanceId);
+        delete(historicProcessInstanceId);
       }
     }
   }
-
+  
   @Override
-  @SuppressWarnings("unchecked")
-  public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
+  public void delete(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryEnabled()) {
-      CommandContext commandContext = Context.getCommandContext();
-      HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
+      HistoricProcessInstanceEntity historicProcessInstance = findById(historicProcessInstanceId);
 
-      commandContext.getHistoricDetailEntityManager().deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
-
-      commandContext.getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
-
-      commandContext.getHistoricActivityInstanceEntityManager().deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
-
-      commandContext.getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
-
-      commandContext.getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
-
-      commandContext.getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
+      getHistoricDetailEntityManager().deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
+      getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
+      getHistoricActivityInstanceEntityManager().deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
+      getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
+      getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
+      getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
 
       getDbSqlSession().delete(historicProcessInstance);
 
@@ -75,7 +63,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
 
       List<HistoricProcessInstance> selectList = getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", subProcessesQueryImpl);
       for (HistoricProcessInstance child : selectList) {
-        deleteHistoricProcessInstanceById(child.getId());
+        delete(child.getId());
       }
     }
   }
@@ -110,8 +98,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
       int firstResult = historicProcessInstanceQuery.getFirstResult();
       int maxResults = historicProcessInstanceQuery.getMaxResults();
 
-      // setting max results, limit to 20000 results for performance
-      // reasons
+      // setting max results, limit to 20000 results for performance reasons
       historicProcessInstanceQuery.setMaxResults(20000);
       historicProcessInstanceQuery.setFirstResult(0);
 

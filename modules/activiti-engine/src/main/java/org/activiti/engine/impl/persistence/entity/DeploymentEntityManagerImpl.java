@@ -25,7 +25,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -43,12 +42,17 @@ import org.apache.commons.collections.CollectionUtils;
 public class DeploymentEntityManagerImpl extends AbstractEntityManager<DeploymentEntity> implements DeploymentEntityManager {
 
   @Override
-  public void insertDeployment(DeploymentEntity deployment) {
+  public Class<DeploymentEntity> getManagedEntity() {
+    return DeploymentEntity.class;
+  }
+  
+  @Override
+  public void insert(DeploymentEntity deployment) {
     getDbSqlSession().insert(deployment);
 
     for (ResourceEntity resource : deployment.getResources().values()) {
       resource.setDeploymentId(deployment.getId());
-      getResourceManager().insert(resource);
+      getResourceEntityManager().insert(resource);
     }
   }
 
@@ -63,7 +67,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
     for (Model model : models) {
       ModelEntity modelEntity = (ModelEntity) model;
       modelEntity.setDeploymentId(null);
-      getModelManager().updateModel(modelEntity);
+      getModelEntityManager().updateModel(modelEntity);
     }
 
     if (cascade) {
@@ -72,7 +76,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       for (ProcessDefinition processDefinition : processDefinitions) {
         String processDefinitionId = processDefinition.getId();
 
-        getProcessInstanceManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
+        getExecutionEntityManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
 
       }
     }
@@ -80,40 +84,38 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
     for (ProcessDefinition processDefinition : processDefinitions) {
       String processDefinitionId = processDefinition.getId();
       // remove related authorization parameters in IdentityLink table
-      getIdentityLinkManager().deleteIdentityLinksByProcDef(processDefinitionId);
+      getIdentityLinkEntityManager().deleteIdentityLinksByProcDef(processDefinitionId);
 
       // event subscriptions
-      getEventSubscriptionManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
+      getEventSubscriptionEntityManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
     }
 
     // delete process definitions from db
-    getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
+    getProcessDefinitionEntityManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
 
     for (ProcessDefinition processDefinition : processDefinitions) {
 
       // remove timer start events for current process definition:
       
-      List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager()
+      List<Job> timerStartJobs = getJobEntityManager()
           .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
       if (timerStartJobs != null && timerStartJobs.size() > 0) {
         for (Job timerStartJob : timerStartJobs) {
-          if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration()
-                   .getEventDispatcher()
-                   .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
+          if (getEventDispatcher().isEnabled()) {
+                   getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
           }
 
-          Context.getCommandContext().getJobEntityManager().delete((JobEntity) timerStartJob);
+          getJobEntityManager().delete((JobEntity) timerStartJob);
         }
       }
       
       // If previous process definition version has a timer start event, it must be added
       ProcessDefinitionEntity latestProcessDefinition = null;
       if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-        latestProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager()
+        latestProcessDefinition = getProcessDefinitionEntityManager()
             .findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
       } else {
-        latestProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager()
+        latestProcessDefinition = getProcessDefinitionEntityManager()
             .findLatestProcessDefinitionByKey(processDefinition.getKey());
       }
 
@@ -125,7 +127,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
         ProcessDefinitionEntity previousProcessDefinition = null;
         while (previousProcessDefinition == null && previousVersion > 0) {
           
-          ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl(Context.getCommandContext())
+          ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl(getCommandContext())
             .processDefinitionVersion(previousVersion)
             .processDefinitionKey(processDefinition.getKey());
         
@@ -162,7 +164,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
                         timer.setTenantId(previousProcessDefinition.getTenantId());
                       }
   
-                      Context.getCommandContext().getJobEntityManager().schedule(timer);
+                      getJobEntityManager().schedule(timer);
                     }
                   }
                 }
@@ -176,7 +178,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
     }
 
-    getResourceManager().deleteResourcesByDeploymentId(deploymentId);
+    getResourceEntityManager().deleteResourcesByDeploymentId(deploymentId);
 
     getDbSqlSession().delete("deleteDeployment", deploymentId);
   }
@@ -188,11 +190,6 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       return (DeploymentEntity) list.get(0);
     }
     return null;
-  }
-
-  @Override
-  public DeploymentEntity findDeploymentById(String deploymentId) {
-    return (DeploymentEntity) getDbSqlSession().selectOne("selectDeploymentById", deploymentId);
   }
 
   @Override

@@ -22,7 +22,7 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
 
-  Class<VariableInstanceEntity> getManagedPersistentObject();
+  Class<VariableInstanceEntity> getManagedEntity();
 
   VariableInstanceEntity create(String name, VariableType type, Object value);
 
@@ -39,10 +39,6 @@ public interface VariableInstanceEntityManager extends EntityManager<VariableIns
   VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
 
   List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names);
-
-  void delete(VariableInstanceEntity entity);
-
-  void delete(VariableInstanceEntity entity, boolean fireDeleteEvent);
 
   void deleteVariableInstanceByTask(TaskEntity task);
 

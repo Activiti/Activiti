@@ -45,7 +45,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     
     // find cancel boundary event:
     ExecutionEntity parentScopeExecution = null;
-    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
+    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(executionEntity.getParentId());
     while (currentlyExaminedExecution != null && parentScopeExecution == null) {
       if (currentlyExaminedExecution.getCurrentFlowElement() instanceof SubProcess) {
         parentScopeExecution = currentlyExaminedExecution;
@@ -59,7 +59,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
         }
         
       } else {
-        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+        currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
       }
     }
     
@@ -85,12 +85,12 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     }
 
     ExecutionEntity newParentScopeExecution = null;
-    currentlyExaminedExecution = executionEntityManager.findExecutionById(parentScopeExecution.getParentId());
+    currentlyExaminedExecution = executionEntityManager.findById(parentScopeExecution.getParentId());
     while (currentlyExaminedExecution != null && newParentScopeExecution == null) {
       if (currentlyExaminedExecution.isScope()) {
         newParentScopeExecution = currentlyExaminedExecution;
       } else {
-        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+        currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
       }
     }
 

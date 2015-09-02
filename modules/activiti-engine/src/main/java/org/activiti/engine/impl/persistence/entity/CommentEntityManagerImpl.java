@@ -30,25 +30,30 @@ import org.activiti.engine.task.Event;
 public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity> implements CommentEntityManager {
 
   @Override
+  public Class<CommentEntity> getManagedEntity() {
+    return CommentEntity.class;
+  }
+  
+  @Override
   public void insert(CommentEntity commentEntity) {
     checkHistoryEnabled();
     super.insert(commentEntity, false);
 
     Comment comment = (Comment) commentEntity;
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    if (getEventDispatcher().isEnabled()) {
       // Forced to fetch the process-instance to associate the right
       // process definition
       String processDefinitionId = null;
       String processInstanceId = comment.getProcessInstanceId();
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity process = getProcessInstanceManager().findExecutionById(comment.getProcessInstanceId());
+        ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (process != null) {
           processDefinitionId = process.getProcessDefinitionId();
         }
       }
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     }
   }
@@ -136,18 +141,18 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
     super.delete(commentEntity, false);
 
     Comment comment = (Comment) commentEntity;
-    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    if (getEventDispatcher().isEnabled()) {
       // Forced to fetch the process-instance to associate the right
       // process definition
       String processDefinitionId = null;
       String processInstanceId = comment.getProcessInstanceId();
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity process = getProcessInstanceManager().findExecutionById(comment.getProcessInstanceId());
+        ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (process != null) {
           processDefinitionId = process.getProcessDefinitionId();
         }
       }
-      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     }
   }

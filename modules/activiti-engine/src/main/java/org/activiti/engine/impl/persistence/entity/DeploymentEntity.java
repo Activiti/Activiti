@@ -22,14 +22,14 @@ import java.util.Map;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.repository.Deployment;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentEntity implements Serializable, Deployment, PersistentObject {
+public class DeploymentEntity implements Serializable, Deployment, Entity {
 
   private static final long serialVersionUID = 1L;
 

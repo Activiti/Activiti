@@ -95,7 +95,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     try {
       formService.getRenderedTaskForm(null);
       fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
+    } catch (ActivitiIllegalArgumentException e) {
       // Expected Exception
     }
   }

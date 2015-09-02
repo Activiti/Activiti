@@ -43,7 +43,7 @@ public class ExecutionContext {
 
   public DeploymentEntity getDeployment() {
     String deploymentId = getProcessDefinition().getDeploymentId();
-    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
+    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
     return deployment;
   }
 }

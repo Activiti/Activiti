@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
@@ -32,9 +31,14 @@ import org.activiti.engine.task.IdentityLinkType;
 public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<IdentityLinkEntity> implements IdentityLinkEntityManager {
   
   @Override
+  public Class<IdentityLinkEntity> getManagedEntity() {
+    return IdentityLinkEntity.class;
+  }
+  
+  @Override
   public void insert(IdentityLinkEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
-    Context.getCommandContext().getHistoryManager().recordIdentityLinkCreated(entity);
+    getHistoryManager().recordIdentityLinkCreated(entity);
   }
 
   @Override
@@ -44,8 +48,8 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
       getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
     }
 
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, identityLink));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, identityLink));
     }
   }
 
@@ -229,7 +233,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   @Override
   public void deleteIdentityLink(ProcessDefinitionEntity processDefinitionEntity, String userId, String groupId) {
-    List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager()
+    List<IdentityLinkEntity> identityLinks = getIdentityLinkEntityManager()
           .findIdentityLinkByProcessDefinitionUserAndGroup(processDefinitionEntity.getId(), userId, groupId);
 
     for (IdentityLinkEntity identityLink : identityLinks) {

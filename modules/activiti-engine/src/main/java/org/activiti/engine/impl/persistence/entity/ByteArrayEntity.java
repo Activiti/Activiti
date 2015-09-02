@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marcus Klimstra (CGI)
  * @author Joram Barrez
  */
-public class ByteArrayEntity implements Serializable, PersistentObject, HasRevision {
+public class ByteArrayEntity implements Serializable, Entity, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

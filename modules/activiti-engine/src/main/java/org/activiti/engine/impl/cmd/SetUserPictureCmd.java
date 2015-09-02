@@ -40,7 +40,7 @@ public class SetUserPictureCmd implements Command<Object>, Serializable {
     if (userId == null) {
       throw new ActivitiIllegalArgumentException("userId is null");
     }
-    User user = commandContext.getUserEntityManager().findUserById(userId);
+    User user = commandContext.getUserEntityManager().findById(userId);
     if (user == null) {
       throw new ActivitiObjectNotFoundException("user " + userId + " doesn't exist", User.class);
     }

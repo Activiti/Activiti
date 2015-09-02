@@ -63,7 +63,7 @@ public class DeploymentManager {
     ProcessDefinitionEntity processDefinition = cacheEntry != null ? cacheEntry.getProcessDefinitionEntity() : null;
 
     if (processDefinition == null) {
-      processDefinition = Context.getCommandContext().getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
+      processDefinition = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
       }
@@ -111,7 +111,7 @@ public class DeploymentManager {
     ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
 
     if (cachedProcessDefinition == null) {
-      DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
+      DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
       deployment.setNew(false);
       deploy(deployment, null);
       cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
@@ -127,7 +127,7 @@ public class DeploymentManager {
     CommandContext commandContext = Context.getCommandContext();
     DeploymentEntityManager deploymentEntityManager = commandContext.getDeploymentEntityManager();
 
-    DeploymentEntity deployment = deploymentEntityManager.findDeploymentById(deploymentId);
+    DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", DeploymentEntity.class);
     }

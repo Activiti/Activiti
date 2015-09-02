@@ -58,7 +58,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     }
 
     if (job == null) {
-      job = commandContext.getJobEntityManager().findJobById(jobId);
+      job = commandContext.getJobEntityManager().findById(jobId);
     }
 
     if (job == null) {

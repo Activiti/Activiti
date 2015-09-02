@@ -45,7 +45,7 @@ public class CancelJobsCmd implements Command<Void>, Serializable {
   public Void execute(CommandContext commandContext) {
     JobEntity jobToDelete = null;
     for (String jobId : jobIds) {
-      jobToDelete = commandContext.getJobEntityManager().findJobById(jobId);
+      jobToDelete = commandContext.getJobEntityManager().findById(jobId);
 
       if (jobToDelete != null) {
         // When given job doesn't exist, ignore

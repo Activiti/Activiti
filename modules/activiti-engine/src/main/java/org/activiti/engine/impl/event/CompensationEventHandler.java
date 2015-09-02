@@ -34,10 +34,8 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  */
 public class CompensationEventHandler implements EventHandler {
 
-  public final static String EVENT_HANDLER_TYPE = "compensate";
-
   public String getEventHandlerType() {
-    return EVENT_HANDLER_TYPE;
+    return CompensateEventSubscriptionEntity.EVENT_TYPE;
   }
 
   public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
@@ -47,7 +45,7 @@ public class CompensationEventHandler implements EventHandler {
       throw new ActivitiException("Compensating execution not set for compensate event subscription with id " + eventSubscription.getId());
     }
 
-    ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findExecutionById(configuration);
+    ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findById(configuration);
 
     String processDefinitionId = compensatingExecution.getProcessDefinitionId();
     Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);

@@ -20,14 +20,14 @@ import java.util.Map;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.repository.Model;
 
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class ModelEntity implements Model, HasRevision, PersistentObject, Serializable {
+public class ModelEntity implements Model, HasRevision, Entity, Serializable {
 
   private static final long serialVersionUID = 1L;
 

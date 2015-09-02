@@ -45,7 +45,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
       throw new ActivitiIllegalArgumentException("ProcessInstanceId cannot be null.");
     }
 
-    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(executionId);
 
     if (executionEntity == null) {
       throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '" + executionId + "'.", Execution.class);

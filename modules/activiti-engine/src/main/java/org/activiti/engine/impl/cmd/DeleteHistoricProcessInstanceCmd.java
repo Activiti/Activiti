@@ -41,7 +41,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
     // Check if process instance is still running
-    HistoricProcessInstance instance = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
+    HistoricProcessInstance instance = commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
 
     if (instance == null) {
       throw new ActivitiObjectNotFoundException("No historic process instance found with id: " + processInstanceId, HistoricProcessInstance.class);
@@ -56,7 +56,7 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
       return null;
     }
     
-    commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(processInstanceId);
+    commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
 
     return null;
   }

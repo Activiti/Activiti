@@ -24,11 +24,7 @@ import org.activiti.engine.repository.Deployment;
  */
 public interface DeploymentEntityManager extends EntityManager<DeploymentEntity> {
 
-  void insertDeployment(DeploymentEntity deployment);
-
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
-
-  DeploymentEntity findDeploymentById(String deploymentId);
 
   List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page);
 

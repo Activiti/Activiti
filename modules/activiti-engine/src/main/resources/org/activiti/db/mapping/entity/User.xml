@@ -78,7 +78,7 @@
   
   <!-- USER SELECT -->
 
-  <select id="selectUserById" parameterType="string" resultMap="userResultMap">
+  <select id="selectUser" parameterType="string" resultMap="userResultMap">
     select * from ${prefix}ACT_ID_USER where ID_ = #{id,jdbcType=VARCHAR}
   </select>
     

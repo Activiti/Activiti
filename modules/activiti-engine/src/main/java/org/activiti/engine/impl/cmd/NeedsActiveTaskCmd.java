@@ -43,7 +43,7 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
 
-    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
     if (task == null) {
       throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);

@@ -49,7 +49,7 @@ public class LockExclusiveJobCmd implements Command<Object>, Serializable {
 
     if (job.isExclusive()) {
       if (job.getExecutionId() != null) {
-        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(job.getExecutionId());
         if (execution != null) {
           commandContext.getExecutionEntityManager().updateProcessInstanceLockTime(execution.getProcessInstanceId());
         }

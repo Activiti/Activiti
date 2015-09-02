@@ -77,7 +77,7 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
   public ProcessInstanceHistoryLog execute(CommandContext commandContext) {
 
     // Fetch historic process instance
-    HistoricProcessInstanceEntity historicProcessInstance = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
+    HistoricProcessInstanceEntity historicProcessInstance = commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
 
     if (historicProcessInstance == null) {
       return null;

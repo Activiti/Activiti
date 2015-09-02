@@ -359,19 +359,6 @@ public class BpmnDeployer implements Deployer {
     // look for subscriptions for the same name in db:
     List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager()
         .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, messageEventDefinition.getMessageRef(), processDefinition.getTenantId());
-    
-//    List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE,
-//        messageEventDefinition.getMessageRef(), processDefinition.getTenantId());
-//    // also look for subscriptions created in the session:
-//    List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext.getPersistentObjectCache().findInCache(MessageEventSubscriptionEntity.class);
-//    for (MessageEventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
-//      if (messageEventDefinition.getMessageRef().equals(cachedSubscription.getEventName()) && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
-//        subscriptionsForSameMessageName.add(cachedSubscription);
-//      }
-//    }
-//    // remove subscriptions deleted in the same command
-//    subscriptionsForSameMessageName = commandContext.getDbSqlSession().pruneDeletedEntities(subscriptionsForSameMessageName);
-
 
     
     for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {

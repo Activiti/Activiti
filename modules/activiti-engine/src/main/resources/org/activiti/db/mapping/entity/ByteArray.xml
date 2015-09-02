@@ -95,7 +95,7 @@
   <!-- BYTE ARRAY SELECT -->
   
   <select id="selectByteArray" parameterType="string" resultMap="byteArrayResultMap">
-   select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
+   select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id, jdbcType=VARCHAR}
   </select>
   
 <!-- Postgresql specific configuration -->

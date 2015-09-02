@@ -19,14 +19,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.impl.context.Context;
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<IdentityInfoEntity> implements IdentityInfoEntityManager {
 
+  @Override
+  public Class<IdentityInfoEntity> getManagedEntity() {
+    return IdentityInfoEntity.class;
+  }
+  
   @Override
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
     IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
@@ -36,7 +39,7 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
   }
 
   protected List<IdentityInfoEntity> findIdentityInfoDetails(String identityInfoId) {
-    return Context.getCommandContext().getDbSqlSession().getSqlSession().selectList("selectIdentityInfoDetails", identityInfoId);
+    return getDbSqlSession().getSqlSession().selectList("selectIdentityInfoDetails", identityInfoId);
   }
 
   @Override
@@ -114,7 +117,7 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
   }
 
   @Override
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);

@@ -206,9 +206,9 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   
   /**
-   * A map {class, boolean}, to indicate whether or not a certain {@link PersistentObject} class can be bulk inserted.
+   * A map {class, boolean}, to indicate whether or not a certain {@link Entity} class can be bulk inserted.
    */
-  protected static Map<Class<? extends PersistentObject>, Boolean> bulkInsertableMap;
+  protected static Map<Class<? extends Entity>, Boolean> bulkInsertableMap;
   
   protected String databaseType;
   protected String databaseTablePrefix = "";
@@ -240,18 +240,18 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
 
   public Session openSession(CommandContext commandContext) {
-    return new DbSqlSession(this, commandContext.getPersistentObjectCache());
+    return new DbSqlSession(this, commandContext.getEntityCache());
   }
 
   // insert, update and delete statements
   // /////////////////////////////////////
 
-  public String getInsertStatement(PersistentObject object) {
+  public String getInsertStatement(Entity object) {
     return getStatement(object.getClass(), insertStatements, "insert");
   }
   
   
-  public String getInsertStatement(Class<? extends PersistentObject> clazz) {
+  public String getInsertStatement(Class<? extends Entity> clazz) {
     return getStatement(clazz, insertStatements, "insert");
   }
   
@@ -260,31 +260,31 @@ public class DbSqlSessionFactory implements SessionFactory {
     return getStatement(clazz, bulkInsertStatements, "bulkInsert");
   }
 
-  public String getUpdateStatement(PersistentObject object) {
+  public String getUpdateStatement(Entity object) {
     return getStatement(object.getClass(), updateStatements, "update");
   }
 
-  public String getDeleteStatement(Class<?> persistentObjectClass) {
-    return getStatement(persistentObjectClass, deleteStatements, "delete");
+  public String getDeleteStatement(Class<?> entityClass) {
+    return getStatement(entityClass, deleteStatements, "delete");
   }
 
-  public String getBulkDeleteStatement(Class<?> persistentObjectClass) {
-    return getStatement(persistentObjectClass, bulkDeleteStatements, "bulkDelete");
+  public String getBulkDeleteStatement(Class<?> entityClass) {
+    return getStatement(entityClass, bulkDeleteStatements, "bulkDelete");
   }
 
-  public String getSelectStatement(Class<?> persistentObjectClass) {
-    return getStatement(persistentObjectClass, selectStatements, "select");
+  public String getSelectStatement(Class<?> entityClass) {
+    return getStatement(entityClass, selectStatements, "select");
   }
 
-  private String getStatement(Class<?> persistentObjectClass, Map<Class<?>, String> cachedStatements, String prefix) {
-    String statement = cachedStatements.get(persistentObjectClass);
+  private String getStatement(Class<?> entityClass, Map<Class<?>, String> cachedStatements, String prefix) {
+    String statement = cachedStatements.get(entityClass);
     if (statement != null) {
       return statement;
     }
-    statement = prefix + persistentObjectClass.getSimpleName();
+    statement = prefix + entityClass.getSimpleName();
     statement = statement.substring(0, statement.length() - 6); // removing
                                                                 // 'entity'
-    cachedStatements.put(persistentObjectClass, statement);
+    cachedStatements.put(entityClass, statement);
     return statement;
   }
 
@@ -324,9 +324,9 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
   
   protected void initBulkInsertEnabledMap(String databaseType) {
-  	bulkInsertableMap = new HashMap<Class<? extends PersistentObject>, Boolean>();
+  	bulkInsertableMap = new HashMap<Class<? extends Entity>, Boolean>();
   	
-  	for (Class<? extends PersistentObject> clazz : EntityDependencyOrder.INSERT_ORDER) {
+  	for (Class<? extends Entity> clazz : EntityDependencyOrder.INSERT_ORDER) {
   		bulkInsertableMap.put(clazz, Boolean.TRUE);
   	}
 
@@ -336,8 +336,8 @@ public class DbSqlSessionFactory implements SessionFactory {
 		}
   }
   
-  public Boolean isBulkInsertable(Class<? extends PersistentObject> persistentObjectClass) {
-  	return bulkInsertableMap != null && bulkInsertableMap.get(persistentObjectClass);
+  public Boolean isBulkInsertable(Class<? extends Entity> entityClass) {
+  	return bulkInsertableMap != null && bulkInsertableMap.get(entityClass);
   }
 
   // getters and setters //////////////////////////////////////////////////////

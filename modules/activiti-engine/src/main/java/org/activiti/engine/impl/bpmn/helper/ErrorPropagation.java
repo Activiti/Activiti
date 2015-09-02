@@ -86,7 +86,7 @@ public class ErrorPropagation {
               
               for (String processInstanceId : toDeleteProcessInstanceIds) {
                 
-                ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
+                ExecutionEntity processInstanceEntity = executionEntityManager.findById(processInstanceId);
                 
                 // Delete
                 executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(), 

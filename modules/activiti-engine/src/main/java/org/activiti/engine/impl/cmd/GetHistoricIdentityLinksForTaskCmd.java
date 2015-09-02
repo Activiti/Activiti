@@ -52,7 +52,7 @@ public class GetHistoricIdentityLinksForTaskCmd implements Command<List<Historic
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected List<HistoricIdentityLink> getLinksForTask(CommandContext commandContext) {
-    HistoricTaskInstanceEntity task = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstanceById(taskId);
+    HistoricTaskInstanceEntity task = commandContext.getHistoricTaskInstanceEntityManager().findById(taskId);
 
     if (task == null) {
       throw new ActivitiObjectNotFoundException("No historic task exists with the given id: " + taskId, HistoricTaskInstance.class);

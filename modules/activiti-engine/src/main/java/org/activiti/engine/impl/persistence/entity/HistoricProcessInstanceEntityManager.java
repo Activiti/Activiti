@@ -23,8 +23,6 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
  */
 public interface HistoricProcessInstanceEntityManager extends EntityManager<HistoricProcessInstanceEntity> {
 
-  HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId);
-
   long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
 
   List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
@@ -35,8 +33,6 @@ public interface HistoricProcessInstanceEntityManager extends EntityManager<Hist
 
   long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap);
   
-  void deleteHistoricProcessInstanceById(String historicProcessInstanceId);
-
   void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId);
 
 }

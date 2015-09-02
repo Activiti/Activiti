@@ -60,8 +60,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.cache.CachedPersistentObject;
-import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
+import org.activiti.engine.impl.persistence.cache.CachedEntity;
+import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -127,23 +127,23 @@ public class DbSqlSession implements Session {
 
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
-  protected PersistentObjectCache persistentObjectCache;
-  protected Map<Class<? extends PersistentObject>, List<PersistentObject>> insertedObjects = new HashMap<Class<? extends PersistentObject>, List<PersistentObject>>();
+  protected EntityCache entityCache;
+  protected Map<Class<? extends Entity>, List<Entity>> insertedObjects = new HashMap<Class<? extends Entity>, List<Entity>>();
   protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
 
-  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, PersistentObjectCache persistentObjectCache) {
+  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, EntityCache entityCache) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
     this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession();
-    this.persistentObjectCache = persistentObjectCache;
+    this.entityCache = entityCache;
   }
 
-  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, PersistentObjectCache persistentObjectCache, Connection connection, String catalog, String schema) {
+  public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, EntityCache entityCache, Connection connection, String catalog, String schema) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
     this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession(connection); // Note the use of connection param here, different from other constructor
-    this.persistentObjectCache = persistentObjectCache;
+    this.entityCache = entityCache;
     this.connectionMetadataDefaultCatalog = catalog;
     this.connectionMetadataDefaultSchema = schema;
   }
@@ -151,26 +151,26 @@ public class DbSqlSession implements Session {
   // insert ///////////////////////////////////////////////////////////////////
   
   
-  public void insert(PersistentObject persistentObject) {
-    if (persistentObject.getId() == null) {
+  public void insert(Entity entity) {
+    if (entity.getId() == null) {
       String id = dbSqlSessionFactory.getIdGenerator().getNextId();
-      persistentObject.setId(id);
+      entity.setId(id);
     }
     
-    Class<? extends PersistentObject> clazz = persistentObject.getClass();
+    Class<? extends Entity> clazz = entity.getClass();
     if (!insertedObjects.containsKey(clazz)) {
-    	insertedObjects.put(clazz, new ArrayList<PersistentObject>());
+    	insertedObjects.put(clazz, new ArrayList<Entity>());
     }
     
-    insertedObjects.get(clazz).add(persistentObject);
-    persistentObjectCache.put(persistentObject, false);
+    insertedObjects.get(clazz).add(entity);
+    entityCache.put(entity, false);
   }
 
   // update
   // ///////////////////////////////////////////////////////////////////
 
-  public void update(PersistentObject persistentObject) {
-    persistentObjectCache.put(persistentObject, false);
+  public void update(Entity entity) {
+    entityCache.put(entity, false);
   }
 
   public int update(String statement, Object parameters) {
@@ -185,15 +185,15 @@ public class DbSqlSession implements Session {
     deleteOperations.add(new BulkDeleteOperation(statement, parameter));
   }
 
-  public void delete(PersistentObject persistentObject) {
+  public void delete(Entity entity) {
     for (DeleteOperation deleteOperation : deleteOperations) {
-      if (deleteOperation.sameIdentity(persistentObject)) {
-        log.debug("skipping redundant delete: {}", persistentObject);
+      if (deleteOperation.sameIdentity(entity)) {
+        log.debug("skipping redundant delete: {}", entity);
         return; // Skip this delete. It was already added.
       }
     }
 
-    deleteOperations.add(new CheckedDeleteOperation(persistentObject));
+    deleteOperations.add(new CheckedDeleteOperation(entity));
   }
 
   public interface DeleteOperation {
@@ -202,9 +202,9 @@ public class DbSqlSession implements Session {
   	 * @return The persistent object class that is being deleted.
   	 *         Null in case there are multiple objects of different types!
   	 */
-  	Class<? extends PersistentObject> getPersistentObjectClass();
+  	Class<? extends Entity> getEntityClass();
     
-    boolean sameIdentity(PersistentObject other);
+    boolean sameIdentity(Entity other);
 
     void clearCache();
 
@@ -229,12 +229,12 @@ public class DbSqlSession implements Session {
     }
 
     @Override
-    public Class<? extends PersistentObject> getPersistentObjectClass() {
+    public Class<? extends Entity> getEntityClass() {
     	return null;
     }
     
     @Override
-    public boolean sameIdentity(PersistentObject other) {
+    public boolean sameIdentity(Entity other) {
       // this implementation is unable to determine what the identity of
       // the removed object(s) will be.
       return false;
@@ -261,53 +261,53 @@ public class DbSqlSession implements Session {
    * persistent object has been fetched already.
    */
   public class CheckedDeleteOperation implements DeleteOperation {
-    protected final PersistentObject persistentObject;
+    protected final Entity entity;
 
-    public CheckedDeleteOperation(PersistentObject persistentObject) {
-      this.persistentObject = persistentObject;
+    public CheckedDeleteOperation(Entity entity) {
+      this.entity = entity;
     }
 
     @Override
-    public Class<? extends PersistentObject> getPersistentObjectClass() {
-    	return persistentObject.getClass();
+    public Class<? extends Entity> getEntityClass() {
+    	return entity.getClass();
     }
     
     @Override
-    public boolean sameIdentity(PersistentObject other) {
-      return persistentObject.getClass().equals(other.getClass()) && persistentObject.getId().equals(other.getId());
+    public boolean sameIdentity(Entity other) {
+      return entity.getClass().equals(other.getClass()) && entity.getId().equals(other.getId());
     }
 
     @Override
     public void clearCache() {
-      persistentObjectCache.cacheRemove(persistentObject.getClass(), persistentObject.getId());
+      entityCache.cacheRemove(entity.getClass(), entity.getId());
     }
 
     public void execute() {
-      String deleteStatement = dbSqlSessionFactory.getDeleteStatement(persistentObject.getClass());
+      String deleteStatement = dbSqlSessionFactory.getDeleteStatement(entity.getClass());
       deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
       if (deleteStatement == null) {
-        throw new ActivitiException("no delete statement for " + persistentObject.getClass() + " in the ibatis mapping files");
+        throw new ActivitiException("no delete statement for " + entity.getClass() + " in the ibatis mapping files");
       }
 
       // It only makes sense to check for optimistic locking exceptions
       // for objects that actually have a revision
-      if (persistentObject instanceof HasRevision) {
-        int nrOfRowsDeleted = sqlSession.delete(deleteStatement, persistentObject);
+      if (entity instanceof HasRevision) {
+        int nrOfRowsDeleted = sqlSession.delete(deleteStatement, entity);
         if (nrOfRowsDeleted == 0) {
-          throw new ActivitiOptimisticLockingException(persistentObject + " was updated by another transaction concurrently");
+          throw new ActivitiOptimisticLockingException(entity + " was updated by another transaction concurrently");
         }
       } else {
-        sqlSession.delete(deleteStatement, persistentObject);
+        sqlSession.delete(deleteStatement, entity);
       }
     }
 
-    public PersistentObject getPersistentObject() {
-      return persistentObject;
+    public Entity getEntity() {
+      return entity;
     }
 
     @Override
     public String toString() {
-      return "delete " + persistentObject;
+      return "delete " + entity;
     }
   }
 
@@ -316,21 +316,21 @@ public class DbSqlSession implements Session {
    */
   public class BulkCheckedDeleteOperation implements DeleteOperation {
 
-    protected Class<? extends PersistentObject> persistentObjectClass;
-    protected List<PersistentObject> persistentObjects = new ArrayList<PersistentObject>();
+    protected Class<? extends Entity> entityClass;
+    protected List<Entity> entities = new ArrayList<Entity>();
 
-    public BulkCheckedDeleteOperation(Class<? extends PersistentObject> persistentObjectClass) {
-      this.persistentObjectClass = persistentObjectClass;
+    public BulkCheckedDeleteOperation(Class<? extends Entity> entityClass) {
+      this.entityClass = entityClass;
     }
 
-    public void addPersistentObject(PersistentObject persistentObject) {
-      persistentObjects.add(persistentObject);
+    public void addEntity(Entity entity) {
+      entities.add(entity);
     }
 
     @Override
-    public boolean sameIdentity(PersistentObject other) {
-      for (PersistentObject persistentObject : persistentObjects) {
-        if (persistentObject.getClass().equals(other.getClass()) && persistentObject.getId().equals(other.getId())) {
+    public boolean sameIdentity(Entity other) {
+      for (Entity entity : entities) {
+        if (entity.getClass().equals(other.getClass()) && entity.getId().equals(other.getId())) {
           return true;
         }
       }
@@ -339,50 +339,50 @@ public class DbSqlSession implements Session {
 
     @Override
     public void clearCache() {
-      for (PersistentObject persistentObject : persistentObjects) {
-        persistentObjectCache.cacheRemove(persistentObject.getClass(), persistentObject.getId());
+      for (Entity entity : entities) {
+        entityCache.cacheRemove(entity.getClass(), entity.getId());
       }
     }
 
     public void execute() {
 
-      if (persistentObjects.isEmpty()) {
+      if (entities.isEmpty()) {
         return;
       }
 
-      String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObjectClass);
+      String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(entityClass);
       bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
       if (bulkDeleteStatement == null) {
-        throw new ActivitiException("no bulk delete statement for " + persistentObjectClass + " in the mapping files");
+        throw new ActivitiException("no bulk delete statement for " + entityClass + " in the mapping files");
       }
 
-      sqlSession.delete(bulkDeleteStatement, persistentObjects);
+      sqlSession.delete(bulkDeleteStatement, entities);
     }
 
-    public Class<? extends PersistentObject> getPersistentObjectClass() {
-      return persistentObjectClass;
+    public Class<? extends Entity> getEntityClass() {
+      return entityClass;
     }
 
-    public void setPersistentObjectClass(Class<? extends PersistentObject> persistentObjectClass) {
-      this.persistentObjectClass = persistentObjectClass;
+    public void setEntityClass(Class<? extends Entity> entityClass) {
+      this.entityClass = entityClass;
     }
 
-    public List<PersistentObject> getPersistentObjects() {
-      return persistentObjects;
+    public List<Entity> getEntities() {
+      return entities;
     }
 
-    public void setPersistentObjects(List<PersistentObject> persistentObjects) {
-      this.persistentObjects = persistentObjects;
+    public void setEntities(List<Entity> entities) {
+      this.entities = entities;
     }
     
     @SuppressWarnings("unchecked")
-    public void setPersistentObjectEntities(List<? extends PersistentObject> persistentObjects) {
-      this.persistentObjects = (List<PersistentObject>) persistentObjects;
+    public void setEntityObjects(List<? extends Entity> entities) {
+      this.entities = (List<Entity>) entities;
     }
 
     @Override
     public String toString() {
-      return "bulk delete of " + persistentObjects.size() + (!persistentObjects.isEmpty() ? " entities of " + persistentObjects.get(0).getClass() : 0);
+      return "bulk delete of " + entities.size() + (!entities.isEmpty() ? " entities of " + entities.get(0).getClass() : 0);
     }
   }
 
@@ -445,27 +445,27 @@ public class DbSqlSession implements Session {
   public Object selectOne(String statement, Object parameter) {
     statement = dbSqlSessionFactory.mapStatement(statement);
     Object result = sqlSession.selectOne(statement, parameter);
-    if (result instanceof PersistentObject) {
-      PersistentObject loadedObject = (PersistentObject) result;
+    if (result instanceof Entity) {
+      Entity loadedObject = (Entity) result;
       result = cacheFilter(loadedObject);
     }
     return result;
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends PersistentObject> T selectById(Class<T> entityClass, String id) {
-    T persistentObject = persistentObjectCache.findInCache(entityClass, id);
-    if (persistentObject != null) {
-      return persistentObject;
+  public <T extends Entity> T selectById(Class<T> entityClass, String id) {
+    T entity = entityCache.findInCache(entityClass, id);
+    if (entity != null) {
+      return entity;
     }
     String selectStatement = dbSqlSessionFactory.getSelectStatement(entityClass);
     selectStatement = dbSqlSessionFactory.mapStatement(selectStatement);
-    persistentObject = (T) sqlSession.selectOne(selectStatement, id);
-    if (persistentObject == null) {
+    entity = (T) sqlSession.selectOne(selectStatement, id);
+    if (entity == null) {
       return null;
     }
-    persistentObjectCache.put(persistentObject, true);
-    return persistentObject;
+    entityCache.put(entity, true);
+    return entity;
   }
 
   // internal session cache
@@ -476,14 +476,14 @@ public class DbSqlSession implements Session {
     if (loadedObjects.isEmpty()) {
       return loadedObjects;
     }
-    if (!(loadedObjects.get(0) instanceof PersistentObject)) {
+    if (!(loadedObjects.get(0) instanceof Entity)) {
       return loadedObjects;
     }
 
-    List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
+    List<Entity> filteredObjects = new ArrayList<Entity>(loadedObjects.size());
     for (Object loadedObject : loadedObjects) {
-      PersistentObject cachedPersistentObject = cacheFilter((PersistentObject) loadedObject);
-      filteredObjects.add(cachedPersistentObject);
+      Entity cachedEntity = cacheFilter((Entity) loadedObject);
+      filteredObjects.add(cachedEntity);
     }
     return filteredObjects;
   }
@@ -492,13 +492,13 @@ public class DbSqlSession implements Session {
    * returns the object in the cache. if this object was loaded before, then the original object is returned. if this is the first time this object is loaded, then the loadedObject is added to the
    * cache.
    */
-  protected PersistentObject cacheFilter(PersistentObject persistentObject) {
-    PersistentObject cachedPersistentObject = persistentObjectCache.findInCache(persistentObject.getClass(), persistentObject.getId());
-    if (cachedPersistentObject != null) {
-      return cachedPersistentObject;
+  protected Entity cacheFilter(Entity entity) {
+    Entity cachedEntity = entityCache.findInCache(entity.getClass(), entity.getId());
+    if (cachedEntity != null) {
+      return cachedEntity;
     }
-    persistentObjectCache.put(persistentObject, true);
-    return persistentObject;
+    entityCache.put(entity, true);
+    return entity;
   }
 
   // deserialized objects
@@ -515,18 +515,18 @@ public class DbSqlSession implements Session {
     List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
 
     flushDeserializedObjects();
-    List<PersistentObject> updatedObjects = getUpdatedObjects();
+    List<Entity> updatedObjects = getUpdatedObjects();
 
     if (log.isDebugEnabled()) {
-      Collection<List<PersistentObject>> insertedObjectLists = insertedObjects.values();
+      Collection<List<Entity>> insertedObjectLists = insertedObjects.values();
       int nrOfInserts = 0, nrOfUpdates = 0, nrOfDeletes = 0;
-      for (List<PersistentObject> insertedObjectList: insertedObjectLists) {
-      	for (PersistentObject insertedObject : insertedObjectList) {
+      for (List<Entity> insertedObjectList: insertedObjectLists) {
+      	for (Entity insertedObject : insertedObjectList) {
       		log.debug("  insert {}", insertedObject);
       		nrOfInserts++;
       	}
       }
-      for (PersistentObject updatedObject : updatedObjects) {
+      for (Entity updatedObject : updatedObjects) {
         log.debug("  update {}", updatedObject);
         nrOfUpdates++;
       }
@@ -552,13 +552,13 @@ public class DbSqlSession implements Session {
     for (Iterator<DeleteOperation> deleteIterator = deleteOperations.iterator(); deleteIterator.hasNext();) {
     	
       DeleteOperation deleteOperation = deleteIterator.next();
-      Class<? extends PersistentObject> deletedPersistentObjectClass = deleteOperation.getPersistentObjectClass();
+      Class<? extends Entity> deletedEntity = deleteOperation.getEntityClass();
       
-      List<PersistentObject> insertedObjectsOfSameClass = insertedObjects.get(deletedPersistentObjectClass);
+      List<Entity> insertedObjectsOfSameClass = insertedObjects.get(deletedEntity);
       if (insertedObjectsOfSameClass != null && insertedObjectsOfSameClass.size() > 0) {
       	
-	      for (Iterator<PersistentObject> insertIterator = insertedObjectsOfSameClass.iterator(); insertIterator.hasNext();) {
-	        PersistentObject insertedObject = insertIterator.next();
+	      for (Iterator<Entity> insertIterator = insertedObjectsOfSameClass.iterator(); insertIterator.hasNext();) {
+	        Entity insertedObject = insertIterator.next();
 	        
 	        // if the deleted object is inserted,
 	        if (deleteOperation.sameIdentity(insertedObject)) {
@@ -570,8 +570,8 @@ public class DbSqlSession implements Session {
 	        }
 	      }
 	      
-	      if (insertedObjects.get(deletedPersistentObjectClass).size() == 0) {
-	      	insertedObjects.remove(deletedPersistentObjectClass);
+	      if (insertedObjects.get(deletedEntity).size() == 0) {
+	      	insertedObjects.remove(deletedEntity);
 	      }
 	      
       }
@@ -580,9 +580,9 @@ public class DbSqlSession implements Session {
       deleteOperation.clearCache();
     }
     
-    for (Class<? extends PersistentObject> persistentObjectClass : insertedObjects.keySet()) {
-    	for (PersistentObject insertedObject : insertedObjects.get(persistentObjectClass)) {
-    	  persistentObjectCache.cacheRemove(insertedObject.getClass(), insertedObject.getId());
+    for (Class<? extends Entity> entityClass : insertedObjects.keySet()) {
+    	for (Entity insertedObject : insertedObjects.get(entityClass)) {
+    	  entityCache.cacheRemove(insertedObject.getClass(), insertedObject.getId());
     	}
     }
 
@@ -614,7 +614,7 @@ public class DbSqlSession implements Session {
 
         // Check parent id / super execution id to know the order of deletions
         // (children first)
-        ExecutionEntity executionEntity = (ExecutionEntity) ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
+        ExecutionEntity executionEntity = (ExecutionEntity) ((CheckedDeleteOperation) deleteOperation).getEntity();
         int parentIndex = -1;
         for (int deleteIndex = 0; deleteIndex < executionEntitiesToDelete.size(); deleteIndex++) {
           ExecutionEntity executionEntityToDelete = executionEntitiesToDelete.get(deleteIndex);
@@ -639,7 +639,7 @@ public class DbSqlSession implements Session {
           // before the parents, but in two different sql statements (vs 1 in the bulk delete).
           
           BulkCheckedDeleteOperation bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(ExecutionEntity.class);
-          bulkCheckedDeleteOperation.setPersistentObjectEntities(executionEntitiesToDelete);
+          bulkCheckedDeleteOperation.setEntityObjects(executionEntitiesToDelete);
           optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
           
         }
@@ -654,7 +654,7 @@ public class DbSqlSession implements Session {
   }
   
   protected boolean isCheckedExecutionEntityDelete(DeleteOperation deleteOperation) {
-    return deleteOperation instanceof CheckedDeleteOperation && ((CheckedDeleteOperation) deleteOperation).getPersistentObject() instanceof ExecutionEntity;
+    return deleteOperation instanceof CheckedDeleteOperation && ((CheckedDeleteOperation) deleteOperation).getEntity() instanceof ExecutionEntity;
   }
   
   protected void flushDeserializedObjects() {
@@ -663,20 +663,20 @@ public class DbSqlSession implements Session {
     }
   }
 
-  public List<PersistentObject> getUpdatedObjects() {
-    List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
-    Map<Class<?>, Map<String, CachedPersistentObject>> cachedObjects = persistentObjectCache.getAllCachedPersistentObjects();
+  public List<Entity> getUpdatedObjects() {
+    List<Entity> updatedObjects = new ArrayList<Entity>();
+    Map<Class<?>, Map<String, CachedEntity>> cachedObjects = entityCache.getAllCachedEntities();
     for (Class<?> clazz : cachedObjects.keySet()) {
 
-      Map<String, CachedPersistentObject> classCache = cachedObjects.get(clazz);
-      for (CachedPersistentObject cachedObject : classCache.values()) {
+      Map<String, CachedEntity> classCache = cachedObjects.get(clazz);
+      for (CachedEntity cachedObject : classCache.values()) {
 
-        PersistentObject persistentObject = cachedObject.getPersistentObject();
-        if (!isPersistentObjectToBeDeleted(persistentObject)) {
+        Entity cachedEntity = cachedObject.getEntity();
+        if (!isEntityToBeDeleted(cachedEntity)) {
           if (cachedObject.hasChanged()) {
-            updatedObjects.add(persistentObject);
+            updatedObjects.add(cachedEntity);
           } else {
-            log.trace("loaded object '{}' was not updated", persistentObject);
+            log.trace("loaded object '{}' was not updated", cachedEntity);
           }
         }
 
@@ -686,16 +686,16 @@ public class DbSqlSession implements Session {
     return updatedObjects;
   }
 
-  public boolean isPersistentObjectToBeDeleted(PersistentObject persistentObject) {
+  public boolean isEntityToBeDeleted(Entity entity) {
     for (DeleteOperation deleteOperation : deleteOperations) {
-      if (deleteOperation.sameIdentity(persistentObject)) {
+      if (deleteOperation.sameIdentity(entity)) {
         return true;
       }
     }
     return false;
   }
 
-  public <T extends PersistentObject> List<T> pruneDeletedEntities(List<T> listToPrune) {
+  public <T extends Entity> List<T> pruneDeletedEntities(List<T> listToPrune) {
     List<T> prunedList = new ArrayList<T>(listToPrune);
     for (T potentiallyDeleted : listToPrune) {
       for (DeleteOperation deleteOperation : deleteOperations) {
@@ -712,74 +712,74 @@ public class DbSqlSession implements Session {
   protected void flushInserts() {
   	
   	// Handle in entity dependency order
-    for (Class<? extends PersistentObject> persistentObjectClass : EntityDependencyOrder.INSERT_ORDER) {
-      if (insertedObjects.containsKey(persistentObjectClass)) {
-      	flushPersistentObjects(persistentObjectClass, insertedObjects.get(persistentObjectClass));
+    for (Class<? extends Entity> entityClass : EntityDependencyOrder.INSERT_ORDER) {
+      if (insertedObjects.containsKey(entityClass)) {
+      	flushEntities(entityClass, insertedObjects.get(entityClass));
       }
     }
     
     // Next, in case of custom entities or we've screwed up and forgotten some entity
     if (insertedObjects.size() > 0) {
-	    for (Class<? extends PersistentObject> persistentObjectClass : insertedObjects.keySet()) {
-      	flushPersistentObjects(persistentObjectClass, insertedObjects.get(persistentObjectClass));
+	    for (Class<? extends Entity> entityClass : insertedObjects.keySet()) {
+      	flushEntities(entityClass, insertedObjects.get(entityClass));
 	    }
     }
     
     insertedObjects.clear();
   }
 
-	protected void flushPersistentObjects(Class<? extends PersistentObject> persistentObjectClass, List<PersistentObject> persistentObjectsToInsert) {
-	  if (persistentObjectsToInsert.size() == 1) {
-	  	flushRegularInsert(persistentObjectsToInsert.get(0), persistentObjectClass);
-	  } else if (Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(persistentObjectClass))) {
-	  	for (PersistentObject persistentObject : persistentObjectsToInsert) {
-	  		flushRegularInsert(persistentObject, persistentObjectClass);
+	protected void flushEntities(Class<? extends Entity> entityClass, List<Entity> entitiesToInsert) {
+	  if (entitiesToInsert.size() == 1) {
+	  	flushRegularInsert(entitiesToInsert.get(0), entityClass);
+	  } else if (Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(entityClass))) {
+	  	for (Entity entity : entitiesToInsert) {
+	  		flushRegularInsert(entity, entityClass);
 	  	}
 	  }	else {
-	  	flushBulkInsert(insertedObjects.get(persistentObjectClass), persistentObjectClass);
+	  	flushBulkInsert(insertedObjects.get(entityClass), entityClass);
 	  }
-	  insertedObjects.remove(persistentObjectClass);
+	  insertedObjects.remove(entityClass);
   }
   
-  protected void flushRegularInsert(PersistentObject persistentObject, Class<? extends PersistentObject> clazz) {
-  	 String insertStatement = dbSqlSessionFactory.getInsertStatement(persistentObject);
+  protected void flushRegularInsert(Entity entity, Class<? extends Entity> clazz) {
+  	 String insertStatement = dbSqlSessionFactory.getInsertStatement(entity);
      insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
      if (insertStatement==null) {
-       throw new ActivitiException("no insert statement for " + persistentObject.getClass() + " in the ibatis mapping files");
+       throw new ActivitiException("no insert statement for " + entity.getClass() + " in the ibatis mapping files");
      }
      
-     log.debug("inserting: {}", persistentObject);
-     sqlSession.insert(insertStatement, persistentObject);
+     log.debug("inserting: {}", entity);
+     sqlSession.insert(insertStatement, entity);
      
      // See https://activiti.atlassian.net/browse/ACT-1290
-     if (persistentObject instanceof HasRevision) {
-       ((HasRevision) persistentObject).setRevision(((HasRevision) persistentObject).getRevisionNext());
+     if (entity instanceof HasRevision) {
+       ((HasRevision) entity).setRevision(((HasRevision) entity).getRevisionNext());
      }
   }
 
-  protected void flushBulkInsert(List<PersistentObject> persistentObjectList, Class<? extends PersistentObject> clazz) {
+  protected void flushBulkInsert(List<Entity> entityList, Class<? extends Entity> clazz) {
     String insertStatement = dbSqlSessionFactory.getBulkInsertStatement(clazz);
     insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
     if (insertStatement==null) {
-      throw new ActivitiException("no insert statement for " + persistentObjectList.get(0).getClass() + " in the ibatis mapping files");
+      throw new ActivitiException("no insert statement for " + entityList.get(0).getClass() + " in the ibatis mapping files");
     }
 
-    if (persistentObjectList.size() <= dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
-      sqlSession.insert(insertStatement, persistentObjectList);
+    if (entityList.size() <= dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
+      sqlSession.insert(insertStatement, entityList);
     } else {
       
-      for (int start = 0; start < persistentObjectList.size(); start += dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
-        List<PersistentObject> subList = persistentObjectList.subList(start, 
-            Math.min(start + dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert(), persistentObjectList.size()));
+      for (int start = 0; start < entityList.size(); start += dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
+        List<Entity> subList = entityList.subList(start, 
+            Math.min(start + dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert(), entityList.size()));
         sqlSession.insert(insertStatement, subList);
       }
       
     }
     
-    if (persistentObjectList.get(0) instanceof HasRevision) {
-      for (PersistentObject insertedObject: persistentObjectList) {
+    if (entityList.get(0) instanceof HasRevision) {
+      for (Entity insertedObject: entityList) {
         ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
       }
     }
@@ -787,8 +787,8 @@ public class DbSqlSession implements Session {
   }
 
 
-  protected void flushUpdates(List<PersistentObject> updatedObjects) {
-    for (PersistentObject updatedObject : updatedObjects) {
+  protected void flushUpdates(List<Entity> updatedObjects) {
+    for (Entity updatedObject : updatedObjects) {
       String updateStatement = dbSqlSessionFactory.getUpdateStatement(updatedObject);
       updateStatement = dbSqlSessionFactory.mapStatement(updateStatement);
 
@@ -828,9 +828,9 @@ public class DbSqlSession implements Session {
       // dispatch removed delete events
       if (delete instanceof CheckedDeleteOperation) {
         CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
-        PersistentObject persistentObject = checkedDeleteOperation.getPersistentObject();
-        if (persistentObject instanceof VariableInstanceEntity) {
-          VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+        Entity entity = checkedDeleteOperation.getEntity();
+        if (entity instanceof VariableInstanceEntity) {
+          VariableInstanceEntity variableInstance = (VariableInstanceEntity) entity;
           Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(createVariableDeleteEvent(variableInstance));
         }
       }
@@ -859,16 +859,16 @@ public class DbSqlSession implements Session {
         // (BulkDeleteOperation is not taken into account)
         if (delete instanceof CheckedDeleteOperation) {
           CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
-          PersistentObject persistentObject = checkedDeleteOperation.getPersistentObject();
-          if (persistentObject instanceof VariableInstanceEntity) {
-            VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+          Entity entity = checkedDeleteOperation.getEntity();
+          if (entity instanceof VariableInstanceEntity) {
+            VariableInstanceEntity variableInstance = (VariableInstanceEntity) entity;
             Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(createVariableDeleteEvent(variableInstance));
           }
         } else if (delete instanceof BulkCheckedDeleteOperation) {
           BulkCheckedDeleteOperation bulkCheckedDeleteOperation = (BulkCheckedDeleteOperation) delete;
-          if (VariableInstanceEntity.class.isAssignableFrom(bulkCheckedDeleteOperation.getPersistentObjectClass())) {
-            for (PersistentObject persistentObject : bulkCheckedDeleteOperation.getPersistentObjects()) {
-              VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+          if (VariableInstanceEntity.class.isAssignableFrom(bulkCheckedDeleteOperation.getEntityClass())) {
+            for (Entity entity : bulkCheckedDeleteOperation.getEntities()) {
+              VariableInstanceEntity variableInstance = (VariableInstanceEntity) entity;
               Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(createVariableDeleteEvent(variableInstance));
             }
           }

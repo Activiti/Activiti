@@ -20,9 +20,8 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 
 /**
  * @author Christian Lipphardt (camunda)
@@ -31,7 +30,7 @@ import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
 public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceEntityManager {
   
   @Override
-  public Class<HistoricVariableInstanceEntity> getManagedPersistentObject() {
+  public Class<HistoricVariableInstanceEntity> getManagedEntity() {
     return HistoricVariableInstanceEntity.class;
   }
   
@@ -48,7 +47,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
 
     copyVariableValue(historicVariableInstance, variableInstance);
 
-    Date time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    Date time = getClock().getCurrentTime();
     historicVariableInstance.setCreateTime(time);
     historicVariableInstance.setLastUpdatedTime(time);
 
@@ -69,7 +68,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
       historicVariableInstance.setBytes(variableInstance.getBytes());
     }
 
-    historicVariableInstance.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    historicVariableInstance.lastUpdatedTime = getClock().getCurrentTime();
   }
   
   @Override
@@ -86,7 +85,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       
       List<HistoricVariableInstanceEntity> historicProcessVariables = getList("selectHistoricVariableInstanceByProcessInstanceId", 
-          historicProcessInstanceId, new CachedPersistentObjectMatcher<HistoricVariableInstanceEntity>() {
+          historicProcessInstanceId, new CachedEntityMatcher<HistoricVariableInstanceEntity>() {
         
         @Override
         public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity) {

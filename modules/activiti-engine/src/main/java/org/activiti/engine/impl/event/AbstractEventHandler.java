@@ -101,7 +101,7 @@ public abstract class AbstractEventHandler implements EventHandler {
     
     if (flowNode instanceof SubProcess) {
       // The parent of the boundary event execution will be the one on which the boundary event is set
-      ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager().findExecutionById(boundaryEventExecution.getParentId());
+      ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager().findById(boundaryEventExecution.getParentId());
       if (parentExecutionEntity != null) {
         dispatchActivityCancelledForChildExecution(eventSubscription, parentExecutionEntity, boundaryEventExecution, commandContext);
       }

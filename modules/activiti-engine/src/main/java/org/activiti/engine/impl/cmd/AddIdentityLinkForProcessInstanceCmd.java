@@ -68,7 +68,7 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
   public Void execute(CommandContext commandContext) {
 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity processInstance = executionEntityManager.findExecutionById(processInstanceId);
+    ExecutionEntity processInstance = executionEntityManager.findById(processInstanceId);
 
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);

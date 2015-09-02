@@ -30,10 +30,8 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.CachedPersistentObjectMatcher;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
 import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
@@ -52,7 +50,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   private static final Logger logger = LoggerFactory.getLogger(ExecutionEntityManagerImpl.class);
 
   @Override
-  public Class<ExecutionEntity> getManagedPersistentObject() {
+  public Class<ExecutionEntity> getManagedEntity() {
     return ExecutionEntity.class;
   }
 
@@ -60,7 +58,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
-    return getEntity("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return findByQuery("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
 
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getSuperExecutionId() != null && superExecutionId.equals(executionEntity.getSuperExecutionId());
@@ -71,7 +69,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {
-    return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity entity) {
         return entity.getParentId() != null && entity.getParentId().equals(parentExecutionId);
@@ -81,7 +79,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
-    return getList("selectChildExecutionsByProcessInstanceId", processInstanceId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectChildExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && executionEntity.getParentId() != null;
@@ -90,18 +88,13 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public ExecutionEntity findExecutionById(final String executionId) {
-    return getEntity(executionId);
-  }
-  
-  @Override
   public List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds) {
     
     Map<String, Object> parameters = new HashMap<String, Object>(2);
     parameters.put("parentExecutionId", parentExecutionId);
     parameters.put("activityIds", activityIds);
     
-    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, new CachedEntityMatcher<ExecutionEntity>() {
       
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getParentId() != null && executionEntity.getParentId().equals(parentExecutionId)
@@ -135,7 +128,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   @Override
   public ExecutionTree findExecutionTree(final String rootProcessInstanceId) {
-    List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity entity) {
         return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId().equals(rootProcessInstanceId);
@@ -149,7 +142,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
    * (i.e. does not treat the id as the root process instance id and fetches everything for that root process instance id) 
    */
   protected ExecutionTree findExecutionTreeInCurrentProcessInstance(final String processInstanceId) {
-    List<ExecutionEntity> executions = getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    List<ExecutionEntity> executions = getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity entity) {
         return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals(processInstanceId);
@@ -208,7 +201,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     HashMap<String, Object> params = new HashMap<String, Object>(2);
     params.put("activityId", activityId);
     params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivity", params, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
       public boolean isRetained(ExecutionEntity entity) {
         return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
       }
@@ -220,7 +213,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     HashMap<String, Object> params = new HashMap<String, Object>(2);
     params.put("processInstanceId", processInstanceId);
     params.put("isActive", false);
-    return getList("selectInactiveExecutionsForProcessInstance", params, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectInactiveExecutionsForProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive();
       }
@@ -233,7 +226,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     params.put("activityId", activityId);
     params.put("processInstanceId", processInstanceId);
     params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, new CachedPersistentObjectMatcher<ExecutionEntity>() {
+    return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive() &&
             executionEntity.getActivityId() != null && executionEntity.getActivityId().equals(activityId);
@@ -274,7 +267,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     }
 
     // Store in database
-    Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution, false);
+    getExecutionEntityManager().insert(processInstanceExecution, false);
 
     // Need to be after insert, cause we need the id
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
@@ -285,13 +278,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
     processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
     if (authenticatedUserId != null) {
-      Context.getCommandContext().getIdentityLinkEntityManager()
-        .addIdentityLink(processInstanceExecution, authenticatedUserId, null, IdentityLinkType.STARTER);
+      getIdentityLinkEntityManager().addIdentityLink(processInstanceExecution, authenticatedUserId, null, IdentityLinkType.STARTER);
     }
 
     // Fire events
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstanceExecution));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstanceExecution));
     }
 
     return processInstanceExecution;
@@ -329,9 +321,9 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       logger.debug("Child execution {} created with parent {}", childExecution, parentExecutionEntity.getId());
     }
 
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, childExecution));
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, childExecution));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, childExecution));
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, childExecution));
     }
 
     return childExecution;
@@ -359,13 +351,13 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     }
 
     if (cascade) {
-      Context.getCommandContext().getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceByProcessDefinitionId(processDefinitionId);
+      getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceByProcessDefinitionId(processDefinitionId);
     }
   }
 
   @Override
   public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade) {
-    ExecutionEntity execution = findExecutionById(processInstanceId);
+    ExecutionEntity execution = findById(processInstanceId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
@@ -381,14 +373,13 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       }
     }
     
-    IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
+    IdentityLinkEntityManager identityLinkEntityManager = getIdentityLinkEntityManager();
     List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(execution.getId());
     for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
       identityLinkEntityManager.delete(identityLinkEntity);
     }
 
-    CommandContext commandContext = Context.getCommandContext();
-    commandContext.getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
+    getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
 
     // delete the execution BEFORE we delete the history, otherwise we will
     // produce orphan HistoricVariableInstance instances
@@ -412,7 +403,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     deleteExecutionAndRelatedData(execution, deleteReason, false);
 
     if (deleteHistory) {
-      commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());
+      getHistoricProcessInstanceEntityManager().delete(execution.getId());
     }
   }
   
@@ -426,7 +417,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   public void deleteProcessInstanceExecutionEntity(String processInstanceId, 
       String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel, boolean fireEvent) {
     
-    ExecutionEntity processInstanceEntity = findExecutionById(processInstanceId);
+    ExecutionEntity processInstanceEntity = findById(processInstanceId);
     
     if (processInstanceEntity == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
@@ -452,13 +443,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     deleteChildExecutions(processInstanceEntity, deleteReason, cancel);
     deleteExecutionAndRelatedData(processInstanceEntity, deleteReason, cancel);
     
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity));
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity));
     }
 
     // TODO: what about delete reason?
-    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
+    getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
     
     processInstanceEntity.setDeleted(true);
   }
@@ -492,14 +482,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   @Override
   public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
 
-    CommandContext commandContext = Context.getCommandContext();
-    
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
     
     if (executionEntity.getId().equals(executionEntity.getProcessInstanceId())) {
-      IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+      IdentityLinkEntityManager identityLinkEntityManager = getIdentityLinkEntityManager();
       Collection<IdentityLinkEntity> identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(executionEntity.getProcessInstanceId());
       for (IdentityLinkEntity identityLink : identityLinks) {
         identityLinkEntityManager.delete(identityLink);
@@ -507,35 +495,35 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     }
 
     // Get variables related to execution and delete them
-    VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+    VariableInstanceEntityManager variableInstanceEntityManager = getVariableInstanceEntityManager();
     Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
     for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
       variableInstanceEntityManager.delete(variableInstanceEntity);
       if (variableInstanceEntity.getByteArrayRef() != null && variableInstanceEntity.getByteArrayRef().getId() != null) {
-        commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
+        getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
       }
     }
 
     // Delete current user tasks
-    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
+    TaskEntityManager taskEntityManager = getTaskEntityManager();
     Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
     for (TaskEntity taskEntity : tasksForExecution) {
       taskEntityManager.deleteTask(taskEntity, deleteReason, false, cancel);
     }
 
     // Delete jobs
-    JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
+    JobEntityManager jobEntityManager = getJobEntityManager();
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (JobEntity job : jobsForExecution) {
-      commandContext.getJobEntityManager().delete(job);
-      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+      getJobEntityManager().delete(job);
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
       }
 //      jobEntityManager.delete(job, false); // false -> jobs fire the events themselves TODO: is this right?
     }
 
     // Delete event subscriptions
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findEventSubscriptionsByExecution(executionEntity.getId());
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       eventSubscriptionEntityManager.delete(eventSubscription);
@@ -546,9 +534,8 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public void updateProcessInstanceLockTime(String processInstanceId) {
-    CommandContext commandContext = Context.getCommandContext();
-    Date expirationTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-    int lockMillis = commandContext.getProcessEngineConfiguration().getAsyncExecutor().getAsyncJobLockTimeInMillis();
+    Date expirationTime = getClock().getCurrentTime();
+    int lockMillis = getAsyncExecutor().getAsyncJobLockTimeInMillis();
     GregorianCalendar lockCal = new GregorianCalendar();
     lockCal.setTime(expirationTime);
     lockCal.add(Calendar.MILLISECOND, lockMillis);
@@ -576,10 +563,10 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   public String updateProcessInstanceBusinessKey(ExecutionEntity executionEntity, String businessKey) {
     if (executionEntity.isProcessInstanceType() && businessKey != null) {
       executionEntity.setBusinessKey(businessKey);
-      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory(executionEntity);
+      getHistoryManager().updateProcessBusinessKeyInHistory(executionEntity);
 
-      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, executionEntity));
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, executionEntity));
       }
 
       return businessKey;

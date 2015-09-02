@@ -21,8 +21,6 @@ public interface ByteArrayEntityManager extends EntityManager<ByteArrayEntity> {
 
   ByteArrayEntity createAndInsert(String name, byte[] bytes);
 
-  ByteArrayEntity findById(String byteArrayEntityId);
-
   /**
    * Deletes the {@link ByteArrayEntity} with the given id from the database. 
    * Important: this operation will NOT do any optimistic locking, to avoid loading the bytes in memory. So use this method

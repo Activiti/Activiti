@@ -30,7 +30,7 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
-import org.activiti.engine.impl.persistence.cache.PersistentObjectCache;
+import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -241,127 +241,127 @@ public class CommandContext {
 
     return (T) session;
   }
+  
+  public Map<Class<?>, SessionFactory> getSessionFactories() {
+    return sessionFactories;
+  }
 
   public DbSqlSession getDbSqlSession() {
     return getSession(DbSqlSession.class);
   }
   
-  public PersistentObjectCache getPersistentObjectCache() {
-    return getSession(PersistentObjectCache.class);
+  public EntityCache getEntityCache() {
+    return getSession(EntityCache.class);
   }
 
   public DeploymentEntityManager getDeploymentEntityManager() {
-    return getSession(DeploymentEntityManager.class);
+    return processEngineConfiguration.getDeploymentEntityManager();
   }
 
   public ResourceEntityManager getResourceEntityManager() {
-    return getSession(ResourceEntityManager.class);
+    return processEngineConfiguration.getResourceEntityManager();
   }
 
   public ByteArrayEntityManager getByteArrayEntityManager() {
-    return getSession(ByteArrayEntityManager.class);
+    return processEngineConfiguration.getByteArrayEntityManager();
   }
 
   public ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
-    return getSession(ProcessDefinitionEntityManager.class);
+    return processEngineConfiguration.getProcessDefinitionEntityManager();
   }
 
   public ModelEntityManager getModelEntityManager() {
-    return getSession(ModelEntityManager.class);
+    return processEngineConfiguration.getModelEntityManager();
   }
 
   public ExecutionEntityManager getExecutionEntityManager() {
-    return getSession(ExecutionEntityManager.class);
+    return processEngineConfiguration.getExecutionEntityManager();
   }
 
   public TaskEntityManager getTaskEntityManager() {
-    return getSession(TaskEntityManager.class);
+    return processEngineConfiguration.getTaskEntityManager();
   }
 
   public IdentityLinkEntityManager getIdentityLinkEntityManager() {
-    return getSession(IdentityLinkEntityManager.class);
+    return processEngineConfiguration.getIdentityLinkEntityManager();
   }
 
   public VariableInstanceEntityManager getVariableInstanceEntityManager() {
-    return getSession(VariableInstanceEntityManager.class);
+    return processEngineConfiguration.getVariableInstanceEntityManager();
   }
 
   public HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {
-    return getSession(HistoricProcessInstanceEntityManager.class);
+    return processEngineConfiguration.getHistoricProcessInstanceEntityManager();
   }
 
   public HistoricDetailEntityManager getHistoricDetailEntityManager() {
-    return getSession(HistoricDetailEntityManager.class);
+    return processEngineConfiguration.getHistoricDetailEntityManager();
   }
 
   public HistoricVariableInstanceEntityManager getHistoricVariableInstanceEntityManager() {
-    return getSession(HistoricVariableInstanceEntityManager.class);
+    return processEngineConfiguration.getHistoricVariableInstanceEntityManager();
   }
 
   public HistoricActivityInstanceEntityManager getHistoricActivityInstanceEntityManager() {
-    return getSession(HistoricActivityInstanceEntityManager.class);
+    return processEngineConfiguration.getHistoricActivityInstanceEntityManager();
   }
 
   public HistoricTaskInstanceEntityManager getHistoricTaskInstanceEntityManager() {
-    return getSession(HistoricTaskInstanceEntityManager.class);
+    return processEngineConfiguration.getHistoricTaskInstanceEntityManager();
   }
 
   public HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
-    return getSession(HistoricIdentityLinkEntityManager.class);
+    return processEngineConfiguration.getHistoricIdentityLinkEntityManager();
   }
 
   public EventLogEntryEntityManager getEventLogEntryEntityManager() {
-    return getSession(EventLogEntryEntityManager.class);
+    return processEngineConfiguration.getEventLogEntryEntityManager();
   }
 
   public JobEntityManager getJobEntityManager() {
-    return getSession(JobEntityManager.class);
+    return processEngineConfiguration.getJobEntityManager();
   }
 
   public UserEntityManager getUserEntityManager() {
-    return getSession(UserEntityManager.class);
+    return processEngineConfiguration.getUserEntityManager();
   }
 
   public GroupEntityManager getGroupEntityManager() {
-    return getSession(GroupEntityManager.class);
+    return processEngineConfiguration.getGroupEntityManager();
   }
 
   public IdentityInfoEntityManager getIdentityInfoEntityManager() {
-    return getSession(IdentityInfoEntityManager.class);
+    return processEngineConfiguration.getIdentityInfoEntityManager();
   }
 
   public MembershipEntityManager getMembershipIdentityManager() {
-    return getSession(MembershipEntityManager.class);
+    return processEngineConfiguration.getMembershipEntityManager();
   }
 
   public AttachmentEntityManager getAttachmentEntityManager() {
-    return getSession(AttachmentEntityManager.class);
+    return processEngineConfiguration.getAttachmentEntityManager();
   }
 
   public TableDataManager getTableDataManager() {
-    return getSession(TableDataManager.class);
+    return processEngineConfiguration.getTableDataManager();
   }
 
   public CommentEntityManager getCommentEntityManager() {
-    return getSession(CommentEntityManager.class);
+    return processEngineConfiguration.getCommentEntityManager();
   }
 
   public PropertyEntityManager getPropertyEntityManager() {
-    return getSession(PropertyEntityManager.class);
+    return processEngineConfiguration.getPropertyEntityManager();
   }
 
   public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
-    return getSession(EventSubscriptionEntityManager.class);
-  }
-
-  public Map<Class<?>, SessionFactory> getSessionFactories() {
-    return sessionFactories;
+    return processEngineConfiguration.getEventSubscriptionEntityManager();
   }
 
   public HistoryManager getHistoryManager() {
-    return getSession(HistoryManager.class);
+    return processEngineConfiguration.getHistoryManager();
   }
-
+  
   // Involved executions ////////////////////////////////////////////////////////
 
   public void addInvolvedExecution(ExecutionEntity executionEntity) {

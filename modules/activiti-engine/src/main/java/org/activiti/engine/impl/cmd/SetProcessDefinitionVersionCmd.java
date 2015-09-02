@@ -75,7 +75,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     // same
     // process definition that the process instance is using
     ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity processInstance = executionManager.findExecutionById(processInstanceId);
+    ExecutionEntity processInstance = executionManager.findById(processInstanceId);
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id = '" + processInstanceId + "'.", ProcessInstance.class);
     } else if (!processInstance.isProcessInstanceType()) {

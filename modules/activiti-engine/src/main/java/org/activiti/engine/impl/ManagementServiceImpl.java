@@ -116,7 +116,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
     return commandExecutor.execute(config, new Command<String>() {
       public String execute(CommandContext commandContext) {
         DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSession.class);
-        DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, commandContext.getPersistentObjectCache(), connection, catalog, schema);
+        DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, commandContext.getEntityCache(), connection, catalog, schema);
         commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
         return dbSqlSession.dbSchemaUpdate();
       }

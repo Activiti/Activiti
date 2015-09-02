@@ -39,7 +39,7 @@ public class GetJobExceptionStacktraceCmd implements Command<String>, Serializab
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
 
-    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
+    JobEntity job = commandContext.getJobEntityManager().findById(jobId);
 
     if (job == null) {
       throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);

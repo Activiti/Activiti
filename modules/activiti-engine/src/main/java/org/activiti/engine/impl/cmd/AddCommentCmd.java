@@ -56,7 +56,7 @@ public class AddCommentCmd implements Command<Comment> {
     TaskEntity task = null;
     // Validate task
     if (taskId != null) {
-      task = commandContext.getTaskEntityManager().findTaskById(taskId);
+      task = commandContext.getTaskEntityManager().findById(taskId);
 
       if (task == null) {
         throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
@@ -69,7 +69,7 @@ public class AddCommentCmd implements Command<Comment> {
 
     ExecutionEntity execution = null;
     if (processInstanceId != null) {
-      execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+      execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
       if (execution == null) {
         throw new ActivitiObjectNotFoundException("execution " + processInstanceId + " doesn't exist", Execution.class);

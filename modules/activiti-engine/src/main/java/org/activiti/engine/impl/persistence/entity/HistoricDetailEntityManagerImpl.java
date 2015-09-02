@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 
 /**
@@ -38,9 +37,9 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
     historicFormPropertyEntity.setTaskId(taskId);
     historicFormPropertyEntity.setPropertyId(propertyId);
     historicFormPropertyEntity.setPropertyValue(propertyValue);
-    historicFormPropertyEntity.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    historicFormPropertyEntity.setTime(getClock().getCurrentTime());
 
-    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true, false);
+    HistoricActivityInstanceEntity historicActivityInstance = getHistoryManager().findActivityInstance(execution, true, false);
     if (historicActivityInstance != null) {
       historicFormPropertyEntity.setActivityInstanceId(historicActivityInstance.getId());
     }
@@ -56,7 +55,7 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
     historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
     historicVariableUpdate.executionId = variableInstance.getExecutionId();
     historicVariableUpdate.taskId = variableInstance.getTaskId();
-    historicVariableUpdate.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    historicVariableUpdate.time = getClock().getCurrentTime();
     historicVariableUpdate.revision = variableInstance.getRevision();
     historicVariableUpdate.name = variableInstance.getName();
     historicVariableUpdate.variableType = variableInstance.getType();

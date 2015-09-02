@@ -12,38 +12,38 @@
  */
 package org.activiti.engine.impl.persistence.cache;
 
-import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Joram Barrez
  */
-public class CachedPersistentObject {
+public class CachedEntity {
 
   /**
-   * The actual {@link PersistentObject} instance. 
+   * The actual {@link Entity} instance. 
    */
-  protected PersistentObject persistentObject;
+  protected Entity entity;
   
   /**
-   * Represents the 'persistence state' at the moment this {@link CachedPersistentObject} instance was created.
-   * It is used later on to determine if a {@link PersistentObject} has been updated, by comparing
+   * Represents the 'persistence state' at the moment this {@link CachedEntity} instance was created.
+   * It is used later on to determine if a {@link Entity} has been updated, by comparing
    * the 'persistent state' at that moment with this instance here.
    */
   protected Object originalPersistentState;
 
-  public CachedPersistentObject(PersistentObject persistentObject, boolean storeState) {
-    this.persistentObject = persistentObject;
+  public CachedEntity(Entity entity, boolean storeState) {
+    this.entity = entity;
     if (storeState) {
-      this.originalPersistentState = persistentObject.getPersistentState();
+      this.originalPersistentState = entity.getPersistentState();
     }
   }
   
-  public PersistentObject getPersistentObject() {
-    return persistentObject;
+  public Entity getEntity() {
+    return entity;
   }
 
-  public void setPersistentObject(PersistentObject persistentObject) {
-    this.persistentObject = persistentObject;
+  public void setEntity(Entity entity) {
+    this.entity = entity;
   }
 
   public Object getOriginalPersistentState() {
@@ -55,7 +55,7 @@ public class CachedPersistentObject {
   }
   
   public boolean hasChanged() {
-    return persistentObject.getPersistentState() != null && !persistentObject.getPersistentState().equals(originalPersistentState);
+    return entity.getPersistentState() != null && !entity.getPersistentState().equals(originalPersistentState);
   }
 
 }

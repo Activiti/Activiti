@@ -53,7 +53,7 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
         .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
     }
 
-    ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(processInstanceId);
     
     if (processInstanceEntity == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);

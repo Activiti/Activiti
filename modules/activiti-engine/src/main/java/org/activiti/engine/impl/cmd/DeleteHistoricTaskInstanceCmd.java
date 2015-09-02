@@ -36,7 +36,7 @@ public class DeleteHistoricTaskInstanceCmd implements Command<Object>, Serializa
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
-    commandContext.getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
+    commandContext.getHistoricTaskInstanceEntityManager().delete(taskId);
     return null;
   }
 

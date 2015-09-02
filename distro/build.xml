@@ -12,6 +12,16 @@
 		<os family="windows" />
 	</condition>
 
+	<condition property="usingJdk8OrHigher" value=",java8" else="">
+		<not>
+			<or>
+				<!-- Activiti supports java 6 as minimum -->
+				<equals arg1="${ant.java.version}" arg2="1.6" />
+				<equals arg1="${ant.java.version}" arg2="1.7" />
+			</or>
+		</not>
+	</condition>
+
 	<target name="clean">
 		<delete dir="target" />
 	</target>
@@ -36,7 +46,7 @@
 		</condition>
 		<exec executable="${mvn.executable}" dir=".." failonerror="true">
 			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
-			<arg line="-Pdistro${nodocs.profile} clean install -Dmaven.test.skip=true" />
+			<arg line="-Pdistro${nodocs.profile}${usingJdk8OrHigher} clean install -Dmaven.test.skip=true" />
 		</exec>
 		<exec executable="${mvn.executable}" dir="../modules/activiti-ui/activiti-app" failonerror="true">
 			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
@@ -67,15 +77,15 @@
 			<fileset dir="../modules/activiti-bpmn-converter/target">
 				<include name="activiti-bpmn-converter-*.jar" />
 			</fileset>
-		   	<fileset dir="../modules/activiti-process-validation/target">
-		        <include name="activiti-process-validation-*.jar" />
-		   	</fileset>
+			<fileset dir="../modules/activiti-process-validation/target">
+				<include name="activiti-process-validation-*.jar" />
+			</fileset>
 			<fileset dir="../modules/activiti5-compatibility/target">
-		        <include name="activiti5-compatibility-*.jar" />
-		   	</fileset>
+				<include name="activiti5-compatibility-*.jar" />
+			</fileset>
 			<fileset dir="../modules/activiti5-engine/target">
-		        <include name="activiti5-engine-*.jar" />
-		   	</fileset>
+				<include name="activiti5-engine-*.jar" />
+			</fileset>
 			<fileset dir="../modules/activiti-bpmn-layout/target">
 				<include name="activiti-bpmn-layout-*.jar" />
 			</fileset>

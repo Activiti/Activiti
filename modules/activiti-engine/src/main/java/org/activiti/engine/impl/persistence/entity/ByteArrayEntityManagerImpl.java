@@ -19,6 +19,11 @@ package org.activiti.engine.impl.persistence.entity;
  * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity> implements ByteArrayEntityManager {
+   
+  @Override
+  public Class<ByteArrayEntity> getManagedEntity() {
+    return ByteArrayEntity.class;
+  }
   
   @Override
   public ByteArrayEntity createAndInsert(byte[] bytes) {
@@ -30,11 +35,6 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
     ByteArrayEntity byteArrayEntity = new ByteArrayEntity(name, bytes);
     insert(byteArrayEntity);
     return byteArrayEntity;
-  }
-
-  @Override
-  public ByteArrayEntity findById(String byteArrayEntityId) {
-    return getDbSqlSession().selectById(ByteArrayEntity.class, byteArrayEntityId);
   }
 
   @Override

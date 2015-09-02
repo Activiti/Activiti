@@ -31,6 +31,11 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<ProcessDefinitionEntity> implements ProcessDefinitionEntityManager {
 
   @Override
+  public Class<ProcessDefinitionEntity> getManagedEntity() {
+    return ProcessDefinitionEntity.class;
+  }
+  
+  @Override
   public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
   }
@@ -46,11 +51,6 @@ public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<Pr
   @Override
   public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
     getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
-  }
-
-  @Override
-  public ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId) {
-    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionById", processDefinitionId);
   }
 
   @Override

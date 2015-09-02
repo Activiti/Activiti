@@ -34,7 +34,7 @@ public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
     ExecutionEntity parentScopeExecution = null;
     ExecutionEntity currentExecution = (ExecutionEntity) execution;
     while (!found && currentExecution != null && currentExecution.getParentId() != null) {
-      parentScopeExecution = executionEntityManager.findExecutionById(currentExecution.getParentId());
+      parentScopeExecution = executionEntityManager.findById(currentExecution.getParentId());
       if (parentScopeExecution != null && parentScopeExecution.isScope()) {
         found = true;
       }
