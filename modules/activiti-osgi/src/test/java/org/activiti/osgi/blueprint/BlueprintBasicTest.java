@@ -79,11 +79,11 @@ public class BlueprintBasicTest {
   @Configuration
   public Option[] createConfiguration() {
     Option[] coreBundles = options(
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("6.0.0.Beta1"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("6.0.0.Beta1"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("6.0.0.Beta1"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("6.0.0.Beta1"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("6.0.0.Beta1"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("6.0.0.Beta2-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("6.0.0.Beta2-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("6.0.0.Beta2-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("6.0.0.Beta2-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("6.0.0.Beta2-SNAPSHOT"),
         mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.3.2"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version("2.2.3"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version("2.2.3"),

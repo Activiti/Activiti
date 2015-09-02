@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-spring-boot-samples</artifactId>
-		<version>6.0.0.Beta1</version>
+		<version>6.0.0.Beta2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>spring-boot-sample-basic</artifactId>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring-boot-starter-basic</artifactId>
-			<version>6.0.0.Beta1</version>
+			<version>6.0.0.Beta2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
