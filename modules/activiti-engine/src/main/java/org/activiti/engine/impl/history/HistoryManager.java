@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -60,8 +59,7 @@ public interface HistoryManager {
   void recordStartEventEnded(String executionId, String activityId);
 
   /**
-   * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution. Uses the {@link DbSqlSession} cache to make sure the right instance is returned, regardless of whether or
-   * not entities have already been flushed to DB.
+   * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution.
    */
   HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull);
 

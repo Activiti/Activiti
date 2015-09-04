@@ -20,7 +20,6 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -87,8 +86,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     attachment.setUserId(Authentication.getAuthenticatedUserId());
     attachment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.insert(attachment);
+    commandContext.getAttachmentEntityManager().insert(attachment, false);
 
     if (content != null) {
       byte[] bytes = IoUtil.readInputStream(content, attachmentName);

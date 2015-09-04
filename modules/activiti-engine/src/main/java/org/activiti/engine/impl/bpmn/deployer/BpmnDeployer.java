@@ -42,7 +42,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.cmd.DeploymentSettings;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
@@ -180,7 +179,6 @@ public class BpmnDeployer implements Deployer {
 
     CommandContext commandContext = Context.getCommandContext();
     ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       List<TimerEntity> timers = new ArrayList<TimerEntity>();
       if (deployment.isNew()) {
@@ -226,7 +224,7 @@ public class BpmnDeployer implements Deployer {
         removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
         addSignalEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
 
-        dbSqlSession.insert(processDefinition);
+        commandContext.getProcessDefinitionEntityManager().insert(processDefinition, false);
         addAuthorizations(processDefinition);
 
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
