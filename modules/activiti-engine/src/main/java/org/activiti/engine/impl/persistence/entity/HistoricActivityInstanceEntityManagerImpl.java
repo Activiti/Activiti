@@ -43,6 +43,11 @@ public class HistoricActivityInstanceEntityManagerImpl extends AbstractEntityMan
   protected DataManager<HistoricActivityInstanceEntity> getDataManager() {
     return historicActivityInstanceDataManager;
   }
+  
+  @Override
+  public List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(String executionId, String activityId) {
+    return historicActivityInstanceDataManager.findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(executionId, activityId);
+  }
 
   @Override
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {

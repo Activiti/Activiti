@@ -93,6 +93,20 @@ public class ProcessDefinitionDataManagerImpl extends AbstractDataManager<Proces
     parameters.put("tenantId", tenantId);
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKeyAndTenantId", parameters);
   }
+  
+  @Override
+  public ProcessDefinitionEntity findProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("processDefinitionKey", processDefinitionKey);
+    params.put("processDefinitionVersion", processDefinitionVersion);
+    List<ProcessDefinitionEntity> results = getDbSqlSession().selectList("selectProcessDefinitionsByKeyAndVersion", params);
+    if (results.size() == 1) {
+      return results.get(0);
+    } else if (results.size() > 1) {
+      throw new ActivitiException("There are " + results.size() + " process definitions with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'.");
+    }
+    return null;
+  }
 
   @Override
   @SuppressWarnings("unchecked")

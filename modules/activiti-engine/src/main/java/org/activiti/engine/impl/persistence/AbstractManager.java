@@ -17,12 +17,10 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -59,21 +57,13 @@ public abstract class AbstractManager {
   
   
   // Command scoped 
-
-  protected <T> T getSession(Class<T> sessionClass) {
-    return Context.getCommandContext().getSession(sessionClass);
-  }
   
   protected CommandContext getCommandContext() {
     return Context.getCommandContext();
   }
-  
-  protected DbSqlSession getDbSqlSession() {
-    return getSession(DbSqlSession.class);
-  }
-  
-  protected EntityCache getEntityCache() {
-    return getSession(EntityCache.class);
+
+  protected <T> T getSession(Class<T> sessionClass) {
+    return getCommandContext().getSession(sessionClass);
   }
   
   // Engine scoped

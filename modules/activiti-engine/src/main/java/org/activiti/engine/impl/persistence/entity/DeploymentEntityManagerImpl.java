@@ -140,7 +140,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
         ProcessDefinitionEntity previousProcessDefinition = null;
         while (previousProcessDefinition == null && previousVersion > 0) {
           
-          ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl(getCommandContext())
+          ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl()
             .processDefinitionVersion(previousVersion)
             .processDefinitionKey(processDefinition.getKey());
         

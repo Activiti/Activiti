@@ -249,4 +249,10 @@
   <select id="selectHistoricActivityInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
     ${sql}
   </select>
+  
+  <select id="selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
+    select * from ${prefix}ACT_HI_ACTINST RES
+    where EXECUTION_ID_ = #{parameter.executionId} and ACT_ID_ = #{parameter.activityId} and END_TIME_ is null
+  </select>
+  
 </mapper>

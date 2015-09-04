@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.form.FormEngine;
@@ -40,6 +41,11 @@ public class GetRenderedTaskFormCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
+    
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("Task id should not be null");
+    }
+    
     TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
     if (task == null) {
       throw new ActivitiObjectNotFoundException("Task '" + taskId + "' not found", Task.class);

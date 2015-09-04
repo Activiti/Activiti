@@ -18,11 +18,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
+import org.activiti.engine.impl.persistence.cache.EntityCache;
 
 /**
  * @author Joram Barrez
@@ -35,11 +36,19 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
     return null;
   }
   
+  protected DbSqlSession getDbSqlSession() {
+    return getSession(DbSqlSession.class);
+  }
+  
+  protected EntityCache getEntityCache() {
+    return getSession(EntityCache.class);
+  }
+  
   @Override
   public EntityImpl findById(String entityId) {
     
     if (entityId == null) {
-      throw new ActivitiIllegalArgumentException("Invalid entity id : null");
+      return null;
     }
 
     // Cache

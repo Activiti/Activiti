@@ -34,6 +34,7 @@ import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TablePageQueryImpl;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.management.TableMetaData;
@@ -134,6 +135,10 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     // TODO: Identity skipped for the moment as no SQL injection is provided
     // here
   }
+  
+  protected DbSqlSession getDbSqlSession() {
+    return getSession(DbSqlSession.class);
+  }
 
   @Override
   public Map<String, Long> getTableCount() {
@@ -167,7 +172,7 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = databaseTablePrefix + "ACT" + databaseMetaData.getSearchStringEscape() + "_%";
         }
-        tables = databaseMetaData.getTables(null, null, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(null, null, tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();

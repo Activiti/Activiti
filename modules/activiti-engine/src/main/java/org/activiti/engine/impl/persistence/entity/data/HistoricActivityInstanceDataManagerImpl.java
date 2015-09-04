@@ -12,12 +12,14 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 /**
@@ -28,6 +30,21 @@ public class HistoricActivityInstanceDataManagerImpl extends AbstractDataManager
   @Override
   public Class<HistoricActivityInstanceEntity> getManagedEntityClass() {
     return HistoricActivityInstanceEntity.class;
+  }
+  
+  @Override
+  public List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(final String executionId, final String activityId) {
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("executionId", executionId);
+    params.put("activityId", activityId);
+    return getList("selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId", params, new CachedEntityMatcher<HistoricActivityInstanceEntity>() {
+      @Override
+      public boolean isRetained(HistoricActivityInstanceEntity entity) {
+        return entity.getExecutionId() != null && entity.getExecutionId().equals(executionId)
+            && entity.getActivityId() != null && entity.getActivityId().equals(activityId)
+            && entity.getEndTime() == null;
+      }
+    }, true);
   }
   
   @Override
