@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -83,7 +83,7 @@ public class CommandContext {
 
   protected Agenda agenda = new Agenda(this);
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
-  protected LinkedList<Object> resultStack = new LinkedList<Object>();; // needs to be a stack, as JavaDelegates can do api calls again
+  protected LinkedList<Object> resultStack = new LinkedList<Object>(); // needs to be a stack, as JavaDelegates can do api calls again
 
   public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.command = command;
@@ -241,7 +241,7 @@ public class CommandContext {
 
     return (T) session;
   }
-  
+
   public Map<Class<?>, SessionFactory> getSessionFactories() {
     return sessionFactories;
   }
@@ -249,7 +249,7 @@ public class CommandContext {
   public DbSqlSession getDbSqlSession() {
     return getSession(DbSqlSession.class);
   }
-  
+
   public EntityCache getEntityCache() {
     return getSession(EntityCache.class);
   }
@@ -361,7 +361,7 @@ public class CommandContext {
   public HistoryManager getHistoryManager() {
     return processEngineConfiguration.getHistoryManager();
   }
-  
+
   // Involved executions ////////////////////////////////////////////////////////
 
   public void addInvolvedExecution(ExecutionEntity executionEntity) {
