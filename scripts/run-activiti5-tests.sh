@@ -15,6 +15,10 @@ cd modules/activiti5-test
 mvn clean install
 cd ../..
 
+cd modules/activiti5-spring
+mvn clean install
+cd ../..
+
 cd modules/activiti5-spring-compatibility/
 mvn clean install
 cd ../..
