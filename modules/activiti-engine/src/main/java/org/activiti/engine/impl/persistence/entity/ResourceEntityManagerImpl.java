@@ -13,9 +13,10 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
 /**
  * @author Tom Baeyens
@@ -23,28 +24,42 @@ import java.util.Map;
  */
 public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEntity> implements ResourceEntityManager {
   
+  protected ResourceDataManager resourceDataManager;
+  
+  public ResourceEntityManagerImpl() {
+
+  }
+  
+  public ResourceEntityManagerImpl(ResourceDataManager resourceDataManager) {
+    this.resourceDataManager = resourceDataManager;
+  }
+  
   @Override
-  public Class<ResourceEntity> getManagedEntity() {
-    return ResourceEntity.class;
+  protected DataManager<ResourceEntity> getDataManager() {
+    return resourceDataManager;
   }
 
   @Override
   public void deleteResourcesByDeploymentId(String deploymentId) {
-    getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId);
+    resourceDataManager.deleteResourcesByDeploymentId(deploymentId);
   }
 
   @Override
   public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("resourceName", resourceName);
-    return (ResourceEntity) getDbSqlSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
+    return resourceDataManager.findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
-    return getDbSqlSession().selectList("selectResourcesByDeploymentId", deploymentId);
+    return resourceDataManager.findResourcesByDeploymentId(deploymentId);
   }
 
+  public ResourceDataManager getResourceDataManager() {
+    return resourceDataManager;
+  }
+
+  public void setResourceDataManager(ResourceDataManager resourceDataManager) {
+    this.resourceDataManager = resourceDataManager;
+  }
+  
 }

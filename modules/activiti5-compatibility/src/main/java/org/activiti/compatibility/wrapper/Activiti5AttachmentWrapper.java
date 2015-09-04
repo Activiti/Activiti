@@ -16,6 +16,7 @@ package org.activiti.compatibility.wrapper;
 import java.util.Date;
 
 import org.activiti.engine.task.Attachment;
+import org.activiti5.engine.impl.persistence.entity.AttachmentEntity;
 
 /**
  * Wraps an Activiti 5 attachment to an Activiti 6 {@link Attachment}.
@@ -24,74 +25,79 @@ import org.activiti.engine.task.Attachment;
  */
 public class Activiti5AttachmentWrapper implements Attachment {
 
-  private org.activiti5.engine.task.Attachment activit5Attachment;
+  private org.activiti5.engine.task.Attachment activiti5Attachment;
   
   public Activiti5AttachmentWrapper(org.activiti5.engine.task.Attachment activit5Attachment) {
-    this.activit5Attachment = activit5Attachment;
+    this.activiti5Attachment = activit5Attachment;
   }
   
   @Override
   public String getId() {
-    return activit5Attachment.getId();
+    return activiti5Attachment.getId();
   }
 
   @Override
   public String getName() {
-    return activit5Attachment.getName();
+    return activiti5Attachment.getName();
   }
 
   @Override
   public void setName(String name) {
-    activit5Attachment.setName(name);
+    activiti5Attachment.setName(name);
   }
 
   @Override
   public String getDescription() {
-    return activit5Attachment.getDescription();
+    return activiti5Attachment.getDescription();
   }
 
   @Override
   public void setDescription(String description) {
-    activit5Attachment.setDescription(description);
+    activiti5Attachment.setDescription(description);
   }
 
   @Override
   public String getType() {
-    return activit5Attachment.getType();
+    return activiti5Attachment.getType();
   }
 
   @Override
   public String getTaskId() {
-    return activit5Attachment.getTaskId();
+    return activiti5Attachment.getTaskId();
   }
 
   @Override
   public String getProcessInstanceId() {
-    return activit5Attachment.getProcessInstanceId();
+    return activiti5Attachment.getProcessInstanceId();
   }
 
   @Override
   public String getUrl() {
-    return activit5Attachment.getUrl();
+    return activiti5Attachment.getUrl();
   }
 
   @Override
   public String getUserId() {
-    return activit5Attachment.getUserId();
+    return activiti5Attachment.getUserId();
   }
 
   @Override
   public Date getTime() {
-    return activit5Attachment.getTime();
+    return activiti5Attachment.getTime();
   }
 
   @Override
   public void setTime(Date time) {
-    activit5Attachment.setTime(time);
+    activiti5Attachment.setTime(time);
+  }
+  
+  @Override
+  public String getContentId() {
+    return ((AttachmentEntity) activiti5Attachment).getContentId();
   }
 
   public org.activiti5.engine.task.Attachment getRawObject() {
-    return activit5Attachment;
+    return activiti5Attachment;
   }
 
 }

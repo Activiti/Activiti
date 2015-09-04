@@ -21,5 +21,9 @@ public interface MembershipEntityManager extends EntityManager<MembershipEntity>
   void createMembership(String userId, String groupId);
 
   void deleteMembership(String userId, String groupId);
+  
+  void deleteMembershipByGroupId(String groupId);
+  
+  void deleteMembershipByUserId(String userId);
 
 }

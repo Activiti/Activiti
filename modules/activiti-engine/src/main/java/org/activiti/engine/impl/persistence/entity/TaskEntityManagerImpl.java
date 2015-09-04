@@ -13,9 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +25,8 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Task;
 
@@ -37,9 +36,19 @@ import org.activiti.engine.task.Task;
  */
 public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> implements TaskEntityManager {
   
+  protected TaskDataManager taskDataManager;
+  
+  public TaskEntityManagerImpl() {
+    
+  }
+  
+  public TaskEntityManagerImpl(TaskDataManager taskDataManager) {
+    this.taskDataManager = taskDataManager;
+  }
+  
   @Override
-  public Class<TaskEntity> getManagedEntity() {
-    return TaskEntity.class;
+  protected DataManager<TaskEntity> getDataManager() {
+    return taskDataManager;
   }
   
   /**
@@ -90,7 +99,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   }
   
   @Override
-  public void update(TaskEntity taskEntity) {
+  public TaskEntity update(TaskEntity taskEntity) {
     // Needed to make history work: the setter will also update the historic task
     taskEntity.setOwner(taskEntity.getOwner());
     taskEntity.setAssignee(taskEntity.getAssignee(), true, false);
@@ -104,17 +113,12 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     taskEntity.setParentTaskId(taskEntity.getParentTaskId());
     taskEntity.setFormKey(taskEntity.getFormKey());
 
-    getDbSqlSession().update(taskEntity);
-
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, taskEntity));
-    }
+    return super.update(taskEntity);
   }
 
   @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
-    List<TaskEntity> tasks = (List) getDbSqlSession().createTaskQuery().processInstanceId(processInstanceId).list();
+    List<TaskEntity> tasks = findTasksByProcessInstanceId(processInstanceId);
 
     String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
 
@@ -143,7 +147,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       }
 
       getIdentityLinkEntityManager().deleteIdentityLinksByTaskId(taskId);
-
       getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
 
       if (cascade) {
@@ -152,10 +155,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         getHistoryManager().recordTaskEnd(taskId, deleteReason);
       }
 
-      getDbSqlSession().delete(task);
+      delete(task, false);
 
       if (getEventDispatcher().isEnabled()) {
-        
         if (cancel) {
           getEventDispatcher().dispatchEvent(
                   ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
@@ -168,90 +170,49 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   }
 
   @Override
-  public List<TaskEntity> findTasksByExecutionId(final String executionId) {
-    return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
-      
-      public boolean isRetained(TaskEntity taskEntity) {
-        return taskEntity.getExecutionId() != null && executionId.equals(taskEntity.getExecutionId());
-      }
-      
-    }, true);
+  public List<TaskEntity> findTasksByExecutionId(String executionId) {
+    return taskDataManager.findTasksByExecutionId(executionId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId) {
-    return getDbSqlSession().selectList("selectTasksByProcessInstanceId", processInstanceId);
+    return taskDataManager.findTasksByProcessInstanceId(processInstanceId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery) {
-    final String query = "selectTaskByQueryCriteria";
-    return getDbSqlSession().selectList(query, taskQuery);
+    return taskDataManager.findTasksByQueryCriteria(taskQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery) {
-    final String query = "selectTaskWithVariablesByQueryCriteria";
-    // paging doesn't work for combining task instances and variables due to
-    // an outer join, so doing it in-memory
-    if (taskQuery.getFirstResult() < 0 || taskQuery.getMaxResults() <= 0) {
-      return Collections.EMPTY_LIST;
-    }
-
-    int firstResult = taskQuery.getFirstResult();
-    int maxResults = taskQuery.getMaxResults();
-
-    // setting max results, limit to 20000 results for performance reasons
-    taskQuery.setMaxResults(20000);
-    taskQuery.setFirstResult(0);
-
-    List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());
-
-    if (instanceList != null && !instanceList.isEmpty()) {
-      if (firstResult > 0) {
-        if (firstResult <= instanceList.size()) {
-          int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
-          return instanceList.subList(firstResult, toIndex);
-        } else {
-          return Collections.EMPTY_LIST;
-        }
-      } else {
-        int toIndex = Math.min(maxResults, instanceList.size());
-        return instanceList.subList(0, toIndex);
-      }
-    }
-    return Collections.EMPTY_LIST;
+    return taskDataManager.findTasksAndVariablesByQueryCriteria(taskQuery);
   }
 
   @Override
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
-    return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
+    return taskDataManager.findTaskCountByQueryCriteria(taskQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectTaskByNativeQuery", parameterMap, firstResult, maxResults);
+    return taskDataManager.findTasksByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findTaskCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectTaskCountByNativeQuery", parameterMap);
+    return taskDataManager.findTaskCountByNativeQuery(parameterMap);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Task> findTasksByParentTaskId(String parentTaskId) {
-    return getDbSqlSession().selectList("selectTasksByParentTaskId", parentTaskId);
+    return taskDataManager.findTasksByParentTaskId(parentTaskId);
   }
 
   @Override
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
     
-    TaskEntity task = getTaskEntityManager().findById(taskId);
+    TaskEntity task = findById(taskId);
 
     if (task != null) {
       if (task.getExecutionId() != null) {
@@ -273,10 +234,15 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
 
   @Override
   public void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId) {
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("tenantId", newTenantId);
-    getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
+    taskDataManager.updateTaskTenantIdForDeployment(deploymentId, newTenantId);
   }
 
+  public TaskDataManager getTaskDataManager() {
+    return taskDataManager;
+  }
+
+  public void setTaskDataManager(TaskDataManager taskDataManager) {
+    this.taskDataManager = taskDataManager;
+  }
+  
 }

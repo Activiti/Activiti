@@ -251,6 +251,12 @@
       and KEY_ = #{processDefinitionKey}
       and TENANT_ID_ = #{tenantId}
   </select>
+  
+   <select id="selectProcessDefinitionsByKeyAndVersionAndTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="processDefinitionResultMap">
+    select *
+    from ${prefix}ACT_RE_PROCDEF 
+    where KEY_ = #{parameter.processDefinitionKey} and VERSION_ = #{parameter.processDefinitionVersion} and TENANT_ID_ = #{parameter.tenantId}
+  </select>
     
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
     select *

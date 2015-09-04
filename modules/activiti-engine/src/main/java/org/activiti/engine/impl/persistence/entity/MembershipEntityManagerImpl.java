@@ -13,11 +13,10 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
 
 /**
  * @author Tom Baeyens
@@ -25,16 +24,26 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
  */
 public class MembershipEntityManagerImpl extends AbstractEntityManager<MembershipEntity> implements MembershipEntityManager {
 
-  @Override
-  public Class<MembershipEntity> getManagedEntity() {
-    return MembershipEntity.class;
+  protected MembershipDataManager membershipDataManager;
+  
+  public MembershipEntityManagerImpl() {
+    
   }
   
+  public MembershipEntityManagerImpl(MembershipDataManager membershipDataManager) {
+    this.membershipDataManager = membershipDataManager;
+  }
+ 
+  @Override
+  protected DataManager<MembershipEntity> getDataManager() {
+    return membershipDataManager;
+  }
+ 
   public void createMembership(String userId, String groupId) {
     MembershipEntity membershipEntity = new MembershipEntity();
     membershipEntity.setUserId(userId);
     membershipEntity.setGroupId(groupId);
-    getDbSqlSession().insert(membershipEntity);
+    insert(membershipEntity, false);
 
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_CREATED, groupId, userId));
@@ -42,14 +51,28 @@ public class MembershipEntityManagerImpl extends AbstractEntityManager<Membershi
   }
 
   public void deleteMembership(String userId, String groupId) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    getDbSqlSession().delete("deleteMembership", parameters);
-
+    membershipDataManager.deleteMembership(userId, groupId);  
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_DELETED, groupId, userId));
     }
   }
+  
+  @Override
+  public void deleteMembershipByGroupId(String groupId) {
+    membershipDataManager.deleteMembershipByGroupId(groupId);
+  }
+  
+  @Override
+  public void deleteMembershipByUserId(String userId) {
+    membershipDataManager.deleteMembershipByUserId(userId);
+  }
 
+  public MembershipDataManager getMembershipDataManager() {
+    return membershipDataManager;
+  }
+
+  public void setMembershipDataManager(MembershipDataManager membershipDataManager) {
+    this.membershipDataManager = membershipDataManager;
+  }
+  
 }

@@ -70,5 +70,8 @@ public interface Attachment {
 
   /** timestamp when this attachment was created */
   void setTime(Date time);
+  
+  /** the id of the byte array entity storing the content */
+  String getContentId();
 
 }

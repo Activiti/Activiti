@@ -45,7 +45,12 @@ public class SaveGroupCmd implements Command<Void>, Serializable {
         commandContext.getDbSqlSession().insert((Entity) group);
       }
     } else {
-      commandContext.getGroupEntityManager().updateGroup(group);
+      if (group instanceof GroupEntity) {
+        commandContext.getGroupEntityManager().update((GroupEntity) group);
+      } else {
+        commandContext.getDbSqlSession().update((Entity) group);
+      }
+      
     }
     return null;
   }

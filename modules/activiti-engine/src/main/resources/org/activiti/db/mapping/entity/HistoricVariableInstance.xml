@@ -236,6 +236,10 @@
   <select id="selectHistoricVariableInstanceByProcessInstanceId" resultMap="historicProcessVariableResultMap">
     select * from ${prefix}ACT_HI_VARINST where PROC_INST_ID_ = #{parameter}
   </select>
+  
+  <select id="selectHistoricVariableInstanceByTaskId" resultMap="historicProcessVariableResultMap">
+    select * from ${prefix}ACT_HI_VARINST where TASK_ID_ = #{parameter}
+  </select>
 
   <select id="selectHistoricVariableInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessVariableResultMap">
     <if test="resultType == 'LIST_PAGE'">

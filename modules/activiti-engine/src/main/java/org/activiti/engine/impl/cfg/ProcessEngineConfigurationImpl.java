@@ -212,6 +212,56 @@ import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.CommentDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
+import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
+import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.GroupDataManager;
+import org.activiti.engine.impl.persistence.entity.data.GroupDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstanceDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
+import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
+import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
+import org.activiti.engine.impl.persistence.entity.data.JobDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
+import org.activiti.engine.impl.persistence.entity.data.MembershipDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ModelDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
+import org.activiti.engine.impl.persistence.entity.data.PropertyDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ResourceDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
+import org.activiti.engine.impl.persistence.entity.data.TaskDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.UserDataManager;
+import org.activiti.engine.impl.persistence.entity.data.UserDataManagerImpl;
+import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManagerImpl;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
 import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
@@ -304,6 +354,35 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutor;
+  
+  // DATA MANAGERS /////////////////////////////////////////////////////////////
+  
+  protected AttachmentDataManager attachmentDataManager;
+  protected ByteArrayDataManager byteArrayDataManager;
+  protected CommentDataManager commentDataManager;
+  protected DeploymentDataManager deploymentDataManager;
+  protected EventLogEntryDataManager eventLogEntryDataManager;
+  protected EventSubscriptionDataManager eventSubscriptionDataManager;
+  protected ExecutionDataManager executionDataManager;
+  protected GroupDataManager groupDataManager;
+  protected HistoricActivityInstanceDataManager historicActivityInstanceDataManager;
+  protected HistoricDetailDataManager historicDetailDataManager;
+  protected HistoricIdentityLinkDataManager historicIdentityLinkDataManager;
+  protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
+  protected HistoricTaskInstanceDataManager historicTaskInstanceDataManager;
+  protected HistoricVariableInstanceDataManager historicVariableInstanceDataManager;
+  protected IdentityInfoDataManager identityInfoDataManager;
+  protected IdentityLinkDataManager identityLinkDataManager;
+  protected JobDataManager jobDataManager;
+  protected MembershipDataManager membershipDataManager;
+  protected ModelDataManager modelDataManager;
+  protected ProcessDefinitionDataManager processDefinitionDataManager;
+  protected PropertyDataManager propertyDataManager;
+  protected ResourceDataManager resourceDataManager;
+  protected TaskDataManager taskDataManager;
+  protected UserDataManager userDataManager;
+  protected VariableInstanceDataManager variableInstanceDataManager;
+  
   
   // ENTITY MANAGERS ///////////////////////////////////////////////////////////
   
@@ -541,6 +620,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initTransactionFactory();
     initSqlSessionFactory();
     initSessionFactories();
+    initDataManagers();
     initEntityManagers();
     initHistoryManager();
     initJpa();
@@ -889,35 +969,65 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.customMybatisXMLMappers = customMybatisXMLMappers;
   }
   
+  // Data managers ///////////////////////////////////////////////////////////
+  
+  protected void initDataManagers() {
+    attachmentDataManager = new AttachmentDataManagerImpl();
+    byteArrayDataManager = new ByteArrayDataManagerImpl();
+    commentDataManager = new CommentDataManagerImpl();
+    deploymentDataManager = new DeploymentDataManagerImpl();
+    eventLogEntryDataManager = new EventLogEntryDataManagerImpl();
+    eventSubscriptionDataManager = new EventSubscriptionDataManagerImpl();
+    executionDataManager = new ExecutionDataManagerImpl();
+    groupDataManager = new GroupDataManagerImpl();
+    historicActivityInstanceDataManager = new HistoricActivityInstanceDataManagerImpl();
+    historicDetailDataManager = new HistoricDetailDataManagerImpl();
+    historicIdentityLinkDataManager = new HistoricIdentityLinkDataManagerImpl();
+    historicProcessInstanceDataManager = new HistoricProcessInstanceDataManagerImpl();
+    historicTaskInstanceDataManager = new HistoricTaskInstanceDataManagerImpl();
+    historicVariableInstanceDataManager = new HistoricVariableInstanceDataManagerImpl();
+    identityInfoDataManager = new IdentityInfoDataManagerImpl();
+    identityLinkDataManager = new IdentityLinkDataManagerImpl();
+    jobDataManager = new JobDataManagerImpl();
+    membershipDataManager = new MembershipDataManagerImpl();
+    modelDataManager = new ModelDataManagerImpl();
+    processDefinitionDataManager = new ProcessDefinitionDataManagerImpl();
+    propertyDataManager = new PropertyDataManagerImpl();
+    resourceDataManager = new ResourceDataManagerImpl();
+    taskDataManager = new TaskDataManagerImpl();
+    userDataManager = new UserDataManagerImpl();
+    variableInstanceDataManager = new VariableInstanceDataManagerImpl();
+  }
+  
   // Entity managers //////////////////////////////////////////////////////////
   
   protected void initEntityManagers() {
-    attachmentEntityManager = new AttachmentEntityManagerImpl();
-    byteArrayEntityManager = new ByteArrayEntityManagerImpl();
-    commentEntityManager = new CommentEntityManagerImpl();
-    deploymentEntityManager = new DeploymentEntityManagerImpl();
-    eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl();
-    eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl();
-    executionEntityManager = new ExecutionEntityManagerImpl();
-    groupEntityManager = new GroupEntityManagerImpl();
-    historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl();
-    historicDetailEntityManager = new HistoricDetailEntityManagerImpl();
-    historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl();
-    historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl();
-    historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl();
-    historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl();
-    identityInfoEntityManager = new IdentityInfoEntityManagerImpl();
-    identityLinkEntityManager = new IdentityLinkEntityManagerImpl();
-    jobEntityManager = new JobEntityManagerImpl();
-    membershipEntityManager = new MembershipEntityManagerImpl();
-    modelEntityManager = new ModelEntityManagerImpl();
-    processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl();
-    propertyEntityManager = new PropertyEntityManagerImpl();
-    resourceEntityManager = new ResourceEntityManagerImpl();
+    attachmentEntityManager = new AttachmentEntityManagerImpl(attachmentDataManager);
+    byteArrayEntityManager = new ByteArrayEntityManagerImpl(byteArrayDataManager);
+    commentEntityManager = new CommentEntityManagerImpl(commentDataManager);
+    deploymentEntityManager = new DeploymentEntityManagerImpl(deploymentDataManager);
+    eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl(eventLogEntryDataManager);
+    eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl(eventSubscriptionDataManager);
+    executionEntityManager = new ExecutionEntityManagerImpl(executionDataManager);
+    groupEntityManager = new GroupEntityManagerImpl(groupDataManager);
+    historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl(historicActivityInstanceDataManager);
+    historicDetailEntityManager = new HistoricDetailEntityManagerImpl(historicDetailDataManager);
+    historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl(historicIdentityLinkDataManager);
+    historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl(historicProcessInstanceDataManager);
+    historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl(historicTaskInstanceDataManager);
+    historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl(historicVariableInstanceDataManager);
+    identityInfoEntityManager = new IdentityInfoEntityManagerImpl(identityInfoDataManager);
+    identityLinkEntityManager = new IdentityLinkEntityManagerImpl(identityLinkDataManager);
+    jobEntityManager = new JobEntityManagerImpl(jobDataManager);
+    membershipEntityManager = new MembershipEntityManagerImpl(membershipDataManager);
+    modelEntityManager = new ModelEntityManagerImpl(modelDataManager);
+    processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl(processDefinitionDataManager);
+    propertyEntityManager = new PropertyEntityManagerImpl(propertyDataManager);
+    resourceEntityManager = new ResourceEntityManagerImpl(resourceDataManager);
     tableDataManager = new TableDataManagerImpl();
-    taskEntityManager = new TaskEntityManagerImpl();
-    userEntityManager = new UserEntityManagerImpl();
-    variableInstanceEntityManager = new VariableInstanceEntityManagerImpl();
+    taskEntityManager = new TaskEntityManagerImpl(taskDataManager);
+    userEntityManager = new UserEntityManagerImpl(userDataManager);
+    variableInstanceEntityManager = new VariableInstanceEntityManagerImpl(variableInstanceDataManager);
   }
   
   // History manager ///////////////////////////////////////////////////////////

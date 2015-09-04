@@ -14,13 +14,13 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
@@ -30,9 +30,19 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<VariableInstanceEntity> implements VariableInstanceEntityManager {
 
+  protected VariableInstanceDataManager variableInstanceDataManager;
+  
+  public VariableInstanceEntityManagerImpl() {
+    
+  }
+  
+  public VariableInstanceEntityManagerImpl(VariableInstanceDataManager variableInstanceDataManager) {
+    this.variableInstanceDataManager = variableInstanceDataManager;
+  }
+
   @Override
-  public Class<VariableInstanceEntity> getManagedEntity() {
-    return VariableInstanceEntity.class;
+  protected DataManager<VariableInstanceEntity> getDataManager() {
+    return variableInstanceDataManager;
   }
   
   @Override
@@ -53,62 +63,38 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
-    return getDbSqlSession().selectList("selectVariablesByTaskId", taskId);
+    return variableInstanceDataManager.findVariableInstancesByTaskId(taskId);
   }
   
   @Override
   public Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
-    return getList("selectVariablesByExecutionId", executionId, new CachedEntityMatcher<VariableInstanceEntity>() {
-      public boolean isRetained(VariableInstanceEntity variableInstanceEntity) {
-        return variableInstanceEntity.getExecutionId() != null && variableInstanceEntity.getExecutionId().equals(executionId);
-      }
-    }, true);
+    return variableInstanceDataManager.findVariableInstancesByExecutionId(executionId);
   }
 
   @Override
   public VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName) {
-    Map<String, String> params = new HashMap<String, String>(2);
-    params.put("executionId", executionId);
-    params.put("name", variableName);
-    return (VariableInstanceEntity) getDbSqlSession().selectOne("selectVariableInstanceByExecutionAndName", params);
+    return variableInstanceDataManager.findVariableInstanceByExecutionAndName(executionId, variableName);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(String executionId, Collection<String> names) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("executionId", executionId);
-    params.put("names", names);
-    return getDbSqlSession().selectList("selectVariableInstancesByExecutionAndNames", params);
+    return variableInstanceDataManager.findVariableInstancesByExecutionAndNames(executionId, names);
   }
 
   @Override
   public VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName) {
-    Map<String, String> params = new HashMap<String, String>(2);
-    params.put("taskId", taskId);
-    params.put("name", variableName);
-    return (VariableInstanceEntity) getDbSqlSession().selectOne("selectVariableInstanceByTaskAndName", params);
+    return variableInstanceDataManager.findVariableInstanceByTaskAndName(taskId, variableName);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("taskId", taskId);
-    params.put("names", names);
-    return getDbSqlSession().selectList("selectVariableInstancesByTaskAndNames", params);
-  }
-
-  @Override
-  public void delete(VariableInstanceEntity entity) {
-    delete(entity, true);
+    return variableInstanceDataManager.findVariableInstancesByTaskAndNames(taskId, names);
   }
 
   @Override
   public void delete(VariableInstanceEntity entity, boolean fireDeleteEvent) {
-    getDbSqlSession().delete(entity);
+    super.delete(entity, false);
     ByteArrayRef byteArrayRef = entity.getByteArrayRef();
     if (byteArrayRef != null) {
       byteArrayRef.delete();
@@ -130,4 +116,13 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
       }
     }
   }
+
+  public VariableInstanceDataManager getVariableInstanceDataManager() {
+    return variableInstanceDataManager;
+  }
+
+  public void setVariableInstanceDataManager(VariableInstanceDataManager variableInstanceDataManager) {
+    this.variableInstanceDataManager = variableInstanceDataManager;
+  }
+  
 }

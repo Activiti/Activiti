@@ -86,7 +86,8 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
     ProcessDefinitionEntity currentProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
 
-    ProcessDefinitionEntity newProcessDefinition = deploymentCache.findDeployedProcessDefinitionByKeyAndVersion(currentProcessDefinition.getKey(), processDefinitionVersion);
+    ProcessDefinitionEntity newProcessDefinition = deploymentCache
+        .findDeployedProcessDefinitionByKeyAndVersionAndTenantId(currentProcessDefinition.getKey(), processDefinitionVersion, currentProcessDefinition.getTenantId());
 
     validateAndSwitchVersionOfExecution(commandContext, processInstance, newProcessDefinition);
 

@@ -30,7 +30,6 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 
@@ -61,8 +60,13 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   }
 
   @Override
-  public void updateGroup(Group updatedGroup) {
-    throw new ActivitiException("LDAP group manager doesn't support updating a group");
+  public GroupEntity update(GroupEntity entity) {
+    throw new ActivitiException("LDAP group manager doesn't support updating a new group");
+  }
+  
+  @Override
+  public GroupEntity update(GroupEntity entity, boolean fireUpdateEvent) {
+    throw new ActivitiException("LDAP group manager doesn't support updating a new group");
   }
 
   @Override
@@ -87,10 +91,7 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
 
   @Override
   public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
-    return findGroupByQueryCriteria(query, null).size(); // Is there a
-                                                         // generic way to
-                                                         // do a count(*) in
-                                                         // ldap?
+    return findGroupByQueryCriteria(query, null).size(); // Is there a generic way to do a count(*) in ldap?
   }
 
   @Override
@@ -181,16 +182,6 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
     throw new ActivitiException("Unsupported by LDAP group manager");
   }
 
-  @Override
-  public GroupEntity findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<GroupEntity> cachedEntityMatcher) {
-    throw new ActivitiException("Unsupported by LDAP group manager");
-  }
-
-  @Override
-  public List<GroupEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<GroupEntity> retainEntityCondition, boolean checkCache) {
-    throw new ActivitiException("Unsupported by LDAP group manager");
-  }
- 
   @Override
   public void delete(String id) {
     throw new ActivitiException("Unsupported by LDAP group manager");

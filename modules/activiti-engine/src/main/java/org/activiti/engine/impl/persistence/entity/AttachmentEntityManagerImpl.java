@@ -18,6 +18,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
@@ -27,30 +29,37 @@ import org.activiti.engine.task.Task;
  */
 public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity> implements AttachmentEntityManager {
 
-  @Override
-  public Class<AttachmentEntity> getManagedEntity() {
-    return AttachmentEntity.class;
+  protected AttachmentDataManager attachmentDataManager;
+  
+  public AttachmentEntityManagerImpl() {
+    
+  }
+  
+  public AttachmentEntityManagerImpl(AttachmentDataManager attachmentDataManager) {
+    this.attachmentDataManager = attachmentDataManager;
   }
   
   @Override
-  @SuppressWarnings("unchecked")
+  protected DataManager<AttachmentEntity> getDataManager() {
+    return attachmentDataManager;
+  }
+  
+  @Override
   public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
+    return attachmentDataManager.findAttachmentsByProcessInstanceId(processInstanceId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
+    return attachmentDataManager.findAttachmentsByTaskId(taskId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public void deleteAttachmentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    List<AttachmentEntity> attachments = getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
+    List<Attachment> attachments = findAttachmentsByTaskId(taskId);
     boolean dispatchEvents = getEventDispatcher().isEnabled();
 
     String processInstanceId = null;
@@ -68,12 +77,14 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
       }
     }
 
-    for (AttachmentEntity attachment : attachments) {
+    for (Attachment attachment : attachments) {
       String contentId = attachment.getContentId();
       if (contentId != null) {
         getByteArrayEntityManager().deleteByteArrayById(contentId);
       }
-      getDbSqlSession().delete(attachment);
+      
+      attachmentDataManager.delete((AttachmentEntity) attachment);
+      
       if (dispatchEvents) {
         getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
@@ -86,4 +97,13 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
       throw new ActivitiException("In order to use attachments, history should be enabled");
     }
   }
+
+  public AttachmentDataManager getAttachmentDataManager() {
+    return attachmentDataManager;
+  }
+
+  public void setAttachmentDataManager(AttachmentDataManager attachmentDataManager) {
+    this.attachmentDataManager = attachmentDataManager;
+  }
+  
 }

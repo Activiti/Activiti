@@ -23,10 +23,13 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
+import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.repository.Deployment;
@@ -41,14 +44,24 @@ import org.apache.commons.collections.CollectionUtils;
  */
 public class DeploymentEntityManagerImpl extends AbstractEntityManager<DeploymentEntity> implements DeploymentEntityManager {
 
+  protected DeploymentDataManager deploymentDataManager;
+  
+  public DeploymentEntityManagerImpl() {
+    
+  }
+  
+  public DeploymentEntityManagerImpl(DeploymentDataManager deploymentDataManager) {
+    this.deploymentDataManager = deploymentDataManager;
+  }
+  
   @Override
-  public Class<DeploymentEntity> getManagedEntity() {
-    return DeploymentEntity.class;
+  protected DataManager<DeploymentEntity> getDataManager() {
+    return deploymentDataManager;
   }
   
   @Override
   public void insert(DeploymentEntity deployment) {
-    getDbSqlSession().insert(deployment);
+    insert(deployment, false);
 
     for (ResourceEntity resource : deployment.getResources().values()) {
       resource.setDeploymentId(deployment.getId());
@@ -58,12 +71,12 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
   @Override
   public void deleteDeployment(String deploymentId, boolean cascade) {
-    List<ProcessDefinition> processDefinitions = getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
+    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
 
     // Remove the deployment link from any model.
     // The model will still exists, as a model is a source for a deployment
     // model and has a different lifecycle
-    List<Model> models = getDbSqlSession().createModelQueryImpl().deploymentId(deploymentId).list();
+    List<Model> models = new ModelQueryImpl().deploymentId(deploymentId).list();
     for (Model model : models) {
       ModelEntity modelEntity = (ModelEntity) model;
       modelEntity.setDeploymentId(null);
@@ -102,7 +115,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       if (timerStartJobs != null && timerStartJobs.size() > 0) {
         for (Job timerStartJob : timerStartJobs) {
           if (getEventDispatcher().isEnabled()) {
-                   getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
+            getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
           }
 
           getJobEntityManager().delete((JobEntity) timerStartJob);
@@ -180,44 +193,47 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
     getResourceEntityManager().deleteResourcesByDeploymentId(deploymentId);
 
-    getDbSqlSession().delete("deleteDeployment", deploymentId);
+    delete(findById(deploymentId), false);
   }
 
   @Override
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
-    List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, 0, 1);
-    if (list != null && !list.isEmpty()) {
-      return (DeploymentEntity) list.get(0);
-    }
-    return null;
+    return deploymentDataManager.findLatestDeploymentByName(deploymentName);
   }
 
   @Override
   public long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery) {
-    return (Long) getDbSqlSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
+    return deploymentDataManager.findDeploymentCountByQueryCriteria(deploymentQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
-    final String query = "selectDeploymentsByQueryCriteria";
-    return getDbSqlSession().selectList(query, deploymentQuery, page);
+    return deploymentDataManager.findDeploymentsByQueryCriteria(deploymentQuery, page);
   }
 
   @Override
   public List<String> getDeploymentResourceNames(String deploymentId) {
-    return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
+    return deploymentDataManager.getDeploymentResourceNames(deploymentId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectDeploymentByNativeQuery", parameterMap, firstResult, maxResults);
+    return deploymentDataManager.findDeploymentsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectDeploymentCountByNativeQuery", parameterMap);
+    return deploymentDataManager.findDeploymentCountByNativeQuery(parameterMap);
   }
 
+
+  public DeploymentDataManager getDeploymentDataManager() {
+    return deploymentDataManager;
+  }
+
+
+  public void setDeploymentDataManager(DeploymentDataManager deploymentDataManager) {
+    this.deploymentDataManager = deploymentDataManager;
+  }
+  
 }

@@ -20,12 +20,29 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManager;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<HistoricDetailEntity> implements HistoricDetailEntityManager {
+  
+  protected HistoricDetailDataManager historicDetailDataManager;
+  
+  public HistoricDetailEntityManagerImpl() {
+    
+  }
+  
+  public HistoricDetailEntityManagerImpl(HistoricDetailDataManager historicDetailDataManager) {
+    this.historicDetailDataManager = historicDetailDataManager;
+  }
+  
+  @Override
+  protected DataManager<HistoricDetailEntity> getDataManager() {
+    return historicDetailDataManager;
+  }
   
   @Override
   public HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, 
@@ -45,7 +62,6 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
     }
     
     insert(historicFormPropertyEntity);
-    
     return historicFormPropertyEntity;
   }
   
@@ -83,10 +99,9 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
   }
 
   @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession().createHistoricDetailQuery().processInstanceId(historicProcessInstanceId).list();
+      List<HistoricDetailEntity> historicDetails = historicDetailDataManager.findHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
 
       for (HistoricDetailEntity historicDetail : historicDetails) {
         delete(historicDetail);
@@ -96,20 +111,18 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
 
   @Override
   public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
+    return historicDetailDataManager.findHistoricDetailCountByQueryCriteria(historicVariableUpdateQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
+    return historicDetailDataManager.findHistoricDetailsByQueryCriteria(historicVariableUpdateQuery, page);
   }
 
   @Override
   public void deleteHistoricDetailsByTaskId(String taskId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
-      HistoricDetailQueryImpl detailsQuery = (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
-      List<HistoricDetail> details = detailsQuery.list();
+      List<HistoricDetailEntity> details = historicDetailDataManager.findHistoricDetailsByTaskId(taskId);
       for (HistoricDetail detail : details) {
         delete((HistoricDetailEntity) detail);
       }
@@ -117,13 +130,21 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricDetailByNativeQuery", parameterMap, firstResult, maxResults);
+    return historicDetailDataManager.findHistoricDetailsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
+    return historicDetailDataManager.findHistoricDetailCountByNativeQuery(parameterMap);
   }
+
+  public HistoricDetailDataManager getHistoricDetailDataManager() {
+    return historicDetailDataManager;
+  }
+
+  public void setHistoricDetailDataManager(HistoricDetailDataManager historicDetailDataManager) {
+    this.historicDetailDataManager = historicDetailDataManager;
+  }
+  
 }

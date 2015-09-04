@@ -36,7 +36,7 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   List<Task> findTasksByParentTaskId(String parentTaskId);
 
-  void update(TaskEntity taskEntity);
+  TaskEntity update(TaskEntity taskEntity);
 
   void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
 

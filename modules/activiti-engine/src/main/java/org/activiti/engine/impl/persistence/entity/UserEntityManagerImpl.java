@@ -13,20 +13,18 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
-import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.UserDataManager;
 
 /**
  * @author Tom Baeyens
@@ -35,9 +33,24 @@ import org.activiti.engine.impl.db.Entity;
  */
 public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> implements UserEntityManager {
   
+  protected UserDataManager userDataManager;
+  
+  public UserEntityManagerImpl() {
+    
+  }
+  
+  public UserEntityManagerImpl(UserDataManager userDataManager) {
+    this.userDataManager = userDataManager;
+  }
+  
   @Override
-  public Class<UserEntity> getManagedEntity() {
-    return UserEntity.class;
+  protected DataManager<UserEntity> getDataManager() {
+    return userDataManager;
+  }
+  
+  @Override
+  public UserEntity findById(String entityId) {
+    return userDataManager.findById(entityId);
   }
 
   public User createNewUser(String userId) {
@@ -45,11 +58,7 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   }
 
   public void updateUser(User updatedUser) {
-    getDbSqlSession().update((Entity) updatedUser);
-
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
-    }
+    super.update((UserEntity) updatedUser);
   }
 
   public void delete(UserEntity userEntity) {
@@ -65,51 +74,32 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void delete(String userId) {
     UserEntity user = findById(userId);
     if (user != null) {
-      List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
+      List<IdentityInfoEntity> identityInfos = getIdentityInfoEntityManager().findIdentityInfoByUserId(userId);
       for (IdentityInfoEntity identityInfo : identityInfos) {
         getIdentityInfoEntityManager().delete(identityInfo);
       }
-      getDbSqlSession().delete("deleteMembershipsByUserId", userId);
-
+      getMembershipEntityManager().deleteMembershipByUserId(userId);
       delete(user);
     }
   }
 
-  @SuppressWarnings("unchecked")
   public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page) {
-    return getDbSqlSession().selectList("selectUserByQueryCriteria", query, page);
+    return userDataManager.findUserByQueryCriteria(query, page);
   }
 
   public long findUserCountByQueryCriteria(UserQueryImpl query) {
-    return (Long) getDbSqlSession().selectOne("selectUserCountByQueryCriteria", query);
+    return userDataManager.findUserCountByQueryCriteria(query);
   }
 
-  @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
-    return getDbSqlSession().selectList("selectGroupsByUserId", userId);
+    return userDataManager.findGroupsByUser(userId);
   }
 
   public UserQuery createNewUserQuery() {
     return new UserQueryImpl(getCommandExecutor());
-  }
-
-  public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("userId", userId);
-    parameters.put("key", key);
-    return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("userId", userId);
-    parameters.put("type", type);
-    return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
   }
 
   public Boolean checkPassword(String userId, String password) {
@@ -125,21 +115,12 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
     return false;
   }
 
-  @SuppressWarnings("unchecked")
-  public List<User> findPotentialStarterUsers(String proceDefId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("procDefId", proceDefId);
-    return (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
-
-  }
-
-  @SuppressWarnings("unchecked")
   public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectUserByNativeQuery", parameterMap, firstResult, maxResults);
+    return userDataManager.findUsersByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectUserCountByNativeQuery", parameterMap);
+    return userDataManager.findUserCountByNativeQuery(parameterMap);
   }
 
   @Override
@@ -163,4 +144,12 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
     user.setPicture(picture);
   }
 
+  public UserDataManager getUserDataManager() {
+    return userDataManager;
+  }
+
+  public void setUserDataManager(UserDataManager userDataManager) {
+    this.userDataManager = userDataManager;
+  }
+  
 }

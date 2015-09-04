@@ -28,6 +28,4 @@ public interface ByteArrayEntityManager extends EntityManager<ByteArrayEntity> {
    */
   void deleteByteArrayById(String byteArrayEntityId);
 
-  void deleteByteArray(ByteArrayEntity byteArray);
-
 }

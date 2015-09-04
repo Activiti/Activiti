@@ -15,12 +15,12 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
@@ -30,9 +30,19 @@ import org.activiti.engine.task.IdentityLinkType;
  */
 public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<IdentityLinkEntity> implements IdentityLinkEntityManager {
   
+  protected IdentityLinkDataManager identityLinkDataManager;
+  
+  public IdentityLinkEntityManagerImpl() {
+    
+  }
+  
+  public IdentityLinkEntityManagerImpl(IdentityLinkDataManager identityLinkDataManager) {
+    this.identityLinkDataManager = identityLinkDataManager;
+  }
+  
   @Override
-  public Class<IdentityLinkEntity> getManagedEntity() {
-    return IdentityLinkEntity.class;
+  protected DataManager<IdentityLinkEntity> getDataManager() {
+    return identityLinkDataManager;
   }
   
   @Override
@@ -43,7 +53,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
 
   @Override
   public void deleteIdentityLink(IdentityLinkEntity identityLink, boolean cascadeHistory) {
-    getDbSqlSession().delete(identityLink);
+    delete(identityLink, false);
     if (cascadeHistory) {
       getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
     }
@@ -54,53 +64,33 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
-    return getDbSqlSession().selectList("selectIdentityLinksByTask", taskId);
+    return identityLinkDataManager.findIdentityLinksByTaskId(taskId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId) {
-    return getDbSqlSession().selectList("selectIdentityLinksByProcessInstance", processInstanceId);
+    return identityLinkDataManager.findIdentityLinksByProcessInstanceId(processInstanceId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId) {
-    return getDbSqlSession().selectList("selectIdentityLinksByProcessDefinition", processDefinitionId);
+    return identityLinkDataManager.findIdentityLinksByProcessDefinitionId(processDefinitionId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("taskId", taskId);
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    parameters.put("type", type);
-    return getDbSqlSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
+    return identityLinkDataManager.findIdentityLinkByTaskUserGroupAndType(taskId, userId, groupId, type);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinkByProcessInstanceUserGroupAndType(String processInstanceId, String userId, String groupId, String type) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("processInstanceId", processInstanceId);
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    parameters.put("type", type);
-    return getDbSqlSession().selectList("selectIdentityLinkByProcessInstanceUserGroupAndType", parameters);
+   return identityLinkDataManager.findIdentityLinkByProcessInstanceUserGroupAndType(processInstanceId, userId, groupId, type);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(String processDefinitionId, String userId, String groupId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("processDefinitionId", processDefinitionId);
-    parameters.put("userId", userId);
-    parameters.put("groupId", groupId);
-    return getDbSqlSession().selectList("selectIdentityLinkByProcessDefinitionUserAndGroup", parameters);
+    return identityLinkDataManager.findIdentityLinkByProcessDefinitionUserAndGroup(processDefinitionId, userId, groupId);
   }
   
   @Override
@@ -233,9 +223,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   @Override
   public void deleteIdentityLink(ProcessDefinitionEntity processDefinitionEntity, String userId, String groupId) {
-    List<IdentityLinkEntity> identityLinks = getIdentityLinkEntityManager()
-          .findIdentityLinkByProcessDefinitionUserAndGroup(processDefinitionEntity.getId(), userId, groupId);
-
+    List<IdentityLinkEntity> identityLinks = findIdentityLinkByProcessDefinitionUserAndGroup(processDefinitionEntity.getId(), userId, groupId);
     for (IdentityLinkEntity identityLink : identityLinks) {
       deleteIdentityLink(identityLink, false);
     }
@@ -251,7 +239,15 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
 
   @Override
   public void deleteIdentityLinksByProcDef(String processDefId) {
-    getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId);
+    identityLinkDataManager.deleteIdentityLinksByProcDef(processDefId);
   }
 
+  public IdentityLinkDataManager getIdentityLinkDataManager() {
+    return identityLinkDataManager;
+  }
+
+  public void setIdentityLinkDataManager(IdentityLinkDataManager identityLinkDataManager) {
+    this.identityLinkDataManager = identityLinkDataManager;
+  }
+  
 }

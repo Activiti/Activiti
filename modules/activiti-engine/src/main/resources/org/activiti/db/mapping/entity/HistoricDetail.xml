@@ -184,7 +184,17 @@
     <result property="propertyValue" column="TEXT_" javaType="String" jdbcType="VARCHAR"/>
   </resultMap>
 
-  <!-- HISTORIC VARIABLE UPDATE SELECT -->
+  <!-- HISTORIC VARIABLE SELECT -->
+  
+  <select id="selectHistoricDetailByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicDetailResultMap">
+    select * from ${prefix}ACT_HI_DETAIL
+    where PROC_INST_ID_ = #{parameter}
+  </select>
+  
+  <select id="selectHistoricDetailByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicDetailResultMap">
+    select * from ${prefix}ACT_HI_DETAIL
+    where TASK_ID_ = #{parameter}
+  </select>
 
   <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
   	${limitBefore}

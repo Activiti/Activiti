@@ -216,6 +216,12 @@
     where PROC_DEF_ID_ = #{parameter}
   </select>
   
+    <select id="selectHistoricProcessInstanceIdsBySuperProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicProcessInstanceResultMap">
+    select *
+    from ${prefix}ACT_HI_PROCINST 
+    where SUPER_PROCESS_INSTANCE_ID_ = #{parameter}
+  </select>
+  
 
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
   	${limitBefore}

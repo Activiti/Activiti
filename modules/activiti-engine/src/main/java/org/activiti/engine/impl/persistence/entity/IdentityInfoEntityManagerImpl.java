@@ -19,15 +19,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<IdentityInfoEntity> implements IdentityInfoEntityManager {
+  
+  protected IdentityInfoDataManager identityInfoDataManager;
+  
+  public IdentityInfoEntityManagerImpl() {
+    
+  }
+  
+  public IdentityInfoEntityManagerImpl(IdentityInfoDataManager identityInfoDataManager) {
+    this.identityInfoDataManager = identityInfoDataManager;
+  }
 
   @Override
-  public Class<IdentityInfoEntity> getManagedEntity() {
-    return IdentityInfoEntity.class;
+  protected DataManager<IdentityInfoEntity> getDataManager() {
+    return identityInfoDataManager;
   }
   
   @Override
@@ -36,10 +49,6 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
     if (identityInfoEntity != null) {
       delete(identityInfoEntity);
     }
-  }
-
-  protected List<IdentityInfoEntity> findIdentityInfoDetails(String identityInfoId) {
-    return getDbSqlSession().getSqlSession().selectList("selectIdentityInfoDetails", identityInfoId);
   }
 
   @Override
@@ -60,7 +69,7 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
       }
 
       Set<String> newKeys = new HashSet<String>(accountDetails.keySet());
-      List<IdentityInfoEntity> identityInfoDetails = findIdentityInfoDetails(identityInfoEntity.getId());
+      List<IdentityInfoEntity> identityInfoDetails = identityInfoDataManager.findIdentityInfoDetails(identityInfoEntity.getId());
       for (IdentityInfoEntity identityInfoDetail : identityInfoDetails) {
         String detailKey = identityInfoDetail.getKey();
         newKeys.remove(detailKey);
@@ -82,21 +91,21 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
       identityInfoEntity.setKey(key);
       identityInfoEntity.setValue(value);
       identityInfoEntity.setPasswordBytes(storedPassword);
-      getDbSqlSession().insert(identityInfoEntity);
+      insert(identityInfoEntity, false);
       if (accountDetails != null) {
         insertAccountDetails(identityInfoEntity, accountDetails, accountDetails.keySet());
       }
     }
   }
 
-  private void insertAccountDetails(IdentityInfoEntity identityInfoEntity, Map<String, String> accountDetails, Set<String> keys) {
+  protected void insertAccountDetails(IdentityInfoEntity identityInfoEntity, Map<String, String> accountDetails, Set<String> keys) {
     for (String newKey : keys) {
       // insert detail
       IdentityInfoEntity identityInfoDetail = new IdentityInfoEntity();
       identityInfoDetail.setParentId(identityInfoEntity.getId());
       identityInfoDetail.setKey(newKey);
       identityInfoDetail.setValue(accountDetails.get(newKey));
-      getDbSqlSession().insert(identityInfoDetail);
+      insert(identityInfoDetail, false);
     }
   }
 
@@ -110,18 +119,25 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
 
   @Override
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("userId", userId);
-    parameters.put("key", key);
-    return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
+    return identityInfoDataManager.findUserInfoByUserIdAndKey(userId, key);
+  }
+  
+  @Override
+  public List<IdentityInfoEntity> findIdentityInfoByUserId(String userId) {
+    return identityInfoDataManager.findIdentityInfoByUserId(userId);
   }
 
   @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("userId", userId);
-    parameters.put("type", type);
-    return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
+    return identityInfoDataManager.findUserInfoKeysByUserIdAndType(userId, type);
   }
+
+  public IdentityInfoDataManager getIdentityInfoDataManager() {
+    return identityInfoDataManager;
+  }
+
+  public void setIdentityInfoDataManager(IdentityInfoDataManager identityInfoDataManager) {
+    this.identityInfoDataManager = identityInfoDataManager;
+  }
+  
 }

@@ -16,10 +16,10 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.repository.Model;
 
 /**
@@ -28,9 +28,24 @@ import org.activiti.engine.repository.Model;
  */
 public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> implements ModelEntityManager {
   
+  protected ModelDataManager modelDataManager;
+  
+  public ModelEntityManagerImpl() {
+    
+  }
+  
+  public ModelEntityManagerImpl(ModelDataManager modelDataManager) {
+    this.modelDataManager = modelDataManager;
+  }
+  
   @Override
-  public Class<ModelEntity> getManagedEntity() {
-    return ModelEntity.class;
+  protected DataManager<ModelEntity> getDataManager() {
+    return modelDataManager;
+  }
+  
+  @Override
+  public ModelEntity findById(String entityId) {
+    return modelDataManager.findById(entityId);
   }
 
   @Override
@@ -49,16 +64,12 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   @Override
   public void updateModel(ModelEntity updatedModel) {
     updatedModel.setLastUpdateTime(getClock().getCurrentTime());
-    getDbSqlSession().update(updatedModel);
-
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
-    }
+    update(updatedModel);
   }
   
   @Override
   public void delete(String modelId) {
-    ModelEntity modelEntity = getDbSqlSession().selectById(ModelEntity.class, modelId);
+    ModelEntity modelEntity = findById(modelId);
     super.delete(modelEntity);
     deleteEditorSource(modelEntity);
     deleteEditorSourceExtra(modelEntity);
@@ -109,14 +120,13 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page) {
-    return getDbSqlSession().selectList("selectModelsByQueryCriteria", query, page);
+    return modelDataManager.findModelsByQueryCriteria(query, page);
   }
 
   @Override
   public long findModelCountByQueryCriteria(ModelQueryImpl query) {
-    return (Long) getDbSqlSession().selectOne("selectModelCountByQueryCriteria", query);
+    return modelDataManager.findModelCountByQueryCriteria(query);
   }
 
   @Override
@@ -142,13 +152,21 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectModelByNativeQuery", parameterMap, firstResult, maxResults);
+    return modelDataManager.findModelsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findModelCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectModelCountByNativeQuery", parameterMap);
+    return modelDataManager.findModelCountByNativeQuery(parameterMap);
   }
+
+  public ModelDataManager getModelDataManager() {
+    return modelDataManager;
+  }
+
+  public void setModelDataManager(ModelDataManager modelDataManager) {
+    this.modelDataManager = modelDataManager;
+  }
+  
 }

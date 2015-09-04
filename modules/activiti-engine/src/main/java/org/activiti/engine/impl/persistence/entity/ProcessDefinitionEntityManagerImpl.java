@@ -13,13 +13,13 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManager;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -30,102 +30,82 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<ProcessDefinitionEntity> implements ProcessDefinitionEntityManager {
 
+  protected ProcessDefinitionDataManager processDefinitionDataManager;
+  
+  public ProcessDefinitionEntityManagerImpl() {
+    
+  }
+  
+  public ProcessDefinitionEntityManagerImpl(ProcessDefinitionDataManager processDefinitionDataManager) {
+    this.processDefinitionDataManager = processDefinitionDataManager;
+  }
+
   @Override
-  public Class<ProcessDefinitionEntity> getManagedEntity() {
-    return ProcessDefinitionEntity.class;
+  protected DataManager<ProcessDefinitionEntity> getDataManager() {
+    return processDefinitionDataManager;
   }
   
   @Override
   public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
-    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
+    return processDefinitionDataManager.findLatestProcessDefinitionByKey(processDefinitionKey);
   }
 
   @Override
   public ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("processDefinitionKey", processDefinitionKey);
-    params.put("tenantId", tenantId);
-    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKeyAndTenantId", params);
+   return processDefinitionDataManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
   }
 
   @Override
   public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
-    getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
+    processDefinitionDataManager.deleteProcessDefinitionsByDeploymentId(deploymentId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
-    // List<ProcessDefinition> processDefinitions =
-    return getDbSqlSession().selectList("selectProcessDefinitionsByQueryCriteria", processDefinitionQuery, page);
-
-    // skipped this after discussion within the team
-    // // retrieve process definitions from cache
-    // (https://activiti.atlassian.net/browse/ACT-1020) to have all available
-    // information
-    // ArrayList<ProcessDefinition> result = new
-    // ArrayList<ProcessDefinition>();
-    // for (ProcessDefinition processDefinitionEntity : processDefinitions)
-    // {
-    // ProcessDefinitionEntity fullProcessDefinition = Context
-    // .getProcessEngineConfiguration()
-    // .getDeploymentCache().resolveProcessDefinition((ProcessDefinitionEntity)processDefinitionEntity);
-    // result.add(fullProcessDefinition);
-    // }
-    // return result;
+   return processDefinitionDataManager.findProcessDefinitionsByQueryCriteria(processDefinitionQuery, page);
   }
 
   @Override
   public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {
-    return (Long) getDbSqlSession().selectOne("selectProcessDefinitionCountByQueryCriteria", processDefinitionQuery);
+    return processDefinitionDataManager.findProcessDefinitionCountByQueryCriteria(processDefinitionQuery);
   }
 
   @Override
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("deploymentId", deploymentId);
-    parameters.put("processDefinitionKey", processDefinitionKey);
-    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
+    return processDefinitionDataManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinitionKey);
   }
 
   @Override
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKeyAndTenantId(String deploymentId, String processDefinitionKey, String tenantId) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("deploymentId", deploymentId);
-    parameters.put("processDefinitionKey", processDefinitionKey);
-    parameters.put("tenantId", tenantId);
-    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKeyAndTenantId", parameters);
+   return processDefinitionDataManager.findProcessDefinitionByDeploymentAndKeyAndTenantId(deploymentId, processDefinitionKey, tenantId);
   }
 
   @Override
-  public ProcessDefinition findProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
-    ProcessDefinitionQueryImpl processDefinitionQuery = new ProcessDefinitionQueryImpl().processDefinitionKey(processDefinitionKey).processDefinitionVersion(processDefinitionVersion);
-    List<ProcessDefinition> results = findProcessDefinitionsByQueryCriteria(processDefinitionQuery, null);
-    if (results.size() == 1) {
-      return results.get(0);
-    } else if (results.size() > 1) {
-      throw new ActivitiException("There are " + results.size() + " process definitions with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'.");
-    }
-    return null;
+  public ProcessDefinition findProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId) {
+    return processDefinitionDataManager.findProcessDefinitionByKeyAndVersionAndTenantId(processDefinitionKey, processDefinitionVersion, tenantId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectProcessDefinitionByNativeQuery", parameterMap, firstResult, maxResults);
+    return processDefinitionDataManager.findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectProcessDefinitionCountByNativeQuery", parameterMap);
+    return processDefinitionDataManager.findProcessDefinitionCountByNativeQuery(parameterMap);
   }
 
   @Override
   public void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId) {
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("tenantId", newTenantId);
-    getDbSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
+    processDefinitionDataManager.updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
   }
 
+  public ProcessDefinitionDataManager getProcessDefinitionDataManager() {
+    return processDefinitionDataManager;
+  }
+
+  public void setProcessDefinitionDataManager(ProcessDefinitionDataManager processDefinitionDataManager) {
+    this.processDefinitionDataManager = processDefinitionDataManager;
+  }
+  
 }

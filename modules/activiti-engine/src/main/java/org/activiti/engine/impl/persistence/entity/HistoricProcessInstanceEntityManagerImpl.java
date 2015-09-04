@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceDataManager;
 
 /**
  * @author Tom Baeyens
@@ -26,17 +28,25 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
  */
 public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceEntityManager {
 
-  @Override
-  public Class<HistoricProcessInstanceEntity> getManagedEntity() {
-    return HistoricProcessInstanceEntity.class;
+  protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
+  
+  public HistoricProcessInstanceEntityManagerImpl() {
+    
+  }
+  
+  public HistoricProcessInstanceEntityManagerImpl(HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
+    this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
   }
   
   @Override
-  @SuppressWarnings("unchecked")
+  protected DataManager<HistoricProcessInstanceEntity> getDataManager() {
+    return historicProcessInstanceDataManager;
+  }
+  
+  @Override
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
     if (getHistoryManager().isHistoryEnabled()) {
-      List<String> historicProcessInstanceIds = getDbSqlSession().selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
-
+      List<String> historicProcessInstanceIds = historicProcessInstanceDataManager.findHistoricProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
       for (String historicProcessInstanceId : historicProcessInstanceIds) {
         delete(historicProcessInstanceId);
       }
@@ -55,15 +65,13 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
       getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
       getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
 
-      getDbSqlSession().delete(historicProcessInstance);
+      delete(historicProcessInstance, false);
 
       // Also delete any sub-processes that may be active (ACT-821)
-      HistoricProcessInstanceQueryImpl subProcessesQueryImpl = new HistoricProcessInstanceQueryImpl();
-      subProcessesQueryImpl.superProcessInstanceId(historicProcessInstanceId);
 
-      List<HistoricProcessInstance> selectList = getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", subProcessesQueryImpl);
-      for (HistoricProcessInstance child : selectList) {
-        delete(child.getId());
+      List<HistoricProcessInstanceEntity> selectList = historicProcessInstanceDataManager.findHistoricProcessInstancesBySuperProcessInstanceId(historicProcessInstanceId);
+      for (HistoricProcessInstanceEntity child : selectList) {
+        delete(child.getId()); // NEEDS to be by id, to come again through this method!
       }
     }
   }
@@ -71,7 +79,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
   @Override
   public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+      return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByQueryCriteria(historicProcessInstanceQuery);
     }
     return 0;
   }
@@ -80,7 +88,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
   @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery);
+      return historicProcessInstanceDataManager.findHistoricProcessInstancesByQueryCriteria(historicProcessInstanceQuery);
     }
     return Collections.EMPTY_LIST;
   }
@@ -89,47 +97,27 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
   @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      // paging doesn't work for combining process instances and variables
-      // due to an outer join, so doing it in-memory
-      if (historicProcessInstanceQuery.getFirstResult() < 0 || historicProcessInstanceQuery.getMaxResults() <= 0) {
-        return Collections.EMPTY_LIST;
-      }
-
-      int firstResult = historicProcessInstanceQuery.getFirstResult();
-      int maxResults = historicProcessInstanceQuery.getMaxResults();
-
-      // setting max results, limit to 20000 results for performance reasons
-      historicProcessInstanceQuery.setMaxResults(20000);
-      historicProcessInstanceQuery.setFirstResult(0);
-
-      List<HistoricProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricProcessInstancesWithVariablesByQueryCriteria",
-          historicProcessInstanceQuery, historicProcessInstanceQuery.getFirstResult(), historicProcessInstanceQuery.getMaxResults());
-
-      if (instanceList != null && !instanceList.isEmpty()) {
-        if (firstResult > 0) {
-          if (firstResult <= instanceList.size()) {
-            int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
-            return instanceList.subList(firstResult, toIndex);
-          } else {
-            return Collections.EMPTY_LIST;
-          }
-        } else {
-          int toIndex = Math.min(maxResults, instanceList.size());
-          return instanceList.subList(0, toIndex);
-        }
-      }
+      return historicProcessInstanceDataManager.findHistoricProcessInstancesAndVariablesByQueryCriteria(historicProcessInstanceQuery);
     }
     return Collections.EMPTY_LIST;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricProcessInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+    return historicProcessInstanceDataManager.findHistoricProcessInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByNativeQuery", parameterMap);
+    return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByNativeQuery(parameterMap);
   }
+
+  public HistoricProcessInstanceDataManager getHistoricProcessInstanceDataManager() {
+    return historicProcessInstanceDataManager;
+  }
+
+  public void setHistoricProcessInstanceDataManager(HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
+    this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
+  }
+  
 }

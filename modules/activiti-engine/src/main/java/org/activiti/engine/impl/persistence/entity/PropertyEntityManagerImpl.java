@@ -13,15 +13,28 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity> implements PropertyEntityManager {
 
+  protected PropertyDataManager propertyDataManager;
+  
+  public PropertyEntityManagerImpl() {
+    
+  }
+  
+  public PropertyEntityManagerImpl(PropertyDataManager propertyDataManager) {
+    this.propertyDataManager = propertyDataManager;
+  }
+  
   @Override
-  public Class<PropertyEntity> getManagedEntity() {
-    return PropertyEntity.class;
+  protected DataManager<PropertyEntity> getDataManager() {
+    return propertyDataManager;
   }
   
 }

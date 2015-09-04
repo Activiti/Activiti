@@ -15,23 +15,21 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
 import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
@@ -48,93 +46,67 @@ import org.slf4j.LoggerFactory;
 public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionEntity> implements ExecutionEntityManager {
   
   private static final Logger logger = LoggerFactory.getLogger(ExecutionEntityManagerImpl.class);
-
-  @Override
-  public Class<ExecutionEntity> getManagedEntity() {
-    return ExecutionEntity.class;
+  
+  protected ExecutionDataManager executionDataManager;
+  
+  public ExecutionEntityManagerImpl() {
+    
+  }
+  
+  public ExecutionEntityManagerImpl(ExecutionDataManager executionDataManager) {
+    this.executionDataManager = executionDataManager;
   }
 
+  @Override
+  protected DataManager<ExecutionEntity> getDataManager() {
+    return executionDataManager;
+  }
+  
   // FIND METHODS
 
   @Override
-  public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
-    return findByQuery("selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
-
-      public boolean isRetained(ExecutionEntity executionEntity) {
-        return executionEntity.getSuperExecutionId() != null && superExecutionId.equals(executionEntity.getSuperExecutionId());
-      }
-      
-    });
+  public ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId) {
+    return executionDataManager.findSubProcessInstanceBySuperExecutionId(superExecutionId);
   }
 
   @Override
-  public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {
-    return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
-      @Override
-      public boolean isRetained(ExecutionEntity entity) {
-        return entity.getParentId() != null && entity.getParentId().equals(parentExecutionId);
-      }
-    }, true);
+  public List<ExecutionEntity> findChildExecutionsByParentExecutionId(String parentExecutionId) {
+    return executionDataManager.findChildExecutionsByParentExecutionId(parentExecutionId);
   }
 
   @Override
-  public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
-    return getList("selectChildExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
-      @Override
-      public boolean isRetained(ExecutionEntity executionEntity) {
-        return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && executionEntity.getParentId() != null;
-      }
-    }, true);
+  public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(String processInstanceId) {
+    return executionDataManager.findChildExecutionsByProcessInstanceId(processInstanceId);
   }
 
   @Override
   public List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds) {
-    
-    Map<String, Object> parameters = new HashMap<String, Object>(2);
-    parameters.put("parentExecutionId", parentExecutionId);
-    parameters.put("activityIds", activityIds);
-    
-    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, new CachedEntityMatcher<ExecutionEntity>() {
-      
-      public boolean isRetained(ExecutionEntity executionEntity) {
-        return executionEntity.getParentId() != null && executionEntity.getParentId().equals(parentExecutionId)
-            && executionEntity.getActivityId() != null && activityIds.contains(executionEntity.getActivityId());
-      }
-      
-    }, true);
+    return executionDataManager.findExecutionsByParentExecutionAndActivityIds(parentExecutionId, activityIds);
   }
 
   @Override
   public long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery) {
-    return (Long) getDbSqlSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
+    return executionDataManager.findExecutionCountByQueryCriteria(executionQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page) {
-    return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page);
+    return executionDataManager.findExecutionsByQueryCriteria(executionQuery, page);
   }
   
   @Override
   public long findProcessInstanceCountByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
-    return (Long) getDbSqlSession().selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
+    return executionDataManager.findProcessInstanceCountByQueryCriteria(executionQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
-    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery);
+    return executionDataManager.findProcessInstanceByQueryCriteria(executionQuery);
   }
   
   @Override
-  public ExecutionTree findExecutionTree(final String rootProcessInstanceId) {
-    List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
-      @Override
-      public boolean isRetained(ExecutionEntity entity) {
-        return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId().equals(rootProcessInstanceId);
-      }
-    }, true); 
-    return ExecutionTreeUtil.buildExecutionTree(executions);
+  public ExecutionTree findExecutionTree(String rootProcessInstanceId) {
+    return ExecutionTreeUtil.buildExecutionTree(executionDataManager.findExecutionsByRootProcessInstanceId(rootProcessInstanceId));
   }
   
   /**
@@ -142,113 +114,47 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
    * (i.e. does not treat the id as the root process instance id and fetches everything for that root process instance id) 
    */
   protected ExecutionTree findExecutionTreeInCurrentProcessInstance(final String processInstanceId) {
-    List<ExecutionEntity> executions = getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
-      @Override
-      public boolean isRetained(ExecutionEntity entity) {
-        return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals(processInstanceId);
-      }
-    }, true); 
-    return ExecutionTreeUtil.buildExecutionTreeForProcessInstance(executions);
-}
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
-    // paging doesn't work for combining process instances and variables due
-    // to an outer join, so doing it in-memory
-    if (executionQuery.getFirstResult() < 0 || executionQuery.getMaxResults() <= 0) {
-      return Collections.EMPTY_LIST;
-    }
-
-    int firstResult = executionQuery.getFirstResult();
-    int maxResults = executionQuery.getMaxResults();
-
-    // setting max results, limit to 20000 results for performance reasons
-    executionQuery.setMaxResults(20000);
-    executionQuery.setFirstResult(0);
-
-    List<ProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectProcessInstanceWithVariablesByQueryCriteria", executionQuery,
-        executionQuery.getFirstResult(), executionQuery.getMaxResults());
-
-    if (instanceList != null && !instanceList.isEmpty()) {
-      if (firstResult > 0) {
-        if (firstResult <= instanceList.size()) {
-          int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
-          return instanceList.subList(firstResult, toIndex);
-        } else {
-          return Collections.EMPTY_LIST;
-        }
-      } else {
-        int toIndex = Math.min(maxResults, instanceList.size());
-        return instanceList.subList(0, toIndex);
-      }
-    }
-    return Collections.EMPTY_LIST;
+    return ExecutionTreeUtil.buildExecutionTreeForProcessInstance(executionDataManager.findExecutionsByProcessInstanceId(processInstanceId));
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("activityId", activityRef);
-    parameters.put("parentExecutionId", parentExecutionId);
+  public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
+    return executionDataManager.findProcessInstanceAndVariablesByQueryCriteria(executionQuery);
+  }
 
-    return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
+  @Override
+  public List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId) {
+    return executionDataManager.findEventScopeExecutionsByActivityId(activityRef, parentExecutionId);
   }
 
   @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(2);
-    params.put("activityId", activityId);
-    params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
-      public boolean isRetained(ExecutionEntity entity) {
-        return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
-      }
-    }, true);
+    return executionDataManager.findInactiveExecutionsByActivityId(activityId);
   }
 
   @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(2);
-    params.put("processInstanceId", processInstanceId);
-    params.put("isActive", false);
-    return getList("selectInactiveExecutionsForProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
-      public boolean isRetained(ExecutionEntity executionEntity) {
-        return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive();
-      }
-    }, true);
+    return executionDataManager.findInactiveExecutionsByProcessInstanceId(processInstanceId);
   }
   
   @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(3);
-    params.put("activityId", activityId);
-    params.put("processInstanceId", processInstanceId);
-    params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
-      public boolean isRetained(ExecutionEntity executionEntity) {
-        return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive() &&
-            executionEntity.getActivityId() != null && executionEntity.getActivityId().equals(activityId);
-      }
-    }, true);
+   return executionDataManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(activityId, processInstanceId);
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectExecutionByNativeQuery", parameterMap, firstResult, maxResults);
+    return executionDataManager.findExecutionsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectExecutionByNativeQuery", parameterMap, firstResult, maxResults);
+    return executionDataManager.findProcessInstanceByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findExecutionCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectExecutionCountByNativeQuery", parameterMap);
+    return executionDataManager.findExecutionCountByNativeQuery(parameterMap);
   }
 
   // CREATE METHODS
@@ -267,7 +173,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     }
 
     // Store in database
-    getExecutionEntityManager().insert(processInstanceExecution, false);
+    insert(processInstanceExecution, false);
 
     // Need to be after insert, cause we need the id
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
@@ -333,18 +239,14 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId) {
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("tenantId", newTenantId);
-    getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
+    executionDataManager.updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
   }
 
   // DELETE METHODS
 
   @Override
-  @SuppressWarnings("unchecked")
   public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
-    List<String> processInstanceIds = getDbSqlSession().selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
+    List<String> processInstanceIds = executionDataManager.findProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
 
     for (String processInstanceId : processInstanceIds) {
       deleteProcessInstance(processInstanceId, deleteReason, cascade);
@@ -536,27 +438,18 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   public void updateProcessInstanceLockTime(String processInstanceId) {
     Date expirationTime = getClock().getCurrentTime();
     int lockMillis = getAsyncExecutor().getAsyncJobLockTimeInMillis();
+    
     GregorianCalendar lockCal = new GregorianCalendar();
     lockCal.setTime(expirationTime);
     lockCal.add(Calendar.MILLISECOND, lockMillis);
+    Date lockDate = lockCal.getTime();
 
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("id", processInstanceId);
-    params.put("lockTime", lockCal.getTime());
-    params.put("expirationTime", expirationTime);
-
-    int result = getDbSqlSession().update("updateProcessInstanceLockTime", params);
-    if (result == 0) {
-      throw new ActivitiOptimisticLockingException("Could not lock process instance");
-    }
+    executionDataManager.updateProcessInstanceLockTime(processInstanceId, lockDate, expirationTime);
   }
 
   @Override
   public void clearProcessInstanceLockTime(String processInstanceId) {
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("id", processInstanceId);
-
-    getDbSqlSession().update("clearProcessInstanceLockTime", params);
+    executionDataManager.clearProcessInstanceLockTime(processInstanceId);
   }
   
   @Override
@@ -574,4 +467,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return null;
   }
 
+  public ExecutionDataManager getExecutionDataManager() {
+    return executionDataManager;
+  }
+
+  public void setExecutionDataManager(ExecutionDataManager executionDataManager) {
+    this.executionDataManager = executionDataManager;
+  }
+  
 }

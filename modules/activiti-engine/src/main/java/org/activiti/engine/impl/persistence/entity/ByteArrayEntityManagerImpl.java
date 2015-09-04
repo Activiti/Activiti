@@ -13,16 +13,29 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+
 
 /**
  * @author Joram Barrez
  * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity> implements ByteArrayEntityManager {
+  
+  protected ByteArrayDataManager byteArrayDataManager;
+  
+  public ByteArrayEntityManagerImpl() {
+    
+  }
+  
+  public ByteArrayEntityManagerImpl(ByteArrayDataManager byteArrayDataManager) {
+    this.byteArrayDataManager = byteArrayDataManager;
+  }
    
   @Override
-  public Class<ByteArrayEntity> getManagedEntity() {
-    return ByteArrayEntity.class;
+  protected DataManager<ByteArrayEntity> getDataManager() {
+    return byteArrayDataManager;
   }
   
   @Override
@@ -33,18 +46,21 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
   @Override
   public ByteArrayEntity createAndInsert(String name, byte[] bytes) {
     ByteArrayEntity byteArrayEntity = new ByteArrayEntity(name, bytes);
-    insert(byteArrayEntity);
+    byteArrayDataManager.insert(byteArrayEntity);
     return byteArrayEntity;
   }
 
   @Override
   public void deleteByteArrayById(String byteArrayEntityId) {
-    getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
+    byteArrayDataManager.deleteByteArrayNoRevisionCheck(byteArrayEntityId);
   }
 
-  @Override
-  public void deleteByteArray(ByteArrayEntity byteArray) {
-    getDbSqlSession().delete(byteArray);
+  public ByteArrayDataManager getByteArrayDataManager() {
+    return byteArrayDataManager;
   }
 
+  public void setByteArrayDataManager(ByteArrayDataManager byteArrayDataManager) {
+    this.byteArrayDataManager = byteArrayDataManager;
+  }
+  
 }

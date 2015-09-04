@@ -32,8 +32,6 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.slf4j.Logger;
@@ -64,6 +62,16 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
 
   @Override
   public void updateUser(User updatedUser) {
+    throw new ActivitiException("LDAP user manager doesn't support updating a user");
+  }
+  
+  @Override
+  public UserEntity update(UserEntity entity) {
+    throw new ActivitiException("LDAP user manager doesn't support updating a user");
+  }
+  
+  @Override
+  public UserEntity update(UserEntity entity, boolean fireUpdateEvent) {
     throw new ActivitiException("LDAP user manager doesn't support updating a user");
   }
 
@@ -198,21 +206,6 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
   }
 
   @Override
-  public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-    throw new ActivitiException("LDAP user manager doesn't support querying");
-  }
-
-  @Override
-  public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
-    throw new ActivitiException("LDAP user manager doesn't support querying");
-  }
-
-  @Override
-  public List<User> findPotentialStarterUsers(String proceDefId) {
-    throw new ActivitiException("LDAP user manager doesn't support querying");
-  }
-
-  @Override
   public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
@@ -314,16 +307,6 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
 
   @Override
   public void insert(UserEntity entity, boolean fireCreateEvent) {
-    throw new ActivitiException("Unsupported by LDAP user manager");
-  }
-
-  @Override
-  public UserEntity findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<UserEntity> cachedEntityMatcher) {
-    throw new ActivitiException("Unsupported by LDAP user manager");
-  }
-
-  @Override
-  public List<UserEntity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<UserEntity> retainEntityCondition, boolean checkCache) {
     throw new ActivitiException("Unsupported by LDAP user manager");
   }
 

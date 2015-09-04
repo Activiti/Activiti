@@ -20,39 +20,63 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManager;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class HistoricActivityInstanceEntityManagerImpl extends AbstractEntityManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceEntityManager {
+  
+  protected HistoricActivityInstanceDataManager historicActivityInstanceDataManager;
+  
+  public HistoricActivityInstanceEntityManagerImpl() {
+    
+  }
+  
+  public HistoricActivityInstanceEntityManagerImpl(HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
+    this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
+  }
+  
+  @Override
+  protected DataManager<HistoricActivityInstanceEntity> getDataManager() {
+    return historicActivityInstanceDataManager;
+  }
 
   @Override
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
+      historicActivityInstanceDataManager.deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
     }
   }
 
   @Override
   public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
+    return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByQueryCriteria(historicActivityInstanceQuery);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
+    return historicActivityInstanceDataManager.findHistoricActivityInstancesByQueryCriteria(historicActivityInstanceQuery, page);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricActivityInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+    return historicActivityInstanceDataManager.findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByNativeQuery", parameterMap);
+    return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByNativeQuery(parameterMap);
   }
+
+  public HistoricActivityInstanceDataManager getHistoricActivityInstanceDataManager() {
+    return historicActivityInstanceDataManager;
+  }
+
+  public void setHistoricActivityInstanceDataManager(HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
+    this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
+  }
+  
 }

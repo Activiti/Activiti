@@ -22,8 +22,6 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
 
-  Class<VariableInstanceEntity> getManagedEntity();
-
   VariableInstanceEntity create(String name, VariableType type, Object value);
 
   VariableInstanceEntity createAndInsert(String name, VariableType type, Object value);

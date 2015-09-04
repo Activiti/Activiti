@@ -12,37 +12,23 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.List;
-
 import org.activiti.engine.impl.db.Entity;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 
 /**
  * @author Joram Barrez
  */
 public interface EntityManager<EntityImpl extends Entity> {
-
+  
+  EntityImpl findById(String entityId);
+  
   void insert(EntityImpl entity);
 
   void insert(EntityImpl entity, boolean fireCreateEvent);
-
-  EntityImpl findById(String entityId);
-
-  EntityImpl findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<EntityImpl> cachedEntityMatcher);
-
-  /**
-   * Gets a list by querying the database and the cache using {@link CachedEntityMatcher}.
-   * First, the entities are fetched from the database using the provided query. 
-   * The cache is then queried for the entities of the same type. If an entity matches
-   * the {@link CachedEntityMatcher} condition, it replaces the entity from the database (as it is newer).
-   * 
-   * @param dbQueryName The query name that needs to be executed.
-   * @param parameter The parameters for the query.
-   * @param entityMatcher The matcher used to determine which entities from the cache needs to be retained
-   * @param checkCache If false, no cache check will be done, and the returned list will simply be the list from the database.
-   */
-  List<EntityImpl> getList(String dbQueryName, Object parameter, CachedEntityMatcher<EntityImpl> entityMatcher, boolean checkCache);
   
+  EntityImpl update(EntityImpl entity);
+  
+  EntityImpl update(EntityImpl entity, boolean fireUpdateEvent);
+
   void delete(String id);
   
   void delete(EntityImpl entity);

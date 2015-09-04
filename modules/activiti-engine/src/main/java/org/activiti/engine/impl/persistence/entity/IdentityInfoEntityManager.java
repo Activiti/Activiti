@@ -24,6 +24,8 @@ public interface IdentityInfoEntityManager extends EntityManager<IdentityInfoEnt
 
   List<String> findUserInfoKeysByUserIdAndType(String userId, String type);
   
+  List<IdentityInfoEntity> findIdentityInfoByUserId(String userId);
+  
   void updateUserInfo(String userId, String userPassword, String type, String key, String value, String accountPassword, Map<String, String> accountDetails);
   
   void deleteUserInfoByUserIdAndKey(String userId, String key);

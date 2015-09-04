@@ -91,9 +91,9 @@ public class DeploymentManager {
     return processDefinition;
   }
 
-  public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
+  public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context.getCommandContext().getProcessDefinitionEntityManager()
-        .findProcessDefinitionByKeyAndVersion(processDefinitionKey, processDefinitionVersion);
+        .findProcessDefinitionByKeyAndVersionAndTenantId(processDefinitionKey, processDefinitionVersion, tenantId);
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'", ProcessDefinition.class);
     }

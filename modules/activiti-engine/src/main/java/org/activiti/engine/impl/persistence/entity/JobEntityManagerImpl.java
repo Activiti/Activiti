@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,8 @@ import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -57,17 +57,19 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   private static final Logger logger = LoggerFactory.getLogger(JobEntityManagerImpl.class);
   
-  @SuppressWarnings("unchecked")
-  protected static final List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = Arrays.asList(TimerEntity.class, MessageEntity.class);
+  protected JobDataManager jobDataManager;
   
-  @Override
-  public Class<JobEntity> getManagedEntity() {
-    return JobEntity.class;
+  public JobEntityManagerImpl() {
+    
+  }
+  
+  public JobEntityManagerImpl(JobDataManager jobDataManager) {
+    this.jobDataManager = jobDataManager;
   }
   
   @Override
-  public List<Class<? extends JobEntity>> getManagedEntitySubClasses() {
-    return ENTITY_SUBCLASSES;
+  protected DataManager<JobEntity> getDataManager() {
+    return jobDataManager;
   }
   
   @Override
@@ -130,7 +132,6 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     insert(timer);
 
     if (getProcessEngineConfiguration().isAsyncExecutorEnabled() == false && timer.getDuedate().getTime() <= (getClock().getCurrentTime().getTime())) {
-
       hintJobExecutor(timer);
     }
   }
@@ -163,123 +164,78 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+    return jobDataManager.findNextJobsToExecute(page); 
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findNextTimerJobsToExecute(Page page) {
-    Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
+    return jobDataManager.findNextTimerJobsToExecute(page);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
-    Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
+    return jobDataManager.findAsyncJobsDueToExecute(page);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
-    return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
+    return jobDataManager.findJobsByLockOwner(lockOwner, start, maxNrOfJobs);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectJobsByExecutionId", executionId, new CachedEntityMatcher<JobEntity>() {
-      @Override
-      public boolean isRetained(JobEntity jobEntity) {
-        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
-      }
-    }, true);
+  public List<JobEntity> findJobsByExecutionId(String executionId) {
+    return jobDataManager.findJobsByExecutionId(executionId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("pid", processInstanceId);
-    params.put("now", getClock().getCurrentTime());
-    return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
+    return jobDataManager.findExclusiveJobsToExecute(processInstanceId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
-    final String query = "selectUnlockedTimersByDuedate";
-    return getDbSqlSession().selectList(query, duedate, page);
+    return jobDataManager.findUnlockedTimersByDuedate(duedate, page);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<TimerEntity> findTimersByExecutionId(String executionId) {
-    return getDbSqlSession().selectList("selectTimersByExecutionId", executionId);
+    return jobDataManager.findTimersByExecutionId(executionId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
-    final String query = "selectJobByQueryCriteria";
-    return getDbSqlSession().selectList(query, jobQuery, page);
+    return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("handlerType", jobHandlerType);
-    
-    if (processDefinitionIds != null && processDefinitionIds.size() > 0) {
-      params.put("processDefinitionIds", processDefinitionIds);
-    }
-    return getDbSqlSession().selectList("selectJobsByTypeAndProcessDefinitionIds", params);
+   return jobDataManager.findJobsByTypeAndProcessDefinitionIds(jobHandlerType, processDefinitionIds);
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<Job> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-     Map<String, String> params = new HashMap<String, String>(2);
-     params.put("handlerType", jobHandlerType);
-     params.put("processDefinitionKey", processDefinitionKey);
-     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionKeyNoTenantId", params);
+    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(jobHandlerType, processDefinitionKey);
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<Job> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-     Map<String, String> params = new HashMap<String, String>(3);
-     params.put("handlerType", jobHandlerType);
-     params.put("processDefinitionKey", processDefinitionKey);
-     params.put("tenantId", tenantId);
-     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionKeyAndTenantId", params);
+    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyAndTenantId(jobHandlerType, processDefinitionKey, tenantId);
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-     Map<String, String> params = new HashMap<String, String>(2);
-     params.put("handlerType", jobHandlerType);
-     params.put("processDefinitionId", processDefinitionId);
-     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionId", params);
+     return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
   }
   
   @Override
   public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
-    return (Long) getDbSqlSession().selectOne("selectJobCountByQueryCriteria", jobQuery);
+    return jobDataManager.findJobCountByQueryCriteria(jobQuery);
   }
 
   @Override
   public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("tenantId", newTenantId);
-    getDbSqlSession().update("updateJobTenantIdForDeployment", params);
+    jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
   }
 
   @Override
@@ -492,4 +448,12 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
   }
 
+  public JobDataManager getJobDataManager() {
+    return jobDataManager;
+  }
+
+  public void setJobDataManager(JobDataManager jobDataManager) {
+    this.jobDataManager = jobDataManager;
+  }
+  
 }

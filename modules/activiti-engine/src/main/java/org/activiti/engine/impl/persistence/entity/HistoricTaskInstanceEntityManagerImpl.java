@@ -21,6 +21,8 @@ import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
@@ -29,18 +31,27 @@ import org.activiti.engine.impl.util.Activiti5Util;
  */
 public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceEntityManager {
 
-  @Override
-  public Class<HistoricTaskInstanceEntity> getManagedEntity() {
-    return HistoricTaskInstanceEntity.class;
+  protected HistoricTaskInstanceDataManager historicTaskInstanceDataManager;
+  
+  public HistoricTaskInstanceEntityManagerImpl() {
+    
+  }
+  
+  public HistoricTaskInstanceEntityManagerImpl(HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+    this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
   }
   
   @Override
-  @SuppressWarnings("unchecked")
+  protected DataManager<HistoricTaskInstanceEntity> getDataManager() {
+      return historicTaskInstanceDataManager;
+  }
+  
+  @Override
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      List<String> taskInstanceIds = (List<String>) getDbSqlSession().selectList("selectHistoricTaskInstanceIdsByProcessInstanceId", processInstanceId);
-      for (String taskInstanceId : taskInstanceIds) {
-        delete(taskInstanceId);
+      List<HistoricTaskInstanceEntity> taskInstances = historicTaskInstanceDataManager.findHistoricTaskInstanceByProcessInstanceId(processInstanceId); 
+      for (HistoricTaskInstanceEntity historicTaskInstanceEntity : taskInstances) {
+        delete(historicTaskInstanceEntity.getId()); // Needs to be by id (since that method is overridden, see below !)
       }
     }
   }
@@ -48,7 +59,7 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   @Override
   public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+      return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByQueryCriteria(historicTaskInstanceQuery);
     }
     return 0;
   }
@@ -57,7 +68,7 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
+      return historicTaskInstanceDataManager.findHistoricTaskInstancesByQueryCriteria(historicTaskInstanceQuery);
     }
     return Collections.EMPTY_LIST;
   }
@@ -66,36 +77,7 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      // paging doesn't work for combining task instances and variables
-      // due to an outer join, so doing it in-memory
-      if (historicTaskInstanceQuery.getFirstResult() < 0 || historicTaskInstanceQuery.getMaxResults() <= 0) {
-        return Collections.EMPTY_LIST;
-      }
-
-      int firstResult = historicTaskInstanceQuery.getFirstResult();
-      int maxResults = historicTaskInstanceQuery.getMaxResults();
-
-      // setting max results, limit to 20000 results for performance
-      // reasons
-      historicTaskInstanceQuery.setMaxResults(20000);
-      historicTaskInstanceQuery.setFirstResult(0);
-
-      List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", historicTaskInstanceQuery,
-          historicTaskInstanceQuery.getFirstResult(), historicTaskInstanceQuery.getMaxResults());
-
-      if (instanceList != null && !instanceList.isEmpty()) {
-        if (firstResult > 0) {
-          if (firstResult <= instanceList.size()) {
-            int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
-            return instanceList.subList(firstResult, toIndex);
-          } else {
-            return Collections.EMPTY_LIST;
-          }
-        } else {
-          int toIndex = Math.min(maxResults, instanceList.size());
-          return instanceList.subList(0, toIndex);
-        }
-      }
+     return historicTaskInstanceDataManager.findHistoricTaskInstancesAndVariablesByQueryCriteria(historicTaskInstanceQuery);
     }
     return Collections.EMPTY_LIST;
   }
@@ -119,19 +101,27 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
         getAttachmentEntityManager().deleteAttachmentsByTaskId(id);
         getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(id);
         
-        getDbSqlSession().delete(historicTaskInstance);
+        delete(historicTaskInstance);
       }
     }
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricTaskInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+    return historicTaskInstanceDataManager.findHistoricTaskInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByNativeQuery", parameterMap);
+    return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByNativeQuery(parameterMap);
   }
+
+  public HistoricTaskInstanceDataManager getHistoricTaskInstanceDataManager() {
+    return historicTaskInstanceDataManager;
+  }
+
+  public void setHistoricTaskInstanceDataManager(HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+    this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
+  }
+  
 }

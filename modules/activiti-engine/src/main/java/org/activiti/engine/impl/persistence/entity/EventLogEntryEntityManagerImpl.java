@@ -13,50 +13,58 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 
 /**
  * @author Joram Barrez
  */
 public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventLogEntryEntity> implements EventLogEntryEntityManager {
+  
+  protected EventLogEntryDataManager eventLogEntryDataManager;
+  
+  public EventLogEntryEntityManagerImpl() {
+    
+  }
+  
+  public EventLogEntryEntityManagerImpl(EventLogEntryDataManager eventLogEntryDataManager) {
+    this.eventLogEntryDataManager = eventLogEntryDataManager;
+  }
 
   @Override
-  public Class<EventLogEntryEntity> getManagedEntity() {
-    return EventLogEntryEntity.class;
+  protected DataManager<EventLogEntryEntity> getDataManager() {
+    return eventLogEntryDataManager;
   }
   
   @Override
-  @SuppressWarnings("unchecked")
   public List<EventLogEntry> findAllEventLogEntries() {
-    return getDbSqlSession().selectList("selectAllEventLogEntries");
+    return eventLogEntryDataManager.findAllEventLogEntries();
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("startLogNr", startLogNr);
-    if (pageSize > 0) {
-      params.put("endLogNr", startLogNr + pageSize + 1);
-    }
-    return getDbSqlSession().selectList("selectEventLogEntries", params);
+   return eventLogEntryDataManager.findEventLogEntries(startLogNr, pageSize);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("processInstanceId", processInstanceId);
-    return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
+    return eventLogEntryDataManager.findEventLogEntriesByProcessInstanceId(processInstanceId);
   }
 
   @Override
   public void deleteEventLogEntry(long logNr) {
-    getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
+    eventLogEntryDataManager.deleteEventLogEntry(logNr);
   }
 
+  public EventLogEntryDataManager getEventLogEntryDataManager() {
+    return eventLogEntryDataManager;
+  }
+
+  public void setEventLogEntryDataManager(EventLogEntryDataManager eventLogEntryDataManager) {
+    this.eventLogEntryDataManager = eventLogEntryDataManager;
+  }
+  
 }

@@ -22,6 +22,8 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.GroupDataManager;
 
 /**
  * @author Tom Baeyens
@@ -29,39 +31,38 @@ import org.activiti.engine.impl.Page;
  * @author Joram Barrez
  */
 public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> implements GroupEntityManager {
+  
+  protected GroupDataManager groupDataManager;
+  
+  public GroupEntityManagerImpl() {
+    
+  }
+  
+  public GroupEntityManagerImpl(GroupDataManager groupDataManager) {
+    this.groupDataManager = groupDataManager;
+  }
 
   @Override
-  public Class<GroupEntity> getManagedEntity() {
-    return GroupEntity.class;
+  protected DataManager<GroupEntity> getDataManager() {
+    return groupDataManager;
   }
   
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);
   }
 
-  public void updateGroup(Group updatedGroup) {
-    getDbSqlSession().update((GroupEntity) updatedGroup);
-
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
-    }
-  }
-  
   @Override
   public void delete(String groupId) {
-    GroupEntity group = getDbSqlSession().selectById(GroupEntity.class, groupId);
+    GroupEntity group = groupDataManager.findById(groupId); 
 
     if (group != null) {
+      
+      getMembershipEntityManager().deleteMembershipByGroupId(groupId);
       if (getEventDispatcher().isEnabled()) {
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIPS_DELETED, groupId, null));
       }
-
-      getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
-      getDbSqlSession().delete(group);
-
-      if (getEventDispatcher().isEnabled()) {
-        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, group));
-      }
+      
+      delete(group);
     }
   }
 
@@ -69,27 +70,24 @@ public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> i
     return new GroupQueryImpl(getCommandExecutor());
   }
 
-  @SuppressWarnings("unchecked")
   public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
-    return getDbSqlSession().selectList("selectGroupByQueryCriteria", query, page);
+    return groupDataManager.findGroupByQueryCriteria(query, page);
   }
 
   public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
-    return (Long) getDbSqlSession().selectOne("selectGroupCountByQueryCriteria", query);
+    return groupDataManager.findGroupCountByQueryCriteria(query);
   }
 
-  @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
-    return getDbSqlSession().selectList("selectGroupsByUserId", userId);
+    return groupDataManager.findGroupsByUser(userId);
   }
 
-  @SuppressWarnings("unchecked")
   public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectGroupByNativeQuery", parameterMap, firstResult, maxResults);
+    return groupDataManager.findGroupsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectGroupCountByNativeQuery", parameterMap);
+    return groupDataManager.findGroupCountByNativeQuery(parameterMap);
   }
 
   @Override
@@ -97,4 +95,12 @@ public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> i
     return ((GroupEntity) group).getRevision() == 0;
   }
 
+  public GroupDataManager getGroupDataManager() {
+    return groupDataManager;
+  }
+
+  public void setGroupDataManager(GroupDataManager groupDataManager) {
+    this.groupDataManager = groupDataManager;
+  }
+  
 }

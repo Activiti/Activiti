@@ -13,13 +13,13 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
@@ -28,16 +28,27 @@ import org.activiti.engine.task.Event;
  * @author Joram Barrez
  */
 public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity> implements CommentEntityManager {
+  
+  protected CommentDataManager commentDataManager;
+  
+  public CommentEntityManagerImpl() {
+    
+  }
+  
+  public CommentEntityManagerImpl(CommentDataManager commentDataManager) {
+    this.commentDataManager = commentDataManager;
+  }
 
   @Override
-  public Class<CommentEntity> getManagedEntity() {
-    return CommentEntity.class;
+  protected DataManager<CommentEntity> getDataManager() {
+    return commentDataManager;
   }
   
   @Override
   public void insert(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.insert(commentEntity, false);
+    
+    insert(commentEntity, false);
 
     Comment comment = (Comment) commentEntity;
     if (getEventDispatcher().isEnabled()) {
@@ -59,86 +70,74 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectCommentsByTaskId", taskId);
+    return commentDataManager.findCommentsByTaskId(taskId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByTaskIdAndType(String taskId, String type) {
     checkHistoryEnabled();
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("taskId", taskId);
-    params.put("type", type);
-    return getDbSqlSession().selectListWithRawParameter("selectCommentsByTaskIdAndType", params, 0, Integer.MAX_VALUE);
+    return commentDataManager.findCommentsByTaskIdAndType(taskId, type);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByType(String type) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectCommentsByType", type);
+    return commentDataManager.findCommentsByType(type);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Event> findEventsByTaskId(String taskId) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectEventsByTaskId", taskId);
+    return commentDataManager.findEventsByTaskId(taskId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Event> findEventsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectEventsByProcessInstanceId", processInstanceId);
+    return commentDataManager.findEventsByProcessInstanceId(processInstanceId);
   }
 
   @Override
   public void deleteCommentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    getDbSqlSession().delete("deleteCommentsByTaskId", taskId);
+    commentDataManager.deleteCommentsByTaskId(taskId);
   }
 
   @Override
   public void deleteCommentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
-    getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId);
+    commentDataManager.deleteCommentsByProcessInstanceId(processInstanceId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
+    return commentDataManager.findCommentsByProcessInstanceId(processInstanceId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByProcessInstanceId(String processInstanceId, String type) {
     checkHistoryEnabled();
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("processInstanceId", processInstanceId);
-    params.put("type", type);
-    return getDbSqlSession().selectListWithRawParameter("selectCommentsByProcessInstanceIdAndType", params, 0, Integer.MAX_VALUE);
+    return commentDataManager.findCommentsByProcessInstanceId(processInstanceId, type);
   }
 
   @Override
   public Comment findComment(String commentId) {
-    return getDbSqlSession().selectById(CommentEntity.class, commentId);
+    return commentDataManager.findComment(commentId);
   }
 
   @Override
   public Event findEvent(String commentId) {
-    return getDbSqlSession().selectById(CommentEntity.class, commentId);
+    return commentDataManager.findEvent(commentId);
   }
   
   @Override
   public void delete(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.delete(commentEntity, false);
+    
+    delete(commentEntity, false);
 
     Comment comment = (Comment) commentEntity;
     if (getEventDispatcher().isEnabled()) {
@@ -162,4 +161,13 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
       throw new ActivitiException("In order to use comments, history should be enabled");
     }
   }
+
+  public CommentDataManager getCommentDataManager() {
+    return commentDataManager;
+  }
+
+  public void setCommentDataManager(CommentDataManager commentDataManager) {
+    this.commentDataManager = commentDataManager;
+  }
+  
 }

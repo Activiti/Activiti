@@ -14,12 +14,9 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Signal;
@@ -30,8 +27,8 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
-import org.activiti.engine.impl.persistence.CachedEntityMatcher;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
 
 /**
  * @author Joram Barrez
@@ -39,26 +36,21 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<EventSubscriptionEntity> implements EventSubscriptionEntityManager {
   
-  @SuppressWarnings("unchecked")
-  private static final List<Class<? extends EventSubscriptionEntity>> ENTITY_SUBCLASSES = 
-      Arrays.asList(MessageEventSubscriptionEntity.class, SignalEventSubscriptionEntity.class, CompensateEventSubscriptionEntity.class);
+  protected EventSubscriptionDataManager eventSubscriptionDataManager;
   
-  @Override
-  public Class<EventSubscriptionEntity> getManagedEntity() {
-    return EventSubscriptionEntity.class;
+  public EventSubscriptionEntityManagerImpl() {
+    
   }
   
-  @Override
-  public List<Class<? extends EventSubscriptionEntity>> getManagedEntitySubClasses() {
-    return ENTITY_SUBCLASSES;
+  public EventSubscriptionEntityManagerImpl(EventSubscriptionDataManager eventSubscriptionDataManager) {
+    this.eventSubscriptionDataManager = eventSubscriptionDataManager;
   }
-
+  
   @Override
-  public void insert(EventSubscriptionEntity eventSubScriptionEntity) {
-    super.insert(eventSubScriptionEntity);
-    addToExecution(eventSubScriptionEntity);
+  protected DataManager<EventSubscriptionEntity> getDataManager() {
+    return eventSubscriptionDataManager;
   }
-
+  
   @Override
   public SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution) {
     SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
@@ -149,230 +141,83 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   
   @Override
   public long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl) {
-    final String query = "selectEventSubscriptionCountByQueryCriteria";
-    return (Long) getDbSqlSession().selectOne(query, eventSubscriptionQueryImpl);
+    return eventSubscriptionDataManager.findEventSubscriptionCountByQueryCriteria(eventSubscriptionQueryImpl);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl, Page page) {
-    final String query = "selectEventSubscriptionByQueryCriteria";
-    return getDbSqlSession().selectList(query, eventSubscriptionQueryImpl, page);
+    return eventSubscriptionDataManager.findEventSubscriptionsByQueryCriteria(eventSubscriptionQueryImpl, page);
   }
   
   @Override
-  public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(final String processInstanceId, final String eventName) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("processInstanceId", processInstanceId);
-    params.put("eventName", eventName);
-    return toMessageEventSubscriptionEntityList(getList("selectMessageEventSubscriptionsByProcessInstanceAndEventName", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
-      }
-      
-    }, true));
-    
+  public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName) {
+    return eventSubscriptionDataManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(processInstanceId, eventName);
   }
 
   @Override
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(final String eventName, final String tenantId) {
-    final String query = "selectSignalEventSubscriptionsByEventName";
-
-    final Map<String, String> params = new HashMap<String, String>();
-    params.put("eventName", eventName);
-    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
-      params.put("tenantId", tenantId);
-    }
-    
-    List<EventSubscriptionEntity> result = getList(query, params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-            && (eventSubscriptionEntity.getExecutionId() == null || (eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecution() != null && eventSubscriptionEntity.getExecution().getSuspensionState() == SuspensionState.ACTIVE.getStateCode()) )
-            && ( (params.containsKey("tenantId") && tenantId.equals(eventSubscriptionEntity.getTenantId())) || (!params.containsKey("tenantId") && StringUtils.isEmpty(eventSubscriptionEntity.getTenantId())) );
-      }
-    }, true);
-    
-    return toSignalEventSubscriptionEntityList(result);
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(String eventName, String tenantId) {
+    return eventSubscriptionDataManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
   }
 
   @Override
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByProcessInstanceAndEventName(final String processInstanceId, final String eventName) {
-    final String query = "selectSignalEventSubscriptionsByProcessInstanceAndEventName";
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("processInstanceId", processInstanceId);
-    params.put("eventName", eventName);
-    
-    return toSignalEventSubscriptionEntityList(getList(query, params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
-      }
-      
-    }, true));
-    
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName) {
+    return eventSubscriptionDataManager.findSignalEventSubscriptionsByProcessInstanceAndEventName(processInstanceId, eventName);
   }
 
   @Override
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(final String executionId) {
-    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByExecution", executionId, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            &&  eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
-      }
-      
-    }, true));
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(String executionId) {
+    return eventSubscriptionDataManager.findSignalEventSubscriptionsByExecution(executionId);
   }
 
   @Override
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(final String name, final String executionId) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("executionId", executionId);
-    params.put("eventName", name);
-    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByNameAndExecution", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(name);
-      }
-      
-    }, true));
-    
+  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(String name, String executionId) {
+    return eventSubscriptionDataManager.findSignalEventSubscriptionsByNameAndExecution(name, executionId);
   }
 
   @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(final String executionId, final String type) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("executionId", executionId);
-    params.put("eventType", type);
-    
-    return getList("selectEventSubscriptionsByExecutionAndType", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-            && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
-      }
-      
-    }, true);
+    return eventSubscriptionDataManager.findEventSubscriptionsByExecutionAndType(executionId, type);
   }
   
   @Override
-  public List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(final String processInstanceId, final String activityId, final String type) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("processInstanceId", processInstanceId);
-    params.put("eventType", type);
-    params.put("activityId", activityId);
-    
-    return getList("selectEventSubscriptionsByProcessInstanceTypeAndActivity", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId)
-            && eventSubscriptionEntity.getActivityId() != null && eventSubscriptionEntity.getActivityId().equals(activityId);
-      }
-      
-    }, true);
+  public List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(String processInstanceId, String activityId, String type) {
+    return eventSubscriptionDataManager.findEventSubscriptionsByProcessInstanceAndActivityId(processInstanceId, activityId, type);
   }
 
   @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId) {
-    return getList("selectEventSubscriptionsByExecution", executionId, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
-      }
-      
-    }, true);
+    return eventSubscriptionDataManager.findEventSubscriptionsByExecution(executionId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId) {
-    final String query = "selectEventSubscriptionsByConfiguration";
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("eventType", type);
-    params.put("configuration", configuration);
-    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
-      params.put("tenantId", tenantId);
-    }
-    return getDbSqlSession().selectList(query, params);
+    return eventSubscriptionDataManager.findEventSubscriptionsByConfiguration(type, configuration, tenantId);
   }
 
   @Override
-  public List<EventSubscriptionEntity> findEventSubscriptionsByName(final String type, final String eventName, final String tenantId) {
-
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("eventType", type);
-    params.put("eventName", eventName);
-    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
-      params.put("tenantId", tenantId);
-    }
-    
-    return getList("selectEventSubscriptionsByName", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        if (eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)) {
-          if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
-            return eventSubscriptionEntity.getTenantId() != null && eventSubscriptionEntity.getTenantId().equals(tenantId);
-          } else {
-            return ProcessEngineConfiguration.NO_TENANT_ID.equals(eventSubscriptionEntity.getTenantId()) || eventSubscriptionEntity.getTenantId() == null;
-          }
-        }
-        return false;
-      }
-      
-    }, true);
-    
+  public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId) {
+    return eventSubscriptionDataManager.findEventSubscriptionsByName(type, eventName, tenantId);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByNameAndExecution(String type, String eventName, String executionId) {
-    final String query = "selectEventSubscriptionsByNameAndExecution";
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("eventType", type);
-    params.put("eventName", eventName);
-    params.put("executionId", executionId);
-    return getDbSqlSession().selectList(query, params);
+    return eventSubscriptionDataManager.findEventSubscriptionsByNameAndExecution(type, eventName, executionId);
   }
 
   @Override
   public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("eventName", messageName);
-    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
-      params.put("tenantId", tenantId);
-    }
-    MessageEventSubscriptionEntity entity = (MessageEventSubscriptionEntity) getDbSqlSession().selectOne("selectMessageStartEventSubscriptionByName", params);
-    return entity;
+    return eventSubscriptionDataManager.findMessageStartEventSubscriptionByName(messageName, tenantId);
   }
 
   @Override
   public void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("oldTenantId", oldTenantId);
-    params.put("newTenantId", newTenantId);
-    getDbSqlSession().update("updateTenantIdOfEventSubscriptions", params);
+    eventSubscriptionDataManager.updateEventSubscriptionTenantId(oldTenantId, newTenantId);
   }
   
+  @Override
+  public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
+    eventSubscriptionDataManager.deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
+  }
   
   // Processing /////////////////////////////////////////////////////////////
   
@@ -420,11 +265,6 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     getJobEntityManager().send(message);
   }
   
-  @Override
-  public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
-    getDbSqlSession().delete("deleteEventSubscriptionsForProcessDefinition", processDefinitionId);
-  }
-  
   protected List<SignalEventSubscriptionEntity> toSignalEventSubscriptionEntityList(List<EventSubscriptionEntity> result) {
     List<SignalEventSubscriptionEntity> signalEventSubscriptionEntities = new ArrayList<SignalEventSubscriptionEntity>(result.size());
     for (EventSubscriptionEntity eventSubscriptionEntity : result ) {
@@ -439,6 +279,14 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
       messageEventSubscriptionEntities.add((MessageEventSubscriptionEntity) eventSubscriptionEntity);
     }
     return messageEventSubscriptionEntities;
+  }
+
+  public EventSubscriptionDataManager getEventSubscriptionDataManager() {
+    return eventSubscriptionDataManager;
+  }
+
+  public void setEventSubscriptionDataManager(EventSubscriptionDataManager eventSubscriptionDataManager) {
+    this.eventSubscriptionDataManager = eventSubscriptionDataManager;
   }
   
 

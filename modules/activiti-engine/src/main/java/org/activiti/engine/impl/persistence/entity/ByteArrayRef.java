@@ -80,7 +80,7 @@ public final class ByteArrayRef implements Serializable {
       if (entity != null) {
         // if the entity has been loaded already,
         // we might as well use the safer optimistic locking delete.
-        Context.getCommandContext().getByteArrayEntityManager().deleteByteArray(entity);
+        Context.getCommandContext().getByteArrayEntityManager().delete(entity);
       } else {
         Context.getCommandContext().getByteArrayEntityManager().deleteByteArrayById(id);
       }

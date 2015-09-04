@@ -40,13 +40,7 @@ public interface UserEntityManager extends EntityManager<UserEntity> {
 
   UserQuery createNewUserQuery();
 
-  IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key);
-
-  List<String> findUserInfoKeysByUserIdAndType(String userId, String type);
-
   Boolean checkPassword(String userId, String password);
-
-  List<User> findPotentialStarterUsers(String proceDefId);
 
   List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
