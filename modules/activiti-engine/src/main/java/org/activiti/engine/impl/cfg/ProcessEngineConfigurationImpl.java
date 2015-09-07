@@ -472,7 +472,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
 
-  // PROCESS VALIDATION
+  // PROCESS VALIDATION //////////////////////////////////////////////////////////////
 
   protected ProcessValidator processValidator;
 
@@ -556,8 +556,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * By default: 100.
    */
   protected int maxNrOfStatementsInBulkInsert = 100;
+  
+  /**
+   * Flag that can be set to configure or nota relational database is used.
+   * This is useful for custom implementations that do not use relational databases at all.
+   * 
+   * If true (default), the {@link ProcessEngineConfiguration#getDatabaseSchemaUpdate()} value will be used to determine
+   * what needs to happen wrt the database schema.
+   * 
+   * If false, no validation or schema creation will be done. That means that the database schema must have been
+   * created 'manually' before but the engine does not validate whether the schema is correct. 
+   * The {@link ProcessEngineConfiguration#getDatabaseSchemaUpdate()} value will not be used.
+   */
+  protected boolean usingRelationalDatabase = true;
 
-  // Backwards compatibility
+  // Backwards compatibility //////////////////////////////////////////////////////////////
+  
   protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
   protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
@@ -616,9 +630,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initJobHandlers();
     initJobExecutor();
     initAsyncExecutor();
-    initDataSource();
+    
+    if (usingRelationalDatabase) {
+      initDataSource();
+    }
+    
     initTransactionFactory();
-    initSqlSessionFactory();
+    
+    if (usingRelationalDatabase) {
+      initSqlSessionFactory();
+    }
+    
     initSessionFactories();
     initDataManagers();
     initEntityManagers();
@@ -1042,21 +1064,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sessionFactories == null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
       
-      if (dbSqlSessionFactory == null) {
-        dbSqlSessionFactory = new DbSqlSessionFactory();
+      if (usingRelationalDatabase) {
+        if (dbSqlSessionFactory == null) {
+          dbSqlSessionFactory = new DbSqlSessionFactory();
+        }
+        dbSqlSessionFactory.setDatabaseType(databaseType);
+        dbSqlSessionFactory.setIdGenerator(idGenerator);
+        dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
+        dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
+        dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
+        dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+        dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
+        dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
+        dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
+        dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
+        dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
+        addSessionFactory(dbSqlSessionFactory);
       }
-      dbSqlSessionFactory.setDatabaseType(databaseType);
-      dbSqlSessionFactory.setIdGenerator(idGenerator);
-      dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
-      dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
-      dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
-      dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
-      dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
-      dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
-      dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
-      dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
-      dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
-      addSessionFactory(dbSqlSessionFactory);
 
       addSessionFactory(new GenericManagerFactory(EntityCache.class, EntityCacheImpl.class));
     }
@@ -2360,6 +2384,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
   }
   
+  public boolean isUsingRelationalDatabase() {
+    return usingRelationalDatabase;
+  }
+
+  public void setUsingRelationalDatabase(boolean usingRelationalDatabase) {
+    this.usingRelationalDatabase = usingRelationalDatabase;
+  }
+
   public AttachmentEntityManager getAttachmentEntityManager() {
     return attachmentEntityManager;
   }

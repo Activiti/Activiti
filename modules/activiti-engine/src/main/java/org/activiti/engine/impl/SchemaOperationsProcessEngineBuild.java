@@ -12,16 +12,21 @@
  */
 package org.activiti.engine.impl;
 
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public final class SchemaOperationsProcessEngineBuild implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
-    commandContext.getDbSqlSession().performSchemaOperationsProcessEngineBuild();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    if (dbSqlSession != null) {
+      dbSqlSession.performSchemaOperationsProcessEngineBuild();
+    }
     return null;
   }
 }
