@@ -57,8 +57,6 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
             InactiveActivityBehavior inactiveActivityBehavior = ((InactiveActivityBehavior) flowNode.getBehavior());
             logger.debug("Found InactiveActivityBehavior instance of class {} that can be executed on activity '{}'", inactiveActivityBehavior.getClass(), flowNode.getId());
             inactiveActivityBehavior.executeInactive(inactiveExecution);
-            ;
-
           }
         }
       }
