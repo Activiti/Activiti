@@ -33,7 +33,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Tim Stephenson
  */
 public class JsonTest extends PluggableActivitiTestCase {
-  
+
+  public static final String MY_JSON_OBJ = "myJsonObj";
+  public static final String BIG_JSON_OBJ = "bigJsonObj";
+
   protected ObjectMapper objectMapper = new ObjectMapper();
   
   @Override
@@ -47,21 +50,21 @@ public class JsonTest extends PluggableActivitiTestCase {
    
     ObjectNode varNode = objectMapper.createObjectNode();
     varNode.put("var", "myValue");
-    vars.put("myJsonObj", varNode);
+    vars.put(MY_JSON_OBJ, varNode);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
     
     // Check JSON has been parsed as expected
-    ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "myJsonObj");
+    ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
     assertNotNull(value);
     assertEquals("myValue", value.get("var").asText());
 
     ObjectNode var2Node = objectMapper.createObjectNode();
     var2Node.put("var", "myValue");
     var2Node.put("var2", "myOtherValue");
-    runtimeService.setVariable(processInstance.getId(), "myJsonObj", var2Node);
+    runtimeService.setVariable(processInstance.getId(), MY_JSON_OBJ, var2Node);
 
     // Check JSON has been updated as expected
-    value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "myJsonObj");
+    value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
     assertNotNull(value);
     assertEquals("myValue", value.get("var").asText());
     assertEquals("myOtherValue", value.get("var2").asText());
@@ -74,16 +77,16 @@ public class JsonTest extends PluggableActivitiTestCase {
     var3Node.put("var3", "myThirdValue");
     
     vars = new HashMap<String, Object>();
-    vars.put("myJsonObj", var3Node);
-    vars.put("bigJsonObj", createBigJsonObject());
+    vars.put(MY_JSON_OBJ, var3Node);
+    vars.put(BIG_JSON_OBJ, createBigJsonObject());
     taskService.complete(task.getId(), vars);
-    value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "myJsonObj");
+    value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
     assertNotNull(value);
     assertEquals("myValue", value.get("var").asText());
     assertEquals("myOtherValue", value.get("var2").asText());
     assertEquals("myThirdValue", value.get("var3").asText());
     
-    value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "bigJsonObj");
+    value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), BIG_JSON_OBJ);
     assertNotNull(value);
     assertEquals(createBigJsonObject().toString(), value.toString());
 
@@ -96,18 +99,26 @@ public class JsonTest extends PluggableActivitiTestCase {
           .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName().asc().list();
       assertEquals(2, historicVariableInstances.size());
       
-      assertEquals("bigJsonObj", historicVariableInstances.get(0).getVariableName());
+      assertEquals(BIG_JSON_OBJ, historicVariableInstances.get(0).getVariableName());
       value = (ObjectNode) historicVariableInstances.get(0).getValue();
       assertNotNull(value);
       assertEquals(createBigJsonObject().toString(), value.toString());
       
-      assertEquals("myJsonObj", historicVariableInstances.get(1).getVariableName());
+      assertEquals(MY_JSON_OBJ, historicVariableInstances.get(1).getVariableName());
       value = (ObjectNode) historicVariableInstances.get(1).getValue();
       assertNotNull(value);
       assertEquals("myValue", value.get("var").asText());
       assertEquals("myOtherValue", value.get("var2").asText());
       assertEquals("myThirdValue", value.get("var3").asText());
     }
+
+    // It should be possible do remove a json variable
+    runtimeService.removeVariable(processInstance.getId(), MY_JSON_OBJ);
+    assertNull(runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ));
+
+    // It should be possible do remove a longJson variable
+    runtimeService.removeVariable(processInstance.getId(), BIG_JSON_OBJ);
+    assertNull(runtimeService.getVariable(processInstance.getId(), BIG_JSON_OBJ));
   }
 
   @Deployment
