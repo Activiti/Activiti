@@ -505,9 +505,9 @@
       </if>
       <if test="involvedUser != null">
         and (
-          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
-          or RES.ASSIGNEE_ = #{involvedUser}
-          or RES.OWNER_ = #{involvedUser}
+          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where lower(USER_ID_) = lower(#{involvedUser}) and LINK.TASK_ID_ = RES.ID_)
+          or lower(RES.ASSIGNEE_) = lower(#{involvedUser})
+          or lower(RES.OWNER_) = lower(#{involvedUser})
           )
       </if>
       <foreach item="var" collection="queryVariableValues" index="index">
