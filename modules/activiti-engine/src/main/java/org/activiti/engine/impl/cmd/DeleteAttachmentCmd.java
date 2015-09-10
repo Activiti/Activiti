@@ -38,7 +38,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    AttachmentEntity attachment = commandContext.getDbSqlSession().selectById(AttachmentEntity.class, attachmentId);
+    AttachmentEntity attachment = commandContext.getAttachmentEntityManager().findById(attachmentId); 
 
     String processInstanceId = attachment.getProcessInstanceId();
     String processDefinitionId = null;
@@ -54,7 +54,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
       }
     }
     
-    commandContext.getDbSqlSession().delete(attachment);
+    commandContext.getAttachmentEntityManager().delete(attachment, false);
 
     if (attachment.getContentId() != null) {
       commandContext.getByteArrayEntityManager().deleteByteArrayById(attachment.getContentId());

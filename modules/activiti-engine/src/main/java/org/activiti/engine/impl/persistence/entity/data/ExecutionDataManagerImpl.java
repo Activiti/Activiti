@@ -25,6 +25,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -34,8 +35,13 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class ExecutionDataManagerImpl extends AbstractDataManager<ExecutionEntity> implements ExecutionDataManager {
 
   @Override
-  public Class<ExecutionEntity> getManagedEntityClass() {
-    return ExecutionEntity.class;
+  public Class<? extends ExecutionEntity> getManagedEntityClass() {
+    return ExecutionEntityImpl.class;
+  }
+  
+  @Override
+  public ExecutionEntity create() {
+    return new ExecutionEntityImpl();
   }
   
   @Override

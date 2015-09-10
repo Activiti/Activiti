@@ -39,6 +39,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     
     ExecutionEntity subProcessExecution = null;
+    // TODO: this can be optimized. A full search in the all executions shouldn't bee needed
     List<ExecutionEntity> processInstanceExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
     for (ExecutionEntity childExecution : processInstanceExecutions) {
       if (childExecution.getCurrentFlowElement() != null && childExecution.getCurrentFlowElement().getId().equals(boundaryEvent.getAttachedToRefId())) {

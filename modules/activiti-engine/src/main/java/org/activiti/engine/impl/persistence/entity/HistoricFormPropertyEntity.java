@@ -19,30 +19,14 @@ import org.activiti.engine.history.HistoricFormProperty;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricFormPropertyEntity extends HistoricDetailEntity implements HistoricFormProperty {
+public interface HistoricFormPropertyEntity extends HistoricDetailEntity, HistoricFormProperty {
 
-  private static final long serialVersionUID = 1L;
+  String getPropertyId();
 
-  protected String propertyId;
-  protected String propertyValue;
+  void setPropertyId(String propertyId);
 
-  public HistoricFormPropertyEntity() {
-    this.detailType = "FormProperty";
-  }
+  String getPropertyValue();
 
-  public String getPropertyId() {
-    return propertyId;
-  }
-
-  public void setPropertyId(String propertyId) {
-    this.propertyId = propertyId;
-  }
-
-  public String getPropertyValue() {
-    return propertyValue;
-  }
-
-  public void setPropertyValue(String propertyValue) {
-    this.propertyValue = propertyValue;
-  }
+  void setPropertyValue(String propertyValue);
+    
 }

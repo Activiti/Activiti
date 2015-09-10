@@ -12,19 +12,11 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Job;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
@@ -35,215 +27,56 @@ import org.apache.commons.lang3.StringUtils;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public abstract class JobEntity implements Job, Entity, HasRevision, BulkDeleteable, Serializable {
+public interface JobEntity extends Job, Entity, HasRevision {
+  
+  boolean DEFAULT_EXCLUSIVE = true;
+  int DEFAULT_RETRIES = 3;
+  int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
-  public static final boolean DEFAULT_EXCLUSIVE = true;
-  public static final int DEFAULT_RETRIES = 3;
-  private static final int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
+  void setExecution(ExecutionEntity execution);
 
-  private static final long serialVersionUID = 1L;
+  String getExceptionStacktrace();
 
-  protected String id;
-  protected int revision;
+  void setExceptionStacktrace(String exception);
 
-  protected Date duedate;
+  void setDuedate(Date duedate);
 
-  protected String lockOwner;
-  protected Date lockExpirationTime;
+  void setExecutionId(String executionId);
 
-  protected String executionId;
-  protected String processInstanceId;
-  protected String processDefinitionId;
+  void setRetries(int retries);
 
-  protected boolean isExclusive = DEFAULT_EXCLUSIVE;
+  String getLockOwner();
 
-  protected int retries = DEFAULT_RETRIES;
+  void setLockOwner(String claimedBy);
 
-  protected String jobHandlerType;
-  protected String jobHandlerConfiguration;
+  Date getLockExpirationTime();
 
-  protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
+  void setLockExpirationTime(Date claimedUntil);
 
-  protected String exceptionMessage;
+  void setProcessInstanceId(String processInstanceId);
 
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  protected String jobType;
+  boolean isExclusive();
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("lockOwner", lockOwner);
-    persistentState.put("lockExpirationTime", lockExpirationTime);
-    persistentState.put("retries", retries);
-    persistentState.put("duedate", duedate);
-    persistentState.put("exceptionMessage", exceptionMessage);
-    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
-    return persistentState;
-  }
+  void setExclusive(boolean isExclusive);
 
-  // getters and setters ////////////////////////////////////////////////////////
+  void setProcessDefinitionId(String processDefinitionId);
 
-  public void setExecution(ExecutionEntity execution) {
-    executionId = execution.getId();
-    processInstanceId = execution.getProcessInstanceId();
-    processDefinitionId = execution.getProcessDefinitionId();
-    execution.getJobs().add(this);
-  }
+  String getJobHandlerType();
 
-  public String getExceptionStacktrace() {
-    byte[] bytes = exceptionByteArrayRef.getBytes();
-    if (bytes == null) {
-      return null;
-    }
-    try {
-      return new String(bytes, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new ActivitiException("UTF-8 is not a supported encoding");
-    }
-  }
+  void setJobHandlerType(String jobHandlerType);
 
-  public void setExceptionStacktrace(String exception) {
-    exceptionByteArrayRef.setValue("stacktrace", getUtf8Bytes(exception));
-  }
+  String getJobHandlerConfiguration();
 
-  private byte[] getUtf8Bytes(String str) {
-    if (str == null) {
-      return null;
-    }
-    try {
-      return str.getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new ActivitiException("UTF-8 is not a supported encoding");
-    }
-  }
+  void setJobHandlerConfiguration(String jobHandlerConfiguration);
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
+  void setExceptionMessage(String exceptionMessage);
 
-  public String getId() {
-    return id;
-  }
+  String getJobType();
 
-  public void setId(String id) {
-    this.id = id;
-  }
+  void setJobType(String jobType);
 
-  public int getRevision() {
-    return revision;
-  }
+  void setTenantId(String tenantId);
 
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public Date getDuedate() {
-    return duedate;
-  }
-
-  public void setDuedate(Date duedate) {
-    this.duedate = duedate;
-  }
-
-  public String getExecutionId() {
-    return executionId;
-  }
-
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public int getRetries() {
-    return retries;
-  }
-
-  public void setRetries(int retries) {
-    this.retries = retries;
-  }
-
-  public String getLockOwner() {
-    return lockOwner;
-  }
-
-  public void setLockOwner(String claimedBy) {
-    this.lockOwner = claimedBy;
-  }
-
-  public Date getLockExpirationTime() {
-    return lockExpirationTime;
-  }
-
-  public void setLockExpirationTime(Date claimedUntil) {
-    this.lockExpirationTime = claimedUntil;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public boolean isExclusive() {
-    return isExclusive;
-  }
-
-  public void setExclusive(boolean isExclusive) {
-    this.isExclusive = isExclusive;
-  }
-
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
-
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public String getJobHandlerType() {
-    return jobHandlerType;
-  }
-
-  public void setJobHandlerType(String jobHandlerType) {
-    this.jobHandlerType = jobHandlerType;
-  }
-
-  public String getJobHandlerConfiguration() {
-    return jobHandlerConfiguration;
-  }
-
-  public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
-    this.jobHandlerConfiguration = jobHandlerConfiguration;
-  }
-
-  public String getExceptionMessage() {
-    return exceptionMessage;
-  }
-
-  public void setExceptionMessage(String exceptionMessage) {
-    this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
-  }
-  public String getJobType() {
-    return jobType;
-  }
-  public void setJobType(String jobType) {
-    this.jobType = jobType;
-  }
-  public String getTenantId() {
-    return tenantId;
-  }
-
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
-
-  public ByteArrayRef getExceptionByteArrayRef() {
-    return exceptionByteArrayRef;
-  }
-
-  @Override
-  public String toString() {
-    return "JobEntity [id=" + id + "]";
-  }
+  ByteArrayRef getExceptionByteArrayRef();
 
 }

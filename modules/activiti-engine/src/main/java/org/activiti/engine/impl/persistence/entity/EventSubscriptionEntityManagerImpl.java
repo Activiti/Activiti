@@ -52,8 +52,23 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   }
   
   @Override
+  public CompensateEventSubscriptionEntity createCompensateEventSubscription() {
+    return eventSubscriptionDataManager.createCompensateEventSubscription();
+  }
+  
+  @Override
+  public MessageEventSubscriptionEntity createMessageEventSubscription() {
+    return eventSubscriptionDataManager.createMessageEventSubscription();
+  }
+  
+  @Override
+  public SignalEventSubscriptionEntity createSignalEventSubscription() {
+    return eventSubscriptionDataManager.createSignalEventSubscription();
+  }
+  
+  @Override
   public SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution) {
-    SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
+    SignalEventSubscriptionEntity subscriptionEntity = createSignalEventSubscription();
     subscriptionEntity.setExecution(execution);
     if (signal != null) {
       subscriptionEntity.setEventName(signal.getName());
@@ -76,7 +91,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
 
   @Override
   public MessageEventSubscriptionEntity insertMessageEvent(MessageEventDefinition messageEventDefinition, ExecutionEntity execution) {
-    MessageEventSubscriptionEntity subscriptionEntity = new MessageEventSubscriptionEntity();
+    MessageEventSubscriptionEntity subscriptionEntity = createMessageEventSubscription();
     subscriptionEntity.setExecution(execution);
     subscriptionEntity.setEventName(messageEventDefinition.getMessageRef());
 
@@ -92,7 +107,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   
   @Override
   public CompensateEventSubscriptionEntity insertCompensationEvent(ExecutionEntity execution, String activityId) {
-    CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity();
+    CompensateEventSubscriptionEntity eventSubscription = createCompensateEventSubscription();
     eventSubscription.setExecution(execution);
     eventSubscription.setActivityId(activityId);
     if (execution.getTenantId() != null) {
@@ -246,7 +261,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
 
   protected void scheduleEventAsync(EventSubscriptionEntity eventSubscriptionEntity, Object payload) {
 
-    MessageEntity message = new MessageEntity();
+    MessageEntity message = getJobEntityManager().createMessage();
     message.setJobHandlerType(ProcessEventJobHandler.TYPE);
     message.setJobHandlerConfiguration(eventSubscriptionEntity.getId());
     message.setTenantId(eventSubscriptionEntity.getTenantId());

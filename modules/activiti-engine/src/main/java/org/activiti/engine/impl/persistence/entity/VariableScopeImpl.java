@@ -113,7 +113,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       }
 
       // Go up if needed
-      VariableScopeImpl parent = getParentVariableScope();
+      VariableScope parent = getParentVariableScope();
       if (parent != null) {
         requestedVariables.putAll(parent.getVariables(variableNamesToFetch, fetchAllVariables));
       }
@@ -471,8 +471,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
         return;
       }
 
-      // Otherwise, go up the hierarchy (we're trying to put it as high as
-      // possible)
+      // Otherwise, go up the hierarchy (we're trying to put it as high as possible)
       VariableScopeImpl parentVariableScope = getParentVariableScope();
       if (parentVariableScope != null) {
         if (sourceActivityExecution == null) {

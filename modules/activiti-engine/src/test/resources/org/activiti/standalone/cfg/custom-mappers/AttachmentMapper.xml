@@ -23,7 +23,7 @@
     <include refid="selectAttachmentByQueryCriteriaSql"/>
   </select>
   
-  <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultMap="org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap">
+  <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultMap="org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl.attachmentResultMap">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectAttachmentByQueryCriteriaSql"/> 

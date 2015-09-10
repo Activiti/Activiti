@@ -53,14 +53,14 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
     // and of course this leads to exception while trying to delete a
     // non-existing identityLink
     if (task.getAssignee() != null) {
-      IdentityLinkEntity identityLink = new IdentityLinkEntity();
+      IdentityLinkEntity identityLink = commandContext.getIdentityLinkEntityManager().create(); 
       identityLink.setUserId(task.getAssignee());
       identityLink.setType(IdentityLinkType.ASSIGNEE);
       identityLink.setTaskId(task.getId());
       identityLinks.add(identityLink);
     }
     if (task.getOwner() != null) {
-      IdentityLinkEntity identityLink = new IdentityLinkEntity();
+      IdentityLinkEntity identityLink = commandContext.getIdentityLinkEntityManager().create(); 
       identityLink.setUserId(task.getOwner());
       identityLink.setTaskId(task.getId());
       identityLink.setType(IdentityLinkType.OWNER);

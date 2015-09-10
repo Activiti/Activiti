@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.task.Task;
 
 /**
@@ -28,8 +29,13 @@ import org.activiti.engine.task.Task;
 public class TaskDataManagerImpl extends AbstractDataManager<TaskEntity> implements TaskDataManager {
   
   @Override
-  public Class<TaskEntity> getManagedEntityClass() {
-    return TaskEntity.class;
+  public Class<? extends TaskEntity> getManagedEntityClass() {
+    return TaskEntityImpl.class;
+  }
+  
+  @Override
+  public TaskEntity create() {
+    return new TaskEntityImpl();
   }
   
   @Override

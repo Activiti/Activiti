@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricDetail;
@@ -23,79 +22,20 @@ import org.activiti.engine.impl.db.Entity;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public abstract class HistoricDetailEntity implements HistoricDetail, Entity, Serializable {
+public interface HistoricDetailEntity extends HistoricDetail, Entity {
 
-  private static final long serialVersionUID = 1L;
+  void setProcessInstanceId(String processInstanceId);
 
-  protected String id;
-  protected String processInstanceId;
-  protected String activityInstanceId;
-  protected String taskId;
-  protected String executionId;
-  protected Date time;
-  protected String detailType;
+  void setActivityInstanceId(String activityInstanceId);
 
-  public Object getPersistentState() {
-    // details are not updatable so we always provide the same object as the state
-    return HistoricDetailEntity.class;
-  }
+  void setTaskId(String taskId);
 
-  // getters and setters //////////////////////////////////////////////////////
+  void setExecutionId(String executionId);
 
-  public String getId() {
-    return id;
-  }
+  void setTime(Date time);
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getActivityInstanceId() {
-    return activityInstanceId;
-  }
-
-  public void setActivityInstanceId(String activityInstanceId) {
-    this.activityInstanceId = activityInstanceId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getExecutionId() {
-    return executionId;
-  }
-
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public Date getTime() {
-    return time;
-  }
-
-  public void setTime(Date time) {
-    this.time = time;
-  }
-
-  public String getDetailType() {
-    return detailType;
-  }
+  String getDetailType();
   
-  public void setDetailType(String detailType) {
-    this.detailType = detailType;
-  }
+  void setDetailType(String detailType);
   
 }

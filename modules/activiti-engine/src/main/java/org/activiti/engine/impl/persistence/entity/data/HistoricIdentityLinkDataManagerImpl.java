@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -23,8 +24,13 @@ import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 public class HistoricIdentityLinkDataManagerImpl extends AbstractDataManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkDataManager {
 
   @Override
-  public Class<HistoricIdentityLinkEntity> getManagedEntityClass() {
-    return HistoricIdentityLinkEntity.class;
+  public Class<? extends HistoricIdentityLinkEntity> getManagedEntityClass() {
+    return HistoricIdentityLinkEntityImpl.class;
+  }
+  
+  @Override
+  public HistoricIdentityLinkEntity create() {
+    return new HistoricIdentityLinkEntityImpl();
   }
   
   @Override

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.MembershipEntity;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -23,8 +24,13 @@ import org.activiti.engine.impl.persistence.entity.MembershipEntity;
 public class MembershipDataManagerImpl extends AbstractDataManager<MembershipEntity> implements MembershipDataManager {
   
   @Override
-  public Class<MembershipEntity> getManagedEntityClass() {
-    return MembershipEntity.class;
+  public Class<? extends MembershipEntity> getManagedEntityClass() {
+    return MembershipEntityImpl.class;
+  }
+  
+  @Override
+  public MembershipEntity create() {
+    return new MembershipEntityImpl();
   }
   
   @Override

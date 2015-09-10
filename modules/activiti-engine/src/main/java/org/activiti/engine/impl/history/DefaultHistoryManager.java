@@ -123,7 +123,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordProcessInstanceStart(ExecutionEntity processInstance, FlowElement startElement) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().create(processInstance); 
       historicProcessInstance.setStartActivityId(startElement.getId());
 
       // Insert historic process-instance
@@ -168,7 +168,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance, FlowElement initialElement) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
 
-      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager().create(subProcessInstance); 
 
       // Fix for ACT-1728: startActivityId not initialized with subprocess instance
       if (historicProcessInstance.getStartActivityId() == null) {
@@ -325,7 +325,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     String processDefinitionId = execution.getProcessDefinitionId();
     String processInstanceId = execution.getProcessInstanceId();
       
-    HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+    HistoricActivityInstanceEntity historicActivityInstance = getHistoricActivityInstanceEntityManager().create();
     historicActivityInstance.setId(idGenerator.getNextId());
     historicActivityInstance.setProcessDefinitionId(processDefinitionId);
     historicActivityInstance.setProcessInstanceId(processInstanceId);
@@ -373,7 +373,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordTaskCreated(TaskEntity task, ExecutionEntity execution) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      HistoricTaskInstanceEntity historicTaskInstance = new HistoricTaskInstanceEntity(task, execution);
+      HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().create(task, execution);
       getHistoricTaskInstanceEntityManager().insert(historicTaskInstance, false);
     }
     
@@ -714,7 +714,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
     if (isHistoryEnabled()) {
       String authenticatedUserId = Authentication.getAuthenticatedUserId();
-      CommentEntity comment = new CommentEntity();
+      CommentEntity comment = getCommentEntityManager().create(); 
       comment.setUserId(authenticatedUserId);
       comment.setType(CommentEntity.TYPE_EVENT);
       comment.setTime(getClock().getCurrentTime());
@@ -748,7 +748,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void createProcessInstanceIdentityLinkComment(String processInstanceId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
     if (isHistoryEnabled()) {
       String authenticatedUserId = Authentication.getAuthenticatedUserId();
-      CommentEntity comment = new CommentEntity();
+      CommentEntity comment = getCommentEntityManager().create();
       comment.setUserId(authenticatedUserId);
       comment.setType(CommentEntity.TYPE_EVENT);
       comment.setTime(getClock().getCurrentTime());
@@ -781,7 +781,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   public void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create) {
     if (isHistoryEnabled()) {
       String userId = Authentication.getAuthenticatedUserId();
-      CommentEntity comment = new CommentEntity();
+      CommentEntity comment = getCommentEntityManager().create();
       comment.setUserId(userId);
       comment.setType(CommentEntity.TYPE_EVENT);
       comment.setTime(getClock().getCurrentTime());
@@ -824,7 +824,13 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     // that is related
     // to a process-definition only as this is never kept in history
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT) && (identityLink.getProcessInstanceId() != null || identityLink.getTaskId() != null)) {
-      HistoricIdentityLinkEntity historicIdentityLinkEntity = new HistoricIdentityLinkEntity(identityLink);
+      HistoricIdentityLinkEntity historicIdentityLinkEntity = getHistoricIdentityLinkEntityManager().create();
+      historicIdentityLinkEntity.setId(identityLink.getId());
+      historicIdentityLinkEntity.setGroupId(identityLink.getGroupId());
+      historicIdentityLinkEntity.setProcessInstanceId(identityLink.getProcessInstanceId());
+      historicIdentityLinkEntity.setTaskId(identityLink.getTaskId());
+      historicIdentityLinkEntity.setType(identityLink.getType());
+      historicIdentityLinkEntity.setUserId(identityLink.getUserId());
       getHistoricIdentityLinkEntityManager().insert(historicIdentityLinkEntity, false);
     }
   }

@@ -18,14 +18,8 @@ package org.activiti.engine.impl.persistence.entity;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public class CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
-
-  private static final long serialVersionUID = 1L;
-
-  public static final String EVENT_TYPE = "compensate";
+public interface CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
   
-  public CompensateEventSubscriptionEntity() {
-    eventType = EVENT_TYPE;
-  }
+  String EVENT_TYPE = "compensate";
 
 }

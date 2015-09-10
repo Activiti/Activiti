@@ -282,8 +282,11 @@ public class DbSqlSessionFactory implements SessionFactory {
       return statement;
     }
     statement = prefix + entityClass.getSimpleName();
-    statement = statement.substring(0, statement.length() - 6); // removing
-                                                                // 'entity'
+    if (statement.endsWith("Impl")) {
+      statement = statement.substring(0, statement.length() - 10); // removing 'entityImpl'
+    } else {
+      statement = statement.substring(0, statement.length() - 6); // removing 'entity'
+    }
     cachedStatements.put(entityClass, statement);
     return statement;
   }

@@ -12,121 +12,26 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-import java.util.Arrays;
-
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.engine.impl.db.HasRevision;
 
 /**
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
  * @author Joram Barrez
  */
-public class ByteArrayEntity implements Serializable, Entity, HasRevision {
+public interface ByteArrayEntity extends Entity, HasRevision {
 
-  private static final long serialVersionUID = 1L;
+  byte[] getBytes();
 
-  protected String id;
-  protected int revision;
-  protected String name;
-  protected byte[] bytes;
-  protected String deploymentId;
+  String getName();
 
-  // Default constructor for SQL mapping
-  protected ByteArrayEntity() {
-  }
+  void setName(String name);
 
-  public ByteArrayEntity(String name, byte[] bytes) {
-    this.name = name;
-    this.bytes = bytes;
-  }
+  String getDeploymentId();
+  
+  void setDeploymentId(String deploymentId);
 
-  public ByteArrayEntity(byte[] bytes) {
-    this.bytes = bytes;
-  }
-
-  public byte[] getBytes() {
-    return bytes;
-  }
-
-  public Object getPersistentState() {
-    return new PersistentState(name, bytes);
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  // getters and setters ////////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getDeploymentId() {
-    return deploymentId;
-  }
-
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
-
-  public void setBytes(byte[] bytes) {
-    this.bytes = bytes;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  @Override
-  public String toString() {
-    return "ByteArrayEntity[id=" + id + ", name=" + name + ", size=" + (bytes != null ? bytes.length : 0) + "]";
-  }
-
-  // Wrapper for a byte array, needed to do byte array comparisons
-  // See https://activiti.atlassian.net/browse/ACT-1524
-  private static class PersistentState {
-
-    private final String name;
-    private final byte[] bytes;
-
-    public PersistentState(String name, byte[] bytes) {
-      this.name = name;
-      this.bytes = bytes;
-    }
-
-    public boolean equals(Object obj) {
-      if (obj instanceof PersistentState) {
-        PersistentState other = (PersistentState) obj;
-        return StringUtils.equals(this.name, other.name) && Arrays.equals(this.bytes, other.bytes);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      throw new UnsupportedOperationException();
-    }
-
-  }
+  void setBytes(byte[] bytes);
 
 }

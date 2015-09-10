@@ -38,15 +38,15 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity1.setEventName("messageName");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity2.setEventName("messageName");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity3 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity3 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity3.setEventName("messageName2");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity3);
 
@@ -69,15 +69,15 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity1.setEventName("messageName");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity2.setEventName("messageName");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
-        SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = new SignalEventSubscriptionEntity();
+        SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = commandContext.getEventSubscriptionEntityManager().createSignalEventSubscription();
         signalEventSubscriptionEntity3.setEventName("messageName2");
         commandContext.getEventSubscriptionEntityManager().insert(signalEventSubscriptionEntity3);
 
@@ -100,17 +100,17 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity1.setEventName("messageName");
         messageEventSubscriptionEntity1.setActivityId("someActivity");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
-        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = new MessageEventSubscriptionEntity();
+        MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
         messageEventSubscriptionEntity2.setEventName("messageName");
         messageEventSubscriptionEntity2.setActivityId("someActivity");
         commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
-        SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = new SignalEventSubscriptionEntity();
+        SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = commandContext.getEventSubscriptionEntityManager().createSignalEventSubscription();
         signalEventSubscriptionEntity3.setEventName("messageName2");
         signalEventSubscriptionEntity3.setActivityId("someOtherActivity");
         commandContext.getEventSubscriptionEntityManager().insert(signalEventSubscriptionEntity3);

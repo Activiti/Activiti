@@ -20,6 +20,11 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
   public EntityImpl findById(String entityId) {
     return getDataManager().findById(entityId);
   }
+  
+  @Override
+  public EntityImpl create() {
+    return getDataManager().create();
+  }
 
   @Override
   public void insert(EntityImpl entity) {

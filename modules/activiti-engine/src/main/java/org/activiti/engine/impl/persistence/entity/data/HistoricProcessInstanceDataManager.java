@@ -17,12 +17,15 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 
 /**
  * @author Joram Barrez
  */
 public interface HistoricProcessInstanceDataManager extends DataManager<HistoricProcessInstanceEntity> {
+  
+  HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity);
 
   List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
   

@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -70,7 +71,7 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
     commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
 
     // Doing process definitions in memory, cause we need to clear the process definition cache
-    List<ProcessDefinition> processDefinitions = commandContext.getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
+    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
     for (ProcessDefinition processDefinition : processDefinitions) {
       commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().remove(processDefinition.getId());
     }

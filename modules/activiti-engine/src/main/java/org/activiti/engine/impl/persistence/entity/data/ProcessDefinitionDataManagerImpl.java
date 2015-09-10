@@ -20,6 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -28,8 +29,13 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class ProcessDefinitionDataManagerImpl extends AbstractDataManager<ProcessDefinitionEntity> implements ProcessDefinitionDataManager {
   
   @Override
-  public Class<ProcessDefinitionEntity> getManagedEntityClass() {
-    return ProcessDefinitionEntity.class;
+  public Class<? extends ProcessDefinitionEntity> getManagedEntityClass() {
+    return ProcessDefinitionEntityImpl.class;
+  }
+  
+  @Override
+  public ProcessDefinitionEntity create() {
+    return new ProcessDefinitionEntityImpl();
   }
   
   @Override

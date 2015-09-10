@@ -6,6 +6,7 @@ import java.util.Map;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -39,7 +40,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 
   protected EventLogEntryEntity createEventLogEntry(String type, String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
 
-    EventLogEntryEntity eventLogEntry = new EventLogEntryEntity();
+    EventLogEntryEntity eventLogEntry = Context.getCommandContext().getEventLogEntryEntityManager().create();
     eventLogEntry.setProcessDefinitionId(processDefinitionId);
     eventLogEntry.setProcessInstanceId(processInstanceId);
     eventLogEntry.setExecutionId(executionId);

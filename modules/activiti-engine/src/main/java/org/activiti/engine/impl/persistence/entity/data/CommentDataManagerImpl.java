@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
@@ -26,8 +27,13 @@ import org.activiti.engine.task.Event;
 public class CommentDataManagerImpl extends AbstractDataManager<CommentEntity> implements CommentDataManager {
 
   @Override
-  public Class<CommentEntity> getManagedEntityClass() {
-    return CommentEntity.class;
+  public Class<? extends CommentEntity> getManagedEntityClass() {
+    return CommentEntityImpl.class;
+  }
+  
+  @Override
+  public CommentEntity create() {
+    return new CommentEntityImpl();
   }
   
   @Override
@@ -90,12 +96,12 @@ public class CommentDataManagerImpl extends AbstractDataManager<CommentEntity> i
 
   @Override
   public Comment findComment(String commentId) {
-    return getDbSqlSession().selectById(CommentEntity.class, commentId);
+    return findById(commentId);
   }
 
   @Override
   public Event findEvent(String commentId) {
-    return getDbSqlSession().selectById(CommentEntity.class, commentId);
+    return findById(commentId);
   }
   
 }

@@ -208,7 +208,7 @@ public class ErrorPropagation {
       /*if (boundaryParentExecution.isScope() == false) {
         boundaryParentExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(boundaryParentExecution.getParentId());
       }*/
-      List<ExecutionEntity> childExecutions = parentExecution.getExecutions();
+      List<? extends ExecutionEntity> childExecutions = parentExecution.getExecutions();
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getActivityId().equals(event.getId())) {
           boundaryExecution = childExecution;

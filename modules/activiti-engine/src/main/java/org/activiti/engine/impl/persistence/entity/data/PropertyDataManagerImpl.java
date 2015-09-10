@@ -12,7 +12,10 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
+import java.util.List;
+
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
+import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -20,8 +23,19 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 public class PropertyDataManagerImpl extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
   
   @Override
-  public Class<PropertyEntity> getManagedEntityClass() {
-    return PropertyEntity.class;
+  public Class<? extends PropertyEntity> getManagedEntityClass() {
+    return PropertyEntityImpl.class;
+  }
+  
+  @Override
+  public PropertyEntity create() {
+    return new PropertyEntityImpl();
+  }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<PropertyEntity> findAll() {
+    return getDbSqlSession().selectList("selectProperties");
   }
   
 }

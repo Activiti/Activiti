@@ -18,12 +18,24 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 
 /**
  * @author Joram Barrez
  */
 public interface HistoricDetailDataManager extends DataManager<HistoricDetailEntity> {
+  
+  HistoricDetailAssignmentEntity createHistoricDetailAssignment();
+  
+  HistoricDetailTransitionInstanceEntity createHistoricDetailTransitionInstance();
+  
+  HistoricDetailVariableInstanceUpdateEntity createHistoricDetailVariableInstanceUpdate();
+  
+  HistoricFormPropertyEntity createHistoricFormProperty();
 
   List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(String processInstanceId);
   

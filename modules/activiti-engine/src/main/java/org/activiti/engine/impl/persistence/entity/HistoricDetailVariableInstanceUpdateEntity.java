@@ -14,167 +14,23 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity 
-  implements ValueFields, HistoricVariableUpdate, Entity, HasRevision {
+public interface HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity, ValueFields, HistoricVariableUpdate, Entity, HasRevision {
 
-  private static final long serialVersionUID = 1L;
-
-  protected int revision;
-
-  protected String name;
-  protected VariableType variableType;
-
-  protected Long longValue;
-  protected Double doubleValue;
-  protected String textValue;
-  protected String textValue2;
-  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
-
-  protected Object cachedValue;
-
-  protected HistoricDetailVariableInstanceUpdateEntity() {
-    this.detailType = "VariableUpdate";
-  }
+  void setName(String name);
   
-  public Object getPersistentState() {
-    // HistoricDetailVariableInstanceUpdateEntity is immutable, so always
-    // the same object is returned
-    return HistoricDetailVariableInstanceUpdateEntity.class;
-  }
+  ByteArrayRef getByteArrayRef();
 
-  public Object getValue() {
-    if (!variableType.isCachable() || cachedValue == null) {
-      cachedValue = variableType.getValue(this);
-    }
-    return cachedValue;
-  }
+  VariableType getVariableType();
 
-  public String getVariableTypeName() {
-    return (variableType != null ? variableType.getTypeName() : null);
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  // byte array value /////////////////////////////////////////////////////////
-
-  @Override
-  public byte[] getBytes() {
-    return byteArrayRef.getBytes();
-  }
-
-  public ByteArrayRef getByteArrayRef() {
-    return byteArrayRef;
-  }
-
-  @Override
-  public void setBytes(byte[] bytes) {
-    throw new UnsupportedOperationException("HistoricDetailVariableInstanceUpdateEntity is immutable");
-  }
-
-  // getters and setters ////////////////////////////////////////////////////////
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public String getVariableName() {
-    return name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public VariableType getVariableType() {
-    return variableType;
-  }
-
-  public void setVariableType(VariableType variableType) {
-    this.variableType = variableType;
-  }
-
-  public Long getLongValue() {
-    return longValue;
-  }
-
-  public void setLongValue(Long longValue) {
-    this.longValue = longValue;
-  }
-
-  public Double getDoubleValue() {
-    return doubleValue;
-  }
-
-  public void setDoubleValue(Double doubleValue) {
-    this.doubleValue = doubleValue;
-  }
-
-  public String getTextValue() {
-    return textValue;
-  }
-
-  public void setTextValue(String textValue) {
-    this.textValue = textValue;
-  }
-
-  public String getTextValue2() {
-    return textValue2;
-  }
-
-  public void setTextValue2(String textValue2) {
-    this.textValue2 = textValue2;
-  }
-
-  public Object getCachedValue() {
-    return cachedValue;
-  }
-
-  public void setCachedValue(Object cachedValue) {
-    this.cachedValue = cachedValue;
-  }
-
-  // common methods ///////////////////////////////////////////////////////////////
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("HistoricDetailVariableInstanceUpdateEntity[");
-    sb.append("id=").append(id);
-    sb.append(", name=").append(name);
-    sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
-    if (longValue != null) {
-      sb.append(", longValue=").append(longValue);
-    }
-    if (doubleValue != null) {
-      sb.append(", doubleValue=").append(doubleValue);
-    }
-    if (textValue != null) {
-      sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
-    }
-    if (textValue2 != null) {
-      sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
-    }
-    if (byteArrayRef.getId() != null) {
-      sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
-    }
-    sb.append("]");
-    return sb.toString();
-  }
+  void setVariableType(VariableType variableType);
 
 }

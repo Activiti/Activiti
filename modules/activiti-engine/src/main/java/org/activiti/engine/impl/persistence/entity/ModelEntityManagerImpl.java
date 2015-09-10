@@ -49,11 +49,6 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   }
 
   @Override
-  public Model createNewModel() {
-    return new ModelEntity();
-  }
-
-  @Override
   public void insert(ModelEntity model) {
     ((ModelEntity) model).setCreateTime(getClock().getCurrentTime());
     ((ModelEntity) model).setLastUpdateTime(getClock().getCurrentTime());

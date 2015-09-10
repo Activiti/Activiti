@@ -18,7 +18,10 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
  * @author Joram Barrez
@@ -26,8 +29,18 @@ import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 public class HistoricTaskInstanceDataManagerImpl extends AbstractDataManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceDataManager {
 
   @Override
-  public Class<HistoricTaskInstanceEntity> getManagedEntityClass() {
-    return HistoricTaskInstanceEntity.class;
+  public Class<? extends HistoricTaskInstanceEntity> getManagedEntityClass() {
+    return HistoricTaskInstanceEntityImpl.class;
+  }
+  
+  @Override
+  public HistoricTaskInstanceEntity create() {
+    return new HistoricTaskInstanceEntityImpl();
+  }
+  
+  @Override
+  public HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution) {
+    return new HistoricTaskInstanceEntityImpl(task, execution);
   }
   
   @Override

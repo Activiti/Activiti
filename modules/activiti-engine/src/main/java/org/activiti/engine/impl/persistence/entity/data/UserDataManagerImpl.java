@@ -20,6 +20,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -27,8 +28,13 @@ import org.activiti.engine.impl.persistence.entity.UserEntity;
 public class UserDataManagerImpl extends AbstractDataManager<UserEntity> implements UserDataManager {
   
   @Override
-  public Class<UserEntity> getManagedEntityClass() {
-    return UserEntity.class;
+  public Class<? extends UserEntity> getManagedEntityClass() {
+    return UserEntityImpl.class;
+  }
+  
+  @Override
+  public UserEntity create() {
+    return new UserEntityImpl();
   }
   
   @SuppressWarnings("unchecked")

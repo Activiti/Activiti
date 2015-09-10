@@ -21,6 +21,7 @@ import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -28,8 +29,13 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 public class HistoricActivityInstanceDataManagerImpl extends AbstractDataManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceDataManager {
 
   @Override
-  public Class<HistoricActivityInstanceEntity> getManagedEntityClass() {
-    return HistoricActivityInstanceEntity.class;
+  public Class<? extends HistoricActivityInstanceEntity> getManagedEntityClass() {
+    return HistoricActivityInstanceEntityImpl.class;
+  }
+  
+  @Override
+  public HistoricActivityInstanceEntity create() {
+    return new HistoricActivityInstanceEntityImpl();
   }
   
   @Override

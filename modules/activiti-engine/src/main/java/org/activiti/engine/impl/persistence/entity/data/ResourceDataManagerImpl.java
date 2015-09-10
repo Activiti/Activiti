@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -24,8 +25,13 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 public class ResourceDataManagerImpl extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
   
   @Override
-  public Class<ResourceEntity> getManagedEntityClass() {
-    return ResourceEntity.class;
+  public Class<? extends ResourceEntity> getManagedEntityClass() {
+    return ResourceEntityImpl.class;
+  }
+  
+  @Override
+  public ResourceEntity create() {
+    return new ResourceEntityImpl();
   }
   
   @Override

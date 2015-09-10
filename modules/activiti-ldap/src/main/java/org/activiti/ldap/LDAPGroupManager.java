@@ -31,6 +31,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
+import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 
 /**
@@ -56,6 +57,11 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
 
   @Override
   public Group createNewGroup(String groupId) {
+    throw new ActivitiException("LDAP group manager doesn't support creating a new group");
+  }
+  
+  @Override
+  public GroupEntity create() {
     throw new ActivitiException("LDAP group manager doesn't support creating a new group");
   }
 
@@ -120,7 +126,7 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
 
-            GroupEntity group = new GroupEntity();
+            GroupEntity group = new GroupEntityImpl();
             if (ldapConfigurator.getGroupIdAttribute() != null) {
               group.setId(result.getAttributes().get(ldapConfigurator.getGroupIdAttribute()).get().toString());
             }

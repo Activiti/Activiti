@@ -23,6 +23,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -51,7 +52,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
   }
 
   protected ProcessDefinitionEntity transformProcess(BpmnParse bpmnParse, Process process) {
-    ProcessDefinitionEntity currentProcessDefinition = new ProcessDefinitionEntity();
+    ProcessDefinitionEntity currentProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager().create();
     bpmnParse.setCurrentProcessDefinition(currentProcessDefinition);
 
     /*

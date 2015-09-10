@@ -32,7 +32,9 @@ import javax.management.modelmbean.ModelMBean;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -82,7 +84,7 @@ public class ProcessDefinitionsTest {
 
     when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
     List<ProcessDefinition> processDefinitionList = new ArrayList<ProcessDefinition>();
-    ProcessDefinitionEntity pd = new ProcessDefinitionEntity();
+    ProcessDefinitionEntity pd = new ProcessDefinitionEntityImpl();
     pd.setId("testId");
     pd.setName("testName");
     pd.setVersion(175);
@@ -113,7 +115,7 @@ public class ProcessDefinitionsTest {
   @Test
   public void testDeployments() {
     when(repositoryService.createDeploymentQuery()).thenReturn(deploymentQuery);
-    DeploymentEntity deployment = new DeploymentEntity();
+    DeploymentEntity deployment = new DeploymentEntityImpl();
     List<Deployment> deploymentList = new ArrayList<Deployment>();
     deployment.setId("testDeploymentId");
     deployment.setName("testDeploymentName");

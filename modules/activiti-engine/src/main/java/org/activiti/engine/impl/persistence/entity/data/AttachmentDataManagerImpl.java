@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
-import org.activiti.engine.task.Attachment;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 
 
 /**
@@ -24,19 +24,24 @@ import org.activiti.engine.task.Attachment;
 public class AttachmentDataManagerImpl extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
   
   @Override
-  public Class<AttachmentEntity> getManagedEntityClass() {
-    return AttachmentEntity.class;
+  public Class<? extends AttachmentEntity> getManagedEntityClass() {
+    return AttachmentEntityImpl.class;
+  }
+  
+  @Override
+  public AttachmentEntity create() {
+    return new AttachmentEntityImpl();
   }
   
   @Override
   @SuppressWarnings("unchecked")
-  public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+  public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
     return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
   }
   
   @Override
   @SuppressWarnings("unchecked")
-  public List<Attachment> findAttachmentsByTaskId(String taskId) {
+  public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
     return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
   }
 

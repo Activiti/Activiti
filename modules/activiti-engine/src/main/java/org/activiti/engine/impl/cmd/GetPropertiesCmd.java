@@ -31,7 +31,7 @@ public class GetPropertiesCmd implements Command<Map<String, String>>, Serializa
 
   @SuppressWarnings("unchecked")
   public Map<String, String> execute(CommandContext commandContext) {
-    List<PropertyEntity> propertyEntities = commandContext.getDbSqlSession().selectList("selectProperties");
+    List<PropertyEntity> propertyEntities = commandContext.getPropertyEntityManager().findAll();
 
     Map<String, String> properties = new HashMap<String, String>();
     for (PropertyEntity propertyEntity : propertyEntities) {

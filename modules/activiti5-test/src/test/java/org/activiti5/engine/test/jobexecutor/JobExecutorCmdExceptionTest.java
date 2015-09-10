@@ -113,7 +113,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
   }
 
   protected MessageEntity createTweetExceptionMessage() {
-    MessageEntity message = new MessageEntity();
+    MessageEntity message = processEngineConfiguration.getJobEntityManager().createMessage();
     message.setJobHandlerType("tweet-exception");
     return message;
   }

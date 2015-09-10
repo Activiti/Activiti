@@ -19,6 +19,8 @@ import org.activiti.engine.impl.db.Entity;
  */
 public interface EntityManager<EntityImpl extends Entity> {
   
+  EntityImpl create();
+  
   EntityImpl findById(String entityId);
   
   void insert(EntityImpl entity);

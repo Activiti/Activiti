@@ -13,246 +13,38 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
  */
-public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, Entity, HasRevision, BulkDeleteable, Serializable {
+public interface HistoricVariableInstanceEntity extends ValueFields, HistoricVariableInstance, Entity, HasRevision {
 
-  private static final long serialVersionUID = 1L;
+  VariableType getVariableType();
 
-  protected String id;
-  protected int revision;
+  void setName(String name);
 
-  protected String name;
-  protected VariableType variableType;
+  void setVariableType(VariableType variableType);
 
-  protected String processInstanceId;
-  protected String executionId;
-  protected String taskId;
+  void setProcessInstanceId(String processInstanceId);
 
-  protected Date createTime;
-  protected Date lastUpdatedTime;
+  void setTaskId(String taskId);
 
-  protected Long longValue;
-  protected Double doubleValue;
-  protected String textValue;
-  protected String textValue2;
-  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
+  void setCreateTime(Date createTime);
 
-  protected Object cachedValue;
+  void setLastUpdatedTime(Date lastUpdatedTime);
 
-  // Default constructor for SQL mapping
-  protected HistoricVariableInstanceEntity() {
-  }
+  String getExecutionId();
 
-  public Object getPersistentState() {
-    HashMap<String, Object> persistentState = new HashMap<String, Object>();
+  void setExecutionId(String executionId);
 
-    persistentState.put("textValue", textValue);
-    persistentState.put("textValue2", textValue2);
-    persistentState.put("doubleValue", doubleValue);
-    persistentState.put("longValue", longValue);
-    persistentState.put("byteArrayRef", byteArrayRef.getId());
-
-    persistentState.put("createTime", createTime);
-    persistentState.put("lastUpdatedTime", lastUpdatedTime);
-
-    return persistentState;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public Object getValue() {
-    if (!variableType.isCachable() || cachedValue == null) {
-      cachedValue = variableType.getValue(this);
-    }
-    return cachedValue;
-  }
-
-  // byte array value /////////////////////////////////////////////////////////
-
-  @Override
-  public byte[] getBytes() {
-    return byteArrayRef.getBytes();
-  }
-
-  @Override
-  public void setBytes(byte[] bytes) {
-    byteArrayRef.setValue("hist.var-" + name, bytes);
-  }
-
-  // getters and setters //////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getVariableTypeName() {
-    return (variableType != null ? variableType.getTypeName() : null);
-  }
-
-  public String getVariableName() {
-    return name;
-  }
+  ByteArrayRef getByteArrayRef();
   
-  public VariableType getVariableType() {
-    return variableType;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public String getName() {
-    return name;
-  }
-  
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Long getLongValue() {
-    return longValue;
-  }
-
-  public void setLongValue(Long longValue) {
-    this.longValue = longValue;
-  }
-
-  public Double getDoubleValue() {
-    return doubleValue;
-  }
-
-  public void setDoubleValue(Double doubleValue) {
-    this.doubleValue = doubleValue;
-  }
-
-  public String getTextValue() {
-    return textValue;
-  }
-
-  public void setTextValue(String textValue) {
-    this.textValue = textValue;
-  }
-
-  public String getTextValue2() {
-    return textValue2;
-  }
-
-  public void setTextValue2(String textValue2) {
-    this.textValue2 = textValue2;
-  }
-
-  public Object getCachedValue() {
-    return cachedValue;
-  }
-
-  public void setCachedValue(Object cachedValue) {
-    this.cachedValue = cachedValue;
-  }
-
-  public void setVariableType(VariableType variableType) {
-    this.variableType = variableType;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public Date getCreateTime() {
-    return createTime;
-  }
-
-  public void setCreateTime(Date createTime) {
-    this.createTime = createTime;
-  }
-
-  public Date getLastUpdatedTime() {
-    return lastUpdatedTime;
-  }
-
-  public void setLastUpdatedTime(Date lastUpdatedTime) {
-    this.lastUpdatedTime = lastUpdatedTime;
-  }
-
-  public String getExecutionId() {
-    return executionId;
-  }
-
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public Date getTime() {
-    return getCreateTime();
-  }
-  
-  public ByteArrayRef getByteArrayRef() {
-    return byteArrayRef;
-  }
-  
-  // common methods //////////////////////////////////////////////////////////
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("HistoricVariableInstanceEntity[");
-    sb.append("id=").append(id);
-    sb.append(", name=").append(name);
-    sb.append(", revision=").append(revision);
-    sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
-    if (longValue != null) {
-      sb.append(", longValue=").append(longValue);
-    }
-    if (doubleValue != null) {
-      sb.append(", doubleValue=").append(doubleValue);
-    }
-    if (textValue != null) {
-      sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
-    }
-    if (textValue2 != null) {
-      sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
-    }
-    if (byteArrayRef.getId() != null) {
-      sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
-    }
-    sb.append("]");
-    return sb.toString();
-  }
-
 }

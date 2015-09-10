@@ -45,7 +45,9 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
   
   @Override
   public ByteArrayEntity createAndInsert(String name, byte[] bytes) {
-    ByteArrayEntity byteArrayEntity = new ByteArrayEntity(name, bytes);
+    ByteArrayEntity byteArrayEntity =  byteArrayDataManager.create();
+    byteArrayEntity.setName(name);
+    byteArrayEntity.setBytes(bytes);
     byteArrayDataManager.insert(byteArrayEntity);
     return byteArrayEntity;
   }

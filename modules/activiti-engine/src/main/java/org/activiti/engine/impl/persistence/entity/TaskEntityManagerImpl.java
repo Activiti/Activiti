@@ -56,9 +56,8 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
    */
   @Override
   public TaskEntity create(Date createTime) {
-    TaskEntity task = new TaskEntity();
-    task.isIdentityLinksInitialized = true;
-    task.createTime = createTime;
+    TaskEntity task = create();
+    task.setCreateTime(createTime);
     return task;
   }
   

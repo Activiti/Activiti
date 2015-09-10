@@ -2,19 +2,19 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl">
 
   <!-- DELETE -->
 
-  <delete id="deleteSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+  <delete id="deleteSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl">
     delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
-  <delete id="deleteCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+  <delete id="deleteCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl">
     delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
-  <delete id="deleteMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+  <delete id="deleteMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl">
     delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -24,7 +24,7 @@
   
   <!-- RESULTMAP -->
 
-  <resultMap id="eventSubscriptionResultMap" type="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+  <resultMap id="eventSubscriptionResultMap" type="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="eventType" column="EVENT_TYPE_" jdbcType="VARCHAR" />
@@ -43,9 +43,9 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity" extends="eventSubscriptionResultMap"/>
-  <resultMap id="signalResultMap" type="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity" extends="eventSubscriptionResultMap"/>   
-  <resultMap id="compensateResultMap" type="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity" extends="eventSubscriptionResultMap"/>   
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl" extends="eventSubscriptionResultMap"/>
+  <resultMap id="signalResultMap" type="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl" extends="eventSubscriptionResultMap"/>   
+  <resultMap id="compensateResultMap" type="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl" extends="eventSubscriptionResultMap"/>   
 
   <!-- SELECT -->  
 
@@ -226,7 +226,7 @@
   
   <!-- MESSAGE INSERT -->
   
-  <insert id="insertMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity">
+  <insert id="insertMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl">
  	insert into ${prefix}ACT_RU_EVENT_SUBSCR (
             ID_, 
             REV_,
@@ -317,7 +317,7 @@
 
   <!-- MESSAGE UPDATE -->
 
-  <update id="updateMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity">
+  <update id="updateMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl">
     update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
@@ -336,7 +336,7 @@
   
    <!-- SIGNAL INSERT -->
   
-  <insert id="insertSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
+  <insert id="insertSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl">
    insert into ${prefix}ACT_RU_EVENT_SUBSCR (
              ID_, 
             REV_,
@@ -428,7 +428,7 @@
 
   <!-- SIGNAL UPDATE -->
 
-  <update id="updateSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
+  <update id="updateSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl">
     update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
@@ -446,7 +446,7 @@
   
    <!-- Compensate INSERT -->
   
-  <insert id="insertCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity">
+  <insert id="insertCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl">
     insert into ${prefix}ACT_RU_EVENT_SUBSCR (
              ID_, 
             REV_,
@@ -538,7 +538,7 @@
   
   <!-- Compensate UPDATE -->
 
-  <update id="updateCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity">
+  <update id="updateCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl">
     update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},

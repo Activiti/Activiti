@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +22,13 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,18 +37,43 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EventSubscriptionDataManagerImpl extends AbstractDataManager<EventSubscriptionEntity> implements EventSubscriptionDataManager {
   
-  @SuppressWarnings("unchecked")
-  private static final List<Class<? extends EventSubscriptionEntity>> ENTITY_SUBCLASSES = 
-      Arrays.asList(MessageEventSubscriptionEntity.class, SignalEventSubscriptionEntity.class, CompensateEventSubscriptionEntity.class);
+  private static List<Class<? extends EventSubscriptionEntity>> ENTITY_SUBCLASSES = new ArrayList<Class<? extends EventSubscriptionEntity>>();
+  
+  static {
+    ENTITY_SUBCLASSES.add(MessageEventSubscriptionEntityImpl.class);
+    ENTITY_SUBCLASSES.add(SignalEventSubscriptionEntityImpl.class);
+    ENTITY_SUBCLASSES.add(CompensateEventSubscriptionEntityImpl.class);
+  }
   
   @Override
-  public Class<EventSubscriptionEntity> getManagedEntityClass() {
-    return EventSubscriptionEntity.class;
+  public Class<? extends EventSubscriptionEntity> getManagedEntityClass() {
+    return EventSubscriptionEntityImpl.class;
   }
   
   @Override
   public List<Class<? extends EventSubscriptionEntity>> getManagedEntitySubClasses() {
     return ENTITY_SUBCLASSES;
+  }
+  
+  @Override
+  public EventSubscriptionEntity create() {
+    // only allowed to create subclasses
+    throw new UnsupportedOperationException();
+  }
+  
+  @Override
+  public CompensateEventSubscriptionEntity createCompensateEventSubscription() {
+    return new CompensateEventSubscriptionEntityImpl();
+  }
+  
+  @Override
+  public MessageEventSubscriptionEntity createMessageEventSubscription() {
+    return new MessageEventSubscriptionEntityImpl();
+  }
+  
+  @Override
+  public SignalEventSubscriptionEntity createSignalEventSubscription() {
+    return new SignalEventSubscriptionEntityImpl();
   }
   
   @Override

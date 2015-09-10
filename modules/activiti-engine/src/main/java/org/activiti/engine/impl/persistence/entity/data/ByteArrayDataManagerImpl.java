@@ -13,15 +13,21 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 
 /**
  * @author Joram Barrez
  */
 public class ByteArrayDataManagerImpl extends AbstractDataManager<ByteArrayEntity> implements ByteArrayDataManager {
+  
+  @Override
+  public ByteArrayEntity create() {
+    return new ByteArrayEntityImpl();
+  }
 
   @Override
-  public Class<ByteArrayEntity> getManagedEntityClass() {
-    return ByteArrayEntity.class;
+  public Class<? extends ByteArrayEntity> getManagedEntityClass() {
+    return ByteArrayEntityImpl.class;
   }
   
   @Override

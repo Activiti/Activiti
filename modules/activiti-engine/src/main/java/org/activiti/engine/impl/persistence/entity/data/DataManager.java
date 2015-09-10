@@ -18,6 +18,8 @@ import org.activiti.engine.impl.db.Entity;
  * @author Joram Barrez
  */
 public interface DataManager<EntityImpl extends Entity> {
+  
+  EntityImpl create();
 
   EntityImpl findById(String entityId);
   

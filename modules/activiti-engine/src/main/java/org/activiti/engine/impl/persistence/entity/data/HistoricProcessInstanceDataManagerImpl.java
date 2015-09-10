@@ -18,7 +18,9 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -26,8 +28,18 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 public class HistoricProcessInstanceDataManagerImpl extends AbstractDataManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceDataManager {
 
   @Override
-  public Class<HistoricProcessInstanceEntity> getManagedEntityClass() {
-    return HistoricProcessInstanceEntity.class;
+  public Class<? extends HistoricProcessInstanceEntity> getManagedEntityClass() {
+    return HistoricProcessInstanceEntityImpl.class;
+  }
+  
+  @Override
+  public HistoricProcessInstanceEntity create() {
+    return new HistoricProcessInstanceEntityImpl();
+  }
+  
+  @Override
+  public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
+    return new HistoricProcessInstanceEntityImpl(processInstanceExecutionEntity);
   }
   
   @Override

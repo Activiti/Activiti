@@ -33,6 +33,7 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,11 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
 
   @Override
   public User createNewUser(String userId) {
+    throw new ActivitiException("LDAP user manager doesn't support creating a new user");
+  }
+  
+  @Override
+  public UserEntity create() {
     throw new ActivitiException("LDAP user manager doesn't support creating a new user");
   }
 
@@ -92,7 +98,7 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
 
           String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
           NamingEnumeration<?> namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
-          UserEntity user = new UserEntity();
+          UserEntity user = new UserEntityImpl();
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
             mapSearchResultToUser(result, user);
@@ -139,7 +145,7 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
             while (namingEnum.hasMore()) {
               SearchResult searchResult = (SearchResult) namingEnum.next();
 
-              UserEntity user = new UserEntity();
+              UserEntity user = new UserEntityImpl();
               mapSearchResultToUser(searchResult, user);
               result.add(user);
 

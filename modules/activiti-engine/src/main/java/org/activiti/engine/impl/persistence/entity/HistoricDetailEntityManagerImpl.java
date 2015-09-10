@@ -48,7 +48,7 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
   public HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, 
       String propertyId, String propertyValue, String taskId) {
     
-    HistoricFormPropertyEntity historicFormPropertyEntity = new HistoricFormPropertyEntity();
+    HistoricFormPropertyEntity historicFormPropertyEntity = historicDetailDataManager.createHistoricFormProperty();
     historicFormPropertyEntity.setProcessInstanceId(execution.getProcessInstanceId());
     historicFormPropertyEntity.setExecutionId(execution.getId());
     historicFormPropertyEntity.setTaskId(taskId);
@@ -67,22 +67,22 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
   
   @Override
   public HistoricDetailVariableInstanceUpdateEntity copyAndInsertHistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance) {
-    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity();
-    historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
-    historicVariableUpdate.executionId = variableInstance.getExecutionId();
-    historicVariableUpdate.taskId = variableInstance.getTaskId();
-    historicVariableUpdate.time = getClock().getCurrentTime();
-    historicVariableUpdate.revision = variableInstance.getRevision();
-    historicVariableUpdate.name = variableInstance.getName();
-    historicVariableUpdate.variableType = variableInstance.getType();
-    historicVariableUpdate.textValue = variableInstance.getTextValue();
-    historicVariableUpdate.textValue2 = variableInstance.getTextValue2();
-    historicVariableUpdate.doubleValue = variableInstance.getDoubleValue();
-    historicVariableUpdate.longValue = variableInstance.getLongValue();
+    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = historicDetailDataManager.createHistoricDetailVariableInstanceUpdate();
+    historicVariableUpdate.setProcessInstanceId(variableInstance.getProcessInstanceId());
+    historicVariableUpdate.setExecutionId(variableInstance.getExecutionId());
+    historicVariableUpdate.setTaskId(variableInstance.getTaskId());
+    historicVariableUpdate.setTime(getClock().getCurrentTime());
+    historicVariableUpdate.setRevision(variableInstance.getRevision());
+    historicVariableUpdate.setName(variableInstance.getName());
+    historicVariableUpdate.setVariableType(variableInstance.getType());
+    historicVariableUpdate.setTextValue(variableInstance.getTextValue());
+    historicVariableUpdate.setTextValue2(variableInstance.getTextValue2());
+    historicVariableUpdate.setDoubleValue(variableInstance.getDoubleValue());
+    historicVariableUpdate.setLongValue(variableInstance.getLongValue());
 
     if (variableInstance.getBytes() != null) {
       String byteArrayName = "hist.detail.var-" + variableInstance.getName();
-      historicVariableUpdate.byteArrayRef.setValue(byteArrayName, variableInstance.getBytes());
+      historicVariableUpdate.getByteArrayRef().setValue(byteArrayName, variableInstance.getBytes());
     }
 
     insert(historicVariableUpdate);

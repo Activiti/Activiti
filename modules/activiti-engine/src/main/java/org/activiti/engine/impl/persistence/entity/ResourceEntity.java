@@ -13,74 +13,29 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-
 import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  */
-public class ResourceEntity implements Entity, Serializable {
+public interface ResourceEntity extends Entity {
 
-  private static final long serialVersionUID = 1L;
+  String getName();
 
-  protected String id;
-  protected String name;
-  protected byte[] bytes;
-  protected String deploymentId;
-  protected boolean generated;
+  void setName(String name);
 
-  public String getId() {
-    return id;
-  }
+  byte[] getBytes();
 
-  public void setId(String id) {
-    this.id = id;
-  }
+  void setBytes(byte[] bytes);
 
-  public String getName() {
-    return name;
-  }
+  String getDeploymentId();
 
-  public void setName(String name) {
-    this.name = name;
-  }
+  void setDeploymentId(String deploymentId);
 
-  public byte[] getBytes() {
-    return bytes;
-  }
+  Object getPersistentState();
 
-  public void setBytes(byte[] bytes) {
-    this.bytes = bytes;
-  }
+  void setGenerated(boolean generated);
 
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+  boolean isGenerated();
 
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
-
-  public Object getPersistentState() {
-    return ResourceEntity.class;
-  }
-
-  public void setGenerated(boolean generated) {
-    this.generated = generated;
-  }
-
-  /**
-   * Indicated whether or not the resource has been generated while deploying rather than being actual part of the deployment.
-   */
-  public boolean isGenerated() {
-    return generated;
-  }
-
-  // common methods //////////////////////////////////////////////////////////
-
-  @Override
-  public String toString() {
-    return "ResourceEntity[id=" + id + ", name=" + name + "]";
-  }
 }

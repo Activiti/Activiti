@@ -16,7 +16,6 @@ package org.activiti.engine.impl.persistence.entity;
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailAssignmentEntity extends HistoricDetailEntity {
+public interface HistoricDetailAssignmentEntity extends HistoricDetailEntity {
 
-  private static final long serialVersionUID = 1L;
 }

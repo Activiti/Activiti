@@ -1032,7 +1032,9 @@ public class DbSqlSession implements Session {
 
         PropertyEntity dbHistoryProperty;
         if ("5.0".equals(dbVersion)) {
-          dbHistoryProperty = new PropertyEntity("schema.history", "create(5.0)");
+          dbHistoryProperty = Context.getCommandContext().getPropertyEntityManager().create();
+          dbHistoryProperty.setName("schema.history");
+          dbHistoryProperty.setValue("create(5.0)");
           insert(dbHistoryProperty);
         } else {
           dbHistoryProperty = selectById(PropertyEntity.class, "schema.history");

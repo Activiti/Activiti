@@ -20,15 +20,11 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class TimerUtil {
-
-  private static final Logger logger = LoggerFactory.getLogger(TimerUtil.class);
 
   /**
    * The event definition on which the timer is based.
@@ -94,7 +90,11 @@ public class TimerUtil {
 
     TimerEntity timer = null;
     if (duedate != null) {
-      timer = new TimerEntity(jobHandlerType, jobHandlerConfig, true, TimerEntity.DEFAULT_RETRIES);
+      timer = Context.getCommandContext().getJobEntityManager().createTimer();
+      timer.setJobHandlerType(jobHandlerType);
+      timer.setJobHandlerConfiguration(jobHandlerConfig);
+      timer.setExclusive(true);
+      timer.setRetries(TimerEntity.DEFAULT_RETRIES);
       timer.setDuedate(duedate);
       if (executionEntity != null) {
         timer.setExecution(executionEntity);

@@ -24,8 +24,6 @@ import org.activiti.engine.repository.Model;
  */
 public interface ModelEntityManager extends EntityManager<ModelEntity> {
 
-  Model createNewModel();
-
   void insertEditorSourceForModel(String modelId, byte[] modelSource);
 
   void insertEditorSourceExtraForModel(String modelId, byte[] modelSource);

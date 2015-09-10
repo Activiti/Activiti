@@ -15,7 +15,9 @@ package org.activiti.engine.test.jobexecutor;
 import java.util.Date;
 
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -34,14 +36,14 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
   }
 
   protected MessageEntity createTweetMessage(String msg) {
-    MessageEntity message = new MessageEntity();
+    MessageEntity message = new MessageEntityImpl();
     message.setJobHandlerType("tweet");
     message.setJobHandlerConfiguration(msg);
     return message;
   }
 
   protected TimerEntity createTweetTimer(String msg, Date duedate) {
-    TimerEntity timer = new TimerEntity();
+    TimerEntity timer = new TimerEntityImpl();
     timer.setJobHandlerType("tweet");
     timer.setJobHandlerConfiguration(msg);
     timer.setDuedate(duedate);

@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
   
    <!-- INSERT HISTORIC IDENTITY LINK -->
   
-  <insert id="insertHistoricIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
+  <insert id="insertHistoricIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
     insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{type, jdbcType=VARCHAR},
@@ -72,7 +72,7 @@
   
   <!-- HISTORIC IDENTITY LINK RESULTMAP -->
 
-  <resultMap id="historicIdentityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
+  <resultMap id="historicIdentityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />

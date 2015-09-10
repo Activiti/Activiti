@@ -16,14 +16,8 @@ package org.activiti.engine.impl.persistence.entity;
 /**
  * @author Tijs Rademakers
  */
-public class MessageEventSubscriptionEntity extends EventSubscriptionEntity {
-
-  private static final long serialVersionUID = 1L;
+public interface MessageEventSubscriptionEntity extends EventSubscriptionEntity {
   
-  public static final String EVENT_TYPE = "message";
-
-  public MessageEventSubscriptionEntity() {
-    eventType = EVENT_TYPE;
-  }
+  String EVENT_TYPE = "message";
 
 }

@@ -18,7 +18,7 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
  * @author Joram Barrez
  */
 public interface ByteArrayDataManager extends DataManager<ByteArrayEntity> {
-
+  
   void deleteByteArrayNoRevisionCheck(String byteArrayEntityId);
   
 }

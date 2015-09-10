@@ -44,6 +44,11 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
   }
   
   @Override
+  public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
+    return historicProcessInstanceDataManager.create(processInstanceExecutionEntity);
+  }
+  
+  @Override
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
     if (getHistoryManager().isHistoryEnabled()) {
       List<String> historicProcessInstanceIds = historicProcessInstanceDataManager.findHistoricProcessInstanceIdsByProcessDefinitionId(processDefinitionId);

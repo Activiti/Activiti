@@ -13,181 +13,55 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.db.HasRevision;
 
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public abstract class EventSubscriptionEntity implements Entity, HasRevision, Serializable {
-
-  private static final long serialVersionUID = 1L;
-
-  // persistent state ///////////////////////////
-  protected String id;
-  protected int revision = 1;
-  protected String eventType;
-  protected String eventName;
-  protected String executionId;
-  protected String processInstanceId;
-  protected String activityId;
-  protected String configuration;
-  protected Date created;
-  protected String processDefinitionId;
-  protected String tenantId;
-
-  // runtime state /////////////////////////////
-  protected ExecutionEntity execution;
-
-  public EventSubscriptionEntity() {
-    this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-  }
-
-  public Object getPersistentState() {
-    HashMap<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("executionId", executionId);
-    persistentState.put("configuration", configuration);
-    return persistentState;
-  }
-
-  // getters & setters ////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public String getEventType() {
-    return eventType;
-  }
-
-  public void setEventType(String eventType) {
-    this.eventType = eventType;
-  }
-
-  public String getEventName() {
-    return eventName;
-  }
-
-  public void setEventName(String eventName) {
-    this.eventName = eventName;
-  }
-
-  public String getExecutionId() {
-    return executionId;
-  }
-
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
+public interface EventSubscriptionEntity extends Entity, HasRevision {
   
-  public ExecutionEntity getExecution() {
-    if (execution == null && executionId != null) {
-      execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
-    }
-    return execution;
-  }
+  String getEventType();
 
-  public void setExecution(ExecutionEntity execution) {
-    this.execution = execution;
-    if (execution != null) {
-      this.executionId = execution.getId();
-      this.processInstanceId = execution.getProcessInstanceId();
-    }
-  }
+  void setEventType(String eventType);
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+  String getEventName();
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+  void setEventName(String eventName);
 
-  public String getConfiguration() {
-    return configuration;
-  }
+  String getExecutionId();
 
-  public void setConfiguration(String configuration) {
-    this.configuration = configuration;
-  }
+  void setExecutionId(String executionId);
+  
+  ExecutionEntity getExecution();
 
-  public String getActivityId() {
-    return activityId;
-  }
+  void setExecution(ExecutionEntity execution);
 
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
+  String getProcessInstanceId();
 
-  public Date getCreated() {
-    return created;
-  }
+  void setProcessInstanceId(String processInstanceId);
 
-  public void setCreated(Date created) {
-    this.created = created;
-  }
+  String getConfiguration();
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+  void setConfiguration(String configuration);
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+  String getActivityId();
 
-  public String getTenantId() {
-    return tenantId;
-  }
+  void setActivityId(String activityId);
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
+  Date getCreated();
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    return result;
-  }
+  void setCreated(Date created);
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    EventSubscriptionEntity other = (EventSubscriptionEntity) obj;
-    if (id == null) {
-      if (other.id != null)
-        return false;
-    } else if (!id.equals(other.id))
-      return false;
-    return true;
-  }
+  String getProcessDefinitionId();
+
+  void setProcessDefinitionId(String processDefinitionId);
+
+  String getTenantId();
+
+  void setTenantId(String tenantId);
 
 }

@@ -17,12 +17,16 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
  * @author Joram Barrez
  */
 public interface HistoricTaskInstanceDataManager extends DataManager<HistoricTaskInstanceEntity> {
+  
+  HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution);
 
   List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(String processInstanceId);
   

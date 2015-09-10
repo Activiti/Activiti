@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
@@ -24,6 +25,12 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
  * @author Joram Barrez
  */
 public interface EventSubscriptionDataManager extends DataManager<EventSubscriptionEntity> {
+  
+  MessageEventSubscriptionEntity createMessageEventSubscription();
+  
+  SignalEventSubscriptionEntity createSignalEventSubscription();
+  
+  CompensateEventSubscriptionEntity createCompensateEventSubscription();
   
   long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl);
 

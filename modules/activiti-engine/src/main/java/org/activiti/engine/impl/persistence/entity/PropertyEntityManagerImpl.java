@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
@@ -35,6 +37,11 @@ public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEnt
   @Override
   protected DataManager<PropertyEntity> getDataManager() {
     return propertyDataManager;
+  }
+  
+  @Override
+  public List<PropertyEntity> findAll() {
+    return propertyDataManager.findAll();
   }
   
 }

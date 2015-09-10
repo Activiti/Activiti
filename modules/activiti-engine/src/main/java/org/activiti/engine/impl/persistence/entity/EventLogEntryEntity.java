@@ -22,138 +22,36 @@ import org.activiti.engine.impl.db.Entity;
  * 
  * @author Joram Barrez
  */
-public class EventLogEntryEntity implements Entity, EventLogEntry {
+public interface EventLogEntryEntity extends Entity, EventLogEntry {
 
-  protected long logNumber; // cant use id here, it would clash with entity
-  protected String type;
-  protected String processDefinitionId;
-  protected String processInstanceId;
-  protected String executionId;
-  protected String taskId;
-  protected Date timeStamp;
-  protected String userId;
-  protected byte[] data;
-  protected String lockOwner;
-  protected String lockTime;
-  protected int isProcessed;
+  void setLogNumber(long logNumber);
 
-  public EventLogEntryEntity() {
-  }
+  void setType(String type);
 
-  @Override
-  public String getId() {
-    return "event-log-" + logNumber; // To avoid clashed, prefixing it (it shouldn't be used)
-  }
+  void setProcessDefinitionId(String processDefinitionId);
 
-  @Override
-  public void setId(String id) {
-    // Set id doesn't do anything: auto incremented column
-  }
+  void setProcessInstanceId(String processInstanceId);
 
-  @Override
-  public Object getPersistentState() {
-    return null; // Not updateable
-  }
+  void setExecutionId(String executionId);
 
-  public long getLogNumber() {
-    return logNumber;
-  }
+  void setTaskId(String taskId);
 
-  public void setLogNumber(long logNumber) {
-    this.logNumber = logNumber;
-  }
+  void setTimeStamp(Date timeStamp);
 
-  public String getType() {
-    return type;
-  }
+  void setUserId(String userId);
 
-  public void setType(String type) {
-    this.type = type;
-  }
+  void setData(byte[] data);
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+  String getLockOwner();
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+  void setLockOwner(String lockOwner);
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+  String getLockTime();
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+  void setLockTime(String lockTime);
 
-  public String getExecutionId() {
-    return executionId;
-  }
+  int getProcessed();
 
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public Date getTimeStamp() {
-    return timeStamp;
-  }
-
-  public void setTimeStamp(Date timeStamp) {
-    this.timeStamp = timeStamp;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
-  public byte[] getData() {
-    return data;
-  }
-
-  public void setData(byte[] data) {
-    this.data = data;
-  }
-
-  public String getLockOwner() {
-    return lockOwner;
-  }
-
-  public void setLockOwner(String lockOwner) {
-    this.lockOwner = lockOwner;
-  }
-
-  public String getLockTime() {
-    return lockTime;
-  }
-
-  public void setLockTime(String lockTime) {
-    this.lockTime = lockTime;
-  }
-
-  public int getProcessed() {
-    return isProcessed;
-  }
-
-  public void setProcessed(int isProcessed) {
-    this.isProcessed = isProcessed;
-  }
-
-  @Override
-  public String toString() {
-    return timeStamp.toString() + " : " + type;
-  }
+  void setProcessed(int isProcessed);
 
 }

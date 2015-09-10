@@ -15,15 +15,14 @@ package org.activiti.engine.impl.persistence.entity.data;
 import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
-import org.activiti.engine.task.Attachment;
 
 /**
  * @author Joram Barrez
  */
 public interface AttachmentDataManager extends DataManager<AttachmentEntity> {
   
-  List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId);
+  List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId);
   
-  List<Attachment> findAttachmentsByTaskId(String taskId);
+  List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
   
 }

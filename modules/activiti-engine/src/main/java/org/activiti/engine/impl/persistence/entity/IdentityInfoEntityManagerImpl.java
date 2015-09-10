@@ -85,7 +85,7 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
 
     } else {
       // insert
-      identityInfoEntity = new IdentityInfoEntity();
+      identityInfoEntity = identityInfoDataManager.create(); 
       identityInfoEntity.setUserId(userId);
       identityInfoEntity.setType(type);
       identityInfoEntity.setKey(key);
@@ -101,7 +101,7 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
   protected void insertAccountDetails(IdentityInfoEntity identityInfoEntity, Map<String, String> accountDetails, Set<String> keys) {
     for (String newKey : keys) {
       // insert detail
-      IdentityInfoEntity identityInfoDetail = new IdentityInfoEntity();
+      IdentityInfoEntity identityInfoDetail = identityInfoDataManager.create();
       identityInfoDetail.setParentId(identityInfoEntity.getId());
       identityInfoDetail.setKey(newKey);
       identityInfoDetail.setValue(accountDetails.get(newKey));

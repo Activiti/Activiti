@@ -45,11 +45,27 @@ public class EntityCacheImpl implements EntityCache {
   public <T> T findInCache(Class<T> entityClass, String id) {
     CachedEntity cachedObject = null;
     Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
+    
+    if (classCache == null) {
+      classCache = findClassCacheByCheckingSubclasses(entityClass);
+    }
+    
     if (classCache != null) {
       cachedObject = classCache.get(id);
     }
+    
     if (cachedObject != null) {
       return (T) cachedObject.getEntity();
+    }
+    
+    return null;
+  }
+  
+  protected Map<String, CachedEntity> findClassCacheByCheckingSubclasses(Class<?> entityClass) {
+    for (Class<?> clazz : cachedObjects.keySet()) {
+      if (entityClass.isAssignableFrom(clazz)) {
+        return cachedObjects.get(clazz);
+      }
     }
     return null;
   }
@@ -76,6 +92,11 @@ public class EntityCacheImpl implements EntityCache {
   @SuppressWarnings("unchecked")
   public <T> List<T> findInCache(Class<T> entityClass) {
     Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
+    
+    if (classCache == null) {
+      classCache = findClassCacheByCheckingSubclasses(entityClass);
+    }
+    
     if (classCache != null) {
       List<T> entities = new ArrayList<T>(classCache.size());
       for (CachedEntity cachedObject : classCache.values()) {
@@ -83,6 +104,7 @@ public class EntityCacheImpl implements EntityCache {
       }
       return entities;
     }
+    
     return Collections.emptyList();
   }
   

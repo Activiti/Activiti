@@ -167,7 +167,7 @@ public class ContinueProcessOperation extends AbstractOperation {
   }
 
   protected void scheduleJob(boolean exclusive) {
-    MessageEntity message = new MessageEntity();
+    MessageEntity message = commandContext.getJobEntityManager().createMessage();
     message.setExecutionId(execution.getId());
     message.setProcessInstanceId(execution.getProcessInstanceId());
     message.setProcessDefinitionId(execution.getProcessDefinitionId());

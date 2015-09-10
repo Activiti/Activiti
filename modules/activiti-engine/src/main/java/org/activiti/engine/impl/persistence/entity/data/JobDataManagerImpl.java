@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +22,11 @@ import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -31,17 +34,37 @@ import org.activiti.engine.runtime.Job;
  */
 public class JobDataManagerImpl extends AbstractDataManager<JobEntity> implements JobDataManager {
   
-  @SuppressWarnings("unchecked")
-  protected static final List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = Arrays.asList(TimerEntity.class, MessageEntity.class);
+  protected static List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = new ArrayList<Class<? extends JobEntity>>();
+  
+  static {
+    ENTITY_SUBCLASSES.add(TimerEntityImpl.class);
+    ENTITY_SUBCLASSES.add(MessageEntityImpl.class);
+  }
   
   @Override
-  public Class<JobEntity> getManagedEntityClass() {
-    return JobEntity.class;
+  public Class<? extends JobEntity> getManagedEntityClass() {
+    return JobEntityImpl.class;
   }
   
   @Override
   public List<Class<? extends JobEntity>> getManagedEntitySubClasses() {
     return ENTITY_SUBCLASSES;
+  }
+  
+  @Override
+  public MessageEntity createMessage() {
+    return new MessageEntityImpl();
+  }
+  
+  @Override
+  public TimerEntity createTimer() {
+    return new TimerEntityImpl();
+  }
+  
+  @Override
+  public JobEntity create() {
+    // Superclass cannot be created
+    throw new UnsupportedOperationException();
   }
   
   @Override

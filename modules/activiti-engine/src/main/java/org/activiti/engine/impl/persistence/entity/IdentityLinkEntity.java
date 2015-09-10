@@ -12,203 +12,44 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.task.IdentityLink;
 
 /**
  * @author Joram Barrez
  */
-public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDeleteable, Entity {
+public interface IdentityLinkEntity extends IdentityLink, Entity {
 
-  private static final long serialVersionUID = 1L;
+  boolean isUser();
 
-  protected String id;
+  boolean isGroup();
 
-  protected String type;
+  void setType(String type);
 
-  protected String userId;
+  void setUserId(String userId);
 
-  protected String groupId;
+  void setGroupId(String groupId);
 
-  protected String taskId;
+  void setTaskId(String taskId);
 
-  protected String processInstanceId;
+  void setProcessInstanceId(String processInstanceId);
 
-  protected String processDefId;
+  String getProcessDefId();
 
-  protected TaskEntity task;
+  void setProcessDefId(String processDefId);
 
-  protected ExecutionEntity processInstance;
+  TaskEntity getTask();
 
-  protected ProcessDefinitionEntity processDef;
+  void setTask(TaskEntity task);
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("id", this.id);
-    persistentState.put("type", this.type);
+  ExecutionEntity getProcessInstance();
 
-    if (this.userId != null) {
-      persistentState.put("userId", this.userId);
-    }
+  void setProcessInstance(ExecutionEntity processInstance);
 
-    if (this.groupId != null) {
-      persistentState.put("groupId", this.groupId);
-    }
+  ProcessDefinitionEntity getProcessDef();
 
-    if (this.taskId != null) {
-      persistentState.put("taskId", this.taskId);
-    }
+  void setProcessDef(ProcessDefinitionEntity processDef);
 
-    if (this.processInstanceId != null) {
-      persistentState.put("processInstanceId", this.processInstanceId);
-    }
+  String getProcessDefinitionId();
 
-    if (this.processDefId != null) {
-      persistentState.put("processDefId", this.processDefId);
-    }
-
-    return persistentState;
-  }
-
-  public boolean isUser() {
-    return userId != null;
-  }
-
-  public boolean isGroup() {
-    return groupId != null;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    if (this.groupId != null && userId != null) {
-      throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
-    }
-    this.userId = userId;
-  }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    if (this.userId != null && groupId != null) {
-      throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
-    }
-    this.groupId = groupId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getProcessDefId() {
-    return processDefId;
-  }
-
-  public void setProcessDefId(String processDefId) {
-    this.processDefId = processDefId;
-  }
-
-  public TaskEntity getTask() {
-    if ((task == null) && (taskId != null)) {
-      this.task = Context.getCommandContext().getTaskEntityManager().findById(taskId);
-    }
-    return task;
-  }
-
-  public void setTask(TaskEntity task) {
-    this.task = task;
-    this.taskId = task.getId();
-  }
-
-  public ExecutionEntity getProcessInstance() {
-    if ((processInstance == null) && (processInstanceId != null)) {
-      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
-    }
-    return processInstance;
-  }
-
-  public void setProcessInstance(ExecutionEntity processInstance) {
-    this.processInstance = processInstance;
-    this.processInstanceId = processInstance.getId();
-  }
-
-  public ProcessDefinitionEntity getProcessDef() {
-    if ((processDef == null) && (processDefId != null)) {
-      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
-    }
-    return processDef;
-  }
-
-  public void setProcessDef(ProcessDefinitionEntity processDef) {
-    this.processDef = processDef;
-    this.processDefId = processDef.getId();
-  }
-
-  @Override
-  public String getProcessDefinitionId() {
-    return this.processDefId;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("IdentityLinkEntity[id=").append(id);
-    sb.append(", type=").append(type);
-    if (userId != null) {
-      sb.append(", userId=").append(userId);
-    }
-    if (groupId != null) {
-      sb.append(", groupId=").append(groupId);
-    }
-    if (taskId != null) {
-      sb.append(", taskId=").append(taskId);
-    }
-    if (processInstanceId != null) {
-      sb.append(", processInstanceId=").append(processInstanceId);
-    }
-    if (processDefId != null) {
-      sb.append(", processDefId=").append(processDefId);
-    }
-    sb.append("]");
-    return sb.toString();
-  }
 }

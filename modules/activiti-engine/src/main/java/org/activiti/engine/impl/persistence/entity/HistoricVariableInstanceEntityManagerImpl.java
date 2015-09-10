@@ -47,7 +47,7 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
   
   @Override
   public HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
-    HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity();
+    HistoricVariableInstanceEntity historicVariableInstance = historicVariableInstanceDataManager.create();
     historicVariableInstance.setId(variableInstance.getId());
     historicVariableInstance.setProcessInstanceId(variableInstance.getProcessInstanceId());
     historicVariableInstance.setExecutionId(variableInstance.getExecutionId());
@@ -69,17 +69,17 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
   
   @Override
   public void copyVariableValue(HistoricVariableInstanceEntity historicVariableInstance, VariableInstanceEntity variableInstance) {
-    historicVariableInstance.textValue = variableInstance.getTextValue();
-    historicVariableInstance.textValue2 = variableInstance.getTextValue2();
-    historicVariableInstance.doubleValue = variableInstance.getDoubleValue();
-    historicVariableInstance.longValue = variableInstance.getLongValue();
+    historicVariableInstance.setTextValue(variableInstance.getTextValue());
+    historicVariableInstance.setTextValue2(variableInstance.getTextValue2());
+    historicVariableInstance.setDoubleValue(variableInstance.getDoubleValue());
+    historicVariableInstance.setLongValue(variableInstance.getLongValue());
 
-    historicVariableInstance.variableType = variableInstance.getType();
+    historicVariableInstance.setVariableType(variableInstance.getType());
     if (variableInstance.getByteArrayRef() != null) {
       historicVariableInstance.setBytes(variableInstance.getBytes());
     }
 
-    historicVariableInstance.lastUpdatedTime = getClock().getCurrentTime();
+    historicVariableInstance.setLastUpdatedTime(getClock().getCurrentTime());
   }
   
   @Override

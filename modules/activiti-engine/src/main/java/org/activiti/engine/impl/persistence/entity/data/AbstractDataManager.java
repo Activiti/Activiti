@@ -30,7 +30,7 @@ import org.activiti.engine.impl.persistence.cache.EntityCache;
  */
 public abstract class AbstractDataManager<EntityImpl extends Entity> extends AbstractManager implements DataManager<EntityImpl> {
   
-  public abstract Class<EntityImpl> getManagedEntityClass();
+  public abstract Class<? extends EntityImpl> getManagedEntityClass();
   
   public List<Class<? extends EntityImpl>> getManagedEntitySubClasses() {
     return null;

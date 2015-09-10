@@ -7,6 +7,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 
@@ -113,7 +114,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
   }
 
   protected MessageEntity createTweetExceptionMessage() {
-    MessageEntity message = new MessageEntity();
+    MessageEntity message = new MessageEntityImpl();
     message.setJobHandlerType("tweet-exception");
     return message;
   }

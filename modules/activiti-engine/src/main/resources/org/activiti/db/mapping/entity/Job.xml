@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.JobEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
 
   <!-- JOB DELETE STATEMENTS-->
 
-  <delete id="deleteJob" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <delete id="deleteJob" parameterType="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -17,7 +17,7 @@
     </foreach> 
   </delete>
   
-  <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -28,7 +28,7 @@
     </foreach> 
   </delete>
   
-  <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -92,7 +92,7 @@
   
   <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
 
-  <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
@@ -113,11 +113,11 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap">
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntityImpl" extends="jobResultMap">
   	<result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
   </resultMap>
 
-  <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.entity.TimerEntity" extends="jobResultMap">
+  <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.entity.TimerEntityImpl" extends="jobResultMap">
     <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
     <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
   </resultMap>
@@ -353,7 +353,7 @@
 
   <!-- TIMER INSERT -->
   
-  <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
+  <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntityImpl">
     insert into ${prefix}ACT_RU_JOB (
             ID_, 
             REV_,
@@ -476,7 +476,7 @@
 
   <!-- TIMER UPDATE -->
 
-  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
+  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntityImpl">
     update ${prefix}ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
@@ -614,7 +614,7 @@
     SELECT * FROM dual
   </insert>
 
-  <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
+  <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntityImpl">
     insert into ${prefix}ACT_RU_JOB (
             ID_, 
             REV_, 
@@ -653,7 +653,7 @@
   
   <!-- MESSAGE UPDATE -->
   
-  <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
+  <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntityImpl">
     update ${prefix}ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},

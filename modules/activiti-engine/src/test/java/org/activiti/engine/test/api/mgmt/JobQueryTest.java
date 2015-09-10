@@ -98,7 +98,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     // Create one message
     messageId = commandExecutor.execute(new Command<String>() {
       public String execute(CommandContext commandContext) {
-        MessageEntity message = new MessageEntity();
+        MessageEntity message = commandContext.getJobEntityManager().createMessage();
         commandContext.getJobEntityManager().send(message);
         return message.getId();
       }
@@ -418,7 +418,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
 
-        timerEntity = new TimerEntity();
+        timerEntity = commandContext.getJobEntityManager().createTimer();
         timerEntity.setLockOwner(UUID.randomUUID().toString());
         timerEntity.setDuedate(new Date());
         timerEntity.setRetries(0);
@@ -445,7 +445,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
 
-        timerEntity = new TimerEntity();
+        timerEntity = commandContext.getJobEntityManager().createTimer();
         timerEntity.setLockOwner(UUID.randomUUID().toString());
         timerEntity.setDuedate(new Date());
         timerEntity.setRetries(0);

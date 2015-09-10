@@ -13,129 +13,52 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.db.HasRevision;
 
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoEntity implements Entity, HasRevision, Serializable {
+public interface IdentityInfoEntity extends Entity, HasRevision {
+  
+  String TYPE_USERINFO = "userinfo";
 
-  private static final long serialVersionUID = 1L;
+  String getType();
 
-  public static final String TYPE_USERINFO = "userinfo";
+  void setType(String type);
 
-  protected String id;
-  protected int revision;
-  protected String type;
-  protected String userId;
-  protected String key;
-  protected String value;
-  protected String password;
-  protected byte[] passwordBytes;
-  protected String parentId;
-  protected Map<String, String> details;
+  String getUserId();
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("value", value);
-    persistentState.put("password", passwordBytes);
-    return persistentState;
-  }
+  void setUserId(String userId);
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
+  String getKey();
 
-  public String getId() {
-    return id;
-  }
+  void setKey(String key);
 
-  public void setId(String id) {
-    this.id = id;
-  }
+  String getValue();
 
-  public int getRevision() {
-    return revision;
-  }
+  void setValue(String value);
 
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
+  byte[] getPasswordBytes();
 
-  public String getType() {
-    return type;
-  }
+  void setPasswordBytes(byte[] passwordBytes);
 
-  public void setType(String type) {
-    this.type = type;
-  }
+  String getPassword();
 
-  public String getUserId() {
-    return userId;
-  }
+  void setPassword(String password);
 
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
+  String getName();
 
-  public String getKey() {
-    return key;
-  }
+  String getUsername();
 
-  public void setKey(String key) {
-    this.key = key;
-  }
+  String getParentId();
 
-  public String getValue() {
-    return value;
-  }
+  void setParentId(String parentId);
 
-  public void setValue(String value) {
-    this.value = value;
-  }
+  Map<String, String> getDetails();
 
-  public byte[] getPasswordBytes() {
-    return passwordBytes;
-  }
-
-  public void setPasswordBytes(byte[] passwordBytes) {
-    this.passwordBytes = passwordBytes;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getName() {
-    return key;
-  }
-
-  public String getUsername() {
-    return value;
-  }
-
-  public String getParentId() {
-    return parentId;
-  }
-
-  public void setParentId(String parentId) {
-    this.parentId = parentId;
-  }
-
-  public Map<String, String> getDetails() {
-    return details;
-  }
-
-  public void setDetails(Map<String, String> details) {
-    this.details = details;
-  }
+  void setDetails(Map<String, String> details);
+    
 }

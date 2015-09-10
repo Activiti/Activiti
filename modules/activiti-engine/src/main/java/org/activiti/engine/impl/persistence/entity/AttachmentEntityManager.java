@@ -14,16 +14,14 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.engine.task.Attachment;
-
 /**
  * @author Joram Barrez
  */
 public interface AttachmentEntityManager extends EntityManager<AttachmentEntity> {
+  
+  List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId);
 
-  List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId);
-
-  List<Attachment> findAttachmentsByTaskId(String taskId);
+  List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
 
   void deleteAttachmentsByTaskId(String taskId);
 

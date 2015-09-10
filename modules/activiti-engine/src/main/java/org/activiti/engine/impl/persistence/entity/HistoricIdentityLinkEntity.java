@@ -12,130 +12,26 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricIdentityLink;
-import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.Entity;
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class HistoricIdentityLinkEntity implements Serializable, HistoricIdentityLink, BulkDeleteable, Entity {
+public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity {
 
-  private static final long serialVersionUID = 1L;
+  boolean isUser();
 
-  protected String id;
+  boolean isGroup();
 
-  protected String type;
+  void setType(String type);
 
-  protected String userId;
+  void setUserId(String userId);
 
-  protected String groupId;
+  void setGroupId(String groupId);
 
-  protected String taskId;
+  void setTaskId(String taskId);
 
-  protected String processInstanceId;
-
-  public HistoricIdentityLinkEntity(IdentityLinkEntity identityLink) {
-    this.id = identityLink.getId();
-    this.groupId = identityLink.getGroupId();
-    this.processInstanceId = identityLink.getProcessInstanceId();
-    this.taskId = identityLink.getTaskId();
-    this.type = identityLink.getType();
-    this.userId = identityLink.getUserId();
-  }
-
-  public HistoricIdentityLinkEntity() {
-
-  }
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("id", this.id);
-    persistentState.put("type", this.type);
-
-    if (this.userId != null) {
-      persistentState.put("userId", this.userId);
-    }
-
-    if (this.groupId != null) {
-      persistentState.put("groupId", this.groupId);
-    }
-
-    if (this.taskId != null) {
-      persistentState.put("taskId", this.taskId);
-    }
-
-    if (this.processInstanceId != null) {
-      persistentState.put("processInstanceId", this.processInstanceId);
-    }
-
-    return persistentState;
-  }
-
-  public boolean isUser() {
-    return userId != null;
-  }
-
-  public boolean isGroup() {
-    return groupId != null;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    if (this.groupId != null && userId != null) {
-      throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
-    }
-    this.userId = userId;
-  }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    if (this.userId != null && groupId != null) {
-      throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
-    }
-    this.groupId = groupId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+  void setProcessInstanceId(String processInstanceId);
+    
 }

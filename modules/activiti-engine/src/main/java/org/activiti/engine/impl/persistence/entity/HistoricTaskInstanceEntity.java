@@ -14,249 +14,45 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity implements HistoricTaskInstance, BulkDeleteable, Entity {
+public interface HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity, HistoricTaskInstance, Entity {
 
-  private static final long serialVersionUID = 1L;
+  void setExecutionId(String executionId);
 
-  protected String executionId;
-  protected String name;
-  protected String parentTaskId;
-  protected String description;
-  protected String owner;
-  protected String assignee;
-  protected String taskDefinitionKey;
-  protected String formKey;
-  protected int priority;
-  protected Date dueDate;
-  protected Date claimTime;
-  protected String category;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  protected List<HistoricVariableInstanceEntity> queryVariables;
+  void setName(String name);
 
-  public HistoricTaskInstanceEntity() {
-  }
+  void setDescription(String description);
 
-  public HistoricTaskInstanceEntity(TaskEntity task, ExecutionEntity execution) {
-    this.id = task.getId();
-    if (execution != null) {
-      this.processDefinitionId = execution.getProcessDefinitionId();
-      this.processInstanceId = execution.getProcessInstanceId();
-      this.executionId = execution.getId();
-    }
-    this.name = task.getName();
-    this.parentTaskId = task.getParentTaskId();
-    this.description = task.getDescription();
-    this.owner = task.getOwner();
-    this.assignee = task.getAssignee();
-    this.startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    this.taskDefinitionKey = task.getTaskDefinitionKey();
+  void setAssignee(String assignee);
 
-    this.setPriority(task.getPriority());
-    this.setDueDate(task.getDueDate());
-    this.setCategory(task.getCategory());
+  void setTaskDefinitionKey(String taskDefinitionKey);
 
-    // Inherit tenant id (if applicable)
-    if (task.getTenantId() != null) {
-      tenantId = task.getTenantId();
-    }
-  }
+  void setFormKey(String formKey);
 
-  // persistence //////////////////////////////////////////////////////////////
+  void setPriority(int priority);
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("name", name);
-    persistentState.put("owner", owner);
-    persistentState.put("assignee", assignee);
-    persistentState.put("endTime", endTime);
-    persistentState.put("durationInMillis", durationInMillis);
-    persistentState.put("description", description);
-    persistentState.put("deleteReason", deleteReason);
-    persistentState.put("taskDefinitionKey", taskDefinitionKey);
-    persistentState.put("formKey", formKey);
-    persistentState.put("priority", priority);
-    persistentState.put("category", category);
-    if (parentTaskId != null) {
-      persistentState.put("parentTaskId", parentTaskId);
-    }
-    if (dueDate != null) {
-      persistentState.put("dueDate", dueDate);
-    }
-    if (claimTime != null) {
-      persistentState.put("claimTime", claimTime);
-    }
-    return persistentState;
-  }
+  void setDueDate(Date dueDate);
 
-  // getters and setters ////////////////////////////////////////////////////////
-  
-  public String getExecutionId() {
-    return executionId;
-  }
+  void setCategory(String category);
 
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
+  void setOwner(String owner);
 
-  public String getName() {
-    return name;
-  }
+  void setParentTaskId(String parentTaskId);
 
-  public void setName(String name) {
-    this.name = name;
-  }
+  void setClaimTime(Date claimTime);
 
-  public String getDescription() {
-    return description;
-  }
+  void setTenantId(String tenantId);
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+  List<HistoricVariableInstanceEntity> getQueryVariables();
 
-  public String getAssignee() {
-    return assignee;
-  }
-
-  public void setAssignee(String assignee) {
-    this.assignee = assignee;
-  }
-
-  public String getTaskDefinitionKey() {
-    return taskDefinitionKey;
-  }
-
-  public void setTaskDefinitionKey(String taskDefinitionKey) {
-    this.taskDefinitionKey = taskDefinitionKey;
-  }
-
-  @Override
-  public Date getCreateTime() {
-    return getStartTime(); // For backwards compatible reason implemented with createTime and startTime
-  }
-
-  public String getFormKey() {
-    return formKey;
-  }
-
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
-  }
-
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
-
-  public Date getDueDate() {
-    return dueDate;
-  }
-
-  public void setDueDate(Date dueDate) {
-    this.dueDate = dueDate;
-  }
-
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  public String getOwner() {
-    return owner;
-  }
-
-  public void setOwner(String owner) {
-    this.owner = owner;
-  }
-
-  public String getParentTaskId() {
-    return parentTaskId;
-  }
-
-  public void setParentTaskId(String parentTaskId) {
-    this.parentTaskId = parentTaskId;
-  }
-
-  public Date getClaimTime() {
-    return claimTime;
-  }
-
-  public void setClaimTime(Date claimTime) {
-    this.claimTime = claimTime;
-  }
-
-  public String getTenantId() {
-    return tenantId;
-  }
-
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
-
-  public Date getTime() {
-    return getStartTime();
-  }
-
-  public Long getWorkTimeInMillis() {
-    if (endTime == null || claimTime == null) {
-      return null;
-    }
-    return endTime.getTime() - claimTime.getTime();
-  }
-
-  public Map<String, Object> getTaskLocalVariables() {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    if (queryVariables != null) {
-      for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
-    }
-    return variables;
-  }
-
-  public Map<String, Object> getProcessVariables() {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    if (queryVariables != null) {
-      for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
-    }
-    return variables;
-  }
-
-  public List<HistoricVariableInstanceEntity> getQueryVariables() {
-    if (queryVariables == null && Context.getCommandContext() != null) {
-      queryVariables = new HistoricVariableInitializingList();
-    }
-    return queryVariables;
-  }
-
-  public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
-    this.queryVariables = queryVariables;
-  }
+  void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables);
   
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -25,8 +26,13 @@ public class IdentityLinkDataManagerImpl extends AbstractDataManager<IdentityLin
   
  
   @Override
-  public Class<IdentityLinkEntity> getManagedEntityClass() {
-    return IdentityLinkEntity.class;
+  public Class<? extends IdentityLinkEntity> getManagedEntityClass() {
+    return IdentityLinkEntityImpl.class;
+  }
+  
+  @Override
+  public IdentityLinkEntity create() {
+    return new IdentityLinkEntityImpl();
   }
   
   @Override

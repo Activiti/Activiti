@@ -12,49 +12,20 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-
 import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class MembershipEntity implements Entity, Serializable {
+public interface MembershipEntity extends Entity {
 
-  private static final long serialVersionUID = 1L;
+  String getUserId();
 
-  protected String userId;
-  protected String groupId;
+  void setUserId(String userId);
 
-  public Object getPersistentState() {
-    // membership is not updatable
-    return MembershipEntity.class;
-  }
+  String getGroupId();
 
-  public String getId() {
-    // membership doesn't have an id
-    return null;
-  }
-
-  public void setId(String id) {
-    // membership doesn't have an id
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
+  void setGroupId(String groupId);
 
 }

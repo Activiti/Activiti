@@ -22,6 +22,8 @@ import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
  * @author Joram Barrez
  */
 public interface HistoricTaskInstanceEntityManager extends EntityManager<HistoricTaskInstanceEntity> {
+  
+  HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution);
 
   long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
 

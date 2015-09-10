@@ -95,7 +95,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   @Override
   public IdentityLinkEntity addIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type) {
-    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
+    IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create(); 
     executionEntity.getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setProcessInstance(executionEntity.getProcessInstance() != null ? executionEntity.getProcessInstance() : executionEntity);
     identityLinkEntity.setUserId(userId);
@@ -107,7 +107,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   @Override
   public IdentityLinkEntity addIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type) {
-    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
+    IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create();
     taskEntity.getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setTask(taskEntity);
     identityLinkEntity.setUserId(userId);
@@ -122,7 +122,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   @Override
   public IdentityLinkEntity addIdentityLink(ProcessDefinitionEntity processDefinitionEntity, String userId, String groupId) {
-    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
+    IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create();
     processDefinitionEntity.getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setProcessDef(processDefinitionEntity);
     identityLinkEntity.setUserId(userId);

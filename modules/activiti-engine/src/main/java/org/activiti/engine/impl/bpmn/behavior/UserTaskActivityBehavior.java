@@ -32,6 +32,7 @@ import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -57,7 +58,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   public void execute(DelegateExecution execution) {
     TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
-    task.setExecution(execution);
+    task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinition(taskDefinition);
 
     if (taskDefinition.getNameExpression() != null) {

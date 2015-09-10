@@ -18,7 +18,16 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -26,8 +35,34 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
 public class HistoricDetailDataManagerImpl extends AbstractDataManager<HistoricDetailEntity> implements HistoricDetailDataManager {
 
   @Override
-  public Class<HistoricDetailEntity> getManagedEntityClass() {
-    return HistoricDetailEntity.class;
+  public Class<? extends HistoricDetailEntity> getManagedEntityClass() {
+    return HistoricDetailEntityImpl.class;
+  }
+  
+  @Override
+  public HistoricDetailEntity create() {
+    // Superclass is abstract
+    throw new UnsupportedOperationException();
+  }
+  
+  @Override
+  public HistoricDetailAssignmentEntity createHistoricDetailAssignment() {
+    return new HistoricDetailAssignmentEntityImpl();
+  }
+  
+  @Override
+  public HistoricDetailTransitionInstanceEntity createHistoricDetailTransitionInstance() {
+    return new HistoricDetailTransitionInstanceEntityImpl();
+  }
+  
+  @Override
+  public HistoricDetailVariableInstanceUpdateEntity createHistoricDetailVariableInstanceUpdate() {
+    return new HistoricDetailVariableInstanceUpdateEntityImpl();
+  }
+  
+  @Override
+  public HistoricFormPropertyEntity createHistoricFormProperty() {
+    return new HistoricFormPropertyEntityImpl();
   }
   
   @Override

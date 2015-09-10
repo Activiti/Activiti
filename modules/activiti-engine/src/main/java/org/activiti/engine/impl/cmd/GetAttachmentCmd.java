@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.task.Attachment;
 
 /**
@@ -33,7 +32,7 @@ public class GetAttachmentCmd implements Command<Attachment>, Serializable {
   }
 
   public Attachment execute(CommandContext commandContext) {
-    return commandContext.getDbSqlSession().selectById(AttachmentEntity.class, attachmentId);
+    return commandContext.getAttachmentEntityManager().findById(attachmentId); 
   }
 
 }

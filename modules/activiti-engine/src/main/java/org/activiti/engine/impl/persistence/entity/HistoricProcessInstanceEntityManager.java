@@ -22,6 +22,8 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
  * @author Joram Barrez
  */
 public interface HistoricProcessInstanceEntityManager extends EntityManager<HistoricProcessInstanceEntity> {
+  
+  HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity);
 
   long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
 

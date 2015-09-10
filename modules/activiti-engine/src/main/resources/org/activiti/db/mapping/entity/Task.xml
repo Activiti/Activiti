@@ -17,11 +17,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
 
   <!-- TASK INSERT -->
   
-  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_)
     values (#{id, jdbcType=VARCHAR},
@@ -104,7 +104,7 @@
   
   <!-- TASK UPDATE -->
   
-  <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     update ${prefix}ACT_RU_TASK
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -161,7 +161,7 @@
   </update>
   
   <!-- TASK DELETE -->
-  <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -174,7 +174,7 @@
   
   <!-- TASK RESULTMAP -->
   
-  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="nameWithoutCascade" column="NAME_" jdbcType="VARCHAR"/>
@@ -196,7 +196,7 @@
     <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="nameWithoutCascade" column="NAME_" jdbcType="VARCHAR"/>
@@ -216,7 +216,7 @@
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
-    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
       <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />

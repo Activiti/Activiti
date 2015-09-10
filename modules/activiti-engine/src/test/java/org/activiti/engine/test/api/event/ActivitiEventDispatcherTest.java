@@ -21,8 +21,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -51,8 +50,8 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     // Add event-listener to dispatcher
     dispatcher.addEventListener(newListener);
 
-    ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_CREATED);
-    ActivitiEntityEventImpl event2 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_CREATED);
+    ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_CREATED);
+    ActivitiEntityEventImpl event2 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_CREATED);
 
     // Dispatch events
     dispatcher.dispatchEvent(event1);
@@ -82,9 +81,9 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     // Add event-listener to dispatcher
     dispatcher.addEventListener(newListener, ActivitiEventType.ENTITY_CREATED, ActivitiEventType.ENTITY_DELETED);
 
-    ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_CREATED);
-    ActivitiEntityEventImpl event2 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_DELETED);
-    ActivitiEntityEventImpl event3 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_UPDATED);
+    ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_CREATED);
+    ActivitiEntityEventImpl event2 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_DELETED);
+    ActivitiEntityEventImpl event3 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_UPDATED);
 
     // Dispatch events, only 2 out of 3 should have entered the listener
     dispatcher.dispatchEvent(event1);
@@ -116,8 +115,8 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     // Add event-listener to dispatcher
     dispatcher.addEventListener(newListener, (ActivitiEventType) null);
 
-    ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_CREATED);
-    ActivitiEntityEventImpl event2 = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_DELETED);
+    ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_CREATED);
+    ActivitiEntityEventImpl event2 = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_DELETED);
 
     // Dispatch events, all should have entered the listener
     dispatcher.dispatchEvent(event1);
@@ -134,10 +133,10 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
 
     dispatcher.addEventListener(listener);
 
-    ActivitiEntityEventImpl createEvent = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_CREATED);
-    ActivitiEntityEventImpl deleteEvent = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_DELETED);
-    ActivitiEntityEventImpl updateEvent = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.ENTITY_UPDATED);
-    ActivitiEntityEventImpl otherEvent = new ActivitiEntityEventImpl(new TaskEntity(), ActivitiEventType.CUSTOM);
+    ActivitiEntityEventImpl createEvent = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_CREATED);
+    ActivitiEntityEventImpl deleteEvent = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_DELETED);
+    ActivitiEntityEventImpl updateEvent = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.ENTITY_UPDATED);
+    ActivitiEntityEventImpl otherEvent = new ActivitiEntityEventImpl(processEngineConfiguration.getTaskEntityManager().create(), ActivitiEventType.CUSTOM);
 
     // Dispatch create event
     dispatcher.dispatchEvent(createEvent);
@@ -183,7 +182,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     listener.reset();
 
     // Dispatch event for a execution, should NOT be received
-    ActivitiEntityEventImpl createEventForExecution = new ActivitiEntityEventImpl(new ExecutionEntity(), ActivitiEventType.ENTITY_CREATED);
+    ActivitiEntityEventImpl createEventForExecution = new ActivitiEntityEventImpl(new ExecutionEntityImpl(), ActivitiEventType.ENTITY_CREATED);
 
     dispatcher.dispatchEvent(createEventForExecution);
     assertFalse(listener.isCreateReceived());

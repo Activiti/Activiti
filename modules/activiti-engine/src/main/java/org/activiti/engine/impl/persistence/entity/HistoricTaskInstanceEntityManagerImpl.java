@@ -47,6 +47,11 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   }
   
   @Override
+  public HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution) {
+    return historicTaskInstanceDataManager.create(task, execution);
+  }
+  
+  @Override
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       List<HistoricTaskInstanceEntity> taskInstances = historicTaskInstanceDataManager.findHistoricTaskInstanceByProcessInstanceId(processInstanceId); 

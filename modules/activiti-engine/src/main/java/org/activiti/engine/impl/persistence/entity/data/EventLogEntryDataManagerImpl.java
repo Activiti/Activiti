@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -25,8 +26,13 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 public class EventLogEntryDataManagerImpl extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
   
   @Override
-  public Class<EventLogEntryEntity> getManagedEntityClass() {
-    return EventLogEntryEntity.class;
+  public Class<? extends EventLogEntryEntity> getManagedEntityClass() {
+    return EventLogEntryEntityImpl.class;
+  }
+  
+  @Override
+  public EventLogEntryEntity create() {
+    return new EventLogEntryEntityImpl();
   }
   
   @Override

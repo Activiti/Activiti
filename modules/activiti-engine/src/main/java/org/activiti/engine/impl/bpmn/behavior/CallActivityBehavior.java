@@ -144,7 +144,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   protected ExecutionEntity createSubProcessInstance(ProcessDefinitionEntity processDefinitionEntity, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
 
-    ExecutionEntity subProcessInstance = new ExecutionEntity();
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().create(); 
     subProcessInstance.setProcessDefinitionId(processDefinitionEntity.getId());
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());

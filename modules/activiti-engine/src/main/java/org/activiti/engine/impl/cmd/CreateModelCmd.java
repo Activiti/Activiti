@@ -27,7 +27,7 @@ public class CreateModelCmd implements Command<Model>, Serializable {
   private static final long serialVersionUID = 1L;
 
   public Model execute(CommandContext commandContext) {
-    return commandContext.getModelEntityManager().createNewModel();
+    return commandContext.getModelEntityManager().create();
   }
 
 }

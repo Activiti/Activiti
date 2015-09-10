@@ -195,7 +195,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     if (outgoingSequenceFlow.size() > 1) {
       for (int i = 1; i < outgoingSequenceFlow.size(); i++) {
 
-        ExecutionEntity outgoingExecutionEntity = new ExecutionEntity();
+        ExecutionEntity outgoingExecutionEntity = commandContext.getExecutionEntityManager().create(); 
         outgoingExecutionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
         outgoingExecutionEntity.setProcessInstanceId(execution.getProcessInstanceId());
         outgoingExecutionEntity.setRootProcessInstanceId(execution.getRootProcessInstanceId());

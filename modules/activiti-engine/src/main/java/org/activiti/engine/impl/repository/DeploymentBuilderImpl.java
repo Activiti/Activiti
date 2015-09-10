@@ -17,8 +17,10 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
@@ -43,7 +45,9 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected static final String DEFAULT_ENCODING = "UTF-8";
 
   protected transient RepositoryServiceImpl repositoryService;
-  protected DeploymentEntity deployment = new DeploymentEntity();
+  protected transient ResourceEntityManager resourceEntityManager;
+  
+  protected DeploymentEntity deployment;
   protected boolean isBpmn20XsdValidationEnabled = true;
   protected boolean isProcessValidationEnabled = true;
   protected boolean isDuplicateFilterEnabled;
@@ -52,6 +56,8 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
     this.repositoryService = repositoryService;
+    this.deployment = Context.getProcessEngineConfiguration().getDeploymentEntityManager().create();
+    this.resourceEntityManager = Context.getProcessEngineConfiguration().getResourceEntityManager();
   }
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
@@ -59,7 +65,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
       throw new ActivitiIllegalArgumentException("inputStream for resource '" + resourceName + "' is null");
     }
     byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
-    ResourceEntity resource = new ResourceEntity();
+    ResourceEntity resource = resourceEntityManager.create();
     resource.setName(resourceName);
     resource.setBytes(bytes);
     deployment.addResource(resource);
@@ -78,7 +84,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     if (text == null) {
       throw new ActivitiIllegalArgumentException("text is null");
     }
-    ResourceEntity resource = new ResourceEntity();
+    ResourceEntity resource = resourceEntityManager.create();
     resource.setName(resourceName);
     try {
       resource.setBytes(text.getBytes(DEFAULT_ENCODING));
@@ -96,7 +102,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
         if (!entry.isDirectory()) {
           String entryName = entry.getName();
           byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
-          ResourceEntity resource = new ResourceEntity();
+          ResourceEntity resource = resourceEntityManager.create();
           resource.setName(entryName);
           resource.setBytes(bytes);
           deployment.addResource(resource);

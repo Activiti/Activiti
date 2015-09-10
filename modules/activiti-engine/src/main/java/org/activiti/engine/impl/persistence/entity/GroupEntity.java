@@ -12,73 +12,21 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.identity.Group;
-import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.Entity;
+import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class GroupEntity implements Group, Serializable, Entity, HasRevision {
+public interface GroupEntity extends Group, Entity, HasRevision {
 
-  private static final long serialVersionUID = 1L;
+  String getName();
 
-  protected String id;
-  protected int revision;
-  protected String name;
-  protected String type;
+  void setName(String name);
+ 
+  String getType();
 
-  public GroupEntity() {
-  }
+  void setType(String type);
 
-  public GroupEntity(String id) {
-    this.id = id;
-  }
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("name", name);
-    persistentState.put("type", type);
-    return persistentState;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
 }

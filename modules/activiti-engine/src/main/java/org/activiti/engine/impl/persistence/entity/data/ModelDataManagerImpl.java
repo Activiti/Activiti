@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
+import org.activiti.engine.impl.persistence.entity.ModelEntityImpl;
 import org.activiti.engine.repository.Model;
 
 /**
@@ -26,8 +27,13 @@ import org.activiti.engine.repository.Model;
 public class ModelDataManagerImpl extends AbstractDataManager<ModelEntity> implements ModelDataManager {
   
   @Override
-  public Class<ModelEntity> getManagedEntityClass() {
-    return ModelEntity.class;
+  public Class<? extends ModelEntity> getManagedEntityClass() {
+    return ModelEntityImpl.class;
+  }
+  
+  @Override
+  public ModelEntity create() {
+    return new ModelEntityImpl();
   }
   
   @Override

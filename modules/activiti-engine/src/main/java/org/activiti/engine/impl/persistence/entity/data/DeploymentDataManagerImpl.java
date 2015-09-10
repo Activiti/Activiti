@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.repository.Deployment;
 
 /**
@@ -26,8 +27,13 @@ import org.activiti.engine.repository.Deployment;
 public class DeploymentDataManagerImpl extends AbstractDataManager<DeploymentEntity> implements DeploymentDataManager {
 
   @Override
-  public Class<DeploymentEntity> getManagedEntityClass() {
-    return DeploymentEntity.class;
+  public Class<? extends DeploymentEntity> getManagedEntityClass() {
+    return DeploymentEntityImpl.class;
+  }
+  
+  @Override
+  public DeploymentEntity create() {
+    return new DeploymentEntityImpl();
   }
   
   @Override

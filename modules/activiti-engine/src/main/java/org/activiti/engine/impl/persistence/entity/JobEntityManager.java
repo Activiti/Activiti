@@ -23,6 +23,13 @@ import org.activiti.engine.runtime.Job;
  * @author Joram Barrez
  */
 public interface JobEntityManager extends EntityManager<JobEntity> {
+  
+  TimerEntity createTimer();
+  
+  TimerEntity createTimer(TimerEntity timerEntity);
+  
+  MessageEntity createMessage();
+  
 
   void execute(JobEntity jobEntity);
   

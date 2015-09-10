@@ -14,88 +14,39 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.Entity;
-
-import java.io.Serializable;
 import java.util.Date;
 
+import org.activiti.engine.impl.db.Entity;
+
 /**
- * @author Christian Stettler
+ * @author Joram Barrez
  */
-public abstract class HistoricScopeInstanceEntity implements Entity, Serializable {
+public interface HistoricScopeInstanceEntity extends Entity {
 
-  private static final long serialVersionUID = 1L;
+  void markEnded(String deleteReason);
 
-  protected String id;
-  protected String processInstanceId;
-  protected String processDefinitionId;
-  protected Date startTime;
-  protected Date endTime;
-  protected Long durationInMillis;
-  protected String deleteReason;
+  String getProcessInstanceId();
 
-  public void markEnded(String deleteReason) {
-    this.deleteReason = deleteReason;
-    this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    this.durationInMillis = endTime.getTime() - startTime.getTime();
-  }
+  String getProcessDefinitionId();
 
-  // getters and setters ////////////////////////////////////////////////////////
+  Date getStartTime();
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+  Date getEndTime();
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+  Long getDurationInMillis();
 
-  public Date getStartTime() {
-    return startTime;
-  }
+  void setProcessInstanceId(String processInstanceId);
 
-  public Date getEndTime() {
-    return endTime;
-  }
+  void setProcessDefinitionId(String processDefinitionId);
 
-  public Long getDurationInMillis() {
-    return durationInMillis;
-  }
+  void setStartTime(Date startTime);
 
-  public String getId() {
-    return id;
-  }
+  void setEndTime(Date endTime);
 
-  public void setId(String id) {
-    this.id = id;
-  }
+  void setDurationInMillis(Long durationInMillis);
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+  String getDeleteReason();
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-
-  public void setEndTime(Date endTime) {
-    this.endTime = endTime;
-  }
-
-  public void setDurationInMillis(Long durationInMillis) {
-    this.durationInMillis = durationInMillis;
-  }
-
-  public String getDeleteReason() {
-    return deleteReason;
-  }
-
-  public void setDeleteReason(String deleteReason) {
-    this.deleteReason = deleteReason;
-  }
+  void setDeleteReason(String deleteReason);
+  
 }

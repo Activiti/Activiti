@@ -19,6 +19,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
+import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -26,8 +27,13 @@ import org.activiti.engine.impl.persistence.entity.GroupEntity;
 public class GroupDataManagerImpl extends AbstractDataManager<GroupEntity> implements GroupDataManager {
 
   @Override
-  public Class<GroupEntity> getManagedEntityClass() {
-    return GroupEntity.class;
+  public Class<? extends GroupEntity> getManagedEntityClass() {
+    return GroupEntityImpl.class;
+  }
+  
+  @Override
+  public GroupEntity create() {
+    return new GroupEntityImpl();
   }
   
   @SuppressWarnings("unchecked")

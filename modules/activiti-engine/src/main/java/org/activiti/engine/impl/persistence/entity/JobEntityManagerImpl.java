@@ -73,6 +73,35 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   @Override
+  public MessageEntity createMessage() {
+    return jobDataManager.createMessage();
+  }
+  
+  @Override
+  public TimerEntity createTimer() {
+    return jobDataManager.createTimer();
+  }
+  
+  @Override
+  public TimerEntity createTimer(TimerEntity te) {
+    TimerEntity newTimerEntity = createTimer();
+    newTimerEntity.setJobHandlerConfiguration(te.getJobHandlerConfiguration());
+    newTimerEntity.setJobHandlerType(te.getJobHandlerType());
+    newTimerEntity.setExclusive(te.isExclusive());
+    newTimerEntity.setRepeat(te.getRepeat());
+    newTimerEntity.setRetries(te.getRetries());
+    newTimerEntity.setEndDate(te.getEndDate());
+    newTimerEntity.setExecutionId(te.getExecutionId());
+    newTimerEntity.setProcessInstanceId(te.getProcessInstanceId());
+    newTimerEntity.setProcessDefinitionId(te.getProcessDefinitionId());
+
+    // Inherit tenant
+    newTimerEntity.setTenantId(te.getTenantId());
+    newTimerEntity.setJobType("timer");
+    return newTimerEntity;
+  }
+  
+  @Override
   public void insert(JobEntity jobEntity, boolean fireCreateEvent) {
 
     // add link to execution
@@ -315,7 +344,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
         }
         Date newTimer = calculateNextTimer(timerEntity);
         if (newTimer != null && isValidTime(timerEntity, newTimer)) {
-          TimerEntity te = new TimerEntity(timerEntity);
+          TimerEntity te = createTimer(timerEntity);
           te.setDuedate(newTimer);
           getJobEntityManager().schedule(te);
         }

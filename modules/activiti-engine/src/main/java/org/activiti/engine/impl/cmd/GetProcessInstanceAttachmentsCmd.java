@@ -23,7 +23,7 @@ import org.activiti.engine.task.Attachment;
 /**
  * @author Tom Baeyens
  */
-public class GetProcessInstanceAttachmentsCmd implements Command<List<Attachment>>, Serializable {
+public class GetProcessInstanceAttachmentsCmd implements Command<List<? extends Attachment>>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
@@ -32,7 +32,7 @@ public class GetProcessInstanceAttachmentsCmd implements Command<List<Attachment
     this.processInstanceId = taskId;
   }
 
-  public List<Attachment> execute(CommandContext commandContext) {
+  public List<? extends Attachment> execute(CommandContext commandContext) {
     return commandContext.getAttachmentEntityManager().findAttachmentsByProcessInstanceId(processInstanceId);
   }
 }

@@ -93,7 +93,7 @@ public class AddCommentCmd implements Command<Comment> {
     }
 
     String userId = Authentication.getAuthenticatedUserId();
-    CommentEntity comment = new CommentEntity();
+    CommentEntity comment = commandContext.getCommentEntityManager().create(); 
     comment.setUserId(userId);
     comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
     comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());

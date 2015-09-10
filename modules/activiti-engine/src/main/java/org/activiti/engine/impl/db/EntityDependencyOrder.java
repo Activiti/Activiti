@@ -4,41 +4,41 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
-import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
-import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.GroupEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricScopeInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.MembershipEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ModelEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.PropertyEntity;
-import org.activiti.engine.impl.persistence.entity.ResourceEntity;
-import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.persistence.entity.UserEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
+import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricScopeInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
+import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
+import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
+import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ModelEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
+import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 
 
 /**
@@ -61,39 +61,39 @@ public class EntityDependencyOrder {
 		 */
 	
 		/* No FK */
-		DELETE_ORDER.add(PropertyEntity.class);
+		DELETE_ORDER.add(PropertyEntityImpl.class);
 		
 		/* No FK */
-		DELETE_ORDER.add(AttachmentEntity.class);
+		DELETE_ORDER.add(AttachmentEntityImpl.class);
 		
 		/* No FK */
-		DELETE_ORDER.add(CommentEntity.class);
+		DELETE_ORDER.add(CommentEntityImpl.class);
 		
 		/* No FK */
-		DELETE_ORDER.add(EventLogEntryEntity.class);
+		DELETE_ORDER.add(EventLogEntryEntityImpl.class);
 		
 		/*
 		 * FK to Deployment
 		 * FK to ByteArray 
 		 */
-		DELETE_ORDER.add(ModelEntity.class); 
+		DELETE_ORDER.add(ModelEntityImpl.class); 
 		
 		/* Subclass of JobEntity */
-		DELETE_ORDER.add(MessageEntity.class);
+		DELETE_ORDER.add(MessageEntityImpl.class);
 		
 		/* Subclass of TimerEntity */
-		DELETE_ORDER.add(TimerEntity.class);
+		DELETE_ORDER.add(TimerEntityImpl.class);
 		
 		/*
 		 * FK to ByteArray
 		 */
-		DELETE_ORDER.add(JobEntity.class);
+		DELETE_ORDER.add(JobEntityImpl.class);
 		
 		/*
 		 * FK to ByteArray
 		 * FK to Exeution
 		 */
-		DELETE_ORDER.add(VariableInstanceEntity.class);
+		DELETE_ORDER.add(VariableInstanceEntityImpl.class);
 		
 		/*
 		 * FK from ModelEntity
@@ -102,7 +102,7 @@ public class EntityDependencyOrder {
 		 * 
 		 * FK to DeploymentEntity
 		 */
-		DELETE_ORDER.add(ByteArrayEntity.class);
+		DELETE_ORDER.add(ByteArrayEntityImpl.class);
 		
 		/*
 		 * FK from ModelEntity
@@ -111,32 +111,32 @@ public class EntityDependencyOrder {
 		 * 
 		 * FK to DeploymentEntity
 		 */
-		DELETE_ORDER.add(ResourceEntity.class);
+		DELETE_ORDER.add(ResourceEntityImpl.class);
 		
 		/*
 		 * FK from ByteArray
 		 */
-		DELETE_ORDER.add(DeploymentEntity.class);
+		DELETE_ORDER.add(DeploymentEntityImpl.class);
 		
 		/*
 		 * FK to Execution
 		 */
-		DELETE_ORDER.add(EventSubscriptionEntity.class);
+		DELETE_ORDER.add(EventSubscriptionEntityImpl.class);
 		
 		/*
 		 * FK to Execution
 		 */
-		DELETE_ORDER.add(CompensateEventSubscriptionEntity.class);
+		DELETE_ORDER.add(CompensateEventSubscriptionEntityImpl.class);
 		
 		/*
 		 * FK to Execution
 		 */
-		DELETE_ORDER.add(MessageEventSubscriptionEntity.class);
+		DELETE_ORDER.add(MessageEventSubscriptionEntityImpl.class);
 		
 		/*
 		 * FK to Execution
 		 */
-		DELETE_ORDER.add(SignalEventSubscriptionEntity.class);
+		DELETE_ORDER.add(SignalEventSubscriptionEntityImpl.class);
 		
 		
 		/*
@@ -144,7 +144,7 @@ public class EntityDependencyOrder {
 		 * FK to Execution
 		 * FK to Task
 		 */
-		DELETE_ORDER.add(IdentityLinkEntity.class);
+		DELETE_ORDER.add(IdentityLinkEntityImpl.class);
 		
 		/*
 		 * FK from IdentityLink
@@ -152,7 +152,7 @@ public class EntityDependencyOrder {
 		 * FK to Execution
 		 * FK to process definition
 		 */
-		DELETE_ORDER.add(TaskEntity.class);
+		DELETE_ORDER.add(TaskEntityImpl.class);
 		
 		/*
 		 * FK from VariableInstance 
@@ -162,50 +162,50 @@ public class EntityDependencyOrder {
 		 * 
 		 * FK to ProcessDefinition
 		 */
-		DELETE_ORDER.add(ExecutionEntity.class);
+		DELETE_ORDER.add(ExecutionEntityImpl.class);
 		
 		/*
 		 * FK from Task
 		 * FK from IdentityLink
 		 * FK from execution
 		 */
-		DELETE_ORDER.add(ProcessDefinitionEntity.class);
+		DELETE_ORDER.add(ProcessDefinitionEntityImpl.class);
 		
 		/*
 	   * FK to User
 	   * FK to Group
 	   */
-		DELETE_ORDER.add(MembershipEntity.class);
+		DELETE_ORDER.add(MembershipEntityImpl.class);
 		
 		/*
 		 * Fk from Membership
 		 */
-		DELETE_ORDER.add(UserEntity.class);
+		DELETE_ORDER.add(UserEntityImpl.class);
 	  
 	  /*
 	   * FK from Membership
 	   */
-		DELETE_ORDER.add(GroupEntity.class);
+		DELETE_ORDER.add(GroupEntityImpl.class);
 	  
 	  
 	  // History entities have no FK's
 	  
-		DELETE_ORDER.add(HistoricIdentityLinkEntity.class);
+		DELETE_ORDER.add(HistoricIdentityLinkEntityImpl.class);
 	  
-		DELETE_ORDER.add(IdentityInfoEntity.class);
+		DELETE_ORDER.add(IdentityInfoEntityImpl.class);
 	  
-		DELETE_ORDER.add(HistoricActivityInstanceEntity.class);
-		DELETE_ORDER.add(HistoricProcessInstanceEntity.class);
-		DELETE_ORDER.add(HistoricTaskInstanceEntity.class);
-		DELETE_ORDER.add(HistoricScopeInstanceEntity.class);
+		DELETE_ORDER.add(HistoricActivityInstanceEntityImpl.class);
+		DELETE_ORDER.add(HistoricProcessInstanceEntityImpl.class);
+		DELETE_ORDER.add(HistoricTaskInstanceEntityImpl.class);
+		DELETE_ORDER.add(HistoricScopeInstanceEntityImpl.class);
 	  
-		DELETE_ORDER.add(HistoricVariableInstanceEntity.class);
+		DELETE_ORDER.add(HistoricVariableInstanceEntityImpl.class);
 	  
-		DELETE_ORDER.add(HistoricDetailAssignmentEntity.class);
-		DELETE_ORDER.add(HistoricDetailTransitionInstanceEntity.class);
-		DELETE_ORDER.add(HistoricDetailVariableInstanceUpdateEntity.class);
-		DELETE_ORDER.add(HistoricFormPropertyEntity.class);
-		DELETE_ORDER.add(HistoricDetailEntity.class);
+		DELETE_ORDER.add(HistoricDetailAssignmentEntityImpl.class);
+		DELETE_ORDER.add(HistoricDetailTransitionInstanceEntityImpl.class);
+		DELETE_ORDER.add(HistoricDetailVariableInstanceUpdateEntityImpl.class);
+		DELETE_ORDER.add(HistoricFormPropertyEntityImpl.class);
+		DELETE_ORDER.add(HistoricDetailEntityImpl.class);
 		
 		INSERT_ORDER = new ArrayList<Class<? extends Entity>>(DELETE_ORDER);
 		Collections.reverse(INSERT_ORDER);

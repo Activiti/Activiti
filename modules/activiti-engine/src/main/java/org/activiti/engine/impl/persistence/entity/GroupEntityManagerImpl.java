@@ -48,7 +48,9 @@ public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> i
   }
   
   public Group createNewGroup(String groupId) {
-    return new GroupEntity(groupId);
+    GroupEntity groupEntity = groupDataManager.create();
+    groupEntity.setId(groupId);
+    return groupEntity;
   }
 
   @Override

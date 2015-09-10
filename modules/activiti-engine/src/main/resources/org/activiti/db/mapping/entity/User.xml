@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.UserEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.UserEntityImpl">
 
   <!-- USER INSERT -->
 
-  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
+  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntityImpl">
     insert into ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -46,7 +46,7 @@
 
   <!-- USER UPDATE -->
 
-  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
+  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntityImpl">
     update ${prefix}ACT_ID_USER set
       REV_ = #{revisionNext ,jdbcType=INTEGER},
       FIRST_ = #{firstName ,jdbcType=VARCHAR},
@@ -60,13 +60,13 @@
   
   <!-- USER DELETE -->
 
-  <delete id="deleteUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
+  <delete id="deleteUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntityImpl">
     delete from ${prefix}ACT_ID_USER where ID_ = #{id} and REV_ = #{revision}
   </delete>
 
   <!-- USER RESULTMAP -->
 
-  <resultMap id="userResultMap" type="org.activiti.engine.impl.persistence.entity.UserEntity">
+  <resultMap id="userResultMap" type="org.activiti.engine.impl.persistence.entity.UserEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="firstName" column="FIRST_" jdbcType="VARCHAR" />

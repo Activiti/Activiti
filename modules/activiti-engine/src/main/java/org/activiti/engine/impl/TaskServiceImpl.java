@@ -369,12 +369,14 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetAttachmentCmd(attachmentId));
   }
 
+  @SuppressWarnings("unchecked")
   public List<Attachment> getTaskAttachments(String taskId) {
-    return commandExecutor.execute(new GetTaskAttachmentsCmd(taskId));
+    return (List<Attachment>) commandExecutor.execute(new GetTaskAttachmentsCmd(taskId));
   }
 
+  @SuppressWarnings("unchecked")
   public List<Attachment> getProcessInstanceAttachments(String processInstanceId) {
-    return commandExecutor.execute(new GetProcessInstanceAttachmentsCmd(processInstanceId));
+    return (List<Attachment>) commandExecutor.execute(new GetProcessInstanceAttachmentsCmd(processInstanceId));
   }
 
   public void saveAttachment(Attachment attachment) {

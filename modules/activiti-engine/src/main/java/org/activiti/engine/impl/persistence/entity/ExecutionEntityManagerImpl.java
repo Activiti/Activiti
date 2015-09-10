@@ -162,7 +162,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   @Override
   public ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId, String initiatorVariableName) {
 
-    ExecutionEntity processInstanceExecution = new ExecutionEntity();
+    ExecutionEntity processInstanceExecution = executionDataManager.create();
     processInstanceExecution.setProcessDefinitionId(processDefinitionId);
     processInstanceExecution.setBusinessKey(businessKey);
     processInstanceExecution.setScope(true); // process instance is always a scope for all child executions
@@ -202,7 +202,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   public ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity) {
     
     // create the new child execution
-    ExecutionEntity childExecution = new ExecutionEntity();
+    ExecutionEntity childExecution = executionDataManager.create();
 
     // Inherit tenant id (if any)
     if (parentExecutionEntity.getTenantId() != null) {
@@ -213,7 +213,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     insert(childExecution, false);
 
     // manage the bidirectional parent-child relation
-    parentExecutionEntity.getExecutions().add(childExecution);
+    parentExecutionEntity.addChildExecution(childExecution);
     childExecution.setParent(parentExecutionEntity);
 
     // initialize the new execution

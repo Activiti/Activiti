@@ -45,13 +45,13 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
   }
   
   @Override
-  public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+  public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
     return attachmentDataManager.findAttachmentsByProcessInstanceId(processInstanceId);
   }
 
   @Override
-  public List<Attachment> findAttachmentsByTaskId(String taskId) {
+  public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
     checkHistoryEnabled();
     return attachmentDataManager.findAttachmentsByTaskId(taskId);
   }
@@ -59,7 +59,7 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
   @Override
   public void deleteAttachmentsByTaskId(String taskId) {
     checkHistoryEnabled();
-    List<Attachment> attachments = findAttachmentsByTaskId(taskId);
+    List<AttachmentEntity> attachments = findAttachmentsByTaskId(taskId);
     boolean dispatchEvents = getEventDispatcher().isEnabled();
 
     String processInstanceId = null;

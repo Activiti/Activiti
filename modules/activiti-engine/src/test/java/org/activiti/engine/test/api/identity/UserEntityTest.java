@@ -4,7 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.activiti.engine.identity.Picture;
-import org.activiti.engine.impl.persistence.entity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 import org.junit.Test;
 
 /**
@@ -31,7 +31,7 @@ public class UserEntityTest {
   }
 
   @SuppressWarnings("serial")
-  class TestableUserEntity extends UserEntity {
+  class TestableUserEntity extends UserEntityImpl {
 
     private boolean hasSavePictureBeenCalled = false;
     private boolean hasDeletePictureBeenCalled = false;

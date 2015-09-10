@@ -58,6 +58,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
@@ -151,7 +152,7 @@ public class BpmnDeployer implements Deployer {
                     processEngineConfiguration.getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
                         processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
                 diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
-                createResource(diagramResourceName, diagramBytes, deployment);
+                createResource(processEngineConfiguration.getResourceEntityManager(), diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
                 log.warn("Error while generating process diagram, image will not be stored in repository", t);
               }
@@ -222,10 +223,11 @@ public class BpmnDeployer implements Deployer {
         addMessageEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
 
         removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
-        addSignalEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
+        addSignalEventSubscriptions(commandContext, processDefinition, process, bpmnModels.get(processDefinition.getKey()));
 
         commandContext.getProcessDefinitionEntityManager().insert(processDefinition, false);
-        addAuthorizations(processDefinition);
+        addAuthorizationsFromIterator(commandContext, processDefinition.getCandidateStarterUserIdExpressions(), processDefinition, ExprType.USER);
+        addAuthorizationsFromIterator(commandContext, processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
 
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
@@ -368,7 +370,7 @@ public class BpmnDeployer implements Deployer {
       }
     }
 
-    MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
+    MessageEventSubscriptionEntity newSubscription = commandContext.getEventSubscriptionEntityManager().createMessageEventSubscription();
     newSubscription.setEventName(messageEventDefinition.getMessageRef());
     newSubscription.setActivityId(startEvent.getId());
     newSubscription.setConfiguration(processDefinition.getId());
@@ -397,7 +399,7 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
-  protected void addSignalEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
+  protected void addSignalEventSubscriptions(CommandContext commandContext, ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
     if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
@@ -406,7 +408,7 @@ public class BpmnDeployer implements Deployer {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof SignalEventDefinition) {
               SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
-              SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
+              SignalEventSubscriptionEntity subscriptionEntity = commandContext.getEventSubscriptionEntityManager().createSignalEventSubscription();
               Signal signal = bpmnModel.getSignal(signalEventDefinition.getSignalRef());
               if (signal != null) {
                 subscriptionEntity.setEventName(signal.getName());
@@ -431,12 +433,12 @@ public class BpmnDeployer implements Deployer {
     USER, GROUP
   }
 
-  private void addAuthorizationsFromIterator(Set<Expression> exprSet, ProcessDefinitionEntity processDefinition, ExprType exprType) {
+  private void addAuthorizationsFromIterator(CommandContext commandContext, Set<Expression> exprSet, ProcessDefinitionEntity processDefinition, ExprType exprType) {
     if (exprSet != null) {
       Iterator<Expression> iterator = exprSet.iterator();
       while (iterator.hasNext()) {
         Expression expr = (Expression) iterator.next();
-        IdentityLinkEntity identityLink = new IdentityLinkEntity();
+        IdentityLinkEntity identityLink = commandContext.getIdentityLinkEntityManager().create();
         identityLink.setProcessDef(processDefinition);
         if (exprType.equals(ExprType.USER)) {
           identityLink.setUserId(expr.toString());
@@ -447,11 +449,6 @@ public class BpmnDeployer implements Deployer {
         Context.getCommandContext().getIdentityLinkEntityManager().insert(identityLink);
       }
     }
-  }
-
-  protected void addAuthorizations(ProcessDefinitionEntity processDefinition) {
-    addAuthorizationsFromIterator(processDefinition.getCandidateStarterUserIdExpressions(), processDefinition, ExprType.USER);
-    addAuthorizationsFromIterator(processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
   }
 
   /**
@@ -499,8 +496,8 @@ public class BpmnDeployer implements Deployer {
     return bpmnFileResource;
   }
 
-  protected void createResource(String name, byte[] bytes, DeploymentEntity deploymentEntity) {
-    ResourceEntity resource = new ResourceEntity();
+  protected void createResource(ResourceEntityManager resourceEntityManager, String name, byte[] bytes, DeploymentEntity deploymentEntity) {
+    ResourceEntity resource = resourceEntityManager.create();
     resource.setName(name);
     resource.setBytes(bytes);
     resource.setDeploymentId(deploymentEntity.getId());
@@ -508,7 +505,7 @@ public class BpmnDeployer implements Deployer {
     // Mark the resource as 'generated'
     resource.setGenerated(true);
 
-    Context.getCommandContext().getDbSqlSession().insert(resource);
+    resourceEntityManager.insert(resource, false);
   }
 
   protected boolean isBpmnResource(String resourceName) {

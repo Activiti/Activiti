@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.GroupEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
 
   <!-- GROUP INSERT -->
 
-  <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntity">
+  <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
     insert into ${prefix}ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -41,7 +41,7 @@
 
   <!-- GROUP UPDATE -->
   
-  <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntity">
+  <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
     update ${prefix}ACT_ID_GROUP set
       REV_ = #{revisionNext ,jdbcType=INTEGER},
       NAME_ = #{name ,jdbcType=VARCHAR},
@@ -52,13 +52,13 @@
   
   <!-- GROUP DELETE -->
 
-  <delete id="deleteGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntity">
+  <delete id="deleteGroup" parameterType="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
     delete from ${prefix}ACT_ID_GROUP where ID_ = #{id} and REV_ = #{revision} 
   </delete>
 
   <!-- GROUP RESULTMAP -->
 
-  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.entity.GroupEntity">
+  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />

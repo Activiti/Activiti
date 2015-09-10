@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
 
   <!-- INSERT IDENTITY LINK -->
   
-  <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+  <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
     insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_)
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -19,7 +19,7 @@
             
   </insert>
   
-  <insert id="bulkInsertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+  <insert id="bulkInsertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
     insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_)
     values 
     <foreach collection="list" item="identityLink" index="index" separator=","> 
@@ -34,7 +34,7 @@
     </foreach>
   </insert>
   
-  <insert id="bulkInsertIdentityLink_oracle" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+  <insert id="bulkInsertIdentityLink_oracle" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
     INSERT ALL
       <foreach collection="list" item="identityLink" index="index">
         into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_) VALUES
@@ -70,7 +70,7 @@
 
   <!-- IDENTITY LINK RESULTMAP -->
 
-  <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+  <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />

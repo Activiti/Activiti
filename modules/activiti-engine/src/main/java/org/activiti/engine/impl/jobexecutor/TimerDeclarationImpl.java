@@ -159,7 +159,7 @@ public class TimerDeclarationImpl implements Serializable {
       duedate = businessCalendar.resolveDuedate(dueDateString);
     }
 
-    TimerEntity timer = new TimerEntity(this);
+    TimerEntity timer = Context.getCommandContext().getJobEntityManager().createTimer();
     timer.setDuedate(duedate);
     timer.setEndDate(endDate);
     if (executionEntity != null) {

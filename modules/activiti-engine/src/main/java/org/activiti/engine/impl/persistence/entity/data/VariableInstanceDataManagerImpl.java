@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -26,8 +27,13 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 public class VariableInstanceDataManagerImpl extends AbstractDataManager<VariableInstanceEntity> implements VariableInstanceDataManager {
 
   @Override
-  public Class<VariableInstanceEntity> getManagedEntityClass() {
-    return VariableInstanceEntity.class;
+  public Class<? extends VariableInstanceEntity> getManagedEntityClass() {
+    return VariableInstanceEntityImpl.class;
+  }
+  
+  @Override
+  public VariableInstanceEntity create() {
+    return new VariableInstanceEntityImpl();
   }
   
   @Override

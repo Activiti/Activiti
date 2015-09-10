@@ -40,7 +40,7 @@ public class MembershipEntityManagerImpl extends AbstractEntityManager<Membershi
   }
  
   public void createMembership(String userId, String groupId) {
-    MembershipEntity membershipEntity = new MembershipEntity();
+    MembershipEntity membershipEntity = create();
     membershipEntity.setUserId(userId);
     membershipEntity.setGroupId(groupId);
     insert(membershipEntity, false);

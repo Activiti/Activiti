@@ -16,22 +16,10 @@ package org.activiti.engine.impl.persistence.entity;
 /**
  * @author Tom Baeyens
  */
-public class MessageEntity extends JobEntity {
+public interface MessageEntity extends JobEntity {
 
-  private static final long serialVersionUID = 1L;
+  String getRepeat();
 
-  public MessageEntity() {
-    super();
-    this.jobType = "message";
-  }
-
-  private String repeat = null;
-  
-  public String getRepeat() {
-    return repeat;
-  }
-
-  public void setRepeat(String repeat) {
-    this.repeat = repeat;
-  }
+  void setRepeat(String repeat);
+    
 }

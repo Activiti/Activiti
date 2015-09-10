@@ -20,6 +20,7 @@ import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -27,8 +28,18 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 public class HistoricVariableInstanceDataManagerImpl extends AbstractDataManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceDataManager {
 
   @Override
-  public Class<HistoricVariableInstanceEntity> getManagedEntityClass() {
-    return HistoricVariableInstanceEntity.class;
+  public Class<? extends HistoricVariableInstanceEntity> getManagedEntityClass() {
+    return HistoricVariableInstanceEntityImpl.class;
+  }
+  
+  @Override
+  public HistoricVariableInstanceEntity create() {
+    return new HistoricVariableInstanceEntityImpl();
+  }
+  
+  @Override
+  public void insert(HistoricVariableInstanceEntity entity) {
+    super.insert(entity);
   }
   
   @Override

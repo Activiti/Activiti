@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl;
 
 /**
  * @author Joram Barrez
@@ -24,8 +25,13 @@ import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 public class IdentityInfoDataManagerImpl extends AbstractDataManager<IdentityInfoEntity> implements IdentityInfoDataManager {
   
   @Override
-  public Class<IdentityInfoEntity> getManagedEntityClass() {
-    return IdentityInfoEntity.class;
+  public Class<? extends IdentityInfoEntity> getManagedEntityClass() {
+    return IdentityInfoEntityImpl.class;
+  }
+  
+  @Override
+  public IdentityInfoEntity create() {
+    return new IdentityInfoEntityImpl();
   }
   
   @Override

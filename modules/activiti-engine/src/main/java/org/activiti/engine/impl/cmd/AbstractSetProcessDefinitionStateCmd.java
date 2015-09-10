@@ -147,7 +147,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       
       if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) continue;
       
-      TimerEntity timer = new TimerEntity();
+      TimerEntity timer = commandContext.getJobEntityManager().createTimer();
       timer.setProcessDefinitionId(processDefinition.getId());
 
       // Inherit tenant identifier (if applicable)

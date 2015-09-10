@@ -25,6 +25,12 @@ import org.activiti.engine.impl.Page;
  */
 public interface EventSubscriptionEntityManager extends EntityManager<EventSubscriptionEntity> {
   
+  MessageEventSubscriptionEntity createMessageEventSubscription();
+  
+  SignalEventSubscriptionEntity createSignalEventSubscription();
+  
+  CompensateEventSubscriptionEntity createCompensateEventSubscription();
+  
   
   void eventReceived(EventSubscriptionEntity eventSubscriptionEntity, Object payload, boolean processASync);
   
