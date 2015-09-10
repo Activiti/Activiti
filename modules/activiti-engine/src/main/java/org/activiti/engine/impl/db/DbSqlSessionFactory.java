@@ -21,7 +21,7 @@ import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
@@ -335,7 +335,7 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   	// Only Oracle is making a fuss in one specific case right now
 		if ("oracle".equals(databaseType)) {
-			bulkInsertableMap.put(EventLogEntryEntity.class, Boolean.FALSE);
+			bulkInsertableMap.put(EventLogEntryEntityImpl.class, Boolean.FALSE);
 		}
   }
   
