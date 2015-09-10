@@ -30,6 +30,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
@@ -52,7 +53,8 @@ public class LDAPUserManager extends AbstractManager implements UserEntityManage
 
   protected LDAPConfigurator ldapConfigurator;
 
-  public LDAPUserManager(LDAPConfigurator ldapConfigurator) {
+  public LDAPUserManager(ProcessEngineConfigurationImpl processEngineConfiguration, LDAPConfigurator ldapConfigurator) {
+    super(processEngineConfiguration);
     this.ldapConfigurator = ldapConfigurator;
   }
 

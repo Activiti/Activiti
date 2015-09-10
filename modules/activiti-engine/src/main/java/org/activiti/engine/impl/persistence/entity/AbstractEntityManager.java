@@ -3,6 +3,7 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -12,10 +13,16 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
  */
 public abstract class AbstractEntityManager<EntityImpl extends Entity> extends AbstractManager implements EntityManager<EntityImpl> {
 
+  public AbstractEntityManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+  
+  
   /*
    * CRUD operations
    */
   
+
   @Override
   public EntityImpl findById(String entityId) {
     return getDataManager().findById(entityId);

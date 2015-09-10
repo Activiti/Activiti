@@ -26,6 +26,7 @@ import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -46,11 +47,8 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
   protected DeploymentDataManager deploymentDataManager;
   
-  public DeploymentEntityManagerImpl() {
-    
-  }
-  
-  public DeploymentEntityManagerImpl(DeploymentDataManager deploymentDataManager) {
+  public DeploymentEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, DeploymentDataManager deploymentDataManager) {
+    super(processEngineConfiguration);
     this.deploymentDataManager = deploymentDataManager;
   }
   

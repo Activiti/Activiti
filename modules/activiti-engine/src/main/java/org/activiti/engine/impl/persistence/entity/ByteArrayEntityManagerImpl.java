@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 
@@ -25,11 +26,8 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
   
   protected ByteArrayDataManager byteArrayDataManager;
   
-  public ByteArrayEntityManagerImpl() {
-    
-  }
-  
-  public ByteArrayEntityManagerImpl(ByteArrayDataManager byteArrayDataManager) {
+  public ByteArrayEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ByteArrayDataManager byteArrayDataManager) {
+    super(processEngineConfiguration);
     this.byteArrayDataManager = byteArrayDataManager;
   }
    

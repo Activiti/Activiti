@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl;
@@ -27,6 +28,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
  * @author Joram Barrez
  */
 public class HistoricActivityInstanceDataManagerImpl extends AbstractDataManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceDataManager {
+
+  public HistoricActivityInstanceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends HistoricActivityInstanceEntity> getManagedEntityClass() {

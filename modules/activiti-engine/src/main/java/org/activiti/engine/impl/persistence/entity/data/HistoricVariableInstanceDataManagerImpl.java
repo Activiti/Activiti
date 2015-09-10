@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl;
@@ -26,6 +27,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
  * @author Joram Barrez
  */
 public class HistoricVariableInstanceDataManagerImpl extends AbstractDataManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceDataManager {
+
+  public HistoricVariableInstanceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends HistoricVariableInstanceEntity> getManagedEntityClass() {

@@ -59,11 +59,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   protected JobDataManager jobDataManager;
   
-  public JobEntityManagerImpl() {
-    
-  }
-  
-  public JobEntityManagerImpl(JobDataManager jobDataManager) {
+  public JobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, JobDataManager jobDataManager) {
+    super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
   }
   

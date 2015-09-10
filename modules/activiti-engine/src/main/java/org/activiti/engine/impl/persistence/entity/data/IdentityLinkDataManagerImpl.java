@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 
@@ -25,6 +26,10 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 public class IdentityLinkDataManagerImpl extends AbstractDataManager<IdentityLinkEntity> implements IdentityLinkDataManager {
   
  
+  public IdentityLinkDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends IdentityLinkEntity> getManagedEntityClass() {
     return IdentityLinkEntityImpl.class;

@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.task.Attachment;
@@ -31,11 +32,8 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
 
   protected AttachmentDataManager attachmentDataManager;
   
-  public AttachmentEntityManagerImpl() {
-    
-  }
-  
-  public AttachmentEntityManagerImpl(AttachmentDataManager attachmentDataManager) {
+  public AttachmentEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, AttachmentDataManager attachmentDataManager) {
+    super(processEngineConfiguration);
     this.attachmentDataManager = attachmentDataManager;
   }
   

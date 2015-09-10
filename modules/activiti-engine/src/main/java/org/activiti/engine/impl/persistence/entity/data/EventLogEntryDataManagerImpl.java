@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 
@@ -25,6 +26,10 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
  */
 public class EventLogEntryDataManagerImpl extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
   
+  public EventLogEntryDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends EventLogEntryEntity> getManagedEntityClass() {
     return EventLogEntryEntityImpl.class;

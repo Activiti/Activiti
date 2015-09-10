@@ -22,6 +22,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.GroupDataManager;
 
@@ -34,11 +35,8 @@ public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> i
   
   protected GroupDataManager groupDataManager;
   
-  public GroupEntityManagerImpl() {
-    
-  }
-  
-  public GroupEntityManagerImpl(GroupDataManager groupDataManager) {
+  public GroupEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, GroupDataManager groupDataManager) {
+    super(processEngineConfiguration);
     this.groupDataManager = groupDataManager;
   }
 

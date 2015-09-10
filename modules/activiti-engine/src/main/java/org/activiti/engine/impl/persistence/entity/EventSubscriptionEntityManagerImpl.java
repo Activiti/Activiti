@@ -25,6 +25,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -38,11 +39,8 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   
   protected EventSubscriptionDataManager eventSubscriptionDataManager;
   
-  public EventSubscriptionEntityManagerImpl() {
-    
-  }
-  
-  public EventSubscriptionEntityManagerImpl(EventSubscriptionDataManager eventSubscriptionDataManager) {
+  public EventSubscriptionEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, EventSubscriptionDataManager eventSubscriptionDataManager) {
+    super(processEngineConfiguration);
     this.eventSubscriptionDataManager = eventSubscriptionDataManager;
   }
   

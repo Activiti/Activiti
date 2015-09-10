@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
@@ -33,11 +34,8 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
 
   protected HistoricTaskInstanceDataManager historicTaskInstanceDataManager;
   
-  public HistoricTaskInstanceEntityManagerImpl() {
-    
-  }
-  
-  public HistoricTaskInstanceEntityManagerImpl(HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+  public HistoricTaskInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+    super(processEngineConfiguration);
     this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
   }
   

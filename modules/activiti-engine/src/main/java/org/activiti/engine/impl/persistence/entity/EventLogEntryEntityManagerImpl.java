@@ -16,6 +16,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 
@@ -26,11 +27,8 @@ public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventL
   
   protected EventLogEntryDataManager eventLogEntryDataManager;
   
-  public EventLogEntryEntityManagerImpl() {
-    
-  }
-  
-  public EventLogEntryEntityManagerImpl(EventLogEntryDataManager eventLogEntryDataManager) {
+  public EventLogEntryEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, EventLogEntryDataManager eventLogEntryDataManager) {
+    super(processEngineConfiguration);
     this.eventLogEntryDataManager = eventLogEntryDataManager;
   }
 

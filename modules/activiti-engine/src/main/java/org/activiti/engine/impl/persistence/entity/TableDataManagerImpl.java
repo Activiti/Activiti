@@ -34,6 +34,7 @@ import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TablePageQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -55,6 +56,10 @@ import org.slf4j.LoggerFactory;
  * @author Tom Baeyens
  */
 public class TableDataManagerImpl extends AbstractManager implements TableDataManager {
+
+  public TableDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   private static Logger log = LoggerFactory.getLogger(TableDataManagerImpl.class);
 

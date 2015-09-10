@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 
@@ -24,6 +25,10 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
  */
 public class ResourceDataManagerImpl extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
   
+  public ResourceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends ResourceEntity> getManagedEntityClass() {
     return ResourceEntityImpl.class;

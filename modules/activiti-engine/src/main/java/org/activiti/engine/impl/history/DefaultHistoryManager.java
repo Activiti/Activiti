@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -52,7 +53,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   private HistoryLevel historyLevel;
 
-  public DefaultHistoryManager(HistoryLevel historyLevel) {
+  public DefaultHistoryManager(ProcessEngineConfigurationImpl processEngineConfiguration, HistoryLevel historyLevel) {
+    super(processEngineConfiguration);
     this.historyLevel = historyLevel;
   }
 

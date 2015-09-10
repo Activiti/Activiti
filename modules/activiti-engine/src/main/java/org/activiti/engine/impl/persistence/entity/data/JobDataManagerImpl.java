@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
@@ -34,6 +35,10 @@ import org.activiti.engine.runtime.Job;
  */
 public class JobDataManagerImpl extends AbstractDataManager<JobEntity> implements JobDataManager {
   
+  public JobDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   protected static List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = new ArrayList<Class<? extends JobEntity>>();
   
   static {

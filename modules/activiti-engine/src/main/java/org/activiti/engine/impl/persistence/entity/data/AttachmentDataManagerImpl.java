@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 
@@ -23,6 +24,10 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
  */
 public class AttachmentDataManagerImpl extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
   
+  public AttachmentDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends AttachmentEntity> getManagedEntityClass() {
     return AttachmentEntityImpl.class;

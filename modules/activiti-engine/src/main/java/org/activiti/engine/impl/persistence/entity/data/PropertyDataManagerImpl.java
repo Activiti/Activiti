@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
 
@@ -22,6 +23,10 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
  */
 public class PropertyDataManagerImpl extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
   
+  public PropertyDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends PropertyEntity> getManagedEntityClass() {
     return PropertyEntityImpl.class;

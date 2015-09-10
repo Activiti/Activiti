@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManager;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -33,11 +34,8 @@ public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<Pr
 
   protected ProcessDefinitionDataManager processDefinitionDataManager;
   
-  public ProcessDefinitionEntityManagerImpl() {
-    
-  }
-  
-  public ProcessDefinitionEntityManagerImpl(ProcessDefinitionDataManager processDefinitionDataManager) {
+  public ProcessDefinitionEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ProcessDefinitionDataManager processDefinitionDataManager) {
+    super(processEngineConfiguration);
     this.processDefinitionDataManager = processDefinitionDataManager;
   }
 

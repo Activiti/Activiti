@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstanceDataManager;
@@ -32,11 +33,8 @@ public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityMan
   
   protected HistoricVariableInstanceDataManager historicVariableInstanceDataManager;
   
-  public HistoricVariableInstanceEntityManagerImpl() {
-    
-  }
-  
-  public HistoricVariableInstanceEntityManagerImpl(HistoricVariableInstanceDataManager historicVariableInstanceDataManager) {
+  public HistoricVariableInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricVariableInstanceDataManager historicVariableInstanceDataManager) {
+    super(processEngineConfiguration);
     this.historicVariableInstanceDataManager = historicVariableInstanceDataManager;
   }
   

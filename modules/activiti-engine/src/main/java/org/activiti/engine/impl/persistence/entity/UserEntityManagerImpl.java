@@ -23,6 +23,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.UserDataManager;
 
@@ -35,11 +36,8 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   
   protected UserDataManager userDataManager;
   
-  public UserEntityManagerImpl() {
-    
-  }
-  
-  public UserEntityManagerImpl(UserDataManager userDataManager) {
+  public UserEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, UserDataManager userDataManager) {
+    super(processEngineConfiguration);
     this.userDataManager = userDataManager;
   }
   

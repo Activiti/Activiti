@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceDataManager;
 
@@ -30,11 +31,8 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
 
   protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
   
-  public HistoricProcessInstanceEntityManagerImpl() {
-    
-  }
-  
-  public HistoricProcessInstanceEntityManagerImpl(HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
+  public HistoricProcessInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
+    super(processEngineConfiguration);
     this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
   }
   

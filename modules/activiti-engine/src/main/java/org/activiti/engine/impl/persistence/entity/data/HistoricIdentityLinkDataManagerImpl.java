@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl;
@@ -22,6 +23,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImp
  * @author Joram Barrez
  */
 public class HistoricIdentityLinkDataManagerImpl extends AbstractDataManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkDataManager {
+
+  public HistoricIdentityLinkDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends HistoricIdentityLinkEntity> getManagedEntityClass() {

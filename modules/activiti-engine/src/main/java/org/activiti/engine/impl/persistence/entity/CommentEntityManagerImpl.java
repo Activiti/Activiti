@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.task.Comment;
@@ -31,11 +32,8 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
   
   protected CommentDataManager commentDataManager;
   
-  public CommentEntityManagerImpl() {
-    
-  }
-  
-  public CommentEntityManagerImpl(CommentDataManager commentDataManager) {
+  public CommentEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, CommentDataManager commentDataManager) {
+    super(processEngineConfiguration);
     this.commentDataManager = commentDataManager;
   }
 

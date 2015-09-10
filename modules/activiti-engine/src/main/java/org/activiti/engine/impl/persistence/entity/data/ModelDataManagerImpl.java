@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.persistence.entity.ModelEntityImpl;
 import org.activiti.engine.repository.Model;
@@ -26,6 +27,10 @@ import org.activiti.engine.repository.Model;
  */
 public class ModelDataManagerImpl extends AbstractDataManager<ModelEntity> implements ModelDataManager {
   
+  public ModelDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends ModelEntity> getManagedEntityClass() {
     return ModelEntityImpl.class;

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.MembershipEntity;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
 
@@ -23,6 +24,10 @@ import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
  */
 public class MembershipDataManagerImpl extends AbstractDataManager<MembershipEntity> implements MembershipDataManager {
   
+  public MembershipDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends MembershipEntity> getManagedEntityClass() {
     return MembershipEntityImpl.class;

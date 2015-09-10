@@ -52,9 +52,11 @@ import org.activiti.engine.runtime.Clock;
  */
 public abstract class AbstractManager {
   
-  // Deliberately private, so subclasses need to use the getters to make sure the lazy loading has happened
-  private ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
   
+  public AbstractManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
   
   // Command scoped 
   
@@ -69,9 +71,6 @@ public abstract class AbstractManager {
   // Engine scoped
   
   protected ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    if (processEngineConfiguration == null) {
-      processEngineConfiguration = Context.getProcessEngineConfiguration();
-    }
     return processEngineConfiguration;
   }
   

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
 import org.activiti.engine.impl.variable.VariableType;
@@ -32,11 +33,8 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
 
   protected VariableInstanceDataManager variableInstanceDataManager;
   
-  public VariableInstanceEntityManagerImpl() {
-    
-  }
-  
-  public VariableInstanceEntityManagerImpl(VariableInstanceDataManager variableInstanceDataManager) {
+  public VariableInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, VariableInstanceDataManager variableInstanceDataManager) {
+    super(processEngineConfiguration);
     this.variableInstanceDataManager = variableInstanceDataManager;
   }
 

@@ -25,6 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -38,11 +39,8 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   
   protected TaskDataManager taskDataManager;
   
-  public TaskEntityManagerImpl() {
-    
-  }
-  
-  public TaskEntityManagerImpl(TaskDataManager taskDataManager) {
+  public TaskEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, TaskDataManager taskDataManager) {
+    super(processEngineConfiguration);
     this.taskDataManager = taskDataManager;
   }
   

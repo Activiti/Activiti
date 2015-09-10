@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
 
@@ -25,6 +26,10 @@ import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
  * @author Joram Barrez
  */
 public class GroupDataManagerImpl extends AbstractDataManager<GroupEntity> implements GroupDataManager {
+
+  public GroupDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends GroupEntity> getManagedEntityClass() {

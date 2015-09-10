@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
 
@@ -30,11 +31,8 @@ public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<Identit
   
   protected IdentityInfoDataManager identityInfoDataManager;
   
-  public IdentityInfoEntityManagerImpl() {
-    
-  }
-  
-  public IdentityInfoEntityManagerImpl(IdentityInfoDataManager identityInfoDataManager) {
+  public IdentityInfoEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, IdentityInfoDataManager identityInfoDataManager) {
+    super(processEngineConfiguration);
     this.identityInfoDataManager = identityInfoDataManager;
   }
 

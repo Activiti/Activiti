@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
 
@@ -26,11 +27,8 @@ public class MembershipEntityManagerImpl extends AbstractEntityManager<Membershi
 
   protected MembershipDataManager membershipDataManager;
   
-  public MembershipEntityManagerImpl() {
-    
-  }
-  
-  public MembershipEntityManagerImpl(MembershipDataManager membershipDataManager) {
+  public MembershipEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, MembershipDataManager membershipDataManager) {
+    super(processEngineConfiguration);
     this.membershipDataManager = membershipDataManager;
   }
  

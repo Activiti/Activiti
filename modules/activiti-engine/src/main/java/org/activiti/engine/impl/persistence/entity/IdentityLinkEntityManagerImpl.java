@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.task.IdentityLinkType;
@@ -32,11 +33,8 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   protected IdentityLinkDataManager identityLinkDataManager;
   
-  public IdentityLinkEntityManagerImpl() {
-    
-  }
-  
-  public IdentityLinkEntityManagerImpl(IdentityLinkDataManager identityLinkDataManager) {
+  public IdentityLinkEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, IdentityLinkDataManager identityLinkDataManager) {
+    super(processEngineConfiguration);
     this.identityLinkDataManager = identityLinkDataManager;
   }
   

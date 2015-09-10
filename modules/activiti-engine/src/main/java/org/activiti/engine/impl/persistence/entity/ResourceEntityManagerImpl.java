@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
@@ -26,11 +27,8 @@ public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEnt
   
   protected ResourceDataManager resourceDataManager;
   
-  public ResourceEntityManagerImpl() {
-
-  }
-  
-  public ResourceEntityManagerImpl(ResourceDataManager resourceDataManager) {
+  public ResourceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ResourceDataManager resourceDataManager) {
+    super(processEngineConfiguration);
     this.resourceDataManager = resourceDataManager;
   }
   

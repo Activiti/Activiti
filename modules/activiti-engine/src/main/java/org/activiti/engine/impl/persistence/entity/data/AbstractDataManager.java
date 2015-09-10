@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -30,6 +31,10 @@ import org.activiti.engine.impl.persistence.cache.EntityCache;
  */
 public abstract class AbstractDataManager<EntityImpl extends Entity> extends AbstractManager implements DataManager<EntityImpl> {
   
+  public AbstractDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   public abstract Class<? extends EntityImpl> getManagedEntityClass();
   
   public List<Class<? extends EntityImpl>> getManagedEntitySubClasses() {

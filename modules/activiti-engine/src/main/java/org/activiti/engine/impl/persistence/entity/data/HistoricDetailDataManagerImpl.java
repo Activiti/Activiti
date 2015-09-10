@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
@@ -33,6 +34,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImp
  * @author Joram Barrez
  */
 public class HistoricDetailDataManagerImpl extends AbstractDataManager<HistoricDetailEntity> implements HistoricDetailDataManager {
+
+  public HistoricDetailDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends HistoricDetailEntity> getManagedEntityClass() {

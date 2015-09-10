@@ -27,6 +27,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
@@ -49,11 +50,8 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   protected ExecutionDataManager executionDataManager;
   
-  public ExecutionEntityManagerImpl() {
-    
-  }
-  
-  public ExecutionEntityManagerImpl(ExecutionDataManager executionDataManager) {
+  public ExecutionEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ExecutionDataManager executionDataManager) {
+    super(processEngineConfiguration);
     this.executionDataManager = executionDataManager;
   }
 

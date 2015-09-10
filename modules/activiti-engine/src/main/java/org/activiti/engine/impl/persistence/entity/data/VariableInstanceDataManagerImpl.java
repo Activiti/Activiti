@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
@@ -25,6 +26,10 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
  * @author Joram Barrez
  */
 public class VariableInstanceDataManagerImpl extends AbstractDataManager<VariableInstanceEntity> implements VariableInstanceDataManager {
+
+  public VariableInstanceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends VariableInstanceEntity> getManagedEntityClass() {

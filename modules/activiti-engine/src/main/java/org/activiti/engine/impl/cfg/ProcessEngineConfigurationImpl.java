@@ -994,68 +994,68 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Data managers ///////////////////////////////////////////////////////////
   
   protected void initDataManagers() {
-    attachmentDataManager = new AttachmentDataManagerImpl();
-    byteArrayDataManager = new ByteArrayDataManagerImpl();
-    commentDataManager = new CommentDataManagerImpl();
-    deploymentDataManager = new DeploymentDataManagerImpl();
-    eventLogEntryDataManager = new EventLogEntryDataManagerImpl();
-    eventSubscriptionDataManager = new EventSubscriptionDataManagerImpl();
-    executionDataManager = new ExecutionDataManagerImpl();
-    groupDataManager = new GroupDataManagerImpl();
-    historicActivityInstanceDataManager = new HistoricActivityInstanceDataManagerImpl();
-    historicDetailDataManager = new HistoricDetailDataManagerImpl();
-    historicIdentityLinkDataManager = new HistoricIdentityLinkDataManagerImpl();
-    historicProcessInstanceDataManager = new HistoricProcessInstanceDataManagerImpl();
-    historicTaskInstanceDataManager = new HistoricTaskInstanceDataManagerImpl();
-    historicVariableInstanceDataManager = new HistoricVariableInstanceDataManagerImpl();
-    identityInfoDataManager = new IdentityInfoDataManagerImpl();
-    identityLinkDataManager = new IdentityLinkDataManagerImpl();
-    jobDataManager = new JobDataManagerImpl();
-    membershipDataManager = new MembershipDataManagerImpl();
-    modelDataManager = new ModelDataManagerImpl();
-    processDefinitionDataManager = new ProcessDefinitionDataManagerImpl();
-    propertyDataManager = new PropertyDataManagerImpl();
-    resourceDataManager = new ResourceDataManagerImpl();
-    taskDataManager = new TaskDataManagerImpl();
-    userDataManager = new UserDataManagerImpl();
-    variableInstanceDataManager = new VariableInstanceDataManagerImpl();
+    attachmentDataManager = new AttachmentDataManagerImpl(this);
+    byteArrayDataManager = new ByteArrayDataManagerImpl(this);
+    commentDataManager = new CommentDataManagerImpl(this);
+    deploymentDataManager = new DeploymentDataManagerImpl(this);
+    eventLogEntryDataManager = new EventLogEntryDataManagerImpl(this);
+    eventSubscriptionDataManager = new EventSubscriptionDataManagerImpl(this);
+    executionDataManager = new ExecutionDataManagerImpl(this);
+    groupDataManager = new GroupDataManagerImpl(this);
+    historicActivityInstanceDataManager = new HistoricActivityInstanceDataManagerImpl(this);
+    historicDetailDataManager = new HistoricDetailDataManagerImpl(this);
+    historicIdentityLinkDataManager = new HistoricIdentityLinkDataManagerImpl(this);
+    historicProcessInstanceDataManager = new HistoricProcessInstanceDataManagerImpl(this);
+    historicTaskInstanceDataManager = new HistoricTaskInstanceDataManagerImpl(this);
+    historicVariableInstanceDataManager = new HistoricVariableInstanceDataManagerImpl(this);
+    identityInfoDataManager = new IdentityInfoDataManagerImpl(this);
+    identityLinkDataManager = new IdentityLinkDataManagerImpl(this);
+    jobDataManager = new JobDataManagerImpl(this);
+    membershipDataManager = new MembershipDataManagerImpl(this);
+    modelDataManager = new ModelDataManagerImpl(this);
+    processDefinitionDataManager = new ProcessDefinitionDataManagerImpl(this);
+    propertyDataManager = new PropertyDataManagerImpl(this);
+    resourceDataManager = new ResourceDataManagerImpl(this);
+    taskDataManager = new TaskDataManagerImpl(this);
+    userDataManager = new UserDataManagerImpl(this);
+    variableInstanceDataManager = new VariableInstanceDataManagerImpl(this);
   }
   
   // Entity managers //////////////////////////////////////////////////////////
   
   protected void initEntityManagers() {
-    attachmentEntityManager = new AttachmentEntityManagerImpl(attachmentDataManager);
-    byteArrayEntityManager = new ByteArrayEntityManagerImpl(byteArrayDataManager);
-    commentEntityManager = new CommentEntityManagerImpl(commentDataManager);
-    deploymentEntityManager = new DeploymentEntityManagerImpl(deploymentDataManager);
-    eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl(eventLogEntryDataManager);
-    eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl(eventSubscriptionDataManager);
-    executionEntityManager = new ExecutionEntityManagerImpl(executionDataManager);
-    groupEntityManager = new GroupEntityManagerImpl(groupDataManager);
-    historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl(historicActivityInstanceDataManager);
-    historicDetailEntityManager = new HistoricDetailEntityManagerImpl(historicDetailDataManager);
-    historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl(historicIdentityLinkDataManager);
-    historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl(historicProcessInstanceDataManager);
-    historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl(historicTaskInstanceDataManager);
-    historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl(historicVariableInstanceDataManager);
-    identityInfoEntityManager = new IdentityInfoEntityManagerImpl(identityInfoDataManager);
-    identityLinkEntityManager = new IdentityLinkEntityManagerImpl(identityLinkDataManager);
-    jobEntityManager = new JobEntityManagerImpl(jobDataManager);
-    membershipEntityManager = new MembershipEntityManagerImpl(membershipDataManager);
-    modelEntityManager = new ModelEntityManagerImpl(modelDataManager);
-    processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl(processDefinitionDataManager);
-    propertyEntityManager = new PropertyEntityManagerImpl(propertyDataManager);
-    resourceEntityManager = new ResourceEntityManagerImpl(resourceDataManager);
-    tableDataManager = new TableDataManagerImpl();
-    taskEntityManager = new TaskEntityManagerImpl(taskDataManager);
-    userEntityManager = new UserEntityManagerImpl(userDataManager);
-    variableInstanceEntityManager = new VariableInstanceEntityManagerImpl(variableInstanceDataManager);
+    attachmentEntityManager = new AttachmentEntityManagerImpl(this, attachmentDataManager);
+    byteArrayEntityManager = new ByteArrayEntityManagerImpl(this, byteArrayDataManager);
+    commentEntityManager = new CommentEntityManagerImpl(this, commentDataManager);
+    deploymentEntityManager = new DeploymentEntityManagerImpl(this, deploymentDataManager);
+    eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl(this, eventLogEntryDataManager);
+    eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl(this, eventSubscriptionDataManager);
+    executionEntityManager = new ExecutionEntityManagerImpl(this, executionDataManager);
+    groupEntityManager = new GroupEntityManagerImpl(this, groupDataManager);
+    historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl(this, historicActivityInstanceDataManager);
+    historicDetailEntityManager = new HistoricDetailEntityManagerImpl(this, historicDetailDataManager);
+    historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl(this, historicIdentityLinkDataManager);
+    historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl(this, historicProcessInstanceDataManager);
+    historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl(this, historicTaskInstanceDataManager);
+    historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl(this, historicVariableInstanceDataManager);
+    identityInfoEntityManager = new IdentityInfoEntityManagerImpl(this, identityInfoDataManager);
+    identityLinkEntityManager = new IdentityLinkEntityManagerImpl(this, identityLinkDataManager);
+    jobEntityManager = new JobEntityManagerImpl(this, jobDataManager);
+    membershipEntityManager = new MembershipEntityManagerImpl(this, membershipDataManager);
+    modelEntityManager = new ModelEntityManagerImpl(this, modelDataManager);
+    processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl(this, processDefinitionDataManager);
+    propertyEntityManager = new PropertyEntityManagerImpl(this, propertyDataManager);
+    resourceEntityManager = new ResourceEntityManagerImpl(this, resourceDataManager);
+    tableDataManager = new TableDataManagerImpl(this);
+    taskEntityManager = new TaskEntityManagerImpl(this, taskDataManager);
+    userEntityManager = new UserEntityManagerImpl(this, userDataManager);
+    variableInstanceEntityManager = new VariableInstanceEntityManagerImpl(this, variableInstanceDataManager);
   }
   
   // History manager ///////////////////////////////////////////////////////////
   
   protected void initHistoryManager() {
-    historyManager = new DefaultHistoryManager(historyLevel);
+    historyManager = new DefaultHistoryManager(this, historyLevel);
   }
 
   // session factories ////////////////////////////////////////////////////////

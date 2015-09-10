@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.TaskQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
@@ -28,6 +29,10 @@ import org.activiti.engine.task.Task;
  */
 public class TaskDataManagerImpl extends AbstractDataManager<TaskEntity> implements TaskDataManager {
   
+  public TaskDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
+
   @Override
   public Class<? extends TaskEntity> getManagedEntityClass() {
     return TaskEntityImpl.class;

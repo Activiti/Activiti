@@ -28,6 +28,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -46,11 +47,13 @@ public class LDAPGroupManager extends AbstractManager implements GroupEntityMana
   protected LDAPConfigurator ldapConfigurator;
   protected LDAPGroupCache ldapGroupCache;
 
-  public LDAPGroupManager(LDAPConfigurator ldapConfigurator) {
+  public LDAPGroupManager(ProcessEngineConfigurationImpl processEngineConfiguration, LDAPConfigurator ldapConfigurator) {
+    super(processEngineConfiguration);
     this.ldapConfigurator = ldapConfigurator;
   }
 
-  public LDAPGroupManager(LDAPConfigurator ldapConfigurator, LDAPGroupCache ldapGroupCache) {
+  public LDAPGroupManager(ProcessEngineConfigurationImpl processEngineConfiguration, LDAPConfigurator ldapConfigurator, LDAPGroupCache ldapGroupCache) {
+    super(processEngineConfiguration);
     this.ldapConfigurator = ldapConfigurator;
     this.ldapGroupCache = ldapGroupCache;
   }

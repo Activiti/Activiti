@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
 import org.activiti.engine.task.Comment;
@@ -25,6 +26,10 @@ import org.activiti.engine.task.Event;
  * @author Joram Barrez
  */
 public class CommentDataManagerImpl extends AbstractDataManager<CommentEntity> implements CommentDataManager {
+
+  public CommentDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends CommentEntity> getManagedEntityClass() {

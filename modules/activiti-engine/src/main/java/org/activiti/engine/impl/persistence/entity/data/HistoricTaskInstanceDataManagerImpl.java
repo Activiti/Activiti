@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl;
@@ -27,6 +28,10 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  * @author Joram Barrez
  */
 public class HistoricTaskInstanceDataManagerImpl extends AbstractDataManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceDataManager {
+
+  public HistoricTaskInstanceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   @Override
   public Class<? extends HistoricTaskInstanceEntity> getManagedEntityClass() {

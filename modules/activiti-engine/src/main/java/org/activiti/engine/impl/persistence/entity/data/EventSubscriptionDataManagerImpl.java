@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl;
@@ -43,6 +44,10 @@ public class EventSubscriptionDataManagerImpl extends AbstractDataManager<EventS
     ENTITY_SUBCLASSES.add(MessageEventSubscriptionEntityImpl.class);
     ENTITY_SUBCLASSES.add(SignalEventSubscriptionEntityImpl.class);
     ENTITY_SUBCLASSES.add(CompensateEventSubscriptionEntityImpl.class);
+  }
+  
+  public EventSubscriptionDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
   }
   
   @Override
