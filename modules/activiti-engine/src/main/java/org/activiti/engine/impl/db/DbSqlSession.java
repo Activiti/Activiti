@@ -708,6 +708,10 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushInserts() {
+    
+    if (insertedObjects.size() == 0) {
+      return;
+    }
   	
   	// Handle in entity dependency order
     for (Class<? extends Entity> entityClass : EntityDependencyOrder.INSERT_ORDER) {
