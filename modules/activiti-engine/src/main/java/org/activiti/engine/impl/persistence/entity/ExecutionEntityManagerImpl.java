@@ -59,6 +59,20 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   protected DataManager<ExecutionEntity> getDataManager() {
     return executionDataManager;
   }
+
+  // Overriding the default delete methods to set the 'isDeleted' flag
+  
+  @Override
+  public void delete(ExecutionEntity entity) {
+    super.delete(entity);
+    entity.setDeleted(true);
+  }
+  
+  @Override
+  public void delete(ExecutionEntity entity, boolean fireDeleteEvent) {
+    super.delete(entity, fireDeleteEvent);
+    entity.setDeleted(true);
+  }
   
   // FIND METHODS
 
