@@ -91,8 +91,8 @@ import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -123,8 +123,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return new ReceiveTaskActivityBehavior();
   }
 
-  public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition) {
-    return new UserTaskActivityBehavior(taskDefinition);
+  @Override
+  public UserTaskActivityBehavior createUserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask) {
+    return new UserTaskActivityBehavior(expressionManager, userTask);
   }
 
   // Service task

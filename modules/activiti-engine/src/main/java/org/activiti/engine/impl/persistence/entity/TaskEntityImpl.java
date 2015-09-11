@@ -30,7 +30,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -75,7 +74,6 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected String processDefinitionId;
 
-  protected TaskDefinition taskDefinition;
   protected String taskDefinitionKey;
   protected String formKey;
 

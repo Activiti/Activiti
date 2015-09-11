@@ -206,21 +206,6 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     assertEquals("This is really good process documentation!", processDefinition.getDescription());
   }
 
-  public void testDeployInvalidExpression() {
-    // ACT-1391: Deploying a process with invalid expressions inside should
-    // cause the deployment to fail, since
-    // the process is not deployed and useless...
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testInvalidExpression.bpmn20.xml").deploy();
-
-      fail("Expected exception when deploying process with invalid expression.");
-    } catch (ActivitiException expected) {
-      // Check if no deployments are made
-      assertEquals(0, repositoryService.createDeploymentQuery().count());
-      assertTrue(expected.getMessage().startsWith("Error parsing XML"));
-    }
-  }
-
   public void testDeploySameFileTwiceForDifferentTenantId() {
     String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
     repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").tenantId("Tenant_A").deploy();

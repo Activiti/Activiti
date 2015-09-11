@@ -19,9 +19,8 @@ import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.Activiti5Util;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.impl.util.FormHandlerUtil;
 
 /**
  * @author Tom Baeyens
@@ -54,10 +53,10 @@ public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
     }
     
     commandContext.getHistoryManager().recordFormPropertiesSubmitted(task.getExecution(), properties, taskId);
+    
+    TaskFormHandler taskFormHandler = FormHandlerUtil.getTaskFormHandlder(task);
 
-    if (task.getProcessDefinitionId() != null) {
-      TaskDefinition taskDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getProcessDefinitionId()).getTaskDefinitions().get(task.getTaskDefinitionKey());
-      TaskFormHandler taskFormHandler = taskDefinition.getTaskFormHandler();
+    if (taskFormHandler != null) {
       taskFormHandler.submitFormProperties(properties, task.getExecution());
 
       if (completeTask) {

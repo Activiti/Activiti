@@ -15,6 +15,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -34,7 +35,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
   protected List<EventListener> eventListeners = new ArrayList<EventListener>();
-
+  
   // Added during process definition parsing
   protected FlowElement initialFlowElement;
 
@@ -380,5 +381,5 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public void setInitialFlowElement(FlowElement initialFlowElement) {
     this.initialFlowElement = initialFlowElement;
   }
-
+  
 }

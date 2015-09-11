@@ -17,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -31,7 +35,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.task.IdentityLinkType;
@@ -236,30 +239,44 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   public void fireTaskListenerEvent(TaskEntity taskEntity, String taskEventName) {
     
     if (taskEntity.getProcessDefinitionId() != null) {
-      TaskDefinition taskDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(taskEntity.getProcessDefinitionId())
-          .getTaskDefinitions().get(taskEntity.getTaskDefinitionKey());
       
-      if (taskDefinition != null) {
-      
-        if (taskDefinition != null) {
-          List<TaskListener> taskEventListeners = taskDefinition.getTaskListener(taskEventName);
-          if (taskEventListeners != null) {
-            for (TaskListener taskListener : taskEventListeners) {
-              ExecutionEntity execution = taskEntity.getExecution();
-              if (execution != null) {
-                taskEntity.setEventName(taskEventName);
-              }
-              try {
-                getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask) taskEntity));
-              } catch (Exception e) {
-                throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
-              }
+      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(taskEntity.getProcessDefinitionId());
+      FlowElement flowElement = process.getFlowElement(taskEntity.getTaskDefinitionKey());
+      if (flowElement != null && flowElement instanceof UserTask) {
+        UserTask userTask = (UserTask) flowElement;
+        for (ActivitiListener activitiListener : userTask.getTaskListeners()) {
+          String event = activitiListener.getEvent();
+          if (event.equals(taskEventName) || event.equals(TaskListener.EVENTNAME_ALL_EVENTS)) {
+            TaskListener taskListener = createTaskListener(activitiListener, taskEventName);
+            ExecutionEntity execution = taskEntity.getExecution();
+            if (execution != null) {
+              taskEntity.setEventName(taskEventName);
+            }
+            try {
+              getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask) taskEntity));
+            } catch (Exception e) {
+              throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
             }
           }
         }
-        
       }
+        
     }
+  }
+  
+  protected TaskListener createTaskListener(ActivitiListener activitiListener, String taskId) {
+    TaskListener taskListener = null;
+
+    if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+      taskListener = getProcessEngineConfiguration().getListenerFactory().createClassDelegateTaskListener(activitiListener);
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+      taskListener = getProcessEngineConfiguration().getListenerFactory().createExpressionTaskListener(activitiListener);
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+      taskListener = getProcessEngineConfiguration().getListenerFactory().createDelegateExpressionTaskListener(activitiListener);
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
+      taskListener = (TaskListener) activitiListener.getInstance();
+    }
+    return taskListener;
   }
 
   @Override

@@ -13,9 +13,10 @@ package org.activiti.crystalball.simulator.impl.bpmn.parser.handler;
  * limitations under the License.
  */
 
+import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 
@@ -36,18 +37,14 @@ public class AddListenerUserTaskParseHandler extends UserTaskParseHandler {
 
   protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
     super.executeParse(bpmnParse, userTask);
-
-//    ScopeImpl scope = bpmnParse.getCurrentScope();
-//    ProcessDefinitionImpl processDefinition = scope.getProcessDefinition();
-//    ActivityImpl activity = processDefinition.findActivity(userTask.getId());
-//
-//    SimulatorParserUtils.setSimulationBehavior(scope, userTask);
-//
-//    UserTaskActivityBehavior userTaskActivity = (UserTaskActivityBehavior) activity.getActivityBehavior();
     
-    UserTaskActivityBehavior userTaskActivity = (UserTaskActivityBehavior) userTask.getBehavior();
+    ActivitiListener listener = new ActivitiListener();
+    listener.setEvent(eventName);
+    listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_INSTANCE);
+    listener.setInstance(taskListener);
+    userTask.getTaskListeners().add(listener);
     
-    userTaskActivity.getTaskDefinition().addTaskListener(eventName, taskListener);
 
   }
+  
 }

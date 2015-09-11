@@ -27,7 +27,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.task.TaskDefinition;
 
 /**
  * @author Joram Barrez
@@ -50,7 +49,6 @@ public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Ser
   protected Integer historyLevel;
   protected String diagramResourceName;
   protected boolean isGraphicalNotationDefined;
-  protected Map<String, TaskDefinition> taskDefinitions;
   protected Map<String, Object> variables;
   protected boolean hasStartFormKey;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
@@ -162,14 +160,6 @@ public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Ser
 
   public void setHistoryLevel(Integer historyLevel) {
     this.historyLevel = historyLevel;
-  }
-
-  public Map<String, TaskDefinition> getTaskDefinitions() {
-    return taskDefinitions;
-  }
-
-  public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
-    this.taskDefinitions = taskDefinitions;
   }
 
   public Map<String, Object> getVariables() {

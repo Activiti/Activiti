@@ -24,8 +24,7 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.task.Task;
 
 /**
@@ -54,18 +53,9 @@ public class GetRenderedTaskFormCmd implements Command<Object>, Serializable {
       throw new ActivitiObjectNotFoundException("Task '" + taskId + "' not found", Task.class);
     }
     
-    if (task.getProcessDefinitionId() != null) {
-      TaskDefinition taskDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getProcessDefinitionId()).getTaskDefinitions().get(task.getTaskDefinitionKey()); 
-  
-      if (taskDefinition == null) {
-        throw new ActivitiException("Task form definition for '" + taskId + "' not found");
-      }
-  
-      TaskFormHandler taskFormHandler = taskDefinition.getTaskFormHandler();
-      if (taskFormHandler == null) {
-        return null;
-      }
-  
+    TaskFormHandler taskFormHandler = FormHandlerUtil.getTaskFormHandlder(task);
+    if (taskFormHandler != null) {
+    
       FormEngine formEngine = commandContext.getProcessEngineConfiguration().getFormEngines().get(formEngineName);
   
       if (formEngine == null) {

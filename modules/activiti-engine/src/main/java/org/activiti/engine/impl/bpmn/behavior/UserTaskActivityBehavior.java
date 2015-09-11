@@ -17,9 +17,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -31,11 +30,12 @@ import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.task.TaskDefinition;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,42 +49,44 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskActivityBehavior.class);
+  
+  protected ExpressionManager expressionManager;
+  protected UserTask userTask;
 
-  protected TaskDefinition taskDefinition;
-
-  public UserTaskActivityBehavior(TaskDefinition taskDefinition) {
-    this.taskDefinition = taskDefinition;
+  public UserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask) {
+    this.expressionManager = expressionManager;
+    this.userTask = userTask;
   }
 
   public void execute(DelegateExecution execution) {
     TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
     task.setExecution((ExecutionEntity) execution);
-    task.setTaskDefinitionKey(taskDefinition.getKey());
+    task.setTaskDefinitionKey(userTask.getId());
 
-    if (taskDefinition.getNameExpression() != null) {
+    if (StringUtils.isNotEmpty(userTask.getName())) {
       String name = null;
       try {
-        name = (String) taskDefinition.getNameExpression().getValue(execution);
+        name = (String) expressionManager.createExpression(userTask.getName()).getValue(execution);
       } catch (ActivitiException e) {
-        name = taskDefinition.getNameExpression().getExpressionText();
+        name = userTask.getName();
         LOGGER.warn("property not found in task name expression " + e.getMessage());
       }
       task.setName(name);
     }
-
-    if (taskDefinition.getDescriptionExpression() != null) {
+    
+    if (StringUtils.isNotEmpty(userTask.getDocumentation())) {
       String description = null;
       try {
-        description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
+        description = (String) expressionManager.createExpression(userTask.getDocumentation()).getValue(execution);
       } catch (ActivitiException e) {
-        description = taskDefinition.getDescriptionExpression().getExpressionText();
+        description = userTask.getDocumentation();
         LOGGER.warn("property not found in task description expression " + e.getMessage());
       }
       task.setDescription(description);
     }
 
-    if (taskDefinition.getDueDateExpression() != null) {
-      Object dueDate = taskDefinition.getDueDateExpression().getValue(execution);
+    if (StringUtils.isNotEmpty(userTask.getDueDate())) {
+      Object dueDate = expressionManager.createExpression(userTask.getDueDate()).getValue(execution);
       if (dueDate != null) {
         if (dueDate instanceof Date) {
           task.setDueDate((Date) dueDate);
@@ -92,13 +94,13 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(DueDateBusinessCalendar.NAME);
           task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
         } else {
-          throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + taskDefinition.getDueDateExpression().getExpressionText());
+          throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + userTask.getDueDate());
         }
       }
     }
-
-    if (taskDefinition.getPriorityExpression() != null) {
-      final Object priority = taskDefinition.getPriorityExpression().getValue(execution);
+    
+    if (StringUtils.isNotEmpty(userTask.getPriority())) {
+      final Object priority = expressionManager.createExpression(userTask.getPriority()).getValue(execution);
       if (priority != null) {
         if (priority instanceof String) {
           try {
@@ -109,29 +111,29 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         } else if (priority instanceof Number) {
           task.setPriority(((Number) priority).intValue());
         } else {
-          throw new ActivitiIllegalArgumentException("Priority expression does not resolve to a number: " + taskDefinition.getPriorityExpression().getExpressionText());
+          throw new ActivitiIllegalArgumentException("Priority expression does not resolve to a number: " + userTask.getPriority());
         }
       }
     }
 
-    if (taskDefinition.getCategoryExpression() != null) {
-      final Object category = taskDefinition.getCategoryExpression().getValue(execution);
+    if (StringUtils.isNotEmpty(userTask.getCategory())) {
+      final Object category = expressionManager.createExpression(userTask.getCategory()).getValue(execution);
       if (category != null) {
         if (category instanceof String) {
           task.setCategory((String) category);
         } else {
-          throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + taskDefinition.getCategoryExpression().getExpressionText());
+          throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + userTask.getCategory());
         }
       }
     }
-
-    if (taskDefinition.getFormKeyExpression() != null) {
-      final Object formKey = taskDefinition.getFormKeyExpression().getValue(execution);
+    
+    if (StringUtils.isNotEmpty(userTask.getFormKey())) {
+      final Object formKey = expressionManager.createExpression(userTask.getFormKey()).getValue(execution);
       if (formKey != null) {
         if (formKey instanceof String) {
           task.setFormKey((String) formKey);
         } else {
-          throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + taskDefinition.getFormKeyExpression().getExpressionText());
+          throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + userTask.getFormKey());
         }
       }
     }
@@ -146,11 +148,13 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     Context.getCommandContext().getTaskEntityManager().update(task);
     Context.getCommandContext().getTaskEntityManager().fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
 
-    Expression skipExpression = taskDefinition.getSkipExpression();
-    if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
-      CommandContext commandContext = Context.getCommandContext();
-      commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
-      leave(execution);
+    if (StringUtils.isNotEmpty(userTask.getSkipExpression())) {
+      Expression skipExpression = expressionManager.createExpression(userTask.getSkipExpression());
+      if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
+        CommandContext commandContext = Context.getCommandContext();
+        commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
+        leave(execution);
+      }
     }
   }
 
@@ -169,8 +173,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(TaskEntity task, DelegateExecution execution) {
-    if (taskDefinition.getAssigneeExpression() != null) {
-      Object assigneeExpressionValue = taskDefinition.getAssigneeExpression().getValue(execution);
+    
+    if (StringUtils.isNotEmpty(userTask.getAssignee())) {
+      Object assigneeExpressionValue = expressionManager.createExpression(userTask.getAssignee()).getValue(execution);
       String assigneeValue = null;
       if (assigneeExpressionValue != null) {
         assigneeValue = assigneeExpressionValue.toString();
@@ -179,8 +184,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       Context.getCommandContext().getTaskEntityManager().update(task);
     }
 
-    if (taskDefinition.getOwnerExpression() != null) {
-      Object ownerExpressionValue = taskDefinition.getOwnerExpression().getValue(execution);
+    if (StringUtils.isNotEmpty(userTask.getOwner())) {
+      Object ownerExpressionValue = expressionManager.createExpression(userTask.getOwner()).getValue(execution);
       String ownerValue = null;
       if (ownerExpressionValue != null) {
         ownerValue = ownerExpressionValue.toString();
@@ -189,8 +194,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       Context.getCommandContext().getTaskEntityManager().update(task);
     }
 
-    if (!taskDefinition.getCandidateGroupIdExpressions().isEmpty()) {
-      for (Expression groupIdExpr : taskDefinition.getCandidateGroupIdExpressions()) {
+    if (userTask.getCandidateGroups() != null && !userTask.getCandidateGroups().isEmpty()) {
+      for (String candidateGroup : userTask.getCandidateGroups()) {
+        Expression groupIdExpr = expressionManager.createExpression(candidateGroup);
         Object value = groupIdExpr.getValue(execution);
         if (value instanceof String) {
           List<String> candidates = extractCandidates((String) value);
@@ -203,8 +209,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
 
-    if (!taskDefinition.getCandidateUserIdExpressions().isEmpty()) {
-      for (Expression userIdExpr : taskDefinition.getCandidateUserIdExpressions()) {
+    if (userTask.getCandidateUsers() != null && !userTask.getCandidateUsers().isEmpty()) {
+      for (String candidateUser : userTask.getCandidateUsers()) {
+        Expression userIdExpr = expressionManager.createExpression(candidateUser);
         Object value = userIdExpr.getValue(execution);
         if (value instanceof String) {
           List<String> candidates = extractCandidates((String) value);
@@ -216,50 +223,58 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         }
       }
     }
-
-    if (!taskDefinition.getCustomUserIdentityLinkExpressions().isEmpty()) {
-      Map<String, Set<Expression>> identityLinks = taskDefinition.getCustomUserIdentityLinkExpressions();
-      for (String identityLinkType : identityLinks.keySet()) {
-        for (Expression idExpression : identityLinks.get(identityLinkType)) {
+    
+    if (userTask.getCustomUserIdentityLinks() != null && !userTask.getCustomUserIdentityLinks().isEmpty()) {
+      
+      for (String customUserIdentityLinkType : userTask.getCustomUserIdentityLinks().keySet()) {
+        for (String userIdentityLink : userTask.getCustomUserIdentityLinks().get(customUserIdentityLinkType)) {
+          Expression idExpression = expressionManager.createExpression(userIdentityLink);
           Object value = idExpression.getValue(execution);
           if (value instanceof String) {
             List<String> userIds = extractCandidates((String) value);
             for (String userId : userIds) {
-              task.addUserIdentityLink(userId, identityLinkType);
+              task.addUserIdentityLink(userId, customUserIdentityLinkType);
             }
           } else if (value instanceof Collection) {
             Iterator userIdSet = ((Collection) value).iterator();
             while (userIdSet.hasNext()) {
-              task.addUserIdentityLink((String) userIdSet.next(), identityLinkType);
+              task.addUserIdentityLink((String) userIdSet.next(), customUserIdentityLinkType);
             }
           } else {
             throw new ActivitiException("Expression did not resolve to a string or collection of strings");
           }
+          
         }
       }
+      
     }
 
-    if (!taskDefinition.getCustomGroupIdentityLinkExpressions().isEmpty()) {
-      Map<String, Set<Expression>> identityLinks = taskDefinition.getCustomGroupIdentityLinkExpressions();
-      for (String identityLinkType : identityLinks.keySet()) {
-        for (Expression idExpression : identityLinks.get(identityLinkType)) {
+    if (userTask.getCustomGroupIdentityLinks() != null && !userTask.getCustomGroupIdentityLinks().isEmpty()) {
+      
+      for (String customGroupIdentityLinkType : userTask.getCustomGroupIdentityLinks().keySet()) {
+        for (String groupIdentityLink : userTask.getCustomGroupIdentityLinks().get(customGroupIdentityLinkType)) {
+          
+          Expression idExpression = expressionManager.createExpression(groupIdentityLink);
           Object value = idExpression.getValue(execution);
           if (value instanceof String) {
             List<String> groupIds = extractCandidates((String) value);
             for (String groupId : groupIds) {
-              task.addGroupIdentityLink(groupId, identityLinkType);
+              task.addGroupIdentityLink(groupId, customGroupIdentityLinkType);
             }
           } else if (value instanceof Collection) {
             Iterator groupIdSet = ((Collection) value).iterator();
             while (groupIdSet.hasNext()) {
-              task.addGroupIdentityLink((String) groupIdSet.next(), identityLinkType);
+              task.addGroupIdentityLink((String) groupIdSet.next(), customGroupIdentityLinkType);
             }
           } else {
             throw new ActivitiException("Expression did not resolve to a string or collection of strings");
           }
+          
         }
       }
+      
     }
+    
   }
 
   /**
@@ -270,13 +285,6 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
    */
   protected List<String> extractCandidates(String str) {
     return Arrays.asList(str.split("[\\s]*,[\\s]*"));
-  }
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
-
-  public TaskDefinition getTaskDefinition() {
-    return taskDefinition;
   }
 
 }

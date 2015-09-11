@@ -86,7 +86,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.el.ExpressionManager;
 
 /**
  * Factory class used by the {@link BpmnParser} and {@link BpmnParse} to instantiate the behaviour classes. For example when parsing an exclusive gateway, this factory will be requested to create a
@@ -115,7 +115,7 @@ public interface ActivityBehaviorFactory {
 
   public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask);
 
-  public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition);
+  public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask);
 
   public abstract ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask);
 

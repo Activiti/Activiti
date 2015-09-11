@@ -37,8 +37,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.task.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -610,24 +609,17 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
         if (taskDefinitionKey != null) {
           TaskEntity taskEntity =  getTaskEntityManager().findById(taskId);
-
-          if (taskEntity.getProcessDefinitionId() != null) {
-            TaskDefinition taskDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(taskEntity.getProcessDefinitionId())
-                .getTaskDefinitions().get(taskEntity.getTaskDefinitionKey());
-            
-            if (taskDefinition != null) {
-              TaskFormHandler taskFormHandler = taskDefinition.getTaskFormHandler();
-              if (taskFormHandler != null) {
-                if (taskFormHandler.getFormKey() != null) {
-                  Object formValue = taskFormHandler.getFormKey().getValue(taskEntity.getExecution());
-                  if (formValue != null) {
-                    historicTaskInstance.setFormKey(formValue.toString());
-                  }
-                }
+          
+          TaskFormHandler taskFormHandler = FormHandlerUtil.getTaskFormHandlder(taskEntity);
+          if (taskFormHandler != null) {
+            if (taskFormHandler.getFormKey() != null) {
+              Object formValue = taskFormHandler.getFormKey().getValue(taskEntity.getExecution());
+              if (formValue != null) {
+                historicTaskInstance.setFormKey(formValue.toString());
               }
             }
           }
-          
+
         }
       }
     }

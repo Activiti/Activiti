@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +60,6 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     currentProcessDefinition.setName(process.getName());
     currentProcessDefinition.setCategory(bpmnParse.getBpmnModel().getTargetNamespace());
     currentProcessDefinition.setDescription(process.getDocumentation());
-    currentProcessDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     currentProcessDefinition.setDeploymentId(bpmnParse.getDeployment().getId());
     
     if (bpmnParse.getDeployment().getEngineVersion() != null) {

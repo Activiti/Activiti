@@ -17,11 +17,16 @@ import java.util.List;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.DefaultStartFormHandler;
+import org.activiti.engine.impl.form.DefaultTaskFormHandler;
 import org.activiti.engine.impl.form.StartFormHandler;
+import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
  * @author Joram Barrez
@@ -48,5 +53,33 @@ public class FormHandlerUtil {
     return null;
     
   }
+  
+  public static TaskFormHandler getTaskFormHandlder(String processDefinitionId, String taskId) {
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+    FlowElement flowElement = process.getFlowElement(taskId);
+    if (flowElement != null && flowElement instanceof UserTask) {
+      UserTask userTask = (UserTask) flowElement;
+      
+      ProcessDefinitionEntity processDefinitionEntity = 
+          ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+      DeploymentEntity deploymentEntity = Context.getProcessEngineConfiguration()
+          .getDeploymentEntityManager().findById(processDefinitionEntity.getDeploymentId());
+      
+      TaskFormHandler taskFormHandler = new DefaultTaskFormHandler();
+      taskFormHandler.parseConfiguration(userTask.getFormProperties(), userTask.getFormKey(), deploymentEntity, processDefinitionEntity);
+      
+      return taskFormHandler;
+    }
+    
+    return null;
+  }
+  
+  public static TaskFormHandler getTaskFormHandlder(TaskEntity taskEntity) {
+    if (taskEntity.getProcessDefinitionId() != null) {
+      return getTaskFormHandlder(taskEntity.getProcessDefinitionId(), taskEntity.getTaskDefinitionKey());
+    }
+    return null;
+  }
+  
 
 }

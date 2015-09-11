@@ -18,8 +18,8 @@ import org.activiti.engine.impl.form.DefaultFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.FormHandlerUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * Command for retrieving start or task form keys.
@@ -57,17 +57,15 @@ public class GetFormKeyCmd implements Command<String> {
   }
 
   public String execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+    
     DefaultFormHandler formHandler;
     if (taskDefinitionKey == null) {
-      // TODO: Maybe add getFormKey() to FormHandler interface to avoid
-      // the following cast
+      // TODO: Maybe add getFormKey() to FormHandler interface to avoid the following cast
       formHandler = (DefaultFormHandler) FormHandlerUtil.getStartFormHandler(commandContext, processDefinition); 
     } else {
-      TaskDefinition taskDefinition = processDefinition.getTaskDefinitions().get(taskDefinitionKey);
-      // TODO: Maybe add getFormKey() to FormHandler interface to avoid
-      // the following cast
-      formHandler = (DefaultFormHandler) taskDefinition.getTaskFormHandler();
+      // TODO: Maybe add getFormKey() to FormHandler interface to avoid the following cast
+      formHandler = (DefaultFormHandler) FormHandlerUtil.getTaskFormHandlder(processDefinitionId, taskDefinitionKey); 
     }
     String formKey = null;
     if (formHandler.getFormKey() != null) {

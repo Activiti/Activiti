@@ -21,7 +21,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -49,10 +48,6 @@ public interface ProcessDefinitionEntity extends ProcessDefinition, Entity, HasR
   Integer getHistoryLevel();
 
   void setHistoryLevel(Integer historyLevel);
-
-  Map<String, TaskDefinition> getTaskDefinitions();
-
-  void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions);
 
   Map<String, Object> getVariables();
 
