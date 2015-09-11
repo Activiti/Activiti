@@ -516,7 +516,6 @@
 					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<encoding>UTF-8</encoding>
 							<excludes>
 								<exclude>**/*TestCase.java</exclude>
 
