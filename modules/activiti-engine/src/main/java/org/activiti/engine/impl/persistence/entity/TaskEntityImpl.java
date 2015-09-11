@@ -25,19 +25,15 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -56,7 +52,6 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected String owner;
   protected String assignee;
-  protected String initialAssignee;
   protected DelegationState delegationState;
 
   protected String parentTaskId;
@@ -132,19 +127,6 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     }
 
     return persistentState;
-  }
-
-  public void delegate(String userId) {
-    setDelegationState(DelegationState.PENDING);
-    if (getOwner() == null) {
-      setOwner(getAssignee());
-    }
-    setAssignee(userId, true, true);
-  }
-
-  public void resolve() {
-    setDelegationState(DelegationState.RESOLVED);
-    setAssignee(this.owner, true, true);
   }
 
   public int getRevisionNext() {
@@ -311,201 +293,36 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     }
   }
 
-  // special setters (takes care of history) ////////////////////////////////////////////////////////////
-
   public void setName(String taskName) {
-    this.name = taskName;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskNameChange(id, taskName);
-    }
-  }
-
-  /* plain setter for persistence */
-  public void setNameWithoutCascade(String taskName) {
     this.name = taskName;
   }
 
   public void setDescription(String description) {
     this.description = description;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskDescriptionChange(id, description);
-    }
-  }
-
-  /* plain setter for persistence */
-  public void setDescriptionWithoutCascade(String description) {
-    this.description = description;
   }
 
   public void setAssignee(String assignee) {
-    setAssignee(assignee, false, false);
-  }
-
-  public void setAssignee(String assignee, boolean dispatchAssignmentEvent, boolean dispatchUpdateEvent) {
-    CommandContext commandContext = Context.getCommandContext();
-
-    if (assignee == null && this.assignee == null) {
-
-      // ACT-1923: even if assignee is unmodified and null, this should be
-      // stored in history.
-      if (commandContext != null) {
-        commandContext.getHistoryManager().recordTaskAssigneeChange(id, assignee);
-      }
-
-      return;
-    }
     this.assignee = assignee;
-
-    // if there is no command context, then it means that the user is
-    // calling the setAssignee outside a service method. E.g. while creating a new task.
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskAssigneeChange(id, assignee);
-
-      if (assignee != null && processInstanceId != null) {
-        Context.getCommandContext().getIdentityLinkEntityManager().involveUser(getProcessInstance(), assignee, IdentityLinkType.PARTICIPANT);
-      }
-
-      if (!StringUtils.equals(initialAssignee, assignee)) {
-        fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
-        
-        // TODO: this was like this in v5. Not sure if this is the right place?
-        commandContext.getHistoryManager().recordTaskAssignment(this);
-        
-        initialAssignee = assignee;
-      }
-
-      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        if (dispatchAssignmentEvent) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, this));
-        }
-
-        if (dispatchUpdateEvent) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
-        }
-      }
-    }
   }
-
-  /* plain setter for persistence */
-  public void setAssigneeWithoutCascade(String assignee) {
-    this.assignee = assignee;
-
-    // Assign the assignee that was persisted before
-    this.initialAssignee = assignee;
-  }
-
+  
   public void setOwner(String owner) {
-    setOwner(owner, false);
-  }
-
-  public void setOwner(String owner, boolean dispatchUpdateEvent) {
-    if (owner == null && this.owner == null) {
-      return;
-    }
-    // if (owner!=null && owner.equals(this.owner)) {
-    // return;
-    // }
-    this.owner = owner;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskOwnerChange(id, owner);
-
-      if (owner != null && processInstanceId != null) {
-        Context.getCommandContext().getIdentityLinkEntityManager().involveUser(getProcessInstance(), owner, IdentityLinkType.PARTICIPANT);
-      }
-
-      if (dispatchUpdateEvent && commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        if (dispatchUpdateEvent) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
-        }
-      }
-    }
-  }
-
-  /* plain setter for persistence */
-  public void setOwnerWithoutCascade(String owner) {
     this.owner = owner;
   }
 
   public void setDueDate(Date dueDate) {
-    setDueDate(dueDate, false);
-  }
-
-  public void setDueDate(Date dueDate, boolean dispatchUpdateEvent) {
-    this.dueDate = dueDate;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskDueDateChange(id, dueDate);
-
-      if (dispatchUpdateEvent && commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        if (dispatchUpdateEvent) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
-        }
-      }
-    }
-  }
-
-  public void setDueDateWithoutCascade(Date dueDate) {
     this.dueDate = dueDate;
   }
 
   public void setPriority(int priority) {
-    setPriority(priority, false);
-  }
-
-  public void setPriority(int priority, boolean dispatchUpdateEvent) {
     this.priority = priority;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskPriorityChange(id, priority);
-
-      if (dispatchUpdateEvent && commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        if (dispatchUpdateEvent) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
-        }
-      }
-    }
-  }
-
-  public void setCategoryWithoutCascade(String category) {
-    this.category = category;
   }
 
   public void setCategory(String category) {
     this.category = category;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskCategoryChange(id, category);
-    }
-  }
-
-  public void setPriorityWithoutCascade(int priority) {
-    this.priority = priority;
   }
 
   public void setParentTaskId(String parentTaskId) {
     this.parentTaskId = parentTaskId;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskParentTaskIdChange(id, parentTaskId);
-    }
-  }
-
-  public void setParentTaskIdWithoutCascade(String parentTaskId) {
-    this.parentTaskId = parentTaskId;
-  }
-
-  public void setTaskDefinitionKeyWithoutCascade(String taskDefinitionKey) {
-    this.taskDefinitionKey = taskDefinitionKey;
   }
 
   public String getFormKey() {
@@ -514,37 +331,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setFormKey(String formKey) {
     this.formKey = formKey;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskFormKeyChange(id, formKey);
-    }
   }
 
-  public void setFormKeyWithoutCascade(String formKey) {
-    this.formKey = formKey;
-  }
-
-  public void fireEvent(String taskEventName) {
-    TaskDefinition taskDefinition = getTaskDefinition();
-    if (taskDefinition != null) {
-      List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);
-      if (taskEventListeners != null) {
-        for (TaskListener taskListener : taskEventListeners) {
-          ExecutionEntity execution = getExecution();
-          if (execution != null) {
-            setEventName(taskEventName);
-          }
-          try {
-            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask) this));
-          } catch (Exception e) {
-            throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
-          }
-        }
-      }
-    }
-  }
-  
   // Override from VariableScopeImpl
 
   @Override
@@ -571,26 +359,6 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
       throw new ActivitiException("lazy loading outside command context");
     }
     return commandContext.getVariableInstanceEntityManager().findVariableInstancesByTaskAndNames(id, variableNames);
-  }
-
-  // modified getters and setters ///////////////////////////////////////////////
-
-  public void setTaskDefinition(TaskDefinition taskDefinition) {
-    this.taskDefinition = taskDefinition;
-    this.taskDefinitionKey = taskDefinition.getKey();
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskDefinitionKeyChange(this, taskDefinitionKey);
-    }
-  }
-
-  public TaskDefinition getTaskDefinition() {
-    if (taskDefinition == null && taskDefinitionKey != null) {
-      ProcessDefinitionEntity processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
-      taskDefinition = processDefinition.getTaskDefinitions().get(taskDefinitionKey);
-    }
-    return taskDefinition;
   }
 
   // regular getters and setters ////////////////////////////////////////////////////////
@@ -647,21 +415,12 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return assignee;
   }
   
-  public String getInitialAssignee() {
-    return initialAssignee;
-  }
-
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
 
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
-
-    CommandContext commandContext = Context.getCommandContext();
-    if (commandContext != null) {
-      commandContext.getHistoryManager().recordTaskDefinitionKeyChange(this, taskDefinitionKey);
-    }
   }
 
   public String getEventName() {
@@ -707,7 +466,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.delegationState = delegationState;
   }
 
-  public String getDelegationStateString() {
+  public String getDelegationStateString() { //Needed for Activiti 5 compatibility, not exposed in terface
     return (delegationState != null ? delegationState.toString() : null);
   }
 

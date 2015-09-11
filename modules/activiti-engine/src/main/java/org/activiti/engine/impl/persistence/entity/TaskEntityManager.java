@@ -37,7 +37,7 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
   List<Task> findTasksByParentTaskId(String parentTaskId);
 
   TaskEntity update(TaskEntity taskEntity);
-
+  
   void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
 
   void deleteTask(String taskId, String deleteReason, boolean cascade);
@@ -45,5 +45,7 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
   void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
 
   void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
+
+  void fireTaskListenerEvent(TaskEntity taskEntity, String taskEventName);
 
 }

@@ -1554,7 +1554,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       resolverFactories.add(new BeansResolverFactory());
     }
     if (scriptingEngines == null) {
-      scriptingEngines = new ScriptingEngines(new ScriptBindingsFactory(resolverFactories));
+      scriptingEngines = new ScriptingEngines(new ScriptBindingsFactory(this, resolverFactories));
     }
   }
 

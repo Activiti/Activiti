@@ -20,7 +20,6 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.Task;
 
 /**
@@ -34,72 +33,39 @@ public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, H
   String DELETE_REASON_COMPLETED = "completed";
   String DELETE_REASON_DELETED = "deleted";
 
-  void resolve();
-
-  void forceUpdate();
-  
   ExecutionEntity getExecution();
+  
+  void setExecutionId(String executionId);
+  
+  void setExecution(ExecutionEntity execution);
 
   List<IdentityLinkEntity> getIdentityLinks();
 
   void setExecutionVariables(Map<String, Object> parameters);
 
-  void setAssignee(String assignee, boolean dispatchAssignmentEvent, boolean dispatchUpdateEvent);
-
-  void setOwner(String owner, boolean dispatchUpdateEvent);
-
-  void setDueDate(Date dueDate, boolean dispatchUpdateEvent);
-
-  void setPriority(int priority, boolean dispatchUpdateEvent);
-
-  void setCategoryWithoutCascade(String category);
-
-  void setParentTaskIdWithoutCascade(String parentTaskId);
-
-  void setFormKeyWithoutCascade(String formKey);
-
-  void setTaskDefinition(TaskDefinition taskDefinition);
-
-  TaskDefinition getTaskDefinition();
-
   void setCreateTime(Date createTime);
 
   void setProcessDefinitionId(String processDefinitionId);
 
-  String getInitialAssignee();
-
-  void setTaskDefinitionKey(String taskDefinitionKey);
-
   void setEventName(String eventName);
-
-  void setExecutionId(String executionId);
 
   ExecutionEntity getProcessInstance();
 
-  void setProcessInstance(ExecutionEntity processInstance);
-
-  void setExecution(ExecutionEntity execution);
-
   void setProcessInstanceId(String processInstanceId);
-
-  String getDelegationStateString();
-
-  void setDelegationStateString(String delegationStateString);
-
-  boolean isDeleted();
-
-  void setDeleted(boolean isDeleted);
-
-  Map<String, VariableInstanceEntity> getVariableInstances();
 
   int getSuspensionState();
 
   void setSuspensionState(int suspensionState);
-
-  List<VariableInstanceEntity> getQueryVariables();
-
-  void setQueryVariables(List<VariableInstanceEntity> queryVariables);
   
-  void fireEvent(String taskEventName);
+  void setTaskDefinitionKey(String taskDefinitionKey);
+  
+  Map<String, VariableInstanceEntity> getVariableInstances();
+
+  void forceUpdate();
+  
+  boolean isDeleted();
+  
+  void setDeleted(boolean isDeleted);
+
   
 }

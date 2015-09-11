@@ -17,9 +17,11 @@ import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.DelegationState;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
 
@@ -36,7 +38,11 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
     if (variables != null) {
       task.setVariables(variables);
     }
-    task.resolve();
+    
+    task.setDelegationState(DelegationState.RESOLVED);
+    task.setAssignee(task.getOwner());
+    commandContext.getTaskEntityManager().update(task);
+    
     return null;
   }
 

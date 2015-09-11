@@ -103,10 +103,6 @@ public interface ExecutionEntity extends VariableScope, DelegateExecution, Execu
 
   void setLockTime(Date lockTime);
 
-  List<VariableInstanceEntity> getQueryVariables();
-
-  void setQueryVariables(List<VariableInstanceEntity> queryVariables);
-
   boolean isDeleted();
 
   void setDeleted(boolean isDeleted);

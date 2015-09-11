@@ -13,6 +13,7 @@
 package org.activiti.engine.test.mock;
 
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.scripting.Resolver;
 import org.activiti.engine.impl.scripting.ResolverFactory;
 
@@ -51,7 +52,7 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
  */
 public class MockResolverFactory implements ResolverFactory {
   @Override
-  public Resolver createResolver(VariableScope variableScope) {
+  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
     return new Resolver() {
 
       @Override

@@ -22,10 +22,13 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
 
@@ -42,17 +45,19 @@ public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
       throw new ActivitiObjectNotFoundException("No task found for taskId '" + taskId + "'", Task.class);
     }
 
-    if (task.getTaskDefinition() != null) {
-      TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-      if (taskFormHandler == null) {
-        throw new ActivitiException("No taskFormHandler specified for task '" + taskId + "'");
-      }
+    if (task.getProcessDefinitionId() != null) {
+      TaskDefinition taskDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getProcessDefinitionId()).getTaskDefinitions().get(task.getTaskDefinitionKey());
+      if (taskDefinition != null) {
+        TaskFormHandler taskFormHandler = taskDefinition.getTaskFormHandler();
+        if (taskFormHandler == null) {
+          throw new ActivitiException("No taskFormHandler specified for task '" + taskId + "'");
+        }
 
-      return taskFormHandler.createTaskForm(task);
-    } else {
-      // Standalone task, no TaskFormData available
-      return null;
+        return taskFormHandler.createTaskForm(task);
+      }
     }
+    
+    return null;
   }
 
 }

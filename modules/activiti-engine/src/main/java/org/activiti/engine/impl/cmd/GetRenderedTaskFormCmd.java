@@ -24,10 +24,13 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class GetRenderedTaskFormCmd implements Command<Object>, Serializable {
 
@@ -50,24 +53,30 @@ public class GetRenderedTaskFormCmd implements Command<Object>, Serializable {
     if (task == null) {
       throw new ActivitiObjectNotFoundException("Task '" + taskId + "' not found", Task.class);
     }
-
-    if (task.getTaskDefinition() == null) {
-      throw new ActivitiException("Task form definition for '" + taskId + "' not found");
+    
+    if (task.getProcessDefinitionId() != null) {
+      TaskDefinition taskDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getProcessDefinitionId()).getTaskDefinitions().get(task.getTaskDefinitionKey()); 
+  
+      if (taskDefinition == null) {
+        throw new ActivitiException("Task form definition for '" + taskId + "' not found");
+      }
+  
+      TaskFormHandler taskFormHandler = taskDefinition.getTaskFormHandler();
+      if (taskFormHandler == null) {
+        return null;
+      }
+  
+      FormEngine formEngine = commandContext.getProcessEngineConfiguration().getFormEngines().get(formEngineName);
+  
+      if (formEngine == null) {
+        throw new ActivitiException("No formEngine '" + formEngineName + "' defined process engine configuration");
+      }
+  
+      TaskFormData taskForm = taskFormHandler.createTaskForm(task);
+  
+      return formEngine.renderTaskForm(taskForm);
     }
-
-    TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    if (taskFormHandler == null) {
-      return null;
-    }
-
-    FormEngine formEngine = commandContext.getProcessEngineConfiguration().getFormEngines().get(formEngineName);
-
-    if (formEngine == null) {
-      throw new ActivitiException("No formEngine '" + formEngineName + "' defined process engine configuration");
-    }
-
-    TaskFormData taskForm = taskFormHandler.createTaskForm(task);
-
-    return formEngine.renderTaskForm(taskForm);
+    
+    return null;
   }
 }

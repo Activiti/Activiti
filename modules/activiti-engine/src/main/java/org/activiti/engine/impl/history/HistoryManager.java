@@ -149,7 +149,7 @@ public interface HistoryManager {
   /**
    * Record task definition key change, if audit history is enabled.
    */
-  void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey);
+  void recordTaskDefinitionKeyChange(String taskId, String taskDefinitionKey);
 
   /**
    * Record a variable has been created, if audit history is enabled.

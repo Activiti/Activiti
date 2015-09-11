@@ -26,6 +26,7 @@
                   } else {
                      task.setCategory('rejected');
                   }
+                  taskService.saveTask(task);
                   
                 ]]>  
                 </activiti:string>

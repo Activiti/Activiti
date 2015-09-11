@@ -450,12 +450,21 @@ public class DbSqlSession implements Session {
     return result;
   }
 
-  @SuppressWarnings("unchecked")
   public <T extends Entity> T selectById(Class<T> entityClass, String id) {
-    T entity = entityCache.findInCache(entityClass, id);
-    if (entity != null) {
-      return entity;
+    return selectById(entityClass, id, true);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T extends Entity> T selectById(Class<T> entityClass, String id, boolean checkCache) {
+    T entity = null;
+    
+    if (checkCache) {
+      entity = entityCache.findInCache(entityClass, id);
+      if (entity != null) {
+        return entity;
+      }
     }
+    
     String selectStatement = dbSqlSessionFactory.getSelectStatement(entityClass);
     selectStatement = dbSqlSessionFactory.mapStatement(selectStatement);
     entity = (T) sqlSession.selectOne(selectStatement, id);

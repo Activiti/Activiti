@@ -15,9 +15,11 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.DelegationState;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
 
@@ -30,7 +32,12 @@ public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
   }
 
   protected Object execute(CommandContext commandContext, TaskEntity task) {
-    task.delegate(userId);
+    task.setDelegationState(DelegationState.PENDING);
+    if (task.getOwner() == null) {
+      task.setOwner(task.getAssignee());
+    }
+    task.setAssignee(userId);
+    commandContext.getTaskEntityManager().update(task);
     return null;
   }
 

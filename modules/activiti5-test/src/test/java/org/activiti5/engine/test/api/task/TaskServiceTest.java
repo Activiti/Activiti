@@ -293,8 +293,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   public void testTaskDelegation() {
     Task task = taskService.newTask();
     task.setOwner("johndoe");
-    task.delegate("joesmoe");
     taskService.saveTask(task);
+    taskService.delegateTask(task.getId(), "joesmoe");
     String taskId = task.getId();
 
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -1087,8 +1087,8 @@ public void testCompleteWithParametersTask2() {
   public void testSetDelegationState() {
     Task task = taskService.newTask();
     task.setOwner("wuzh");
-    task.delegate("other");
     taskService.saveTask(task);
+    taskService.delegateTask(task.getId(), "other");
     String taskId = task.getId();
 
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -1382,7 +1382,7 @@ public void testCompleteWithParametersTask2() {
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("First task", task.getName());
 
-    task.delegate("johndoe");
+    taskService.delegateTask(task.getId(), "johndoe");
 
     // Resolve first task
     Map<String, Object> taskParams = new HashMap<String, Object>();

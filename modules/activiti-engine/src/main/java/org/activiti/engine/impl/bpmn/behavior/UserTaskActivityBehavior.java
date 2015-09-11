@@ -59,7 +59,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   public void execute(DelegateExecution execution) {
     TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
     task.setExecution((ExecutionEntity) execution);
-    task.setTaskDefinition(taskDefinition);
+    task.setTaskDefinitionKey(taskDefinition.getKey());
 
     if (taskDefinition.getNameExpression() != null) {
       String name = null;
@@ -142,8 +142,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
-
-    task.fireEvent(TaskListener.EVENTNAME_CREATE);
+    
+    Context.getCommandContext().getTaskEntityManager().update(task);
+    Context.getCommandContext().getTaskEntityManager().fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
 
     Expression skipExpression = taskDefinition.getSkipExpression();
     if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
@@ -174,7 +175,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (assigneeExpressionValue != null) {
         assigneeValue = assigneeExpressionValue.toString();
       }
-      task.setAssignee(assigneeValue, true, false);
+      task.setAssignee(assigneeValue);
+      Context.getCommandContext().getTaskEntityManager().update(task);
     }
 
     if (taskDefinition.getOwnerExpression() != null) {
@@ -184,6 +186,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         ownerValue = ownerExpressionValue.toString();
       }
       task.setOwner(ownerValue);
+      Context.getCommandContext().getTaskEntityManager().update(task);
     }
 
     if (!taskDefinition.getCandidateGroupIdExpressions().isEmpty()) {

@@ -40,7 +40,8 @@ public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
       return null;
     }
     
-    task.setDueDate(dueDate, true);
+    task.setDueDate(dueDate);
+    commandContext.getTaskEntityManager().update(task);
     return null;
   }
 

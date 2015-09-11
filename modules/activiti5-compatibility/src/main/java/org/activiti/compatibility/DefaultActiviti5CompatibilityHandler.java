@@ -45,6 +45,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
@@ -853,12 +854,9 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   protected org.activiti5.engine.impl.persistence.entity.TaskEntity convertToActiviti5TaskEntity(TaskEntity task) {
     org.activiti5.engine.impl.persistence.entity.TaskEntity activiti5Task = new org.activiti5.engine.impl.persistence.entity.TaskEntity();
     activiti5Task.setAssigneeWithoutCascade(task.getAssignee());
-    if (task.getInitialAssignee() != null) {
-      activiti5Task.setInitialAssignee(task.getInitialAssignee());
-    }
     activiti5Task.setCategoryWithoutCascade(task.getCategory());
     activiti5Task.setCreateTime(task.getCreateTime());
-    activiti5Task.setDelegationStateString(task.getDelegationStateString());
+    activiti5Task.setDelegationStateString(((TaskEntityImpl)task).getDelegationStateString());
     activiti5Task.setDescriptionWithoutCascade(task.getDescription());
     activiti5Task.setDueDateWithoutCascade(task.getDueDate());
     activiti5Task.setExecutionId(task.getExecutionId());

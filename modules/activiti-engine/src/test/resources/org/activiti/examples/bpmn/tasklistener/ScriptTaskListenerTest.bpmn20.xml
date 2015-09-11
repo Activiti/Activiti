@@ -12,6 +12,7 @@
             	def bar = "BAR";  // local variable
             	task.getExecution().setVariable('foo', "FOO"); // pushes variable to execution context
                 task.setOwner("kermit"); // test access to task instance
+                taskService.saveTask(task);
             	bar // implicit return value
             </activiti:string>
 					</activiti:field>

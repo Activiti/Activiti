@@ -14,22 +14,25 @@
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
  * @author Tom Baeyens
  */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
+  
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public Resolver createResolver(VariableScope variableScope) {
+  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
+    this.processEngineConfiguration = processEngineConfiguration;
     return this;
   }
 
   public boolean containsKey(Object key) {
-    return Context.getProcessEngineConfiguration().getBeans().containsKey(key);
+    return processEngineConfiguration.getBeans().containsKey(key);
   }
 
   public Object get(Object key) {
-    return Context.getProcessEngineConfiguration().getBeans().get(key);
+    return processEngineConfiguration.getBeans().get(key);
   }
 }
