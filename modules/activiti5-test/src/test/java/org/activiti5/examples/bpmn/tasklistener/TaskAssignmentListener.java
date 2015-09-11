@@ -14,6 +14,7 @@ package org.activiti5.examples.bpmn.tasklistener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
 
 /**

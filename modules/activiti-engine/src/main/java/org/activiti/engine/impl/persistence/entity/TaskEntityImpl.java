@@ -50,6 +50,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected int revision;
 
   protected String owner;
+  protected int assigneeUpdatedCount; // needed for v5 compatibility
+  protected String originalAssignee; // needed for v5 compatibility
   protected String assignee;
   protected DelegationState delegationState;
 
@@ -300,7 +302,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   }
 
   public void setAssignee(String assignee) {
+    this.originalAssignee = this.assignee;
     this.assignee = assignee;
+    assigneeUpdatedCount++;
   }
   
   public void setOwner(String owner) {
@@ -411,6 +415,15 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public String getAssignee() {
     return assignee;
+  }
+  
+  public String getOriginalAssignee() {
+    // Don't ask. A stupid hack for v5 compatibility
+    if (assigneeUpdatedCount > 1) {
+      return originalAssignee;
+    } else {
+      return assignee;
+    }
   }
   
   public String getTaskDefinitionKey() {

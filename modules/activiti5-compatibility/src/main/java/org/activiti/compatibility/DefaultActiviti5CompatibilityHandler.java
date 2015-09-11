@@ -854,6 +854,7 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   protected org.activiti5.engine.impl.persistence.entity.TaskEntity convertToActiviti5TaskEntity(TaskEntity task) {
     org.activiti5.engine.impl.persistence.entity.TaskEntity activiti5Task = new org.activiti5.engine.impl.persistence.entity.TaskEntity();
     activiti5Task.setAssigneeWithoutCascade(task.getAssignee());
+    activiti5Task.setInitialAssignee( ((TaskEntityImpl) task).getOriginalAssignee());
     activiti5Task.setCategoryWithoutCascade(task.getCategory());
     activiti5Task.setCreateTime(task.getCreateTime());
     activiti5Task.setDelegationStateString(((TaskEntityImpl)task).getDelegationStateString());
