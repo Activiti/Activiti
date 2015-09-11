@@ -17,6 +17,9 @@ import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author Josh Long
  * @author Joram Barrez
@@ -208,6 +211,7 @@ public class ActivitiProperties {
 	public void setMailServerUseTls(boolean mailServerUseTls) {
 		this.mailServerUseTls = mailServerUseTls;
 	}
+
   public List<String> getCustomMybatisMappers() {
     return customMybatisMappers;
   }
@@ -223,5 +227,4 @@ public class ActivitiProperties {
   public void setCustomMybatisXMLMappers(List<String> customMybatisXMLMappers) {
     this.customMybatisXMLMappers = customMybatisXMLMappers;
   }
-	
 }

@@ -96,6 +96,13 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
+    if (activitiProperties.getCustomMybatisMappers() != null) {
+      conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
+    }
+
+    if (activitiProperties.getCustomMybatisXMLMappers() != null) {
+      conf.setCustomMybatisXMLMappers(new HashSet<String>(activitiProperties.getCustomMybatisXMLMappers()));
+    }
 
     if (activitiProperties.getCustomMybatisMappers() != null) {
       conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
@@ -112,6 +119,19 @@ public abstract class AbstractProcessEngineAutoConfiguration
     return conf;
   }
   
+  private Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
+    Set<Class<?>> mybatisMappers = new HashSet<Class<?>>();
+    for (String customMybatisMapperClassName : customMyBatisMappers) {
+      try {
+        Class customMybatisClass = Class.forName(customMybatisMapperClassName);
+        mybatisMappers.add(customMybatisClass);
+      } catch (ClassNotFoundException e) {
+        throw new IllegalArgumentException("Class " + customMybatisMapperClassName + " has not been found.", e);
+      }
+    }
+    return mybatisMappers;
+  }
+
   private Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
     Set<Class<?>> mybatisMappers = new HashSet<Class<?>>();
     for (String customMybatisMapperClassName : customMyBatisMappers) {
