@@ -14,6 +14,7 @@ package org.activiti.engine.impl.db;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface Entity {
 

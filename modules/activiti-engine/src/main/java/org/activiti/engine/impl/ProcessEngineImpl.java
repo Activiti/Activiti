@@ -74,7 +74,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
 
-    if (processEngineConfiguration.isUsingRelationalDatabase()) {
+    if (processEngineConfiguration.isUsingRelationalDatabase() && processEngineConfiguration.getDatabaseSchemaUpdate() != null) {
       commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
     }
 

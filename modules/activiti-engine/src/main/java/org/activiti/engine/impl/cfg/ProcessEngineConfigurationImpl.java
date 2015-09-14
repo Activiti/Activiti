@@ -902,9 +902,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sqlSessionFactory == null) {
       InputStream inputStream = null;
       try {
-        inputStream = getMyBatisXmlConfigurationSteam();
+        inputStream = getMyBatisXmlConfigurationStream();
 
-        // update the jdbc parameters to the configured ones...
         Environment environment = new Environment("default", transactionFactory, dataSource);
         Reader reader = new InputStreamReader(inputStream);
         Properties properties = new Properties();
@@ -971,7 +970,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return ReflectUtil.getResourceAsStream(resource);
   }
 
-  protected InputStream getMyBatisXmlConfigurationSteam() {
+  protected InputStream getMyBatisXmlConfigurationStream() {
     return getResourceAsStream(DEFAULT_MYBATIS_MAPPING_FILE);
   }
 
@@ -1065,21 +1064,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
       
       if (usingRelationalDatabase) {
-        if (dbSqlSessionFactory == null) {
-          dbSqlSessionFactory = new DbSqlSessionFactory();
-        }
-        dbSqlSessionFactory.setDatabaseType(databaseType);
-        dbSqlSessionFactory.setIdGenerator(idGenerator);
-        dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
-        dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
-        dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
-        dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
-        dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
-        dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
-        dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
-        dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
-        dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
-        addSessionFactory(dbSqlSessionFactory);
+        initDbSqlSessionFactory();
       }
 
       addSessionFactory(new GenericManagerFactory(EntityCache.class, EntityCacheImpl.class));
@@ -1090,6 +1075,28 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         addSessionFactory(sessionFactory);
       }
     }
+  }
+
+  protected void initDbSqlSessionFactory() {
+    if (dbSqlSessionFactory == null) {
+      dbSqlSessionFactory = createDbSqlSessionFactory();
+    }
+    dbSqlSessionFactory.setDatabaseType(databaseType);
+    dbSqlSessionFactory.setIdGenerator(idGenerator);
+    dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
+    dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
+    dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
+    dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+    dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
+    dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
+    dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
+    dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
+    dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
+    addSessionFactory(dbSqlSessionFactory);
+  }
+
+  protected DbSqlSessionFactory createDbSqlSessionFactory() {
+    return new DbSqlSessionFactory();
   }
 
   protected void addSessionFactory(SessionFactory sessionFactory) {

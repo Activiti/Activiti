@@ -33,10 +33,14 @@ public interface DelegateExecution extends VariableScope {
   /** Reference to the overall process instance */
   String getProcessInstanceId();
   
+  /**
+   * The 'root' process instance. When using call activity for example, the processInstance
+   * set will not always be the root. This method returns the topmost process instance.
+   */
   String getRootProcessInstanceId();
 
   /**
-   * The {@link ExecutionListener#EVENTNAME_START event name} in case this execution is passed in for an {@link ExecutionListener}
+   * Will contain the event name in case this execution is passed in for an {@link ExecutionListener}.
    */
   String getEventName();
 
@@ -70,8 +74,14 @@ public interface DelegateExecution extends VariableScope {
    */
   String getTenantId();
   
+  /**
+   * The BPMN element where the execution currently is at. 
+   */
   FlowElement getCurrentFlowElement();
 
+  /**
+   * Change the current BPMN element the execution is at. 
+   */
   void setCurrentFlowElement(FlowElement flowElement);
 
   /* Execution management */
