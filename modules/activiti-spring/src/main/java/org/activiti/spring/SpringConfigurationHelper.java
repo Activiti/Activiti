@@ -32,7 +32,7 @@ class SpringConfigurationHelper {
 
     private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
 
-    private static ProcessEngine buildProcessEngine(URL resource) {
+    public static ProcessEngine buildProcessEngine(URL resource) {
         log.debug("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
 
         ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
