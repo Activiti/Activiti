@@ -14,8 +14,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -31,15 +29,6 @@ public class TimerEntityImpl extends JobEntityImpl implements TimerEntity {
   public TimerEntityImpl() {
     super();
     this.jobType = "timer";
-  }
-
-  public TimerEntityImpl(TimerDeclarationImpl timerDeclaration) {
-    this();
-    jobHandlerType = timerDeclaration.getJobHandlerType();
-    jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
-    isExclusive = timerDeclaration.isExclusive();
-    repeat = timerDeclaration.getRepeat();
-    retries = timerDeclaration.getRetries();
   }
 
   public TimerEntityImpl(TimerEntityImpl te) {
