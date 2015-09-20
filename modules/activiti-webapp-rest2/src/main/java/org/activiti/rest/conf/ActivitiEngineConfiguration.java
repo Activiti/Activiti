@@ -59,7 +59,7 @@ public class ActivitiEngineConfiguration {
 
     return ds;
   }
-
+  
   @Bean(name = "transactionManager")
   public PlatformTransactionManager annotationDrivenTransactionManager() {
     DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
@@ -86,7 +86,7 @@ public class ActivitiEngineConfiguration {
       throw new RuntimeException(e);
     }
   }
-
+  
   @Bean(name = "processEngineConfiguration")
   public ProcessEngineConfigurationImpl processEngineConfiguration() {
     SpringProcessEngineConfiguration processEngineConfiguration = new SpringProcessEngineConfiguration();

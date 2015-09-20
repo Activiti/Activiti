@@ -106,7 +106,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     if (jobExecutor != null && jobExecutor.isActive()) {
       jobExecutor.shutdown();
     }
-
+    
     if (asyncExecutor != null && asyncExecutor.isActive()) {
       asyncExecutor.shutdown();
     }
@@ -116,7 +116,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
     }
-
+    
     processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
   }
 

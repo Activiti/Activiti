@@ -30,9 +30,9 @@ public class ExecuteJobsRunnable implements Runnable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
-  private JobEntity job;
-  private List<String> jobIds;
-  private JobExecutor jobExecutor;
+  protected JobEntity job;
+  protected List<String> jobIds;
+  protected JobExecutor jobExecutor;
 
   public ExecuteJobsRunnable(JobExecutor jobExecutor, JobEntity job) {
     this.jobExecutor = jobExecutor;

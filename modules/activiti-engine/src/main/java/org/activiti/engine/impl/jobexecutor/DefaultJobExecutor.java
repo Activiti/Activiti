@@ -82,10 +82,14 @@ public class DefaultJobExecutor extends JobExecutor {
 
   public void executeJobs(List<String> jobIds) {
     try {
-      threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
+      threadPoolExecutor.execute(createExecuteJobsRunnable(jobIds));
     } catch (RejectedExecutionException e) {
       rejectedJobsHandler.jobsRejected(this, jobIds);
     }
+  }
+  
+  protected Runnable createExecuteJobsRunnable(List<String> jobIds) {
+    return new ExecuteJobsRunnable(this, jobIds);
   }
 
   // getters and setters

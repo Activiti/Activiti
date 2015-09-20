@@ -55,6 +55,8 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   protected Thread asyncJobAcquisitionThread;
   protected AcquireTimerJobsRunnable timerJobRunnable;
   protected AcquireAsyncJobsDueRunnable asyncJobsDueRunnable;
+  
+  protected ExecuteAsyncRunnableFactory executeAsyncRunnableFactory;
 
   protected boolean isAutoActivate;
   protected boolean isActive;
@@ -76,13 +78,19 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   protected CommandExecutor commandExecutor;
 
   public void executeAsyncJob(JobEntity job) {
+    Runnable runnable = null;
     if (isActive) {
-      executorService.execute(new ExecuteAsyncRunnable(job, commandExecutor));
+      if (executeAsyncRunnableFactory == null) {
+        runnable = new ExecuteAsyncRunnable(job, commandExecutor);
+      } else {
+        runnable = executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, commandExecutor);
+      }
+      executorService.execute(runnable);
     } else {
       temporaryJobQueue.add(job);
     }
   }
-
+  
   /** Starts the async executor */
   public void start() {
     if (isActive) {
@@ -338,5 +346,13 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 	public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
 		this.retryWaitTimeInMillis = retryWaitTimeInMillis;
 	}
+
+  public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {
+    return executeAsyncRunnableFactory;
+  }
+
+  public void setExecuteAsyncRunnableFactory(ExecuteAsyncRunnableFactory executeAsyncRunnableFactory) {
+    this.executeAsyncRunnableFactory = executeAsyncRunnableFactory;
+  }
 
 }
