@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,14 +22,16 @@ import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManager;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
  */
-public class ProcessDefinitionDataManagerImpl extends AbstractDataManager<ProcessDefinitionEntity> implements ProcessDefinitionDataManager {
+public class MybatisProcessDefinitionDataManager extends AbstractDataManager<ProcessDefinitionEntity> implements ProcessDefinitionDataManager {
   
-  public ProcessDefinitionDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisProcessDefinitionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

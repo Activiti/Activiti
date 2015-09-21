@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,13 +21,15 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class VariableInstanceDataManagerImpl extends AbstractDataManager<VariableInstanceEntity> implements VariableInstanceDataManager {
+public class MybatisVariableInstanceDataManager extends AbstractDataManager<VariableInstanceEntity> implements VariableInstanceDataManager {
 
-  public VariableInstanceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisVariableInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

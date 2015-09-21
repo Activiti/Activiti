@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,13 +20,15 @@ import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class EventLogEntryDataManagerImpl extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
+public class MybatisEventLogEntryDataManager extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
   
-  public EventLogEntryDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisEventLogEntryDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

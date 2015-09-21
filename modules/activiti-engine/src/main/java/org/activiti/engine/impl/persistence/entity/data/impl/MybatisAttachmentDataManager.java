@@ -10,21 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
 
 
 /**
  * @author Joram Barrez
  */
-public class AttachmentDataManagerImpl extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
+public class MybatisAttachmentDataManager extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
   
-  public AttachmentDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisAttachmentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

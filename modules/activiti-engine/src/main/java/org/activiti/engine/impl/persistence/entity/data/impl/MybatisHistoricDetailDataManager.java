@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -29,13 +29,15 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanc
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class HistoricDetailDataManagerImpl extends AbstractDataManager<HistoricDetailEntity> implements HistoricDetailDataManager {
+public class MybatisHistoricDetailDataManager extends AbstractDataManager<HistoricDetailEntity> implements HistoricDetailDataManager {
 
-  public HistoricDetailDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisHistoricDetailDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

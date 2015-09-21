@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,15 +19,17 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 /**
  * @author Joram Barrez
  */
-public class CommentDataManagerImpl extends AbstractDataManager<CommentEntity> implements CommentDataManager {
+public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity> implements CommentDataManager {
 
-  public CommentDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisCommentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

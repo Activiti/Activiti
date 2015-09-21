@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -21,13 +21,15 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.GroupDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class GroupDataManagerImpl extends AbstractDataManager<GroupEntity> implements GroupDataManager {
+public class MybatisGroupDataManager extends AbstractDataManager<GroupEntity> implements GroupDataManager {
 
-  public GroupDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisGroupDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

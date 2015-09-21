@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +31,14 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Joram Barrez
  */
-public class EventSubscriptionDataManagerImpl extends AbstractDataManager<EventSubscriptionEntity> implements EventSubscriptionDataManager {
+public class MybatisEventSubscriptionDataManager extends AbstractDataManager<EventSubscriptionEntity> implements EventSubscriptionDataManager {
   
   private static List<Class<? extends EventSubscriptionEntity>> ENTITY_SUBCLASSES = new ArrayList<Class<? extends EventSubscriptionEntity>>();
   
@@ -46,7 +48,7 @@ public class EventSubscriptionDataManagerImpl extends AbstractDataManager<EventS
     ENTITY_SUBCLASSES.add(CompensateEventSubscriptionEntityImpl.class);
   }
   
-  public EventSubscriptionDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisEventSubscriptionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
   

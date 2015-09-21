@@ -10,20 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class PropertyDataManagerImpl extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
+public class MybatisPropertyDataManager extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
   
-  public PropertyDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisPropertyDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

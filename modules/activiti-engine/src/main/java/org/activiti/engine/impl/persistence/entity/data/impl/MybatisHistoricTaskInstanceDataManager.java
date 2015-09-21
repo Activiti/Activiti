@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,13 +23,15 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class HistoricTaskInstanceDataManagerImpl extends AbstractDataManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceDataManager {
+public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceDataManager {
 
-  public HistoricTaskInstanceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisHistoricTaskInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

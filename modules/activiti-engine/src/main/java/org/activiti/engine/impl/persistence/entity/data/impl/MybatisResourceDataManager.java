@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +19,15 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class ResourceDataManagerImpl extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
+public class MybatisResourceDataManager extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
   
-  public ResourceDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisResourceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

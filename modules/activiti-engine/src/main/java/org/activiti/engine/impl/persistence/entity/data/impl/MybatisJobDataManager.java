@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,14 +28,16 @@ import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.runtime.Job;
 
 /**
  * @author Joram Barrez
  */
-public class JobDataManagerImpl extends AbstractDataManager<JobEntity> implements JobDataManager {
+public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implements JobDataManager {
   
-  public JobDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 

@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data;
+package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +19,15 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl;
+import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
+import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
 
 /**
  * @author Joram Barrez
  */
-public class IdentityInfoDataManagerImpl extends AbstractDataManager<IdentityInfoEntity> implements IdentityInfoDataManager {
+public class MybatisIdentityInfoDataManager extends AbstractDataManager<IdentityInfoEntity> implements IdentityInfoDataManager {
   
-  public IdentityInfoDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisIdentityInfoDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
