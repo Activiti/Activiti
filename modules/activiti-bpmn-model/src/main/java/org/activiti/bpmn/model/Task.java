@@ -14,7 +14,14 @@ package org.activiti.bpmn.model;
 
 /**
  * @author Tijs Rademakers
+ * @author Sebastian Bittmann
  */
-public abstract class Task extends Activity {
-
+public class Task extends Activity {
+	
+	@Override
+	public Task clone() {
+		Task clone = new Task();
+	    clone.setValues(this);
+	    return clone;
+	}
 }

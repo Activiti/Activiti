@@ -23,6 +23,7 @@ import org.activiti.bpmn.model.Task;
 
 /**
  * @author Tijs Rademakers
+ * @author Sebastian Bittmann
  */
 public class TaskXMLConverter extends BaseBpmnXMLConverter {
 
@@ -37,7 +38,10 @@ public class TaskXMLConverter extends BaseBpmnXMLConverter {
   
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    ManualTask manualTask = new ManualTask();
+    /**
+     * This previously created a manual task.
+     */
+	Task manualTask = new Task();
     BpmnXMLUtil.addXMLLocation(manualTask, xtr);
     parseChildElements(getXMLElementName(), manualTask, model, xtr);
     return manualTask;
