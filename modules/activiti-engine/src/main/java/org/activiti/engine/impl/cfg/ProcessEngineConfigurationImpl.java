@@ -1054,7 +1054,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // History manager ///////////////////////////////////////////////////////////
   
   protected void initHistoryManager() {
-    historyManager = new DefaultHistoryManager(this, historyLevel);
+    if(historyManager == null) {
+      historyManager = new DefaultHistoryManager(this, historyLevel);
+    }
   }
 
   // session factories ////////////////////////////////////////////////////////
