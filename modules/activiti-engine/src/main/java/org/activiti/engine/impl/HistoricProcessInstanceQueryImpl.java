@@ -54,6 +54,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processDefinitionKey;
   protected Set<String> processInstanceIds;
   protected String involvedUser;
+  protected String involvedUserLike;
+  protected String involvedUserLikeIgnoreCase;
   protected boolean includeProcessVariables;
   protected String tenantId;
   protected String tenantIdLike;

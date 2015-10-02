@@ -54,6 +54,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String assigneeLike;
   protected String assigneeLikeIgnoreCase;
   protected String involvedUser;
+  protected String involvedUserLike;
+  protected String involvedUserLikeIgnoreCase;
   protected String owner;
   protected String ownerLike;
   protected String ownerLikeIgnoreCase;

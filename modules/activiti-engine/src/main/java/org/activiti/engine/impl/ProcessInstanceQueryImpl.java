@@ -52,6 +52,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String subProcessInstanceId;
   protected boolean excludeSubprocesses;
   protected String involvedUser;
+  protected String involvedUserLike;
   protected String involvedUserLikeIgnoreCase;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;

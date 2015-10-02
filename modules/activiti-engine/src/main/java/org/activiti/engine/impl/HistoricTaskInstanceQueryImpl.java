@@ -73,6 +73,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String candidateGroup;
   private List<String> candidateGroups;
   protected String involvedUser;
+  protected String involvedUserLike;
+  protected String involvedUserLikeIgnoreCase;
   protected Integer taskPriority;
   protected Integer taskMinPriority;
   protected Integer taskMaxPriority;
