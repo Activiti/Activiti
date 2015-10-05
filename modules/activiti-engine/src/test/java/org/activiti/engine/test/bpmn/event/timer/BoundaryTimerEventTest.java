@@ -13,9 +13,11 @@
 
 package org.activiti.engine.test.bpmn.event.timer;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -172,5 +174,38 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count());
     assertEquals(1, taskService.createTaskQuery().count());
   }
+  
+  @Deployment
+	public void testInfiniteRepeatingTimer() throws Exception {
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
+		Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
+		processEngineConfiguration.getClock().setCurrentTime(currentTime);
+		
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("timerString", "R/2015-10-01T11:00:00/PT24H");
+		runtimeService.startProcessInstanceByKey("testTimerErrors", vars);
+		
+		long twentyFourHours = 24L * 60L * 60L * 1000L; 
+
+		Date previousDueDate = null;
+		
+		// Move clock, job should fire
+		for (int i=0; i<30; i++) {
+			Job job = managementService.createJobQuery().singleResult();
+			
+			// Verify due date
+			if (previousDueDate != null) {
+				assertTrue(job.getDuedate().getTime() - previousDueDate.getTime() >= twentyFourHours);
+			}
+			previousDueDate = job.getDuedate();
+			
+			currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
+			processEngineConfiguration.getClock().setCurrentTime(currentTime);
+			managementService.executeJob(managementService.createJobQuery().executable().singleResult().getId());
+		}
+		
+	}
+
 
 }

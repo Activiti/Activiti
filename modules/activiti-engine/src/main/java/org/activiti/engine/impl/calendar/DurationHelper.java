@@ -35,16 +35,12 @@ import org.joda.time.format.ISODateTimeFormat;
 public class DurationHelper {
 
   private Calendar start;
-
   private Calendar end;
-
   private Duration period;
-
   private boolean isRepeat;
-
   private int times;
-
   private int maxIterations = -1;
+  private boolean repeatWithNoBounds;
 
   private DatatypeFactory datatypeFactory;
 
@@ -82,6 +78,11 @@ public class DurationHelper {
     if (expression.get(0).startsWith("R")) {
       isRepeat = true;
       times = expression.get(0).length() == 1 ? Integer.MAX_VALUE-1 : Integer.parseInt(expression.get(0).substring(1));
+      
+      if (expression.get(0).equals("R")) { // R without params
+      	repeatWithNoBounds = true;
+      }
+      
       expression = expression.subList(1, expression.size());
     }
 
@@ -133,17 +134,32 @@ public class DurationHelper {
   }
 
   private Calendar getDateAfterRepeat(Calendar date) {
-
-    Calendar cur = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
-    int maxLoops = times;
-    if (maxIterations > 0) {
-      maxLoops = maxIterations - times;
-    }
-    for (int i = 0; i < maxLoops+1 && !cur.after(date); i++) {
-      cur = add(cur, period);
-    }
-
-    return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
+  	Calendar current = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
+  	
+  	if (repeatWithNoBounds) {
+  		
+      while(current.before(date) || current.equals(date)) { // As long as current date is not past the engine date, we keep looping
+      	Calendar newTime = add(current, period);
+        if (newTime.equals(current) || newTime.before(current)) {
+        	break;
+        }
+        current = newTime;
+      }
+      
+  		
+  	} else {
+  		
+	    int maxLoops = times;
+	    if (maxIterations > 0) {
+	      maxLoops = maxIterations - times;
+	    }
+	    for (int i = 0; i < maxLoops+1 && !current.after(date); i++) {
+	      current = add(current, period);
+	    }
+	
+  	}
+  	return current.before(date) ? date : TimeZoneUtil.convertToTimeZone(current, clockReader.getCurrentTimeZone());
+  	
   }
 
   private Calendar add(Calendar date, Duration duration) {
