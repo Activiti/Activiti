@@ -17,14 +17,12 @@ package org.activiti.spring.boot;
 
 import org.activiti.rest.common.application.ContentTypeResolver;
 import org.activiti.rest.common.application.DefaultContentTypeResolver;
-import org.activiti.rest.security.BasicAuthenticationProvider;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -37,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author Joram Barrez
  * @author Josh Long
+ * @author Vedran Pavic
  */
 @Configuration
 @AutoConfigureAfter(SecurityAutoConfiguration.class)
@@ -77,16 +76,10 @@ public class RestApiAutoConfiguration {
   @EnableWebSecurity
   @EnableWebMvcSecurity
   public static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-      return new BasicAuthenticationProvider();
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
       http
-        .authenticationProvider(authenticationProvider())
         .csrf().disable()
         .authorizeRequests()
           .anyRequest().authenticated()
