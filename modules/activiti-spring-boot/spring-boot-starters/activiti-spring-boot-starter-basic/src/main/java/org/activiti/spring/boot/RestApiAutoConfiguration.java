@@ -30,13 +30,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Auto-configuration and starter for the Activiti REST APIs.
  *
  * @author Joram Barrez
  * @author Josh Long
+ * @author Vedran Pavic
  */
 @Configuration
 @AutoConfigureAfter(SecurityAutoConfiguration.class)
@@ -53,13 +52,6 @@ public class RestApiAutoConfiguration {
   public ContentTypeResolver contentTypeResolver() {
     ContentTypeResolver resolver = new DefaultContentTypeResolver();
     return resolver;
-  }
-  
-  @Bean
-  public ObjectMapper objectMapper() {
-    // To avoid instantiating and configuring the mapper everywhere
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper;
   }
   
   @Configuration
