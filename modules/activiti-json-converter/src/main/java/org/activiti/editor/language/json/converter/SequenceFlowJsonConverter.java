@@ -90,24 +90,22 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     }
 
     if (StringUtils.isNotEmpty(sequenceFlow.getSourceRef())) {
-      boolean isDefault = false;
+
       FlowElement sourceFlowElement = container.getFlowElement(sequenceFlow.getSourceRef());
       if (sourceFlowElement != null) {
+        String defaultFlowId = null;
         if (sourceFlowElement instanceof ExclusiveGateway) {
           ExclusiveGateway parentExclusiveGateway = (ExclusiveGateway) sourceFlowElement;
-          if (parentExclusiveGateway.getDefaultFlow() != null && parentExclusiveGateway.getDefaultFlow().equals(sequenceFlow.getId())) {
-            isDefault = true;
-          }
+          defaultFlowId = parentExclusiveGateway.getDefaultFlow();
         } else if (sourceFlowElement instanceof Activity) {
           Activity parentActivity = (Activity) sourceFlowElement;
-          if (parentActivity.getDefaultFlow() != null && parentActivity.getDefaultFlow().equals(sequenceFlow.getId())) {
-            isDefault = true;
-          }
+          defaultFlowId = parentActivity.getDefaultFlow();
         }
-      }
 
-      if (isDefault) {
-        propertiesNode.put(PROPERTY_SEQUENCEFLOW_DEFAULT, true);
+        if (defaultFlowId != null && defaultFlowId.equals(sequenceFlow.getId())) {
+          propertiesNode.put(PROPERTY_SEQUENCEFLOW_DEFAULT, true);
+        }
+
       }
 
     }
