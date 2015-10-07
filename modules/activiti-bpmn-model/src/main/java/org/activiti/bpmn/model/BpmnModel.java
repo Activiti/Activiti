@@ -12,11 +12,17 @@
  */
 package org.activiti.bpmn.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,6 +53,7 @@ public class BpmnModel {
   protected List<String> userTaskFormTypes;
   protected List<String> startEventFormTypes;
   protected int nextFlowIdCounter = 1;
+  protected Locale locale;
 
   public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
     return definitionsAttributes;
@@ -542,5 +549,13 @@ public class BpmnModel {
 
   public void setStartEventFormTypes(List<String> startEventFormTypes) {
     this.startEventFormTypes = startEventFormTypes;
+  }
+  
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
+  
+  public Locale getLocale() {
+    return locale;
   }
 }

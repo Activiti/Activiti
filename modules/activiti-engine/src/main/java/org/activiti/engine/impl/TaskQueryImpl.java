@@ -15,10 +15,15 @@ package org.activiti.engine.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
+import org.activiti.engine.impl.cmd.GetProcessDefinitionResourceBundleCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -34,7 +39,7 @@ import org.activiti.engine.task.TaskQuery;
  * @author Falko Menge
  * @author Tijs Rademakers
  */
-public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> implements TaskQuery {
+public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task>implements TaskQuery {
 
   private static final long serialVersionUID = 1L;
 
@@ -102,7 +107,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean orActive;
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
-  
+  protected Locale locale;
+
   public TaskQueryImpl() {
   }
 
@@ -1043,6 +1049,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
+  public TaskQuery locale(Locale locale) {
+    this.locale = locale;
+    return this;
+  }
+
   public TaskQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
     return this;
@@ -1213,6 +1224,37 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     ensureVariablesInitialized();
     checkQueryOk();
     return commandContext.getTaskEntityManager().findTaskCountByQueryCriteria(this);
+  }
+
+  @Override
+  public Task singleResult() {
+    Task task = super.singleResult();
+    if (locale != null) {
+      localize(task);
+    }
+    return task;
+  }
+
+  @Override
+  public List<Task> list() {
+    List<Task> tasks = super.list();
+    if (locale != null) {
+      for (Task task : tasks) {
+        localize(task);
+      }
+    }
+    return tasks;
+  }
+
+  @Override
+  public List<Task> listPage(int firstResult, int maxResults) {
+    List<Task> tasks = super.listPage(firstResult, maxResults);
+    if (tasks != null) {
+      for (Task task : tasks) {
+        localize(task);
+      }
+    }
+    return tasks;
   }
 
   // getters ////////////////////////////////////////////////////////////////
@@ -1473,4 +1515,28 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return orActive;
   }
 
+  private void localize(Task task) {
+    String processDefinitionId = task.getProcessDefinitionId();
+    if (processDefinitionId != null) {
+      BpmnModel bpmnModel = commandExecutor.execute(new GetBpmnModelCmd(processDefinitionId));
+      Locale defaultLocale = bpmnModel.getLocale();
+      if (defaultLocale == null || defaultLocale.equals(locale)) {
+        return;
+      }
+
+      ResourceBundle resourceBundle = commandExecutor.execute(new GetProcessDefinitionResourceBundleCmd(processDefinitionId, locale));
+      if (resourceBundle != null) {
+
+        String name = resourceBundle.getString("userTask." + task.getTaskDefinitionKey() + ".name");
+        if (name != null) {
+          task.setName(name);
+        }
+
+        String documentation = resourceBundle.getString("userTask." + task.getTaskDefinitionKey() + ".documentation");
+        if (documentation != null) {
+          task.setDescription(documentation);
+        }
+      }
+    }
+  }
 }

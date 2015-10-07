@@ -14,6 +14,8 @@ package org.activiti.bpmn.converter.parser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -28,12 +30,18 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DefinitionsParser implements BpmnXMLConstants {
 
-  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
-      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
+  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE),
+          new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
 
   @SuppressWarnings("unchecked")
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
+
+    String lang = xtr.getAttributeValue(null, ATTRIBUTE_LANG);
+    if (StringUtils.trimToNull(lang) != null) {
+      model.setLocale(Locale.forLanguageTag(lang));
+    }
+
     for (int i = 0; i < xtr.getNamespaceCount(); i++) {
       String prefix = xtr.getNamespacePrefix(i);
       if (StringUtils.isNotEmpty(prefix)) {

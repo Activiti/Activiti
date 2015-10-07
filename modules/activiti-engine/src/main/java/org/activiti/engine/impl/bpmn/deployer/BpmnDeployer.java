@@ -13,11 +13,14 @@
 package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.PropertyResourceBundle;
 import java.util.Set;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -253,8 +256,25 @@ public class BpmnDeployer implements Deployer {
         }
       }
 
+      Map<String,PropertyResourceBundle> resourceBundles = new HashMap<String,PropertyResourceBundle>();
+      final String extension = ".l10n.properties";
+      String processFileNamePrefix = stripBpmnFileSuffix(new File(processDefinition.getResourceName()).getName());
+      processFileNamePrefix = processFileNamePrefix.substring(0, processFileNamePrefix.length()-1);
+      for (String resourceName : resources.keySet()) {
+        String resourceFileName = new File(resourceName).getName();
+        if(resourceFileName.endsWith(extension) && resourceFileName.startsWith(processFileNamePrefix)) {
+          String key = resourceFileName.replace(processFileNamePrefix, processDefinition.getId());
+          ResourceEntity resource = resources.get(resourceName);
+          try {
+            resourceBundles.put(key, new PropertyResourceBundle(new ByteArrayInputStream(resource.getBytes())));
+          } catch (IOException e) {
+            throw new ActivitiException("Unable to process localization file in deployment.", e);
+          }
+        }
+      }
+      
       // Add to cache
-      ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModels.get(processDefinition.getKey()), processModels.get(processDefinition.getKey()));
+      ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModels.get(processDefinition.getKey()), processModels.get(processDefinition.getKey()), resourceBundles);
       processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
 
       // Add to deployment for further usage

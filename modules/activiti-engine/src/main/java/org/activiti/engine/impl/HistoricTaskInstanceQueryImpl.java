@@ -16,16 +16,22 @@ package org.activiti.engine.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
+import org.activiti.engine.impl.cmd.GetProcessDefinitionResourceBundleCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
@@ -100,6 +106,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected List<HistoricTaskInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricTaskInstanceQueryImpl>();
   protected HistoricTaskInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
+  protected Locale locale;
 
   public HistoricTaskInstanceQueryImpl() {
   }
@@ -1431,5 +1438,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 	}
 	public List<HistoricTaskInstanceQueryImpl> getOrQueryObjects() {
     return orQueryObjects;
+  }
+
+  @Override
+  public HistoricTaskInstanceQuery locale(Locale locale) {
+    throw new UnsupportedOperationException();
   }
 }
