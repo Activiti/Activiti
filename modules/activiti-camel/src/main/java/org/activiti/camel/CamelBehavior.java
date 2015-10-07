@@ -132,7 +132,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   }
 
   protected Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
-    Exchange ex = new DefaultExchange(camelContextObj);
+    Exchange ex = endpoint.createExchange();
     ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
     ex.setProperty(ActivitiProducer.EXECUTION_ID_PROPERTY, activityExecution.getId());
     Map<String, Object> variables = activityExecution.getVariables();

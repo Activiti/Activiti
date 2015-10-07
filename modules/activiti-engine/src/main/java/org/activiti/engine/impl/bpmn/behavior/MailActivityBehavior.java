@@ -13,9 +13,12 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.*;
-
 import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.activation.DataSource;
 import javax.naming.NamingException;
@@ -28,7 +31,11 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.apache.commons.mail.*;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail.MultiPartEmail;
+import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -259,8 +266,8 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
         email.setSmtpPort(mailServerInfo.getMailServerPort());
 
-        email.setSSLOnConnect(processEngineConfiguration.getMailServerUseSSL());
-        email.setStartTLSEnabled(processEngineConfiguration.getMailServerUseTLS());
+        email.setSSLOnConnect(mailServerInfo.isMailServerUseSSL());
+        email.setStartTLSEnabled(mailServerInfo.isMailServerUseTLS());
 
         String user = mailServerInfo.getMailServerUsername();
         String password = mailServerInfo.getMailServerPassword();
