@@ -176,6 +176,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEUSERS = "candidateUsers";
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEGROUPS = "candidateGroups";
   public static final String ATTRIBUTE_TASK_USER_DUEDATE = "dueDate";
+  public static final String ATTRIBUTE_TASK_USER_BUSINESS_CALENDAR_NAME = "businessCalendarName";
   public static final String ATTRIBUTE_TASK_USER_CATEGORY = "category";
   public static final String ATTRIBUTE_TASK_USER_PRIORITY = "priority";
   public static final String ATTRIBUTE_TASK_USER_SKIP_EXPRESSION = "skipExpression";

@@ -29,6 +29,7 @@ public class UserTask extends Task {
   protected String priority;
   protected String formKey;
   protected String dueDate;
+  protected String businessCalendarName;
   protected String category;
   protected String extensionId;
   protected List<String> candidateUsers = new ArrayList<String>();
@@ -72,6 +73,15 @@ public class UserTask extends Task {
   public void setDueDate(String dueDate) {
     this.dueDate = dueDate;
   }
+
+  public String getBusinessCalendarName() {
+    return businessCalendarName;
+  }
+
+  public void setBusinessCalendarName(String businessCalendarName) {
+    this.businessCalendarName = businessCalendarName;
+  }
+
   public String getCategory() {
 		return category;
 	}

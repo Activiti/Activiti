@@ -90,7 +90,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           BusinessCalendar businessCalendar = Context
             .getProcessEngineConfiguration()
             .getBusinessCalendarManager()
-            .getBusinessCalendar(DueDateBusinessCalendar.NAME);
+            .getBusinessCalendar(taskDefinition.getBusinessCalendarNameExpression().getValue(execution).toString());
           task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
         } else {
           throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + 

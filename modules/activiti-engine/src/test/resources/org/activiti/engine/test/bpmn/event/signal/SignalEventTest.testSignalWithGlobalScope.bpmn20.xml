@@ -11,6 +11,7 @@
 
    <intermediateThrowEvent id="signalThrow">
     <signalEventDefinition signalRef="theSignal" />
+       <
    </intermediateThrowEvent>
     <sequenceFlow id="flow3" sourceRef="signalThrow" targetRef="theEnd" />
     

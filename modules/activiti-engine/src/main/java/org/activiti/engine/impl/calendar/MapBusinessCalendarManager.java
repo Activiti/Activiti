@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 /**
- * @author Tom Baeyens
+ * @author martin.grofcik
  */
 public class MapBusinessCalendarManager implements BusinessCalendarManager {
   
@@ -30,7 +30,9 @@ public class MapBusinessCalendarManager implements BusinessCalendarManager {
   }
 
   public MapBusinessCalendarManager(Map<String, BusinessCalendar> businessCalendars) {
-    assert(businessCalendars != null);
+    if (businessCalendars != null) {
+      throw new IllegalArgumentException("businessCalendars can not be null");
+    }
 
     this.businessCalendars = new HashMap<String, BusinessCalendar>(businessCalendars);
   }

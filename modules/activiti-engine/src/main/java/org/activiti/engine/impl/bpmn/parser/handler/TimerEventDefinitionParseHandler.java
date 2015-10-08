@@ -42,7 +42,6 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
 	private static final Logger logger = LoggerFactory.getLogger(TimerEventDefinitionParseHandler.class);
 
   public static final String PROPERTYNAME_START_TIMER = "timerStart";
-  public static final String PROPERTYNAME_CALENDAR_NAME = "businessCalendarName";
 
   public Class< ? extends BaseElement> getHandledType() {
     return TimerEventDefinition.class;

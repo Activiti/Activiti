@@ -27,7 +27,7 @@ public class MapBusinessCalendarManagerTest extends TestCase {
     }
 
     public void testInvalidCalendarNameRequest() {
-        MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(Collections.EMPTY_MAP);
+        @SuppressWarnings("unchecked") MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(Collections.EMPTY_MAP);
 
         try {
             businessCalendarManager.getBusinessCalendar("INVALID");
@@ -41,7 +41,7 @@ public class MapBusinessCalendarManagerTest extends TestCase {
         try {
             new MapBusinessCalendarManager(null);
             fail("AssertionError expected");
-        } catch(AssertionError e) {
+        } catch(IllegalArgumentException e) {
             // Expected error
         }
     }
