@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="testJsonAvailableProcess" name="Test JSON available process">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask" />
+    <userTask id="userTask" />
+    <sequenceFlow sourceRef="userTask" targetRef="haveVar2"/>
+    <exclusiveGateway id="haveVar2" name="Have var2?"/>
+    <sequenceFlow sourceRef="haveVar2" targetRef="userTaskFailure">
+      <conditionExpression><![CDATA[${myJsonObj.var3 != 'myThirdValue'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow sourceRef="haveVar2" targetRef="userTaskSuccess">
+      <conditionExpression><![CDATA[${myJsonObj.var3 == 'myThirdValue' && myJsonObj.var2 == 'myOtherValue'}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="userTaskFailure" />
+    <sequenceFlow id="flow3" sourceRef="userTaskFailure" targetRef="theEndFailure" />
+    <endEvent id="theEndFailure" />
+    <userTask id="userTaskSuccess" />
+    <sequenceFlow id="flow4" sourceRef="userTaskSuccess" targetRef="theEndSuccess" />
+    <endEvent id="theEndSuccess" />
+    
+  </process>
+
+</definitions>

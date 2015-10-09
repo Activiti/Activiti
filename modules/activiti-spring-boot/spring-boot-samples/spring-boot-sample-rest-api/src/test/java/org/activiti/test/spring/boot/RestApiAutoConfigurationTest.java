@@ -7,6 +7,7 @@ import org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration;
 import org.activiti.spring.boot.RestApiAutoConfiguration;
 import org.junit.After;
 import org.junit.Test;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Josh Long
+ * @author Vedran Pavic
  */
 public class RestApiAutoConfigurationTest {
 
@@ -33,7 +35,8 @@ public class RestApiAutoConfigurationTest {
           ServerPropertiesAutoConfiguration.class,
           DataSourceAutoConfiguration.class,
           DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class,
-          RestApiAutoConfiguration.class
+          RestApiAutoConfiguration.class,
+          JacksonAutoConfiguration.class
   })
   protected static class BaseConfiguration {
     
