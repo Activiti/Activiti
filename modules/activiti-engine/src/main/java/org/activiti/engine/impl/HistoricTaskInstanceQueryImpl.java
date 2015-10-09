@@ -967,7 +967,25 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
-  
+
+  public HistoricTaskInstanceQuery taskInvolvedUserLike(String involvedUserLike) {
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLike = involvedUserLike;
+    } else {
+      this.involvedUserLike = involvedUserLike;
+    }
+    return this;
+  }
+
+  public HistoricTaskInstanceQuery taskInvolvedUserLikeIgnoreCase(String involvedUserv) {
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    } else {
+      this.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    }
+    return this;
+  }
+
   public HistoricTaskInstanceQuery taskTenantId(String tenantId) {
   	if (tenantId == null) {
   		throw new ActivitiIllegalArgumentException("task tenant id is null");
