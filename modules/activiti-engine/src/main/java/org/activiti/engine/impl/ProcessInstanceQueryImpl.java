@@ -299,7 +299,31 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return this;
   }
-  
+  public ProcessInstanceQuery involvedUserLike(String involvedUserLike) {
+    if (involvedUser == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLike = involvedUserLike;
+    } else {
+      this.involvedUserLike = involvedUserLike;
+    }
+    return this;
+  }
+  public ProcessInstanceQuery involvedUserLikeIgnoreCase(String involvedUserLikeIgnoreCase) {
+    if (involvedUserLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    } else {
+      this.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    }
+    return this;
+  }
+
   public ProcessInstanceQuery active() {
     if (inOrStatement) {
       this.orQueryObject.suspensionState = SuspensionState.ACTIVE;

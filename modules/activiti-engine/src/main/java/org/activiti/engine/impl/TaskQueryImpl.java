@@ -448,7 +448,29 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+  public TaskQueryImpl taskInvolvedUserLike(String involvedUserLike) {
+    if (involvedUserLike == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+    if(orActive) {
+      orQueryObject.involvedUserLike = involvedUserLike;
+    } else {
+      this.involvedUserLike = involvedUserLike;
+    }
+    return this;
+  }
+  public TaskQueryImpl taskInvolvedUserLikeIgnoreCase(String involvedUserLikeIgnoreCase) {
+    if (involvedUserLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+    if(orActive) {
+      orQueryObject.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    } else {
+      this.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    }
+    return this;
+  }
+
   public TaskQueryImpl taskCandidateGroup(String candidateGroup) {
     if (candidateGroup == null) {
       throw new ActivitiIllegalArgumentException("Candidate group is null");
