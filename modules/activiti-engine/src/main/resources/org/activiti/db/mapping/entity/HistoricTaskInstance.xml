@@ -501,9 +501,23 @@
       </if>
       <if test="involvedUser != null">
         and (
-          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) = lower(#{involvedUser}) and LINK.TASK_ID_ = RES.ID_)
-          or lower(RES.ASSIGNEE_) = lower(#{involvedUser})
-          or lower(RES.OWNER_) = lower(#{involvedUser})
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
+          or RES.ASSIGNEE_ = #{involvedUser}
+          or RES.OWNER_ = #{involvedUser}
+          )
+      </if>
+      <if test="involvedUserLike != null">
+        and (
+        exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ like #{involvedUserLike} and LINK.TASK_ID_ = RES.ID_)
+        or RES.ASSIGNEE_ like #{involvedUserLike}
+        or RES.OWNER_ like #{involvedUserLike}
+          )
+      </if>
+      <if test="involvedUserLikeIgnoreCase != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like #{involvedUserLikeIgnoreCase} and LINK.TASK_ID_ = RES.ID_)
+          or lower(RES.ASSIGNEE_) like #{involvedUserLikeIgnoreCase}
+          or lower(RES.OWNER_) = like #{involvedUserLikeIgnoreCase}
           )
       </if>
       <foreach item="queryVar" collection="queryVariableValues" index="index">
@@ -780,6 +794,20 @@
               exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
               or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
               or RES.OWNER_ = #{orQueryObject.involvedUser}
+              )
+          </if>
+          <if test="orQueryObject.involvedUserLike != null">
+            or (
+              exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ like #{orQueryObject.involvedUserLike} and LINK.TASK_ID_ = RES.ID_)
+              or RES.ASSIGNEE_ like #{orQueryObject.involvedUserLike}
+              or RES.OWNER_ like #{orQueryObject.involvedUserLike}
+              )
+          </if>
+          <if test="orQueryObject.involvedUserLikeIgnoreCase != null">
+            or (
+              exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like #{orQueryObject.involvedUserLikeIgnoreCase} and LINK.TASK_ID_ = RES.ID_)
+              or lower(RES.ASSIGNEE_) like #{orQueryObject.involvedUserLikeIgnoreCase}
+              or lower(RES.OWNER_) like #{orQueryObject.involvedUserLikeIgnoreCase}
               )
           </if>
           <foreach item="queryVar" collection="orQueryObject.queryVariableValues" index="index">
