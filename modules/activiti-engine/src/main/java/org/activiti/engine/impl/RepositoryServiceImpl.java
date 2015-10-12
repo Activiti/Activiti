@@ -40,7 +40,9 @@ import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetModelCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
+import org.activiti.engine.impl.cmd.GetProcessDefinitionInfoCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
+import org.activiti.engine.impl.cmd.SaveProcessDefinitionInfoCmd;
 import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
@@ -61,6 +63,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -221,6 +225,14 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   
   public void addModelEditorSourceExtra(String modelId, byte[] bytes) {
     commandExecutor.execute(new AddEditorSourceExtraForModelCmd(modelId, bytes));
+  }
+  
+  public ObjectNode getProcessDefinitionInfo(String processDefinitionId) {
+    return commandExecutor.execute(new GetProcessDefinitionInfoCmd(processDefinitionId));
+  }
+  
+  public void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode) {
+    commandExecutor.execute(new SaveProcessDefinitionInfoCmd(processDefinitionId, infoNode));
   }
   
   public ModelQuery createModelQuery() {

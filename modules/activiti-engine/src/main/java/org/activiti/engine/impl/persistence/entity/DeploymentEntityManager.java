@@ -58,9 +58,10 @@ public class DeploymentEntityManager extends AbstractManager {
     // Remove the deployment link from any model. 
     // The model will still exists, as a model is a source for a deployment model and has a different lifecycle
     List<Model> models = getDbSqlSession()
-            .createModelQueryImpl()
-            .deploymentId(deploymentId)
-            .list();
+        .createModelQueryImpl()
+        .deploymentId(deploymentId)
+        .list();
+    
     for (Model model : models) {
       ModelEntity modelEntity = (ModelEntity) model;
       modelEntity.setDeploymentId(null);
@@ -73,9 +74,7 @@ public class DeploymentEntityManager extends AbstractManager {
       for (ProcessDefinition processDefinition: processDefinitions) {
         String processDefinitionId = processDefinition.getId();
         
-        getProcessInstanceManager()
-          .deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
-    
+        getProcessInstanceManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
       }
     }
 
@@ -86,11 +85,12 @@ public class DeploymentEntityManager extends AbstractManager {
       
       // event subscriptions
       getEventSubscriptionManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
+      
+      getProcessDefinitionInfoManager().deleteProcessDefinitionInfo(processDefinitionId);
     }
 
     // delete process definitions from db
-    getProcessDefinitionManager()
-      .deleteProcessDefinitionsByDeploymentId(deploymentId);
+    getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
     
     for (ProcessDefinition processDefinition : processDefinitions) {
       
@@ -176,8 +176,7 @@ public class DeploymentEntityManager extends AbstractManager {
       }
     }
     
-    getResourceManager()
-      .deleteResourcesByDeploymentId(deploymentId);
+    getResourceManager().deleteResourcesByDeploymentId(deploymentId);
     
     getDbSqlSession().delete("deleteDeployment", deploymentId);
   }

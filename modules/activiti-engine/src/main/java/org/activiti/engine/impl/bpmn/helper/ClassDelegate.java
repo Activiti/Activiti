@@ -38,7 +38,11 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
+import org.activiti.engine.impl.util.BpmnCacheUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -59,18 +63,18 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected ActivityBehavior activityBehaviorInstance;
   protected Expression skipExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected String serviceTaskId;
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
     this.fieldDeclarations = fieldDeclarations;
     this.skipExpression = skipExpression;
-   
   }
 
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
+  public ClassDelegate(String id, String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
     this(className, fieldDeclarations, skipExpression);
+    this.serviceTaskId = id;
     this.mapExceptions = mapExceptions;
-   
   }
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
@@ -135,6 +139,15 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     if (!isSkipExpressionEnabled || 
             (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
       
+      ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
+      if (taskElementProperties != null && taskElementProperties.has(BpmnCacheUtil.SERVICE_TASK_CLASS_NAME)) {
+        String overrideClassName = taskElementProperties.get(BpmnCacheUtil.SERVICE_TASK_CLASS_NAME).asText();
+        if (StringUtils.isNotEmpty(overrideClassName) && overrideClassName.equals(className) == false) {
+          className = overrideClassName;
+          activityBehaviorInstance = null;
+        }
+      }
+      
       if (activityBehaviorInstance == null) {
         activityBehaviorInstance = getActivityBehaviorInstance(execution);
       }
@@ -144,11 +157,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
       } catch (Exception e) {
-        if (!ErrorPropagation.mapException(e, execution, mapExceptions))
+        if (!ErrorPropagation.mapException(e, execution, mapExceptions)) {
             throw e;
-        
+        }
       }
-      
     }
   }
 
