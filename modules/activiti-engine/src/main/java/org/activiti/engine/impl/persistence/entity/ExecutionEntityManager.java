@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -70,16 +71,26 @@ public class ExecutionEntityManager extends AbstractManager {
   }
 
   private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
-    for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
-      if (subExecutionEntity.getSubProcessInstance() != null) {
-        deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
-      }
+    List<ProcessInstance> subProcesses = execution.getEngineServices().getRuntimeService().createProcessInstanceQuery().superProcessInstanceId(execution.processInstanceId).list();
+    for (ProcessInstance subProcess : subProcesses) {
+      deleteProcessInstanceCascade((ExecutionEntity) subProcess, deleteReason, deleteHistory);
     }
 
     CommandContext commandContext = Context.getCommandContext();
     commandContext
       .getTaskEntityManager()
       .deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
+
+    // fill default reason if none provided
+    if (deleteReason == null) {
+      deleteReason = "ACTIVITI_DELETED";
+    }
+
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled() && execution.isProcessInstanceType()) {
+      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createCancelledEvent(execution.processInstanceId
+                      , execution.processInstanceId, execution.processDefinitionId, deleteReason));
+    }
 
     // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricVariableInstance instances
     execution.deleteCascade(deleteReason);
@@ -106,7 +117,7 @@ public class ExecutionEntityManager extends AbstractManager {
   }
 
   public ExecutionEntity findExecutionById(String executionId) {
-    return (ExecutionEntity) getDbSqlSession().selectById(ExecutionEntity.class, executionId);
+    return getDbSqlSession().selectById(ExecutionEntity.class, executionId);
   }
   
   public long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery) {

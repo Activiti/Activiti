@@ -25,6 +25,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 /**
@@ -37,6 +38,7 @@ public class TimerDeclarationImpl implements Serializable {
   protected Expression description;
   protected TimerDeclarationType type;
   protected Expression endDateExpression;
+  protected Expression calendarName;
 
   protected String jobHandlerType;
   protected String jobHandlerConfiguration = null;
@@ -45,9 +47,10 @@ public class TimerDeclarationImpl implements Serializable {
   protected int retries = TimerEntity.DEFAULT_RETRIES;
   protected boolean isInterruptingTimer; // For boundary timers
 
-  public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType, Expression endDateExpression) {
+  public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType, Expression endDateExpression, Expression calendarName) {
     this(expression,type,jobHandlerType);
     this.endDateExpression = endDateExpression;
+    this.calendarName = calendarName;
   }  
   
   public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType) {
@@ -108,10 +111,21 @@ public class TimerDeclarationImpl implements Serializable {
   }
 
   public TimerEntity prepareTimerEntity(ExecutionEntity executionEntity) {
+    // ACT-1415: timer-declaration on start-event may contain expressions NOT
+    // evaluating variables but other context, evaluating should happen nevertheless
+    VariableScope scopeForExpression = executionEntity;
+    if (scopeForExpression == null) {
+      scopeForExpression = NoExecutionVariableScope.getSharedInstance();
+    }
+
+    String calendarName = type.calendarName;
+    if (this.calendarName != null) {
+      calendarName = (String) this.calendarName.getValue(scopeForExpression);
+    }
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(type.calendarName);
+        .getBusinessCalendar(calendarName);
     
     if (description==null) {
       // Prevent NPE from happening in the next line
@@ -122,13 +136,6 @@ public class TimerDeclarationImpl implements Serializable {
     String dueDateString = null;
     Date duedate = null;
     Date endDate = null;
-    
-    // ACT-1415: timer-declaration on start-event may contain expressions NOT
-    // evaluating variables but other context, evaluating should happen nevertheless
-    VariableScope scopeForExpression = executionEntity;
-    if(scopeForExpression == null) {
-      scopeForExpression = NoExecutionVariableScope.getSharedInstance();
-    }
 
     if (endDateExpression != null &&  !(scopeForExpression instanceof NoExecutionVariableScope)) {
       Object endDateValue = endDateExpression.getValue(scopeForExpression);

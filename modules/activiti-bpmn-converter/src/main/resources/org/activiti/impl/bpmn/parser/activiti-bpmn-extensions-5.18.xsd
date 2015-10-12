@@ -384,7 +384,9 @@
   </complexType>
   
   <element name="potentialStarter" type="string" />
-  
+
+  <element name="businessCalendarName" type="string" />
+
   <element name="taskListener">
     <annotation>
       <documentation>
