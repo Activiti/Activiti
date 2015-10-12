@@ -977,6 +977,14 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
+  public String getInvolvedUserLike() {
+    return involvedUserLike;
+  }
+
+  public String getInvolvedUserLikeIgnoreCase() {
+    return involvedUserLikeIgnoreCase;
+  }
+
   public HistoricTaskInstanceQuery taskInvolvedUserLikeIgnoreCase(String involvedUserv) {
     if (inOrStatement) {
       this.orQueryObject.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;

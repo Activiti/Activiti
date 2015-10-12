@@ -55,6 +55,8 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
+  protected String involvedUserLike;
+  protected String involvedUserLikeIgnoreCase;
   protected Set<String> processDefinitionKeys;
   protected Set<String> processDefinitionIds;
 
@@ -333,6 +335,24 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public void setInvolvedUser(String involvedUser) {
     this.involvedUser = involvedUser;
   }
+
+  public String getInvolvedUserLike() {
+    return involvedUserLike;
+  }
+
+  public void setInvolvedUserLike(String involvedUserLike) {
+    this.involvedUserLike = involvedUserLike;
+  }
+
+  public String getInvolvedUserLikeIgnoreCase() {
+    return involvedUserLikeIgnoreCase;
+  }
+
+  public void setInvolvedUserIgnoreLikeCase(String involvedUserIgnoreCase) {
+    this.involvedUserLikeIgnoreCase = involvedUserIgnoreCase;
+  }
+
+
   public Set<String> getProcessDefinitionIds() {
     return processDefinitionIds;
   }

@@ -433,7 +433,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     // Manually involved person
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskInvolvedUser("gonzo").endOr().count());
-
+    // if (true) throw new Error("Maggie was here");
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     

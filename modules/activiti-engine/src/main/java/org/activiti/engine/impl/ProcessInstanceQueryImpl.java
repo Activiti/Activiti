@@ -311,6 +311,15 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return this;
   }
+
+  public String getInvolvedUserLike() {
+    return involvedUserLike;
+  }
+
+  public String getInvolvedUserLikeIgnoreCase() {
+    return involvedUserLikeIgnoreCase;
+  }
+
   public ProcessInstanceQuery involvedUserLikeIgnoreCase(String involvedUserLikeIgnoreCase) {
     if (involvedUserLikeIgnoreCase == null) {
       throw new ActivitiIllegalArgumentException("Involved user is null");
