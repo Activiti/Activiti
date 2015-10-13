@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.uuid.Logger;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
@@ -265,7 +266,17 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     // Manually involved person
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("gonzo").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("mickey").count());
 
+    // search variants
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%onzo").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ONZO").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("kermi%").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("ERMIT%").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%ozzie").count());
+    Object foo = historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ickey");
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%MICKEY").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ickey").count());
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
@@ -433,7 +444,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     // Manually involved person
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskInvolvedUser("gonzo").endOr().count());
-    // if (true) throw new Error("Maggie was here");
+
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
