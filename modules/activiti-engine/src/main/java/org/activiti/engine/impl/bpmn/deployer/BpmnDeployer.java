@@ -40,12 +40,16 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
@@ -54,6 +58,9 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.IdentityLinkType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tom Baeyens
@@ -234,17 +241,56 @@ public class BpmnDeployer implements Deployer {
       }
 
       // Add to cache
-      processEngineConfiguration
-        .getDeploymentManager()
-        .getProcessDefinitionCache()
-        .add(processDefinition.getId(), processDefinition);
+      DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+      deploymentManager.getProcessDefinitionCache().add(processDefinition.getId(), processDefinition);
+      addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
     }
   }
+  
+  protected void addDefinitionInfoToCache(ProcessDefinitionEntity processDefinition, 
+      ProcessEngineConfigurationImpl processEngineConfiguration, CommandContext commandContext) {
+    
+    if (processEngineConfiguration.isEnableProcessDefinitionInfoCache() == false) {
+      return;
+    }
+    
+    DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+    ProcessDefinitionInfoEntityManager definitionInfoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
+    ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
+    ProcessDefinitionInfoEntity definitionInfoEntity = definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinition.getId());
+    
+    ObjectNode infoNode = null;
+    if (definitionInfoEntity != null && definitionInfoEntity.getInfoJsonId() != null) {
+      byte[] infoBytes = definitionInfoEntityManager.findInfoJsonById(definitionInfoEntity.getInfoJsonId());
+      if (infoBytes != null) {
+        try {
+          infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
+        } catch (Exception e) {
+          throw new ActivitiException("Error deserializing json info for process definition " + processDefinition.getId());
+        }
+      }
+    }
+    
+    ProcessDefinitionInfoCacheObject definitionCacheObject = new ProcessDefinitionInfoCacheObject();
+    if (definitionInfoEntity == null) {
+      definitionCacheObject.setRevision(0);
+    } else {
+      definitionCacheObject.setId(definitionInfoEntity.getId());
+      definitionCacheObject.setRevision(definitionInfoEntity.getRevision());
+    }
+    
+    if (infoNode == null) {
+      infoNode = objectMapper.createObjectNode();
+    }
+    definitionCacheObject.setInfoNode(infoNode);
+    
+    deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
+  }
 
-  private void scheduleTimers(List<TimerEntity> timers) {
+  protected void scheduleTimers(List<TimerEntity> timers) {
     for (TimerEntity timer : timers) {
       Context
         .getCommandContext()

@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
@@ -559,13 +559,11 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
         historicTaskInstance.setTaskDefinitionKey(taskDefinitionKey);
         
         if (taskDefinitionKey != null) {
-          TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-          if (taskFormHandler != null) {
-            if (taskFormHandler.getFormKey() != null) {
-              Object formValue = taskFormHandler.getFormKey().getValue(task.getExecution());
-              if (formValue != null) {
-                historicTaskInstance.setFormKey(formValue.toString());
-              }
+          Expression taskFormExpression = task.getTaskDefinition().getFormKeyExpression();
+          if (taskFormExpression != null) {
+            Object formValue = taskFormExpression.getValue(task.getExecution());
+            if (formValue != null) {
+              historicTaskInstance.setFormKey(formValue.toString());
             }
           }
         }

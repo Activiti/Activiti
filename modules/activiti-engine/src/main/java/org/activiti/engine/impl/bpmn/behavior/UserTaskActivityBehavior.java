@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -37,6 +38,9 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * activity implementation for the user task.
  * 
@@ -48,15 +52,27 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskActivityBehavior.class);
 
+  protected String userTaskId;
   protected TaskDefinition taskDefinition;
 
-  public UserTaskActivityBehavior(TaskDefinition taskDefinition) {
+  public UserTaskActivityBehavior(String userTaskId, TaskDefinition taskDefinition) {
+    this.userTaskId = userTaskId;
     this.taskDefinition = taskDefinition;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
     TaskEntity task = TaskEntity.createAndInsert(execution);
     task.setExecution(execution);
+    
+    Expression activeFormExpression = null;
+    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+      ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTaskId, execution.getProcessDefinitionId());
+      activeFormExpression = getActiveValue(taskDefinition.getFormKeyExpression(), DynamicBpmnConstants.USER_TASK_FORM_KEY, taskElementProperties);
+      taskDefinition.setFormKeyExpression(activeFormExpression);
+    } else {
+      activeFormExpression = taskDefinition.getFormKeyExpression();
+    }
+    
     task.setTaskDefinition(taskDefinition);
 
     if (taskDefinition.getNameExpression() != null) {
@@ -129,14 +145,13 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     	}
     }
     
-    if (taskDefinition.getFormKeyExpression() != null) {
-    	final Object formKey = taskDefinition.getFormKeyExpression().getValue(execution);
+    if (activeFormExpression != null) {
+    	final Object formKey = activeFormExpression.getValue(execution);
     	if (formKey != null) {
     		if (formKey instanceof String) {
     			task.setFormKey((String) formKey);
     		} else {
-    			 throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + 
-               taskDefinition.getFormKeyExpression().getExpressionText());
+    		  throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + activeFormExpression.getExpressionText());
     		}
     	}
     }
@@ -266,6 +281,21 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
    */
   protected List<String> extractCandidates(String str) {
     return Arrays.asList(str.split("[\\s]*,[\\s]*"));
+  }
+  
+  protected Expression getActiveValue(Expression originalValue, String propertyName, ObjectNode taskElementProperties) {
+    Expression activeValue = originalValue;
+    if (taskElementProperties != null) {
+      JsonNode overrideValueNode = taskElementProperties.get(propertyName);
+      if (overrideValueNode != null) {
+        if (overrideValueNode.isNull()) {
+          activeValue = null;
+        } else {
+          activeValue = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(overrideValueNode.asText());
+        }
+      }
+    }
+    return activeValue;
   }
   
   // getters and setters //////////////////////////////////////////////////////

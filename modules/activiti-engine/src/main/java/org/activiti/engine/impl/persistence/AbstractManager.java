@@ -36,6 +36,7 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
@@ -78,6 +79,10 @@ public abstract class AbstractManager implements Session {
   
   protected ProcessDefinitionEntityManager getProcessDefinitionManager() {
     return getSession(ProcessDefinitionEntityManager.class);
+  }
+  
+  protected ProcessDefinitionInfoEntityManager getProcessDefinitionInfoManager() {
+    return getSession(ProcessDefinitionInfoEntityManager.class);
   }
   
   protected ModelEntityManager getModelManager() {

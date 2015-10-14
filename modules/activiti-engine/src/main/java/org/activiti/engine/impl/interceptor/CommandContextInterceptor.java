@@ -69,6 +69,7 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
     	  // Pop from stack
     	  Context.removeCommandContext();
     	  Context.removeProcessEngineConfiguration();
+    	  Context.removeBpmnOverrideContext();
       }
     }
     

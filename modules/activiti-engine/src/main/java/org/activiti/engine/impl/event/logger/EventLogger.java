@@ -54,9 +54,9 @@ public class EventLogger implements ActivitiEventListener {
 	// Listeners for new events
 	protected List<EventLoggerListener> listeners;
 	
-	public EventLogger(Clock clock) {
+	public EventLogger(Clock clock, ObjectMapper objectMapper) {
 		this.clock = clock;
-		this.objectMapper = new ObjectMapper();
+		this.objectMapper = objectMapper;
 		
 		// Initialization of all event handlers
 		

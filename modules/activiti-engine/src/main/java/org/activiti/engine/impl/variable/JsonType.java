@@ -28,9 +28,12 @@ public class JsonType implements VariableType {
   private static final Logger logger = LoggerFactory.getLogger(JsonType.class);
   
   protected final int maxLength;
-  protected ObjectMapper objectMapper = new ObjectMapper();
+  protected ObjectMapper objectMapper = null;
 
-  public JsonType(int maxLength) {this.maxLength = maxLength;}
+  public JsonType(int maxLength, ObjectMapper objectMapper) {
+    this.maxLength = maxLength;
+    this.objectMapper = objectMapper;
+  }
 
   public String getTypeName() {
     return "json";
