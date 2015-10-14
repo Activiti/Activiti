@@ -243,43 +243,54 @@ public class BpmnDeployer implements Deployer {
       // Add to cache
       DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
       deploymentManager.getProcessDefinitionCache().add(processDefinition.getId(), processDefinition);
-      
-      ProcessDefinitionInfoEntityManager definitionInfoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
-      ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
-      ProcessDefinitionInfoEntity definitionInfoEntity = definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinition.getId());
-      ObjectNode infoNode = null;
-      if (definitionInfoEntity != null && definitionInfoEntity.getInfoJsonId() != null) {
-        byte[] infoBytes = definitionInfoEntityManager.findInfoJsonById(definitionInfoEntity.getInfoJsonId());
-        if (infoBytes != null) {
-          try {
-            infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
-          } catch (Exception e) {
-            throw new ActivitiException("Error deserializing json info for process definition " + processDefinition.getId());
-          }
-        }
-      }
-      
-      ProcessDefinitionInfoCacheObject definitionCacheObject = new ProcessDefinitionInfoCacheObject();
-      if (definitionInfoEntity == null) {
-        definitionCacheObject.setRevision(0);
-      } else {
-        definitionCacheObject.setId(definitionInfoEntity.getId());
-        definitionCacheObject.setRevision(definitionInfoEntity.getRevision());
-      }
-      
-      if (infoNode == null) {
-        infoNode = objectMapper.createObjectNode();
-      }
-      definitionCacheObject.setInfoNode(infoNode);
-      
-      deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
+      addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
     }
   }
+  
+  protected void addDefinitionInfoToCache(ProcessDefinitionEntity processDefinition, 
+      ProcessEngineConfigurationImpl processEngineConfiguration, CommandContext commandContext) {
+    
+    if (processEngineConfiguration.isEnableProcessDefinitionInfoCache() == false) {
+      return;
+    }
+    
+    DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+    ProcessDefinitionInfoEntityManager definitionInfoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
+    ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
+    ProcessDefinitionInfoEntity definitionInfoEntity = definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinition.getId());
+    
+    ObjectNode infoNode = null;
+    if (definitionInfoEntity != null && definitionInfoEntity.getInfoJsonId() != null) {
+      byte[] infoBytes = definitionInfoEntityManager.findInfoJsonById(definitionInfoEntity.getInfoJsonId());
+      if (infoBytes != null) {
+        try {
+          infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
+        } catch (Exception e) {
+          throw new ActivitiException("Error deserializing json info for process definition " + processDefinition.getId());
+        }
+      }
+    }
+    
+    ProcessDefinitionInfoCacheObject definitionCacheObject = new ProcessDefinitionInfoCacheObject();
+    if (definitionInfoEntity == null) {
+      definitionCacheObject.setRevision(0);
+    } else {
+      definitionCacheObject.setId(definitionInfoEntity.getId());
+      definitionCacheObject.setRevision(definitionInfoEntity.getRevision());
+    }
+    
+    if (infoNode == null) {
+      infoNode = objectMapper.createObjectNode();
+    }
+    definitionCacheObject.setInfoNode(infoNode);
+    
+    deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
+  }
 
-  private void scheduleTimers(List<TimerEntity> timers) {
+  protected void scheduleTimers(List<TimerEntity> timers) {
     for (TimerEntity timer : timers) {
       Context
         .getCommandContext()

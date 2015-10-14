@@ -36,6 +36,7 @@ import javax.sql.DataSource;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -51,6 +52,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.form.AbstractFormType;
+import org.activiti.engine.impl.DynamicBpmnServiceImpl;
 import org.activiti.engine.impl.FormServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
@@ -262,6 +264,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskService taskService = new TaskServiceImpl(this);
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
+  protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
   
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
   
@@ -565,6 +568,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initService(taskService);
     initService(formService);
     initService(managementService);
+    initService(dynamicBpmnService);
   }
 
   protected void initService(Object service) {
@@ -1592,6 +1596,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public DynamicBpmnService getDynamicBpmnService() {
+    return dynamicBpmnService;
+  }
+
+  public ProcessEngineConfigurationImpl setDynamicBpmnService(DynamicBpmnService dynamicBpmnService) {
+    this.dynamicBpmnService = dynamicBpmnService;
+    return this;
+  }
+
   public ProcessEngineConfiguration getProcessEngineConfiguration() {
     return this;
   }
@@ -2138,8 +2151,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 		return maxNrOfStatementsInBulkInsert;
 	}
 
-	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+	public ProcessEngineConfigurationImpl setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
+		return this;
 	}
 
   public ObjectMapper getObjectMapper() {

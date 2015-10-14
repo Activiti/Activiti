@@ -3,6 +3,7 @@ drop index ACT_IDX_TASK_CREATE on ACT_RU_TASK;
 drop index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK;
 drop index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK;
 drop index ACT_IDX_VARIABLE_TASK_ID on ACT_RU_VARIABLE;
+drop index ACT_IDX_INFO_PROCDEF on ACT_PROCDEF_INFO;
 
 alter table ACT_GE_BYTEARRAY 
     drop FOREIGN KEY ACT_FK_BYTEARR_DEPL;
@@ -57,6 +58,12 @@ alter table ACT_RE_MODEL
     
 alter table ACT_RE_MODEL 
     drop FOREIGN KEY ACT_FK_MODEL_DEPLOYMENT;    
+
+alter table ACT_PROCDEF_INFO 
+    drop FOREIGN KEY ACT_FK_INFO_JSON_BA;
+    
+alter table ACT_PROCDEF_INFO 
+    drop FOREIGN KEY ACT_FK_INFO_PROCDEF;
     
 drop index ACT_IDX_ATHRZ_PROCEDEF on ACT_RU_IDENTITYLINK;
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_ on ACT_RU_EVENT_SUBSCR;
@@ -73,3 +80,4 @@ drop table if exists ACT_RU_EXECUTION;
 drop table if exists ACT_RU_JOB; 
 drop table if exists ACT_RU_EVENT_SUBSCR;
 drop table if exists ACT_EVT_LOG;
+drop table if exists ACT_PROCDEF_INFO;

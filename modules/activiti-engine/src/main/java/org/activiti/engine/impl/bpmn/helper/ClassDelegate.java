@@ -21,6 +21,7 @@ import java.util.List;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
@@ -38,7 +39,6 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.util.BpmnCacheUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -139,12 +139,14 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     if (!isSkipExpressionEnabled || 
             (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
       
-      ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
-      if (taskElementProperties != null && taskElementProperties.has(BpmnCacheUtil.SERVICE_TASK_CLASS_NAME)) {
-        String overrideClassName = taskElementProperties.get(BpmnCacheUtil.SERVICE_TASK_CLASS_NAME).asText();
-        if (StringUtils.isNotEmpty(overrideClassName) && overrideClassName.equals(className) == false) {
-          className = overrideClassName;
-          activityBehaviorInstance = null;
+      if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+        ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
+        if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME)) {
+          String overrideClassName = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME).asText();
+          if (StringUtils.isNotEmpty(overrideClassName) && overrideClassName.equals(className) == false) {
+            className = overrideClassName;
+            activityBehaviorInstance = null;
+          }
         }
       }
       

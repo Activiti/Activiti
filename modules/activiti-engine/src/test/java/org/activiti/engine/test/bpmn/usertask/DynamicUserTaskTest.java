@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.BpmnCacheUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -43,9 +42,8 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
     
     // now test with changing the form key
-    ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
-    BpmnCacheUtil.changeFormKey("task1", "test2", infoNode);
-    repositoryService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    ObjectNode infoNode = dynamicBpmnService.changeFormKey("task1", "test2");
+    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
     
     processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     
@@ -71,9 +69,8 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
     
     // now test with changing the form key
-    ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
-    BpmnCacheUtil.changeFormKey("task1", "${anotherKey}", infoNode);
-    repositoryService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    ObjectNode infoNode = dynamicBpmnService.changeFormKey("task1", "${anotherKey}");
+    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
     
     varMap = new HashMap<String, Object>();
     varMap.put("anotherKey", "test2");

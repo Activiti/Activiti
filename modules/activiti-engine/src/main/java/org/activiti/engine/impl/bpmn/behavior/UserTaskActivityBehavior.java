@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -34,7 +35,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.util.BpmnCacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +64,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     TaskEntity task = TaskEntity.createAndInsert(execution);
     task.setExecution(execution);
     
-    ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTaskId, execution.getProcessDefinitionId());
-    Expression activeFormExpression = getActiveValue(taskDefinition.getFormKeyExpression(), BpmnCacheUtil.USER_TASK_FORM_KEY, taskElementProperties);
-    taskDefinition.setFormKeyExpression(activeFormExpression);
+    Expression activeFormExpression = null;
+    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+      ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTaskId, execution.getProcessDefinitionId());
+      activeFormExpression = getActiveValue(taskDefinition.getFormKeyExpression(), DynamicBpmnConstants.USER_TASK_FORM_KEY, taskElementProperties);
+      taskDefinition.setFormKeyExpression(activeFormExpression);
+    } else {
+      activeFormExpression = taskDefinition.getFormKeyExpression();
+    }
     
     task.setTaskDefinition(taskDefinition);
 

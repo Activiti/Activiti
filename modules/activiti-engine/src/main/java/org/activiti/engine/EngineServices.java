@@ -34,5 +34,7 @@ public interface EngineServices {
   
   ManagementService getManagementService();
   
+  DynamicBpmnService getDynamicBpmnService();
+  
   ProcessEngineConfiguration getProcessEngineConfiguration();
 }

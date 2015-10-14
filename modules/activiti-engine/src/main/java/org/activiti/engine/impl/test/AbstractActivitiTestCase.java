@@ -26,6 +26,7 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -69,6 +70,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
+  protected DynamicBpmnService dynamicBpmnService;
   
   @Override
   protected void setUp() throws Exception {
@@ -183,6 +185,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
     historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
+    dynamicBpmnService = processEngine.getDynamicBpmnService();
   }
   
   public void assertProcessEnded(final String processInstanceId) {

@@ -11,12 +11,17 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.test.bpmn.servicetask;
+package org.activiti.engine.test.bpmn.usertask;
+
+
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -27,7 +32,44 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
+public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
+
+  protected static ProcessEngine cachedProcessEngine;
+  
+  protected void initializeProcessEngine() {
+    if (cachedProcessEngine==null) {
+      ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
+          .createProcessEngineConfigurationFromResource("org/activiti/engine/test/bpmn/usertask/activiti.cfg.xml");
+      
+      cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
+    }
+    processEngine = cachedProcessEngine;
+  }
+
+  @Deployment
+  public void testChangeFormKey() {
+    // first test without changing the form key
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
+    String processDefinitionId = processInstance.getProcessDefinitionId();
+    
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("test", task.getFormKey());
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+    
+    // now test with changing the form key
+    ObjectNode infoNode = dynamicBpmnService.changeFormKey("task1", "test2");
+    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    
+    processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("test", task.getFormKey());
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+  }
   
   @Deployment
   public void testChangeClassName() {
@@ -61,13 +103,13 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
-    assertEquals(0, runtimeService.getVariable(processInstance.getId(), "count"));
-    assertEquals(1, runtimeService.getVariable(processInstance.getId(), "count2"));
+    assertEquals(1, runtimeService.getVariable(processInstance.getId(), "count"));
+    assertEquals(0, runtimeService.getVariable(processInstance.getId(), "count2"));
     
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
     assertProcessEnded(processInstance.getId());
   }
-
+  
 }

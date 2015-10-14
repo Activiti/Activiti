@@ -31,8 +31,6 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /** Service providing access to the repository of process definitions and deployments.
  * 
  * @author Tom Baeyens
@@ -377,10 +375,6 @@ public interface RepositoryService {
    * @param modelId id of model
    */
   byte[] getModelEditorSourceExtra(String modelId);
-  
-  ObjectNode getProcessDefinitionInfo(String processDefinitionId);
-  
-  void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
   
   /**
    * Authorizes a candidate user for a process definition.

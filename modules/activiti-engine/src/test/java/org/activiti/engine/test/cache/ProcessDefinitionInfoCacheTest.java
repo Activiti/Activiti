@@ -63,6 +63,7 @@ public class ProcessDefinitionInfoCacheTest extends PvmTestCase {
         .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
         .setJdbcUrl("jdbc:h2:mem:activiti-reboot-info-test;DB_CLOSE_DELAY=1000")
         .setJobExecutorActivate(false)
+        .setEnableProcessDefinitionInfoCache(true)
         .buildProcessEngine();
      
     processEngine.getRepositoryService()
@@ -79,14 +80,14 @@ public class ProcessDefinitionInfoCacheTest extends PvmTestCase {
     assertEquals(1, processDefinitions.size());
     String processDefinitionId = processDefinitions.get(0).getId();
      
-    ObjectNode infoNode = processEngine.getRepositoryService().getProcessDefinitionInfo(processDefinitionId);
+    ObjectNode infoNode = processEngine.getDynamicBpmnService().getProcessDefinitionInfo(processDefinitionId);
     assertNotNull(infoNode);
     
     infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
     infoNode.put("test", "test");
-    processEngine.getRepositoryService().saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    processEngine.getDynamicBpmnService().saveProcessDefinitionInfo(processDefinitionId, infoNode);
     
-    infoNode = processEngine.getRepositoryService().getProcessDefinitionInfo(processDefinitionId);
+    infoNode = processEngine.getDynamicBpmnService().getProcessDefinitionInfo(processDefinitionId);
     assertNotNull(infoNode);
     assertEquals("test", infoNode.get("test").asText());
      
@@ -105,9 +106,10 @@ public class ProcessDefinitionInfoCacheTest extends PvmTestCase {
         .setDatabaseSchemaUpdate(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
         .setJdbcUrl("jdbc:h2:mem:activiti-reboot-info-test;DB_CLOSE_DELAY=1000")
         .setJobExecutorActivate(false)
+        .setEnableProcessDefinitionInfoCache(true)
         .buildProcessEngine();
     
-    infoNode = processEngine.getRepositoryService().getProcessDefinitionInfo(processDefinitionId);
+    infoNode = processEngine.getDynamicBpmnService().getProcessDefinitionInfo(processDefinitionId);
     assertNotNull(infoNode);
     assertEquals("test", infoNode.get("test").asText());
      

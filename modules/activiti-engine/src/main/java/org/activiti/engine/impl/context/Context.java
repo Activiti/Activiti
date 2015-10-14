@@ -22,7 +22,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
-import org.activiti.engine.impl.util.BpmnCacheUtil;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -122,7 +121,7 @@ public class Context {
     ObjectNode definitionInfoNode = getBpmnOverrideContext().get(processDefinitionId);
     ObjectNode elementProperties = null;
     if (definitionInfoNode != null) {
-      elementProperties = BpmnCacheUtil.getElementProperties(id, definitionInfoNode);
+      elementProperties = getProcessEngineConfiguration().getDynamicBpmnService().getElementProperties(id, definitionInfoNode);
     }
     return elementProperties;
   }
