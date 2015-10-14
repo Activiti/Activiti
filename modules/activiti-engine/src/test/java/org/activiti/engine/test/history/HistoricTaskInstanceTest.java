@@ -132,7 +132,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     taskService.saveTask(task);
     taskService.addUserIdentityLink(task.getId(), "gonzo", "someType");
-    
+    taskService.addUserIdentityLink(task.getId(), "MISSPIGGY", "someType");
+
     // Complete the task
     String taskId = task.getId();
     taskService.complete(taskId);
@@ -270,13 +271,14 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
     // search variants
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%onzo").count());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ONZO").count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("kermi%").count());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("ERMIT%").count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%ozzie").count());
-    Object foo = historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ickey");
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%MICKEY").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ickey").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%piggy").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ONZO").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("ERMIT%").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%MICKEY").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%PIGGY").count());
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     

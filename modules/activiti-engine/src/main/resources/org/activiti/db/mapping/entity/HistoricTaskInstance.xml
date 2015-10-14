@@ -516,8 +516,8 @@
       <if test="involvedUserLikeIgnoreCase != null">
         and (
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like #{involvedUserLikeIgnoreCase} and LINK.TASK_ID_ = RES.ID_)
-          or lower(RES.ASSIGNEE_) like #{involvedUserLikeIgnoreCase}
-          or lower(RES.OWNER_) = like #{involvedUserLikeIgnoreCase}
+          or lower(RES.ASSIGNEE_) like lower(#{involvedUserLikeIgnoreCase})
+          or lower(RES.OWNER_) like lower(#{involvedUserLikeIgnoreCase})
           )
       </if>
       <foreach item="queryVar" collection="queryVariableValues" index="index">
