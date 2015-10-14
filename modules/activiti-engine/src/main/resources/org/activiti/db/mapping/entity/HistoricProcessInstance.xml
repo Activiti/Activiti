@@ -339,7 +339,7 @@
       </if>
        <if test="involvedUserLikeIgnoreCase != null">
         and (
-          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like #{involvedUserLikeIgnoreCase}) and LINK.PROC_INST_ID_ = RES.ID_)
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like lower(#{involvedUserLikeIgnoreCase}) and LINK.PROC_INST_ID_ = RES.ID_)
         )
       </if>
       <if test="startedBy != null">

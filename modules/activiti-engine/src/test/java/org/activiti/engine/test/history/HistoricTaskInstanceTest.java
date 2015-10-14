@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.uuid.Logger;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
@@ -269,16 +268,19 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("gonzo").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("mickey").count());
 
-    // search variants
+    // search variants - involved like and likeignorecase
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%onzo").count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("kermi%").count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%ozzie").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%ickey").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLike("%PIGGY").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ickey").count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%piggy").count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%ONZO").count());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("ERMIT%").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("KERM%").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%MICKEY").count());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%PIGGY").count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUserLikeIgnoreCase("%pig%").count());
+
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
