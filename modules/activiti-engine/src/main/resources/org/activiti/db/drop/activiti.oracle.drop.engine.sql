@@ -13,6 +13,8 @@ drop index ACT_IDX_JOB_EXCEPTION;
 drop index ACT_IDX_MODEL_SOURCE;
 drop index ACT_IDX_MODEL_SOURCE_EXTRA;
 drop index ACT_IDX_MODEL_DEPLOYMENT;
+drop index ACT_IDX_PROCDEF_INFO_JSON;
+drop index ACT_IDX_PROCDEF_INFO_PROC;
 
 drop index ACT_IDX_EXEC_BUSKEY;
 drop index ACT_IDX_TASK_CREATE;
@@ -86,7 +88,6 @@ alter table ACT_PROCDEF_INFO
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_EVENT_SUBSCR;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
-drop index ACT_IDX_INFO_PROCDEF;
 
 drop table  ACT_GE_PROPERTY;
 drop table  ACT_GE_BYTEARRAY;
