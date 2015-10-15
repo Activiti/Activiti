@@ -14,7 +14,6 @@ drop index ACT_IDX_MODEL_SOURCE;
 drop index ACT_IDX_MODEL_SOURCE_EXTRA;
 drop index ACT_IDX_MODEL_DEPLOYMENT;
 drop index ACT_IDX_PROCDEF_INFO_JSON;
-drop index ACT_IDX_PROCDEF_INFO_PROC;
 
 drop index ACT_IDX_EXEC_BUSKEY;
 drop index ACT_IDX_TASK_CREATE;
@@ -80,6 +79,9 @@ alter table ACT_RE_MODEL
     drop CONSTRAINT ACT_FK_MODEL_DEPLOYMENT;
     
 alter table ACT_PROCDEF_INFO
+    drop CONSTRAINT ACT_UNIQ_INFO_PROCDEF;
+    
+alter table ACT_PROCDEF_INFO
     drop CONSTRAINT ACT_FK_INFO_JSON_BA;
     
 alter table ACT_PROCDEF_INFO
@@ -88,6 +90,7 @@ alter table ACT_PROCDEF_INFO
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_EVENT_SUBSCR;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
+drop index ACT_IDX_PROCDEF_INFO_PROC;
 
 drop table  ACT_GE_PROPERTY;
 drop table  ACT_GE_BYTEARRAY;
