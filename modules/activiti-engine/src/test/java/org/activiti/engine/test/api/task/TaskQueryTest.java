@@ -651,21 +651,31 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertNull(query.singleResult());
   }
   
-  public void testQueryByInvolvedUser() { //todo: io.point.WORK-635
+  public void testQueryByInvolvedUser() {
     try {
       Task adhocTask = taskService.newTask();
       adhocTask.setAssignee("kermit");
       adhocTask.setOwner("fozzie");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "customType");
+      taskService.addUserIdentityLink(adhocTask.getId(), "MISSPIGGY", "someType");
       
-      assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      assertEquals(4, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
       
-      assertEquals(1, taskService.createTaskQuery()
-          .taskId(adhocTask.getId()).taskInvolvedUser("gonzo").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").count());
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("kermit").count());
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("fozzie").count());
-      
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLike("%onzo").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLike("kermi%").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLike("%ozzie").count());
+      assertEquals(0, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLike("%ickey").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLike("%PIGGY").count());
+      assertEquals(0, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLikeIgnoreCase("%ickey").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLikeIgnoreCase("%piggy").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLikeIgnoreCase("%ONZO").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLikeIgnoreCase("KERM%").count());
+      assertEquals(0, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLikeIgnoreCase("%MICKEY").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUserLikeIgnoreCase("%pig%").count());
     } finally {
       List<Task> allTasks = taskService.createTaskQuery().list();
       for(Task task : allTasks) {
@@ -686,8 +696,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       adhocTask.setOwner("fozzie");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "customType");
+      taskService.addUserIdentityLink(adhocTask.getId(), "MISSPIGGY", "someType");
       
-      assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      assertEquals(4, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
       
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId())
           .or()
