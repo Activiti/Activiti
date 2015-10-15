@@ -58,6 +58,7 @@
     <property name="idGenerator">
       <bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
     </property>
+    <property name="enableProcessDefinitionInfoCache" value="true" />
   </bean>
   
   <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
