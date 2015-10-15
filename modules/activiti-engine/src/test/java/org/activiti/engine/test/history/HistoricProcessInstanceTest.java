@@ -121,6 +121,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(startTime.getTime());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "businessKey123");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "someType");
+    runtimeService.addUserIdentityLink(processInstance.getId(), "MISSPIGGY", "someType");
     runtimeService.setProcessInstanceName(processInstance.getId(), "The name");
     Calendar hourAgo = Calendar.getInstance();
     hourAgo.add(Calendar.HOUR_OF_DAY, -1);
@@ -181,6 +182,18 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     // Check identity links
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count());
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUser("gonzo").count());
+    // search variants - involved like and likeignorecase
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUserLike("%onzo").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUserLike("kermi%").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUserLike("%ozzie").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUserLike("%ickey").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUserLike("%PIGGY").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUserLikeIgnoreCase("%ickey").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUserLikeIgnoreCase("%piggy").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUserLikeIgnoreCase("%ONZO").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUserLikeIgnoreCase("KERM%").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUserLikeIgnoreCase("%MICKEY").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUserLikeIgnoreCase("%pig%").count());
   }
   
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
@@ -251,6 +264,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").processDefinitionId("undefined").endOr().count());
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().involvedUser("gonzo").processDefinitionId("undefined").endOr().count());
   }
+  //todo: io.point.WORK-635
   
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceSorting() {

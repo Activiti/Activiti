@@ -651,7 +651,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertNull(query.singleResult());
   }
   
-  public void testQueryByInvolvedUser() {
+  public void testQueryByInvolvedUser() { //todo: io.point.WORK-635
     try {
       Task adhocTask = taskService.newTask();
       adhocTask.setAssignee("kermit");
@@ -679,7 +679,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     }
   }
   
-  public void testQueryByInvolvedUserOr() {
+  public void testQueryByInvolvedUserOr() {   //todo: io.point.WORK-635
     try {
       Task adhocTask = taskService.newTask();
       adhocTask.setAssignee("kermit");
