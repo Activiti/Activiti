@@ -628,7 +628,7 @@
             or EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ like #{orQueryObject.involvedUserLike})
           </if>
           <if test="orQueryObject.involvedUserLikeIgnoreCase != null">
-            or EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and lower(I.USER_ID_) like #{orQueryObject.involvedUserLikeIgnoreCase})
+            or EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and lower(I.USER_ID_) like lower(#{orQueryObject.involvedUserLikeIgnoreCase}))
           </if>
           <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
