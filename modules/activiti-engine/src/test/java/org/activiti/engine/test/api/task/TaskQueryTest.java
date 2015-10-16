@@ -658,7 +658,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       adhocTask.setOwner("fozzie");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "customType");
-      taskService.addUserIdentityLink(adhocTask.getId(), "MISSPIGGY", "someType");
+      taskService.addUserIdentityLink(adhocTask.getId(), "MISSPIGGY", "customType");
       
       assertEquals(4, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
       

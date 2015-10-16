@@ -55,14 +55,6 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String assigneeLikeIgnoreCase;
   protected String involvedUser;
 
-  public String getInvolvedUserLike() {
-    return involvedUserLike;
-  }
-
-  public String getInvolvedUserLikeIgnoreCase() {
-    return involvedUserLikeIgnoreCase;
-  }
-
   protected String involvedUserLike;
   protected String involvedUserLikeIgnoreCase;
   protected String owner;
@@ -1351,6 +1343,14 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getInvolvedUser() {
     return involvedUser;
   }
+  public String getInvolvedUserLike() {
+    return involvedUserLike;
+  }
+  public String getInvolvedUserLikeIgnoreCase() {
+    return involvedUserLikeIgnoreCase;
+  }
+
+
 
   public String getOwner() {
     return owner;

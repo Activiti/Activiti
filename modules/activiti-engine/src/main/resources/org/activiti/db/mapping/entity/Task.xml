@@ -519,7 +519,7 @@
       </if>
       <if test="involvedUserLikeIgnoreCase != null">
         and (
-          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where lower(USER_ID_) = lower(#{involvedUserLikeIgnoreCase}) and LINK.TASK_ID_ = RES.ID_)
+          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where lower(USER_ID_) like lower(#{involvedUserLikeIgnoreCase}) and LINK.TASK_ID_ = RES.ID_)
           or lower(RES.ASSIGNEE_) like lower(#{involvedUserLikeIgnoreCase})
           or lower(RES.OWNER_) like lower(#{involvedUserLikeIgnoreCase})
           )
