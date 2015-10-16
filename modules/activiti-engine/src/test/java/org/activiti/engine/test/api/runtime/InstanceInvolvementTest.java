@@ -104,18 +104,18 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type1");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type2");
     
-    assertEquals(1L, runtimeService.createProcessInstanceQuery().involvedUser("kermit").count());     //todo: io.point.WORK-635
+    assertEquals(1L, runtimeService.createProcessInstanceQuery().involvedUser("kermit").count());
   }
 
   
   private void assertNoInvolvement(String userId) {
-    assertEquals(0L, runtimeService.createProcessInstanceQuery().involvedUser(userId).count());     //todo: io.point.WORK-635
+    assertEquals(0L, runtimeService.createProcessInstanceQuery().involvedUser(userId).count());
   }
   
   private void assertInvolvement(String userId, String instanceId) {
     ProcessInstance involvedInstance = runtimeService
       .createProcessInstanceQuery()
-      .involvedUser(userId)          //todo: io.point.WORK-635
+      .involvedUser(userId)
       .singleResult();
     assertEquals(instanceId, involvedInstance.getId());
   }
