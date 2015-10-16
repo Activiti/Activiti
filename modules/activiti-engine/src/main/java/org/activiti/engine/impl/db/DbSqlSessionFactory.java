@@ -340,7 +340,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
   
   public Boolean isBulkInsertable(Class<? extends Entity> entityClass) {
-  	return bulkInsertableMap != null && bulkInsertableMap.get(entityClass);
+  	return bulkInsertableMap != null && bulkInsertableMap.containsKey(entityClass);
   }
 
   // getters and setters //////////////////////////////////////////////////////
