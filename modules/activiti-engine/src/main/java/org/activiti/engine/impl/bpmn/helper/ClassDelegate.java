@@ -228,13 +228,17 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     return delegateInstance;
   }
   
-  // --HELPER METHODS (also usable by external classes) ----------------------------------------
-  
-  public static Object instantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
-    return instantiateDelegate(clazz.getName(), fieldDeclarations);
+  protected Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+    return ClassDelegate.defaultInstantiateDelegate(className, fieldDeclarations);
   }
   
-  public static Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+  // --HELPER METHODS (also usable by external classes) ----------------------------------------
+  
+  public static Object defaultInstantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
+    return defaultInstantiateDelegate(clazz.getName(), fieldDeclarations);
+  }
+  
+  public static Object defaultInstantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
     Object object = ReflectUtil.instantiate(className);
     applyFieldDeclaration(fieldDeclarations, object);
     return object;
