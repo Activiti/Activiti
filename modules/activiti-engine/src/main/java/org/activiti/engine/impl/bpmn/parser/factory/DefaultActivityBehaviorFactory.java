@@ -180,7 +180,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
   protected MailActivityBehavior createMailActivityBehavior(String taskId, List<FieldExtension> fields) {
     List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fields);
-    return (MailActivityBehavior) ClassDelegate.instantiateDelegate(MailActivityBehavior.class, fieldDeclarations);
+    return (MailActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
+        MailActivityBehavior.class, fieldDeclarations);
   }
 
   // We do not want a hard dependency on Mule, hence we return
@@ -199,7 +200,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
       Class<?> theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
       List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
-      return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
+      return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
+          theClass, fieldDeclarations);
 
     } catch (ClassNotFoundException e) {
       throw new ActivitiException("Could not find org.activiti.mule.MuleSendActivitiBehavior: ", e);
@@ -239,7 +241,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
       List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
       addExceptionMapAsFieldDeclaration(fieldDeclarations, task.getMapExceptions());
-      return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
+      return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
+          theClass, fieldDeclarations);
 
     } catch (ClassNotFoundException e) {
       throw new ActivitiException("Could not find org.activiti.camel.CamelBehavior: ", e);
@@ -254,7 +257,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
   public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
     List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(serviceTask.getFieldExtensions());
-    return (ShellActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations);
+    return (ShellActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
+        ShellActivityBehavior.class, fieldDeclarations);
   }
 
   public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
