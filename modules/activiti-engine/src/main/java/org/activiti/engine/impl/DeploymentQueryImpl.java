@@ -194,4 +194,11 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     return withoutTenantId;
   }
 
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+
+  public String getProcessDefinitionKeyLike() {
+    return processDefinitionKeyLike;
+  }
 }
