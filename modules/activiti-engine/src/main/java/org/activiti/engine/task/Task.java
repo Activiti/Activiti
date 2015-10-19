@@ -32,8 +32,14 @@ public interface Task extends TaskInfo {
   /** Name or title of the task. */
 	void setName(String name);
 	
+	/** Sets an optional localized name for the task. */
+  void setLocalizedName(String name);
+	
   /** Change the description of the task */
 	void setDescription(String description);
+	
+	/** Sets an optional localized description for the task. */
+  void setLocalizedDescription(String description);
 	
 	/** Sets the indication of how important/urgent this task is */
 	void setPriority(int priority);

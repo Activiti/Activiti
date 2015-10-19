@@ -109,6 +109,29 @@ public class Context {
   }
   
   public static ObjectNode getBpmnOverrideElementProperties(String id, String processDefinitionId) {
+    ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
+    ObjectNode elementProperties = null;
+    if (definitionInfoNode != null) {
+      elementProperties = getProcessEngineConfiguration().getDynamicBpmnService().getBpmnElementProperties(id, definitionInfoNode);
+    }
+    return elementProperties;
+  }
+  
+  public static ObjectNode getLocalizationElementProperties(String language, String id, String processDefinitionId) {
+    ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
+    ObjectNode localizationProperties = null;
+    if (definitionInfoNode != null) {
+      localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
+          language, id, definitionInfoNode);
+    }
+    return localizationProperties;
+  }
+  
+  public static void removeBpmnOverrideContext() {
+    bpmnOverrideContextThreadLocal.remove();
+  }
+  
+  protected static ObjectNode getProcessDefinitionInfoNode(String processDefinitionId) {
     Map<String, ObjectNode> bpmnOverrideMap = getBpmnOverrideContext();
     if (bpmnOverrideMap.containsKey(processDefinitionId) == false) {
       ProcessDefinitionInfoCacheObject cacheObject = getProcessEngineConfiguration().getDeploymentManager()
@@ -118,15 +141,10 @@ public class Context {
       addBpmnOverrideElement(processDefinitionId, cacheObject.getInfoNode());
     }
     
-    ObjectNode definitionInfoNode = getBpmnOverrideContext().get(processDefinitionId);
-    ObjectNode elementProperties = null;
-    if (definitionInfoNode != null) {
-      elementProperties = getProcessEngineConfiguration().getDynamicBpmnService().getElementProperties(id, definitionInfoNode);
-    }
-    return elementProperties;
+    return getBpmnOverrideContext().get(processDefinitionId);
   }
   
-  public static Map<String, ObjectNode> getBpmnOverrideContext() {
+  protected static Map<String, ObjectNode> getBpmnOverrideContext() {
     Map<String, ObjectNode> bpmnOverrideMap = bpmnOverrideContextThreadLocal.get();
     if (bpmnOverrideMap == null) {
       bpmnOverrideMap = new HashMap<String, ObjectNode>();
@@ -134,16 +152,12 @@ public class Context {
     return bpmnOverrideMap;
   }
   
-  public static void addBpmnOverrideElement(String id, ObjectNode infoNode) {
+  protected static void addBpmnOverrideElement(String id, ObjectNode infoNode) {
     Map<String, ObjectNode> bpmnOverrideMap = bpmnOverrideContextThreadLocal.get();
     if (bpmnOverrideMap == null) {
       bpmnOverrideMap = new HashMap<String, ObjectNode>();
       bpmnOverrideContextThreadLocal.set(bpmnOverrideMap);
     }
     bpmnOverrideMap.put(id, infoNode);
-  }
-  
-  public static void removeBpmnOverrideContext() {
-    bpmnOverrideContextThreadLocal.remove();
   }
 }

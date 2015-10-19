@@ -36,6 +36,8 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.runtime.ProcessInstanceQueryTest;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * @author Frederik Heremans
  * @author Falko Menge
@@ -454,6 +456,52 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     
     taskInstanceQuery = historyService.createHistoricTaskInstanceQuery().taskDefinitionKey("theTask").or().deploymentIdIn(deploymentIds).endOr();
     assertEquals(0, taskInstanceQuery.count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testLocalizeTasks() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
+    assertEquals(1, tasks.size());
+    assertEquals("my task", tasks.get(0).getName());
+    assertNull(tasks.get(0).getDescription());
+    
+    ObjectNode infoNode = dynamicBpmnService.changeLocalizationName("en-GB", "theTask", "My localized name");
+    dynamicBpmnService.changeLocalizationDescription("en-GB".toString(), "theTask", "My localized description", infoNode);
+    dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
+    
+    tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
+    assertEquals(1, tasks.size());
+    assertEquals("my task", tasks.get(0).getName());
+    assertNull(tasks.get(0).getDescription());
+    
+    tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").list();
+    assertEquals(1, tasks.size());
+    assertEquals("My localized name", tasks.get(0).getName());
+    assertEquals("My localized description", tasks.get(0).getDescription());
+    
+    tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).listPage(0, 10);
+    assertEquals(1, tasks.size());
+    assertEquals("my task", tasks.get(0).getName());
+    assertNull(tasks.get(0).getDescription());
+    
+    tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").listPage(0, 10);
+    assertEquals(1, tasks.size());
+    assertEquals("My localized name", tasks.get(0).getName());
+    assertEquals("My localized description", tasks.get(0).getDescription());
+    
+    HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
+    assertEquals("my task", task.getName());
+    assertNull(task.getDescription());
+    
+    task = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").singleResult();
+    assertEquals("My localized name", task.getName());
+    assertEquals("My localized description", task.getDescription());
+    
+    task = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
+    assertEquals("my task", task.getName());
+    assertNull(task.getDescription());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml" })

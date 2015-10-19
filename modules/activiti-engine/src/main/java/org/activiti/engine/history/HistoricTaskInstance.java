@@ -45,4 +45,10 @@ public interface HistoricTaskInstance extends TaskInfo, HistoricData {
   /** Time when the task was claimed. */
   Date getClaimTime();
   
+  /** Sets an optional localized name for the task. */
+  void setLocalizedName(String name);
+  
+  /** Sets an optional localized description for the task. */
+  void setLocalizedDescription(String description);
+  
 }

@@ -25,22 +25,67 @@ public interface DynamicBpmnService {
   
   void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
   
-  ObjectNode changeClassName(String id, String className);
+  ObjectNode changeServiceTaskClassName(String id, String className);
   
-  void changeClassName(String id, String className, ObjectNode infoNode);
+  void changeServiceTaskClassName(String id, String className, ObjectNode infoNode);
   
-  ObjectNode changeExpression(String id, String expression);
+  ObjectNode changeServiceTaskExpression(String id, String expression);
   
-  void changeExpression(String id, String expression, ObjectNode infoNode);
+  void changeServiceTaskExpression(String id, String expression, ObjectNode infoNode);
   
-  ObjectNode changeDelegateExpression(String id, String expression);
+  ObjectNode changeServiceTaskDelegateExpression(String id, String expression);
   
-  void changeDelegateExpression(String id, String expression, ObjectNode infoNode);
+  void changeServiceTaskDelegateExpression(String id, String expression, ObjectNode infoNode);
   
-  ObjectNode changeFormKey(String id, String formKey);
+  ObjectNode changeUserTaskName(String id, String name);
   
-  void changeFormKey(String id, String formKey, ObjectNode infoNode);
+  void changeUserTaskName(String id, String name, ObjectNode infoNode);
   
-  ObjectNode getElementProperties(String id, ObjectNode infoNode);
+  ObjectNode changeUserTaskDescription(String id, String description);
+  
+  void changeUserTaskDescription(String id, String description, ObjectNode infoNode);
+  
+  ObjectNode changeUserTaskDueDate(String id, String dueDate);
+  
+  void changeUserTaskDueDate(String id, String dueDate, ObjectNode infoNode);
+  
+  ObjectNode changeUserTaskPriority(String id, String priority);
+  
+  void changeUserTaskPriority(String id, String priority, ObjectNode infoNode);
+  
+  ObjectNode changeUserTaskCategory(String id, String category);
+  
+  void changeUserTaskCategory(String id, String category, ObjectNode infoNode);
+  
+  ObjectNode changeUserTaskFormKey(String id, String formKey);
+  
+  void changeUserTaskFormKey(String id, String formKey, ObjectNode infoNode);
+  
+  ObjectNode changeUserTaskAssignee(String id, String assignee);
+  
+  void changeUserTaskAssignee(String id, String assignee, ObjectNode infoNode);
+  
+  ObjectNode changeUserTaskOwner(String id, String owner);
+  
+  void changeUserTaskOwner(String id, String owner, ObjectNode infoNode); 
+  
+  ObjectNode changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries);
+  
+  void changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
 
+  ObjectNode changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries);
+  
+  void changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
+  
+  ObjectNode getBpmnElementProperties(String id, ObjectNode infoNode);
+  
+  ObjectNode changeLocalizationName(String language, String id, String value);
+  
+  void changeLocalizationName(String language, String id, String value, ObjectNode infoNode);
+  
+  ObjectNode changeLocalizationDescription(String language, String id, String value);
+  
+  void changeLocalizationDescription(String language, String id, String value, ObjectNode infoNode);
+  
+  ObjectNode getLocalizationElementProperties(String language, String id, ObjectNode infoNode);
 }

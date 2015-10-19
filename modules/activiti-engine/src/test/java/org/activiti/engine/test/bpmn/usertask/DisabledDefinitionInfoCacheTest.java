@@ -59,7 +59,7 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
     assertProcessEnded(processInstance.getId());
     
     // now test with changing the form key
-    ObjectNode infoNode = dynamicBpmnService.changeFormKey("task1", "test2");
+    ObjectNode infoNode = dynamicBpmnService.changeUserTaskFormKey("task1", "test2");
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
     
     processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
@@ -97,7 +97,7 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
     
     String processDefinitionId = processInstance.getProcessDefinitionId();
-    ObjectNode infoNode = dynamicBpmnService.changeClassName("service", "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2");
+    ObjectNode infoNode = dynamicBpmnService.changeServiceTaskClassName("service", "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2");
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
     
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

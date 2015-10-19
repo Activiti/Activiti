@@ -102,12 +102,20 @@ public class TaskDefinition implements Serializable {
     candidateUserIdExpressions.add(userId);
   }
 
+  public void setCandidateUserIdExpressions(Set<Expression> candidateUserIdExpressions) {
+    this.candidateUserIdExpressions = candidateUserIdExpressions;
+  }
+
   public Set<Expression> getCandidateGroupIdExpressions() {
     return candidateGroupIdExpressions;
   }
 
   public void addCandidateGroupIdExpression(Expression groupId) {
     candidateGroupIdExpressions.add(groupId);
+  }
+  
+  public void setCandidateGroupIdExpressions(Set<Expression> candidateGroupIdExpressions) {
+    this.candidateGroupIdExpressions = candidateGroupIdExpressions;
   }
 
   public Map<String, Set<Expression>> getCustomUserIdentityLinkExpressions() {

@@ -69,7 +69,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected String parentTaskId;
   
   protected String name;
+  protected String localizedName;
   protected String description;
+  protected String localizedDescription;
   protected int priority = DEFAULT_PRIORITY;
   protected Date createTime; // The time when the task has been created
   protected Date dueDate;
@@ -497,6 +499,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setNameWithoutCascade(String taskName) {
     this.name = taskName;
   }
+  
+  public void setLocalizedName(String name) {
+    this.localizedName = name;
+  }
 
   public void setDescription(String description) {
     this.description = description;
@@ -512,6 +518,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   /* plain setter for persistence */
   public void setDescriptionWithoutCascade(String description) {
     this.description = description;
+  }
+  
+  public void setLocalizedDescription(String description) {
+    this.localizedDescription = description;
   }
 
   public void setAssignee(String assignee) {
@@ -802,11 +812,19 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
 
   public String getName() {
-    return name;
+    if (localizedName != null && localizedName.length() > 0) {
+      return localizedName;
+    } else {
+      return name;
+    }
   }
 
   public String getDescription() {
-    return description;
+    if (localizedDescription != null && localizedDescription.length() > 0) {
+      return localizedDescription;
+    } else {
+      return description;
+    }
   }
   
   public Date getDueDate() {
