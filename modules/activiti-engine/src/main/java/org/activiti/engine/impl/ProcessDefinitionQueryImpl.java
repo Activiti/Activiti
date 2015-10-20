@@ -322,6 +322,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return id;
   }
 
+  public Set<String> getIds() {
+    return ids;
+  }
+
   public String getName() {
     return name;
   }
