@@ -27,7 +27,7 @@ public class StandaloneDatabaseEventLoggerTest extends PluggableActivitiTestCase
 	  super.setUp();
 	  
 	  // Database event logger setup
-	  databaseEventLogger = new EventLogger(processEngineConfiguration.getClock());
+	  databaseEventLogger = new EventLogger(processEngineConfiguration.getClock(), processEngineConfiguration.getObjectMapper());
 	  runtimeService.addEventListener(databaseEventLogger);
 	}
 	

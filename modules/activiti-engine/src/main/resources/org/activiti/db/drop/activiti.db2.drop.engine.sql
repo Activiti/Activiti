@@ -3,6 +3,7 @@ drop index ACT_IDX_TASK_CREATE;
 drop index ACT_IDX_IDENT_LNK_USER;
 drop index ACT_IDX_IDENT_LNK_GROUP;
 drop index ACT_IDX_VARIABLE_TASK_ID;
+drop index ACT_IDX_INFO_PROCDEF;
 
 alter table ACT_GE_BYTEARRAY 
     drop foreign key ACT_FK_BYTEARR_DEPL;
@@ -56,7 +57,13 @@ alter table ACT_RE_MODEL
     drop foreign key ACT_FK_MODEL_SOURCE_EXTRA; 
     
 alter table ACT_RE_MODEL 
-    drop foreign key ACT_FK_MODEL_DEPLOYMENT; 
+    drop foreign key ACT_FK_MODEL_DEPLOYMENT;
+
+alter table ACT_PROCDEF_INFO 
+	drop foreign key ACT_FK_INFO_JSON_BA;
+
+alter table ACT_PROCDEF_INFO 
+	drop foreign key ACT_FK_INFO_PROCDEF;
 
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
@@ -73,3 +80,4 @@ drop table ACT_RU_EXECUTION;
 drop table ACT_RU_JOB;
 drop table ACT_RU_EVENT_SUBSCR;
 drop table ACT_EVT_LOG;
+drop table ACT_PROCDEF_INFO;

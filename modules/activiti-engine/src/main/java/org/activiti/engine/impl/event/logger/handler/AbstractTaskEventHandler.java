@@ -29,10 +29,7 @@ public abstract class AbstractTaskEventHandler extends AbstractDatabaseEventLogg
     putInMapIfNotNull(data, Fields.EXECUTION_ID, task.getExecutionId());
 
     if (task.getTenantId() != null && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(task.getTenantId())) {
-      putInMapIfNotNull(data, Fields.TENANT_ID, task.getTenantId()); // Important
-                                                                     // for
-                                                                     // standalone
-                                                                     // tasks
+      putInMapIfNotNull(data, Fields.TENANT_ID, task.getTenantId()); // Important for standalone tasks
     }
     return data;
   }

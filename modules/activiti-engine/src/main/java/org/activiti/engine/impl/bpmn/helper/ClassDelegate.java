@@ -21,6 +21,7 @@ import java.util.List;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
@@ -39,6 +40,9 @@ import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Helper class for bpmn constructs that allow class delegation.
@@ -53,6 +57,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
 
   private static final long serialVersionUID = 1L;
   
+  protected String serviceTaskId;
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
   protected ExecutionListener executionListenerInstance;
@@ -68,10 +73,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
 
   }
 
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
+  public ClassDelegate(String id, String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
     this(className, fieldDeclarations, skipExpression);
+    this.serviceTaskId = id;
     this.mapExceptions = mapExceptions;
-
   }
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
@@ -131,6 +136,17 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
     if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
 
+      if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+        ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
+        if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME)) {
+          String overrideClassName = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME).asText();
+          if (StringUtils.isNotEmpty(overrideClassName) && overrideClassName.equals(className) == false) {
+            className = overrideClassName;
+            activityBehaviorInstance = null;
+          }
+        }
+      }
+      
       if (activityBehaviorInstance == null) {
         activityBehaviorInstance = getActivityBehaviorInstance(execution);
       }

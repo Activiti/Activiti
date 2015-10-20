@@ -35,6 +35,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -53,6 +54,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.form.AbstractFormType;
+import org.activiti.engine.impl.DynamicBpmnServiceImpl;
 import org.activiti.engine.impl.FormServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
@@ -160,6 +162,7 @@ import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
@@ -200,6 +203,8 @@ import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
@@ -232,6 +237,7 @@ import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManager;
+import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
@@ -257,6 +263,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.MybatisJobDataManag
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisMembershipDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisModelDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisProcessDefinitionDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.MybatisProcessDefinitionInfoDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisPropertyDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisResourceDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisTaskDataManager;
@@ -312,6 +319,8 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -336,6 +345,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskService taskService = new TaskServiceImpl(this);
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
+  protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
 
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
 
@@ -377,6 +387,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected MembershipDataManager membershipDataManager;
   protected ModelDataManager modelDataManager;
   protected ProcessDefinitionDataManager processDefinitionDataManager;
+  protected ProcessDefinitionInfoDataManager processDefinitionInfoDataManager;
   protected PropertyDataManager propertyDataManager;
   protected ResourceDataManager resourceDataManager;
   protected TaskDataManager taskDataManager;
@@ -406,6 +417,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected MembershipEntityManager membershipEntityManager;
   protected ModelEntityManager modelEntityManager;
   protected ProcessDefinitionEntityManager processDefinitionEntityManager;
+  protected ProcessDefinitionInfoEntityManager processDefinitionInfoEntityManager;
   protected PropertyEntityManager propertyEntityManager;
   protected ResourceEntityManager resourceEntityManager;
   protected TableDataManager tableDataManager;
@@ -440,6 +452,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected int processDefinitionCacheLimit = -1; // By default, no limit
   protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
+  
+  protected int processDefinitionInfoCacheLimit = -1; // By default, no limit
+  protected ProcessDefinitionInfoCache processDefinitionInfoCache;
 
   protected int knowledgeBaseCacheLimit = -1;
   protected DeploymentCache<Object> knowledgeBaseCache;
@@ -556,6 +571,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * By default: 100.
    */
   protected int maxNrOfStatementsInBulkInsert = 100;
+  
+  protected ObjectMapper objectMapper = new ObjectMapper();
   
   /**
    * Flag that can be set to configure or nota relational database is used.
@@ -751,6 +768,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initService(taskService);
     initService(formService);
     initService(managementService);
+    initService(dynamicBpmnService);
   }
 
   protected void initService(Object service) {
@@ -1013,6 +1031,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     membershipDataManager = new MybatisMembershipDataManager(this);
     modelDataManager = new MybatisModelDataManager(this);
     processDefinitionDataManager = new MybatisProcessDefinitionDataManager(this);
+    processDefinitionInfoDataManager = new MybatisProcessDefinitionInfoDataManager(this);
     propertyDataManager = new MybatisPropertyDataManager(this);
     resourceDataManager = new MybatisResourceDataManager(this);
     taskDataManager = new MybatisTaskDataManager(this);
@@ -1043,6 +1062,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     membershipEntityManager = new MembershipEntityManagerImpl(this, membershipDataManager);
     modelEntityManager = new ModelEntityManagerImpl(this, modelDataManager);
     processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl(this, processDefinitionDataManager);
+    processDefinitionInfoEntityManager = new ProcessDefinitionInfoEntityManagerImpl(this, processDefinitionInfoDataManager);
     propertyEntityManager = new PropertyEntityManagerImpl(this, propertyDataManager);
     resourceEntityManager = new ResourceEntityManagerImpl(this, resourceDataManager);
     tableDataManager = new TableDataManagerImpl(this);
@@ -1204,6 +1224,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>(processDefinitionCacheLimit);
         }
       }
+      
+      if (processDefinitionInfoCache == null) {
+        if (processDefinitionInfoCacheLimit <= 0) {
+          processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor);
+        } else {
+          processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor, processDefinitionInfoCacheLimit);
+        }
+      }
 
       // Knowledge base cache (used for Drools business task)
       if (knowledgeBaseCache == null) {
@@ -1215,6 +1243,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
 
       deploymentManager.setProcessDefinitionCache(processDefinitionCache);
+      deploymentManager.setProcessDefinitionInfoCache(processDefinitionInfoCache);
       deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
     }
   }
@@ -1511,8 +1540,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DateType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
-      variableTypes.addType(new JsonType(maxLengthStringVariableType));
-      variableTypes.addType(new LongJsonType(maxLengthStringVariableType + 1));
+      variableTypes.addType(new JsonType(maxLengthStringVariableType, objectMapper));
+      variableTypes.addType(new LongJsonType(maxLengthStringVariableType + 1, objectMapper));
       variableTypes.addType(new ByteArrayType());
       variableTypes.addType(new SerializableType());
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
@@ -1682,10 +1711,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initDatabaseEventLogging() {
     if (enableDatabaseEventLogging) {
-      // Database event logging uses the default logging mechanism and
-      // adds
+      // Database event logging uses the default logging mechanism and adds
       // a specific event listener to the list of event listeners
-      getEventDispatcher().addEventListener(new EventLogger(clock));
+      getEventDispatcher().addEventListener(new EventLogger(clock, objectMapper));
     }
   }
 
@@ -1833,6 +1861,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setManagementService(ManagementService managementService) {
     this.managementService = managementService;
+    return this;
+  }
+  
+  public DynamicBpmnService getDynamicBpmnService() {
+    return dynamicBpmnService;
+  }
+
+  public ProcessEngineConfigurationImpl setDynamicBpmnService(DynamicBpmnService dynamicBpmnService) {
+    this.dynamicBpmnService = dynamicBpmnService;
     return this;
   }
 
@@ -2560,6 +2597,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setProcessDefinitionEntityManager(ProcessDefinitionEntityManager processDefinitionEntityManager) {
     this.processDefinitionEntityManager = processDefinitionEntityManager;
   }
+  
+  public ProcessDefinitionInfoEntityManager getProcessDefinitionInfoEntityManager() {
+    return processDefinitionInfoEntityManager;
+  }
+
+  public void setProcessDefinitionInfoEntityManager(ProcessDefinitionInfoEntityManager processDefinitionInfoEntityManager) {
+    this.processDefinitionInfoEntityManager = processDefinitionInfoEntityManager;
+  }
 
   public PropertyEntityManager getPropertyEntityManager() {
     return propertyEntityManager;
@@ -2639,6 +2684,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
+  public ObjectMapper getObjectMapper() {
+    return objectMapper;
+  }
   
   // Activiti 5
   

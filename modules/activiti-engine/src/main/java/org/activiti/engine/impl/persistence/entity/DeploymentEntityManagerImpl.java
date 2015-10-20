@@ -99,6 +99,8 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
       // event subscriptions
       getEventSubscriptionEntityManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
+      
+      getProcessDefinitionInfoEntityManager().deleteProcessDefinitionInfo(processDefinitionId);
     }
 
     // delete process definitions from db

@@ -14,7 +14,7 @@
 
     <property name="databaseSchemaUpdate" value="true" />
     
-    
+    <property name="enableProcessDefinitionInfoCache" value="true" />
   </bean>
 
 </beans>

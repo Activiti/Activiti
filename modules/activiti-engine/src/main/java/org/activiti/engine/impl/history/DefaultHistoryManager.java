@@ -22,7 +22,6 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
@@ -37,7 +36,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.task.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -606,21 +604,6 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
       if (historicTaskInstance != null) {
         historicTaskInstance.setTaskDefinitionKey(taskDefinitionKey);
-
-        if (taskDefinitionKey != null) {
-          TaskEntity taskEntity =  getTaskEntityManager().findById(taskId);
-          
-          TaskFormHandler taskFormHandler = FormHandlerUtil.getTaskFormHandlder(taskEntity);
-          if (taskFormHandler != null) {
-            if (taskFormHandler.getFormKey() != null) {
-              Object formValue = taskFormHandler.getFormKey().getValue(taskEntity.getExecution());
-              if (formValue != null) {
-                historicTaskInstance.setFormKey(formValue.toString());
-              }
-            }
-          }
-
-        }
       }
     }
   }

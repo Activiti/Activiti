@@ -40,6 +40,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
+  protected ProcessDefinitionInfoCache processDefinitionInfoCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
 
@@ -181,6 +182,14 @@ public class DeploymentManager {
 
   public void setProcessDefinitionCache(DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache) {
     this.processDefinitionCache = processDefinitionCache;
+  }
+  
+  public ProcessDefinitionInfoCache getProcessDefinitionInfoCache() {
+    return processDefinitionInfoCache;
+  }
+
+  public void setProcessDefinitionInfoCache(ProcessDefinitionInfoCache processDefinitionInfoCache) {
+    this.processDefinitionInfoCache = processDefinitionInfoCache;
   }
 
   public DeploymentCache<Object> getKnowledgeBaseCache() {

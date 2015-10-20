@@ -10,6 +10,7 @@ drop table if exists ACT_RU_IDENTITYLINK cascade constraints;
 drop table if exists ACT_RU_VARIABLE cascade constraints;
 drop table if exists ACT_RU_EVENT_SUBSCR cascade constraints;
 drop table if exists ACT_EVT_LOG cascade constraints;
+drop table if exists ACT_PROCDEF_INFO cascade constraints;
 
 drop index if exists ACT_IDX_EXEC_BUSKEY;
 drop index if exists ACT_IDX_TASK_CREATE;
@@ -18,3 +19,4 @@ drop index if exists ACT_IDX_IDENT_LNK_GROUP;
 drop index if exists ACT_IDX_VARIABLE_TASK_ID;
 drop index if exists ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index if exists ACT_IDX_ATHRZ_PROCEDEF;
+drop index if exists ACT_IDX_INFO_PROCDEF;

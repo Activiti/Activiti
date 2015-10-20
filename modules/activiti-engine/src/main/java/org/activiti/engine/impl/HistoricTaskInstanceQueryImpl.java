@@ -19,13 +19,18 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.variable.VariableTypes;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tom Baeyens
@@ -95,6 +100,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
+  protected String locale;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
   protected List<HistoricTaskInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricTaskInstanceQueryImpl>();
@@ -124,11 +130,20 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public List<HistoricTaskInstance> executeList(CommandContext commandContext, Page page) {
     ensureVariablesInitialized();
     checkQueryOk();
+    List<HistoricTaskInstance> tasks = null;
     if (includeTaskLocalVariables || includeProcessVariables) {
-      return commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesAndVariablesByQueryCriteria(this);
+      tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesAndVariablesByQueryCriteria(this);
     } else {
-      return commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(this);
+      tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(this);
     }
+    
+    if (tasks != null) {
+      for (HistoricTaskInstance task : tasks) {
+        localize(task);
+      }
+    }
+    
+    return tasks;
   }
 
   public HistoricTaskInstanceQueryImpl processInstanceId(String processInstanceId) {
@@ -995,6 +1010,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
+  
+  public HistoricTaskInstanceQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
 
   public HistoricTaskInstanceQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
@@ -1025,6 +1045,30 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     inOrStatement = false;
     currentOrQueryObject = null;
     return this;
+  }
+  
+  protected void localize(HistoricTaskInstance task) {
+    HistoricTaskInstanceEntity taskEntity = (HistoricTaskInstanceEntity) task;
+    taskEntity.setLocalizedName(null);
+    taskEntity.setLocalizedDescription(null);
+    
+    if (locale != null) {
+      String processDefinitionId = task.getProcessDefinitionId();
+      if (processDefinitionId != null) {
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId);
+        if (languageNode != null) {
+          JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+          if (languageNameNode != null && languageNameNode.isNull() == false) {
+            taskEntity.setLocalizedName(languageNameNode.asText());
+          }
+          
+          JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+            taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
+          }
+        }
+      }
+    }
   }
 
   // ordering
@@ -1411,25 +1455,36 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getInvolvedUser() {
     return involvedUser;
   }
+  
 	public String getProcessDefinitionKeyLikeIgnoreCase() {
 		return processDefinitionKeyLikeIgnoreCase;
 	}
+	
 	public String getProcessInstanceBusinessKeyLikeIgnoreCase() {
 		return processInstanceBusinessKeyLikeIgnoreCase;
 	}
+	
 	public String getTaskNameLikeIgnoreCase() {
 		return taskNameLikeIgnoreCase;
 	}
+	
 	public String getTaskDescriptionLikeIgnoreCase() {
 		return taskDescriptionLikeIgnoreCase;
 	}
+	
 	public String getTaskOwnerLikeIgnoreCase() {
 		return taskOwnerLikeIgnoreCase;
 	}
+	
 	public String getTaskAssigneeLikeIgnoreCase() {
 		return taskAssigneeLikeIgnoreCase;
 	}
-	public List<HistoricTaskInstanceQueryImpl> getOrQueryObjects() {
+	
+	public String getLocale() {
+    return locale;
+  }
+
+  public List<HistoricTaskInstanceQueryImpl> getOrQueryObjects() {
     return orQueryObjects;
   }
 }

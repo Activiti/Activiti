@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.List;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
@@ -38,6 +40,9 @@ import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * activity implementation for the user task.
@@ -62,31 +67,71 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
     task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinitionKey(userTask.getId());
+    
+    String activeTaskName = null;
+    String activeTaskDescription = null;
+    String activeTaskDueDate = null;
+    String activeTaskPriority = null;
+    String activeTaskCategory = null;
+    String activeTaskFormKey = null;
+    String activeTaskSkipExpression = null;
+    String activeTaskAssignee = null;
+    String activeTaskOwner = null;
+    List<String> activeTaskCandidateUsers = null;
+    List<String> activeTaskCandidateGroups = null;
+    
+    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+      ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTask.getId(), execution.getProcessDefinitionId());
+      activeTaskName = getActiveValue(userTask.getName(), DynamicBpmnConstants.USER_TASK_NAME, taskElementProperties);
+      activeTaskDescription = getActiveValue(userTask.getDocumentation(), DynamicBpmnConstants.USER_TASK_DESCRIPTION, taskElementProperties);
+      activeTaskDueDate = getActiveValue(userTask.getDueDate(), DynamicBpmnConstants.USER_TASK_DUEDATE, taskElementProperties);
+      activeTaskPriority = getActiveValue(userTask.getPriority(), DynamicBpmnConstants.USER_TASK_PRIORITY, taskElementProperties);
+      activeTaskCategory = getActiveValue(userTask.getCategory(), DynamicBpmnConstants.USER_TASK_CATEGORY, taskElementProperties);
+      activeTaskFormKey = getActiveValue(userTask.getFormKey(), DynamicBpmnConstants.USER_TASK_FORM_KEY, taskElementProperties);
+      activeTaskSkipExpression = getActiveValue(userTask.getSkipExpression(), DynamicBpmnConstants.TASK_SKIP_EXPRESSION, taskElementProperties);
+      activeTaskAssignee = getActiveValue(userTask.getAssignee(), DynamicBpmnConstants.USER_TASK_ASSIGNEE, taskElementProperties);
+      activeTaskOwner = getActiveValue(userTask.getOwner(), DynamicBpmnConstants.USER_TASK_OWNER, taskElementProperties);
+      activeTaskCandidateUsers = getActiveValueList(userTask.getCandidateUsers(), DynamicBpmnConstants.USER_TASK_CANDIDATE_USERS, taskElementProperties);
+      activeTaskCandidateGroups = getActiveValueList(userTask.getCandidateGroups(), DynamicBpmnConstants.USER_TASK_CANDIDATE_GROUPS, taskElementProperties);
+      
+    } else {
+      activeTaskName = userTask.getName();
+      activeTaskDescription = userTask.getDocumentation();
+      activeTaskDueDate = userTask.getDueDate();
+      activeTaskPriority = userTask.getPriority();
+      activeTaskCategory = userTask.getCategory();
+      activeTaskFormKey = userTask.getFormKey();
+      activeTaskSkipExpression = userTask.getSkipExpression();
+      activeTaskAssignee = userTask.getAssignee();
+      activeTaskOwner = userTask.getOwner();
+      activeTaskCandidateUsers = userTask.getCandidateUsers();
+      activeTaskCandidateGroups = userTask.getCandidateGroups();
+    }
 
-    if (StringUtils.isNotEmpty(userTask.getName())) {
+    if (StringUtils.isNotEmpty(activeTaskName)) {
       String name = null;
       try {
-        name = (String) expressionManager.createExpression(userTask.getName()).getValue(execution);
+        name = (String) expressionManager.createExpression(activeTaskName).getValue(execution);
       } catch (ActivitiException e) {
-        name = userTask.getName();
+        name = activeTaskName;
         LOGGER.warn("property not found in task name expression " + e.getMessage());
       }
       task.setName(name);
     }
     
-    if (StringUtils.isNotEmpty(userTask.getDocumentation())) {
+    if (StringUtils.isNotEmpty(activeTaskDescription)) {
       String description = null;
       try {
-        description = (String) expressionManager.createExpression(userTask.getDocumentation()).getValue(execution);
+        description = (String) expressionManager.createExpression(activeTaskDescription).getValue(execution);
       } catch (ActivitiException e) {
-        description = userTask.getDocumentation();
+        description = activeTaskDescription;
         LOGGER.warn("property not found in task description expression " + e.getMessage());
       }
       task.setDescription(description);
     }
 
-    if (StringUtils.isNotEmpty(userTask.getDueDate())) {
-      Object dueDate = expressionManager.createExpression(userTask.getDueDate()).getValue(execution);
+    if (StringUtils.isNotEmpty(activeTaskDueDate)) {
+      Object dueDate = expressionManager.createExpression(activeTaskDueDate).getValue(execution);
       if (dueDate != null) {
         if (dueDate instanceof Date) {
           task.setDueDate((Date) dueDate);
@@ -94,13 +139,13 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(DueDateBusinessCalendar.NAME);
           task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
         } else {
-          throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + userTask.getDueDate());
+          throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + activeTaskDueDate);
         }
       }
     }
     
-    if (StringUtils.isNotEmpty(userTask.getPriority())) {
-      final Object priority = expressionManager.createExpression(userTask.getPriority()).getValue(execution);
+    if (StringUtils.isNotEmpty(activeTaskPriority)) {
+      final Object priority = expressionManager.createExpression(activeTaskPriority).getValue(execution);
       if (priority != null) {
         if (priority instanceof String) {
           try {
@@ -111,34 +156,34 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         } else if (priority instanceof Number) {
           task.setPriority(((Number) priority).intValue());
         } else {
-          throw new ActivitiIllegalArgumentException("Priority expression does not resolve to a number: " + userTask.getPriority());
+          throw new ActivitiIllegalArgumentException("Priority expression does not resolve to a number: " + activeTaskPriority);
         }
       }
     }
 
-    if (StringUtils.isNotEmpty(userTask.getCategory())) {
-      final Object category = expressionManager.createExpression(userTask.getCategory()).getValue(execution);
+    if (StringUtils.isNotEmpty(activeTaskCategory)) {
+      final Object category = expressionManager.createExpression(activeTaskCategory).getValue(execution);
       if (category != null) {
         if (category instanceof String) {
           task.setCategory((String) category);
         } else {
-          throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + userTask.getCategory());
+          throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + activeTaskCategory);
         }
       }
     }
     
-    if (StringUtils.isNotEmpty(userTask.getFormKey())) {
-      final Object formKey = expressionManager.createExpression(userTask.getFormKey()).getValue(execution);
+    if (StringUtils.isNotEmpty(activeTaskFormKey)) {
+      final Object formKey = expressionManager.createExpression(activeTaskFormKey).getValue(execution);
       if (formKey != null) {
         if (formKey instanceof String) {
           task.setFormKey((String) formKey);
         } else {
-          throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + userTask.getFormKey());
+          throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + activeTaskFormKey);
         }
       }
     }
 
-    handleAssignments(task, execution);
+    handleAssignments(activeTaskAssignee, activeTaskOwner, activeTaskCandidateUsers, activeTaskCandidateGroups, task, execution);
 
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -148,8 +193,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     Context.getCommandContext().getTaskEntityManager().update(task);
     Context.getCommandContext().getTaskEntityManager().fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
 
-    if (StringUtils.isNotEmpty(userTask.getSkipExpression())) {
-      Expression skipExpression = expressionManager.createExpression(userTask.getSkipExpression());
+    if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
+      Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
       if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
         CommandContext commandContext = Context.getCommandContext();
         commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
@@ -172,10 +217,11 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  protected void handleAssignments(TaskEntity task, DelegateExecution execution) {
+  protected void handleAssignments(String assignee, String owner, List<String> candidateUsers,
+      List<String> candidateGroups, TaskEntity task, DelegateExecution execution) {
     
-    if (StringUtils.isNotEmpty(userTask.getAssignee())) {
-      Object assigneeExpressionValue = expressionManager.createExpression(userTask.getAssignee()).getValue(execution);
+    if (StringUtils.isNotEmpty(assignee)) {
+      Object assigneeExpressionValue = expressionManager.createExpression(assignee).getValue(execution);
       String assigneeValue = null;
       if (assigneeExpressionValue != null) {
         assigneeValue = assigneeExpressionValue.toString();
@@ -184,8 +230,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       Context.getCommandContext().getTaskEntityManager().update(task);
     }
 
-    if (StringUtils.isNotEmpty(userTask.getOwner())) {
-      Object ownerExpressionValue = expressionManager.createExpression(userTask.getOwner()).getValue(execution);
+    if (StringUtils.isNotEmpty(owner)) {
+      Object ownerExpressionValue = expressionManager.createExpression(owner).getValue(execution);
       String ownerValue = null;
       if (ownerExpressionValue != null) {
         ownerValue = ownerExpressionValue.toString();
@@ -194,8 +240,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       Context.getCommandContext().getTaskEntityManager().update(task);
     }
 
-    if (userTask.getCandidateGroups() != null && !userTask.getCandidateGroups().isEmpty()) {
-      for (String candidateGroup : userTask.getCandidateGroups()) {
+    if (candidateGroups != null && !candidateGroups.isEmpty()) {
+      for (String candidateGroup : candidateGroups) {
         Expression groupIdExpr = expressionManager.createExpression(candidateGroup);
         Object value = groupIdExpr.getValue(execution);
         if (value instanceof String) {
@@ -209,8 +255,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
 
-    if (userTask.getCandidateUsers() != null && !userTask.getCandidateUsers().isEmpty()) {
-      for (String candidateUser : userTask.getCandidateUsers()) {
+    if (candidateUsers != null && !candidateUsers.isEmpty()) {
+      for (String candidateUser : candidateUsers) {
         Expression userIdExpr = expressionManager.createExpression(candidateUser);
         Object value = userIdExpr.getValue(execution);
         if (value instanceof String) {
@@ -287,4 +333,36 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     return Arrays.asList(str.split("[\\s]*,[\\s]*"));
   }
 
+  protected String getActiveValue(String originalValue, String propertyName, ObjectNode taskElementProperties) {
+    String activeValue = originalValue;
+    if (taskElementProperties != null) {
+      JsonNode overrideValueNode = taskElementProperties.get(propertyName);
+      if (overrideValueNode != null) {
+        if (overrideValueNode.isNull()) {
+          activeValue = null;
+        } else {
+          activeValue = overrideValueNode.asText();
+        }
+      }
+    }
+    return activeValue;
+  }
+  
+  protected List<String> getActiveValueList(List<String> originalValues, String propertyName, ObjectNode taskElementProperties) {
+    List<String> activeValues = originalValues;
+    if (taskElementProperties != null) {
+      JsonNode overrideValuesNode = taskElementProperties.get(propertyName);
+      if (overrideValuesNode != null) {
+        if (overrideValuesNode.isNull() || overrideValuesNode.isArray() == false || overrideValuesNode.size() == 0) {
+          activeValues = null;
+        } else {
+          activeValues = new ArrayList<String>();
+          for (JsonNode valueNode : overrideValuesNode) {
+            activeValues.add(valueNode.asText());
+          }
+        }
+      }
+    }
+    return activeValues;
+  }
 }

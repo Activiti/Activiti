@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.context;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
@@ -20,7 +22,10 @@ import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tom Baeyens
@@ -33,6 +38,7 @@ public class Context {
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
   protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
   protected static ThreadLocal<JobExecutorContext> jobExecutorContextThreadLocal = new ThreadLocal<JobExecutorContext>();
+  protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
   protected static ThreadLocal<Activiti5CompatibilityHandler> activiti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
   protected static ThreadLocal<Activiti5CompatibilityHandler> fallbackActiviti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
   
@@ -108,6 +114,59 @@ public class Context {
 
   public static void removeJobExecutorContext() {
     jobExecutorContextThreadLocal.remove();
+  }
+  
+  public static ObjectNode getBpmnOverrideElementProperties(String id, String processDefinitionId) {
+    ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
+    ObjectNode elementProperties = null;
+    if (definitionInfoNode != null) {
+      elementProperties = getProcessEngineConfiguration().getDynamicBpmnService().getBpmnElementProperties(id, definitionInfoNode);
+    }
+    return elementProperties;
+  }
+  
+  public static ObjectNode getLocalizationElementProperties(String language, String id, String processDefinitionId) {
+    ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
+    ObjectNode localizationProperties = null;
+    if (definitionInfoNode != null) {
+      localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
+          language, id, definitionInfoNode);
+    }
+    return localizationProperties;
+  }
+  
+  public static void removeBpmnOverrideContext() {
+    bpmnOverrideContextThreadLocal.remove();
+  }
+  
+  protected static ObjectNode getProcessDefinitionInfoNode(String processDefinitionId) {
+    Map<String, ObjectNode> bpmnOverrideMap = getBpmnOverrideContext();
+    if (bpmnOverrideMap.containsKey(processDefinitionId) == false) {
+      ProcessDefinitionInfoCacheObject cacheObject = getProcessEngineConfiguration().getDeploymentManager()
+          .getProcessDefinitionInfoCache()
+          .get(processDefinitionId);
+      
+      addBpmnOverrideElement(processDefinitionId, cacheObject.getInfoNode());
+    }
+    
+    return getBpmnOverrideContext().get(processDefinitionId);
+  }
+  
+  protected static Map<String, ObjectNode> getBpmnOverrideContext() {
+    Map<String, ObjectNode> bpmnOverrideMap = bpmnOverrideContextThreadLocal.get();
+    if (bpmnOverrideMap == null) {
+      bpmnOverrideMap = new HashMap<String, ObjectNode>();
+    }
+    return bpmnOverrideMap;
+  }
+  
+  protected static void addBpmnOverrideElement(String id, ObjectNode infoNode) {
+    Map<String, ObjectNode> bpmnOverrideMap = bpmnOverrideContextThreadLocal.get();
+    if (bpmnOverrideMap == null) {
+      bpmnOverrideMap = new HashMap<String, ObjectNode>();
+      bpmnOverrideContextThreadLocal.set(bpmnOverrideMap);
+    }
+    bpmnOverrideMap.put(id, infoNode);
   }
   
   public static Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {

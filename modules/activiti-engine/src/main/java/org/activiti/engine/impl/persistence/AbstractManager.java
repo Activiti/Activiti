@@ -40,6 +40,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
@@ -112,6 +113,10 @@ public abstract class AbstractManager {
 
   protected ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
     return getProcessEngineConfiguration().getProcessDefinitionEntityManager();
+  }
+  
+  protected ProcessDefinitionInfoEntityManager getProcessDefinitionInfoEntityManager() {
+    return getProcessEngineConfiguration().getProcessDefinitionInfoEntityManager();
   }
 
   protected ModelEntityManager getModelEntityManager() {
