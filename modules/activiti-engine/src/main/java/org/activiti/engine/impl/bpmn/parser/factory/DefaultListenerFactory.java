@@ -23,7 +23,8 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.helper.BaseDelegateEventListener;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.helper.ClassDelegateFactory;
+import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.helper.DelegateActivitiEventListener;
 import org.activiti.engine.impl.bpmn.helper.DelegateExpressionActivitiEventListener;
 import org.activiti.engine.impl.bpmn.helper.ErrorThrowingEventListener;
@@ -49,6 +50,15 @@ import org.activiti.engine.task.Task;
  * @author Joram Barrez
  */
 public class DefaultListenerFactory extends AbstractBehaviorFactory implements ListenerFactory {
+  private final ClassDelegateFactory classDelegateFactory;
+
+  public DefaultListenerFactory(ClassDelegateFactory classDelegateFactory) {
+    this.classDelegateFactory = classDelegateFactory;
+  }
+
+  public DefaultListenerFactory() {
+    this(new DefaultClassDelegateFactory());
+  }
 
   public static final Map<String, Class<?>> ENTITY_MAPPING = new HashMap<String, Class<?>>();
   static {
@@ -63,7 +73,8 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
   }
 
   public TaskListener createClassDelegateTaskListener(ActivitiListener activitiListener) {
-    return new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
+    return classDelegateFactory.create(activitiListener.getImplementation(),
+        createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
 
   public TaskListener createExpressionTaskListener(ActivitiListener activitiListener) {
@@ -75,7 +86,7 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
   }
 
   public ExecutionListener createClassDelegateExecutionListener(ActivitiListener activitiListener) {
-    return new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
+    return classDelegateFactory.create(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
 
   public ExecutionListener createExpressionExecutionListener(ActivitiListener activitiListener) {

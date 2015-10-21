@@ -88,6 +88,8 @@ import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.helper.ClassDelegateFactory;
+import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
@@ -101,6 +103,15 @@ import org.apache.commons.lang3.StringUtils;
  * @author Joram Barrez
  */
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
+  private final ClassDelegateFactory classDelegateFactory;
+
+  public DefaultActivityBehaviorFactory(ClassDelegateFactory classDelegateFactory) {
+    this.classDelegateFactory = classDelegateFactory;
+  }
+
+  public DefaultActivityBehaviorFactory() {
+    this(new DefaultClassDelegateFactory());
+  }
 
   // Start event
   public final static String EXCEPTION_MAP_FIELD = "mapExceptions";
@@ -130,38 +141,30 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
   // Service task
 
-  public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
-    Expression skipExpression;
+  private Expression getSkipExpressionFromServiceTask(ServiceTask serviceTask) {
+    Expression result = null;
     if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
-      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
-    } else {
-      skipExpression = null;
+      result = expressionManager.createExpression(serviceTask.getSkipExpression());
     }
-    return new ClassDelegate(serviceTask.getId(), serviceTask.getImplementation(), 
-        createFieldDeclarations(serviceTask.getFieldExtensions()), skipExpression, serviceTask.getMapExceptions());
+    return result;
+  }
+
+  public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
+    return new ClassDelegate(serviceTask.getId(), serviceTask.getImplementation(),
+        createFieldDeclarations(serviceTask.getFieldExtensions()),
+        getSkipExpressionFromServiceTask(serviceTask), serviceTask.getMapExceptions());
   }
 
   public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression delegateExpression = expressionManager.createExpression(serviceTask.getImplementation());
-    Expression skipExpression;
-    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
-      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
-    } else {
-      skipExpression = null;
-    }
-    return new ServiceTaskDelegateExpressionActivityBehavior(serviceTask.getId(), delegateExpression, 
-        skipExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
+    return new ServiceTaskDelegateExpressionActivityBehavior(serviceTask.getId(), delegateExpression,
+        getSkipExpressionFromServiceTask(serviceTask), createFieldDeclarations(serviceTask.getFieldExtensions()));
   }
 
   public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression expression = expressionManager.createExpression(serviceTask.getImplementation());
-    Expression skipExpression;
-    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
-      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
-    } else {
-      skipExpression = null;
-    }
-    return new ServiceTaskExpressionActivityBehavior(serviceTask.getId(), expression, skipExpression, serviceTask.getResultVariableName());
+    return new ServiceTaskExpressionActivityBehavior(serviceTask.getId(), expression,
+        getSkipExpressionFromServiceTask(serviceTask), serviceTask.getResultVariableName());
   }
 
   public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {
