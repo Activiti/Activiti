@@ -124,7 +124,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
   
   public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition) {
-    return new UserTaskActivityBehavior(taskDefinition);
+    return new UserTaskActivityBehavior(userTask.getId(), taskDefinition);
   }
 
   // Service task
@@ -136,7 +136,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     } else {
       skipExpression = null;
     }
-    return new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()), skipExpression, serviceTask.getMapExceptions());
+    return new ClassDelegate(serviceTask.getId(), serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()), 
+        skipExpression, serviceTask.getMapExceptions());
   }
   
   public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
@@ -147,7 +148,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     } else {
       skipExpression = null;
     }
-    return new ServiceTaskDelegateExpressionActivityBehavior(delegateExpression, skipExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
+    return new ServiceTaskDelegateExpressionActivityBehavior(serviceTask.getId(), delegateExpression, skipExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
   }
   
   public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
@@ -158,7 +159,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     } else {
       skipExpression = null;
     }
-    return new ServiceTaskExpressionActivityBehavior(expression, skipExpression, serviceTask.getResultVariableName());
+    return new ServiceTaskExpressionActivityBehavior(serviceTask.getId(), expression, skipExpression, serviceTask.getResultVariableName());
   }
   
   public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {

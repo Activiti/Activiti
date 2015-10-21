@@ -74,6 +74,8 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
 import org.activiti5.engine.repository.DeploymentBuilder;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
@@ -151,6 +153,25 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
       } else {
         getProcessEngine().getRepositoryService().addCandidateStarterGroup(processDefinitionId, groupId);
       }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+    }
+  }
+  
+  public ObjectNode getProcessDefinitionInfo(String processDefinitionId) {
+    try {
+      return getProcessEngine().getDynamicBpmnService().getProcessDefinitionInfo(processDefinitionId);
+      
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
+  }
+  
+  public void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode) {
+    try {
+      getProcessEngine().getDynamicBpmnService().saveProcessDefinitionInfo(processDefinitionId, infoNode);
+      
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);
     }

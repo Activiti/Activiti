@@ -213,6 +213,8 @@ public abstract class ProcessEngineConfiguration {
    */
   protected boolean useClassForNameClassLoading = true;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
+  
+  protected boolean enableProcessDefinitionInfoCache = false;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -807,6 +809,15 @@ public abstract class ProcessEngineConfiguration {
 
   public ProcessEngineConfiguration setAsyncFailedJobWaitTime(int asyncFailedJobWaitTime) {
     this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
+    return this;
+  }
+  
+  public boolean isEnableProcessDefinitionInfoCache() {
+    return enableProcessDefinitionInfoCache;
+  }
+
+  public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(boolean enableProcessDefinitionInfoCache) {
+    this.enableProcessDefinitionInfoCache = enableProcessDefinitionInfoCache;
     return this;
   }
 }

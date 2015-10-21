@@ -72,6 +72,8 @@ public interface ProcessEngine {
   IdentityService getIdentityService();
 
   ManagementService getManagementService();
+  
+  DynamicBpmnService getDynamicBpmnService();
 
   ProcessEngineConfiguration getProcessEngineConfiguration();
 }

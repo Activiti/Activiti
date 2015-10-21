@@ -102,6 +102,7 @@ public class DefaultProcessEngineFactory {
     
     activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
     activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
+    activiti5Configuration.setEnableProcessDefinitionInfoCache(activiti6Configuration.isEnableProcessDefinitionInfoCache());
     
     if (activiti6Configuration.isAsyncExecutorEnabled()) {
       activiti5Configuration.setAsyncExecutorEnabled(true);

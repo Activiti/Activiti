@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -39,6 +40,9 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti5.engine.impl.util.ReflectUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -59,6 +63,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected ActivityBehavior activityBehaviorInstance;
   protected Expression skipExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected String serviceTaskId;
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
@@ -67,10 +72,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
    
   }
 
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
+  public ClassDelegate(String id, String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
     this(className, fieldDeclarations, skipExpression);
+    this.serviceTaskId = id;
     this.mapExceptions = mapExceptions;
-   
   }
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
@@ -135,6 +140,17 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression);
     if (!isSkipExpressionEnabled || 
             (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression))) {
+      
+      if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+        ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
+        if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME)) {
+          String overrideClassName = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME).asText();
+          if (StringUtils.isNotEmpty(overrideClassName) && overrideClassName.equals(className) == false) {
+            className = overrideClassName;
+            activityBehaviorInstance = null;
+          }
+        }
+      }
       
       if (activityBehaviorInstance == null) {
         activityBehaviorInstance = getActivityBehaviorInstance(activityExecution);

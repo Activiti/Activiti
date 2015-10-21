@@ -43,6 +43,7 @@ import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti5.engine.ActivitiException;
+import org.activiti5.engine.DynamicBpmnService;
 import org.activiti5.engine.FormService;
 import org.activiti5.engine.HistoryService;
 import org.activiti5.engine.IdentityService;
@@ -58,6 +59,7 @@ import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti5.engine.form.AbstractFormType;
+import org.activiti5.engine.impl.DynamicBpmnServiceImpl;
 import org.activiti5.engine.impl.FormServiceImpl;
 import org.activiti5.engine.impl.HistoryServiceImpl;
 import org.activiti5.engine.impl.IdentityServiceImpl;
@@ -165,6 +167,7 @@ import org.activiti5.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti5.engine.impl.persistence.deploy.Deployer;
 import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti5.engine.impl.persistence.deploy.ProcessDefinitionInfoCache;
 import org.activiti5.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti5.engine.impl.persistence.entity.CommentEntityManager;
@@ -184,6 +187,7 @@ import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti5.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti5.engine.impl.persistence.entity.TableDataManager;
@@ -234,6 +238,8 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 /**
  * @author Tom Baeyens
@@ -259,6 +265,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskService taskService = new TaskServiceImpl(this);
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
+  protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
   
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
   
@@ -301,6 +308,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
   protected int bpmnModelCacheLimit = -1; // By default, no limit
   protected DeploymentCache<BpmnModel> bpmnModelCache;
+  protected int processDefinitionInfoCacheLimit = -1; // By default, no limit
+  protected ProcessDefinitionInfoCache processDefinitionInfoCache;
   
   protected int knowledgeBaseCacheLimit = -1;
   protected DeploymentCache<Object> knowledgeBaseCache;
@@ -407,6 +416,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   */
   protected int maxNrOfStatementsInBulkInsert = 100;
   
+  protected ObjectMapper objectMapper = new ObjectMapper();
+  
   protected boolean enableEventDispatcher = true;
   protected ActivitiEventDispatcher eventDispatcher;
   protected List<ActivitiEventListener> eventListeners;
@@ -420,6 +431,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
    */
   protected int maxLengthStringVariableType = 4000;
+  
+  protected boolean enableProcessDefinitionInfoCache = false;
   
   // Activiti 5 backwards compatibility handler
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
@@ -561,6 +574,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initService(taskService);
     initService(formService);
     initService(managementService);
+    initService(dynamicBpmnService);
   }
 
   protected void initService(Object service) {
@@ -838,6 +852,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
       addSessionFactory(new GenericManagerFactory(ProcessDefinitionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ProcessDefinitionInfoEntityManager.class));
       addSessionFactory(new GenericManagerFactory(PropertyEntityManager.class));
       addSessionFactory(new GenericManagerFactory(ResourceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class));
@@ -973,6 +988,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
       }
       
+      if (processDefinitionInfoCache == null) {
+        if (processDefinitionInfoCacheLimit <= 0) {
+          processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor);
+        } else {
+          processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor, processDefinitionInfoCacheLimit);
+        }
+      }
+      
       // Knowledge base cache (used for Drools business task)
       if (knowledgeBaseCache == null) {
         if (knowledgeBaseCacheLimit <= 0) {
@@ -984,6 +1007,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       
       deploymentManager.setProcessDefinitionCache(processDefinitionCache);
       deploymentManager.setBpmnModelCache(bpmnModelCache);
+      deploymentManager.setProcessDefinitionInfoCache(processDefinitionInfoCache);
       deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
     }
   }
@@ -1573,6 +1597,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return managementService;
   }
   
+  public DynamicBpmnService getDynamicBpmnService() {
+    return dynamicBpmnService;
+  }
+  
   public ProcessEngineConfigurationImpl setManagementService(ManagementService managementService) {
     this.managementService = managementService;
     return this;
@@ -2127,6 +2155,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
+	
+	public ObjectMapper getObjectMapper() {
+    return objectMapper;
+  }
 
   public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
     return activiti5CompatibilityHandler;

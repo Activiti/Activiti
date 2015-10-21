@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -30,6 +31,9 @@ import org.activiti5.engine.impl.delegate.ActivityBehaviorInvocation;
 import org.activiti5.engine.impl.delegate.JavaDelegateInvocation;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -43,11 +47,13 @@ import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
   
+  protected String serviceTaskId;
   protected Expression expression;
   protected Expression skipExpression;
   private final List<FieldDeclaration> fieldDeclarations;
 
-  public ServiceTaskDelegateExpressionActivityBehavior(Expression expression, Expression skipExpression, List<FieldDeclaration> fieldDeclarations) {
+  public ServiceTaskDelegateExpressionActivityBehavior(String serviceTaskId, Expression expression, Expression skipExpression, List<FieldDeclaration> fieldDeclarations) {
+    this.serviceTaskId = serviceTaskId;
     this.expression = expression;
     this.skipExpression = skipExpression;
     this.fieldDeclarations = fieldDeclarations;
@@ -69,9 +75,18 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
       if (!isSkipExpressionEnabled || 
               (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression))) {
         
+        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+          ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
+          if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_DELEGATE_EXPRESSION)) {
+            String overrideExpression = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_DELEGATE_EXPRESSION).asText();
+            if (StringUtils.isNotEmpty(overrideExpression) && overrideExpression.equals(expression.getExpressionText()) == false) {
+              expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(overrideExpression);
+            }
+          }
+        }
+        
         // Note: we can't cache the result of the expression, because the
-        // execution can change: eg.
-        // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+        // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
         Object delegate = expression.getValue(execution);
         ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
 

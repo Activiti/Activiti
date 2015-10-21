@@ -101,6 +101,10 @@ public class TaskDefinition implements Serializable {
   public void addCandidateUserIdExpression(Expression userId) {
     candidateUserIdExpressions.add(userId);
   }
+  
+  public void setCandidateUserIdExpressions(Set<Expression> candidateUserIdExpressions) {
+    this.candidateUserIdExpressions = candidateUserIdExpressions;
+  }
 
   public Set<Expression> getCandidateGroupIdExpressions() {
     return candidateGroupIdExpressions;
@@ -108,6 +112,10 @@ public class TaskDefinition implements Serializable {
 
   public void addCandidateGroupIdExpression(Expression groupId) {
     candidateGroupIdExpressions.add(groupId);
+  }
+  
+  public void setCandidateGroupIdExpressions(Set<Expression> candidateGroupIdExpressions) {
+    this.candidateGroupIdExpressions = candidateGroupIdExpressions;
   }
 
   public Map<String, Set<Expression>> getCustomUserIdentityLinkExpressions() {

@@ -14,6 +14,7 @@ package org.activiti5.engine.impl;
 
 import java.util.Map;
 
+import org.activiti5.engine.DynamicBpmnService;
 import org.activiti5.engine.FormService;
 import org.activiti5.engine.HistoryService;
 import org.activiti5.engine.IdentityService;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
+ * @author Tijs Rademakers
  */
 public class ProcessEngineImpl implements ProcessEngine {
 
@@ -50,6 +52,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected TaskService taskService;
   protected FormService formService;
   protected ManagementService managementService;
+  protected DynamicBpmnService dynamicBpmnService;
   protected JobExecutor jobExecutor;
   protected AsyncExecutor asyncExecutor;
   protected CommandExecutor commandExecutor;
@@ -68,6 +71,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.taskService = processEngineConfiguration.getTaskService();
     this.formService = processEngineConfiguration.getFormService();
     this.managementService = processEngineConfiguration.getManagementService();
+    this.dynamicBpmnService = processEngineConfiguration.getDynamicBpmnService();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
     this.asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
@@ -152,6 +156,10 @@ public class ProcessEngineImpl implements ProcessEngine {
   
   public FormService getFormService() {
     return formService;
+  }
+  
+  public DynamicBpmnService getDynamicBpmnService() {
+    return dynamicBpmnService;
   }
 
   public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {

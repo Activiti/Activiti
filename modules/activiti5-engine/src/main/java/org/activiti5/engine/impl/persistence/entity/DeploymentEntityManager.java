@@ -74,7 +74,6 @@ public class DeploymentEntityManager extends AbstractManager {
         
         getProcessInstanceManager()
           .deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
-    
       }
     }
 
@@ -85,6 +84,8 @@ public class DeploymentEntityManager extends AbstractManager {
       
       // event subscriptions
       getEventSubscriptionManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
+      
+      getProcessDefinitionInfoManager().deleteProcessDefinitionInfo(processDefinitionId);
     }
 
     // delete process definitions from db

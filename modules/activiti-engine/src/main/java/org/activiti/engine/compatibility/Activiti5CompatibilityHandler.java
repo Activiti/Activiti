@@ -34,6 +34,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
@@ -49,6 +51,10 @@ public interface Activiti5CompatibilityHandler {
   org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(String processDefinitionId);
   
   BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
+  
+  ObjectNode getProcessDefinitionInfo(String processDefinitionId);
+  
+  void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
   
   void addCandidateStarter(String processDefinitionId, String userId, String groupId);
   

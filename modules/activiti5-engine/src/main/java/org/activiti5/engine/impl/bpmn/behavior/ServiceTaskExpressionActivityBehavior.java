@@ -14,12 +14,17 @@
 package org.activiti5.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.bpmn.helper.SkipExpressionUtil;
+import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * ActivityBehavior that evaluates an expression when executed. Optionally, it
@@ -33,11 +38,13 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
+  protected String serviceTaskId;
   protected Expression expression;
   protected Expression skipExpression;
   protected String resultVariable;
 
-  public ServiceTaskExpressionActivityBehavior(Expression expression, Expression skipExpression, String resultVariable) {
+  public ServiceTaskExpressionActivityBehavior(String serviceTaskId, Expression expression, Expression skipExpression, String resultVariable) {
+    this.serviceTaskId = serviceTaskId;
     this.expression = expression;
     this.skipExpression = skipExpression;
     this.resultVariable = resultVariable;
@@ -50,6 +57,17 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression);
       if (!isSkipExpressionEnabled || 
               (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression))) {
+        
+        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+          ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
+          if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)) {
+            String overrideExpression = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION).asText();
+            if (StringUtils.isNotEmpty(overrideExpression) && overrideExpression.equals(expression.getExpressionText()) == false) {
+              expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(overrideExpression);
+            }
+          }
+        }
+        
         value = expression.getValue(execution);
         if (resultVariable != null) {
           execution.setVariable(resultVariable, value);

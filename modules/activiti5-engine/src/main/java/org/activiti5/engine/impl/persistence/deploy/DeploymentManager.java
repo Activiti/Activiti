@@ -45,6 +45,7 @@ public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
   protected DeploymentCache<BpmnModel> bpmnModelCache;
+  protected ProcessDefinitionInfoCache processDefinitionInfoCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
   
@@ -236,6 +237,14 @@ public class DeploymentManager {
     this.bpmnModelCache = bpmnModelCache;
   }
 
+  public ProcessDefinitionInfoCache getProcessDefinitionInfoCache() {
+    return processDefinitionInfoCache;
+  }
+
+  public void setProcessDefinitionInfoCache(ProcessDefinitionInfoCache processDefinitionInfoCache) {
+    this.processDefinitionInfoCache = processDefinitionInfoCache;
+  }
+  
   public DeploymentCache<Object> getKnowledgeBaseCache() {
     return knowledgeBaseCache;
   }

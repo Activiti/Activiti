@@ -49,6 +49,7 @@ import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.MembershipIdentityManager;
 import org.activiti5.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti5.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti5.engine.impl.persistence.entity.TableDataManager;
@@ -281,6 +282,10 @@ public class CommandContext {
   
   public ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
     return getSession(ProcessDefinitionEntityManager.class);
+  }
+  
+  public ProcessDefinitionInfoEntityManager getProcessDefinitionInfoEntityManager() {
+    return getSession(ProcessDefinitionInfoEntityManager.class);
   }
   
   public ModelEntityManager getModelEntityManager() {
