@@ -90,7 +90,7 @@ alter table ACT_PROCDEF_INFO
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_EVENT_SUBSCR;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
-drop index ACT_IDX_INFO_PROCDEF;
+drop index ACT_IDX_PROCDEF_INFO_PROC;
 
 drop table  ACT_GE_PROPERTY;
 drop table  ACT_GE_BYTEARRAY;
