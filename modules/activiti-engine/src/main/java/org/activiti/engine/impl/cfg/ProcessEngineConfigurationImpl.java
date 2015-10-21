@@ -643,6 +643,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initCommandExecutors();
     initServices();
     initIdGenerator();
+    initBehaviorFactory();
+    initListenerFactory();
+    initBpmnParser();
     initDeployers();
     initJobHandlers();
     initJobExecutor();
@@ -1309,17 +1312,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     bpmnDeployer.setExpressionManager(expressionManager);
     bpmnDeployer.setIdGenerator(idGenerator);
-
-    if (bpmnParseFactory == null) {
-      bpmnParseFactory = new DefaultBpmnParseFactory();
-    }
-
-    initBehaviorFactory();
-
-    initListenerFactory();
-
-    initBpmnParser();
-
     bpmnDeployer.setBpmnParser(bpmnParser);
 
     defaultDeployers.add(bpmnDeployer);
@@ -1329,6 +1321,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initBpmnParser() {
     if (bpmnParser == null) {
       bpmnParser = new BpmnParser();
+    }
+
+    if (bpmnParseFactory == null) {
+      bpmnParseFactory = new DefaultBpmnParseFactory();
     }
 
     bpmnParser.setExpressionManager(expressionManager);
