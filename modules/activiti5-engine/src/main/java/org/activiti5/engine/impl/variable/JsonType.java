@@ -53,7 +53,7 @@ public class JsonType implements VariableType {
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setTextValue(((JsonNode) value).toString());
+    valueFields.setTextValue(value != null ? value.toString() : null);
   }
 
   public boolean isAbleToStore(Object value) {
