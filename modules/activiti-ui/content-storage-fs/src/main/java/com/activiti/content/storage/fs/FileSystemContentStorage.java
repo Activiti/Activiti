@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -117,7 +116,9 @@ public class FileSystemContentStorage implements ContentStorage {
             tempFileCreated = true;
             
             // Write the actual content to the file
-            length = IOUtils.copy(contentStream, new FileOutputStream(tempContentFile));
+            FileOutputStream tempOutputStream = new FileOutputStream(tempContentFile);
+            length = IOUtils.copy(contentStream, tempOutputStream);
+            IOUtils.closeQuietly(tempOutputStream);
             
             // Rename the content file first
             if (contentFile.renameTo(oldContentFile)) {

@@ -141,7 +141,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
   // Service task
 
-  private Expression getSkipExpressionFromServiceTask(ServiceTask serviceTask) {
+  protected Expression getSkipExpressionFromServiceTask(ServiceTask serviceTask) {
     Expression result = null;
     if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
       result = expressionManager.createExpression(serviceTask.getSkipExpression());
@@ -150,7 +150,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
 
   public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
-    return new ClassDelegate(serviceTask.getId(), serviceTask.getImplementation(),
+    return classDelegateFactory.create(serviceTask.getId(), serviceTask.getImplementation(),
         createFieldDeclarations(serviceTask.getFieldExtensions()),
         getSkipExpressionFromServiceTask(serviceTask), serviceTask.getMapExceptions());
   }
