@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.HashSet;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.wsdl.Definition;
@@ -29,7 +31,6 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
-import com.sun.codemodel.JJavaName;
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
@@ -65,6 +66,33 @@ import com.sun.tools.xjc.api.XJC;
 public class CxfWSDLImporter implements XMLImporter {
     
   protected static final String JAXB_BINDINGS_RESOURCE = "activiti-bindings.xjc";
+
+  protected static HashSet<String> reservedKeywords = new HashSet<String>();
+
+  static {
+    String[] words = new String[]{
+            "abstract",
+            "boolean", "break", "byte",
+            "case", "catch", "char", "class", "const", "continue",
+            "default", "do", "double",
+            "else", "extends",
+            "final", "finally", "float", "for",
+            "goto",
+            "if", "implements", "import", "instanceof", "int", "interface",
+            "long",
+            "native", "new",
+            "package", "private", "protected", "public",
+            "return",
+            "short", "static", "strictfp", "super", "switch", "synchronized",
+            "this", "throw", "throws", "transient", "try",
+            "void", "volatile", "while", "true",
+            "false",
+            "null",
+            "assert",
+            "enum"
+    };
+    Collections.addAll(reservedKeywords, words);
+  }
 
   protected Map<String, WSService> wsServices = new HashMap<String, WSService>();
   protected Map<String, WSOperation> wsOperations = new HashMap<String, WSOperation>();
@@ -214,7 +242,7 @@ public class CxfWSDLImporter implements XMLImporter {
 
       String fieldName = entry.getKey();
       if (fieldName.startsWith("_")) {
-        if (!JJavaName.isJavaIdentifier(fieldName.substring(1)))
+        if (!reservedKeywords.contains(fieldName.substring(1)))
           fieldName = fieldName.substring(1); //it was prefixed with '_' so we should use the original name.
       }
 
