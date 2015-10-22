@@ -12,7 +12,15 @@
  */
 package org.activiti.engine.impl.persistence.deploy;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
@@ -28,11 +36,14 @@ public class ProcessDefinitionCacheEntry implements Serializable {
   protected ProcessDefinitionEntity processDefinitionEntity;
   protected BpmnModel bpmnModel;
   protected Process process;
+  protected ResourceBundle.Control resourceBundleControl;
 
-  public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, BpmnModel bpmnModel, Process process) {
+  public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, BpmnModel bpmnModel, Process process,
+          Map<String, PropertyResourceBundle> resourceBundles) {
     this.processDefinitionEntity = processDefinitionEntity;
     this.bpmnModel = bpmnModel;
     this.process = process;
+    this.resourceBundleControl = new ResourceBundleControl(resourceBundles);
   }
 
   public ProcessDefinitionEntity getProcessDefinitionEntity() {
@@ -59,4 +70,37 @@ public class ProcessDefinitionCacheEntry implements Serializable {
     this.process = process;
   }
 
+  public ResourceBundle getResourceBundle(Locale locale) {
+    try {
+      return ResourceBundle.getBundle(processDefinitionEntity.getId(), locale, resourceBundleControl);
+    } catch (MissingResourceException mre) {
+      return null;
+    }
+  }
+
+  private static class ResourceBundleControl extends ResourceBundle.Control {
+
+    private static final String FORMAT = "l10n.properties";
+    private Map<String, PropertyResourceBundle> resourceBundles;
+
+    public ResourceBundleControl(Map<String, PropertyResourceBundle> resourceBundles) {
+      this.resourceBundles = resourceBundles;
+    }
+
+    @Override
+    public List<String> getFormats(String baseName) {
+      return Collections.singletonList(FORMAT);
+    }
+
+    @Override
+    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+            throws IllegalAccessException, InstantiationException, IOException {
+      if (null != resourceBundles) {
+        String bundleName = toBundleName(baseName, locale);
+        String resourceName = toResourceName(bundleName, format);
+        return resourceBundles.get(resourceName);
+      }
+      return null;
+    }
+  }
 }

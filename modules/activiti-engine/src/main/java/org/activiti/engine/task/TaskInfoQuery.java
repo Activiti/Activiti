@@ -15,6 +15,7 @@ package org.activiti.engine.task;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
@@ -494,6 +495,11 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    */
   T locale(String locale);
 
+  /**
+   * Localize task name and description to specified locale.
+   */
+  public T locale(Locale locale);
+  
   /**
    * All query clauses called will be added to a single or-statement. This or-statement will be included with the other already existing clauses in the query, joined by an 'and'.
    * 

@@ -12,9 +12,18 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;

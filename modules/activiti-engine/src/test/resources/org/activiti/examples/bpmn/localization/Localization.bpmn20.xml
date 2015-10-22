@@ -1,0 +1,24 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples"
+  xml:lang="en-US">
+  
+  <process id="localization" name="Localization">
+    
+    <startEvent id="start" name="Start Event"/>
+
+    <sequenceFlow sourceRef="start" targetRef="userTask1" />    
+    
+	<userTask id="userTask1" name="Color Task">
+		<documentation>
+		Color Task Description
+		</documentation>
+	</userTask>
+	
+	<sequenceFlow sourceRef="userTask1" targetRef="end" />
+	
+	<endEvent id="end" name="End Event"/>  
+    
+  </process>
+</definitions>

@@ -41,6 +41,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TYPE = "type";
   public static final String ATTRIBUTE_DEFAULT = "default";
   public static final String ATTRIBUTE_ITEM_REF = "itemRef";
+  public static final String ATTRIBUTE_LANG = "lang";
   public static final String ELEMENT_DEFINITIONS = "definitions";
   public static final String ELEMENT_DOCUMENTATION = "documentation";
 
@@ -95,6 +96,9 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ACTIVITY_EXCLUSIVE = "exclusive";
   public static final String ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION = "isForCompensation";
 
+  public static final String ELEMENT_LOCALIZATION = "localization";
+  public static final String ATTRIBUTE_LOCALE = "locale";
+  
   public static final String ELEMENT_IMPORT = "import";
   public static final String ATTRIBUTE_IMPORT_TYPE = "importType";
   public static final String ATTRIBUTE_LOCATION = "location";
