@@ -643,6 +643,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initCommandExecutors();
     initServices();
     initIdGenerator();
+    initBehaviorFactory();
+    initListenerFactory();
+    initBpmnParser();
     initDeployers();
     initJobHandlers();
     initJobExecutor();
@@ -1011,32 +1014,84 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Data managers ///////////////////////////////////////////////////////////
   
   protected void initDataManagers() {
-    attachmentDataManager = new MybatisAttachmentDataManager(this);
-    byteArrayDataManager = new MybatisByteArrayDataManager(this);
-    commentDataManager = new MybatisCommentDataManager(this);
-    deploymentDataManager = new MybatisDeploymentDataManager(this);
-    eventLogEntryDataManager = new MybatisEventLogEntryDataManager(this);
-    eventSubscriptionDataManager = new MybatisEventSubscriptionDataManager(this);
-    executionDataManager = new MybatisExecutionDataManager(this);
-    groupDataManager = new MybatisGroupDataManager(this);
-    historicActivityInstanceDataManager = new MybatisHistoricActivityInstanceDataManager(this);
-    historicDetailDataManager = new MybatisHistoricDetailDataManager(this);
-    historicIdentityLinkDataManager = new MybatisHistoricIdentityLinkDataManager(this);
-    historicProcessInstanceDataManager = new MybatisHistoricProcessInstanceDataManager(this);
-    historicTaskInstanceDataManager = new MybatisHistoricTaskInstanceDataManager(this);
-    historicVariableInstanceDataManager = new MybatisHistoricVariableInstanceDataManager(this);
-    identityInfoDataManager = new MybatisIdentityInfoDataManager(this);
-    identityLinkDataManager = new MybatisIdentityLinkDataManager(this);
-    jobDataManager = new MybatisJobDataManager(this);
-    membershipDataManager = new MybatisMembershipDataManager(this);
-    modelDataManager = new MybatisModelDataManager(this);
-    processDefinitionDataManager = new MybatisProcessDefinitionDataManager(this);
-    processDefinitionInfoDataManager = new MybatisProcessDefinitionInfoDataManager(this);
-    propertyDataManager = new MybatisPropertyDataManager(this);
-    resourceDataManager = new MybatisResourceDataManager(this);
-    taskDataManager = new MybatisTaskDataManager(this);
-    userDataManager = new MybatisUserDataManager(this);
-    variableInstanceDataManager = new MybatisVariableInstanceDataManager(this);
+    if(attachmentDataManager == null) {
+      attachmentDataManager = new MybatisAttachmentDataManager(this);
+    }
+    if(byteArrayDataManager == null) {
+      byteArrayDataManager = new MybatisByteArrayDataManager(this);
+    }
+    if(commentDataManager == null) {
+      commentDataManager = new MybatisCommentDataManager(this);
+    }
+    if(deploymentDataManager == null) {
+      deploymentDataManager = new MybatisDeploymentDataManager(this);
+    }
+    if(eventLogEntryDataManager == null) {
+      eventLogEntryDataManager = new MybatisEventLogEntryDataManager(this);
+    }
+    if(eventSubscriptionDataManager == null) {
+      eventSubscriptionDataManager = new MybatisEventSubscriptionDataManager(this);
+    }
+    if(executionDataManager == null) {
+      executionDataManager = new MybatisExecutionDataManager(this);
+    }
+    if(groupDataManager == null) {
+      groupDataManager = new MybatisGroupDataManager(this);
+    }
+    if(historicActivityInstanceDataManager == null) {
+      historicActivityInstanceDataManager = new MybatisHistoricActivityInstanceDataManager(this);
+    }
+    if(historicDetailDataManager == null) {
+      historicDetailDataManager = new MybatisHistoricDetailDataManager(this);
+    }
+    if(historicIdentityLinkDataManager == null) {
+      historicIdentityLinkDataManager = new MybatisHistoricIdentityLinkDataManager(this);
+    }
+    if(historicProcessInstanceDataManager == null) {
+      historicProcessInstanceDataManager = new MybatisHistoricProcessInstanceDataManager(this);
+    }
+    if(historicTaskInstanceDataManager == null) {
+      historicTaskInstanceDataManager = new MybatisHistoricTaskInstanceDataManager(this);
+    }
+    if(historicVariableInstanceDataManager == null) {
+      historicVariableInstanceDataManager = new MybatisHistoricVariableInstanceDataManager(this);
+    }
+    if(identityInfoDataManager == null) {
+      identityInfoDataManager = new MybatisIdentityInfoDataManager(this);
+    }
+    if(identityLinkDataManager == null) {
+      identityLinkDataManager = new MybatisIdentityLinkDataManager(this);
+    }
+    if(jobDataManager == null) {
+      jobDataManager = new MybatisJobDataManager(this);
+    }
+    if(membershipDataManager == null) {
+      membershipDataManager = new MybatisMembershipDataManager(this);
+    }
+    if(modelDataManager == null) {
+      modelDataManager = new MybatisModelDataManager(this);
+    }
+    if(processDefinitionDataManager == null) {
+      processDefinitionDataManager = new MybatisProcessDefinitionDataManager(this);
+    }
+    if(processDefinitionInfoDataManager == null) {
+      processDefinitionInfoDataManager = new MybatisProcessDefinitionInfoDataManager(this);
+    }
+    if(propertyDataManager == null) {
+      propertyDataManager = new MybatisPropertyDataManager(this);
+    }
+    if(resourceDataManager == null) {
+      resourceDataManager = new MybatisResourceDataManager(this);
+    }
+    if(taskDataManager == null) {
+      taskDataManager = new MybatisTaskDataManager(this);
+    }
+    if(userDataManager == null) {
+      userDataManager = new MybatisUserDataManager(this);
+    }
+    if(variableInstanceDataManager == null) {
+      variableInstanceDataManager = new MybatisVariableInstanceDataManager(this);
+    }
   }
   
   // Entity managers //////////////////////////////////////////////////////////
@@ -1257,36 +1312,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     bpmnDeployer.setExpressionManager(expressionManager);
     bpmnDeployer.setIdGenerator(idGenerator);
+    bpmnDeployer.setBpmnParser(bpmnParser);
+
+    defaultDeployers.add(bpmnDeployer);
+    return defaultDeployers;
+  }
+
+  protected void initBpmnParser() {
+    if (bpmnParser == null) {
+      bpmnParser = new BpmnParser();
+    }
 
     if (bpmnParseFactory == null) {
       bpmnParseFactory = new DefaultBpmnParseFactory();
-    }
-
-    if (activityBehaviorFactory == null) {
-      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
-      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
-      activityBehaviorFactory = defaultActivityBehaviorFactory;
-    } else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
-      ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
-    }
-
-    if (listenerFactory == null) {
-      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
-      defaultListenerFactory.setExpressionManager(expressionManager);
-      listenerFactory = defaultListenerFactory;
-    } else if ((listenerFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
-      ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
-    }
-
-    if (bpmnParser == null) {
-      bpmnParser = new BpmnParser();
     }
 
     bpmnParser.setExpressionManager(expressionManager);
     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
     bpmnParser.setListenerFactory(listenerFactory);
-
+    
     List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
     if (getPreBpmnParseHandlers() != null) {
       parseHandlers.addAll(getPreBpmnParseHandlers());
@@ -1299,11 +1344,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     BpmnParseHandlers bpmnParseHandlers = new BpmnParseHandlers();
     bpmnParseHandlers.addHandlers(parseHandlers);
     bpmnParser.setBpmnParserHandlers(bpmnParseHandlers);
+  }
 
-    bpmnDeployer.setBpmnParser(bpmnParser);
+  protected void initListenerFactory() {
+    if (listenerFactory == null) {
+      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
+      defaultListenerFactory.setExpressionManager(expressionManager);
+      listenerFactory = defaultListenerFactory;
+    } else if ((listenerFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
+      ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
+    }
+  }
 
-    defaultDeployers.add(bpmnDeployer);
-    return defaultDeployers;
+  protected void initBehaviorFactory() {
+    if (activityBehaviorFactory == null) {
+      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
+      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
+      activityBehaviorFactory = defaultActivityBehaviorFactory;
+    } else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
+      ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
+    }
   }
 
   protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
