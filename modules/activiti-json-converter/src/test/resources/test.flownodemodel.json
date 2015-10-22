@@ -410,7 +410,7 @@
         "outgoing" : [ { "resourceId" : "sid-03BC7128-4496-4027-88A9-E67D3DA63734" } ],
         "properties" : { "conditionalflow" : "None",
             "conditionsequenceflow" : "${number > 1}",
-            "defaultflow" : "None",
+            "defaultflow" : "true",
             "documentation" : "",
             "name" : ""
           },
