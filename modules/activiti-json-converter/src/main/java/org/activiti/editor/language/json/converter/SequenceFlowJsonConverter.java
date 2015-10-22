@@ -12,20 +12,13 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import java.util.Map;
-
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ExtensionElement;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowElementsContainer;
-import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.bpmn.model.*;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -94,6 +87,27 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
 
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
       propertiesNode.put(PROPERTY_SEQUENCEFLOW_CONDITION, sequenceFlow.getConditionExpression());
+    }
+
+    if (StringUtils.isNotEmpty(sequenceFlow.getSourceRef())) {
+
+      FlowElement sourceFlowElement = container.getFlowElement(sequenceFlow.getSourceRef());
+      if (sourceFlowElement != null) {
+        String defaultFlowId = null;
+        if (sourceFlowElement instanceof ExclusiveGateway) {
+          ExclusiveGateway parentExclusiveGateway = (ExclusiveGateway) sourceFlowElement;
+          defaultFlowId = parentExclusiveGateway.getDefaultFlow();
+        } else if (sourceFlowElement instanceof Activity) {
+          Activity parentActivity = (Activity) sourceFlowElement;
+          defaultFlowId = parentActivity.getDefaultFlow();
+        }
+
+        if (defaultFlowId != null && defaultFlowId.equals(sequenceFlow.getId())) {
+          propertiesNode.put(PROPERTY_SEQUENCEFLOW_DEFAULT, true);
+        }
+
+      }
+
     }
 
     if (sequenceFlow.getExecutionListeners().size() > 0) {
