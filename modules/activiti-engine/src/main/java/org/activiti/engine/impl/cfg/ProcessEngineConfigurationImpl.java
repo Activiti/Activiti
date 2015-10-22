@@ -1014,82 +1014,82 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Data managers ///////////////////////////////////////////////////////////
   
   protected void initDataManagers() {
-    if(attachmentDataManager == null) {
+    if (attachmentDataManager == null) {
       attachmentDataManager = new MybatisAttachmentDataManager(this);
     }
-    if(byteArrayDataManager == null) {
+    if (byteArrayDataManager == null) {
       byteArrayDataManager = new MybatisByteArrayDataManager(this);
     }
-    if(commentDataManager == null) {
+    if (commentDataManager == null) {
       commentDataManager = new MybatisCommentDataManager(this);
     }
-    if(deploymentDataManager == null) {
+    if (deploymentDataManager == null) {
       deploymentDataManager = new MybatisDeploymentDataManager(this);
     }
-    if(eventLogEntryDataManager == null) {
+    if (eventLogEntryDataManager == null) {
       eventLogEntryDataManager = new MybatisEventLogEntryDataManager(this);
     }
-    if(eventSubscriptionDataManager == null) {
+    if (eventSubscriptionDataManager == null) {
       eventSubscriptionDataManager = new MybatisEventSubscriptionDataManager(this);
     }
-    if(executionDataManager == null) {
+    if (executionDataManager == null) {
       executionDataManager = new MybatisExecutionDataManager(this);
     }
-    if(groupDataManager == null) {
+    if (groupDataManager == null) {
       groupDataManager = new MybatisGroupDataManager(this);
     }
-    if(historicActivityInstanceDataManager == null) {
+    if (historicActivityInstanceDataManager == null) {
       historicActivityInstanceDataManager = new MybatisHistoricActivityInstanceDataManager(this);
     }
-    if(historicDetailDataManager == null) {
+    if (historicDetailDataManager == null) {
       historicDetailDataManager = new MybatisHistoricDetailDataManager(this);
     }
-    if(historicIdentityLinkDataManager == null) {
+    if (historicIdentityLinkDataManager == null) {
       historicIdentityLinkDataManager = new MybatisHistoricIdentityLinkDataManager(this);
     }
-    if(historicProcessInstanceDataManager == null) {
+    if (historicProcessInstanceDataManager == null) {
       historicProcessInstanceDataManager = new MybatisHistoricProcessInstanceDataManager(this);
     }
-    if(historicTaskInstanceDataManager == null) {
+    if (historicTaskInstanceDataManager == null) {
       historicTaskInstanceDataManager = new MybatisHistoricTaskInstanceDataManager(this);
     }
-    if(historicVariableInstanceDataManager == null) {
+    if (historicVariableInstanceDataManager == null) {
       historicVariableInstanceDataManager = new MybatisHistoricVariableInstanceDataManager(this);
     }
-    if(identityInfoDataManager == null) {
+    if (identityInfoDataManager == null) {
       identityInfoDataManager = new MybatisIdentityInfoDataManager(this);
     }
-    if(identityLinkDataManager == null) {
+    if (identityLinkDataManager == null) {
       identityLinkDataManager = new MybatisIdentityLinkDataManager(this);
     }
-    if(jobDataManager == null) {
+    if (jobDataManager == null) {
       jobDataManager = new MybatisJobDataManager(this);
     }
-    if(membershipDataManager == null) {
+    if (membershipDataManager == null) {
       membershipDataManager = new MybatisMembershipDataManager(this);
     }
-    if(modelDataManager == null) {
+    if (modelDataManager == null) {
       modelDataManager = new MybatisModelDataManager(this);
     }
-    if(processDefinitionDataManager == null) {
+    if (processDefinitionDataManager == null) {
       processDefinitionDataManager = new MybatisProcessDefinitionDataManager(this);
     }
-    if(processDefinitionInfoDataManager == null) {
+    if (processDefinitionInfoDataManager == null) {
       processDefinitionInfoDataManager = new MybatisProcessDefinitionInfoDataManager(this);
     }
-    if(propertyDataManager == null) {
+    if (propertyDataManager == null) {
       propertyDataManager = new MybatisPropertyDataManager(this);
     }
-    if(resourceDataManager == null) {
+    if (resourceDataManager == null) {
       resourceDataManager = new MybatisResourceDataManager(this);
     }
-    if(taskDataManager == null) {
+    if (taskDataManager == null) {
       taskDataManager = new MybatisTaskDataManager(this);
     }
-    if(userDataManager == null) {
+    if (userDataManager == null) {
       userDataManager = new MybatisUserDataManager(this);
     }
-    if(variableInstanceDataManager == null) {
+    if (variableInstanceDataManager == null) {
       variableInstanceDataManager = new MybatisVariableInstanceDataManager(this);
     }
   }
@@ -1097,33 +1097,87 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Entity managers //////////////////////////////////////////////////////////
   
   protected void initEntityManagers() {
-    attachmentEntityManager = new AttachmentEntityManagerImpl(this, attachmentDataManager);
-    byteArrayEntityManager = new ByteArrayEntityManagerImpl(this, byteArrayDataManager);
-    commentEntityManager = new CommentEntityManagerImpl(this, commentDataManager);
-    deploymentEntityManager = new DeploymentEntityManagerImpl(this, deploymentDataManager);
-    eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl(this, eventLogEntryDataManager);
-    eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl(this, eventSubscriptionDataManager);
-    executionEntityManager = new ExecutionEntityManagerImpl(this, executionDataManager);
-    groupEntityManager = new GroupEntityManagerImpl(this, groupDataManager);
-    historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl(this, historicActivityInstanceDataManager);
-    historicDetailEntityManager = new HistoricDetailEntityManagerImpl(this, historicDetailDataManager);
-    historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl(this, historicIdentityLinkDataManager);
-    historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl(this, historicProcessInstanceDataManager);
-    historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl(this, historicTaskInstanceDataManager);
-    historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl(this, historicVariableInstanceDataManager);
-    identityInfoEntityManager = new IdentityInfoEntityManagerImpl(this, identityInfoDataManager);
-    identityLinkEntityManager = new IdentityLinkEntityManagerImpl(this, identityLinkDataManager);
-    jobEntityManager = new JobEntityManagerImpl(this, jobDataManager);
-    membershipEntityManager = new MembershipEntityManagerImpl(this, membershipDataManager);
-    modelEntityManager = new ModelEntityManagerImpl(this, modelDataManager);
-    processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl(this, processDefinitionDataManager);
-    processDefinitionInfoEntityManager = new ProcessDefinitionInfoEntityManagerImpl(this, processDefinitionInfoDataManager);
-    propertyEntityManager = new PropertyEntityManagerImpl(this, propertyDataManager);
-    resourceEntityManager = new ResourceEntityManagerImpl(this, resourceDataManager);
-    tableDataManager = new TableDataManagerImpl(this);
-    taskEntityManager = new TaskEntityManagerImpl(this, taskDataManager);
-    userEntityManager = new UserEntityManagerImpl(this, userDataManager);
-    variableInstanceEntityManager = new VariableInstanceEntityManagerImpl(this, variableInstanceDataManager);
+    if (attachmentEntityManager == null) {
+      attachmentEntityManager = new AttachmentEntityManagerImpl(this, attachmentDataManager);
+    }
+    if (byteArrayEntityManager == null) {
+      byteArrayEntityManager = new ByteArrayEntityManagerImpl(this, byteArrayDataManager);
+    }
+    if (commentEntityManager == null) {
+      commentEntityManager = new CommentEntityManagerImpl(this, commentDataManager);
+    }
+    if (deploymentEntityManager == null) {
+      deploymentEntityManager = new DeploymentEntityManagerImpl(this, deploymentDataManager);
+    }
+    if (eventLogEntryEntityManager == null) {
+      eventLogEntryEntityManager = new EventLogEntryEntityManagerImpl(this, eventLogEntryDataManager);
+    }
+    if (eventSubscriptionEntityManager == null) {
+      eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl(this, eventSubscriptionDataManager);
+    }
+    if (executionEntityManager == null) {
+      executionEntityManager = new ExecutionEntityManagerImpl(this, executionDataManager);
+    }
+    if (groupEntityManager == null) {
+      groupEntityManager = new GroupEntityManagerImpl(this, groupDataManager);
+    }
+    if (historicActivityInstanceEntityManager == null) {
+      historicActivityInstanceEntityManager = new HistoricActivityInstanceEntityManagerImpl(this, historicActivityInstanceDataManager);
+    }
+    if (historicDetailEntityManager == null) {
+      historicDetailEntityManager = new HistoricDetailEntityManagerImpl(this, historicDetailDataManager);
+    }
+    if (historicIdentityLinkEntityManager == null) {
+      historicIdentityLinkEntityManager = new HistoricIdentityLinkEntityManagerImpl(this, historicIdentityLinkDataManager);
+    }
+    if (historicProcessInstanceEntityManager == null) {
+      historicProcessInstanceEntityManager = new HistoricProcessInstanceEntityManagerImpl(this, historicProcessInstanceDataManager);
+    }
+    if (historicTaskInstanceEntityManager == null) {
+      historicTaskInstanceEntityManager = new HistoricTaskInstanceEntityManagerImpl(this, historicTaskInstanceDataManager);
+    }
+    if (historicVariableInstanceEntityManager == null) {
+      historicVariableInstanceEntityManager = new HistoricVariableInstanceEntityManagerImpl(this, historicVariableInstanceDataManager);
+    }
+    if (identityInfoEntityManager == null) {
+      identityInfoEntityManager = new IdentityInfoEntityManagerImpl(this, identityInfoDataManager);
+    }
+    if (identityLinkEntityManager == null) {
+      identityLinkEntityManager = new IdentityLinkEntityManagerImpl(this, identityLinkDataManager);
+    }
+    if (jobEntityManager == null) {
+      jobEntityManager = new JobEntityManagerImpl(this, jobDataManager);
+    }
+    if (membershipEntityManager == null) {
+      membershipEntityManager = new MembershipEntityManagerImpl(this, membershipDataManager);
+    }
+    if (modelEntityManager == null) {
+      modelEntityManager = new ModelEntityManagerImpl(this, modelDataManager);
+    }
+    if (processDefinitionEntityManager == null) {
+      processDefinitionEntityManager = new ProcessDefinitionEntityManagerImpl(this, processDefinitionDataManager);
+    }
+    if (processDefinitionInfoEntityManager == null) {
+      processDefinitionInfoEntityManager = new ProcessDefinitionInfoEntityManagerImpl(this, processDefinitionInfoDataManager);
+    }
+    if (propertyEntityManager == null) {
+      propertyEntityManager = new PropertyEntityManagerImpl(this, propertyDataManager);
+    }
+    if (resourceEntityManager == null) {
+      resourceEntityManager = new ResourceEntityManagerImpl(this, resourceDataManager);
+    }
+    if (tableDataManager == null) {
+      tableDataManager = new TableDataManagerImpl(this);
+    }
+    if (taskEntityManager == null) {
+      taskEntityManager = new TaskEntityManagerImpl(this, taskDataManager);
+    }
+    if (userEntityManager == null) {
+      userEntityManager = new UserEntityManagerImpl(this, userDataManager);
+    }
+    if (variableInstanceEntityManager == null) {
+      variableInstanceEntityManager = new VariableInstanceEntityManagerImpl(this, variableInstanceDataManager);
+    }
   }
   
   // History manager ///////////////////////////////////////////////////////////
@@ -1318,6 +1372,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return defaultDeployers;
   }
 
+  protected void initListenerFactory() {
+    if (listenerFactory == null) {
+      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
+      defaultListenerFactory.setExpressionManager(expressionManager);
+      listenerFactory = defaultListenerFactory;
+    } else if ((listenerFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
+      ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
+    }
+  }
+
+  protected void initBehaviorFactory() {
+    if (activityBehaviorFactory == null) {
+      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
+      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
+      activityBehaviorFactory = defaultActivityBehaviorFactory;
+    } else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
+      ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
+    }
+  }
+  
   protected void initBpmnParser() {
     if (bpmnParser == null) {
       bpmnParser = new BpmnParser();
@@ -1344,26 +1418,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     BpmnParseHandlers bpmnParseHandlers = new BpmnParseHandlers();
     bpmnParseHandlers.addHandlers(parseHandlers);
     bpmnParser.setBpmnParserHandlers(bpmnParseHandlers);
-  }
-
-  protected void initListenerFactory() {
-    if (listenerFactory == null) {
-      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
-      defaultListenerFactory.setExpressionManager(expressionManager);
-      listenerFactory = defaultListenerFactory;
-    } else if ((listenerFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
-      ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
-    }
-  }
-
-  protected void initBehaviorFactory() {
-    if (activityBehaviorFactory == null) {
-      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
-      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
-      activityBehaviorFactory = defaultActivityBehaviorFactory;
-    } else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
-      ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
-    }
   }
 
   protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
@@ -2420,36 +2474,41 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return eventDispatcher;
   }
 
-  public void setEventDispatcher(ActivitiEventDispatcher eventDispatcher) {
+  public ProcessEngineConfigurationImpl setEventDispatcher(ActivitiEventDispatcher eventDispatcher) {
     this.eventDispatcher = eventDispatcher;
+    return this;
   }
 
-  public void setEnableEventDispatcher(boolean enableEventDispatcher) {
+  public ProcessEngineConfigurationImpl setEnableEventDispatcher(boolean enableEventDispatcher) {
     this.enableEventDispatcher = enableEventDispatcher;
+    return this;
   }
 
   public Map<String, List<ActivitiEventListener>> getTypedEventListeners() {
     return typedEventListeners;
   }
 
-  public void setTypedEventListeners(Map<String, List<ActivitiEventListener>> typedListeners) {
+  public ProcessEngineConfigurationImpl setTypedEventListeners(Map<String, List<ActivitiEventListener>> typedListeners) {
     this.typedEventListeners = typedListeners;
+    return this;
   }
 
   public List<ActivitiEventListener> getEventListeners() {
     return eventListeners;
   }
 
-  public void setEventListeners(List<ActivitiEventListener> eventListeners) {
+  public ProcessEngineConfigurationImpl setEventListeners(List<ActivitiEventListener> eventListeners) {
     this.eventListeners = eventListeners;
+    return this;
   }
 
   public ProcessValidator getProcessValidator() {
     return processValidator;
   }
 
-  public void setProcessValidator(ProcessValidator processValidator) {
+  public ProcessEngineConfigurationImpl setProcessValidator(ProcessValidator processValidator) {
     this.processValidator = processValidator;
+    return this;
   }
 
   public boolean isEnableEventDispatcher() {
@@ -2478,248 +2537,517 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return isBulkInsertEnabled;
   }
 
-  public void setBulkInsertEnabled(boolean isBulkInsertEnabled) {
+  public ProcessEngineConfigurationImpl setBulkInsertEnabled(boolean isBulkInsertEnabled) {
     this.isBulkInsertEnabled = isBulkInsertEnabled;
+    return this;
   }
   
   public int getMaxNrOfStatementsInBulkInsert() {
     return maxNrOfStatementsInBulkInsert;
   }
 
-  public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
+  public ProcessEngineConfigurationImpl setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
     this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
+    return this;
   }
   
   public boolean isUsingRelationalDatabase() {
     return usingRelationalDatabase;
   }
 
-  public void setUsingRelationalDatabase(boolean usingRelationalDatabase) {
+  public ProcessEngineConfigurationImpl setUsingRelationalDatabase(boolean usingRelationalDatabase) {
     this.usingRelationalDatabase = usingRelationalDatabase;
+    return this;
+  }
+
+  public AttachmentDataManager getAttachmentDataManager() {
+    return attachmentDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setAttachmentDataManager(AttachmentDataManager attachmentDataManager) {
+    this.attachmentDataManager = attachmentDataManager;
+    return this;
+  }
+
+  public ByteArrayDataManager getByteArrayDataManager() {
+    return byteArrayDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setByteArrayDataManager(ByteArrayDataManager byteArrayDataManager) {
+    this.byteArrayDataManager = byteArrayDataManager;
+    return this;
+  }
+
+  public CommentDataManager getCommentDataManager() {
+    return commentDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setCommentDataManager(CommentDataManager commentDataManager) {
+    this.commentDataManager = commentDataManager;
+    return this;
+  }
+
+  public DeploymentDataManager getDeploymentDataManager() {
+    return deploymentDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setDeploymentDataManager(DeploymentDataManager deploymentDataManager) {
+    this.deploymentDataManager = deploymentDataManager;
+    return this;
+  }
+
+  public EventLogEntryDataManager getEventLogEntryDataManager() {
+    return eventLogEntryDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setEventLogEntryDataManager(EventLogEntryDataManager eventLogEntryDataManager) {
+    this.eventLogEntryDataManager = eventLogEntryDataManager;
+    return this;
+  }
+
+  public EventSubscriptionDataManager getEventSubscriptionDataManager() {
+    return eventSubscriptionDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setEventSubscriptionDataManager(EventSubscriptionDataManager eventSubscriptionDataManager) {
+    this.eventSubscriptionDataManager = eventSubscriptionDataManager;
+    return this;
+  }
+
+  public ExecutionDataManager getExecutionDataManager() {
+    return executionDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setExecutionDataManager(ExecutionDataManager executionDataManager) {
+    this.executionDataManager = executionDataManager;
+    return this;
+  }
+
+  public GroupDataManager getGroupDataManager() {
+    return groupDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setGroupDataManager(GroupDataManager groupDataManager) {
+    this.groupDataManager = groupDataManager;
+    return this;
+  }
+
+  public HistoricActivityInstanceDataManager getHistoricActivityInstanceDataManager() {
+    return historicActivityInstanceDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricActivityInstanceDataManager(HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
+    this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
+    return this;
+  }
+
+  public HistoricDetailDataManager getHistoricDetailDataManager() {
+    return historicDetailDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricDetailDataManager(HistoricDetailDataManager historicDetailDataManager) {
+    this.historicDetailDataManager = historicDetailDataManager;
+    return this;
+  }
+
+  public HistoricIdentityLinkDataManager getHistoricIdentityLinkDataManager() {
+    return historicIdentityLinkDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricIdentityLinkDataManager(HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
+    this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
+    return this;
+  }
+
+  public HistoricProcessInstanceDataManager getHistoricProcessInstanceDataManager() {
+    return historicProcessInstanceDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricProcessInstanceDataManager(HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
+    this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
+    return this;
+  }
+
+  public HistoricTaskInstanceDataManager getHistoricTaskInstanceDataManager() {
+    return historicTaskInstanceDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricTaskInstanceDataManager(HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+    this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
+    return this;
+  }
+
+  public HistoricVariableInstanceDataManager getHistoricVariableInstanceDataManager() {
+    return historicVariableInstanceDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricVariableInstanceDataManager(HistoricVariableInstanceDataManager historicVariableInstanceDataManager) {
+    this.historicVariableInstanceDataManager = historicVariableInstanceDataManager;
+    return this;
+  }
+
+  public IdentityInfoDataManager getIdentityInfoDataManager() {
+    return identityInfoDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setIdentityInfoDataManager(IdentityInfoDataManager identityInfoDataManager) {
+    this.identityInfoDataManager = identityInfoDataManager;
+    return this;
+  }
+
+  public IdentityLinkDataManager getIdentityLinkDataManager() {
+    return identityLinkDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setIdentityLinkDataManager(IdentityLinkDataManager identityLinkDataManager) {
+    this.identityLinkDataManager = identityLinkDataManager;
+    return this;
+  }
+
+  public JobDataManager getJobDataManager() {
+    return jobDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setJobDataManager(JobDataManager jobDataManager) {
+    this.jobDataManager = jobDataManager;
+    return this;
+  }
+
+  public MembershipDataManager getMembershipDataManager() {
+    return membershipDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setMembershipDataManager(MembershipDataManager membershipDataManager) {
+    this.membershipDataManager = membershipDataManager;
+    return this;
+  }
+
+  public ModelDataManager getModelDataManager() {
+    return modelDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setModelDataManager(ModelDataManager modelDataManager) {
+    this.modelDataManager = modelDataManager;
+    return this;
+  }
+
+  public ProcessDefinitionDataManager getProcessDefinitionDataManager() {
+    return processDefinitionDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessDefinitionDataManager(ProcessDefinitionDataManager processDefinitionDataManager) {
+    this.processDefinitionDataManager = processDefinitionDataManager;
+    return this;
+  }
+
+  public ProcessDefinitionInfoDataManager getProcessDefinitionInfoDataManager() {
+    return processDefinitionInfoDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessDefinitionInfoDataManager(ProcessDefinitionInfoDataManager processDefinitionInfoDataManager) {
+    this.processDefinitionInfoDataManager = processDefinitionInfoDataManager;
+    return this;
+  }
+
+  public PropertyDataManager getPropertyDataManager() {
+    return propertyDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setPropertyDataManager(PropertyDataManager propertyDataManager) {
+    this.propertyDataManager = propertyDataManager;
+    return this;
+  }
+
+  public ResourceDataManager getResourceDataManager() {
+    return resourceDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setResourceDataManager(ResourceDataManager resourceDataManager) {
+    this.resourceDataManager = resourceDataManager;
+    return this;
+  }
+
+  public TaskDataManager getTaskDataManager() {
+    return taskDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setTaskDataManager(TaskDataManager taskDataManager) {
+    this.taskDataManager = taskDataManager;
+    return this;
+  }
+
+  public UserDataManager getUserDataManager() {
+    return userDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setUserDataManager(UserDataManager userDataManager) {
+    this.userDataManager = userDataManager;
+    return this;
+  }
+
+  public VariableInstanceDataManager getVariableInstanceDataManager() {
+    return variableInstanceDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setVariableInstanceDataManager(VariableInstanceDataManager variableInstanceDataManager) {
+    this.variableInstanceDataManager = variableInstanceDataManager;
+    return this;
+  }
+
+  public boolean isEnableConfiguratorServiceLoader() {
+    return enableConfiguratorServiceLoader;
   }
 
   public AttachmentEntityManager getAttachmentEntityManager() {
     return attachmentEntityManager;
   }
 
-  public void setAttachmentEntityManager(AttachmentEntityManager attachmentEntityManager) {
+  public ProcessEngineConfigurationImpl setAttachmentEntityManager(AttachmentEntityManager attachmentEntityManager) {
     this.attachmentEntityManager = attachmentEntityManager;
+    return this;
   }
 
   public ByteArrayEntityManager getByteArrayEntityManager() {
     return byteArrayEntityManager;
   }
 
-  public void setByteArrayEntityManager(ByteArrayEntityManager byteArrayEntityManager) {
+  public ProcessEngineConfigurationImpl setByteArrayEntityManager(ByteArrayEntityManager byteArrayEntityManager) {
     this.byteArrayEntityManager = byteArrayEntityManager;
+    return this;
   }
 
   public CommentEntityManager getCommentEntityManager() {
     return commentEntityManager;
   }
 
-  public void setCommentEntityManager(CommentEntityManager commentEntityManager) {
+  public ProcessEngineConfigurationImpl setCommentEntityManager(CommentEntityManager commentEntityManager) {
     this.commentEntityManager = commentEntityManager;
+    return this;
   }
 
   public DeploymentEntityManager getDeploymentEntityManager() {
     return deploymentEntityManager;
   }
 
-  public void setDeploymentEntityManager(DeploymentEntityManager deploymentEntityManager) {
+  public ProcessEngineConfigurationImpl setDeploymentEntityManager(DeploymentEntityManager deploymentEntityManager) {
     this.deploymentEntityManager = deploymentEntityManager;
+    return this;
   }
 
   public EventLogEntryEntityManager getEventLogEntryEntityManager() {
     return eventLogEntryEntityManager;
   }
 
-  public void setEventLogEntryEntityManager(EventLogEntryEntityManager eventLogEntryEntityManager) {
+  public ProcessEngineConfigurationImpl setEventLogEntryEntityManager(EventLogEntryEntityManager eventLogEntryEntityManager) {
     this.eventLogEntryEntityManager = eventLogEntryEntityManager;
+    return this;
   }
 
   public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
     return eventSubscriptionEntityManager;
   }
 
-  public void setEventSubscriptionEntityManager(EventSubscriptionEntityManager eventSubscriptionEntityManager) {
+  public ProcessEngineConfigurationImpl setEventSubscriptionEntityManager(EventSubscriptionEntityManager eventSubscriptionEntityManager) {
     this.eventSubscriptionEntityManager = eventSubscriptionEntityManager;
+    return this;
   }
 
   public ExecutionEntityManager getExecutionEntityManager() {
     return executionEntityManager;
   }
 
-  public void setExecutionEntityManager(ExecutionEntityManager executionEntityManager) {
+  public ProcessEngineConfigurationImpl setExecutionEntityManager(ExecutionEntityManager executionEntityManager) {
     this.executionEntityManager = executionEntityManager;
+    return this;
   }
 
   public GroupEntityManager getGroupEntityManager() {
     return groupEntityManager;
   }
 
-  public void setGroupEntityManager(GroupEntityManager groupEntityManager) {
+  public ProcessEngineConfigurationImpl setGroupEntityManager(GroupEntityManager groupEntityManager) {
     this.groupEntityManager = groupEntityManager;
+    return this;
   }
 
   public HistoricActivityInstanceEntityManager getHistoricActivityInstanceEntityManager() {
     return historicActivityInstanceEntityManager;
   }
 
-  public void setHistoricActivityInstanceEntityManager(HistoricActivityInstanceEntityManager historicActivityInstanceEntityManager) {
+  public ProcessEngineConfigurationImpl setHistoricActivityInstanceEntityManager(HistoricActivityInstanceEntityManager historicActivityInstanceEntityManager) {
     this.historicActivityInstanceEntityManager = historicActivityInstanceEntityManager;
+    return this;
   }
 
   public HistoricDetailEntityManager getHistoricDetailEntityManager() {
     return historicDetailEntityManager;
   }
 
-  public void setHistoricDetailEntityManager(HistoricDetailEntityManager historicDetailEntityManager) {
+  public ProcessEngineConfigurationImpl setHistoricDetailEntityManager(HistoricDetailEntityManager historicDetailEntityManager) {
     this.historicDetailEntityManager = historicDetailEntityManager;
+    return this;
   }
 
   public HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
     return historicIdentityLinkEntityManager;
   }
 
-  public void setHistoricIdentityLinkEntityManager(HistoricIdentityLinkEntityManager historicIdentityLinkEntityManager) {
+  public ProcessEngineConfigurationImpl setHistoricIdentityLinkEntityManager(HistoricIdentityLinkEntityManager historicIdentityLinkEntityManager) {
     this.historicIdentityLinkEntityManager = historicIdentityLinkEntityManager;
+    return this;
   }
 
   public HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {
     return historicProcessInstanceEntityManager;
   }
 
-  public void setHistoricProcessInstanceEntityManager(HistoricProcessInstanceEntityManager historicProcessInstanceEntityManager) {
+  public ProcessEngineConfigurationImpl setHistoricProcessInstanceEntityManager(HistoricProcessInstanceEntityManager historicProcessInstanceEntityManager) {
     this.historicProcessInstanceEntityManager = historicProcessInstanceEntityManager;
+    return this;
   }
 
   public HistoricTaskInstanceEntityManager getHistoricTaskInstanceEntityManager() {
     return historicTaskInstanceEntityManager;
   }
 
-  public void setHistoricTaskInstanceEntityManager(HistoricTaskInstanceEntityManager historicTaskInstanceEntityManager) {
+  public ProcessEngineConfigurationImpl setHistoricTaskInstanceEntityManager(HistoricTaskInstanceEntityManager historicTaskInstanceEntityManager) {
     this.historicTaskInstanceEntityManager = historicTaskInstanceEntityManager;
+    return this;
   }
 
   public HistoricVariableInstanceEntityManager getHistoricVariableInstanceEntityManager() {
     return historicVariableInstanceEntityManager;
   }
 
-  public void setHistoricVariableInstanceEntityManager(HistoricVariableInstanceEntityManager historicVariableInstanceEntityManager) {
+  public ProcessEngineConfigurationImpl setHistoricVariableInstanceEntityManager(HistoricVariableInstanceEntityManager historicVariableInstanceEntityManager) {
     this.historicVariableInstanceEntityManager = historicVariableInstanceEntityManager;
+    return this;
   }
 
   public IdentityInfoEntityManager getIdentityInfoEntityManager() {
     return identityInfoEntityManager;
   }
 
-  public void setIdentityInfoEntityManager(IdentityInfoEntityManager identityInfoEntityManager) {
+  public ProcessEngineConfigurationImpl setIdentityInfoEntityManager(IdentityInfoEntityManager identityInfoEntityManager) {
     this.identityInfoEntityManager = identityInfoEntityManager;
+    return this;
   }
 
   public IdentityLinkEntityManager getIdentityLinkEntityManager() {
     return identityLinkEntityManager;
   }
 
-  public void setIdentityLinkEntityManager(IdentityLinkEntityManager identityLinkEntityManager) {
+  public ProcessEngineConfigurationImpl setIdentityLinkEntityManager(IdentityLinkEntityManager identityLinkEntityManager) {
     this.identityLinkEntityManager = identityLinkEntityManager;
+    return this;
   }
 
   public JobEntityManager getJobEntityManager() {
     return jobEntityManager;
   }
 
-  public void setJobEntityManager(JobEntityManager jobEntityManager) {
+  public ProcessEngineConfigurationImpl setJobEntityManager(JobEntityManager jobEntityManager) {
     this.jobEntityManager = jobEntityManager;
+    return this;
   }
 
   public MembershipEntityManager getMembershipEntityManager() {
     return membershipEntityManager;
   }
 
-  public void setMembershipEntityManager(MembershipEntityManager membershipEntityManager) {
+  public ProcessEngineConfigurationImpl setMembershipEntityManager(MembershipEntityManager membershipEntityManager) {
     this.membershipEntityManager = membershipEntityManager;
+    return this;
   }
 
   public ModelEntityManager getModelEntityManager() {
     return modelEntityManager;
   }
 
-  public void setModelEntityManager(ModelEntityManager modelEntityManager) {
+  public ProcessEngineConfigurationImpl setModelEntityManager(ModelEntityManager modelEntityManager) {
     this.modelEntityManager = modelEntityManager;
+    return this;
   }
 
   public ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
     return processDefinitionEntityManager;
   }
 
-  public void setProcessDefinitionEntityManager(ProcessDefinitionEntityManager processDefinitionEntityManager) {
+  public ProcessEngineConfigurationImpl setProcessDefinitionEntityManager(ProcessDefinitionEntityManager processDefinitionEntityManager) {
     this.processDefinitionEntityManager = processDefinitionEntityManager;
+    return this;
   }
   
   public ProcessDefinitionInfoEntityManager getProcessDefinitionInfoEntityManager() {
     return processDefinitionInfoEntityManager;
   }
 
-  public void setProcessDefinitionInfoEntityManager(ProcessDefinitionInfoEntityManager processDefinitionInfoEntityManager) {
+  public ProcessEngineConfigurationImpl setProcessDefinitionInfoEntityManager(ProcessDefinitionInfoEntityManager processDefinitionInfoEntityManager) {
     this.processDefinitionInfoEntityManager = processDefinitionInfoEntityManager;
+    return this;
   }
 
   public PropertyEntityManager getPropertyEntityManager() {
     return propertyEntityManager;
   }
 
-  public void setPropertyEntityManager(PropertyEntityManager propertyEntityManager) {
+  public ProcessEngineConfigurationImpl setPropertyEntityManager(PropertyEntityManager propertyEntityManager) {
     this.propertyEntityManager = propertyEntityManager;
+    return this;
   }
 
   public ResourceEntityManager getResourceEntityManager() {
     return resourceEntityManager;
   }
 
-  public void setResourceEntityManager(ResourceEntityManager resourceEntityManager) {
+  public ProcessEngineConfigurationImpl setResourceEntityManager(ResourceEntityManager resourceEntityManager) {
     this.resourceEntityManager = resourceEntityManager;
+    return this;
   }
 
   public TaskEntityManager getTaskEntityManager() {
     return taskEntityManager;
   }
 
-  public void setTaskEntityManager(TaskEntityManager taskEntityManager) {
+  public ProcessEngineConfigurationImpl setTaskEntityManager(TaskEntityManager taskEntityManager) {
     this.taskEntityManager = taskEntityManager;
+    return this;
   }
 
   public UserEntityManager getUserEntityManager() {
     return userEntityManager;
   }
 
-  public void setUserEntityManager(UserEntityManager userEntityManager) {
+  public ProcessEngineConfigurationImpl setUserEntityManager(UserEntityManager userEntityManager) {
     this.userEntityManager = userEntityManager;
+    return this;
   }
 
   public VariableInstanceEntityManager getVariableInstanceEntityManager() {
     return variableInstanceEntityManager;
   }
 
-  public void setVariableInstanceEntityManager(VariableInstanceEntityManager variableInstanceEntityManager) {
+  public ProcessEngineConfigurationImpl setVariableInstanceEntityManager(VariableInstanceEntityManager variableInstanceEntityManager) {
     this.variableInstanceEntityManager = variableInstanceEntityManager;
+    return this;
   }
   
   public TableDataManager getTableDataManager() {
     return tableDataManager;
   }
 
-  public void setTableDataManager(TableDataManager tableDataManager) {
+  public ProcessEngineConfigurationImpl setTableDataManager(TableDataManager tableDataManager) {
     this.tableDataManager = tableDataManager;
+    return this;
   }
 
   public HistoryManager getHistoryManager() {
     return historyManager;
   }
 
-  public void setHistoryManager(HistoryManager historyManager) {
+  public ProcessEngineConfigurationImpl setHistoryManager(HistoryManager historyManager) {
     this.historyManager = historyManager;
+    return this;
   }
 
   public ProcessEngineConfigurationImpl setClock(Clock clock) {
