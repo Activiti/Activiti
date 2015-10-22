@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
@@ -75,6 +76,12 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
         ((HistoricVariableInstanceEntity) historicProcessVariable).delete();
       }
     }
+  }
+  
+  @Override
+  public void delete(PersistentObject persistentObject) {
+    HistoricVariableInstanceEntity variableInstanceEntity = (HistoricVariableInstanceEntity) persistentObject;
+    variableInstanceEntity.delete();
   }
 
   @SuppressWarnings("unchecked")

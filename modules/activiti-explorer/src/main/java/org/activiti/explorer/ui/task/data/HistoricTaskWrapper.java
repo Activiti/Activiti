@@ -182,4 +182,14 @@ public class HistoricTaskWrapper implements Task {
     return null;
   }
 
+  @Override
+  public void setLocalizedName(String name) {
+    
+  }
+
+  @Override
+  public void setLocalizedDescription(String description) {
+    
+  }
+
 }
