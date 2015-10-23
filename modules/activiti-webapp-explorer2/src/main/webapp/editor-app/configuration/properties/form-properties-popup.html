@@ -49,9 +49,10 @@
             			   		<input id="datePatternField" class="form-control" type="text" ng-model="selectedProperties[0].datePattern" placeholder="{{'PROPERTY.FORMPROPERTIES.DATEPATTERN.PLACEHOLDER' | translate }}" />
             				</div>
                             <div class="form-group" ng-show="selectedProperties[0].enumValues">
-            			   		<label for="valueField">{{'PROPERTY.FORMPROPERTIES.VALUES' | translate}}</label>
+            			   		<label for="nameField">{{'PROPERTY.FORMPROPERTIES.VALUES' | translate}}</label>
             			   		<div ng-repeat="enum in selectedProperties[0].enumValues">
-                                    <input id="valueField" class="form-control" type="text" ng-model="enum.value" />
+                                    <input id="valueIdField" class="form-control" type="text" ng-model="enum.id" placeholder="{{'PROPERTY.FORMPROPERTIES.VALUES.ID.PLACEHOLDER' | translate }}" />
+                                    <input id="nameField" class="form-control" type="text" ng-model="enum.name"  placeholder="{{'PROPERTY.FORMPROPERTIES.VALUES.NAME.PLACEHOLDER' | translate }}" />
                                     <i class="glyphicon glyphicon-minus clickable-property" ng-click="removeEnumValue($index)"></i>
                                     <i ng-if="$index == (selectedProperties[0].enumValues.length - 1)" class="glyphicon glyphicon-plus clickable-property" ng-click="addEnumValue($index)"></i>
                                 </div>
