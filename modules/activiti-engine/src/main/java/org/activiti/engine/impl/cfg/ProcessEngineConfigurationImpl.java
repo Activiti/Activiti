@@ -13,26 +13,7 @@
 
 package org.activiti.engine.impl.cfg;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.Set;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -67,6 +48,12 @@ import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.deployer.BpmnDeploymentUtilities;
+import org.activiti.engine.impl.bpmn.deployer.CachingAndArtifactsManager;
+import org.activiti.engine.impl.bpmn.deployer.EventSubscriptionManager;
+import org.activiti.engine.impl.bpmn.deployer.ExpandedDeployment;
+import org.activiti.engine.impl.bpmn.deployer.ProcessDefinitionDiagrammer;
+import org.activiti.engine.impl.bpmn.deployer.TimerManager;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.factory.AbstractBehaviorFactory;
@@ -304,7 +291,6 @@ import org.activiti.engine.runtime.Clock;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -319,7 +305,27 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 /**
  * @author Tom Baeyens
@@ -445,6 +451,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected BpmnDeployer bpmnDeployer;
   protected BpmnParser bpmnParser;
+  protected ExpandedDeployment.BuilderFactory expandedDeploymentBuilderFactory;
+  protected TimerManager timerManager;
+  protected EventSubscriptionManager eventSubscriptionManager;
+  protected BpmnDeploymentUtilities bpmnDeploymentUtilities;
+  protected CachingAndArtifactsManager cachingAndArtifactsManager;
+  protected ProcessDefinitionDiagrammer processDefinitionDiagrammer;
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
@@ -611,6 +623,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
 
+  @Override
   public ProcessEngine buildProcessEngine() {
     init();
     ProcessEngineImpl processEngine = new ProcessEngineImpl(this);
@@ -935,7 +948,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("limitBetween", DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
           properties.put("limitOuterJoinBetween", DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
           properties.put("orderBy", DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
-          properties.put("limitBeforeNativeQuery", ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
+          properties.put("limitBeforeNativeQuery", Objects.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
 
         Configuration configuration = initMybatisConfiguration(environment, reader, properties);
@@ -973,7 +986,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected Configuration parseMybatisConfiguration(Configuration configuration, XMLConfigBuilder parser) {
+  protected Configuration parseMybatisConfiguration(
+      @SuppressWarnings("unused") Configuration configuration, XMLConfigBuilder parser) {
     return parseCustomMybatisXMLMappers(parser.parse());
   }
 
@@ -1357,16 +1371,55 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  protected void initBpmnDeployerDependencies() {
+    if (expandedDeploymentBuilderFactory == null) {
+      expandedDeploymentBuilderFactory = new ExpandedDeployment.BuilderFactory();
+    }
+    if (expandedDeploymentBuilderFactory.getBpmnParser() == null) {
+      expandedDeploymentBuilderFactory.setBpmnParser(bpmnParser);
+    }
+    
+    if (timerManager == null) {
+      timerManager = new TimerManager();
+    }
+    
+    if (eventSubscriptionManager == null) {
+      eventSubscriptionManager = new EventSubscriptionManager();
+    }
+    
+    if (bpmnDeploymentUtilities == null) {
+      bpmnDeploymentUtilities = new BpmnDeploymentUtilities();
+    }
+    if (bpmnDeploymentUtilities.getTimerManager() == null) {
+      bpmnDeploymentUtilities.setTimerManager(timerManager);
+    }
+    if (bpmnDeploymentUtilities.getEventSubscriptionManager() == null) {
+      bpmnDeploymentUtilities.setEventSubscriptionManager(eventSubscriptionManager);
+    }
+    
+    if (cachingAndArtifactsManager == null) {
+      cachingAndArtifactsManager = new CachingAndArtifactsManager();
+    }
+    
+    if (processDefinitionDiagrammer == null) {
+      processDefinitionDiagrammer = new ProcessDefinitionDiagrammer();
+    }
+  }
+  
   protected Collection<? extends Deployer> getDefaultDeployers() {
     List<Deployer> defaultDeployers = new ArrayList<Deployer>();
 
     if (bpmnDeployer == null) {
       bpmnDeployer = new BpmnDeployer();
     }
-
-    bpmnDeployer.setExpressionManager(expressionManager);
+    
+    initBpmnDeployerDependencies();
+    
     bpmnDeployer.setIdGenerator(idGenerator);
-    bpmnDeployer.setBpmnParser(bpmnParser);
+    bpmnDeployer.setExpandedDeploymentBuilderFactory(expandedDeploymentBuilderFactory);
+    bpmnDeployer.setBpmnDeploymentUtilities(bpmnDeploymentUtilities);
+    bpmnDeployer.setCachingAndArtifactsManager(cachingAndArtifactsManager);
+    bpmnDeployer.setProcessDefinitionDiagrammer(processDefinitionDiagrammer);
 
     defaultDeployers.add(bpmnDeployer);
     return defaultDeployers;
@@ -2041,6 +2094,55 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setBpmnParser(BpmnParser bpmnParser) {
     this.bpmnParser = bpmnParser;
     return this;
+  }
+
+  public ExpandedDeployment.BuilderFactory getExpandedDeploymentBuilderFactory() {
+    return expandedDeploymentBuilderFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setExpandedDeploymentBuilderFactory(ExpandedDeployment.BuilderFactory factory) {
+    this.expandedDeploymentBuilderFactory = factory;
+    return this;
+  }
+
+  public TimerManager getTimerManager() {
+    return timerManager;
+  }
+
+  public void setTimerManager(TimerManager timerManager) {
+    this.timerManager = timerManager;
+  }
+
+  public EventSubscriptionManager getEventSubscriptionManager() {
+    return eventSubscriptionManager;
+  }
+
+  public void setEventSubscriptionManager(EventSubscriptionManager eventSubscriptionManager) {
+    this.eventSubscriptionManager = eventSubscriptionManager;
+  }
+
+  public BpmnDeploymentUtilities getBpmnDeploymentUtilities() {
+    return bpmnDeploymentUtilities;
+  }
+
+  public void setBpmnDeploymentUtilities(BpmnDeploymentUtilities bpmnDeploymentUtilities) {
+    this.bpmnDeploymentUtilities = bpmnDeploymentUtilities;
+  }
+
+  public CachingAndArtifactsManager getCachingAndArtifactsManager() {
+    return cachingAndArtifactsManager;
+  }
+
+  public void setCachingAndArtifactsManager(CachingAndArtifactsManager cachingAndArtifactsManager) {
+    this.cachingAndArtifactsManager = cachingAndArtifactsManager;
+  }
+
+  public ProcessDefinitionDiagrammer getProcessDefinitionDiagrammer() {
+    return processDefinitionDiagrammer;
+  }
+
+  public void setProcessDefinitionDiagrammer(ProcessDefinitionDiagrammer processDefinitionDiagrammer) {
+    this.processDefinitionDiagrammer = processDefinitionDiagrammer;
   }
 
   public List<Deployer> getDeployers() {

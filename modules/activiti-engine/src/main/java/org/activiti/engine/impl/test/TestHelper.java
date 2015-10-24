@@ -26,7 +26,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtilities;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -191,7 +191,7 @@ public abstract class TestHelper {
    * parameter: <code>BpmnDeployer.BPMN_RESOURCE_SUFFIXES</code>. The first resource matching a suffix will be returned.
    */
   public static String getBpmnProcessDefinitionResource(Class<?> type, String name) {
-    for (String suffix : BpmnDeployer.BPMN_RESOURCE_SUFFIXES) {
+    for (String suffix : ResourceNameUtilities.BPMN_RESOURCE_SUFFIXES) {
       String resource = type.getName().replace('.', '/') + "." + name + "." + suffix;
       InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
       if (inputStream == null) {
@@ -200,7 +200,7 @@ public abstract class TestHelper {
         return resource;
       }
     }
-    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIXES[0];
+    return type.getName().replace('.', '/') + "." + name + "." + ResourceNameUtilities.BPMN_RESOURCE_SUFFIXES[0];
   }
 
   // Engine startup and shutdown helpers
