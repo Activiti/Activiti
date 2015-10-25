@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Iterator;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
@@ -24,6 +22,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 
 /**
  * implementation of the Exclusive Gateway/XOR gateway/exclusive data-based gateway
@@ -66,12 +65,16 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       
       if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
         Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-        if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
-                || (condition != null && condition.evaluate(execution)) ) {
-          if (log.isDebugEnabled()) {
-            log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
+        if (condition == null) {
+          if (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) {
+            outgoingSeqFlow = seqFlow;
           }
-          outgoingSeqFlow = seqFlow;
+        } else {
+          if (condition.evaluate(execution)) {
+            outgoingSeqFlow = seqFlow;
+          } else {
+            logSequenceSelection(log, seqFlow, false);
+          }
         }
       }
       else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
@@ -80,12 +83,23 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     
     if (outgoingSeqFlow != null) {
+
+      logSequenceSelection(log, outgoingSeqFlow, true);
+      logExecutionVariables(log, execution);
+
       execution.take(outgoingSeqFlow);
     } else {
-      
+
+      logExecutionVariables(log, execution);
+
       if (defaultSequenceFlow != null) {
         PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
         if (defaultTransition != null) {
+
+          if (log.isDebugEnabled()) {
+            log.debug("Default sequence flow '{}' selected as outgoing sequence flow.", defaultTransition.getId());
+          }
+
           execution.take(defaultTransition);
         } else {
           throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' not found");
