@@ -1,5 +1,5 @@
-
-== Operation Control
+[[Tooling]]
+== Tooling
 
 [[JMX]]
 
@@ -125,19 +125,64 @@ service:jmx:rmi:///jndi/rmi://:<hostname>:<registryPort>/<serviceUrlPath>
 ----
 
 
-[[JMX]]
-
-
+[[mavenArchetypes]]
 === Maven archetypes
 
-[[create test case]]
 
 ==== Create Test Case
-During development, sometimes it is helpful to create a small test case to test an idea or a feature, before implementing it in the real practical scenario.
-This helps to isolate the subject under test. JUnit test cases are also the preferred tools for communicating bug reports.
+During development, sometimes it is helpful to create a small test case to test an idea or a feature,
+before implementing it in the real application.
+This helps to isolate the subject under test. JUnit test cases are also the preferred tools for communicating
+bug reports and feature requests.
 Having a test case attached to a bug report or feature request jira issue, considerably reduces its fixing time.
-To facilitate creation of a test cases, a maven archetype is available. By use of this archetype, one can rapidly create a standard test case.
-The archetype should be already avilable in the standard repository, if not, you can easily install it in your local maven repository folder by just typing:
-  mvn install in tooling/archtypes folder.
+
+To facilitate creation of a test case, a maven archetype is available. By use of this archetype, one can rapidly create a standard test case.
+The archetype should be already avilable in the standard repository. if not, you can easily install it in your local maven repository folder by just typing
+  *mvn install* in *tooling/archtypes* folder.
 
 The following command creates the unit test project:
+[source]
+
+mvn archetype:generate \
+-DarchetypeGroupId=org.activiti \
+-DarchetypeArtifactId=activiti-archetype-unittest \
+-DarchetypeVersion=5.18.1-SNAPSHOT \
+-DgroupId=org.myGroup \
+-DartifactId=myArtifact
+
+The effect of each parameter is explained in the following table:
+
+.Unittest Generation archetype parameters
+[options="header" cols="1,12,30"]
+|===
+|Row|Parameter|Explanation
+|1|archetypeGroupId|Group id of the archetype. should be *org.activiti*
+|2|archetypeArtifactId|Artifact if of the archetype. should be *activiti-archetype-unittest*
+|3|archetypeVersion|Activiti version used in the generated test project
+|4|groupId|Group id of the generated test project
+|5|artifactId|Artifact id of the generated test project
+|===
+
+
+The directory structure of the generated project would be like this:
+----
+.
+├── pom.xml
+└── src
+    └── test
+        ├── java
+        │   └── org
+        │       └── myGroup
+        │           └── MyUnitTest.java
+        └── resources
+            ├── activiti.cfg.xml
+            ├── log4j.properties
+            └── org
+                └── myGroup
+                    └── my-process.bpmn20.xml
+----
+
+You can modify java unit test case and its corresponding process model, or add new test cases and process models.
+If you are using the project to articulate a bug or a feature, test case should fail initially. It should then pass
+after the desired bug is fixed or the desired feature is implemented.
+Please make sure to clean the project by typing *mvn clean* before sending it.
