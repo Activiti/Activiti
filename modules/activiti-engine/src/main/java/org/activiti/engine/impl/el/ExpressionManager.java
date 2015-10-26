@@ -70,13 +70,11 @@ public class ExpressionManager {
   }
   
   public ExpressionManager(Map<Object, Object> beans, boolean initFactory) {
-	    // Use the ExpressionFactoryImpl in activiti build in version of juel, with parametrised method expressions enabled
-	    expressionFactory = new ExpressionFactoryImpl();
-	    this.beans = beans;
+    // Use the ExpressionFactoryImpl in activiti build in version of juel, with parametrised method expressions enabled
+    expressionFactory = new ExpressionFactoryImpl();
+    this.beans = beans;
   }
 
- 
-  
   public Expression createExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression.trim(), Object.class);
     return new JuelExpression(valueExpression, expression);

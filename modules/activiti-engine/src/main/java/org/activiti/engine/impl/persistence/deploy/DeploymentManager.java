@@ -45,6 +45,7 @@ public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
   protected DeploymentCache<BpmnModel> bpmnModelCache;
+  protected ProcessDefinitionInfoCache processDefinitionInfoCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
   
@@ -188,9 +189,8 @@ public class DeploymentManager {
     
     for (ProcessDefinition processDefinition : processDefinitions) {
       
-      // Since all process definitions are deleted by a single query, we should dispatch the
-      // events in this loop
-      if(eventDispatcher.isEnabled()) {
+      // Since all process definitions are deleted by a single query, we should dispatch the events in this loop
+      if (eventDispatcher.isEnabled()) {
       	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
       			ActivitiEventType.ENTITY_DELETED, processDefinition));
       }
@@ -234,6 +234,14 @@ public class DeploymentManager {
 
   public void setBpmnModelCache(DeploymentCache<BpmnModel> bpmnModelCache) {
     this.bpmnModelCache = bpmnModelCache;
+  }
+
+  public ProcessDefinitionInfoCache getProcessDefinitionInfoCache() {
+    return processDefinitionInfoCache;
+  }
+
+  public void setProcessDefinitionInfoCache(ProcessDefinitionInfoCache processDefinitionInfoCache) {
+    this.processDefinitionInfoCache = processDefinitionInfoCache;
   }
 
   public DeploymentCache<Object> getKnowledgeBaseCache() {

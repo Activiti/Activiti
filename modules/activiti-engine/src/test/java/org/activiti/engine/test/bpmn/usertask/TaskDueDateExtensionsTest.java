@@ -15,10 +15,12 @@ package org.activiti.engine.test.bpmn.usertask;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -64,7 +66,8 @@ public class TaskDueDateExtensionsTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testRelativeDueDateStringExtension() throws Exception {
-    
+    Clock clock = processEngineConfiguration.getClock();
+    clock.setCurrentCalendar(new GregorianCalendar(2015, 0, 1));
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("dateVariable", "P2DT5H40M");
     
@@ -78,5 +81,6 @@ public class TaskDueDateExtensionsTest extends PluggableActivitiTestCase {
     assertEquals(2, period.getDays());
     assertEquals(5, period.getHours());
     assertEquals(40, period.getMinutes());
+    clock.reset();
   }
 }

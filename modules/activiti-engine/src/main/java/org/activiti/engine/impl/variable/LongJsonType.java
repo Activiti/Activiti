@@ -25,9 +25,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class LongJsonType extends SerializableType {
 
   protected final int minLength;
-  protected ObjectMapper objectMapper = new ObjectMapper();
+  protected ObjectMapper objectMapper = null;
 
-  public LongJsonType(int minLength) {this.minLength = minLength;}
+  public LongJsonType(int minLength, ObjectMapper objectMapper) {
+    this.minLength = minLength;
+    this.objectMapper = objectMapper;
+  }
 
   public String getTypeName() {
     return "longJson";

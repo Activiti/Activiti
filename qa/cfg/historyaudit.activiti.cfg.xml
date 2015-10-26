@@ -38,6 +38,8 @@
         </entry>
       </map>
     </property>
+    
+    <property name="enableProcessDefinitionInfoCache" value="true" />
   </bean>
   
   <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">

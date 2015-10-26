@@ -521,6 +521,11 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   T includeProcessVariables();
   
   /**
+   * Localize task name and description to specified locale.
+   */
+  T locale(String locale);
+  
+  /**
    * All query clauses called will be added to a single or-statement. This or-statement will be
    * included with the other already existing clauses in the query, joined by an 'and'.
    * 

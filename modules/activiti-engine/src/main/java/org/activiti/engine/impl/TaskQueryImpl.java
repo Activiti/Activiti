@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,6 +28,9 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Joram Barrez
@@ -99,6 +103,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean includeProcessVariables = false;
   protected String userIdForCandidateAndAssignee;
   protected boolean bothCandidateAndAssigned = false;
+  protected String locale;
   protected boolean orActive;
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
@@ -1049,6 +1054,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+  public TaskQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
+  
   public TaskQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
     return this;
@@ -1211,15 +1221,24 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public List<Task> executeList(CommandContext commandContext, Page page) {
     ensureVariablesInitialized();
     checkQueryOk();
+    List<Task> tasks = null;
     if (includeTaskLocalVariables || includeProcessVariables) {
-      return commandContext
+      tasks = commandContext
           .getTaskEntityManager()
           .findTasksAndVariablesByQueryCriteria(this);
     } else {
-      return commandContext
+      tasks = commandContext
           .getTaskEntityManager()
           .findTasksByQueryCriteria(this);
     }
+    
+    if (tasks != null) {
+      for (Task task : tasks) {
+        localize(task);
+      }
+    }
+    
+    return tasks;
   }
   
   public long executeCount(CommandContext commandContext) {
@@ -1228,6 +1247,29 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return commandContext
       .getTaskEntityManager()
       .findTaskCountByQueryCriteria(this);
+  }
+
+  protected void localize(Task task) {
+    task.setLocalizedName(null);
+    task.setLocalizedDescription(null);
+    
+    if (locale != null) {
+      String processDefinitionId = task.getProcessDefinitionId();
+      if (processDefinitionId != null) {
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId);
+        if (languageNode != null) {
+          JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+          if (languageNameNode != null && languageNameNode.isNull() == false) {
+            task.setLocalizedName(languageNameNode.asText());
+          }
+          
+          JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+            task.setLocalizedDescription(languageDescriptionNode.asText());
+          }
+        }
+      }
+    }
   }
   
   //getters ////////////////////////////////////////////////////////////////
