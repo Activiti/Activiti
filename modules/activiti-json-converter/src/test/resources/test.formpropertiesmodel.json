@@ -19,7 +19,61 @@
             "overrideid": "register",
             "name": "Insert Data",
             "documentation": "",
-            "formproperties": "{\"totalCount\": 5, \"items\": [{\"formproperty_id\": \"duplicated\", \"formproperty_name\": \"duplicated\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"duplicated\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"name\", \"formproperty_name\": \"name\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"name\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"age\", \"formproperty_name\": \"age\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"age\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"isMan\", \"formproperty_name\": \"isMan\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"isMan\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"remove\", \"formproperty_name\": \"remove\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"remove\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}]}",
+            "formproperties": {
+                "totalCount": 5,
+                "formProperties": [
+                    {
+                        "id": "duplicated",
+                        "name": "duplicated-name",
+                        "type": "string",
+                        "expression": null,
+                        "variable": "duplicated-var",
+                        "required": true,
+                        "readable": true,
+                        "writable": true
+                    },
+                    {
+                        "id": "name",
+                        "name": "name-name",
+                        "type": "string",
+                        "expression": null,
+                        "variable": "name-var",
+                        "required": true,
+                        "readable": true,
+                        "writable": true
+                    },
+                    {
+                        "id": "age",
+                        "name": "age-name",
+                        "type": "long",
+                        "expression": null,
+                        "variable": "age",
+                        "required": true,
+                        "readable": true,
+                        "writable": false
+                    },
+                    {
+                        "id": "isMan",
+                        "name": "isMan-name",
+                        "type": "boolean",
+                        "expression": null,
+                        "variable": "isMan-var",
+                        "required": true,
+                        "readable": false,
+                        "writable": true
+                    },
+                    {
+                        "id": "remove",
+                        "name": "remove-name",
+                        "type": "boolean",
+                        "expression": null,
+                        "variable": "remove-var",
+                        "required": true,
+                        "readable": true,
+                        "writable": true
+                    }
+                ]
+            },
             "initiator": "",
             "formkeydefinition": "teste",
             "executionlisteners": ""
@@ -58,7 +112,76 @@
                     "resourceassignmentexpr": "kermit"
                 }]
             },
-            "formproperties": "{\"totalCount\": 5, \"items\": [{\"formproperty_id\": \"duplicated\", \"formproperty_name\": \"duplicated\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"duplicated\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"name\", \"formproperty_name\": \"name\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"name\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"age\", \"formproperty_name\": \"age\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"age\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"No\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"isMan\", \"formproperty_name\": \"isMan\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"isMan\", \"formproperty_required\": \"\", \"formproperty_readable\": \"No\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"remove\", \"formproperty_name\": \"remove\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"remove\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"},{\"formproperty_id\": \"testEnum\", \"formproperty_name\": \"testEnum\", \"formproperty_type\": \"enum\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"testEnum\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"{\\\"totalCount\\\": 2, \\\"items\\\": [{\\\"formproperty_formvalue_id\\\": \\\"enum1\\\", \\\"formproperty_formvalue_name\\\": \\\"enum1\\\"}, {\\\"formproperty_formvalue_id\\\": \\\"enum2\\\", \\\"formproperty_formvalue_name\\\": \\\"enum2\\\"}]}\"}]}",
+            "formproperties": {
+                "totalCount": 5,
+                "formProperties": [
+                    {
+                        "id": "duplicated",
+                        "name": "duplicated-name",
+                        "type": "string",
+                        "expression": null,
+                        "variable": "duplicated-var",
+                        "required": false,
+                        "readable": true,
+                        "writable": true
+                    },
+                    {
+                        "id": "name",
+                        "name": "name-name",
+                        "type": "string",
+                        "expression": null,
+                        "variable": "name-var",
+                        "required": false,
+                        "readable": true,
+                        "writable": true
+                    },
+                    {
+                        "id": "age",
+                        "name": "age-name",
+                        "type": "long",
+                        "expression": null,
+                        "variable": "age",
+                        "required": false,
+                        "readable": true,
+                        "writable": false
+                    },
+                    {
+                        "id": "isMan",
+                        "name": "isMan-name",
+                        "type": "boolean",
+                        "expression": null,
+                        "variable": "isMan-var",
+                        "required": false,
+                        "readable": false,
+                        "writable": true
+                    },
+                    {
+                        "id": "remove",
+                        "name": "remove-name",
+                        "type": "boolean",
+                        "expression": null,
+                        "variable": "remove-var",
+                        "required": true,
+                        "readable": true,
+                        "writable": true
+                    },
+                    {
+                        "id": "testEnum",
+                        "name": "testEnum-name",
+                        "type": "enum",
+                        "expression": null,
+                        "variable": "testEnum-var",
+                        "required": false,
+                        "readable": true,
+                        "writable": true,
+                        "enumValues": [
+                            { "id": "enum1-id", "name": "enum1-name" },
+                            { "id": "enum2-id", "name": "enum2-name" }
+                        ]
+                    }
+                ]
+            },
+
             "tasklisteners": "{\"totalCount\":0,\"items\":[]}",
             "asynchronousdefinition": "No",
             "exclusivedefinition": "Yes",

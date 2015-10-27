@@ -47,6 +47,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertNotNull(startFlowElement);
     assertTrue(startFlowElement instanceof StartEvent);
     StartEvent startEvent = (StartEvent) startFlowElement;
+    assertEquals(5, startEvent.getFormProperties().size());
     for (FormProperty formProperty :startEvent.getFormProperties()) {
     	assertEquals(true, formProperty.isRequired());
     }
@@ -55,6 +56,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertNotNull(userFlowElement);
     assertTrue(userFlowElement instanceof UserTask);
     UserTask userTask = (UserTask) userFlowElement;
+    assertEquals(6, userTask.getFormProperties().size());
     for (FormProperty formProperty :userTask.getFormProperties()) {
       if (formProperty.getId().equals("duplicated")) {
         checkFormProperty(formProperty, false, true, true);
@@ -96,11 +98,11 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   private void checkFormPropertyFormValues(List<Map<String, Object>> formValues) {
     List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String,Object>>();
     Map<String, Object> formValue1 = new HashMap<String, Object>();
-    formValue1.put("id", "enum1");
-    formValue1.put("name", "enum1");
+    formValue1.put("id", "enum1-id");
+    formValue1.put("name", "enum1-name");
     Map<String, Object> formValue2 = new HashMap<String, Object>();
-    formValue2.put("id", "enum2");
-    formValue2.put("name", "enum2");
+    formValue2.put("id", "enum2-id");
+    formValue2.put("name", "enum2-name");
     expectedFormValues.add(formValue1);
     expectedFormValues.add(formValue2);
     assertEquals(expectedFormValues, formValues);
