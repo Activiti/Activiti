@@ -194,20 +194,10 @@ activitiModeler
             suffix: '.json'
         });
 
-        $translateProvider.registerAvailableLanguageKeys(['en', 'de', 'es', 'fr', 'it', 'ja'], {
+        $translateProvider.registerAvailableLanguageKeys(['en'], {
             'en_*': 'en',
-            'de_*': 'de',
-            'es_*': 'es',
-            'fr_*': 'fr',
-            'it_*': 'it',
-            'ja_*': 'ja',
-            'en-*': 'en',
-            'de-*': 'de',
-            'es-*': 'es',
-            'fr-*': 'fr',
-            'it-*': 'it',
-            'ja-*': 'ja'
-        }).determinePreferredLanguage();
+            'en-*': 'en'
+        });
         
   }])
   .run(['$rootScope', '$timeout', '$modal', '$translate', '$location', '$window', 'appResourceRoot',
