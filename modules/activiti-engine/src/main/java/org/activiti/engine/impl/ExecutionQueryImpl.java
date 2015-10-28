@@ -12,12 +12,23 @@
  */
 package org.activiti.engine.impl;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +56,8 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
+  protected String locale;
+  protected boolean withLocalizationFallback;
 
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
@@ -248,6 +261,17 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return variableValueNotEqualsIgnoreCase(name, value, false);
   }
 
+  @Override
+  public ExecutionQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
+
+  public ExecutionQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
+    return this;
+  }
+  
   // ordering ////////////////////////////////////////////////////
 
   public ExecutionQueryImpl orderByProcessInstanceId() {
@@ -282,7 +306,57 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return (List) commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
+    List<?> executions = commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
+    
+    for(ExecutionEntity execution : (List<ExecutionEntity>)executions) {
+      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
+      String activityId;
+      if(execution.isScope()) {
+        if(execution.getId() == execution.getProcessInstanceId()) {
+          Process process  = bpmnModel.getMainProcess();
+          execution.setName(process.getName());
+          execution.setDescription(process.getDocumentation());
+          activityId = process.getId();
+        }
+        else {
+          activityId = execution.getActivityId();
+          FlowElement element = bpmnModel.getFlowElement(activityId);
+          if(element instanceof SubProcess) {
+            SubProcess subprocess = (SubProcess) element;
+            execution.setName(subprocess.getName());
+            execution.setDescription(subprocess.getDocumentation());
+          }
+        }
+
+        if(locale != null && activityId != null) {
+          localize(execution, activityId);
+        }
+      }
+    }
+
+    return (List<Execution>) executions;
+  }
+  
+  protected void localize(Execution execution, String activityId) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    executionEntity.setLocalizedName(null);
+    executionEntity.setLocalizedDescription(null);
+
+    String processDefinitionId = executionEntity.getProcessDefinitionId();
+    if (processDefinitionId != null) {
+      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, activityId, processDefinitionId, withLocalizationFallback);
+      if (languageNode != null) {
+        JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+        if (languageNameNode != null && languageNameNode.isNull() == false) {
+          executionEntity.setLocalizedName(languageNameNode.asText());
+        }
+
+        JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+        if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+          executionEntity.setLocalizedDescription(languageDescriptionNode.asText());
+        }
+      }
+    }
   }
 
   // getters ////////////////////////////////////////////////////

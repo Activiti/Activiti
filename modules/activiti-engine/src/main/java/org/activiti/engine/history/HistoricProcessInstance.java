@@ -83,6 +83,11 @@ public interface HistoricProcessInstance {
    */
   String getName();
 
+  /**
+   * The description for the process instance.
+   */
+  String getDescription();
+  
   /** Returns the process variables if requested in the process instance query */
   Map<String, Object> getProcessVariables();
 }

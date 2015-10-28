@@ -39,6 +39,9 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   protected String superProcessInstanceId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected String name;
+  protected String localizedName;
+  protected String description;
+  protected String localizedDescription;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntityImpl() {
@@ -124,11 +127,43 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   }
 
   public String getName() {
-    return name;
+    if (localizedName != null && localizedName.length() > 0) {
+      return localizedName;
+    } else {
+      return name;
+    }
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getLocalizedName() {
+    return localizedName;
+  }
+  
+  public void setLocalizedName(String localizedName) {
+    this.localizedName = localizedName;
+  }
+  
+  public String getDescription() {
+    if (localizedDescription != null && localizedDescription.length() > 0) {
+      return localizedDescription;
+    } else {
+      return description;
+    }
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
+  }
+  
+  public String getLocalizedDescription() {
+    return localizedDescription;
+  }
+  
+  public void setLocalizedDescription(String localizedDescription) {
+    this.localizedDescription = localizedDescription;
   }
 
   public Map<String, Object> getProcessVariables() {

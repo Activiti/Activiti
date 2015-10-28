@@ -99,7 +99,13 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   void setMultiInstanceRoot(boolean isMultiInstanceRoot);
 
   void setName(String name);
+  
+  void setDescription(String description);
 
+  void setLocalizedName(String localizedName);
+  
+  void setLocalizedDescription(String localizedDescription);
+  
   void setTenantId(String tenantId);
 
   Date getLockTime();

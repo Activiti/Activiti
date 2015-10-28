@@ -36,6 +36,12 @@ public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEnti
   void setTenantId(String tenantId);
 
   void setName(String name);
+  
+  void setLocalizedName(String localizedName);
+  
+  void setDescription(String description);
+  
+  void setLocalizedDescription(String localizedDescription);
 
   List<HistoricVariableInstanceEntity> getQueryVariables();
 

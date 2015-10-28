@@ -105,6 +105,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean bothCandidateAndAssigned;
   protected boolean orActive;
   protected String locale;
+  protected boolean withLocalizationFallback;
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
   
@@ -1053,6 +1054,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
+  public TaskQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
+    return this;
+  }
+  
   public TaskQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
     return this;
@@ -1241,7 +1247,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
       if (processDefinitionId != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId);
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (languageNameNode != null && languageNameNode.isNull() == false) {
