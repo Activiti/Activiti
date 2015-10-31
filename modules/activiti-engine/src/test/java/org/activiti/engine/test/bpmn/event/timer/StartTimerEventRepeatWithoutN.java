@@ -18,6 +18,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -27,10 +28,9 @@ import org.activiti.engine.test.Deployment;
 
 public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
 
-	protected long counter = 0;
-	protected StartEventListener startEventListener;
+	long counter = 0;
 	
-	class StartEventListener implements ActivitiEventListener {
+	class startEventListener implements ActivitiEventListener {
 
 		@Override
 		public void onEvent(ActivitiEvent event) {
@@ -50,31 +50,26 @@ public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		startEventListener = new StartEventListener();
-		processEngineConfiguration.getEventDispatcher().addEventListener(startEventListener);
+		startEventListener listener = new startEventListener();
+		processEngineConfiguration.getEventDispatcher().addEventListener(
+				listener);				
 	}
-	
-	
 
-	@Override
-  protected void tearDown() throws Exception {
-	  processEngineConfiguration.getEventDispatcher().removeEventListener(startEventListener);
-    super.tearDown();
-  }
-
-
-
-  @Deployment
+	@Deployment
 	public void testStartTimerEventRepeatWithoutN() {
 		counter = 0;
 		
+		Boolean exceptionOccured = false;
 		try {
-			waitForJobExecutorToProcessAllJobs(5500, 500);
-			fail("job is finished sooner than expected");
+			waitForJobExecutorToProcessAllJobs(12000, 100);
 		} catch (ActivitiException e) {
 			assertTrue(e.getMessage().startsWith("time limit"));
-			assertTrue(counter >= 2);
+			assertEquals(2, counter);
+			exceptionOccured = true;
 		}
+		if (!exceptionOccured)
+			fail("job is finished sooner than expected");
+
 	}
 
 }

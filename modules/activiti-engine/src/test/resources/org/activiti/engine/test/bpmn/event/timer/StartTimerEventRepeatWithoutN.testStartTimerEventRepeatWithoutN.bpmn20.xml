@@ -3,7 +3,7 @@
   <process id="testProcess" isExecutable="true">
     <startEvent id="timerstartevent1" name="Timer start">
       <timerEventDefinition>
-        <timeCycle>R/PT2S</timeCycle>
+        <timeCycle>R/PT5S</timeCycle>
       </timerEventDefinition>
     </startEvent>
     
