@@ -26,52 +26,67 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A validator for stuff that is shared accross all flow elements
+ * A validator for stuff that is shared across all flow elements
  * 
  * @author jbarrez
+ * @author Erik Winlof
  */
 public class FlowElementValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    for (FlowElement flowElement : process.getFlowElements()) {
+	protected static final int ID_MAX_LENGTH = 255;
 
-      if (flowElement instanceof Activity) {
-        Activity activity = (Activity) flowElement;
-        handleMultiInstanceLoopCharacteristics(process, activity, errors);
-        handleDataAssociations(process, activity, errors);
-      }
+	@Override
+	protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+		for (FlowElement flowElement : process.getFlowElements()) {
+			
+			if (flowElement instanceof Activity) {
+				Activity activity = (Activity) flowElement;
+				handleConstraints(process, activity, errors);
+				handleMultiInstanceLoopCharacteristics(process, activity, errors);
+				handleDataAssociations(process, activity, errors);
+			}
+			
+		}
+		
+	}
 
-    }
+	protected void handleConstraints(Process process, Activity activity, List<ValidationError> errors) {
+		if (activity.getId() != null && activity.getId().length() > ID_MAX_LENGTH) {
+			addError(errors, Problems.FLOW_ELEMENT_ID_TOO_LONG, process, activity,
+					"The id of a flow element must not contain more than " + ID_MAX_LENGTH + " characters");
+		}
+	}
 
-  }
+	protected void handleMultiInstanceLoopCharacteristics(Process process, Activity activity, List<ValidationError> errors) {
+		MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
+		if (multiInstanceLoopCharacteristics != null) {
 
-  protected void handleMultiInstanceLoopCharacteristics(Process process, Activity activity, List<ValidationError> errors) {
-    MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
-    if (multiInstanceLoopCharacteristics != null) {
+			if (StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality())
+	    		&& StringUtils.isEmpty(multiInstanceLoopCharacteristics.getInputDataItem())) {
+	    	addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity,
+	    			"Either loopCardinality or loopDataInputRef/activiti:collection must been set");
+	    }
 
-      if (StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality()) && StringUtils.isEmpty(multiInstanceLoopCharacteristics.getInputDataItem())) {
-        addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity, "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
-      }
+		}
+	}
 
-    }
-  }
-
-  protected void handleDataAssociations(Process process, Activity activity, List<ValidationError> errors) {
-    if (activity.getDataInputAssociations() != null) {
-      for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
-        if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
-          addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, "Targetref is required on a data association");
-        }
-      }
-    }
-    if (activity.getDataOutputAssociations() != null) {
-      for (DataAssociation dataAssociation : activity.getDataOutputAssociations()) {
-        if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
-          addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, "Targetref is required on a data association");
-        }
-      }
-    }
+	protected void handleDataAssociations(Process process, Activity activity, List<ValidationError> errors) {
+	  if (activity.getDataInputAssociations() != null) {
+	  	for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
+	  		if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
+	  			 addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, 
+	  					 "Targetref is required on a data association");
+	  	    }
+	  	}
+	  }
+	  if (activity.getDataOutputAssociations() != null) {
+	  	for (DataAssociation dataAssociation : activity.getDataOutputAssociations()) {
+	  		if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
+	  			 addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, 
+	  					 "Targetref is required on a data association");
+	  	    }
+	  	}
+	  }
   }
 
 }

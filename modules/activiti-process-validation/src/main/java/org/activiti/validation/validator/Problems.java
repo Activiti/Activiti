@@ -62,7 +62,16 @@ public interface Problems {
 
   String EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS = "activiti-event-gateway-only-connected-to-intermediate-events";
 
-  String SUBPROCESS_MULTIPLE_START_EVENTS = "activiti-subprocess-multiple-start-event";
+    String BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG = "activiti-bpmn-model-target-namespace-too-long";
+
+    String PROCESS_DEFINITION_ID_TOO_LONG = "activiti-process-definition-id-too-long";
+    String PROCESS_DEFINITION_NAME_TOO_LONG = "activiti-process-definition-name-too-long";
+    String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG = "activiti-process-definition-documentation-too-long";
+
+    String FLOW_ELEMENT_ID_TOO_LONG = "activiti-flow-element-id-too-long";
+
+    String SUBPROCESS_MULTIPLE_START_EVENTS = "activiti-subprocess-multiple-start-event";
+    
   String SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED = "activiti-subprocess-start-event-event-definition-not-allowed";
 
   String EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION = "activiti-event-subprocess-invalid-start-event-definition";
