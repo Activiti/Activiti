@@ -63,11 +63,11 @@ public interface Problems {
 	
 	String EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS = "activiti-event-gateway-only-connected-to-intermediate-events";
 
-    String BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG = "activiti-bpmn-model-target-namespace-too-long";
+	String BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG = "activiti-bpmn-model-target-namespace-too-long";
 
-    String PROCESS_DEFINITION_ID_TOO_LONG = "activiti-process-definition-id-too-long";
-    String PROCESS_DEFINITION_NAME_TOO_LONG = "activiti-process-definition-name-too-long";
-    String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG = "activiti-process-definition-documentation-too-long";
+	String PROCESS_DEFINITION_ID_TOO_LONG = "activiti-process-definition-id-too-long";
+	String PROCESS_DEFINITION_NAME_TOO_LONG = "activiti-process-definition-name-too-long";
+	String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG = "activiti-process-definition-documentation-too-long";
 
 	String FLOW_ELEMENT_ID_TOO_LONG = "activiti-flow-element-id-too-long";
 
