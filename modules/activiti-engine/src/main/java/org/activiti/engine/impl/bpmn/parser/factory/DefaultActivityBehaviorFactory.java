@@ -40,6 +40,7 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
@@ -419,7 +420,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
 
   public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent) {
-    return new TerminateEndEventActivityBehavior();
+    boolean terminateAll = false;
+    if (endEvent.getEventDefinitions() != null 
+        && endEvent.getEventDefinitions().size() > 0
+        && endEvent.getEventDefinitions().get(0) instanceof TerminateEventDefinition) {
+      terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateAll();
+    }
+    return new TerminateEndEventActivityBehavior(terminateAll);
   }
 
   // Boundary Events

@@ -32,8 +32,16 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   
   private static final long serialVersionUID = 1L;
   
-  protected boolean destroyProcessInstance;
-	
+  protected boolean terminateAll; 
+  
+  public TerminateEndEventActivityBehavior() {
+    
+  }
+  
+  public TerminateEndEventActivityBehavior(boolean terminateAll) {
+    this.terminateAll = terminateAll;
+  }
+  
 	@Override
 	public void execute(DelegateExecution execution) {
 		
@@ -42,11 +50,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 		
 		ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
 		
-		if (destroyProcessInstance) {
+		if (terminateAll) {
 
-		  // Not yet enabled in BPMN
-		  
-//			deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+			deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
 			
 		} else {
 			
@@ -77,6 +83,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 				} else {
 				  
 				  deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+				  
 				}
 				
 			} else {
