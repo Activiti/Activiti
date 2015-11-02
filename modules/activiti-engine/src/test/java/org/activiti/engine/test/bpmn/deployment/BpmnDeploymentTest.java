@@ -31,9 +31,11 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
+import org.activiti.validation.validator.Problems;
 
 /**
  * @author Joram Barrez
+ * @author Erik Winlof
  */
 public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
@@ -71,12 +73,44 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     return new String(bytes);
   }
 
-  public void FAILING_testViolateProcessDefinitionIdMaximumLength() {
+  public void testViolateBPMNIdMaximumLength() {
     try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml").deploy();
+      repositoryService.createDeployment()
+          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/definitionWithLongTargetNamespace.bpmn20.xml")
+          .deploy();
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("id can be maximum 64 characters", e.getMessage());
+      assertTextPresent(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, e.getMessage());
+    }
+
+    // Verify that nothing is deployed
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+  }
+
+
+  public void testViolateProcessDefinitionIdMaximumLength() {
+    try {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml")
+        .deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent(Problems.PROCESS_DEFINITION_ID_TOO_LONG, e.getMessage());
+    }
+
+    // Verify that nothing is deployed
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+  }
+
+  public void testViolateProcessDefinitionNameAndDescriptionMaximumLength() {
+    try {
+      repositoryService.createDeployment()
+          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongNameAndDescription.bpmn20.xml")
+          .deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent(Problems.PROCESS_DEFINITION_NAME_TOO_LONG, e.getMessage());
+      assertTextPresent(Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG, e.getMessage());
     }
 
     // Verify that nothing is deployed
