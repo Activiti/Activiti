@@ -524,6 +524,158 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 		assertProcessEnded(pi.getId());
 	}
+	
+	@Deployment
+	public void testTerminateNestedSubprocesses() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedSubprocesses");
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		assertEquals("D", tasks.get(2).getName());
+		assertEquals("E", tasks.get(3).getName());
+		assertEquals("F", tasks.get(4).getName());
+		
+		// Completing E should finish the lower subprocess and make 'H' active
+		taskService.complete(tasks.get(3).getId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("H").singleResult();
+		assertNotNull(task);
+		
+		// Completing A should make C active
+		taskService.complete(tasks.get(0).getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
+		assertNotNull(task);
+		
+		// Completing C should make I active
+		taskService.complete(task.getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("I").singleResult();
+		assertNotNull(task);
+		
+		// Completing I and B should make G active
+		taskService.complete(task.getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("G").singleResult();
+		assertNull(task);
+		taskService.complete(tasks.get(1).getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("G").singleResult();
+		assertNotNull(task);
+	}
+	
+	@Deployment
+	public void testTerminateNestedSubprocessesTerminateAll1() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").singleResult();
+	
+		// Completing E leads to a terminate end event with termninate all set to true
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedSubprocessesTerminateAll2() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").singleResult();
+	
+		// Completing A and C leads to a terminate end event with termninate all set to true
+		taskService.complete(task.getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
+		taskService.complete(task.getId());
+		
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocesses() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		
+		// Should have 7 tasks C active
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list();
+		assertEquals(7, tasks.size());
+		
+		// Completing these should lead to task I being active
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("I").singleResult();
+		assertNotNull(task);
+		
+		// Should have 3 instances of E active
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list();
+		assertEquals(3, tasks.size());
+		
+		// Completing these should make H active
+		for (Task t : tasks) {
+			taskService.complete(t.getId());
+		}
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("H").singleResult();
+		assertNotNull(task);
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesSequential() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		
+		// Should have 7 tasks C active after each other
+		for (int i=0; i<7; i++) {
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
+			taskService.complete(task.getId());
+		}
+		
+		// I should be active now
+		assertNotNull(taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("I").singleResult());
+		
+		// Should have 3 instances of E active after each other
+		for (int i=0; i<3; i++) {
+			assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("D").count());
+			assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("F").count());
+			
+			// Completing F should not finish the subprocess
+			taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("F").singleResult().getId());
+			
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").singleResult();
+			taskService.complete(task.getId());
+		}
+		
+		assertNotNull(taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("H").singleResult());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll1() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll2() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll3() { // Same as 1, but sequential Multi-Instance
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll4() { // Same as 2, but sequential Multi-Instance
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
 
   public void testParseTerminateEndEventDefinitionWithExtensions() {
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
