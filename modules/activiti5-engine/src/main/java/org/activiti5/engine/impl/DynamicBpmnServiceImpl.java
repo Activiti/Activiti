@@ -200,6 +200,16 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     setElementProperty(id, USER_TASK_CANDIDATE_GROUPS, valuesNode, infoNode);
   }
   
+  public ObjectNode changeSequenceFlowCondition(String id, String condition) {
+    ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
+    changeSequenceFlowCondition(id, condition, infoNode);
+    return infoNode;
+  }
+  
+  public void changeSequenceFlowCondition(String id, String condition, ObjectNode infoNode) {
+    setElementProperty(id, SEQUENCE_FLOW_CONDITION, condition, infoNode);
+  }
+  
   public ObjectNode getBpmnElementProperties(String id, ObjectNode infoNode) {
     ObjectNode propertiesNode = null;
     ObjectNode bpmnNode = getBpmnNode(infoNode);

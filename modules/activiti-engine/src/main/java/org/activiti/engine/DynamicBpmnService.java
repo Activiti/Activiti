@@ -37,6 +37,10 @@ public interface DynamicBpmnService {
   
   void changeServiceTaskDelegateExpression(String id, String expression, ObjectNode infoNode);
   
+  ObjectNode changeScriptTaskScript(String id, String script);
+  
+  void changeScriptTaskScript(String id, String script, ObjectNode infoNode);
+  
   ObjectNode changeUserTaskName(String id, String name);
   
   void changeUserTaskName(String id, String name, ObjectNode infoNode);
@@ -76,6 +80,10 @@ public interface DynamicBpmnService {
   ObjectNode changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries);
   
   void changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
+  
+  ObjectNode changeSequenceFlowCondition(String id, String condition);
+  
+  void changeSequenceFlowCondition(String id, String condition, ObjectNode infoNode);
   
   ObjectNode getBpmnElementProperties(String id, ObjectNode infoNode);
   

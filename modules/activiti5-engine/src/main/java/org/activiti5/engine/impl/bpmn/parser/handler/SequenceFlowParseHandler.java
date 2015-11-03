@@ -58,7 +58,7 @@ public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceF
     transition.setDestination(destinationActivity);
 
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
-      Condition expressionCondition = new UelExpressionCondition(bpmnParse.getExpressionManager().createExpression(sequenceFlow.getConditionExpression()));
+      Condition expressionCondition = new UelExpressionCondition(sequenceFlow.getConditionExpression());
       transition.setProperty(PROPERTYNAME_CONDITION_TEXT, sequenceFlow.getConditionExpression());
       transition.setProperty(PROPERTYNAME_CONDITION, expressionCondition);
     }

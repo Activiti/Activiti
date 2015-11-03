@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.BpmnError;
@@ -19,9 +20,12 @@ import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -37,6 +41,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(ScriptTaskActivityBehavior.class);
   
+  protected String scriptTaskId;
   protected String script;
   protected String language;
   protected String resultVariable;
@@ -48,16 +53,25 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     this.resultVariable = resultVariable;
   }
   
-  public ScriptTaskActivityBehavior(String script, String language, String resultVariable, boolean storeScriptVariables) {
+  public ScriptTaskActivityBehavior(String scriptTaskId, String script, String language, String resultVariable, boolean storeScriptVariables) {
     this(script, language, resultVariable);
+    this.scriptTaskId = scriptTaskId;
     this.storeScriptVariables = storeScriptVariables;
   }
   
   public void execute(DelegateExecution execution) {
     ActivityExecution activityExecution = (ActivityExecution) execution;
-    ScriptingEngines scriptingEngines = Context
-      .getProcessEngineConfiguration()
-      .getScriptingEngines();
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+    
+    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+      ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(scriptTaskId, execution.getProcessDefinitionId());
+      if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT)) {
+        String overrideScript = taskElementProperties.get(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT).asText();
+        if (StringUtils.isNotEmpty(overrideScript) && overrideScript.equals(script) == false) {
+          script = overrideScript;
+        }
+      }
+    }
 
     boolean noErrors = true;
     try {

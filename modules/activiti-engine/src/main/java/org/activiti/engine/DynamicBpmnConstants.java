@@ -23,6 +23,8 @@ public interface DynamicBpmnConstants {
   String SERVICE_TASK_EXPRESSION = "serviceTaskExpression";
   String SERVICE_TASK_DELEGATE_EXPRESSION = "serviceTaskDelegateExpression";
   
+  String SCRIPT_TASK_SCRIPT = "scriptTaskScript";
+  
   String USER_TASK_NAME = "userTaskName";
   String USER_TASK_DESCRIPTION = "userTaskDescription";
   String USER_TASK_DUEDATE = "userTaskDueDate";
@@ -33,6 +35,8 @@ public interface DynamicBpmnConstants {
   String USER_TASK_OWNER = "userTaskOwner";
   String USER_TASK_CANDIDATE_USERS = "userTaskCandidateUsers";
   String USER_TASK_CANDIDATE_GROUPS = "userTaskCandidateGroups";
+  
+  String SEQUENCE_FLOW_CONDITION = "sequenceFlowCondition";
 
   String LOCALIZATION_LANGUAGE = "language";
   String LOCALIZATION_NAME = "name";

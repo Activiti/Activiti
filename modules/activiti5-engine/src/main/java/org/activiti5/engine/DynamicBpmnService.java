@@ -77,6 +77,10 @@ public interface DynamicBpmnService {
   
   void changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
   
+  ObjectNode changeSequenceFlowCondition(String id, String condition);
+  
+  void changeSequenceFlowCondition(String id, String condition, ObjectNode infoNode);
+  
   ObjectNode getBpmnElementProperties(String id, ObjectNode infoNode);
   
   ObjectNode changeLocalizationName(String language, String id, String value);
