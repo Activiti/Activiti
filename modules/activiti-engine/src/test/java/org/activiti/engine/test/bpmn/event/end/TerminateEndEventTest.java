@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -675,6 +676,75 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testNestedCallActivities() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
+		
+		// Verify the tasks
+		List<Task> tasks = assertTaskNames(processInstance, 
+				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+		
+		// Completing 'before c' 
+		taskService.complete(tasks.get(9).getId());
+		tasks = assertTaskNames(processInstance, 
+				Arrays.asList("After C", "B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B"));
+		
+		// Completing 'before A' of one instance
+		Task task = taskService.createTaskQuery().taskName("task_subprocess_1").singleResult();
+		assertNull(task);
+		taskService.complete(tasks.get(5).getId());
+
+		// Multi instance call activity is sequential, so expecting 5 more times the same task
+		for (int i=0; i<6; i++) {
+			task = taskService.createTaskQuery().taskName("subprocess1_task").singleResult();
+			assertNotNull("Task is null for index " + i, task);
+			taskService.complete(task.getId());
+		}
+		
+		tasks = assertTaskNames(processInstance, 
+				Arrays.asList("After A", "After C", "B", "B", "B", "B", "Before A", "Before A", "Before A", "Before B"));
+		
+	}
+	
+	@Deployment
+	public void testNestedCallActivitiesTerminateAll() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
+		
+		// Verify the tasks
+		List<Task> tasks = assertTaskNames(processInstance, 
+				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+		
+		// Completing 'Before B' should lead to process instance termination
+		taskService.complete(tasks.get(8).getId());
+		assertProcessEnded(processInstance.getId());
+		
+		// Completing 'Before C' too
+		processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
+		tasks = assertTaskNames(processInstance, 
+				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+		taskService.complete(tasks.get(9).getId());
+		assertProcessEnded(processInstance.getId());
+		
+		// Now the tricky one. 'Before A' leads to 'callActivity A', which calls subprocess02 which terminates
+		processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
+		tasks = assertTaskNames(processInstance, 
+				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+		taskService.complete(tasks.get(5).getId());
+		Task task = taskService.createTaskQuery().taskName("subprocess1_task").singleResult();
+		assertNotNull(task);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+		
+	}
+	
+	private List<Task> assertTaskNames(ProcessInstance processInstance, List<String> taskNames) {
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		for (int i=0; i<taskNames.size(); i++) {
+			assertEquals("Task name at index " + i + " does not match", taskNames.get(i), tasks.get(i).getName());
+		}
+		return tasks;
 	}
 
   public void testParseTerminateEndEventDefinitionWithExtensions() {
