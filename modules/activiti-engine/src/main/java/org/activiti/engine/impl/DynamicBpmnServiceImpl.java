@@ -72,6 +72,16 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     setElementProperty(id, SERVICE_TASK_DELEGATE_EXPRESSION, expression, infoNode);
   }
   
+  public ObjectNode changeScriptTaskScript(String id, String script) {
+    ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
+    changeScriptTaskScript(id, script, infoNode);
+    return infoNode;
+  }
+ 
+  public void changeScriptTaskScript(String id, String script, ObjectNode infoNode) {
+    setElementProperty(id, SCRIPT_TASK_SCRIPT, script, infoNode);
+  }
+  
   public ObjectNode changeUserTaskName(String id, String name) {
     ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
     changeUserTaskName(id, name, infoNode);
@@ -198,6 +208,16 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     
     valuesNode.add(candidateGroup);
     setElementProperty(id, USER_TASK_CANDIDATE_GROUPS, valuesNode, infoNode);
+  }
+  
+  public ObjectNode changeSequenceFlowCondition(String id, String condition) {
+    ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
+    changeSequenceFlowCondition(id, condition, infoNode);
+    return infoNode;
+  }
+
+  public void changeSequenceFlowCondition(String id, String condition, ObjectNode infoNode) {
+    setElementProperty(id, SEQUENCE_FLOW_CONDITION, condition, infoNode);
   }
   
   public ObjectNode getBpmnElementProperties(String id, ObjectNode infoNode) {
