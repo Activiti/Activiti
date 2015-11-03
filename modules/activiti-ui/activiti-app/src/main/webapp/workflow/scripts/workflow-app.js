@@ -166,20 +166,10 @@ activitiApp
             suffix: '.json'
         });
 
-        $translateProvider.registerAvailableLanguageKeys(['en', 'de', 'es', 'fr', 'it', 'ja'], {
-            'en_*': 'en',
-            'de_*': 'de',
-            'es_*': 'es',
-            'fr_*': 'fr',
-            'it_*': 'it',
-            'ja_*': 'ja',
-            'en-*': 'en',
-            'de-*': 'de',
-            'es-*': 'es',
-            'fr-*': 'fr',
-            'it-*': 'it',
-            'ja-*': 'ja'
-        }).determinePreferredLanguage();
+       $translateProvider.registerAvailableLanguageKeys(['en'], {
+           'en_*': 'en',
+           'en-*': 'en'
+       });
 
        // turn loading bar spinner off (angular-loading-bar lib)
        cfpLoadingBarProvider.includeSpinner = false;

@@ -6,7 +6,6 @@ if [ $STATUS -eq 0 ]
 then
 	cd activiti-app
 
-	# Create activiti app & ldap properties files
 	echo "Creating development config files for backend"
     cd src/main/resources/META-INF/activiti-app/
     rm activiti-app.properties
