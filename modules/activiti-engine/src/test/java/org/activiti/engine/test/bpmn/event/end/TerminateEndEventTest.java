@@ -36,10 +36,18 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Nico Rehwaldt
+ * @author Joram Barrez
  */
 public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
   public static int serviceTaskInvokedCount = 0;
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    serviceTaskInvokedCount = 0;
+    serviceTaskInvokedCount2 = 0;
+  }
 
   public static class CountDelegate implements JavaDelegate {
 
@@ -72,6 +80,16 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(pi.getId());
   }
+  
+  @Deployment
+  public void testProcessTerminateAll() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateTask").singleResult();
+    taskService.complete(task.getId());
+
+    assertProcessEnded(pi.getId());
+  }
 
   @Deployment
   public void testTerminateWithSubProcess() throws Exception {
@@ -84,6 +102,32 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
     taskService.complete(task.getId());
 
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateWithSubProcess2() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+
+    // Completing the task -> terminal end event -> subprocess ends
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateWithSubProcessTerminateAll() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+
+    // Completing the task -> terminal end event -> all ends (termninate all)
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
+    taskService.complete(task.getId());
+    
     assertProcessEnded(pi.getId());
   }
   
@@ -102,6 +146,20 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(pi.getId());
   }
+  
+	@Deployment(resources = {
+	    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateWithCallActivityTerminateAll.bpmn20.xml",
+	    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessNoTerminate.bpmn" })
+	public void testTerminateWithCallActivityTerminateAll() throws Exception {
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId())
+		    .taskDefinitionKey("preTerminateEnd").singleResult();
+		taskService.complete(task.getId());
+
+		assertProcessEnded(pi.getId());
+	}
+
 
   @Deployment(resources = {
           "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInExclusiveGatewayWithCallActivity.bpmn",
@@ -135,30 +193,54 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(pi.getId());
   }
+  
+  @Deployment
+  public void testTerminateInExclusiveGatewayWithMultiInstanceSubProcessTerminateAll() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
+
+    // Completing the task once should only destroy ONE multi instance
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("task").list();
+    assertEquals(5, tasks.size());
+    
+    for (int i=0; i<5; i++) {
+    	taskService.complete(tasks.get(i).getId());
+    	assertTrue(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count() > 0);
+    }
+    
+    // Other task will now finish the process instance
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("input", 1);
+    taskService.complete(task.getId(), variables);
+
+    assertTrue(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count() == 0);
+  }
 
   @Deployment
   public void testTerminateInSubProcess() throws Exception {
-    serviceTaskInvokedCount = 0;
-    
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+  	ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
-    // should terminate the subprocess and continue the parent
-    long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
-    assertEquals(1, executionEntities);
-    
-    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
-    taskService.complete(task.getId());
-    
-    assertProcessEnded(pi.getId());
+  	// should terminate the subprocess and continue the parent
+  	long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
+  	assertEquals(1, executionEntities);
+
+  	Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
+  	taskService.complete(task.getId());
+
+  	assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessTerminateAll() throws Exception {
+  	ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+  	assertProcessEnded(pi.getId());
   }
   
   @Deployment
   public void testTerminateInSubProcessWithBoundary() throws Exception {
-    serviceTaskInvokedCount = 0;
-    
     Date startTime = new Date();
     
-    // Test terminating process
+    // Test terminating process via boundary timer
     
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventWithBoundary");
 
@@ -200,6 +282,21 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+  public void testTerminateInSubProcessWithBoundaryTerminateAll() throws Exception {
+    // Test terminating subprocess
+    
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventWithBoundary");
+
+    assertEquals(3, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+    
+    // Complete sub process task that leads to a terminate end event
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTermInnerTask").singleResult();
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
   public void testTerminateInSubProcessConcurrent() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
@@ -213,13 +310,33 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testTerminateInSubProcessConcurrentMultiInstance() throws Exception {
-    serviceTaskInvokedCount = 0;
+  public void testTerminateInSubProcessConcurrentTerminateAll() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessConcurrentTerminateAll2() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
     
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+    assertEquals(2, tasks.size());
+    
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskName("User Task").singleResult();
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessConcurrentMultiInstance() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
     long executionEntities = runtimeService.createExecutionQuery().count();
     assertEquals(12, executionEntities);
+    
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+    assertEquals(4, tasks.size()); // 3 user tasks in MI  +1 (preNormalEnd) = 4 (2 were killed because it went directly to the terminate end event)
     
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
     taskService.complete(task.getId());
@@ -227,11 +344,34 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     long executionEntities2 = runtimeService.createExecutionQuery().count();
     assertEquals(10, executionEntities2);
     
-    List<Task> tasks = taskService.createTaskQuery().list();
+    tasks = taskService.createTaskQuery().list();
     for (Task t : tasks) {
       taskService.complete(t.getId());
     }
     
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessConcurrentMultiInstance2() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+    
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
+    taskService.complete(task.getId());
+    
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).taskName("User Task").list();
+    assertEquals(3, tasks.size());
+    
+    for (Task t : tasks) {
+    	taskService.complete(t.getId());
+    }
+    
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessConcurrentMultiInstanceTerminateAll() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
     assertProcessEnded(pi.getId());
   }
 
@@ -239,8 +379,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
           "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateAfterUserTask.bpmn",
           "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testTerminateInCallActivityConcurrentCallActivity() throws Exception {
-    serviceTaskInvokedCount = 0;
-
     // GIVEN - process instance starts and creates 2 subProcessInstances (with 2 user tasks - preTerminate and my task)
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventInCallActivityConcurrentCallActivity");
     assertThat(runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).list().size(), is(2));
@@ -249,14 +387,12 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     Task preTerminate = taskService.createTaskQuery().taskName("preTerminate").singleResult();
     taskService.complete(preTerminate.getId());
 
-    //THEN - super process is finished together with subprocesses
-    assertProcessEnded(pi.getId());
+    //THEN - super process is not finished together
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count());
   }
   
   @Deployment
   public void testTerminateInSubProcessMultiInstance() throws Exception {
-    serviceTaskInvokedCount = 0;
-    
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
     long executionEntities = runtimeService.createExecutionQuery().count();
@@ -271,8 +407,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testTerminateInSubProcessSequentialConcurrentMultiInstance() throws Exception {
-    serviceTaskInvokedCount = 0;
-    serviceTaskInvokedCount2 = 0;
     
     // Starting multi instance with 5 instances; terminating 2, finishing 3
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
@@ -289,6 +423,12 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     // last task remaining
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessSequentialConcurrentMultiInstanceTerminateAll() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
     assertProcessEnded(pi.getId());
   }
   
@@ -313,7 +453,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityMulitInstance.bpmn", 
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn" 
   })
-  public void testTerminateInCallActivityMulitInstance() throws Exception {
+  public void testTerminateInCallActivityMultiInstance() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
     // should terminate the called process and continue the parent
@@ -326,6 +466,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getId());
   }
   
+	@Deployment(resources = {
+	    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityMulitInstance.bpmn",
+	    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminateTerminateAll.bpmn20.xml" })
+	public void testTerminateInCallActivityMultiInstanceTerminateAll() throws Exception {
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+		assertProcessEnded(pi.getId());
+	}
+
   @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrent.bpmn", 
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn"
@@ -344,6 +492,15 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources={
+      "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrent.bpmn", 
+      "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminateTerminateAll.bpmn20.xml"
+    })
+    public void testTerminateInCallActivityConcurrentTerminateAll() throws Exception {
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+      assertProcessEnded(pi.getId());
+    }
+  
+  @Deployment(resources={
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrentMulitInstance.bpmn", 
     "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn" 
   })
@@ -359,6 +516,166 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(pi.getId());
   }
+  
+	@Deployment(resources = {
+	    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrentMulitInstance.bpmn",
+	    "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminateTerminateAll.bpmn20.xml" })
+	public void testTerminateInCallActivityConcurrentMulitInstanceTerminateALl() throws Exception {
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+		assertProcessEnded(pi.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedSubprocesses() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedSubprocesses");
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		assertEquals("D", tasks.get(2).getName());
+		assertEquals("E", tasks.get(3).getName());
+		assertEquals("F", tasks.get(4).getName());
+		
+		// Completing E should finish the lower subprocess and make 'H' active
+		taskService.complete(tasks.get(3).getId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("H").singleResult();
+		assertNotNull(task);
+		
+		// Completing A should make C active
+		taskService.complete(tasks.get(0).getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
+		assertNotNull(task);
+		
+		// Completing C should make I active
+		taskService.complete(task.getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("I").singleResult();
+		assertNotNull(task);
+		
+		// Completing I and B should make G active
+		taskService.complete(task.getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("G").singleResult();
+		assertNull(task);
+		taskService.complete(tasks.get(1).getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("G").singleResult();
+		assertNotNull(task);
+	}
+	
+	@Deployment
+	public void testTerminateNestedSubprocessesTerminateAll1() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").singleResult();
+	
+		// Completing E leads to a terminate end event with termninate all set to true
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedSubprocessesTerminateAll2() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").singleResult();
+	
+		// Completing A and C leads to a terminate end event with termninate all set to true
+		taskService.complete(task.getId());
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
+		taskService.complete(task.getId());
+		
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocesses() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		
+		// Should have 7 tasks C active
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list();
+		assertEquals(7, tasks.size());
+		
+		// Completing these should lead to task I being active
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("I").singleResult();
+		assertNotNull(task);
+		
+		// Should have 3 instances of E active
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list();
+		assertEquals(3, tasks.size());
+		
+		// Completing these should make H active
+		for (Task t : tasks) {
+			taskService.complete(t.getId());
+		}
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("H").singleResult();
+		assertNotNull(task);
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesSequential() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		
+		// Should have 7 tasks C active after each other
+		for (int i=0; i<7; i++) {
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
+			taskService.complete(task.getId());
+		}
+		
+		// I should be active now
+		assertNotNull(taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("I").singleResult());
+		
+		// Should have 3 instances of E active after each other
+		for (int i=0; i<3; i++) {
+			assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("D").count());
+			assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("F").count());
+			
+			// Completing F should not finish the subprocess
+			taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("F").singleResult().getId());
+			
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").singleResult();
+			taskService.complete(task.getId());
+		}
+		
+		assertNotNull(taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("H").singleResult());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll1() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll2() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll3() { // Same as 1, but sequential Multi-Instance
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
+	
+	@Deployment
+	public void testTerminateNestedMiSubprocessesTerminateAll4() { // Same as 2, but sequential Multi-Instance
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestTerminateNestedMiSubprocesses");
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
+		taskService.complete(task.getId());
+		assertProcessEnded(processInstance.getId());
+	}
 
   public void testParseTerminateEndEventDefinitionWithExtensions() {
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
