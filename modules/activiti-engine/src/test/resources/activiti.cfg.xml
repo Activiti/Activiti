@@ -48,12 +48,9 @@
     <property name="enableProcessDefinitionInfoCache" value="true" />
   </bean>
 
-  <bean id="asyncExecutor"
-    class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
-    <property name="defaultAsyncJobAcquireWaitTimeInMillis"
-      value="1000" />
-    <property name="defaultTimerJobAcquireWaitTimeInMillis"
-      value="1000" />
+  <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
+    <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
+    <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
   </bean>
 
 </beans>

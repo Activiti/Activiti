@@ -29,7 +29,6 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
-import com.sun.codemodel.JJavaName;
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
@@ -52,6 +51,7 @@ import com.ibm.wsdl.extensions.schema.SchemaImpl;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JJavaName;
 import com.sun.tools.xjc.ConsoleErrorReporter;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.Mapping;
@@ -214,8 +214,9 @@ public class CxfWSDLImporter implements XMLImporter {
 
       String fieldName = entry.getKey();
       if (fieldName.startsWith("_")) {
-        if (!JJavaName.isJavaIdentifier(fieldName.substring(1)))
+        if (!JJavaName.isJavaIdentifier(fieldName.substring(1))) {
           fieldName = fieldName.substring(1); //it was prefixed with '_' so we should use the original name.
+        }
       }
 
       structure.setFieldName(index.getAndIncrement(), fieldName, fieldClass);

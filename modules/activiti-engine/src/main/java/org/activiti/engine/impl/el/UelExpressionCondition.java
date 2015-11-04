@@ -14,9 +14,14 @@
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.context.Context;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -27,13 +32,24 @@ import org.activiti.engine.impl.Condition;
  */
 public class UelExpressionCondition implements Condition {
   
-  protected Expression expression;
+  private static final long serialVersionUID = 1L;
   
-  public UelExpressionCondition(Expression expression) {
-    this.expression = expression;
+  protected String initialConditionExpression;
+  
+  public UelExpressionCondition(String conditionExpression) {
+    this.initialConditionExpression = conditionExpression;
   }
 
-  public boolean evaluate(DelegateExecution execution) {
+  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
+    String conditionExpression = null;
+    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+      ObjectNode elementProperties = Context.getBpmnOverrideElementProperties(sequenceFlowId, execution.getProcessDefinitionId());
+      conditionExpression = getActiveValue(initialConditionExpression, DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION, elementProperties);
+    } else {
+      conditionExpression = initialConditionExpression;
+    }
+
+    Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(conditionExpression);
     Object result = expression.getValue(execution);
     
     if (result==null) {
@@ -43,6 +59,21 @@ public class UelExpressionCondition implements Condition {
       throw new ActivitiException("condition expression returns non-Boolean: "+result+" ("+result.getClass().getName()+")");
     }
     return (Boolean) result;
+  }
+  
+  protected String getActiveValue(String originalValue, String propertyName, ObjectNode elementProperties) {
+    String activeValue = originalValue;
+    if (elementProperties != null) {
+      JsonNode overrideValueNode = elementProperties.get(propertyName);
+      if (overrideValueNode != null) {
+        if (overrideValueNode.isNull()) {
+          activeValue = null;
+        } else {
+          activeValue = overrideValueNode.asText();
+        }
+      }
+    }
+    return activeValue;
   }
 
 }

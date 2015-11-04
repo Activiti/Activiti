@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -82,12 +83,14 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
-    HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getId())
-        .variableName("executed")
-        .singleResult();
-    assertNotNull(historicVariableInstance);
-    assertTrue((Boolean) historicVariableInstance.getValue());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .variableName("executed")
+          .singleResult();
+      assertNotNull(historicVariableInstance);
+      assertTrue((Boolean) historicVariableInstance.getValue());
+    }
     
     assertProcessEnded(processInstance.getId());
     
@@ -104,12 +107,14 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
-    historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getId())
-        .variableName("executed")
-        .singleResult();
-    assertNotNull(historicVariableInstance);
-    assertTrue((Boolean) historicVariableInstance.getValue());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .variableName("executed")
+          .singleResult();
+      assertNotNull(historicVariableInstance);
+      assertTrue((Boolean) historicVariableInstance.getValue());
+    }
     
     assertProcessEnded(processInstance.getId());
   }
@@ -125,12 +130,14 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
-    HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getId())
-        .variableName("executed")
-        .singleResult();
-    assertNotNull(historicVariableInstance);
-    assertTrue((Boolean) historicVariableInstance.getValue());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .variableName("executed")
+          .singleResult();
+      assertNotNull(historicVariableInstance);
+      assertTrue((Boolean) historicVariableInstance.getValue());
+    }
     
     assertProcessEnded(processInstance.getId());
     
@@ -147,12 +154,14 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
-    historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getId())
-        .variableName("executed")
-        .singleResult();
-    assertNotNull(historicVariableInstance);
-    assertTrue((Boolean) historicVariableInstance.getValue());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .variableName("executed")
+          .singleResult();
+      assertNotNull(historicVariableInstance);
+      assertTrue((Boolean) historicVariableInstance.getValue());
+    }
     
     assertProcessEnded(processInstance.getId());
   }

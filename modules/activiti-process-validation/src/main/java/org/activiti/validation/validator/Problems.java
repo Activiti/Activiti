@@ -62,7 +62,15 @@ public interface Problems {
 	String EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS = "activiti-exclusive-gateway-seq-flow-without-conditions";
 	
 	String EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS = "activiti-event-gateway-only-connected-to-intermediate-events";
-	
+
+	String BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG = "activiti-bpmn-model-target-namespace-too-long";
+
+	String PROCESS_DEFINITION_ID_TOO_LONG = "activiti-process-definition-id-too-long";
+	String PROCESS_DEFINITION_NAME_TOO_LONG = "activiti-process-definition-name-too-long";
+	String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG = "activiti-process-definition-documentation-too-long";
+
+	String FLOW_ELEMENT_ID_TOO_LONG = "activiti-flow-element-id-too-long";
+
 	String SUBPROCESS_MULTIPLE_START_EVENTS = "activiti-subprocess-multiple-start-event";
 	String SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED = "activiti-subprocess-start-event-event-definition-not-allowed";
 	
