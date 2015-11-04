@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.CustomMybatisMapper">
+
+    <!-- SELECT ALL PROCESS DEFINITION ID -->
+    <select id="selectProcessDefinitionDeploymentIdByKey" parameterType="String" resultType="String">
+        SELECT DEPLOYMENT_ID_ FROM ACT_RE_PROCDEF WHERE KEY_ = #{value}
+    </select>
+
+</mapper>

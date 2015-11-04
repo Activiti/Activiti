@@ -2,6 +2,9 @@ package org.activiti.spring.boot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author Josh Long
  * @author Joram Barrez
@@ -29,6 +32,8 @@ public class ActivitiProperties {
   private String restApiMapping = "/api/*";
   private String restApiServletName = "activitiRestApi";
   private boolean jpaEnabled = true; // true by default
+  private List<String> customMybatisMappers;
+  private List<String> customMybatisXMLMappers;
 
   public boolean isJobExecutorActivate() {
     return jobExecutorActivate;
@@ -191,5 +196,20 @@ public class ActivitiProperties {
 	public void setMailServerUseTls(boolean mailServerUseTls) {
 		this.mailServerUseTls = mailServerUseTls;
 	}
-	
+
+  public List<String> getCustomMybatisMappers() {
+    return customMybatisMappers;
+  }
+
+  public void setCustomMybatisMappers(List<String> customMyBatisMappers) {
+    this.customMybatisMappers = customMyBatisMappers;
+  }
+
+  public List<String> getCustomMybatisXMLMappers() {
+    return customMybatisXMLMappers;
+  }
+
+  public void setCustomMybatisXMLMappers(List<String> customMybatisXMLMappers) {
+    this.customMybatisXMLMappers = customMybatisXMLMappers;
+  }
 }
