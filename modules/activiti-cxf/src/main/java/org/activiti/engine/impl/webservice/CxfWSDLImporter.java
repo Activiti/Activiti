@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.HashSet;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.wsdl.Definition;
@@ -67,33 +65,6 @@ import com.sun.tools.xjc.api.XJC;
 public class CxfWSDLImporter implements XMLImporter {
     
   protected static final String JAXB_BINDINGS_RESOURCE = "activiti-bindings.xjc";
-
-  protected static HashSet<String> reservedKeywords = new HashSet<String>();
-
-  static {
-    String[] words = new String[]{
-            "abstract",
-            "boolean", "break", "byte",
-            "case", "catch", "char", "class", "const", "continue",
-            "default", "do", "double",
-            "else", "extends",
-            "final", "finally", "float", "for",
-            "goto",
-            "if", "implements", "import", "instanceof", "int", "interface",
-            "long",
-            "native", "new",
-            "package", "private", "protected", "public",
-            "return",
-            "short", "static", "strictfp", "super", "switch", "synchronized",
-            "this", "throw", "throws", "transient", "try",
-            "void", "volatile", "while", "true",
-            "false",
-            "null",
-            "assert",
-            "enum"
-    };
-    Collections.addAll(reservedKeywords, words);
-  }
 
   protected Map<String, WSService> wsServices = new HashMap<String, WSService>();
   protected Map<String, WSOperation> wsOperations = new HashMap<String, WSOperation>();
