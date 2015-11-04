@@ -29,18 +29,17 @@ public class BpmnModelValidator extends ValidatorImpl {
 
   @Override
   public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-		
-    // If all process definitions of this bpmnModel are not executable, 
+
+    // If all process definitions of this bpmnModel are not executable,
     // raise an error
     boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(bpmnModel, errors);
-		
-    // If at least one process definition is executable, show a warning for 
+
+    // If at least one process definition is executable, show a warning for
     // each of the none-executables
     if (isAtLeastOneExecutable) {
       for (Process process : bpmnModel.getProcesses()) {
         if (!process.isExecutable()) {
-          addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process,
-              "Process definition is not executable. Please verify that this is intentional.");
+          addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process, "Process definition is not executable. Please verify that this is intentional.");
         }
         handleProcessConstraints(bpmnModel, process, errors);
       }
