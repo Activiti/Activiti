@@ -31,6 +31,7 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
+import com.sun.codemodel.JJavaName;
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
@@ -242,7 +243,7 @@ public class CxfWSDLImporter implements XMLImporter {
 
       String fieldName = entry.getKey();
       if (fieldName.startsWith("_")) {
-        if (reservedKeywords.contains(fieldName.substring(1)))
+        if (!JJavaName.isJavaIdentifier(fieldName.substring(1)))
           fieldName = fieldName.substring(1); //it was prefixed with '_' so we should use the original name.
       }
 
