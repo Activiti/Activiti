@@ -242,7 +242,7 @@ public class CxfWSDLImporter implements XMLImporter {
 
       String fieldName = entry.getKey();
       if (fieldName.startsWith("_")) {
-        if (!reservedKeywords.contains(fieldName.substring(1)))
+        if (reservedKeywords.contains(fieldName.substring(1)))
           fieldName = fieldName.substring(1); //it was prefixed with '_' so we should use the original name.
       }
 
