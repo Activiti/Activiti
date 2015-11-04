@@ -13,14 +13,20 @@
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.context.Context;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tom Baeyens
  */
 public class ScriptCondition implements Condition {
+  
+  private static final long serialVersionUID = 1L;
 
   private final String expression;
   private final String language;
@@ -30,12 +36,20 @@ public class ScriptCondition implements Condition {
     this.language = language;
   }
 
-  public boolean evaluate(DelegateExecution execution) {
+  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
+    String conditionExpression = null;
+    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+      ObjectNode elementProperties = Context.getBpmnOverrideElementProperties(sequenceFlowId, execution.getProcessDefinitionId());
+      conditionExpression = getActiveValue(expression, DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION, elementProperties);
+    } else {
+      conditionExpression = expression;
+    }
+    
     ScriptingEngines scriptingEngines = Context
       .getProcessEngineConfiguration()
       .getScriptingEngines();
     
-    Object result = scriptingEngines.evaluate(expression, language, execution);
+    Object result = scriptingEngines.evaluate(conditionExpression, language, execution);
     if (result == null) {
       throw new ActivitiException("condition script returns null: " + expression);
     }
@@ -45,4 +59,18 @@ public class ScriptCondition implements Condition {
     return (Boolean) result;
   }
 
+  protected String getActiveValue(String originalValue, String propertyName, ObjectNode elementProperties) {
+    String activeValue = originalValue;
+    if (elementProperties != null) {
+      JsonNode overrideValueNode = elementProperties.get(propertyName);
+      if (overrideValueNode != null) {
+        if (overrideValueNode.isNull()) {
+          activeValue = null;
+        } else {
+          activeValue = overrideValueNode.asText();
+        }
+      }
+    }
+    return activeValue;
+  }
 }

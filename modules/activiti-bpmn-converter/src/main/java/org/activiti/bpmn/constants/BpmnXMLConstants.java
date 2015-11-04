@@ -234,6 +234,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_END_DATE = "endDate";
   public static final String ATTRIBUTE_TIMER_DURATION = "timeDuration";
   public static final String ELEMENT_EVENT_TERMINATEDEFINITION = "terminateEventDefinition";
+  public static final String ATTRIBUTE_TERMINATE_ALL = "terminateAll";
   public static final String ELEMENT_EVENT_CANCELDEFINITION = "cancelEventDefinition";
   public static final String ELEMENT_EVENT_COMPENSATEDEFINITION = "compensateEventDefinition";
   public static final String ATTRIBUTE_COMPENSATE_ACTIVITYREF = "activityRef";

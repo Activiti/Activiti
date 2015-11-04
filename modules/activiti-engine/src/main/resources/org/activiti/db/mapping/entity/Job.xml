@@ -229,7 +229,7 @@
    <select id="selectJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select J.*
     from ${prefix}ACT_RU_JOB J
-    inner join ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
+    inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
     where J.HANDLER_TYPE_ = #{parameter.handlerType} 
     and P.KEY_ = #{parameter.processDefinitionKey}
     and (P.TENANT_ID_ = ''  or P.TENANT_ID_ is null)  
@@ -238,7 +238,7 @@
   <select id="selectJobByTypeAndProcessDefinitionKeyAndTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select J.*
     from ${prefix}ACT_RU_JOB J
-    inner join ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
+    inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
     where J.HANDLER_TYPE_ = #{parameter.handlerType} 
     and P.KEY_ = #{parameter.processDefinitionKey}
     and P.TENANT_ID_ = #{parameter.tenantId} 

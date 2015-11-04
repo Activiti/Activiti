@@ -496,7 +496,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
-
+  	
   	fireActivityCompletedEvent();
   	
     transitions = new ArrayList<PvmTransition>(transitions);
@@ -1255,6 +1255,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     performOperation(AtomicOperation.DELETE_CASCADE);
   }
   
+  public void setDeleteRoot(boolean deleteRoot) {
+  	this.deleteRoot = deleteRoot;
+  }
+  
   public int getRevisionNext() {
     return revision+1;
   }
@@ -1530,6 +1534,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   public boolean isEnded() {
     return isEnded;
+  }
+  public void setEnded(boolean ended) {
+  	this.isEnded = ended;
   }
   public String getEventName() {
     return eventName;

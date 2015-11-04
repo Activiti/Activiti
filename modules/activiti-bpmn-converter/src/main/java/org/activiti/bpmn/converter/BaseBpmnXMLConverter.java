@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
@@ -500,6 +501,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   
   protected void writeTerminateDefinition(Event parentEvent, TerminateEventDefinition terminateDefinition, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartElement(ELEMENT_EVENT_TERMINATEDEFINITION);
+    
+    if (terminateDefinition.isTerminateAll()) {
+    	writeQualifiedAttribute(ATTRIBUTE_TERMINATE_ALL, "true", xtw);
+    }
+    
     boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(terminateDefinition, false, xtw);
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();

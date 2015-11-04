@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.TerminateEventDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -83,6 +84,10 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
       endEvent.getEventDefinitions().add(eventDefinition);
     } else if (STENCIL_EVENT_END_TERMINATE.equals(stencilId)) {
       TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+      String terminateAllStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_ALL, elementNode);
+      if (StringUtils.isNotEmpty(terminateAllStringValue)) {
+     		eventDefinition.setTerminateAll("true".equals(terminateAllStringValue));
+      }
       endEvent.getEventDefinitions().add(eventDefinition);
     }
     return endEvent;

@@ -789,6 +789,10 @@ public class ExecutionImpl implements
   public boolean isEnded() {
     return isEnded;
   }
+  @Override
+  public void setEnded(boolean ended) {
+  	this.isEnded = ended;
+  }
   public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
   }
