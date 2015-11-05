@@ -46,6 +46,7 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.constants.EditorJsonConstants;
@@ -490,6 +491,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 if (StringUtils.isNotEmpty(timerDefinition.getEndDate())) {
                     propertiesNode.put(PROPERTY_TIMER_CYCLE_END_DATE, timerDefinition.getEndDate());
                 }
+            } else if (eventDefinition instanceof TerminateEventDefinition) {
+            		TerminateEventDefinition terminateEventDefinition = (TerminateEventDefinition) eventDefinition;
+            		propertiesNode.put(PROPERTY_TERMINATE_ALL, terminateEventDefinition.isTerminateAll());
             }
         }
     }
