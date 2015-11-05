@@ -1,7 +1,9 @@
 package org.activiti.spring.boot;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -79,8 +81,28 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
+    if (activitiProperties.getCustomMybatisMappers() != null) {
+      conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
+    }
+
+    if (activitiProperties.getCustomMybatisXMLMappers() != null) {
+      conf.setCustomMybatisXMLMappers(new HashSet<String>(activitiProperties.getCustomMybatisXMLMappers()));
+    }
 
     return conf;
+  }
+
+  private Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
+    Set<Class<?>> mybatisMappers = new HashSet<Class<?>>();
+    for (String customMybatisMapperClassName : customMyBatisMappers) {
+      try {
+        Class customMybatisClass = Class.forName(customMybatisMapperClassName);
+        mybatisMappers.add(customMybatisClass);
+      } catch (ClassNotFoundException e) {
+        throw new IllegalArgumentException("Class " + customMybatisMapperClassName + " has not been found.", e);
+      }
+    }
+    return mybatisMappers;
   }
 
 

@@ -297,7 +297,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     if (language == null) {
       language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
     }
-    return new ScriptTaskActivityBehavior(scriptTask.getScript(), language, scriptTask.getResultVariable(), scriptTask.isAutoStoreVariables());
+    return new ScriptTaskActivityBehavior(scriptTask.getId(), scriptTask.getScript(), language, scriptTask.getResultVariable(), scriptTask.isAutoStoreVariables());
   }
 
   // Gateways

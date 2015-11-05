@@ -67,7 +67,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
         Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
         if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
-                || (condition != null && condition.evaluate(execution)) ) {
+                || (condition != null && condition.evaluate(seqFlow.getId(), execution)) ) {
           if (log.isDebugEnabled()) {
             log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
           }

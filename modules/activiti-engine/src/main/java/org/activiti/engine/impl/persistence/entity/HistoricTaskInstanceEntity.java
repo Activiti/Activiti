@@ -23,6 +23,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -244,4 +245,16 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
+  
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("HistoricTaskInstanceEntity[");
+    sb.append("id=").append(id);
+    sb.append(", name=").append(name);
+    sb.append("]");
+    return sb.toString();
+  }
+  
+  
 }

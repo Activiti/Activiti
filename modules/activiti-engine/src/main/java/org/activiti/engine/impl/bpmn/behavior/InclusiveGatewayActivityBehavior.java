@@ -65,7 +65,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
           if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
             Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-            if (condition == null || condition.evaluate(execution)) {
+            if (condition == null || condition.evaluate(outgoingTransition.getId(), execution)) {
               transitionsToTake.add(outgoingTransition);
             }
           }
