@@ -64,12 +64,6 @@ public class VariablesTest extends PluggableActivitiTestCase {
     long2001StringBuilder.append("a");
 
 
-    // 8000 bytes (2000 chars * 4 bytes/characters)
-    StringBuilder long4000StringBuilder = new StringBuilder();
-    for (int i = 0; i < 2000; i++) {
-      long4000StringBuilder.append("\uD841\uDF31");
-    }
-
     // 4002 characters
     StringBuilder long4001StringBuilder = new StringBuilder();
 
@@ -83,7 +77,6 @@ public class VariablesTest extends PluggableActivitiTestCase {
     variables.put("longVar", 928374L);
     variables.put("shortVar", (short) 123);
     variables.put("integerVar", 1234);
-    variables.put("longString4000chars", long4000StringBuilder.toString());
     variables.put("longString2000chars", long2000StringBuilder.toString());
     variables.put("stringVar", "coca-cola");
     variables.put("dateVar", now);
@@ -100,14 +93,13 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(1234, variables.get("integerVar"));
     assertEquals("coca-cola", variables.get("stringVar"));
     assertEquals(long2000StringBuilder.toString(), variables.get("longString2000chars"));
-    assertEquals(long4000StringBuilder.toString(), variables.get("longString4000chars"));
     assertEquals(now, variables.get("dateVar"));
     assertEquals(null, variables.get("nullVar"));
     assertEquals(serializable, variables.get("serializableVar"));
     assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
     assertEquals(new CustomType(bytes2), variables.get("customVar1"));
     assertEquals(null, variables.get("customVar2"));
-    assertEquals(12, variables.size());
+    assertEquals(11, variables.size());
 
     // Set all existing variables values to null
     runtimeService.setVariable(processInstance.getId(), "longVar", null);
