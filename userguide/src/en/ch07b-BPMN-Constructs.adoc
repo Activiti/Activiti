@@ -2890,7 +2890,7 @@ This mechanism should be used *only for business faults* that shall be handled b
 
 ====== Exception mapping
 
-It is also possible to directly map a java exception to business exception by using +mapException+ extention. Single mapping is the simplest form:
+It is also possible to directly map a java exception to business exception by using +mapException+ extension. Single mapping is the simplest form:
 [source,xml,linenums]
 ----
 <serviceTask id="servicetask1" name="Service Task" activiti:class="...">
@@ -2931,7 +2931,7 @@ The most generic mapping is a default map. Default map is a map with no class. I
 </serviceTask>
 ----
 
-The mappings are checked in order, from top to buttom and the first found match will be followed, except for the default map. Default map is selected only after all maps are unsuccessfully checked.
+The mappings are checked in order, from top to bottom and the first found match will be followed, except for the default map. Default map is selected only after all maps are unsuccessfully checked.
 Only the first map with no class will be considered as default map. +includeChildExceptions+ is ignored for default Map.
 
 
@@ -3641,7 +3641,7 @@ The above table explains how Activiti variables are going to be transferred to C
 What is mentioned above about passing variables, only holds for start side of the variable transfer, in both directions from Camel to Activiti and vice versa. +
 It is important to notice that because of special non blocking behavior of Activiti, variables are not automatically returned back from Activiti to Camel.
 For that to happen, a special syntax is available. There can be one or more parameters in Camel route URL in format of +var.return.someVariableName+.
-All variabls having a name equal to one of these parameters without +var.return+ part, will be considered as output variables and will be copied back as camel properties with the same names. +
+All variables having a name equal to one of these parameters without +var.return+ part, will be considered as output variables and will be copied back as camel properties with the same names. +
 For example in a route like:
 ----
 from("direct:start").to("activiti:process?var.return.exampleVar").to("mock:result");
@@ -4264,7 +4264,7 @@ However, when the activity is multi instance, the behavior is different:
 The same reasoning applies for the end event:
 
 * When the actual activity is left, an end even is thrown. The _loopCounter_ variable is set.
-* When the multi instance activity has finised as a whole, an end event is thrown. The _loopCounter_ variable is not set.
+* When the multi instance activity has finished as a whole, an end event is thrown. The _loopCounter_ variable is not set.
 
 For example:
 
@@ -4628,7 +4628,7 @@ You can pass process variables to the sub process and vice versa. The data is co
 <callActivity id="callSubProcess" calledElement="checkCreditProcess" >
   <extensionElements>
 	  <activiti:in source="someVariableInMainProcess" target="nameOfVariableInSubProcess" />
-	  <activiti:out source="someVariableInSubProcss" target="nameOfVariableInMainProcess" />
+	  <activiti:out source="someVariableInSubProcess" target="nameOfVariableInMainProcess" />
   </extensionElements>
 </callActivity>
 ----
