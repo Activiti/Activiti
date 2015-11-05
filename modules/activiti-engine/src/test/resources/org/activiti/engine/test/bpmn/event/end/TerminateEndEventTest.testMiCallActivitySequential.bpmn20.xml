@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20151105122624969" modeler:modelId="4000" modeler:modelVersion="1" modeler:modelLastUpdated="1446722783163">
+  <process id="testMiCallActivity" name="testMiCallActivity" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <callActivity id="sid-45436C99-B809-4449-A773-E3DCDA74F253" name="Call activity" calledElement="parallel_tasks">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>9</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="sid-309D0F1D-AA7E-4331-AA94-A16400848DC0" sourceRef="startEvent1" targetRef="sid-45436C99-B809-4449-A773-E3DCDA74F253"/>
+    <userTask id="sid-50A98D4E-06A5-4481-B8A1-64DDFFEC3E2B" name="After call activity" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+        <modeler:activiti-idm-initiator>true</modeler:activiti-idm-initiator>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-0ABF8EBD-4104-42C1-B5EE-BC8DD5D0C2DA" sourceRef="sid-45436C99-B809-4449-A773-E3DCDA74F253" targetRef="sid-50A98D4E-06A5-4481-B8A1-64DDFFEC3E2B"/>
+    <endEvent id="sid-ED852A9C-4DA6-4A47-88B9-835857B44E6A"/>
+    <sequenceFlow id="sid-9F03602D-75DE-4E34-9438-402F7A7B200E" sourceRef="sid-50A98D4E-06A5-4481-B8A1-64DDFFEC3E2B" targetRef="sid-ED852A9C-4DA6-4A47-88B9-835857B44E6A"/>
+  </process>
+  
+  <process id="parallel_tasks" name="parallel_tasks" isExecutable="true">
+    <startEvent id="startEvent1_sub"/>
+    <sequenceFlow id="sid-62A7653D-4888-43DC-A137-DC4E867A26CD" sourceRef="startEvent1_sub" targetRef="sid-90FE0F4A-623F-40EC-A916-150BE2964BD6"/>
+    <parallelGateway id="sid-90FE0F4A-623F-40EC-A916-150BE2964BD6"/>
+    <userTask id="sid-363E5425-6005-4D44-B2D3-87F8B56950DD" name="A">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-1D38EE85-8F49-4E28-A336-0EC41AE2ADD5" sourceRef="sid-90FE0F4A-623F-40EC-A916-150BE2964BD6" targetRef="sid-363E5425-6005-4D44-B2D3-87F8B56950DD"/>
+    <userTask id="sid-327D8D79-540C-4D70-90F3-6D3B3863F77D" name="B">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-3D311008-D9F9-40F3-AD3E-D91910D814AD" sourceRef="sid-90FE0F4A-623F-40EC-A916-150BE2964BD6" targetRef="sid-327D8D79-540C-4D70-90F3-6D3B3863F77D"/>
+    <endEvent id="a_end"/>
+    <sequenceFlow id="sid-B10CF0D5-03B6-4C17-A2E9-25D4DB34BCBF" sourceRef="sid-363E5425-6005-4D44-B2D3-87F8B56950DD" targetRef="a_end"/>
+    <sequenceFlow id="sid-8951E7EA-0ECB-4954-AD4A-74E6BF6A02E9" sourceRef="sid-327D8D79-540C-4D70-90F3-6D3B3863F77D" targetRef="b_end"/>
+    <endEvent id="b_end">
+      <terminateEventDefinition/>
+    </endEvent>
+  </process>
+  
+</definitions>
