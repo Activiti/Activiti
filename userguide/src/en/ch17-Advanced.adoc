@@ -757,7 +757,7 @@ runtimeService.addEventListener(databaseEventLogger);
 
 The EventLogger class can be subclassed. In particular, the _createEventFlusher()_ method needs to return an instance of the _org.activiti.engine.impl.event.logger.EventFlusher_ interface if the default database logging is not wanted. The _managementService.getEventLogEntries(startLogNr, size);_  can be used to retrieve the _EventLogEntryEntity_ instances through Activiti.
 
-It is easy to see how this table data can now be used to feed the JSON into a big data NoSQL store such as MongDb, Elastic Search, etc. It is also easy to see that the classes used here (org.activiti.engine.impl.event.logger.EventLogger/EventFlusher and many EventHandler classes) are pluggable and can be tweaked to your own use case (eg not storing the JSON in the database, but firing it straight onto a queue or big data store).
+It is easy to see how this table data can now be used to feed the JSON into a big data NoSQL store such as MongoDB, Elastic Search, etc. It is also easy to see that the classes used here (org.activiti.engine.impl.event.logger.EventLogger/EventFlusher and many EventHandler classes) are pluggable and can be tweaked to your own use case (eg not storing the JSON in the database, but firing it straight onto a queue or big data store).
 
 Note that this event logging mechanism is additional to the 'traditional' history manager of Activiti. Although all the data is in the database tables,
 it is not optimized for querying nor for easy retrieval. The real use case is audit trailing and feeding it into a big data store.
