@@ -831,6 +831,34 @@ Note that the _errorRef_ must comply with the BPMN 2.0 schema, and must be a val
 
 [[bpmnCancelEndEvent]]
 
+==== Terminate End Event
+
+===== Description
+
+When a _terminate end event_ is reached, the current process instance or sub-process will be terminated. Conceptually, when an execution arrives in a terminate end event, the first _scope_ (process or sub-process) will be determined and ended. Note that in BPMN 2.0, a sub-process can be an embedded sub-process, call activity, event sub-process or transaction sub-process. This rule applies in general: when for example there is a multi-instance call activity or embedded subprocess, only that instance will be ended, the other instances and the process instance are not affected.
+
+There is an optional attribute _terminateAll_ that can be added. When _true_, regardless of the placement of the terminate end event in the process definition and regardless of being in a sub-process (even nested), the (root) process instance will be terminated.
+
+===== Graphical notation
+
+A cancel end event visualized as a typical end event (circle with thick outline), with a full black circle inside.
+
+image::images/bpmn.terminate.end.event.png[align="center"]
+
+
+===== XML representation
+
+A terminate end event is represented as an end event, with a _terminateEventDefinition_ child element.
+
+Note that the _terminateAll_ attribute is optional (and _false_ by default).
+
+[source,xml,linenums]
+----
+<endEvent id="myEndEvent >
+  <terminateEventDefinition activiti:terminateAll="true"></terminateEventDefinition>
+</endEvent>
+----
+
 
 ==== Cancel End Event
 

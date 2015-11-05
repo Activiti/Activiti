@@ -229,5 +229,5 @@ public interface StencilConstants {
   final String PROPERTY_SIGNAL_DEFINITION_NAME = "name";
   final String PROPERTY_SIGNAL_DEFINITION_SCOPE = "scope";
   
-  final String PROPERTY_TERMINATE_ALL = "terminateAll";
+  final String PROPERTY_TERMINATE_ALL = "terminateall";
 }
