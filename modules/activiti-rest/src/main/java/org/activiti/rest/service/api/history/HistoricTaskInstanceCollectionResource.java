@@ -47,8 +47,17 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
       queryRequest.setProcessBusinessKey(allRequestParams.get("processBusinessKey"));
     }
 
+    if (allRequestParams.get("processBusinessKeyLike") != null) {
+        queryRequest.setProcessBusinessKeyLike(allRequestParams.get("processBusinessKeyLike"));
+    }
+    
+    
     if (allRequestParams.get("processDefinitionKey") != null) {
       queryRequest.setProcessDefinitionKey(allRequestParams.get("processDefinitionKey"));
+    }
+    
+    if (allRequestParams.get("processDefinitionKeyLike") != null) {
+        queryRequest.setProcessDefinitionKeyLike(allRequestParams.get("processDefinitionKeyLike"));
     }
 
     if (allRequestParams.get("processDefinitionId") != null) {
@@ -58,7 +67,11 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
     if (allRequestParams.get("processDefinitionName") != null) {
       queryRequest.setProcessDefinitionName(allRequestParams.get("processDefinitionName"));
     }
-
+    if (allRequestParams.get("processDefinitionNameLike") != null) {
+    	queryRequest.setProcessDefinitionNameLike(allRequestParams.get("processDefinitionNameLike"));
+    	
+    }
+    
     if (allRequestParams.get("executionId") != null) {
       queryRequest.setExecutionId(allRequestParams.get("executionId"));
     }
@@ -114,7 +127,15 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
     if (allRequestParams.get("taskPriority") != null) {
       queryRequest.setTaskPriority(Integer.valueOf(allRequestParams.get("taskPriority")));
     }
+    
+    if (allRequestParams.get("taskMinPriority") != null) {
+        queryRequest.setTaskMinPriority(Integer.valueOf(allRequestParams.get("taskMinPriority")));
+    }
 
+    if (allRequestParams.get("taskMaxPriority") != null) {
+        queryRequest.setTaskMaxPriority(Integer.valueOf(allRequestParams.get("taskMaxPriority")));
+    }
+    
     if (allRequestParams.get("finished") != null) {
       queryRequest.setFinished(Boolean.valueOf(allRequestParams.get("finished")));
     }
