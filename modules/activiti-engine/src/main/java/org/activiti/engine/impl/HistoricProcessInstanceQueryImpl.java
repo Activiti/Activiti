@@ -454,7 +454,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       return variableValueLike(name, value, true);
     }
   }
-  
+
   public HistoricProcessInstanceQuery locale(String locale) {
     this.locale = locale;
     return this;
@@ -464,7 +464,17 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     withLocalizationFallback = true;
     return this;
   }
-
+  
+  @Override
+  public HistoricProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value) {
+    if (inOrStatement) {
+      currentOrQueryObject.variableValueLikeIgnoreCase(name, value, true);
+      return this;
+    } else {
+      return variableValueLikeIgnoreCase(name, value, true);
+    }
+  }
+  
   public HistoricProcessInstanceQuery or() {
     if (inOrStatement) {
       throw new ActivitiException("the query is already in an or statement");

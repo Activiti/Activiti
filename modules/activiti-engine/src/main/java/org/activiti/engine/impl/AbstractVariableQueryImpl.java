@@ -156,7 +156,13 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
     addVariable(name, value, QueryOperator.LIKE, localScope);
     return (T) this;
   }
-
+  
+  @SuppressWarnings("unchecked")
+  public T variableValueLikeIgnoreCase(String name, String value, boolean localScope) {
+    addVariable(name, value, QueryOperator.LIKE_IGNORE_CASE, localScope);
+    return (T)this;
+  }
+  
   private void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
     if (name == null) {
       throw new ActivitiIllegalArgumentException("name is null");
@@ -182,8 +188,9 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
       if (operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && !(value instanceof String)) {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'not equals ignore case' condition");
       }
-
-      if (operator == QueryOperator.LIKE && !(value instanceof String)) {
+      
+      if((operator == QueryOperator.LIKE || operator == QueryOperator.LIKE_IGNORE_CASE) && !(value instanceof String))
+      {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'like' condition");
       }
     }
