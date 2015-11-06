@@ -447,6 +447,16 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     }
   }
   
+  @Override
+  public HistoricProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value) {
+    if (inOrStatement) {
+      currentOrQueryObject.variableValueLikeIgnoreCase(name, value, true);
+      return this;
+    } else {
+      return variableValueLikeIgnoreCase(name, value, true);
+    }
+  }
+  
   public HistoricProcessInstanceQuery or() {
     if (inOrStatement) {
       throw new ActivitiException("the query is already in an or statement");
