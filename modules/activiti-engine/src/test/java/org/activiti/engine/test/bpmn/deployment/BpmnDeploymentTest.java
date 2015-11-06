@@ -74,10 +74,10 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     return new String(bytes);
   }
 
-  public void testViolateBPMNIdMaximumLength() {
+  public void testViolateDefinitionTargetNamespaceMaximumLength() {
     try {
       repositoryService.createDeployment()
-          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/definitionWithLongTargetNamespace.bpmn20.xml")
+          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.definitionWithLongTargetNamespace.bpmn20.xml")
           .deploy();
       fail();
     } catch (ActivitiException e) {
@@ -92,7 +92,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   public void testViolateProcessDefinitionIdMaximumLength() {
     try {
       repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml")
+        .addClasspathResource("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.processWithLongId.bpmn20.xml")
         .deploy();
       fail();
     } catch (ActivitiException e) {
@@ -106,7 +106,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   public void testViolateProcessDefinitionNameAndDescriptionMaximumLength() {
     try {
       repositoryService.createDeployment()
-          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongNameAndDescription.bpmn20.xml")
+          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.processWithLongNameAndDescription.bpmn20.xml")
           .deploy();
       fail();
     } catch (ActivitiException e) {
