@@ -34,6 +34,62 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
+<h3>Release Notes - Activiti - Version 5.19.0</h3>
+<h4>Highlights</h4>
+<ul>
+    <li>We introduced a new service DynamicBpmnService that allows you to change a defined set of properties of a process definition without needing to redeploy <a href="http://bpmn20inaction.blogspot.com/2015/10/adding-dynamic-behaviour-to-activiti.html">http://bpmn20inaction.blogspot.com/2015/10/adding-dynamic-behaviour-to-activiti.html</a></li>
+    <li>Improved support for the terminate end event. According to the BPMN spec a terminate end event should only terminate the current scope. 
+    So in case of a multi instance sub process, a terminate end event inside that multi instance sub process should only kill a single instance and the rest
+    of the instances (of the multi instance) will continue. And in case a call activity kicks off a sub process, a terminate end event in the sub process 
+    will only kill the sub process instance, and the parent process will continue. We've added a new attribute on the terminate end event (activiti:terminateAll) 
+    that allows you to terminate all parent scopes if the value is set to true. By default only the current scope is killed.</li>
+    <li>ACT-4072 was fixed, a repeating timer (time cycle) now works according to the defined duration values</li>
+    <li>Various bug fixes</li>
+</ul>
+
+<p>Check out the <a href="https://activiti.atlassian.net/jira/secure/ReleaseNote.jspa?projectId=10000&version=10200">Release notes</a> for more details</p>
+
+<h4>Bug fixes and various smaller improvements</h4>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-1768'>ACT-1768</a>] -         Revision of same variable is always zero
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2129'>ACT-2129</a>] -         Activiti can&#39;t store string variables with length &gt;2000 and &lt;4000 characters in oracle db
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2163'>ACT-2163</a>] -         Fix some bugs and optimize display on text in workflow drawing
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-3997'>ACT-3997</a>] -         Validate bpmn components for max length
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4066'>ACT-4066</a>] -         Timer Start Event ignores Time Cycle value if iteration count not present
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4069'>ACT-4069</a>] -         Activiti Spring Boot REST API starter incompatible with Spring Boot HATEOAS starter
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4079'>ACT-4079</a>] -         NullPointerException in DbSqlSessionFactory.isBulkInsertable() when Custom Entity is inserted
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4084'>ACT-4084</a>] -         Multi instance parallel task fails with empty collection
+</li>
+</ul>
+        
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4010'>ACT-4010</a>] -         Design tools should support message artifact - what is the runtime implementation for registering custom messages?
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4045'>ACT-4045</a>] -         enable shared process definitions per tenants
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4072'>ACT-4072</a>] -         Repeating timer with no repetition bound does not follow duration
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4080'>ACT-4080</a>] -         Verify terminate end behavior
+</li>
+</ul>
+
 <h3>Release Notes - Activiti - Version 5.18.0</h3>
 
 <h4>Highlights</h4>

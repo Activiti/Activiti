@@ -689,6 +689,16 @@
       "popular" : true,
       "refToView" : "border"
     } ]
+  }, {
+    "name" : "terminateAllpackage",
+    "properties" : [ {
+      "id" : "terminateAll",
+      "type" : "Boolean",
+      "title" : "Terminate all",
+      "value" : "false",
+      "description" : "Enable to terminate the process instance",
+      "popular" : true
+    } ]
   } ],
   "stencils" : [ {
     "type" : "node",
@@ -1107,7 +1117,7 @@
     "view" : "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n    <circle id=\"bg_frame\" cx=\"16\" cy=\"16\" r=\"14\" stroke=\"#585858\" fill=\"#ffffff\" stroke-width=\"3\"/>\n    \n    <circle id=\"circle1\" cx=\"16\" cy=\"16\" r=\"9\" stroke=\"#585858\" fill=\"#585858\" stroke-width=\"1\"/>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"32\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
     "icon" : "endevent/terminate.png",
     "groups" : [ "End Events" ],
-    "propertyPackages" : [ "overrideidpackage", "namepackage", "documentationpackage", "executionlistenerspackage" ],
+    "propertyPackages" : [ "overrideidpackage", "namepackage", "documentationpackage", "executionlistenerspackage", "terminateAllpackage" ],
     "hiddenPropertyPackages" : [ ],
     "roles" : [ "EndEventsMorph", "sequence_end", "all" ]
   }, {

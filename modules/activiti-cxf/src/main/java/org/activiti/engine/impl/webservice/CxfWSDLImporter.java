@@ -51,6 +51,7 @@ import com.ibm.wsdl.extensions.schema.SchemaImpl;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JJavaName;
 import com.sun.tools.xjc.ConsoleErrorReporter;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.Mapping;
@@ -187,7 +188,7 @@ public class CxfWSDLImporter implements XMLImporter {
       this.importStructure(mapping);
     }
   }
-  
+
   private void importStructure(Mapping mapping) {
     QName qname = mapping.getElement();
     JDefinedClass theClass = (JDefinedClass) mapping.getType().getTypeClass();
@@ -210,7 +211,15 @@ public class CxfWSDLImporter implements XMLImporter {
     }
     for (Entry<String, JFieldVar> entry : theClass.fields().entrySet()) {
       Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
-      structure.setFieldName(index.getAndIncrement(), entry.getKey(), fieldClass);
+
+      String fieldName = entry.getKey();
+      if (fieldName.startsWith("_")) {
+        if (!JJavaName.isJavaIdentifier(fieldName.substring(1))) {
+          fieldName = fieldName.substring(1); //it was prefixed with '_' so we should use the original name.
+        }
+      }
+
+      structure.setFieldName(index.getAndIncrement(), fieldName, fieldClass);
     }
   }
   
