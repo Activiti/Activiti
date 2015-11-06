@@ -50,7 +50,7 @@ Here is a list available attributes and operations at this moment. This list may
 [options="header"]
 |===============
 |MBean|Type|Name|Description
-|ProcessDefinitionsMBean|Attribute|processDefinitons|+Id+, +Name+, +Version+, +IsSuspended+ properties of deployed process definitions as a list of list of Strings
+|ProcessDefinitionsMBean|Attribute|processDefinitions|+Id+, +Name+, +Version+, +IsSuspended+ properties of deployed process definitions as a list of list of Strings
 ||Attribute|deployments|+Id+, +Name+, +TenantId+ properties of current deployments
 ||method|getProcessDefinitionById(String id)|+Id+, +Name+, +Version+ and +IsSuspended+ properties of the process definition with given id
 ||method|deleteDeployment(String id)|Deletes deployment with the given +Id+
@@ -137,7 +137,7 @@ bug reports and feature requests.
 Having a test case attached to a bug report or feature request jira issue, considerably reduces its fixing time.
 
 To facilitate creation of a test case, a maven archetype is available. By use of this archetype, one can rapidly create a standard test case.
-The archetype should be already avilable in the standard repository. if not, you can easily install it in your local maven repository folder by just typing
+The archetype should be already available in the standard repository. If not, you can easily install it in your local maven repository folder by just typing
   *mvn install* in *tooling/archtypes* folder.
 
 The following command creates the unit test project:
@@ -146,7 +146,7 @@ The following command creates the unit test project:
 mvn archetype:generate \
 -DarchetypeGroupId=org.activiti \
 -DarchetypeArtifactId=activiti-archetype-unittest \
--DarchetypeVersion=5.19.0-SNAPSHOT \
+-DarchetypeVersion=5.19.0 \
 -DgroupId=org.myGroup \
 -DartifactId=myArtifact
 

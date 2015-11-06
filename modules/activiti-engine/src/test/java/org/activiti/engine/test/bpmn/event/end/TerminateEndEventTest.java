@@ -492,6 +492,70 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getId());
   }
   
+  @Deployment
+  public void testMiCallActivityParallel() {
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMiCallActivity");
+  	
+  	List<Task> aTasks = taskService.createTaskQuery().taskName("A").list();
+  	assertEquals(5, aTasks.size());
+  	
+  	List<Task> bTasks = taskService.createTaskQuery().taskName("B").list();
+  	assertEquals(5, bTasks.size());
+  	
+  	// Completing B should terminate one instance (it goes to a terminate end event)
+  	int bTasksCompleted = 0;
+  	for (Task bTask : bTasks) {
+  		
+  		taskService.complete(bTask.getId());
+  		bTasksCompleted++;
+  		
+  		aTasks = taskService.createTaskQuery().taskName("A").list();
+    	assertEquals(5-bTasksCompleted, aTasks.size());
+  	}
+  	
+  	Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+  	assertEquals("After call activity", task.getName());
+  	
+  	taskService.complete(task.getId());
+  	assertProcessEnded(processInstance.getId());
+  	
+  }
+  
+  @Deployment
+  public void testMiCallActivitySequential() {
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMiCallActivity");
+  	
+  	List<Task> aTasks = taskService.createTaskQuery().taskName("A").list();
+  	assertEquals(1, aTasks.size());
+  	
+  	List<Task> bTasks = taskService.createTaskQuery().taskName("B").list();
+  	assertEquals(1, bTasks.size());
+  	
+  	// Completing B should terminate one instance (it goes to a terminate end event)
+  	for (int i=0; i<9; i++) {
+  		
+  		Task bTask = taskService.createTaskQuery().taskName("B").singleResult();
+  		
+  		taskService.complete(bTask.getId());
+  		
+  		if (i != 8) {
+  			aTasks = taskService.createTaskQuery().taskName("A").list();
+  			assertEquals(1, aTasks.size());
+    	
+  			bTasks = taskService.createTaskQuery().taskName("B").list();
+  			assertEquals(1, bTasks.size());
+  		}
+  	}
+  	
+  	Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+  	assertEquals("After call activity", task.getName());
+  	
+  	taskService.complete(task.getId());
+  	assertProcessEnded(processInstance.getId());
+  	
+  	
+  }
+  
   @Deployment(resources={
       "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrent.bpmn", 
       "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminateTerminateAll.bpmn20.xml"
