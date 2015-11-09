@@ -23,6 +23,8 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * @author Joram Barrez
  * @author Christian Stettler
@@ -68,8 +70,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testAutoStoreVariables() {
-    // The first script should NOT store anything as 'autoStoreVariables' is
-    // set to false
+    // The first script should NOT store anything as 'autoStoreVariables' is set to false
     String id = runtimeService.startProcessInstanceByKey("testAutoStoreVariables", CollectionUtil.map("a", 20, "b", 22)).getId();
     assertNull(runtimeService.getVariable(id, "sum"));
 
@@ -84,6 +85,23 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     } catch (ActivitiException e) {
       assertTextPresent("No script provided", e.getMessage());
     }
+  }
+  
+  @Deployment
+  public void testDynamicScript() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("a", 20, "b", 22));
+    assertEquals(42.0, runtimeService.getVariable(processInstance.getId(), "test"));
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    assertProcessEnded(processInstance.getId());
+    
+    String processDefinitionId = processInstance.getProcessDefinitionId();
+    ObjectNode infoNode = dynamicBpmnService.changeScriptTaskScript("script1", "var sum = c + d;\nexecution.setVariable('test2', sum);");
+    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    
+    processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("c", 10, "d", 12));
+    assertEquals(22.0, runtimeService.getVariable(processInstance.getId(), "test2"));
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    assertProcessEnded(processInstance.getId());
   }
 
   protected void verifyExceptionInStacktrace(Exception rootException, Class<?> expectedExceptionClass) {

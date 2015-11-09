@@ -125,7 +125,7 @@ public class BpmnActivityBehavior implements Serializable {
       if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
         if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
           Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-          if (condition == null || !checkConditions || condition.evaluate(execution)) {
+          if (condition == null || !checkConditions || condition.evaluate(outgoingTransition.getId(), execution)) {
             transitionsToTake.add(outgoingTransition);
           }
         }
