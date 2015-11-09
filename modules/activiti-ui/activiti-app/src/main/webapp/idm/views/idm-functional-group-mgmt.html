@@ -29,7 +29,7 @@
 
 
         <div class="nothing-to-see" ng-if="model.groups.length == 0">
-            <span  translate="IDM.SYSTEM-GROUP-MGMT.NO-GROUPS"></span>
+            <span  translate="IDM.FUNCTIONAL-GROUP-MGMT.NO-GROUPS"></span>
         </div>
 
     </div>
@@ -99,18 +99,18 @@
                     <div class="section" style="min-height: 0">
 
                         <h3 style="margin-bottom: 10px;">
-                            {{'IDM.SYSTEM-GROUP-MGMT.MEMBERS' | translate}}
+                            {{'IDM.FUNCTIONAL-GROUP-MGMT.MEMBERS' | translate}}
                             <span class="action">
                                  <a id="toggle-add-group-member"
                                     select-people-popover
-                                    popover-title="IDM.SYSTEM-GROUP-MGMT.ADD-POPOVER-TITLE"
+                                    popover-title="IDM.FUNCTIONAL-GROUP-MGMT.ADD-POPOVER-TITLE"
                                     placement="bottom"
                                     on-people-selected="addGroupMember(user)"
                                     email-mode-disabled="true"
                                     tenant-id="common.selectedTenantId"
                                     type="'idm'"
                                     style="font-weight: normal">
-                                     {{'IDM.SYSTEM-GROUP-MGMT.ADD-USER' | translate}}
+                                     {{'IDM.FUNCTIONAL-GROUP-MGMT.ADD-USER' | translate}}
                                  </a>
                             </span>
                         </h3>
@@ -145,7 +145,7 @@
                         </table>
 
                         <div ng-if="!model.selectedGroup.users || model.selectedGroup.users.length == 0">
-                            <span>{{'IDM.SYSTEM-GROUP-MGMT.NO-MEMBERS' | translate}}</span>
+                            <span>{{'IDM.FUNCTIONAL-GROUP-MGMT.NO-MEMBERS' | translate}}</span>
                         </div>
                     </div>
 
@@ -156,7 +156,7 @@
         </div>
 
         <div class="nothing-to-see" ng-if="model.groups.length > 0 && !model.selectedGroup && !model.loading">
-            <span>{{'IDM.SYSTEM-GROUP-MGMT.NO-SELECTION' | translate}}</span>
+            <span>{{'IDM.FUNCTIONAL-GROUP-MGMT.NO-SELECTION' | translate}}</span>
         </div>
 
     </div>
