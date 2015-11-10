@@ -52,16 +52,18 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   /**
    * Handles the parallel case of spawning the instances. Will create child executions accordingly for every instance needed.
    */
-  protected void createInstances(DelegateExecution execution) {
+  protected int createInstances(DelegateExecution execution) {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances < 0) {
       throw new ActivitiIllegalArgumentException("Invalid number of instances: must be non-negative integer value" + ", but was " + nrOfInstances);
     }
+    
+    execution.setMultiInstanceRoot(true);
 
     setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
     setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, nrOfInstances);
-
+    
     List<DelegateExecution> concurrentExecutions = new ArrayList<DelegateExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
       DelegateExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
@@ -96,6 +98,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       ExecutionEntity executionEntity = (ExecutionEntity) execution;
       executionEntity.setActive(false);
     }
+    
+    return nrOfInstances;
   }
 
   /**
@@ -108,7 +112,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       // Empty collection, just leave.
       zeroNrOfInstances = true;
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
-      super.leave(execution);
+      super.leave(execution); // Plan the default leave
+      execution.setMultiInstanceRoot(false);
     }
 
     int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
@@ -204,7 +209,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     } else {
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
-      super.leave(executionEntity);
+      execution.setMultiInstanceRoot(false);
+      super.leave(execution);
     }
   }
   
@@ -225,7 +231,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     
     parentScopeExecution.forceUpdate();
   }
-
+  
   // TODO: can the ExecutionManager.deleteChildExecution not be used?
   protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
     // Delete all child executions

@@ -973,4 +973,15 @@ public class ExecutionImpl implements
   public String getTenantId() {
     return null; // Not implemented
   }
+  
+  // NOT IN V5
+  @Override
+  public boolean isMultiInstanceRoot() {
+    return false;
+  }
+  
+  @Override
+  public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
+    
+  }
 }

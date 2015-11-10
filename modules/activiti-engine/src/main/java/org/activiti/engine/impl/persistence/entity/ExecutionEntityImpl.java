@@ -69,13 +69,12 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   // state/type of execution //////////////////////////////////////////////////
   
-  // TODO: remnants of Activti 5. Check which ones should be kept and which ones deleted.
-
   protected boolean isActive = true;
   protected boolean isScope = true;
   protected boolean isConcurrent;
   protected boolean isEnded;
   protected boolean isEventScope;
+  protected boolean isMultiInstanceRoot;
 
   // events ///////////////////////////////////////////////////////////////////
   
@@ -660,6 +659,16 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setEventScope(boolean isEventScope) {
     this.isEventScope = isEventScope;
   }
+  
+  @Override
+  public boolean isMultiInstanceRoot() {
+    return isMultiInstanceRoot;
+  }
+  
+  @Override
+  public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
+    this.isMultiInstanceRoot = isMultiInstanceRoot;
+  }
 
   public String getCurrentActivityId() {
     return activityId;
@@ -727,9 +736,21 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     if (isProcessInstanceType()) {
       return "ProcessInstance[" + getId() + "]";
     } else {
-      return (isScope ? "Scope" : "") + "Execution[ id '" + getId() + "'" 
-          + (activityId != null ? " - activity '" + activityId + "'" : "") 
-          + (parentId != null ? " - parent '" + parentId + "'" : "") + "] ";
+      StringBuilder strb = new StringBuilder();
+      if (isScope) {
+        strb.append("Scoped execution[ id '" + getId() + "' ]");
+      } else if(isMultiInstanceRoot) {
+        strb.append("Multi instance root execution[ id '" + getId() + "' ]");
+      } else {
+        strb.append("Execution[ id '" + getId() + "' ]");
+      }
+      if (activityId != null) {
+        strb.append(" - activity '" + activityId);
+      }
+      if (parentId != null) {
+        strb.append(" - parent '" + parentId + "'");
+      }
+      return strb.toString();
     }
   }
 

@@ -65,7 +65,7 @@ public class ErrorPropagation {
     if (eventMap.size() > 0) {
       executeCatch(eventMap, execution, errorCode);
     } else {
-      if (execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId()) == false) {
+      if (execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId()) == false) { // Call activity
         ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
         ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
         ExecutionTreeNode rootNode = executionTree.getRoot();
@@ -131,9 +131,8 @@ public class ErrorPropagation {
     if (eventMap.containsKey(currentExecution.getActivityId())) {
       matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
       
-      // check for parallel multi instance execution --> if so, get the parent execution
-      FlowElement parentElement = currentExecution.getParent().getCurrentFlowElement();
-      if (parentElement != null && parentElement.getId().equals(currentExecution.getCurrentFlowElement().getId())) {
+      // Check for multi instance
+      if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
         currentExecution = currentExecution.getParent();
       }
       
@@ -162,11 +161,11 @@ public class ErrorPropagation {
           if (eventMap.containsKey(currentExecution.getActivityId())) {
             matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
             
-            // check for parallel multi instance execution --> if so, get the parent execution
-            FlowElement parentElement = currentExecution.getParent().getCurrentFlowElement();
-            if (parentElement != null && parentElement.getId().equals(currentExecution.getCurrentFlowElement().getId())) {
+            // Check for multi instance
+            if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
               currentExecution = currentExecution.getParent();
             }
+            
           } else if (StringUtils.isNotEmpty(currentExecution.getParentId())) {
             currentExecution = currentExecution.getParent();
           } else {

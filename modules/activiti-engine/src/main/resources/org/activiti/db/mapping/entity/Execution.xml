@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -19,6 +19,7 @@
       #{isConcurrent ,jdbcType=BOOLEAN},
       #{isScope ,jdbcType=BOOLEAN},
       #{isEventScope ,jdbcType=BOOLEAN},
+      #{isMultiInstanceRoot, jdbcType=BOOLEAN},
       #{parentId, jdbcType=VARCHAR},
       #{superExecutionId, jdbcType=VARCHAR},
       #{rootProcessInstanceId, jdbcType=VARCHAR},
@@ -30,7 +31,7 @@
   </insert>
 
   <insert id="bulkInsertExecution" parameterType="java.util.List">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
     values 
       <foreach collection="list" item="execution" index="index" separator=",">
         (#{execution.id ,jdbcType=VARCHAR},
@@ -43,6 +44,7 @@
          #{execution.isConcurrent ,jdbcType=BOOLEAN},
          #{execution.isScope ,jdbcType=BOOLEAN},
          #{execution.isEventScope ,jdbcType=BOOLEAN},
+         #{execution.isMultiInstanceRoot, jdbcType=BOOLEAN},
          #{execution.parentId, jdbcType=VARCHAR},
          #{execution.superExecutionId, jdbcType=VARCHAR},
          #{execution.rootProcessInstanceId, jdbcType=VARCHAR},
@@ -57,7 +59,7 @@
     INSERT ALL 
       <foreach collection="list" item="execution" index="index">
         into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_,
-        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_) VALUES 
+        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_) VALUES 
             (#{execution.id ,jdbcType=VARCHAR},
              1,
              #{execution.processInstanceId, jdbcType=VARCHAR},
@@ -68,6 +70,7 @@
              #{execution.isConcurrent ,jdbcType=BOOLEAN},
              #{execution.isScope ,jdbcType=BOOLEAN},
              #{execution.isEventScope ,jdbcType=BOOLEAN},
+             #{execution.isMultiInstanceRoot, jdbcType=BOOLEAN},
              #{execution.parentId, jdbcType=VARCHAR},
              #{execution.superExecutionId, jdbcType=VARCHAR},
              #{execution.rootProcessInstanceId, jdbcType=VARCHAR},
@@ -91,6 +94,7 @@
       IS_CONCURRENT_ = #{isConcurrent, jdbcType=BOOLEAN},
       IS_SCOPE_ = #{isScope, jdbcType=BOOLEAN},
       IS_EVENT_SCOPE_ = #{isEventScope, jdbcType=BOOLEAN},
+      IS_MI_ROOT_ = #{isMultiInstanceRoot, jdbcType=BOOLEAN},
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
       SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR},
       ROOT_PROC_INST_ID_ = #{rootProcessInstanceId, jdbcType=VARCHAR},
@@ -175,6 +179,7 @@
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -202,6 +207,7 @@
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -223,6 +229,7 @@
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -261,6 +268,7 @@
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -401,9 +409,10 @@
     TEMPRES_REV_ as REV_, TEMPRES_ACT_ID_ as ACT_ID_,
     TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, TEMPRES_IS_ACTIVE_ as IS_ACTIVE_,
     TEMPRES_IS_CONCURRENT_ as IS_CONCURRENT_, TEMPRES_IS_SCOPE_ as IS_SCOPE_,
-    TEMPRES_IS_EVENT_SCOPE_ as IS_EVENT_SCOPE_, TEMPRES_PARENT_ID_ as PARENT_ID_, 
-    TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, TEMPRES_SUPER_EXEC_ as SUPER_EXEC_, 
-    TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_NAME_ as NAME_, TEMPRES_TENANT_ID_ as TENANT_ID_,
+    TEMPRES_IS_EVENT_SCOPE_ as IS_EVENT_SCOPE_, TEMPRES_IS_MI_ROOT_ as IS_MI_ROOT_, 
+    TEMPRES_PARENT_ID_ as PARENT_ID_, TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, 
+    TEMPRES_SUPER_EXEC_ as SUPER_EXEC_, TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, 
+    TEMPRES_NAME_ as NAME_, TEMPRES_TENANT_ID_ as TENANT_ID_,
     TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_, TEMPRES_CACHED_ENT_STATE_ as CACHED_ENT_STATE_,
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
     TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
@@ -414,9 +423,9 @@
     RES.ACT_ID_ as TEMPRES_ACT_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
     RES.BUSINESS_KEY_ as TEMPRES_BUSINESS_KEY_, RES.IS_ACTIVE_ as TEMPRES_IS_ACTIVE_,
     RES.IS_CONCURRENT_ as TEMPRES_IS_CONCURRENT_, RES.IS_SCOPE_ as TEMPRES_IS_SCOPE_,
-    RES.IS_EVENT_SCOPE_ as TEMPRES_IS_EVENT_SCOPE_, RES.PARENT_ID_ as TEMPRES_PARENT_ID_,
-    RES.SUPER_EXEC_ as TEMPRES_SUPER_EXEC_, RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_,
-    RES.CACHED_ENT_STATE_ as TEMPRES_CACHED_ENT_STATE_,
+    RES.IS_EVENT_SCOPE_ as TEMPRES_IS_EVENT_SCOPE_, RES.IS_MI_ROOT_ as TEMPRES_IS_MI_ROOT_,
+    RES.PARENT_ID_ as TEMPRES_PARENT_ID_, RES.SUPER_EXEC_ as TEMPRES_SUPER_EXEC_, 
+    RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_, RES.CACHED_ENT_STATE_ as TEMPRES_CACHED_ENT_STATE_,
     RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.NAME_ as TEMPRES_NAME_, RES.TENANT_ID_ as TEMPRES_TENANT_ID_,
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,

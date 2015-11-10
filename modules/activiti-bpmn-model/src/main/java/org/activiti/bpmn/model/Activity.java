@@ -68,6 +68,10 @@ public abstract class Activity extends FlowNode {
   public void setLoopCharacteristics(MultiInstanceLoopCharacteristics loopCharacteristics) {
     this.loopCharacteristics = loopCharacteristics;
   }
+  
+  public boolean hasMultiInstanceLoopCharacteristics() {
+    return getLoopCharacteristics() != null;
+  }
 
   public IOSpecification getIoSpecification() {
     return ioSpecification;

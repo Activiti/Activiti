@@ -1690,4 +1690,16 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   }
   
+  
+  // NOT IN V5
+  @Override
+  public boolean isMultiInstanceRoot() {
+    return false;
+  }
+  
+  @Override
+  public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
+    
+  }
+  
 }

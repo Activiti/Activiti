@@ -93,6 +93,10 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   boolean isEventScope();
 
   void setEventScope(boolean isEventScope);
+  
+  boolean isMultiInstanceRoot();
+  
+  void setMultiInstanceRoot(boolean isMultiInstanceRoot);
 
   void setName(String name);
 

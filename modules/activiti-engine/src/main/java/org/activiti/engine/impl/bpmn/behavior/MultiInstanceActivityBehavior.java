@@ -89,21 +89,25 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   public void execute(DelegateExecution execution) {
     if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
+      
+      int nrOfInstances = 0;
+      
       try {
-        createInstances(execution);
+        nrOfInstances = createInstances(execution);
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
       }
-
-      if (resolveNrOfInstances(execution) == 0) {
-        leave(execution);
+      
+      if (nrOfInstances == 0) {
+        super.leave(execution);
       }
+      
     } else {
       innerActivityBehavior.execute(execution);
     }
   }
 
-  protected abstract void createInstances(DelegateExecution execution);
+  protected abstract int createInstances(DelegateExecution execution);
   
   protected void executeCompensationBoundaryEvents(FlowElement flowElement, DelegateExecution execution) {
 
@@ -278,7 +282,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
     return (Integer) (value != null ? value : 0);
   }
-
+  
   protected Integer getLocalLoopVariable(DelegateExecution execution, String variableName) {
     return (Integer) execution.getVariableLocal(variableName);
   }
@@ -380,9 +384,23 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   protected void logLoopDetails(DelegateExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}", execution.getCurrentFlowElement(), custom, loopCounter,
+      LOGGER.debug("Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}", 
+          execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : "", custom, loopCounter,
           nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     }
+  }
+  
+  protected DelegateExecution getMultiInstanceRootExecution(DelegateExecution executionEntity) {
+    DelegateExecution multiInstanceRootExecution = null;
+    DelegateExecution currentExecution = executionEntity;
+    while (currentExecution != null  && multiInstanceRootExecution == null && currentExecution.getParent() != null) {
+      if (currentExecution.isMultiInstanceRoot()) {
+        multiInstanceRootExecution = currentExecution;
+      } else {
+        currentExecution = currentExecution.getParent();
+      }
+    }
+    return multiInstanceRootExecution;
   }
 
   // Getters and Setters

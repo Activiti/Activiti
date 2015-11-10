@@ -65,6 +65,7 @@ create table ACT_RU_EXECUTION (
     IS_CONCURRENT_ tinyint,
     IS_SCOPE_ tinyint,
     IS_EVENT_SCOPE_ tinyint,
+    IS_MI_ROOT_ tinyint,
     SUSPENSION_STATE_ tinyint,
     CACHED_ENT_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',

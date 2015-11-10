@@ -60,11 +60,6 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
   protected void executeInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
 
-    // TODO: is this needed???
-    // if (executionEntity.getSubProcessInstance() != null) {
-    // executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
-    // }
-
     // The destroy scope operation will look for the parent execution and
     // destroy the whole scope, and leave the boundary event using this parent execution.
     //
