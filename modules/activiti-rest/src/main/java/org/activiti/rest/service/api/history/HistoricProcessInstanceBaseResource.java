@@ -173,7 +173,16 @@ public class HistoricProcessInstanceBaseResource {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: " + actualValue.getClass().getName());
         }
         break;
-
+        
+      case LIKE_IGNORE_CASE:
+          if (actualValue instanceof String) {
+            processInstanceQuery.variableValueLikeIgnoreCase(variable.getName(), (String) actualValue);
+          } else {
+            throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: "
+                    + actualValue.getClass().getName());
+          }
+          break;
+        
       case GREATER_THAN:
         processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
         break;
