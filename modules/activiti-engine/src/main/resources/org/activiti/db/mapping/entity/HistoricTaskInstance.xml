@@ -265,6 +265,10 @@
     select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId, jdbcType=VARCHAR}
   </select>
   
+  <select id="selectHistoricTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicTaskInstanceResultMap">
+    select * from ${prefix}ACT_HI_TASKINST where PARENT_TASK_ID_ = #{parameter}
+  </select>
+  
   <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" >
     select ID_ 
     from ${prefix}ACT_HI_TASKINST 
