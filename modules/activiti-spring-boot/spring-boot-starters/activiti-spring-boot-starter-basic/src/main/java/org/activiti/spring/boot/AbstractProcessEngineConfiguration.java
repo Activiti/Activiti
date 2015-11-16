@@ -76,12 +76,12 @@ public abstract class AbstractProcessEngineConfiguration {
   public List<Resource> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext, String prefix, String suffix, boolean checkPDs) throws IOException {
     String path = prefix + suffix;
     if (checkPDs) {
-    	if (!applicationContext.getResource(prefix).exists()) {
-    		logger.warn(String.format("No process definitions were found using the specified path (%s).", path));
-    		return new ArrayList<Resource>();
-    	}
-
-      return Arrays.asList(applicationContext.getResources(path));
+      final Resource[] resources = applicationContext.getResources(path);
+      if (resources == null || resources.length == 0) {
+        logger.warn(String.format("No process definitions were found using the specified path (%s).", path));
+        return new ArrayList<Resource>();
+      }
+      return Arrays.asList(resources);
     }
     return new ArrayList<Resource>();
   }
