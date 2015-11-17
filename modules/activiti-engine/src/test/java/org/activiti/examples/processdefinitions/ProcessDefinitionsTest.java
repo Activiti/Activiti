@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtilities;
+import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtil;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -148,7 +148,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
   }
 
   private String deployProcessString(String processString) {
-    String resourceName = "xmlString." + ResourceNameUtilities.BPMN_RESOURCE_SUFFIXES[0];
+    String resourceName = "xmlString." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
     return repositoryService.createDeployment().addString(resourceName, processString).deploy().getId();
   }
 

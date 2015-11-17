@@ -21,7 +21,8 @@ import java.util.Map;
 /**
  * Static methods for working with BPMN and image resource names.
  */
-public class ResourceNameUtilities {
+public class ResourceNameUtil {
+  
   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[] { "png", "jpg", "gif", "svg" };
 
@@ -34,8 +35,8 @@ public class ResourceNameUtilities {
     return bpmnFileResource;
   }
 
-  public static String getProcessImageResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {
-    String bpmnFileResourceBase = ResourceNameUtilities.stripBpmnFileSuffix(bpmnFileResource);
+  public static String getProcessDiagramResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {
+    String bpmnFileResourceBase = ResourceNameUtil.stripBpmnFileSuffix(bpmnFileResource);
     return bpmnFileResourceBase + processKey + "." + diagramSuffix;
   }
   
@@ -56,10 +57,11 @@ public class ResourceNameUtilities {
    * called 'abc.a.png' before looking for 'abc.png' (likewise for b and c). Note that if abc.a.png,
    * abc.b.png and abc.c.png don't exist, all processes will have the same image: abc.png.
    *
-   * @return name of an existing resource, or null if no matching image resource is found.
+   * @return name of an existing resource, or null if no matching image resource is found in the resources.
    */
-  public static String getDiagramResourceName(
+  public static String getProcessDiagramResourceNameFromDeployment(
       ProcessDefinitionEntity processDefinition, Map<String, ResourceEntity> resources) {
+    
     if (StringUtils.isEmpty(processDefinition.getResourceName())) {
       throw new IllegalStateException("Provided process definition must have its resource name set.");
     }
@@ -81,5 +83,6 @@ public class ResourceNameUtilities {
     
     return null;
   }
+  
 }
 

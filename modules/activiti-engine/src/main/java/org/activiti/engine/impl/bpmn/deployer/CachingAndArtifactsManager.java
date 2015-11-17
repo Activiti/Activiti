@@ -31,24 +31,26 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 
 /**
- * Updates caches and artifacts for a deployment, its process definitions, and its process definition
- * infos.
+ * Updates caches and artifacts for a deployment, its process definitions, 
+ * and its process definition infos.
  */
 public class CachingAndArtifactsManager {
+  
   /**
    * Ensures that the process definition is cached in the appropriate places, including the
    * deployment's collection of deployed artifacts and the deployment manager's cache, as well
    * as caching any ProcessDefinitionInfos.
    */
-  public void updateCachingAndArtifacts(ExpandedDeployment expandedDeployment) {
+  public void updateCachingAndArtifacts(ParsedDeployment parsedDeployment) {
     CommandContext commandContext = Context.getCommandContext();
     final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache();
-    DeploymentEntity deployment = expandedDeployment.getDeployment();
+    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache 
+      = processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache();
+    DeploymentEntity deployment = parsedDeployment.getDeployment();
 
-    for (ProcessDefinitionEntity processDefinition : expandedDeployment.getAllProcessDefinitions()) {
-      BpmnModel bpmnModel = expandedDeployment.getBpmnModelForProcessDefinition(processDefinition);
-      Process process = expandedDeployment.getProcessModelForProcessDefinition(processDefinition);
+    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+      BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
+      Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
       ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, process);
       processDefinitionCache.add(processDefinition.getId(), cacheEntry);
       addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);

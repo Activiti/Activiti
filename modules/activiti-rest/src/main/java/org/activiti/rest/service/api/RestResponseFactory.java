@@ -34,7 +34,7 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -200,7 +200,7 @@ public class RestResponseFactory {
 
     // Determine type
     String type = "resource";
-    for (String suffix : BpmnDeployer.BPMN_RESOURCE_SUFFIXES) {
+    for (String suffix : ResourceNameUtil.BPMN_RESOURCE_SUFFIXES) {
       if (resourceId.endsWith(suffix)) {
         type = "processDefinition";
         break;

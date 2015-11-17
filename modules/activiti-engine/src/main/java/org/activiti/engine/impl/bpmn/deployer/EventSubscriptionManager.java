@@ -39,18 +39,17 @@ import java.util.List;
  * Manages event subscriptions for newly-deployed process definitions and their previous versions.
  */
 public class EventSubscriptionManager {
+  
   protected void removeObsoleteEventSubscriptionsImpl(ProcessDefinitionEntity processDefinition, String eventHandlerType) {
     // remove all subscriptions for the previous version
-      CommandContext commandContext = Context.getCommandContext();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    List<EventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findEventSubscriptionsByConfiguration(eventHandlerType,
+        processDefinition.getId(), processDefinition.getTenantId());
 
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
-      List<EventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findEventSubscriptionsByConfiguration(eventHandlerType,
-          processDefinition.getId(), processDefinition.getTenantId());
-
-      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-        eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
-      }
+    for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+      eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
     }
+  }
 
   protected void removeObsoleteMessageEventSubscriptions(ProcessDefinitionEntity previousProcessDefinition) {
     // remove all subscriptions for the previous version
@@ -146,5 +145,6 @@ public class EventSubscriptionManager {
       }
     }
   }
+  
 }
 

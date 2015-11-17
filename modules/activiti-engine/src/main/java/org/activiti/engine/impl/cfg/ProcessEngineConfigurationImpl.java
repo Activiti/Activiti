@@ -13,7 +13,27 @@
 
 package org.activiti.engine.impl.cfg;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -48,11 +68,11 @@ import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
-import org.activiti.engine.impl.bpmn.deployer.BpmnDeploymentUtilities;
+import org.activiti.engine.impl.bpmn.deployer.BpmnDeploymentHelper;
 import org.activiti.engine.impl.bpmn.deployer.CachingAndArtifactsManager;
 import org.activiti.engine.impl.bpmn.deployer.EventSubscriptionManager;
-import org.activiti.engine.impl.bpmn.deployer.ExpandedDeployment;
-import org.activiti.engine.impl.bpmn.deployer.ProcessDefinitionDiagrammer;
+import org.activiti.engine.impl.bpmn.deployer.ParsedDeploymentBuilderFactory;
+import org.activiti.engine.impl.bpmn.deployer.ProcessDefinitionDiagramHelper;
 import org.activiti.engine.impl.bpmn.deployer.TimerManager;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -305,27 +325,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.Set;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Tom Baeyens
@@ -451,12 +451,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected BpmnDeployer bpmnDeployer;
   protected BpmnParser bpmnParser;
-  protected ExpandedDeployment.BuilderFactory expandedDeploymentBuilderFactory;
+  protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
   protected TimerManager timerManager;
   protected EventSubscriptionManager eventSubscriptionManager;
-  protected BpmnDeploymentUtilities bpmnDeploymentUtilities;
+  protected BpmnDeploymentHelper bpmnDeploymentHelper;
   protected CachingAndArtifactsManager cachingAndArtifactsManager;
-  protected ProcessDefinitionDiagrammer processDefinitionDiagrammer;
+  protected ProcessDefinitionDiagramHelper processDefinitionDiagramHelper;
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
@@ -1372,11 +1372,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   protected void initBpmnDeployerDependencies() {
-    if (expandedDeploymentBuilderFactory == null) {
-      expandedDeploymentBuilderFactory = new ExpandedDeployment.BuilderFactory();
+    
+    if (parsedDeploymentBuilderFactory == null) {
+      parsedDeploymentBuilderFactory = new ParsedDeploymentBuilderFactory();
     }
-    if (expandedDeploymentBuilderFactory.getBpmnParser() == null) {
-      expandedDeploymentBuilderFactory.setBpmnParser(bpmnParser);
+    if (parsedDeploymentBuilderFactory.getBpmnParser() == null) {
+      parsedDeploymentBuilderFactory.setBpmnParser(bpmnParser);
     }
     
     if (timerManager == null) {
@@ -1387,22 +1388,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       eventSubscriptionManager = new EventSubscriptionManager();
     }
     
-    if (bpmnDeploymentUtilities == null) {
-      bpmnDeploymentUtilities = new BpmnDeploymentUtilities();
+    if (bpmnDeploymentHelper == null) {
+      bpmnDeploymentHelper = new BpmnDeploymentHelper();
     }
-    if (bpmnDeploymentUtilities.getTimerManager() == null) {
-      bpmnDeploymentUtilities.setTimerManager(timerManager);
+    if (bpmnDeploymentHelper.getTimerManager() == null) {
+      bpmnDeploymentHelper.setTimerManager(timerManager);
     }
-    if (bpmnDeploymentUtilities.getEventSubscriptionManager() == null) {
-      bpmnDeploymentUtilities.setEventSubscriptionManager(eventSubscriptionManager);
+    if (bpmnDeploymentHelper.getEventSubscriptionManager() == null) {
+      bpmnDeploymentHelper.setEventSubscriptionManager(eventSubscriptionManager);
     }
     
     if (cachingAndArtifactsManager == null) {
       cachingAndArtifactsManager = new CachingAndArtifactsManager();
     }
     
-    if (processDefinitionDiagrammer == null) {
-      processDefinitionDiagrammer = new ProcessDefinitionDiagrammer();
+    if (processDefinitionDiagramHelper == null) {
+      processDefinitionDiagramHelper = new ProcessDefinitionDiagramHelper();
     }
   }
   
@@ -1416,10 +1417,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initBpmnDeployerDependencies();
     
     bpmnDeployer.setIdGenerator(idGenerator);
-    bpmnDeployer.setExpandedDeploymentBuilderFactory(expandedDeploymentBuilderFactory);
-    bpmnDeployer.setBpmnDeploymentUtilities(bpmnDeploymentUtilities);
+    bpmnDeployer.setParsedDeploymentBuilderFactory(parsedDeploymentBuilderFactory);
+    bpmnDeployer.setBpmnDeploymentHelper(bpmnDeploymentHelper);
     bpmnDeployer.setCachingAndArtifactsManager(cachingAndArtifactsManager);
-    bpmnDeployer.setProcessDefinitionDiagrammer(processDefinitionDiagrammer);
+    bpmnDeployer.setProcessDefinitionDiagramHelper(processDefinitionDiagramHelper);
 
     defaultDeployers.add(bpmnDeployer);
     return defaultDeployers;
@@ -2096,12 +2097,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public ExpandedDeployment.BuilderFactory getExpandedDeploymentBuilderFactory() {
-    return expandedDeploymentBuilderFactory;
+  public ParsedDeploymentBuilderFactory getParsedDeploymentBuilderFactory() {
+    return parsedDeploymentBuilderFactory;
   }
 
-  public ProcessEngineConfigurationImpl setExpandedDeploymentBuilderFactory(ExpandedDeployment.BuilderFactory factory) {
-    this.expandedDeploymentBuilderFactory = factory;
+  public ProcessEngineConfigurationImpl setParsedDeploymentBuilderFactory(ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory) {
+    this.parsedDeploymentBuilderFactory = parsedDeploymentBuilderFactory;
     return this;
   }
 
@@ -2121,12 +2122,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.eventSubscriptionManager = eventSubscriptionManager;
   }
 
-  public BpmnDeploymentUtilities getBpmnDeploymentUtilities() {
-    return bpmnDeploymentUtilities;
+  public BpmnDeploymentHelper getBpmnDeploymentHelper() {
+    return bpmnDeploymentHelper;
   }
 
-  public void setBpmnDeploymentUtilities(BpmnDeploymentUtilities bpmnDeploymentUtilities) {
-    this.bpmnDeploymentUtilities = bpmnDeploymentUtilities;
+  public ProcessEngineConfigurationImpl setBpmnDeploymentHelper(BpmnDeploymentHelper bpmnDeploymentHelper) {
+    this.bpmnDeploymentHelper = bpmnDeploymentHelper;
+    return this;
   }
 
   public CachingAndArtifactsManager getCachingAndArtifactsManager() {
@@ -2137,12 +2139,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.cachingAndArtifactsManager = cachingAndArtifactsManager;
   }
 
-  public ProcessDefinitionDiagrammer getProcessDefinitionDiagrammer() {
-    return processDefinitionDiagrammer;
+  public ProcessDefinitionDiagramHelper getProcessDefinitionDiagramHelper() {
+    return processDefinitionDiagramHelper;
   }
 
-  public void setProcessDefinitionDiagrammer(ProcessDefinitionDiagrammer processDefinitionDiagrammer) {
-    this.processDefinitionDiagrammer = processDefinitionDiagrammer;
+  public ProcessEngineConfigurationImpl setProcessDefinitionDiagramHelper(ProcessDefinitionDiagramHelper processDefinitionDiagramHelper) {
+    this.processDefinitionDiagramHelper = processDefinitionDiagramHelper;
+    return this;
   }
 
   public List<Deployer> getDeployers() {

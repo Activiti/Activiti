@@ -19,8 +19,12 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtilities;
-import org.activiti.engine.impl.bpmn.deployer.ExpandedDeployment;
+import java.util.List;
+
+import org.activiti.engine.impl.bpmn.deployer.ParsedDeployment;
+import org.activiti.engine.impl.bpmn.deployer.ParsedDeploymentBuilder;
+import org.activiti.engine.impl.bpmn.deployer.ParsedDeploymentBuilderFactory;
+import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
@@ -29,9 +33,8 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
-import java.util.List;
-
-public class ExpandedDeploymentTest extends PluggableActivitiTestCase {
+public class ParsedDeploymentTest extends PluggableActivitiTestCase {
+  
   private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
   private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
   
@@ -40,14 +43,14 @@ public class ExpandedDeploymentTest extends PluggableActivitiTestCase {
   private static final String IDR_PROCESS_XML = aseembleXmlResourceString(
       "<process id='" + ID1_ID + "' name='Insurance Damage Report 1' />",
       "<process id='" + ID2_ID + "' name='Insurance Damager Report 2' />");
-  private static final String IDR_XML_NAME = "idr." + ResourceNameUtilities.BPMN_RESOURCE_SUFFIXES[0];
+  private static final String IDR_XML_NAME = "idr." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
   
   private static final String EN1_ID = "en1";
   private static final String EN2_ID = "en2";
   private static final String EN_PROCESS_XML = aseembleXmlResourceString(
       "<process id='" + EN1_ID + "' name='Expense Note 1' />",
       "<process id='" + EN2_ID + "' name='Expense Note 2' />");
-  private static final String EN_XML_NAME = "en." + ResourceNameUtilities.BPMN_RESOURCE_SUFFIXES[1];
+  private static final String EN_XML_NAME = "en." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[1];
       
   @Override
   public void setUp() {
@@ -62,31 +65,31 @@ public class ExpandedDeploymentTest extends PluggableActivitiTestCase {
   public void testCreateAndQuery() {
     DeploymentEntity entity = assembleUnpersistedDeploymentEntity();
 
-    ExpandedDeployment.BuilderFactory builderFactory = processEngineConfiguration.getExpandedDeploymentBuilderFactory();
-    ExpandedDeployment.Builder builder = builderFactory.getBuilderForDeployment(entity);
-    ExpandedDeployment expanded = builder.build();
+    ParsedDeploymentBuilderFactory builderFactory = processEngineConfiguration.getParsedDeploymentBuilderFactory();
+    ParsedDeploymentBuilder builder = builderFactory.getBuilderForDeployment(entity);
+    ParsedDeployment parsedDeployment = builder.build();
     
-    List<ProcessDefinitionEntity> processDefinitions = expanded.getAllProcessDefinitions();
+    List<ProcessDefinitionEntity> processDefinitions = parsedDeployment.getAllProcessDefinitions();
     
-    assertThat(expanded.getDeployment(), sameInstance(entity));
+    assertThat(parsedDeployment.getDeployment(), sameInstance(entity));
     assertThat(processDefinitions.size(), equalTo(4));
 
     ProcessDefinitionEntity id1 = getProcessDefinitionEntityFromList(processDefinitions, ID1_ID);
     ProcessDefinitionEntity id2 = getProcessDefinitionEntityFromList(processDefinitions, ID2_ID);
-    assertThat(expanded.getBpmnParseForProcessDefinition(id1), 
-        sameInstance(expanded.getBpmnParseForProcessDefinition(id2)));
-    assertThat(expanded.getBpmnModelForProcessDefinition(id1), sameInstance(expanded.getBpmnParseForProcessDefinition(id1).getBpmnModel()));
-    assertThat(expanded.getProcessModelForProcessDefinition(id1), sameInstance(expanded.getBpmnParseForProcessDefinition(id1).getBpmnModel().getProcessById(id1.getKey())));
-    assertThat(expanded.getResourceForProcessDefinition(id1).getName(), equalTo(IDR_XML_NAME));
-    assertThat(expanded.getResourceForProcessDefinition(id2).getName(), equalTo(IDR_XML_NAME));
+    assertThat(parsedDeployment.getBpmnParseForProcessDefinition(id1), 
+        sameInstance(parsedDeployment.getBpmnParseForProcessDefinition(id2)));
+    assertThat(parsedDeployment.getBpmnModelForProcessDefinition(id1), sameInstance(parsedDeployment.getBpmnParseForProcessDefinition(id1).getBpmnModel()));
+    assertThat(parsedDeployment.getProcessModelForProcessDefinition(id1), sameInstance(parsedDeployment.getBpmnParseForProcessDefinition(id1).getBpmnModel().getProcessById(id1.getKey())));
+    assertThat(parsedDeployment.getResourceForProcessDefinition(id1).getName(), equalTo(IDR_XML_NAME));
+    assertThat(parsedDeployment.getResourceForProcessDefinition(id2).getName(), equalTo(IDR_XML_NAME));
     
     ProcessDefinitionEntity en1 = getProcessDefinitionEntityFromList(processDefinitions, EN1_ID);
     ProcessDefinitionEntity en2 = getProcessDefinitionEntityFromList(processDefinitions, EN2_ID);
-    assertThat(expanded.getBpmnParseForProcessDefinition(en1), 
-        sameInstance(expanded.getBpmnParseForProcessDefinition(en2)));
-    assertThat(expanded.getBpmnParseForProcessDefinition(en1), not(equalTo(expanded.getBpmnParseForProcessDefinition(id2))));
-    assertThat(expanded.getResourceForProcessDefinition(en1).getName(), equalTo(EN_XML_NAME));
-    assertThat(expanded.getResourceForProcessDefinition(en2).getName(), equalTo(EN_XML_NAME));
+    assertThat(parsedDeployment.getBpmnParseForProcessDefinition(en1), 
+        sameInstance(parsedDeployment.getBpmnParseForProcessDefinition(en2)));
+    assertThat(parsedDeployment.getBpmnParseForProcessDefinition(en1), not(equalTo(parsedDeployment.getBpmnParseForProcessDefinition(id2))));
+    assertThat(parsedDeployment.getResourceForProcessDefinition(en1).getName(), equalTo(EN_XML_NAME));
+    assertThat(parsedDeployment.getResourceForProcessDefinition(en2).getName(), equalTo(EN_XML_NAME));
   }
   
   private ProcessDefinitionEntity getProcessDefinitionEntityFromList(List<ProcessDefinitionEntity> list, String idString) {

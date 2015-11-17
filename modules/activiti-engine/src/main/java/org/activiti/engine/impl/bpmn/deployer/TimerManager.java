@@ -35,6 +35,7 @@ import java.util.List;
  * Manages timers for newly-deployed process definitions and their previous versions.
  */
 public class TimerManager {
+  
   protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
     List<Job> jobsToDelete = null;
 

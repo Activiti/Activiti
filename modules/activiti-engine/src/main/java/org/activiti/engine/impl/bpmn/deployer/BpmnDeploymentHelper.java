@@ -37,7 +37,8 @@ import java.util.Set;
  * done by orchestrating the different pieces of work this class does; by having them here,
  * we allow other deployers to make use of them.   
  */
-public class BpmnDeploymentUtilities  {
+public class BpmnDeploymentHelper  {
+  
   protected TimerManager timerManager;
   protected EventSubscriptionManager eventSubscriptionManager;
   
@@ -63,20 +64,22 @@ public class BpmnDeploymentUtilities  {
    * Updates all the process definition entities to match the deployment's values for tenant,
    * engine version, and deployment id.
    */
-  public void copyDeploymentValuesToProcessDefinitions(DeploymentEntity deployment,
+  public void copyDeploymentValuesToProcessDefinitions(DeploymentEntity deployment, 
       List<ProcessDefinitionEntity> processDefinitions) {
     String engineVersion = deployment.getEngineVersion();
     String tenantId = deployment.getTenantId();
     String deploymentId = deployment.getId();
 
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      
       // Backwards compatibility
       if (engineVersion != null) {
         processDefinition.setEngineVersion(engineVersion);
       }
 
+      // process definition inherits the tenant id
       if (tenantId != null) {
-        processDefinition.setTenantId(tenantId); // process definition inherits the tenant id
+        processDefinition.setTenantId(tenantId); 
       }
 
       processDefinition.setDeploymentId(deploymentId);
@@ -86,9 +89,9 @@ public class BpmnDeploymentUtilities  {
   /**
    * Updates all the process definition entities to have the correct resource names.
    */
-  public void setResourceNamesOnProcessDefinitions(ExpandedDeployment expandedDeployment) {
-    for (ProcessDefinitionEntity processDefinition : expandedDeployment.getAllProcessDefinitions()) {
-      String resourceName = expandedDeployment.getResourceForProcessDefinition(processDefinition).getName();
+  public void setResourceNamesOnProcessDefinitions(ParsedDeployment parsedDeployment) {
+    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+      String resourceName = parsedDeployment.getResourceForProcessDefinition(processDefinition).getName();
       processDefinition.setResourceName(resourceName);
     }
   }
@@ -101,7 +104,8 @@ public class BpmnDeploymentUtilities  {
   public ProcessDefinitionEntity getMostRecentVersionOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
     String key = processDefinition.getKey();
     String tenantId = processDefinition.getTenantId();
-    ProcessDefinitionEntityManager processDefinitionManager = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
+    ProcessDefinitionEntityManager processDefinitionManager 
+      = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
 
     ProcessDefinitionEntity existingDefinition = null;
 
@@ -126,7 +130,8 @@ public class BpmnDeploymentUtilities  {
       throw new IllegalStateException("Provided process definition must have a deployment id.");
     }
 
-    ProcessDefinitionEntityManager processDefinitionManager = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
+    ProcessDefinitionEntityManager processDefinitionManager 
+      = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
     ProcessDefinitionEntity persistedProcessDefinition = null;
     if (processDefinition.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
       persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
@@ -142,9 +147,10 @@ public class BpmnDeploymentUtilities  {
    * subscriptions and timers, and adds new ones.
    */
   public void updateTimersAndEvents(ProcessDefinitionEntity processDefinition, 
-      ProcessDefinitionEntity previousProcessDefinition, ExpandedDeployment expandedDeployment) {
-    Process process = expandedDeployment.getProcessModelForProcessDefinition(processDefinition);
-    BpmnModel bpmnModel = expandedDeployment.getBpmnModelForProcessDefinition(processDefinition);
+      ProcessDefinitionEntity previousProcessDefinition, ParsedDeployment parsedDeployment) {
+    
+    Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
+    BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
 
     eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(previousProcessDefinition);
     eventSubscriptionManager.addMessageEventSubscriptions(processDefinition, process, bpmnModel);
@@ -169,26 +175,28 @@ public class BpmnDeploymentUtilities  {
     addAuthorizationsFromIterator(commandContext, processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
   }
   
-  private void addAuthorizationsFromIterator(CommandContext commandContext, 
-      Set<Expression> exprSet, 
+  protected void addAuthorizationsFromIterator(CommandContext commandContext, 
+      Set<Expression> expressions, 
       ProcessDefinitionEntity processDefinition, 
-      ExprType exprType) {
-    if (exprSet != null) {
-      Iterator<Expression> iterator = exprSet.iterator();
+      ExprType expressionType) {
+    
+    if (expressions != null) {
+      Iterator<Expression> iterator = expressions.iterator();
       while (iterator.hasNext()) {
         @SuppressWarnings("cast")
         Expression expr = (Expression) iterator.next();
         IdentityLinkEntity identityLink = commandContext.getIdentityLinkEntityManager().create();
         identityLink.setProcessDef(processDefinition);
-        if (exprType.equals(ExprType.USER)) {
+        if (expressionType.equals(ExprType.USER)) {
           identityLink.setUserId(expr.toString());
-        } else if (exprType.equals(ExprType.GROUP)) {
+        } else if (expressionType.equals(ExprType.GROUP)) {
           identityLink.setGroupId(expr.toString());
         }
         identityLink.setType(IdentityLinkType.CANDIDATE);
         commandContext.getIdentityLinkEntityManager().insert(identityLink);
       }
     }
+    
   }
 
   public TimerManager getTimerManager() {
