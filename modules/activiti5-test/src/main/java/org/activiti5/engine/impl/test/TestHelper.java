@@ -20,13 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtil;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -44,6 +42,8 @@ import org.activiti5.engine.test.mock.MockServiceTasks;
 import org.activiti5.engine.test.mock.NoOpServiceTasks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import junit.framework.AssertionFailedError;
 
 
 /**
@@ -209,7 +209,7 @@ public abstract class TestHelper {
    * The first resource matching a suffix will be returned.
    */
   public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
-    for (String suffix : BpmnDeployer.BPMN_RESOURCE_SUFFIXES) {
+    for (String suffix : ResourceNameUtil.BPMN_RESOURCE_SUFFIXES) {
       String resource = type.getName().replace('.', '/') + "." + name + "." + suffix;
       InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
       if (inputStream == null) {
@@ -218,7 +218,7 @@ public abstract class TestHelper {
         return resource;
       }
     }
-    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIXES[0];
+    return type.getName().replace('.', '/') + "." + name + "." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
   }
   
   
