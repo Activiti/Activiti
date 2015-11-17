@@ -195,7 +195,17 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
    *          variable value, cannot be null. The string can include the wildcard character '%' to express like-strategy: starts with (string%), ends with (%string) or contains (%string%).
    */
   ExecutionQuery variableValueLike(String name, String value);
-
+  
+  /** 
+   * Only select executions which have a local variable value like the given value (case insensitive).
+   * This be used on string variables only.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null. The string can include the
+   * wildcard character '%' to express like-strategy: 
+   * starts with (string%), ends with (%string) or contains (%string%).
+   */
+  ExecutionQuery variableValueLikeIgnoreCase(String name, String value);
+  
   /**
    * Only select executions which are part of a process that have a variable with the given name set to the given value. Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported.
@@ -241,7 +251,19 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
    *          value of the variable, cannot be null.
    */
   ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
-
+  
+  /**
+   * Only select executions which are part of a process that have at least one variable like the given value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
+   */
+  ExecutionQuery processVariableValueLike(String name, String value);
+  
+  /**
+   * Only select executions which are part of a process that have at least one variable like the given value (case insensitive).
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
+   */
+  ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value);
+  
   // event subscriptions //////////////////////////////////////////////////
 
   /**

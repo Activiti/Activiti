@@ -252,9 +252,16 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return variableValueEqualsIgnoreCase(name, value, false);
   }
 
-  @Override
   public ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
     return variableValueNotEqualsIgnoreCase(name, value, false);
+  }
+  
+  public ExecutionQuery processVariableValueLike(String name, String value) {
+    return variableValueLike(name, value, false);
+  }
+  
+  public ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value) {
+    return variableValueLikeIgnoreCase(name, value, false);
   }
 
   @Override

@@ -599,7 +599,7 @@
         </if>
       	<if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
           <choose>
-            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">
               and lower(A${index}.TEXT_)
             </when>
             <otherwise>
@@ -607,7 +607,7 @@
             </otherwise>
           </choose>
 	      <choose>
-	        <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+	        <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
   	      #{queryVariableValue.textValue}
@@ -761,7 +761,7 @@
               </if>
               <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
-                  <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+                  <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">
                     and lower(A_OR${orIndex}_${index}.TEXT_)
                   </when>
                   <otherwise>
@@ -769,7 +769,7 @@
                   </otherwise>
                 </choose>
               <choose>
-                <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+                <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
                 <otherwise><include refid="executionVariableOperator" /></otherwise>
               </choose>
                 #{queryVariableValue.textValue}

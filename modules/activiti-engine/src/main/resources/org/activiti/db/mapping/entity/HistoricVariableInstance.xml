@@ -180,7 +180,7 @@
         <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
         and RES.TEXT_
         <choose>
-          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
           <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
           #{queryVariableValue.textValue}
@@ -188,7 +188,7 @@
         <if test="queryVariableValue.textValue2 != null">
         and RES.TEXT2_
         <choose>
-          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
           <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
           #{queryVariableValue.textValue2}

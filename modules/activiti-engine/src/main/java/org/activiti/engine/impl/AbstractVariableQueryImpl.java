@@ -150,7 +150,11 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   public T variableValueLike(String name, String value) {
     return variableValueLike(name, value, true);
   }
-
+  
+  public T variableValueLikeIgnoreCase(String name, String value) {
+    return variableValueLikeIgnoreCase(name, value, true);
+  }
+  
   @SuppressWarnings("unchecked")
   public T variableValueLike(String name, String value, boolean localScope) {
     addVariable(name, value, QueryOperator.LIKE, localScope);
@@ -159,8 +163,8 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   
   @SuppressWarnings("unchecked")
   public T variableValueLikeIgnoreCase(String name, String value, boolean localScope) {
-    addVariable(name, value, QueryOperator.LIKE_IGNORE_CASE, localScope);
-    return (T)this;
+    addVariable(name, value.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, localScope);
+    return (T) this;
   }
   
   private void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
