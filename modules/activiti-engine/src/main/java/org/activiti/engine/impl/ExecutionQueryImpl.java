@@ -12,16 +12,16 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -232,9 +232,16 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return variableValueEqualsIgnoreCase(name, value, false);
   }
 
-  @Override
   public ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
     return variableValueNotEqualsIgnoreCase(name, value, false);
+  }
+  
+  public ExecutionQuery processVariableValueLike(String name, String value) {
+    return variableValueLike(name, value, false);
+  }
+  
+  public ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value) {
+    return variableValueLikeIgnoreCase(name, value, false);
   }
 
   //ordering ////////////////////////////////////////////////////

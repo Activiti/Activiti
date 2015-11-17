@@ -50,6 +50,21 @@ public interface HistoricVariableInstanceQuery extends Query<HistoricVariableIns
    * only select historic process variables with the given name and value
    */
   HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue);
+  
+  /**
+   * only select historic process variables that don't have the given name and value
+   */
+  HistoricVariableInstanceQuery variableValueNotEquals(String variableName, Object variableValue);
+  
+  /**
+   * only select historic process variables like the given name and value
+   */
+  HistoricVariableInstanceQuery variableValueLike(String variableName, String variableValue);
+  
+  /**
+   * only select historic process variables like the given name and value (case insensitive)
+   */
+  HistoricVariableInstanceQuery variableValueLikeIgnoreCase(String variableName, String variableValue);
 
   HistoricVariableInstanceQuery orderByProcessInstanceId();
   
