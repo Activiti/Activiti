@@ -12,12 +12,12 @@
  */
 package org.activiti.engine.runtime;
 
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.query.Query;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.
@@ -216,6 +216,16 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * starts with (string%), ends with (%string) or contains (%string%).
    */
   ProcessInstanceQuery variableValueLike(String name, String value);
+  
+  /** 
+   * Only select process instances which have a global variable value like the given value (case insensitive).
+   * This be used on string variables only.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null. The string can include the
+   * wildcard character '%' to express like-strategy: 
+   * starts with (string%), ends with (%string) or contains (%string%).
+   */
+  ProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value);
   
   /**
    * Only select process instances which are suspended, either because the 

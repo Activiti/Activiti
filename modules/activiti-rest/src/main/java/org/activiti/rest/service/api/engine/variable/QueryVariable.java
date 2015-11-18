@@ -66,6 +66,7 @@ public class QueryVariable {
     EQUALS_IGNORE_CASE("equalsIgnoreCase"),
     NOT_EQUALS_IGNORE_CASE("notEqualsIgnoreCase"),
     LIKE("like"),
+    LIKE_IGNORE_CASE("likeIgnoreCase"),
     GREATER_THAN("greaterThan"),
     GREATER_THAN_OR_EQUALS("greaterThanOrEquals"),
     LESS_THAN("lessThan"),

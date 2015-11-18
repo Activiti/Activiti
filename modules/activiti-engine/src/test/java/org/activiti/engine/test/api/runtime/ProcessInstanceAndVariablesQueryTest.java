@@ -27,6 +27,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
 
   private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
   private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
+  private static String PROCESS_DEFINITION_KEY_3 = "oneTaskProcess3";
   
   private List<String> processInstanceIds;
 
@@ -39,6 +40,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
     repositoryService.createDeployment()
       .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml")
       .deploy();
     
     Map<String, Object> startMap = new HashMap<String, Object>();
@@ -48,9 +50,14 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
     for (int i = 0; i < 4; i++) {
       processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, i + "", startMap).getId());
     }
+    
     startMap.clear();
     startMap.put("anothertest", 123);
     processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_2, "1", startMap).getId());
+    
+    startMap.clear();
+    startMap.put("casetest", "MyCaseTest");
+    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_3, "1", startMap).getId());
   }
 
   protected void tearDown() throws Exception {
@@ -68,7 +75,23 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
     assertEquals(123, variableMap.get("anothertest"));
     
     List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().includeProcessVariables().list();
-    assertEquals(5, instanceList.size());
+    assertEquals(6, instanceList.size());
+    
+    processInstance = runtimeService.createProcessInstanceQuery().includeProcessVariables()
+        .variableValueLike("casetest", "MyCase%").singleResult();
+    variableMap = processInstance.getProcessVariables();
+    assertEquals(1, variableMap.size());
+    assertEquals("MyCaseTest", variableMap.get("casetest"));
+    
+    processInstance = runtimeService.createProcessInstanceQuery().includeProcessVariables()
+        .variableValueLikeIgnoreCase("casetest", "mycase%").singleResult();
+    variableMap = processInstance.getProcessVariables();
+    assertEquals(1, variableMap.size());
+    assertEquals("MyCaseTest", variableMap.get("casetest"));
+    
+    processInstance = runtimeService.createProcessInstanceQuery().includeProcessVariables()
+        .variableValueLikeIgnoreCase("casetest", "mycase2%").singleResult();
+    assertNull(processInstance);
     
     instanceList = runtimeService.createProcessInstanceQuery().includeProcessVariables().processDefinitionKey(PROCESS_DEFINITION_KEY).list();
     assertEquals(4, instanceList.size());
