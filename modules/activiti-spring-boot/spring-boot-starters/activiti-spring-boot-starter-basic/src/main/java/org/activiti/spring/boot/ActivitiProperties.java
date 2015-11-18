@@ -12,6 +12,7 @@
  */
 package org.activiti.spring.boot;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -39,7 +40,7 @@ public class ActivitiProperties {
   private String databaseSchemaUpdate = "true";
   private String databaseSchema;
   private String processDefinitionLocationPrefix = "classpath:/processes/";
-  private String processDefinitionLocationSuffix = "**.bpmn20.xml";
+  private List<String> processDefinitionLocationSuffixes = Arrays.asList("**.bpmn20.xml", "**.bpmn");
   private String restApiMapping = "/api/*";
   private String restApiServletName = "activitiRestApi";
   private boolean jpaEnabled = true; // true by default
@@ -143,16 +144,16 @@ public class ActivitiProperties {
     this.processDefinitionLocationPrefix = processDefinitionLocationPrefix;
   }
 
-  public String getProcessDefinitionLocationSuffix() {
-    return processDefinitionLocationSuffix;
-  }
+  public List<String> getProcessDefinitionLocationSuffixes() {
+		return processDefinitionLocationSuffixes;
+	}
 
-  public void setProcessDefinitionLocationSuffix(
-      String processDefinitionLocationSuffix) {
-    this.processDefinitionLocationSuffix = processDefinitionLocationSuffix;
-  }
+	public void setProcessDefinitionLocationSuffixes(
+	    List<String> processDefinitionLocationSuffixes) {
+		this.processDefinitionLocationSuffixes = processDefinitionLocationSuffixes;
+	}
 
-  public String getMailServerHost() {
+	public String getMailServerHost() {
     return mailServerHost;
   }
 
