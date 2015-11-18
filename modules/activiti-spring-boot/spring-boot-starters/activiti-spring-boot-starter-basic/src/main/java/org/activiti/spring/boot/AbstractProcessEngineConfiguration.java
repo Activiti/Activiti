@@ -14,7 +14,6 @@ package org.activiti.spring.boot;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -35,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.util.Assert;
 
 /**
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
@@ -73,15 +71,25 @@ public abstract class AbstractProcessEngineConfiguration {
     return engine;
   }
 
-  public List<Resource> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext, String prefix, String suffix, boolean checkPDs) throws IOException {
-    String path = prefix + suffix;
+  public List<Resource> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext, String prefix, List<String> suffixes, boolean checkPDs) throws IOException {
     if (checkPDs) {
-    	if (!applicationContext.getResource(prefix).exists()) {
-    		logger.warn(String.format("No process definitions were found using the specified path (%s).", path));
-    		return new ArrayList<Resource>();
-    	}
 
-      return Arrays.asList(applicationContext.getResources(path));
+    	List<Resource> result = new ArrayList<Resource>();
+    	for (String suffix : suffixes) {
+    		String path = prefix + suffix;
+    		Resource[] resources = applicationContext.getResources(path);
+    		if (resources != null && resources.length > 0) {
+    			for (Resource resource : resources) {
+    				result.add(resource);
+    			}
+    		}
+    	}
+    	
+    	if (result.isEmpty()) {
+      	logger.info(String.format("No process definitions were found for autodeployment"));
+    	}
+    	
+      return result;
     }
     return new ArrayList<Resource>();
   }

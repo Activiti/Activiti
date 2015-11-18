@@ -30,6 +30,7 @@ public class ProcessEngineAutoConfigurationTest {
                 DataSourceAutoConfiguration.class, DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class);
         RepositoryService repositoryService = applicationContext.getBean(RepositoryService.class);
         Assert.assertNotNull("we should have a default repositoryService included", repositoryService);
+        Assert.assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
         List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey("waiter")
                 .list();

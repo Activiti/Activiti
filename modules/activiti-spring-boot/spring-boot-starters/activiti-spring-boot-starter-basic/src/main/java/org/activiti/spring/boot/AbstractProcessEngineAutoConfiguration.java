@@ -73,7 +73,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
 
     List<Resource> procDefResources = this.discoverProcessDefinitionResources(
         this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
-        this.activitiProperties.getProcessDefinitionLocationSuffix(),
+        this.activitiProperties.getProcessDefinitionLocationSuffixes(),
         this.activitiProperties.isCheckProcessDefinitions());
 
     SpringProcessEngineConfiguration conf = super.processEngineConfigurationBean(
