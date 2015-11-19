@@ -130,6 +130,19 @@ public class HistoricProcessInstanceQueryResourceTest extends BaseSpringRestTest
     variableNode.put("operation", "equals");
     assertResultsPresentInPostDataResponse(url, requestNode);
     
+    // String like ignore case
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "azerty");
+    variableNode.put("operation", "likeIgnoreCase");
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "azerty2");
+    variableNode.put("operation", "likeIgnoreCase");
+    assertResultsPresentInPostDataResponse(url, requestNode);
+    
     requestNode = objectMapper.createObjectNode();
     requestNode.put("finished", true);
     assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());

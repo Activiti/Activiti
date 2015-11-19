@@ -750,6 +750,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
+  
+  public TaskQuery taskVariableValueLikeIgnoreCase(String name, String value) {
+    if(orActive) {
+      currentOrQueryObject.variableValueLikeIgnoreCase(name, value);
+    } else {
+      this.variableValueLikeIgnoreCase(name, value);
+    }
+    return this;
+  }
 
   public TaskQuery processVariableValueEquals(String variableName, Object variableValue) {
     if(orActive) {
@@ -837,6 +846,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       currentOrQueryObject.variableValueLike(name, value, false);
     } else {
       this.variableValueLike(name, value, false);
+    }
+    return this;
+  }
+  
+  public TaskQuery processVariableValueLikeIgnoreCase(String name, String value) {
+    if(orActive) {
+      currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
+    } else {
+      this.variableValueLikeIgnoreCase(name, value, false);
     }
     return this;
   }

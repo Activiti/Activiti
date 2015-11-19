@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.19.0</version>
+  <version>5.20.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
@@ -776,6 +776,7 @@
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
         <module>modules/activiti-crystalball</module>
+        <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
       <build>
         <plugins>
@@ -930,6 +931,7 @@
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-crystalball</module>
         <module>modules/activiti-jmx</module>
+        <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
 	<build>
 		<plugins>

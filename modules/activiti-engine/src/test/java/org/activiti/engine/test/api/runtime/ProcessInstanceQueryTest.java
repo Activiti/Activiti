@@ -12,6 +12,18 @@
  */
 package org.activiti.engine.test.api.runtime;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -21,9 +33,6 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.Deployment;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * @author Joram Barrez
@@ -1575,6 +1584,47 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testQueryLikeIgnoreCase() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("mixed", "AbCdEfG");
+    vars.put("upper", "ABCDEFG");
+    vars.put("lower", "abcdefg");
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    
+    ProcessInstance instance = runtimeService.createProcessInstanceQuery().variableValueLikeIgnoreCase("mixed", "abcd%").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    instance = runtimeService.createProcessInstanceQuery().variableValueLikeIgnoreCase("lower", "abcde%").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    instance = runtimeService.createProcessInstanceQuery().variableValueLikeIgnoreCase("upper", "abcd%").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    // Pass in non-lower-case string
+    instance = runtimeService.createProcessInstanceQuery().variableValueLikeIgnoreCase("upper", "ABCde%").singleResult();
+    assertNotNull(instance);
+    assertEquals(processInstance1.getId(), instance.getId());
+    
+    // Pass in null-value, should cause exception
+    try {
+      runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
+      fail("Exception expected");
+    } catch(ActivitiIllegalArgumentException ae) {
+      assertEquals("value is null", ae.getMessage());
+    }
+    
+    // Pass in null name, should cause exception
+    try {
+      runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
+      fail("Exception expected");
+    } catch(ActivitiIllegalArgumentException ae) {
+      assertEquals("name is null", ae.getMessage());
+    }
+  }
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})

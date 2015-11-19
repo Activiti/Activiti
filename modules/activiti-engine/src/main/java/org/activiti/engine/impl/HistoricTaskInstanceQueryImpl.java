@@ -682,6 +682,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       return variableValueLike(name, value);
     }
   }
+  
+  public HistoricTaskInstanceQuery taskVariableValueLikeIgnoreCase(String name, String value) {
+    if (inOrStatement) {
+      currentOrQueryObject.variableValueLikeIgnoreCase(name, value, true);
+      return this;
+    } else {
+      return variableValueLikeIgnoreCase(name, value, true);
+    }
+  }
 
   public HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
@@ -770,6 +779,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       return this;
     } else {
       return variableValueLike(name, value, false);
+    }
+  }
+  
+  public HistoricTaskInstanceQuery processVariableValueLikeIgnoreCase(String name, String value) {
+    if (inOrStatement) {
+      currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
+      return this;
+    } else {
+      return variableValueLikeIgnoreCase(name, value, false);
     }
   }
   
