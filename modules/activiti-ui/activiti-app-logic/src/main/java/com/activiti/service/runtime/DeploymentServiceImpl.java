@@ -333,7 +333,7 @@ public class DeploymentServiceImpl implements DeploymentService {
             }
         }
         
-        if (StringUtils.isEmpty(formKey)) {
+        if (StringUtils.isEmpty(finalFormKey)) {
             finalFormKey = formKey;
         }
         
