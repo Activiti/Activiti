@@ -15,7 +15,6 @@ import java.util.Set;
 )
 public class User implements java.io.Serializable {
 
-
     private String id;
     private Integer rev;
     private String first;
@@ -27,7 +26,6 @@ public class User implements java.io.Serializable {
 
     public User() {
     }
-
 
     public User(String id) {
         this.id = id;
@@ -45,7 +43,6 @@ public class User implements java.io.Serializable {
     }
 
     @Id
-
     @Column(name = "id_", unique = true, nullable = false, length = 64)
     public String getId() {
         return this.id;
@@ -120,8 +117,6 @@ public class User implements java.io.Serializable {
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
-
-
 }
 
 

@@ -13,7 +13,6 @@ import javax.persistence.*;
 )
 public class VariableInstance implements java.io.Serializable {
 
-
     private String id;
     private Execution executionByExecutionId;
     private ByteArray byteArray;
@@ -29,7 +28,6 @@ public class VariableInstance implements java.io.Serializable {
 
     public VariableInstance() {
     }
-
 
     public VariableInstance(String id, String type, String name) {
         this.id = id;
@@ -53,7 +51,6 @@ public class VariableInstance implements java.io.Serializable {
     }
 
     @Id
-
     @Column(name = "id_", unique = true, nullable = false, length = 64)
     public String getId() {
         return this.id;
@@ -164,8 +161,6 @@ public class VariableInstance implements java.io.Serializable {
     public void setText2(String text2) {
         this.text2 = text2;
     }
-
-
 }
 
 

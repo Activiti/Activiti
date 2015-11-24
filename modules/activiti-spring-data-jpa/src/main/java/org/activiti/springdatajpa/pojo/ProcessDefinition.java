@@ -16,7 +16,6 @@ import java.util.Set;
 )
 public class ProcessDefinition implements java.io.Serializable {
 
-
     private String id;
     private Integer rev;
     private String category;
@@ -38,7 +37,6 @@ public class ProcessDefinition implements java.io.Serializable {
 
     public ProcessDefinition() {
     }
-
 
     public ProcessDefinition(String id, String key, int version) {
         this.id = id;
@@ -68,7 +66,6 @@ public class ProcessDefinition implements java.io.Serializable {
     }
 
     @Id
-
     @Column(name = "id_", unique = true, nullable = false, length = 64)
     public String getId() {
         return this.id;
@@ -230,8 +227,6 @@ public class ProcessDefinition implements java.io.Serializable {
     public void setIdentityLinks(Set<IdentityLink> identityLinks) {
         this.identityLinks = identityLinks;
     }
-
-
 }
 
 

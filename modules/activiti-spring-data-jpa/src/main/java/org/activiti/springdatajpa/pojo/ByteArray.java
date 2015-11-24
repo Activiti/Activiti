@@ -13,7 +13,6 @@ import java.util.Set;
 @Table(name = "act_ge_bytearray")
 public class ByteArray implements java.io.Serializable {
 
-
     private String id;
     private Deployment deployment;
     private Integer rev;
@@ -28,7 +27,6 @@ public class ByteArray implements java.io.Serializable {
 
     public ByteArray() {
     }
-
 
     public ByteArray(String id) {
         this.id = id;
@@ -49,7 +47,6 @@ public class ByteArray implements java.io.Serializable {
     }
 
     @Id
-
     @Column(name = "id_", unique = true, nullable = false, length = 64)
     public String getId() {
         return this.id;
@@ -149,8 +146,6 @@ public class ByteArray implements java.io.Serializable {
     public void setVariableInstances(Set<VariableInstance> variableInstances) {
         this.variableInstances = variableInstances;
     }
-
-
 }
 
 

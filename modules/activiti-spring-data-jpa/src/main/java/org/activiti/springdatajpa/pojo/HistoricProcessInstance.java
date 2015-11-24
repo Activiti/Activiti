@@ -15,7 +15,6 @@ import java.util.Date;
 )
 public class HistoricProcessInstance implements java.io.Serializable {
 
-
     private String id;
     private String processInstanceId;
     private String businessKey;
@@ -33,7 +32,6 @@ public class HistoricProcessInstance implements java.io.Serializable {
 
     public HistoricProcessInstance() {
     }
-
 
     public HistoricProcessInstance(String id, String processInstanceId, String processDefinitionId, Date startTime) {
         this.id = id;
@@ -187,8 +185,6 @@ public class HistoricProcessInstance implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }
 
 

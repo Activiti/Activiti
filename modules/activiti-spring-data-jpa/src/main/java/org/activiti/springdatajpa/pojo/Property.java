@@ -14,14 +14,12 @@ import javax.persistence.Table;
 @Table(name = "act_ge_property")
 public class Property implements java.io.Serializable {
 
-
     private String name;
     private String value;
     private Integer rev;
 
     public Property() {
     }
-
 
     public Property(String name) {
         this.name = name;
@@ -34,7 +32,6 @@ public class Property implements java.io.Serializable {
     }
 
     @Id
-
     @Column(name = "name_", unique = true, nullable = false, length = 64)
     public String getName() {
         return this.name;
@@ -61,8 +58,6 @@ public class Property implements java.io.Serializable {
     public void setRev(Integer rev) {
         this.rev = rev;
     }
-
-
 }
 
 

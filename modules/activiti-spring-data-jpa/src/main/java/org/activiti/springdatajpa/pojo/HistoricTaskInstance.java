@@ -12,7 +12,6 @@ import java.util.Date;
 @Table(name = "act_hi_taskinst")
 public class HistoricTaskInstance implements java.io.Serializable {
 
-
     private String id;
     private String processDefinitionId;
     private String taskDefinitionKey;
@@ -36,7 +35,6 @@ public class HistoricTaskInstance implements java.io.Serializable {
 
     public HistoricTaskInstance() {
     }
-
 
     public HistoricTaskInstance(String id, Date startTime) {
         this.id = id;
@@ -250,8 +248,6 @@ public class HistoricTaskInstance implements java.io.Serializable {
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
-
-
 }
 
 

@@ -30,7 +30,6 @@ public class HistoricActivityInstance implements java.io.Serializable {
     public HistoricActivityInstance() {
     }
 
-
     public HistoricActivityInstance(String id, String procDefId, String procInstId, String executionId, String actId, String actType, Date startTime) {
         this.id = id;
         this.procDefId = procDefId;
@@ -59,7 +58,6 @@ public class HistoricActivityInstance implements java.io.Serializable {
     }
 
     @Id
-
     @Column(name = "id_", unique = true, nullable = false, length = 64)
     public String getId() {
         return this.id;
