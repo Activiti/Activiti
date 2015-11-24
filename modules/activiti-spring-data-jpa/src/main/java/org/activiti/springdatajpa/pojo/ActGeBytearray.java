@@ -15,16 +15,16 @@ public class ActGeBytearray implements java.io.Serializable {
 
 
     private String id;
-    private ActReDeployment actReDeployment;
+    private Deployment deployment;
     private Integer rev;
     private String name;
     private byte[] bytes;
     private Boolean generated;
-    private Set<ActReModel> actReModelsForEditorSourceValueId = new HashSet<ActReModel>(0);
-    private Set<ActRuJob> actRuJobs = new HashSet<ActRuJob>(0);
-    private Set<ActProcdefInfo> actProcdefInfos = new HashSet<ActProcdefInfo>(0);
-    private Set<ActReModel> actReModelsForEditorSourceExtraValueId = new HashSet<ActReModel>(0);
-    private Set<ActRuVariable> actRuVariables = new HashSet<ActRuVariable>(0);
+    private Set<Model> modelsForEditorSourceValueId = new HashSet<Model>(0);
+    private Set<Job> jobs = new HashSet<Job>(0);
+    private Set<ProcessDefinitionInfo> processDefinitionInfos = new HashSet<ProcessDefinitionInfo>(0);
+    private Set<Model> modelsForEditorSourceExtraValueId = new HashSet<Model>(0);
+    private Set<VariableInstance> variableInstances = new HashSet<VariableInstance>(0);
 
     public ActGeBytearray() {
     }
@@ -34,18 +34,18 @@ public class ActGeBytearray implements java.io.Serializable {
         this.id = id;
     }
 
-    public ActGeBytearray(String id, ActReDeployment actReDeployment, Integer rev, String name, byte[] bytes, Boolean generated, Set<ActReModel> actReModelsForEditorSourceValueId, Set<ActRuJob> actRuJobs, Set<ActProcdefInfo> actProcdefInfos, Set<ActReModel> actReModelsForEditorSourceExtraValueId, Set<ActRuVariable> actRuVariables) {
+    public ActGeBytearray(String id, Deployment deployment, Integer rev, String name, byte[] bytes, Boolean generated, Set<Model> modelsForEditorSourceValueId, Set<Job> jobs, Set<ProcessDefinitionInfo> processDefinitionInfos, Set<Model> modelsForEditorSourceExtraValueId, Set<VariableInstance> variableInstances) {
         this.id = id;
-        this.actReDeployment = actReDeployment;
+        this.deployment = deployment;
         this.rev = rev;
         this.name = name;
         this.bytes = bytes;
         this.generated = generated;
-        this.actReModelsForEditorSourceValueId = actReModelsForEditorSourceValueId;
-        this.actRuJobs = actRuJobs;
-        this.actProcdefInfos = actProcdefInfos;
-        this.actReModelsForEditorSourceExtraValueId = actReModelsForEditorSourceExtraValueId;
-        this.actRuVariables = actRuVariables;
+        this.modelsForEditorSourceValueId = modelsForEditorSourceValueId;
+        this.jobs = jobs;
+        this.processDefinitionInfos = processDefinitionInfos;
+        this.modelsForEditorSourceExtraValueId = modelsForEditorSourceExtraValueId;
+        this.variableInstances = variableInstances;
     }
 
     @Id
@@ -61,12 +61,12 @@ public class ActGeBytearray implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deployment_id_")
-    public ActReDeployment getActReDeployment() {
-        return this.actReDeployment;
+    public Deployment getDeployment() {
+        return this.deployment;
     }
 
-    public void setActReDeployment(ActReDeployment actReDeployment) {
-        this.actReDeployment = actReDeployment;
+    public void setDeployment(Deployment deployment) {
+        this.deployment = deployment;
     }
 
     @Column(name = "rev_")
@@ -106,48 +106,48 @@ public class ActGeBytearray implements java.io.Serializable {
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actGeBytearrayByEditorSourceValueId")
-    public Set<ActReModel> getActReModelsForEditorSourceValueId() {
-        return this.actReModelsForEditorSourceValueId;
+    public Set<Model> getModelsForEditorSourceValueId() {
+        return this.modelsForEditorSourceValueId;
     }
 
-    public void setActReModelsForEditorSourceValueId(Set<ActReModel> actReModelsForEditorSourceValueId) {
-        this.actReModelsForEditorSourceValueId = actReModelsForEditorSourceValueId;
-    }
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actGeBytearray")
-    public Set<ActRuJob> getActRuJobs() {
-        return this.actRuJobs;
-    }
-
-    public void setActRuJobs(Set<ActRuJob> actRuJobs) {
-        this.actRuJobs = actRuJobs;
+    public void setModelsForEditorSourceValueId(Set<Model> modelsForEditorSourceValueId) {
+        this.modelsForEditorSourceValueId = modelsForEditorSourceValueId;
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actGeBytearray")
-    public Set<ActProcdefInfo> getActProcdefInfos() {
-        return this.actProcdefInfos;
+    public Set<Job> getJobs() {
+        return this.jobs;
     }
 
-    public void setActProcdefInfos(Set<ActProcdefInfo> actProcdefInfos) {
-        this.actProcdefInfos = actProcdefInfos;
+    public void setJobs(Set<Job> jobs) {
+        this.jobs = jobs;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actGeBytearray")
+    public Set<ProcessDefinitionInfo> getProcessDefinitionInfos() {
+        return this.processDefinitionInfos;
+    }
+
+    public void setProcessDefinitionInfos(Set<ProcessDefinitionInfo> processDefinitionInfos) {
+        this.processDefinitionInfos = processDefinitionInfos;
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actGeBytearrayByEditorSourceExtraValueId")
-    public Set<ActReModel> getActReModelsForEditorSourceExtraValueId() {
-        return this.actReModelsForEditorSourceExtraValueId;
+    public Set<Model> getModelsForEditorSourceExtraValueId() {
+        return this.modelsForEditorSourceExtraValueId;
     }
 
-    public void setActReModelsForEditorSourceExtraValueId(Set<ActReModel> actReModelsForEditorSourceExtraValueId) {
-        this.actReModelsForEditorSourceExtraValueId = actReModelsForEditorSourceExtraValueId;
+    public void setModelsForEditorSourceExtraValueId(Set<Model> modelsForEditorSourceExtraValueId) {
+        this.modelsForEditorSourceExtraValueId = modelsForEditorSourceExtraValueId;
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actGeBytearray")
-    public Set<ActRuVariable> getActRuVariables() {
-        return this.actRuVariables;
+    public Set<VariableInstance> getVariableInstances() {
+        return this.variableInstances;
     }
 
-    public void setActRuVariables(Set<ActRuVariable> actRuVariables) {
-        this.actRuVariables = actRuVariables;
+    public void setVariableInstances(Set<VariableInstance> variableInstances) {
+        this.variableInstances = variableInstances;
     }
 
 

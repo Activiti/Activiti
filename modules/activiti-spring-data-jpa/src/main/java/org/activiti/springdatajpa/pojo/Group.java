@@ -20,7 +20,7 @@ public class Group implements java.io.Serializable {
     private Integer rev;
     private String name;
     private String type;
-    private Set<ActIdUser> actIdUsers = new HashSet<ActIdUser>(0);
+    private Set<User> users = new HashSet<User>(0);
 
     public Group() {
     }
@@ -30,12 +30,12 @@ public class Group implements java.io.Serializable {
         this.id = id;
     }
 
-    public Group(String id, Integer rev, String name, String type, Set<ActIdUser> actIdUsers) {
+    public Group(String id, Integer rev, String name, String type, Set<User> users) {
         this.id = id;
         this.rev = rev;
         this.name = name;
         this.type = type;
-        this.actIdUsers = actIdUsers;
+        this.users = users;
     }
 
     @Id
@@ -80,12 +80,12 @@ public class Group implements java.io.Serializable {
     @JoinTable(name = "act_id_membership", schema = "public", joinColumns = {
             @JoinColumn(name = "group_id_", nullable = false, updatable = false)}, inverseJoinColumns = {
             @JoinColumn(name = "user_id_", nullable = false, updatable = false)})
-    public Set<ActIdUser> getActIdUsers() {
-        return this.actIdUsers;
+    public Set<User> getUsers() {
+        return this.users;
     }
 
-    public void setActIdUsers(Set<ActIdUser> actIdUsers) {
-        this.actIdUsers = actIdUsers;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
 
