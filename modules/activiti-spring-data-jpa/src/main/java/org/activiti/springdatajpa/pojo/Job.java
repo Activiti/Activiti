@@ -13,7 +13,7 @@ import java.util.Date;
 public class Job implements java.io.Serializable {
 
     private String id;
-    private ActGeBytearray actGeBytearray;
+    private ByteArray byteArray;
     private Integer rev;
     private String type;
     private Date lockExpTime;
@@ -39,9 +39,9 @@ public class Job implements java.io.Serializable {
         this.type = type;
     }
 
-    public Job(String id, ActGeBytearray actGeBytearray, Integer rev, String type, Date lockExpTime, String lockOwner, Boolean exclusive, String executionId, String processInstanceId, String procDefId, Integer retries, String exceptionMsg, Date duedate, String repeat, String handlerType, String handlerCfg, String tenantId) {
+    public Job(String id, ByteArray byteArray, Integer rev, String type, Date lockExpTime, String lockOwner, Boolean exclusive, String executionId, String processInstanceId, String procDefId, Integer retries, String exceptionMsg, Date duedate, String repeat, String handlerType, String handlerCfg, String tenantId) {
         this.id = id;
-        this.actGeBytearray = actGeBytearray;
+        this.byteArray = byteArray;
         this.rev = rev;
         this.type = type;
         this.lockExpTime = lockExpTime;
@@ -72,12 +72,12 @@ public class Job implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exception_stack_id_")
-    public ActGeBytearray getActGeBytearray() {
-        return this.actGeBytearray;
+    public ByteArray getByteArray() {
+        return this.byteArray;
     }
 
-    public void setActGeBytearray(ActGeBytearray actGeBytearray) {
-        this.actGeBytearray = actGeBytearray;
+    public void setByteArray(ByteArray byteArray) {
+        this.byteArray = byteArray;
     }
 
     @Column(name = "rev_")

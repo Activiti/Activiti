@@ -23,7 +23,7 @@ public class Deployment implements java.io.Serializable {
     private String tenantId;
     private Date deployTime;
     private Set<Model> models = new HashSet<Model>(0);
-    private Set<ActGeBytearray> actGeBytearraies = new HashSet<ActGeBytearray>(0);
+    private Set<ByteArray> actGeBytearraies = new HashSet<ByteArray>(0);
 
     public Deployment() {
     }
@@ -33,7 +33,7 @@ public class Deployment implements java.io.Serializable {
         this.id = id;
     }
 
-    public Deployment(String id, String name, String category, String tenantId, Date deployTime, Set<Model> models, Set<ActGeBytearray> actGeBytearraies) {
+    public Deployment(String id, String name, String category, String tenantId, Date deployTime, Set<Model> models, Set<ByteArray> actGeBytearraies) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -101,11 +101,11 @@ public class Deployment implements java.io.Serializable {
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actReDeployment")
-    public Set<ActGeBytearray> getActGeBytearraies() {
+    public Set<ByteArray> getActGeBytearraies() {
         return this.actGeBytearraies;
     }
 
-    public void setActGeBytearraies(Set<ActGeBytearray> actGeBytearraies) {
+    public void setActGeBytearraies(Set<ByteArray> actGeBytearraies) {
         this.actGeBytearraies = actGeBytearraies;
     }
 

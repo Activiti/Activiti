@@ -16,9 +16,9 @@ public class Model implements java.io.Serializable {
 
 
     private String id;
-    private ActGeBytearray actGeBytearrayByEditorSourceValueId;
+    private ByteArray byteArrayByEditorSourceValueId;
     private Deployment deployment;
-    private ActGeBytearray actGeBytearrayByEditorSourceExtraValueId;
+    private ByteArray byteArrayByEditorSourceExtraValueId;
     private Integer rev;
     private String name;
     private String key;
@@ -37,11 +37,11 @@ public class Model implements java.io.Serializable {
         this.id = id;
     }
 
-    public Model(String id, ActGeBytearray actGeBytearrayByEditorSourceValueId, Deployment deployment, ActGeBytearray actGeBytearrayByEditorSourceExtraValueId, Integer rev, String name, String key, String category, Date createTime, Date lastUpdateTime, Integer version, String metaInfo, String tenantId) {
+    public Model(String id, ByteArray byteArrayByEditorSourceValueId, Deployment deployment, ByteArray byteArrayByEditorSourceExtraValueId, Integer rev, String name, String key, String category, Date createTime, Date lastUpdateTime, Integer version, String metaInfo, String tenantId) {
         this.id = id;
-        this.actGeBytearrayByEditorSourceValueId = actGeBytearrayByEditorSourceValueId;
+        this.byteArrayByEditorSourceValueId = byteArrayByEditorSourceValueId;
         this.deployment = deployment;
-        this.actGeBytearrayByEditorSourceExtraValueId = actGeBytearrayByEditorSourceExtraValueId;
+        this.byteArrayByEditorSourceExtraValueId = byteArrayByEditorSourceExtraValueId;
         this.rev = rev;
         this.name = name;
         this.key = key;
@@ -66,12 +66,12 @@ public class Model implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "editor_source_value_id_")
-    public ActGeBytearray getActGeBytearrayByEditorSourceValueId() {
-        return this.actGeBytearrayByEditorSourceValueId;
+    public ByteArray getByteArrayByEditorSourceValueId() {
+        return this.byteArrayByEditorSourceValueId;
     }
 
-    public void setActGeBytearrayByEditorSourceValueId(ActGeBytearray actGeBytearrayByEditorSourceValueId) {
-        this.actGeBytearrayByEditorSourceValueId = actGeBytearrayByEditorSourceValueId;
+    public void setByteArrayByEditorSourceValueId(ByteArray byteArrayByEditorSourceValueId) {
+        this.byteArrayByEditorSourceValueId = byteArrayByEditorSourceValueId;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -86,12 +86,12 @@ public class Model implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "editor_source_extra_value_id_")
-    public ActGeBytearray getActGeBytearrayByEditorSourceExtraValueId() {
-        return this.actGeBytearrayByEditorSourceExtraValueId;
+    public ByteArray getByteArrayByEditorSourceExtraValueId() {
+        return this.byteArrayByEditorSourceExtraValueId;
     }
 
-    public void setActGeBytearrayByEditorSourceExtraValueId(ActGeBytearray actGeBytearrayByEditorSourceExtraValueId) {
-        this.actGeBytearrayByEditorSourceExtraValueId = actGeBytearrayByEditorSourceExtraValueId;
+    public void setByteArrayByEditorSourceExtraValueId(ByteArray byteArrayByEditorSourceExtraValueId) {
+        this.byteArrayByEditorSourceExtraValueId = byteArrayByEditorSourceExtraValueId;
     }
 
     @Column(name = "rev_")

@@ -15,7 +15,7 @@ public class ProcessDefinitionInfo implements java.io.Serializable {
 
     private String id;
     private ProcessDefinition processDefinition;
-    private ActGeBytearray actGeBytearray;
+    private ByteArray byteArray;
     private Integer rev;
 
     public ProcessDefinitionInfo() {
@@ -26,10 +26,10 @@ public class ProcessDefinitionInfo implements java.io.Serializable {
         this.processDefinition = processDefinition;
     }
 
-    public ProcessDefinitionInfo(String id, ProcessDefinition processDefinition, ActGeBytearray actGeBytearray, Integer rev) {
+    public ProcessDefinitionInfo(String id, ProcessDefinition processDefinition, ByteArray byteArray, Integer rev) {
         this.id = id;
         this.processDefinition = processDefinition;
-        this.actGeBytearray = actGeBytearray;
+        this.byteArray = byteArray;
         this.rev = rev;
     }
 
@@ -55,12 +55,12 @@ public class ProcessDefinitionInfo implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "info_json_id_")
-    public ActGeBytearray getActGeBytearray() {
-        return this.actGeBytearray;
+    public ByteArray getByteArray() {
+        return this.byteArray;
     }
 
-    public void setActGeBytearray(ActGeBytearray actGeBytearray) {
-        this.actGeBytearray = actGeBytearray;
+    public void setByteArray(ByteArray byteArray) {
+        this.byteArray = byteArray;
     }
 
     @Column(name = "rev_")

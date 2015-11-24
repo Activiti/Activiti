@@ -16,7 +16,7 @@ public class VariableInstance implements java.io.Serializable {
 
     private String id;
     private Execution executionByExecutionId;
-    private ActGeBytearray actGeBytearray;
+    private ByteArray byteArray;
     private Execution executionByProcInstId;
     private Integer rev;
     private String type;
@@ -37,10 +37,10 @@ public class VariableInstance implements java.io.Serializable {
         this.name = name;
     }
 
-    public VariableInstance(String id, Execution executionByExecutionId, ActGeBytearray actGeBytearray, Execution executionByProcInstId, Integer rev, String type, String name, String taskId, Double double_, Long long_, String text, String text2) {
+    public VariableInstance(String id, Execution executionByExecutionId, ByteArray byteArray, Execution executionByProcInstId, Integer rev, String type, String name, String taskId, Double double_, Long long_, String text, String text2) {
         this.id = id;
         this.executionByExecutionId = executionByExecutionId;
-        this.actGeBytearray = actGeBytearray;
+        this.byteArray = byteArray;
         this.executionByProcInstId = executionByProcInstId;
         this.rev = rev;
         this.type = type;
@@ -75,12 +75,12 @@ public class VariableInstance implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bytearray_id_")
-    public ActGeBytearray getActGeBytearray() {
-        return this.actGeBytearray;
+    public ByteArray getByteArray() {
+        return this.byteArray;
     }
 
-    public void setActGeBytearray(ActGeBytearray actGeBytearray) {
-        this.actGeBytearray = actGeBytearray;
+    public void setByteArray(ByteArray byteArray) {
+        this.byteArray = byteArray;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
