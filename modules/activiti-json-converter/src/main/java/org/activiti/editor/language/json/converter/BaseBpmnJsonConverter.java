@@ -419,7 +419,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 ArrayNode valuesNode = objectMapper.createArrayNode();
                 for (FormValue formValue : property.getFormValues()) {
                     ObjectNode valueNode = objectMapper.createObjectNode();
-                    valueNode.put("value", formValue.getName());
+                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_NAME, formValue.getName());
+                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_ID, formValue.getId());
                     valuesNode.add(valueNode);
                 }
                 propertyItemNode.put(PROPERTY_FORM_ENUM_VALUES, valuesNode);
@@ -522,10 +523,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                             if (enumValuesNode != null) {
                                 List<FormValue> formValueList = new ArrayList<FormValue>();
                                 for (JsonNode enumNode : enumValuesNode) {
-                                    if (enumNode.get("value") != null && enumNode.get("value").isNull() == false) {
+                                    if (enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME) != null && enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).isNull() == false) {
                                         FormValue formValue = new FormValue();
-                                        formValue.setId(enumNode.get("value").asText());
-                                        formValue.setName(enumNode.get("value").asText());
+                                        formValue.setId(enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).asText());
+                                        formValue.setName(enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).asText());
                                         formValueList.add(formValue);
                                     }
                                 }
