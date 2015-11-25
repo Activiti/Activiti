@@ -77,7 +77,7 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
     ScriptTask scriptTask = (ScriptTask) element;
     if (StringUtils.isNotEmpty(scriptTask.getScript())) {
       xtw.writeStartElement(ATTRIBUTE_TASK_SCRIPT_TEXT);
-      xtw.writeCharacters(scriptTask.getScript());
+      xtw.writeCData(scriptTask.getScript());
       xtw.writeEndElement();
     }
   }
