@@ -216,6 +216,7 @@ public interface StencilConstants {
   final String PROPERTY_MULETASK_PAYLOAD_EXPRESSION= "muletaskpayloadexpression";
   final String PROPERTY_MULETASK_RESULT_VARIABLE= "muletaskresultvariable";
 
+  final String PROPERTY_SEQUENCEFLOW_DEFAULT = "defaultflow";
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
   final String PROPERTY_SEQUENCEFLOW_ORDER = "sequencefloworder";
   
