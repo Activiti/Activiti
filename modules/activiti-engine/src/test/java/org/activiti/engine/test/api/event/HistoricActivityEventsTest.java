@@ -18,6 +18,7 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -30,32 +31,35 @@ import org.activiti.engine.test.Deployment;
  */
 public class HistoricActivityEventsTest extends PluggableActivitiTestCase {
 
-	private TestHistoricActivityEventListener listener;
-	
-	@Override
-	protected void setUp() throws Exception {
-	  super.setUp();
-	  
-	  this.listener = new TestHistoricActivityEventListener();
-	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-	}
-	
-	@Override
-	protected void tearDown() throws Exception {
-		
-		if (listener != null) {
-			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-		}
-		
-	  super.tearDown();
-	}
-	
+  private TestHistoricActivityEventListener listener;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    this.listener = new TestHistoricActivityEventListener();
+    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+
+    if (listener != null) {
+      listener.clearEventsReceived();
+      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+    }
+
+    super.tearDown();
+  }
+
   /**
    * Test added to assert the historic activity instance event
    */
   @Deployment
   public void testHistoricActivityEventDispatched() {
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+    
   	 ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestActivityEvents");
      assertNotNull(processInstance);
 
@@ -128,11 +132,7 @@ public class HistoricActivityEventsTest extends PluggableActivitiTestCase {
      // Process instance end
      assertEquals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED, events.get(15).getType());
      
-     System.out.println("-----AAP----");
-     for (ActivitiEvent event : events ) {
-    	 System.out.println(event.getType() + " - " + ((ActivitiEntityEvent) event).getEntity());
-     }
-     System.out.println("---------");
+    }
   }
 
 }
