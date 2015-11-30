@@ -695,7 +695,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                     ((FlowNode) sourceFlowElement).getOutgoingFlows().add(sequenceFlow);
                     JsonNode edgeNode = edgeMap.get(sequenceFlow.getId());
                     if (edgeNode != null) {
-                      boolean isDefault = JsonConverterUtil.getPropertyValueAsBoolean("defaultflow", edgeNode);
+                      boolean isDefault = JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_SEQUENCEFLOW_DEFAULT, edgeNode);
                       if (isDefault) {
                           if (sourceFlowElement instanceof Activity) {
                               ((Activity) sourceFlowElement).setDefaultFlow(sequenceFlow.getId());
