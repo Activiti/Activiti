@@ -38,8 +38,8 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertEquals("process", model.getMainProcess().getId());
-    assertEquals("formPropsProcess", model.getMainProcess().getName());
+    assertEquals("formPropertiesProcess", model.getMainProcess().getId());
+    assertEquals("User registration", model.getMainProcess().getName());
     assertEquals(true, model.getMainProcess().isExecutable());
 
     FlowElement startFlowElement = model.getMainProcess().getFlowElement("startNode");
@@ -102,19 +102,19 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   private void checkFormPropertyFormValues(List<Map<String, Object>> formValues) {
     List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String,Object>>();
     Map<String, Object> formValue1 = new HashMap<String, Object>();
-    formValue1.put("id", "value 1");
-    formValue1.put("name", "value 1");
+    formValue1.put("id", "value1");
+    formValue1.put("name", "Value 1");
     Map<String, Object> formValue2 = new HashMap<String, Object>();
-    formValue2.put("id", "value 2");
-    formValue2.put("name", "value 2");
+    formValue2.put("id", "value2");
+    formValue2.put("name", "Value 2");
 
     Map<String, Object> formValue3 = new HashMap<String, Object>();
-    formValue3.put("id", "value 3");
-    formValue3.put("name", "value 3");
+    formValue3.put("id", "value3");
+    formValue3.put("name", "Value 3");
 
     Map<String, Object> formValue4 = new HashMap<String, Object>();
-    formValue4.put("id", "value 4");
-    formValue4.put("name", "value 4");
+    formValue4.put("id", "value4");
+    formValue4.put("name", "Value 4");
 
     expectedFormValues.add(formValue1);
     expectedFormValues.add(formValue2);

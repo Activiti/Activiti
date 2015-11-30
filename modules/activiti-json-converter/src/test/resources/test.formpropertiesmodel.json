@@ -1,8 +1,8 @@
 {
     "resourceId": "1744",
     "properties": {
-        "process_id": "process",
-        "name": "formPropsProcess",
+        "process_id": "formPropertiesProcess",
+        "name": "User registration",
         "documentation": "",
         "process_author": "",
         "process_version": "",
@@ -71,20 +71,16 @@
                             "required": true,
                             "enumValues": [
                                 {
-                                    "value": "value 1",
-                                    "$$hashKey": "0CU"
+                                    "value": "value 1"
                                 },
                                 {
-                                    "value": "value 2",
-                                    "$$hashKey": "0CV"
+                                    "value": "value 2"
                                 },
                                 {
-                                    "value": "value 3",
-                                    "$$hashKey": "0CZ"
+                                    "value": "value 3"
                                 },
                                 {
-                                    "value": "value 4",
-                                    "$$hashKey": "0D2"
+                                    "value": "value 4"
                                 }
                             ]
                         },

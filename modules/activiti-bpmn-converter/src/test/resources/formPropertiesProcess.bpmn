@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
-  <process id="process" name="formPropsProcess" isExecutable="true">
+  <process id="formPropertiesProcess" name="User registration" isExecutable="true">
     <startEvent id="startNode">
       <extensionElements>
         <activiti:formProperty id="new_property_1" name="v000" type="string" variable="v000" required="true" readable="false" writable="false"></activiti:formProperty>
@@ -8,10 +8,10 @@
         <activiti:formProperty id="new_property_3" name="v010" type="string" variable="v010" required="true" writable="false"></activiti:formProperty>
         <activiti:formProperty id="new_property_4" name="v011" type="string" variable="v011" required="true"></activiti:formProperty>
         <activiti:formProperty id="new_property_5" name="v100" type="enum" variable="v100" readable="false" writable="false" required="true">
-          <activiti:value id="value 1" name="value 1"></activiti:value>
-          <activiti:value id="value 2" name="value 2"></activiti:value>
-          <activiti:value id="value 3" name="value 3"></activiti:value>
-          <activiti:value id="value 4" name="value 4"></activiti:value>
+          <activiti:value id="value1" name="Value 1"></activiti:value>
+          <activiti:value id="value2" name="Value 2"></activiti:value>
+          <activiti:value id="value3" name="Value 3"></activiti:value>
+          <activiti:value id="value4" name="Value 4"></activiti:value>
         </activiti:formProperty>
         <activiti:formProperty id="new_property_6" name="v101" type="string" variable="v101" readable="false" required="true"></activiti:formProperty>
         <activiti:formProperty id="new_property_7" name="v110" type="string" variable="v110" writable="false" required="true"></activiti:formProperty>
@@ -26,10 +26,10 @@
         <activiti:formProperty id="new_property_3" name="v010" type="string" variable="v010" writable="false"></activiti:formProperty>
         <activiti:formProperty id="new_property_4" name="v011" type="string" variable="v011"></activiti:formProperty>
         <activiti:formProperty id="new_property_5" name="v100" type="enum" variable="v100" readable="false" writable="false" required="true">
-          <activiti:value id="value 1" name="value 1"></activiti:value>
-          <activiti:value id="value 2" name="value 2"></activiti:value>
-          <activiti:value id="value 3" name="value 3"></activiti:value>
-          <activiti:value id="value 4" name="value 4"></activiti:value>
+          <activiti:value id="value1" name="Value 1"></activiti:value>
+          <activiti:value id="value2" name="Value 2"></activiti:value>
+          <activiti:value id="value3" name="Value 3"></activiti:value>
+          <activiti:value id="value4" name="Value 4"></activiti:value>
         </activiti:formProperty>
         <activiti:formProperty id="new_property_6" name="v101" type="string" variable="v101" readable="false" required="true"></activiti:formProperty>
         <activiti:formProperty id="new_property_7" name="v110" type="string" variable="v110" writable="false" required="true"></activiti:formProperty>

@@ -39,8 +39,8 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   }
   
   private void validateModel(BpmnModel model) {
-    assertEquals("process", model.getMainProcess().getId());
-    assertEquals("formPropsProcess", model.getMainProcess().getName());
+    assertEquals("formPropertiesProcess", model.getMainProcess().getId());
+    assertEquals("User registration", model.getMainProcess().getName());
     assertEquals(true, model.getMainProcess().isExecutable());
     
     FlowElement startFlowElement = model.getMainProcess().getFlowElement("startNode");
@@ -64,15 +64,15 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
 
     for (FormProperty formProperty :formProperties) {
       if (formProperty.getId().equals("new_property_1")) {
-        checkFormProperty(formProperty, false, false, false);
+        checkFormProperty(formProperty, "v000", false, false, false);
       } else if (formProperty.getId().equals("new_property_2")) {
-        checkFormProperty(formProperty, false, false, true);
+        checkFormProperty(formProperty, "v001",  false, false, true);
       } else if (formProperty.getId().equals("new_property_3")) {
-        checkFormProperty(formProperty, false, true, false);
+        checkFormProperty(formProperty, "v010", false, true, false);
       } else if (formProperty.getId().equals("new_property_4")) {
-        checkFormProperty(formProperty, false, true, true);
+        checkFormProperty(formProperty, "v011", false, true, true);
       } else if (formProperty.getId().equals("new_property_5")) {
-        checkFormProperty(formProperty, true, false, false);
+        checkFormProperty(formProperty, "v100", true, false, false);
 
         List<Map<String, Object>> formValues = new ArrayList<Map<String,Object>>();
         for (FormValue formValue : formProperty.getFormValues()) {
@@ -84,17 +84,18 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
         checkFormPropertyFormValues(formValues);
 
       } else if (formProperty.getId().equals("new_property_6")) {
-        checkFormProperty(formProperty, true, false, true);
+        checkFormProperty(formProperty, "v101", true, false, true);
       } else if (formProperty.getId().equals("new_property_7")) {
-        checkFormProperty(formProperty, true, true, false);
+        checkFormProperty(formProperty, "v110", true, true, false);
       } else if (formProperty.getId().equals("new_property_8")) {
-        checkFormProperty(formProperty, true, true, true);
+        checkFormProperty(formProperty, "v111", true, true, true);
       }
     }
     
   }
   
-  private void checkFormProperty(FormProperty formProperty, boolean shouldBeRequired, boolean shouldBeReadable, boolean shouldBeWritable) {
+  private void checkFormProperty(FormProperty formProperty, String name, boolean shouldBeRequired, boolean shouldBeReadable, boolean shouldBeWritable) {
+    assertEquals(name, formProperty.getName());
     assertEquals(shouldBeRequired, formProperty.isRequired());
     assertEquals(shouldBeReadable, formProperty.isReadable());
     assertEquals(shouldBeWritable, formProperty.isWriteable());
