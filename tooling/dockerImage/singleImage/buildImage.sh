@@ -1,1 +1,1 @@
-sudo docker build -t smirzai/activiti_single_image:v1 .
+sudo docker build -t smirzai/activiti-single-image:latest .
