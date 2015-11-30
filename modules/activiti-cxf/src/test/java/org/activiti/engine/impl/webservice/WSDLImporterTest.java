@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -47,16 +45,16 @@ public class WSDLImporterTest {
     importer.importFrom(url.toString());
     
     List<WSService> services = new ArrayList<WSService>(importer.getServices());
-    Assert.assertEquals(1, services.size());
+    assertEquals(1, services.size());
     WSService service = services.get(0);
     
-    Assert.assertEquals("Counter", service.getName());
-    Assert.assertEquals("http://localhost:63081/webservicemock", service.getLocation());
+    assertEquals("Counter", service.getName());
+    assertEquals("http://localhost:63081/webservicemock", service.getLocation());
     
     List<StructureDefinition> structures = sortStructures();
     List<WSOperation> operations = sortOperations();
 
-    Assert.assertEquals(7, operations.size());
+    assertEquals(7, operations.size());
     this.assertOperation(operations.get(0), "getCount", service);
     this.assertOperation(operations.get(1), "inc", service);
     this.assertOperation(operations.get(2), "noNameResult", service);
@@ -65,7 +63,7 @@ public class WSDLImporterTest {
     this.assertOperation(operations.get(5), "reset", service);
     this.assertOperation(operations.get(6), "setTo", service);
     
-    Assert.assertEquals(14, structures.size());
+    assertEquals(14, structures.size());
     this.assertStructure(structures.get(0), "getCount", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(1), "getCountResponse", new String[] { "count" }, new Class<?>[] { Integer.class });
     this.assertStructure(structures.get(2), "inc", new String[] {}, new Class<?>[] {});
@@ -88,16 +86,16 @@ public class WSDLImporterTest {
     importer.importFrom(url.toString());
     
     List<WSService> services = new ArrayList<WSService>(importer.getServices());
-    Assert.assertEquals(1, services.size());
+    assertEquals(1, services.size());
     WSService service = services.get(0);
     
-    Assert.assertEquals("Counter", service.getName());
-    Assert.assertEquals("http://localhost:63081/counter", service.getLocation());
+    assertEquals("Counter", service.getName());
+    assertEquals("http://localhost:63081/counter", service.getLocation());
     
     List<StructureDefinition> structures = sortStructures();
     List<WSOperation> operations = sortOperations();
 
-    Assert.assertEquals(7, operations.size());
+    assertEquals(7, operations.size());
     this.assertOperation(operations.get(0), "getCount", service);
     this.assertOperation(operations.get(1), "inc", service);
     this.assertOperation(operations.get(2), "noNameResult", service);
@@ -106,7 +104,7 @@ public class WSDLImporterTest {
     this.assertOperation(operations.get(5), "reset", service);
     this.assertOperation(operations.get(6), "setTo", service);
     
-    Assert.assertEquals(14, structures.size());
+    assertEquals(14, structures.size());
     this.assertStructure(structures.get(0), "getCount", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(1), "getCountResponse", new String[] { "count" }, new Class<?>[] { Integer.class });
     this.assertStructure(structures.get(2), "inc", new String[] {}, new Class<?>[] {});
@@ -144,18 +142,18 @@ public class WSDLImporterTest {
   }
   
   private void assertOperation(WSOperation wsOperation, String name, WSService service) {
-    Assert.assertEquals(name, wsOperation.getName());
-    Assert.assertEquals(service, wsOperation.getService());
+    assertEquals(name, wsOperation.getName());
+    assertEquals(service, wsOperation.getService());
   }
 
   private void assertStructure(StructureDefinition structure, String structureId, String[] parameters, Class<?>[] classes) {
     SimpleStructureDefinition simpleStructure = (SimpleStructureDefinition) structure;
     
-    Assert.assertEquals(structureId, simpleStructure.getId());
+    assertEquals(structureId, simpleStructure.getId());
     
     for (int i = 0; i < simpleStructure.getFieldSize(); i++) {
-      Assert.assertEquals(parameters[i], simpleStructure.getFieldNameAt(i));
-      Assert.assertEquals(classes[i], simpleStructure.getFieldTypeAt(i));
+      assertEquals(parameters[i], simpleStructure.getFieldNameAt(i));
+      assertEquals(classes[i], simpleStructure.getFieldTypeAt(i));
     }
   }
   
@@ -168,7 +166,7 @@ public class WSDLImporterTest {
     List<StructureDefinition> structures = sortStructures();
     assertEquals(1, structures.size());
         final Object structureTypeInst = ReflectUtil.instantiate("org.activiti.webservice.counter.StructureType");
-    final Class structureType = structureTypeInst.getClass();
+    final Class<? extends Object> structureType = structureTypeInst.getClass();
     this.assertStructure(structures.get(0), "inheritedRequest", new String[] { "rootElt", "inheritedElt", "newSimpleElt", 
         "newStructuredElt" }, new Class<?>[] { Short.class, Integer.class, String.class, structureType });
     assertEquals(2, structureType.getDeclaredFields().length);
@@ -176,5 +174,12 @@ public class WSDLImporterTest {
     assertNotNull(structureType.getDeclaredField("dateElt"));
     assertEquals(1, structureType.getSuperclass().getDeclaredFields().length);
     assertNotNull(structureType.getSuperclass().getDeclaredField("rootElt"));
+  }
+  
+  @Test
+  public void testImportBasicElement() throws Exception {
+    URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/basic-elements-in-types.wsdl");
+    assertNotNull(url);
+    importer.importFrom(url.toString());
   }
 }
