@@ -20,6 +20,9 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.identity.Authentication;
@@ -101,6 +104,14 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       if (historicProcessInstance != null) {
         historicProcessInstance.markEnded(deleteReason);
         historicProcessInstance.setEndActivityId(activityId);
+        
+        // Fire event
+        ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
+        if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
+          activitiEventDispatcher.dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED, historicProcessInstance));
+        }
+        
       }
     }
   }
@@ -129,33 +140,14 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
       // Insert historic process-instance
       getHistoricProcessInstanceEntityManager().insert(historicProcessInstance, false);
+      
+      // Fire event
+      ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
+      if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
+        activitiEventDispatcher.dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED, historicProcessInstance));
+      }
 
-//      // Also record the start-event manually, as there is no "start"
-//      // activity history listener for this
-//      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-//
-//      String processDefinitionId = processInstance.getProcessDefinitionId();
-//      String processInstanceId = processInstance.getId();
-//      String executionId = processInstance.getId();
-
-//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-//      historicActivityInstance.setId(idGenerator.getNextId());
-//      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
-//      historicActivityInstance.setProcessInstanceId(processInstanceId);
-//      historicActivityInstance.setExecutionId(executionId);
-//      historicActivityInstance.setActivityId(startElement.getId());
-//      historicActivityInstance.setActivityName(startElement.getName());
-//      historicActivityInstance.setActivityType(parseActivityType(startElement));
-//      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-//      historicActivityInstance.setStartTime(now);
-//      historicActivityInstance.setEndTime(now);
-//
-//      // Inherit tenant id (if applicable)
-//      if (processInstance.getTenantId() != null) {
-//        historicActivityInstance.setTenantId(processInstance.getTenantId());
-//      }
-//
-//      getDbSqlSession().insert(historicActivityInstance);
     }
   }
 
@@ -176,29 +168,19 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         historicProcessInstance.setStartActivityId(initialElement.getId());
       }
       getHistoricProcessInstanceEntityManager().insert(historicProcessInstance, false);
+      
+      // Fire event
+      ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
+      if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
+        activitiEventDispatcher.dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED, historicProcessInstance));
+      }
 
       HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution, false, true);
       if (activitiyInstance != null) {
         activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
       }
 
-//      // Fix for ACT-1728: start-event not recorded for subprocesses
-//      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-//
-//      // Also record the start-event manually, as there is no "start"
-//      // activity history listener for this
-//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-//      historicActivityInstance.setId(idGenerator.getNextId());
-//      historicActivityInstance.setProcessDefinitionId(subProcessInstance.getProcessDefinitionId());
-//      historicActivityInstance.setProcessInstanceId(subProcessInstance.getProcessInstanceId());
-//      historicActivityInstance.setExecutionId(subProcessInstance.getId());
-//      historicActivityInstance.setActivityId(initialElement.getId());
-//      historicActivityInstance.setActivityName(initialElement.getName());
-//      historicActivityInstance.setActivityType(parseActivityType(initialElement));
-//      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-//      historicActivityInstance.setStartTime(now);
-//
-//      getDbSqlSession().insert(historicActivityInstance);
     }
   }
 
@@ -214,11 +196,14 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       if (executionEntity.getCurrentActivityId() != null && executionEntity.getCurrentFlowElement() != null) {
         
-        createHistoricActivityInstanceEntity(executionEntity);
-//        HistoricActivityInstanceEntity historicActivityInstanceEntity = findActivityInstance(executionEntity, false);
-//        if (historicActivityInstanceEntity == null) {
-//          createHistoricActivityInstanceEntity(executionEntity);
-//        }
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = createHistoricActivityInstanceEntity(executionEntity);
+        
+        // Fire event
+        ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
+        if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
+          activitiEventDispatcher.dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstanceEntity));
+        }
         
       }
     }
@@ -235,6 +220,13 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false, true);
       if (historicActivityInstance != null) {
         historicActivityInstance.markEnded(null);
+        
+        // Fire event
+        ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
+        if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
+          activitiEventDispatcher.dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+        }
       }
     }
   }

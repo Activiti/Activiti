@@ -13,12 +13,12 @@
 
 package org.activiti.engine.test.bpmn.deployment;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.activiti.engine.impl.bpmn.deployer.ParsedDeployment;
@@ -62,7 +62,7 @@ public class ParsedDeploymentTest extends PluggableActivitiTestCase {
     Context.removeCommandContext();
   }
   
-  public void testCreateAndQuery() {
+  public void testCreateAndQuery() throws UnsupportedEncodingException {
     DeploymentEntity entity = assembleUnpersistedDeploymentEntity();
 
     ParsedDeploymentBuilderFactory builderFactory = processEngineConfiguration.getParsedDeploymentBuilderFactory();
@@ -101,17 +101,17 @@ public class ParsedDeploymentTest extends PluggableActivitiTestCase {
     return null;
   }
   
-  private DeploymentEntity assembleUnpersistedDeploymentEntity() {
+  private DeploymentEntity assembleUnpersistedDeploymentEntity() throws UnsupportedEncodingException {
     DeploymentEntity entity = new DeploymentEntityImpl();
     entity.addResource(buildResource(IDR_XML_NAME, IDR_PROCESS_XML));
     entity.addResource(buildResource(EN_XML_NAME, EN_PROCESS_XML));
     return entity;
   }
   
-  private ResourceEntity buildResource(String name, String text) {
+  private ResourceEntity buildResource(String name, String text) throws UnsupportedEncodingException {
     ResourceEntityImpl result = new ResourceEntityImpl();
     result.setName(name);
-    result.setBytes(text.getBytes(UTF_8));
+    result.setBytes(text.getBytes("UTF8"));
     
     return result;
   }
