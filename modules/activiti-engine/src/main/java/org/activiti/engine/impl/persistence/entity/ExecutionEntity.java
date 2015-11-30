@@ -339,10 +339,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // initialize the lists of referenced objects (prevents db queries)
     variableInstances = new HashMap<String, VariableInstanceEntity>();
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
-    jobs = new ArrayList<JobEntity>();
-    tasks = new ArrayList<TaskEntity>();
     
-    // Cached entity-state initialized to null, all bits are zore, indicating NO entities present
+    // Cached entity-state initialized to null, all bits are zero, indicating NO entities present
     cachedEntityState = 0;
     
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
