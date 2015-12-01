@@ -6,6 +6,11 @@
 
   <process id="oneTaskProcess" name="oneTaskProcessName">
 	<documentation>oneTaskProcessDescription</documentation>
+    <extensionElements>
+    	<activiti:localization locale="es" name="Nombre del proceso">
+    		<activiti:documentation>Descripción del proceso</activiti:documentation>
+    	</activiti:localization>
+    </extensionElements>
 
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
