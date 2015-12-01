@@ -2908,8 +2908,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals("my task", tasks.get(0).getName());
     assertNull(tasks.get(0).getDescription());
     
-    ObjectNode infoNode = dynamicBpmnService.changeLocalizationName("en-GB", "theTask", "My localized name");
-    dynamicBpmnService.changeLocalizationDescription("en-GB".toString(), "theTask", "My localized description", infoNode);
+    ObjectNode infoNode = dynamicBpmnService.changeLocalizationName("en-GB", "theTask", "My 'en-GB' localized name");
+    dynamicBpmnService.changeLocalizationDescription("en-GB", "theTask", "My 'en-GB' localized description", infoNode);
+    dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
+    
+    dynamicBpmnService.changeLocalizationName("en", "theTask", "My 'en' localized name", infoNode);
+    dynamicBpmnService.changeLocalizationDescription("en", "theTask", "My 'en' localized description", infoNode);
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
     
     tasks = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
@@ -2919,8 +2923,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     
     tasks = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").list();
     assertEquals(1, tasks.size());
-    assertEquals("My localized name", tasks.get(0).getName());
-    assertEquals("My localized description", tasks.get(0).getDescription());
+    assertEquals("My 'en-GB' localized name", tasks.get(0).getName());
+    assertEquals("My 'en-GB' localized description", tasks.get(0).getDescription());
     
     tasks = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).listPage(0, 10);
     assertEquals(1, tasks.size());
@@ -2929,20 +2933,28 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     
     tasks = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").listPage(0, 10);
     assertEquals(1, tasks.size());
-    assertEquals("My localized name", tasks.get(0).getName());
-    assertEquals("My localized description", tasks.get(0).getDescription());
+    assertEquals("My 'en-GB' localized name", tasks.get(0).getName());
+    assertEquals("My 'en-GB' localized description", tasks.get(0).getDescription());
     
     Task task = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
     assertEquals("my task", task.getName());
     assertNull(task.getDescription());
     
     task = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").singleResult();
-    assertEquals("My localized name", task.getName());
-    assertEquals("My localized description", task.getDescription());
+    assertEquals("My 'en-GB' localized name", task.getName());
+    assertEquals("My 'en-GB' localized description", task.getDescription());
     
     task = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
     assertEquals("my task", task.getName());
     assertNull(task.getDescription());
+    
+    task = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en").singleResult();
+    assertEquals("My 'en' localized name", task.getName());
+    assertEquals("My 'en' localized description", task.getDescription());
+    
+    task = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-AU").withLocalizationFallback().singleResult();
+    assertEquals("My 'en' localized name", task.getName());
+    assertEquals("My 'en' localized description", task.getDescription());
   }
   
   /**
