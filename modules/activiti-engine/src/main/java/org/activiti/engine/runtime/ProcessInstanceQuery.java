@@ -281,4 +281,13 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    */
   ProcessInstanceQuery orderByTenantId();
 
+  /**
+   * Localize process name and description to specified locale.
+   */
+  public ProcessInstanceQuery locale(String locale);
+  
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  public ProcessInstanceQuery withLocalizationFallback();
 }

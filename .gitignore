@@ -10,3 +10,4 @@ target
 *.bpmn/
 /userguide/src/en/index.html
 migration.html
+/modules/**/bin

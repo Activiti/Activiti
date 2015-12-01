@@ -18,13 +18,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -58,6 +67,8 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
+  protected String locale;
+  protected boolean withLocalizationFallback;
 
   protected String tenantId;
   protected String tenantIdLike;
@@ -495,6 +506,16 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
 
+  public ProcessInstanceQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
+  
+  public ProcessInstanceQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
+    return this;
+  }
+  
   public String getMssqlOrDB2OrderBy() {
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {
@@ -504,7 +525,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return specialOrderBy;
   }
-
+  
   // results /////////////////////////////////////////////////////////////////
 
   public long executeCount(CommandContext commandContext) {
@@ -516,11 +537,29 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
+    List<ProcessInstance> processInstances;
     if (includeProcessVariables) {
-      return commandContext.getExecutionEntityManager().findProcessInstanceAndVariablesByQueryCriteria(this);
+      processInstances = commandContext.getExecutionEntityManager().findProcessInstanceAndVariablesByQueryCriteria(this);
     } else {
-      return commandContext.getExecutionEntityManager().findProcessInstanceByQueryCriteria(this);
+      processInstances= commandContext.getExecutionEntityManager().findProcessInstanceByQueryCriteria(this);
     }
+    
+    for (ProcessInstance processInstance : processInstances) {
+      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processInstance.getProcessDefinitionId());
+      Process process = bpmnModel.getMainProcess();
+      
+      ExecutionEntity processInstanceExecution = (ExecutionEntity) processInstance;
+      if (null == processInstance.getName()) {
+        processInstanceExecution.setName(process.getName());
+      } 
+      processInstanceExecution.setDescription(process.getDocumentation());
+
+      if (locale != null) {
+        localize(processInstanceExecution);
+      }
+    }
+    
+    return processInstances;
   }
 
   @Override
@@ -532,6 +571,29 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
   }
 
+  protected void localize(ExecutionEntity processInstanceExecution) {
+    processInstanceExecution.setLocalizedName(null);
+    processInstanceExecution.setLocalizedDescription(null);
+
+    if (locale != null) {
+      String processDefinitionId = processInstanceExecution.getProcessDefinitionId();
+      if (processDefinitionId != null) {
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processInstanceExecution.getProcessDefinitionKey(), processDefinitionId, withLocalizationFallback);
+        if (languageNode != null) {
+          JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+          if (languageNameNode != null && languageNameNode.isNull() == false) {
+            processInstanceExecution.setLocalizedName(languageNameNode.asText());
+          }
+
+          JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+            processInstanceExecution.setLocalizedDescription(languageDescriptionNode.asText());
+          }
+        }
+      }
+    }
+  }
+  
   // getters /////////////////////////////////////////////////////////////////
 
   public boolean getOnlyProcessInstances() {

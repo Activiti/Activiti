@@ -289,4 +289,14 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select process instances with a name like the given value, ignoring upper/lower case.
    */
   HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
+  
+  /**
+   * Localize historic process name and description to specified locale.
+   */
+  public HistoricProcessInstanceQuery locale(String locale);
+  
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  public HistoricProcessInstanceQuery withLocalizationFallback();
 }
