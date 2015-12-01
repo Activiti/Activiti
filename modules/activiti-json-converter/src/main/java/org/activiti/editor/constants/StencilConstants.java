@@ -177,7 +177,9 @@ public interface StencilConstants {
   final String PROPERTY_FORM_READABLE = "readable";
   final String PROPERTY_FORM_WRITABLE = "writable";
   final String PROPERTY_FORM_ENUM_VALUES = "enumValues";
-
+  final String PROPERTY_FORM_ENUM_VALUES_NAME = "name";
+  final String PROPERTY_FORM_ENUM_VALUES_ID = "id";
+  
   final String PROPERTY_DATA_PROPERTIES = "dataproperties";
   final String PROPERTY_DATA_ID = "dataproperty_id";
   final String PROPERTY_DATA_NAME = "dataproperty_name";
