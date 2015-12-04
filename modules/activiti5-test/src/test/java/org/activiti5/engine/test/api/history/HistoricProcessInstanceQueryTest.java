@@ -10,16 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.test.api.history;
+package org.activiti5.engine.test.api.history;
 
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

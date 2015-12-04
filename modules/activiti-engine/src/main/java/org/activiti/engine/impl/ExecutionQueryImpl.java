@@ -12,27 +12,23 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SubProcess;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Joram Barrez
@@ -302,35 +298,28 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return commandContext.getExecutionEntityManager().findExecutionCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({ "unchecked" })
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
     List<?> executions = commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
     
-    for(ExecutionEntity execution : (List<ExecutionEntity>)executions) {
-      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
-      String activityId;
-      if(execution.isScope()) {
-        if(execution.getId() == execution.getProcessInstanceId()) {
-          Process process  = bpmnModel.getMainProcess();
-          execution.setName(process.getName());
-          execution.setDescription(process.getDocumentation());
-          activityId = process.getId();
+    for (ExecutionEntity execution : (List<ExecutionEntity>) executions) {
+      String activityId = null;
+      if (execution.getId().equals(execution.getProcessInstanceId())) {
+        if (execution.getProcessDefinitionId() != null) {
+          ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration()
+              .getDeploymentManager()
+              .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
+          activityId = processDefinition.getKey();
         }
-        else {
-          activityId = execution.getActivityId();
-          FlowElement element = bpmnModel.getFlowElement(activityId);
-          if(element instanceof SubProcess) {
-            SubProcess subprocess = (SubProcess) element;
-            execution.setName(subprocess.getName());
-            execution.setDescription(subprocess.getDocumentation());
-          }
-        }
+        
+      } else {
+        activityId = execution.getActivityId();
+      }
 
-        if(locale != null && activityId != null) {
-          localize(execution, activityId);
-        }
+      if (activityId != null) {
+        localize(execution, activityId);
       }
     }
 
@@ -343,7 +332,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     executionEntity.setLocalizedDescription(null);
 
     String processDefinitionId = executionEntity.getProcessDefinitionId();
-    if (processDefinitionId != null) {
+    if (locale != null && processDefinitionId != null) {
       ObjectNode languageNode = Context.getLocalizationElementProperties(locale, activityId, processDefinitionId, withLocalizationFallback);
       if (languageNode != null) {
         JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);

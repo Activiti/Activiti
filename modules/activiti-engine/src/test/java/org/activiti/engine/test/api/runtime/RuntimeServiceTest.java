@@ -864,7 +864,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     runtimeService.setProcessInstanceName(processInstance.getId(), null);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(processInstance);
-    assertEquals("The One Task Process", processInstance.getName());
+    assertNull(processInstance.getName());
 
     // Set name for unexisting process instance, should fail
     try {
@@ -876,7 +876,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(processInstance);
-    assertEquals("The One Task Process", processInstance.getName());
+    assertNull(processInstance.getName());
 
     // Set name for suspended process instance, should fail
     runtimeService.suspendProcessInstanceById(processInstance.getId());
@@ -889,7 +889,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(processInstance);
-    assertEquals("The One Task Process", processInstance.getName());
+    assertNull(processInstance.getName());
   }
 
   private void startSignalCatchProcesses() {

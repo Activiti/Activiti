@@ -103,9 +103,9 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean includeProcessVariables;
   protected String userIdForCandidateAndAssignee;
   protected boolean bothCandidateAndAssigned;
-  protected boolean orActive;
   protected String locale;
   protected boolean withLocalizationFallback;
+  protected boolean orActive;
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
   

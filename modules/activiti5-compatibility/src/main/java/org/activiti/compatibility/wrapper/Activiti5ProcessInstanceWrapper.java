@@ -24,89 +24,104 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class Activiti5ProcessInstanceWrapper implements ProcessInstance {
 
-  private org.activiti5.engine.runtime.ProcessInstance activit5ProcessInstance;
+  private org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance;
   
-  public Activiti5ProcessInstanceWrapper(org.activiti5.engine.runtime.ProcessInstance activit5ProcessInstance) {
-    this.activit5ProcessInstance = activit5ProcessInstance;
+  public Activiti5ProcessInstanceWrapper(org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance) {
+    this.activiti5ProcessInstance = activiti5ProcessInstance;
   }
 
   @Override
   public String getId() {
-    return activit5ProcessInstance.getId();
+    return activiti5ProcessInstance.getId();
   }
 
   @Override
   public boolean isEnded() {
-    return activit5ProcessInstance.isEnded();
+    return activiti5ProcessInstance.isEnded();
   }
 
   @Override
   public String getActivityId() {
-    return activit5ProcessInstance.getActivityId();
+    return activiti5ProcessInstance.getActivityId();
   }
 
   @Override
   public String getProcessInstanceId() {
-    return activit5ProcessInstance.getProcessInstanceId();
+    return activiti5ProcessInstance.getProcessInstanceId();
   }
 
   @Override
   public String getParentId() {
-    return activit5ProcessInstance.getParentId();
+    return activiti5ProcessInstance.getParentId();
   }
 
   @Override
   public String getProcessDefinitionId() {
-    return activit5ProcessInstance.getProcessDefinitionId();
+    return activiti5ProcessInstance.getProcessDefinitionId();
   }
 
   @Override
   public String getProcessDefinitionName() {
-    return activit5ProcessInstance.getProcessDefinitionName();
+    return activiti5ProcessInstance.getProcessDefinitionName();
   }
 
   @Override
   public String getProcessDefinitionKey() {
-    return activit5ProcessInstance.getProcessDefinitionKey();
+    return activiti5ProcessInstance.getProcessDefinitionKey();
   }
 
   @Override
   public Integer getProcessDefinitionVersion() {
-    return activit5ProcessInstance.getProcessDefinitionVersion();
+    return activiti5ProcessInstance.getProcessDefinitionVersion();
   }
 
   @Override
   public String getDeploymentId() {
-    return activit5ProcessInstance.getDeploymentId();
+    return activiti5ProcessInstance.getDeploymentId();
   }
 
   @Override
   public String getBusinessKey() {
-    return activit5ProcessInstance.getBusinessKey();
+    return activiti5ProcessInstance.getBusinessKey();
   }
 
   @Override
   public boolean isSuspended() {
-    return activit5ProcessInstance.isSuspended();
+    return activiti5ProcessInstance.isSuspended();
   }
 
   @Override
   public Map<String, Object> getProcessVariables() {
-    return activit5ProcessInstance.getProcessVariables();
+    return activiti5ProcessInstance.getProcessVariables();
   }
 
   @Override
   public String getTenantId() {
-    return activit5ProcessInstance.getTenantId();
+    return activiti5ProcessInstance.getTenantId();
   }
 
   @Override
   public String getName() {
-    return activit5ProcessInstance.getName();
+    return activiti5ProcessInstance.getName();
   }
   
+  @Override
+  public String getDescription() {
+    return activiti5ProcessInstance.getDescription();
+  }
+
+  @Override
+  public String getLocalizedName() {
+    return activiti5ProcessInstance.getLocalizedName();
+  }
+
+  @Override
+  public String getLocalizedDescription() {
+    return activiti5ProcessInstance.getLocalizedDescription();
+  }
+
   public org.activiti5.engine.runtime.ProcessInstance getRawObject() {
-    return activit5ProcessInstance;
+    return activiti5ProcessInstance;
   }
 
 }

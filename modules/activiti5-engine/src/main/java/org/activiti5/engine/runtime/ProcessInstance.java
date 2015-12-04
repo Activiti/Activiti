@@ -77,4 +77,18 @@ public interface ProcessInstance extends Execution {
    */
   String getName();
   
+  /**
+   * Returns the description of this process instance.
+   */
+  String getDescription();
+  
+  /**
+   * Returns the localized name of this process instance.
+   */
+  String getLocalizedName();
+  
+  /**
+   * Returns the localized description of this process instance.
+   */
+  String getLocalizedDescription();
 }

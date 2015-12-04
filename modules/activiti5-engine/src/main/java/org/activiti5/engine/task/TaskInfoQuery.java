@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.task.IdentityLink;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.history.HistoricTaskInstanceQuery;
 import org.activiti5.engine.query.Query;
@@ -519,6 +520,16 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    * Include global task variables in the task query result
    */
   T includeProcessVariables();
+  
+  /**
+   * Localize task name and description to specified locale.
+   */
+  T locale(String locale);
+
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  T withLocalizationFallback();
   
   /**
    * All query clauses called will be added to a single or-statement. This or-statement will be

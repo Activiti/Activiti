@@ -16,15 +16,16 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
     <subProcess id="subProcess" name="SubProcess Name">
       <documentation>SubProcess Description</documentation>
-      <extensionElements>
-    	<activiti:localization locale="es" name="Nombre Subproceso">
-    		<activiti:documentation>Subproceso Descripción</activiti:documentation>
-    	</activiti:localization>
-      </extensionElements>
     	
       <startEvent id="subStart" />
       <sequenceFlow id="flow3" sourceRef="subStart" targetRef="subTask" />
-      <userTask id="subTask" name="sub task" />
+      <userTask id="subTask" name="sub task">
+      	<extensionElements>
+	    	<activiti:localization locale="es" name="Nombre Subproceso">
+	    		<activiti:documentation>Subproceso Descripción</activiti:documentation>
+	    	</activiti:localization>
+      	</extensionElements>
+      </userTask>
       <sequenceFlow id="flow4" sourceRef="subTask" targetRef="subEnd" />
       <endEvent id="subEnd" />
     </subProcess>

@@ -244,6 +244,16 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Only select process instances with a name like the given value, ignoring upper/lower case.
    */
   ProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
+  
+  /**
+   * Localize process name and description to specified locale.
+   */
+  ProcessInstanceQuery locale(String locale);
+  
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  ProcessInstanceQuery withLocalizationFallback();
 
   /**
    * Include process variables in the process query result
@@ -280,14 +290,4 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
    */
   ProcessInstanceQuery orderByTenantId();
-
-  /**
-   * Localize process name and description to specified locale.
-   */
-  public ProcessInstanceQuery locale(String locale);
-  
-  /**
-   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   */
-  public ProcessInstanceQuery withLocalizationFallback();
 }

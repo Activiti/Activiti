@@ -18,8 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
@@ -29,7 +27,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -72,11 +70,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
+  protected String locale;
+  protected boolean withLocalizationFallback;
   protected List<HistoricProcessInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricProcessInstanceQueryImpl>();
   protected HistoricProcessInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
-  protected String locale;
-  protected boolean withLocalizationFallback;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -456,6 +454,16 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       return variableValueLike(name, value, true);
     }
   }
+  
+  public HistoricProcessInstanceQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
+    return this;
+  }
 
   public HistoricProcessInstanceQuery or() {
     if (inOrStatement) {
@@ -505,16 +513,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public HistoricProcessInstanceQuery orderByTenantId() {
     return orderBy(HistoricProcessInstanceQueryProperty.TENANT_ID);
   }
-
-  public HistoricProcessInstanceQuery locale(String locale) {
-    this.locale = locale;
-    return this;
-  }
-  
-  public HistoricProcessInstanceQuery withLocalizationFallback() {
-    withLocalizationFallback = true;
-    return this;
-  }
   
   public String getMssqlOrDB2OrderBy() {
     String specialOrderBy = super.getOrderBy();
@@ -534,48 +532,39 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    List<HistoricProcessInstance> results;
+    List<HistoricProcessInstance> results = null;
     if (includeProcessVariables) {
       results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
     } else {
       results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesByQueryCriteria(this);
     }
     
-    for(HistoricProcessInstance processInstance : results) {
-      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processInstance.getProcessDefinitionId());
-      Process process = bpmnModel.getMainProcess();
-      
-      HistoricProcessInstanceEntity processInstanceEntity = (HistoricProcessInstanceEntity) processInstance;
-      if (null == processInstance.getName()) {
-        processInstanceEntity.setName(process.getName());
-      } 
-      processInstanceEntity.setDescription(process.getDocumentation());
-      
-      if (locale != null) {
-        localize(processInstanceEntity, bpmnModel);
-      }
+    for (HistoricProcessInstance processInstance : results) {
+      localize(processInstance, commandContext);
     }
+    
     return results;
   }
 
-  protected void localize(HistoricProcessInstanceEntity processInstance, BpmnModel bpmnModel) {
-    processInstance.setLocalizedName(null);
-    processInstance.setLocalizedDescription(null);
+  protected void localize(HistoricProcessInstance processInstance, CommandContext commandContext) {
+    HistoricProcessInstanceEntity processInstanceEntity = (HistoricProcessInstanceEntity) processInstance;
+    processInstanceEntity.setLocalizedName(null);
+    processInstanceEntity.setLocalizedDescription(null);
 
-    String processDefinitionId = processInstance.getProcessDefinitionId();
-    String processDefinitionKey = bpmnModel.getMainProcess().getId();
-    
-    if (processDefinitionId != null) {
-      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinitionKey, processDefinitionId, withLocalizationFallback);
+    if (locale != null && processInstance.getProcessDefinitionId() != null) {
+      ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
+      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinition.getKey(), 
+          processInstanceEntity.getProcessDefinitionId(), withLocalizationFallback);
+      
       if (languageNode != null) {
         JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
         if (languageNameNode != null && languageNameNode.isNull() == false) {
-          processInstance.setLocalizedName(languageNameNode.asText());
+          processInstanceEntity.setLocalizedName(languageNameNode.asText());
         }
 
         JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
         if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
-          processInstance.setLocalizedDescription(languageDescriptionNode.asText());
+          processInstanceEntity.setLocalizedDescription(languageDescriptionNode.asText());
         }
       }
     }

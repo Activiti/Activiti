@@ -35,8 +35,10 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   
   protected String executionId;
   protected String name;
+  protected String localizedName;
   protected String parentTaskId;
   protected String description;
+  protected String localizedDescription;
   protected String owner;
   protected String assignee;
   protected String taskDefinitionKey;
@@ -111,16 +113,34 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     this.executionId = executionId;
   }
   public String getName() {
-    return name;
+    if (localizedName != null && localizedName.length() > 0) {
+      return localizedName;
+    } else {
+      return name;
+    }
   }
   public void setName(String name) {
     this.name = name;
   }
-  public String getDescription() {
-    return description;
+  
+  public void setLocalizedName(String name) {
+    this.localizedName = name;
   }
+  
+  public String getDescription() {
+    if (localizedDescription != null && localizedDescription.length() > 0) {
+      return localizedDescription;
+    } else {
+      return description;
+    }
+  }
+  
   public void setDescription(String description) {
     this.description = description;
+  }
+  
+  public void setLocalizedDescription(String description) {
+    this.localizedDescription = description;
   }
   public String getAssignee() {
     return assignee;

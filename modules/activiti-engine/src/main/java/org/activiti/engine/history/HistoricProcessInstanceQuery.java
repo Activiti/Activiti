@@ -293,10 +293,10 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Localize historic process name and description to specified locale.
    */
-  public HistoricProcessInstanceQuery locale(String locale);
+  HistoricProcessInstanceQuery locale(String locale);
   
   /**
    * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
    */
-  public HistoricProcessInstanceQuery withLocalizationFallback();
+  HistoricProcessInstanceQuery withLocalizationFallback();
 }

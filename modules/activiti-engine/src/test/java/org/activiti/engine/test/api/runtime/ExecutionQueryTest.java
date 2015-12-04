@@ -1308,14 +1308,14 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
-        assertEquals("Process Name", execution.getName());
-        assertEquals("Process Description", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()){
-        assertEquals("SubProcess Name", execution.getName());
-        assertEquals("SubProcess Description", execution.getDescription());
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
+        assertNull(execution.getName());
+        assertNull(execution.getDescription());
+        
+      } else if (execution.getParentId() == execution.getProcessInstanceId()){
+        assertNull(execution.getName());
+        assertNull(execution.getDescription());
       }
     }
 
@@ -1338,26 +1338,26 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
     String subProcessId = null;
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
-        assertEquals("Process Name", execution.getName());
-        assertEquals("Process Description", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()){
-        assertEquals("SubProcess Name", execution.getName());
-        assertEquals("SubProcess Description", execution.getDescription());
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
+        assertNull(execution.getName());
+        assertNull(execution.getDescription());
+        
+      } else if (execution.getParentId() == execution.getProcessInstanceId()) {
+        assertNull(execution.getName());
+        assertNull(execution.getDescription());
         subProcessId = execution.getId();
       }
     }
 
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).locale("es").list();
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
         assertEquals("Nombre del proceso", execution.getName());
         assertEquals("Descripción del proceso", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()){
+        
+      } else if (execution.getParentId() == execution.getProcessInstanceId()) {
         assertEquals("Nombre Subproceso", execution.getName());
         assertEquals("Subproceso Descripción", execution.getDescription());
       }
@@ -1365,12 +1365,12 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).locale("en-GB").list();
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
         assertEquals("Process Name 'en-GB'", execution.getName());
         assertEquals("Process Description 'en-GB'", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()){
+        
+      } else if(execution.getParentId() == execution.getProcessInstanceId()) {
         assertEquals("SubProcess Name 'en-GB'", execution.getName());
         assertEquals("SubProcess Description 'en-GB'", execution.getDescription());
       }
@@ -1378,25 +1378,25 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).listPage(0,10);
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
-        assertEquals("Process Name", execution.getName());
-        assertEquals("Process Description", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()){
-        assertEquals("SubProcess Name", execution.getName());
-        assertEquals("SubProcess Description", execution.getDescription());
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
+        assertNull(execution.getName());
+        assertNull(execution.getDescription());
+        
+      } else if (execution.getParentId() == execution.getProcessInstanceId()) {
+        assertNull(execution.getName());
+        assertNull(execution.getDescription());
       }
     }
 
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).locale("es").listPage(0,10);
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
         assertEquals("Nombre del proceso", execution.getName());
         assertEquals("Descripción del proceso", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()){
+        
+      } else if(execution.getParentId() == execution.getProcessInstanceId()) {
         assertEquals("Nombre Subproceso", execution.getName());
         assertEquals("Subproceso Descripción", execution.getDescription());
       }
@@ -1404,24 +1404,24 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).locale("en-GB").listPage(0,10);
     assertEquals(3, executions.size());
-    for(Execution execution : executions) {
-      if(execution.getParentId() == null) {
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
         assertEquals("Process Name 'en-GB'", execution.getName());
         assertEquals("Process Description 'en-GB'", execution.getDescription());
-      }
-      else if(execution.getParentId() == execution.getProcessInstanceId()) {
+        
+      } else if(execution.getParentId() == execution.getProcessInstanceId()) {
         assertEquals("SubProcess Name 'en-GB'", execution.getName());
         assertEquals("SubProcess Description 'en-GB'", execution.getDescription());
       }
     }
 
     Execution execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).singleResult();
-    assertEquals("Process Name", execution.getName());
-    assertEquals("Process Description", execution.getDescription());
+    assertNull(execution.getName());
+    assertNull(execution.getDescription());
 
     execution = runtimeService.createExecutionQuery().executionId(subProcessId).singleResult();
-    assertEquals("SubProcess Name", execution.getName());
-    assertEquals("SubProcess Description", execution.getDescription());
+    assertNull(execution.getName());
+    assertNull(execution.getDescription());
 
     execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).locale("es").singleResult();
     assertEquals("Nombre del proceso", execution.getName());
@@ -1455,12 +1455,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     dynamicBpmnService.changeLocalizationName("en-US", "subProcess", "SubProcess Name 'en-US'", infoNode);
     dynamicBpmnService.changeLocalizationDescription("en-US", "subProcess", "SubProcess Description 'en-US'", infoNode);
     
-    dynamicBpmnService.changeLocalizationName("en-US", "subProcess", "SubProcess Name 'en-US'", infoNode);
-    dynamicBpmnService.changeLocalizationDescription("en-US", "subProcess", "SubProcess Description 'en-US'", infoNode);
-    
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
     
-    execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).locale("en-GB").withLocalizationFallback().singleResult();
+    execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).locale("en-US").singleResult();
     assertEquals("Process Name 'en-US'", execution.getName());
     assertEquals("Process Description 'en-US'", execution.getDescription());
 

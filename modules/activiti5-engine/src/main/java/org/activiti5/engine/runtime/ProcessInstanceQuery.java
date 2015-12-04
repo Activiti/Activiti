@@ -247,6 +247,16 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
   
   /**
+   * Localize process name and description to specified locale.
+   */
+  ProcessInstanceQuery locale(String locale);
+  
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  ProcessInstanceQuery withLocalizationFallback();
+  
+  /**
    * Include process variables in the process query result
    */
   ProcessInstanceQuery includeProcessVariables();

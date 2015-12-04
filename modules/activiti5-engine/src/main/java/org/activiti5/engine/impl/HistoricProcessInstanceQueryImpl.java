@@ -18,12 +18,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.history.HistoricProcessInstance;
 import org.activiti5.engine.history.HistoricProcessInstanceQuery;
+import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
+import org.activiti5.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -64,6 +71,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
+  protected String locale;
+  protected boolean withLocalizationFallback;
   protected List<HistoricProcessInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricProcessInstanceQueryImpl>();
   protected HistoricProcessInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
@@ -447,6 +456,16 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     }
   }
   
+  public HistoricProcessInstanceQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
+    return this;
+  }
+  
   public HistoricProcessInstanceQuery or() {
     if (inOrStatement) {
       throw new ActivitiException("the query is already in an or statement");
@@ -516,14 +535,41 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
+    List<HistoricProcessInstance> results = null;
     if (includeProcessVariables) {
-      return commandContext
-          .getHistoricProcessInstanceEntityManager()
-          .findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
+      results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
     } else {
-      return commandContext
-          .getHistoricProcessInstanceEntityManager()
-          .findHistoricProcessInstancesByQueryCriteria(this);
+      results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesByQueryCriteria(this);
+    }
+    
+    for (HistoricProcessInstance processInstance : results) {
+      localize(processInstance, commandContext);
+    }
+    
+    return results;
+  }
+
+  protected void localize(HistoricProcessInstance processInstance, CommandContext commandContext) {
+    HistoricProcessInstanceEntity processInstanceEntity = (HistoricProcessInstanceEntity) processInstance;
+    processInstanceEntity.setLocalizedName(null);
+    processInstanceEntity.setLocalizedDescription(null);
+
+    if (locale != null && processInstance.getProcessDefinitionId() != null) {
+      ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
+      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinition.getKey(), 
+          processInstanceEntity.getProcessDefinitionId(), withLocalizationFallback);
+      
+      if (languageNode != null) {
+        JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+        if (languageNameNode != null && languageNameNode.isNull() == false) {
+          processInstanceEntity.setLocalizedName(languageNameNode.asText());
+        }
+
+        JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+        if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+          processInstanceEntity.setLocalizedDescription(languageDescriptionNode.asText());
+        }
+      }
     }
   }
   

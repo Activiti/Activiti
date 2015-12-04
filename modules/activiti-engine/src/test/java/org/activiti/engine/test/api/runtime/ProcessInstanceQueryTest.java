@@ -1756,8 +1756,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
     List<ProcessInstance> processes = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).list();
     assertEquals(1, processes.size());
-    assertEquals("oneTaskProcessName", processes.get(0).getName());
-    assertEquals("oneTaskProcessDescription", processes.get(0).getDescription());
+    assertNull(processes.get(0).getName());
+    assertNull(processes.get(0).getDescription());
 
     ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processInstance.getProcessDefinitionId());
     dynamicBpmnService.changeLocalizationName("en-GB", "oneTaskProcess", "The One Task Process 'en-GB' localized name", infoNode);
@@ -1770,8 +1770,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
    
     processes = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).list();
     assertEquals(1, processes.size());
-    assertEquals("oneTaskProcessName", processes.get(0).getName());
-    assertEquals("oneTaskProcessDescription", processes.get(0).getDescription());
+    assertNull(processes.get(0).getName());
+    assertNull(processes.get(0).getDescription());
 
     processes = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).locale("es").list();
     assertEquals(1, processes.size());
@@ -1785,8 +1785,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
     processes = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).listPage(0, 10);
     assertEquals(1, processes.size());
-    assertEquals("oneTaskProcessName", processes.get(0).getName());
-    assertEquals("oneTaskProcessDescription", processes.get(0).getDescription());
+    assertNull(processes.get(0).getName());
+    assertNull(processes.get(0).getDescription());
 
     processes = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).locale("es").listPage(0,10);
     assertEquals(1, processes.size());
@@ -1799,8 +1799,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals("The One Task Process 'en-GB' localized description", processes.get(0).getDescription());
 
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals("oneTaskProcessName", processInstance.getName());
-    assertEquals("oneTaskProcessDescription", processInstance.getDescription());
+    assertNull(processInstance.getName());
+    assertNull(processInstance.getDescription());
 
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).locale("es").singleResult();
     assertEquals("Nombre del proceso", processInstance.getName());
@@ -1811,8 +1811,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals("The One Task Process 'en-GB' localized description", processInstance.getDescription());
 
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals("oneTaskProcessName", processInstance.getName());
-    assertEquals("oneTaskProcessDescription", processInstance.getDescription());
+    assertNull(processInstance.getName());
+    assertNull(processInstance.getDescription());
 
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).locale("en").singleResult();
     assertEquals("The One Task Process 'en' localized name", processInstance.getName());

@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
@@ -36,11 +41,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Joram Barrez
@@ -88,7 +90,7 @@ public class BpmnDeployer implements Deployer {
     
     cachingAndArtifactsManager.updateCachingAndArtifacts(parsedDeployment);
     
-    for(ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
       BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
       createLocalizationValues(processDefinition.getId(), bpmnModel.getProcessById(processDefinition.getKey()));  
     }
@@ -246,6 +248,117 @@ public class BpmnDeployer implements Deployer {
     }
   }
   
+  protected void createLocalizationValues(String processDefinitionId, Process process) {
+    if (process == null) return;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
+    ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processDefinitionId);
+
+    boolean localizationValuesChanged = false;
+    List<ExtensionElement> localizationElements = process.getExtensionElements().get("localization");
+    if (localizationElements != null) {
+      for (ExtensionElement localizationElement : localizationElements) {
+        if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
+          String locale = localizationElement.getAttributeValue(null, "locale");
+          String name = localizationElement.getAttributeValue(null, "name");
+          String documentation = null;
+          List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+          if (documentationElements != null) {
+            for (ExtensionElement documentationElement : documentationElements) {
+              documentation = StringUtils.trimToNull(documentationElement.getElementText());
+              break;
+            }
+          }
+
+          String processId = process.getId();
+          if (isEqualToCurrentLocalizationValue(locale, processId, "name", name, infoNode) == false) {
+            dynamicBpmnService.changeLocalizationName(locale, processId, name, infoNode);
+            localizationValuesChanged = true;
+          }
+          
+          if (documentation != null && isEqualToCurrentLocalizationValue(locale, processId, "description", documentation, infoNode) == false) {
+            dynamicBpmnService.changeLocalizationDescription(locale, processId, documentation, infoNode);
+            localizationValuesChanged = true;
+          }
+          
+          break;
+        }
+      }
+    }
+
+    boolean isFlowElementLocalizationChanged = localizeFlowElements(process.getFlowElements(), infoNode);
+    if (isFlowElementLocalizationChanged) {
+      localizationValuesChanged = true;
+    }
+
+    if (localizationValuesChanged) {
+      dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    }
+  }
+  
+  protected boolean localizeFlowElements(Collection<FlowElement> flowElements, ObjectNode infoNode) {
+    boolean localizationValuesChanged = false;
+    
+    if (flowElements == null) return localizationValuesChanged;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
+    
+    for (FlowElement flowElement : flowElements) {
+      if (flowElement instanceof UserTask || flowElement instanceof SubProcess) {
+        List<ExtensionElement> localizationElements = flowElement.getExtensionElements().get("localization");
+        if (localizationElements != null) {
+          for (ExtensionElement localizationElement : localizationElements) {
+            if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
+              String locale = localizationElement.getAttributeValue(null, "locale");
+              String name = localizationElement.getAttributeValue(null, "name");
+              String documentation = null;
+              List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+              if (documentationElements != null) {
+                for (ExtensionElement documentationElement : documentationElements) {
+                  documentation = StringUtils.trimToNull(documentationElement.getElementText());
+                  break;
+                }
+              }
+
+              String flowElementId = flowElement.getId();
+              if (isEqualToCurrentLocalizationValue(locale, flowElementId, "name", name, infoNode) == false) {
+                dynamicBpmnService.changeLocalizationName(locale, flowElementId, name, infoNode);
+                localizationValuesChanged = true;
+              }
+              
+              if (documentation != null && isEqualToCurrentLocalizationValue(locale, flowElementId, "description", documentation, infoNode) == false) {
+                dynamicBpmnService.changeLocalizationDescription(locale, flowElementId, documentation, infoNode);
+                localizationValuesChanged = true;
+              }
+              
+              break;
+            }
+          }
+        }
+        
+        if (flowElement instanceof SubProcess) {
+          boolean isSubProcessLocalized = localizeFlowElements(((SubProcess) flowElement).getFlowElements(), infoNode);
+          if (isSubProcessLocalized) {
+            localizationValuesChanged = true;
+          }
+        }
+      }
+    }
+    
+    return localizationValuesChanged;
+  }
+  
+  protected boolean isEqualToCurrentLocalizationValue(String language, String id, String propertyName, String propertyValue, ObjectNode infoNode) {
+    boolean isEqual = false;
+    JsonNode localizationNode = infoNode.path("localization").path(language).path(id).path(propertyName);
+    if (localizationNode.isMissingNode() == false && localizationNode.isNull() == false && localizationNode.asText().equals(propertyValue)) {
+      isEqual = true;
+    }
+    return isEqual;
+  }
+  
   public IdGenerator getIdGenerator() {
     return idGenerator;
   }
@@ -284,67 +397,5 @@ public class BpmnDeployer implements Deployer {
 
   public void setProcessDefinitionDiagramHelper(ProcessDefinitionDiagramHelper processDefinitionDiagramHelper) {
     this.processDefinitionDiagramHelper = processDefinitionDiagramHelper;
-  }
-
-  protected void createLocalizationValues(String processDefinitionId, Process process) {
-    CommandContext commandContext = Context.getCommandContext();
-    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
-    ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processDefinitionId);
-
-    List<ExtensionElement> localizationElements = process.getExtensionElements().get("localization");
-    if(localizationElements != null) {
-      for(ExtensionElement localizationElement : localizationElements) {
-        if(BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
-          String locale = localizationElement.getAttributeValue(null, "locale");
-          String name = localizationElement.getAttributeValue(null, "name");
-          String documentation = null;
-          List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
-          if(documentationElements != null) {
-            for(ExtensionElement documentationElement : documentationElements) {
-              documentation = StringUtils.trimToNull(documentationElement.getElementText());
-              break;
-            }
-          }
-
-          String processId = process.getId();
-          dynamicBpmnService.changeLocalizationName(locale, processId, name, infoNode);
-          if(documentation != null) {
-            dynamicBpmnService.changeLocalizationDescription(locale, processId, documentation, infoNode);
-          }
-        }
-      }
-    }
-
-    for(FlowElement flowElement : process.getFlowElements()) {
-      if(flowElement instanceof UserTask || flowElement instanceof SubProcess) {
-        localizationElements = flowElement.getExtensionElements().get("localization");
-        if(localizationElements != null) {
-          for(ExtensionElement localizationElement : localizationElements) {
-            if(BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
-              String locale = localizationElement.getAttributeValue(null, "locale");
-              String name = localizationElement.getAttributeValue(null, "name");
-              String documentation = null;
-              List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
-              if(documentationElements != null) {
-                for(ExtensionElement documentationElement : documentationElements) {
-                  documentation = StringUtils.trimToNull(documentationElement.getElementText());
-                  break;
-                }
-              }
-
-              String flowElementId = flowElement.getId();
-              dynamicBpmnService.changeLocalizationName(locale, flowElementId, name, infoNode);
-              if(documentation != null) {
-                dynamicBpmnService.changeLocalizationDescription(locale, flowElementId, documentation, infoNode);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if(null != infoNode) {
-      dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
-    }
   }
 }

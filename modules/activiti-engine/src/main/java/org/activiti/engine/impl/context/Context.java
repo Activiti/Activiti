@@ -135,17 +135,18 @@ public class Context {
     ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
     ObjectNode localizationProperties = null;
     if (definitionInfoNode != null) {
-      if(!useFallback) {
-        localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(language, id,
-                definitionInfoNode);
-      }
-      else {
+      if (useFallback == false) {
+        localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
+            language, id, definitionInfoNode);
+        
+      } else {
         HashSet<Locale> candidateLocales = new LinkedHashSet<Locale>();
-        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, Locale.forLanguageTag(language)));
+        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, new Locale(language)));
         candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, Locale.getDefault()));
         for (Locale locale : candidateLocales) {
-          localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(locale.toLanguageTag(), id,
-                  definitionInfoNode);
+          localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
+              locale.getLanguage(), id, definitionInfoNode);
+          
           if (localizationProperties != null) {
             break;
           }
