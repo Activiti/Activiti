@@ -572,7 +572,6 @@
         and RES.PARENT_TASK_ID_ IS NULL
       </if>
       <if test="!bothCandidateAndAssigned &amp;&amp; (candidateUser != null || candidateGroups != null)">
-        and RES.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
         and 
         ( 

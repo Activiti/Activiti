@@ -71,9 +71,9 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     // Claim task
     taskService.claim(taskId, "kermit");
 
-    // Tasks shouldn't appear in the candidate tasklists anymore
-    assertTrue(taskService.createTaskQuery().taskCandidateUser("kermit").list().isEmpty());
-    assertTrue(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty());
+    // ACT-1395: Allow to fetch tasks that are in a candidateGroup and that are already assigned
+    assertFalse(taskService.createTaskQuery().taskCandidateUser("kermit").list().isEmpty());
+    assertFalse(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty());
 
     // Complete task
     taskService.deleteTask(taskId, true);
