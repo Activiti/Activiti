@@ -1356,7 +1356,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertNull(execution.getName());
         assertNull(execution.getDescription());
         
-      } else if (execution.getParentId() == execution.getProcessInstanceId()){
+      } else if (execution.getParentId().equals(execution.getProcessInstanceId())){
         assertNull(execution.getName());
         assertNull(execution.getDescription());
       }
@@ -1386,7 +1386,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertNull(execution.getName());
         assertNull(execution.getDescription());
         
-      } else if (execution.getParentId() == execution.getProcessInstanceId()) {
+      } else if (execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertNull(execution.getName());
         assertNull(execution.getDescription());
         subProcessId = execution.getId();
@@ -1400,7 +1400,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertEquals("Nombre del proceso", execution.getName());
         assertEquals("Descripción del proceso", execution.getDescription());
         
-      } else if (execution.getParentId() == execution.getProcessInstanceId()) {
+      } else if (execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertEquals("Nombre Subproceso", execution.getName());
         assertEquals("Subproceso Descripción", execution.getDescription());
       }
@@ -1413,7 +1413,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertEquals("Process Name 'en-GB'", execution.getName());
         assertEquals("Process Description 'en-GB'", execution.getDescription());
         
-      } else if(execution.getParentId() == execution.getProcessInstanceId()) {
+      } else if(execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertEquals("Sub task Name 'en-GB'", execution.getName());
         assertEquals("Sub task Description 'en-GB'", execution.getDescription());
       }
@@ -1426,7 +1426,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertNull(execution.getName());
         assertNull(execution.getDescription());
         
-      } else if (execution.getParentId() == execution.getProcessInstanceId()) {
+      } else if (execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertNull(execution.getName());
         assertNull(execution.getDescription());
       }
@@ -1439,7 +1439,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertEquals("Nombre del proceso", execution.getName());
         assertEquals("Descripción del proceso", execution.getDescription());
         
-      } else if(execution.getParentId() == execution.getProcessInstanceId()) {
+      } else if(execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertEquals("Nombre Subproceso", execution.getName());
         assertEquals("Subproceso Descripción", execution.getDescription());
       }
@@ -1452,7 +1452,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertEquals("Process Name 'en-GB'", execution.getName());
         assertEquals("Process Description 'en-GB'", execution.getDescription());
         
-      } else if(execution.getParentId() == execution.getProcessInstanceId()) {
+      } else if(execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertEquals("Sub task Name 'en-GB'", execution.getName());
         assertEquals("Sub task Description 'en-GB'", execution.getDescription());
       }
