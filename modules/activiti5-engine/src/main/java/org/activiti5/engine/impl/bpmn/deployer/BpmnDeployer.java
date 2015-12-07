@@ -264,7 +264,7 @@ public class BpmnDeployer implements Deployer {
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
       
-      createLocalizationValues(processDefinition.getId(), bpmnModelMap.get(processDefinition.getKey()).getProcessById(processDefinition.getKey()));  
+      createLocalizationValues(processDefinition.getId(), bpmnModelMap.get(processDefinition.getKey()).getProcessById(processDefinition.getKey()));
     }
   }
   

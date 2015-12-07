@@ -289,7 +289,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       .findExecutionCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({ "unchecked" })
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();

@@ -276,7 +276,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   /**
    * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
    */
-  public ExecutionQuery withLocalizationFallback();
+  ExecutionQuery withLocalizationFallback();
   
   //ordering //////////////////////////////////////////////////////////////
   

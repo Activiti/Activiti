@@ -82,6 +82,12 @@ public interface HistoricProcessInstance {
    */
   String getDescription();
   
+  /** Sets an optional localized name for the process instance. */
+  void setLocalizedName(String name);
+  
+  /** Sets an optional localized description for the process instance. */
+  void setLocalizedDescription(String description);
+  
   /** Returns the process variables if requested in the process instance query */
   Map<String, Object> getProcessVariables();
 }

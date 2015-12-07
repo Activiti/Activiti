@@ -26,7 +26,6 @@ import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
-import org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti5.engine.impl.variable.VariableTypes;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -1073,9 +1072,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
   
   protected void localize(HistoricTaskInstance task) {
-    HistoricTaskInstanceEntity taskEntity = (HistoricTaskInstanceEntity) task;
-    taskEntity.setLocalizedName(null);
-    taskEntity.setLocalizedDescription(null);
+    task.setLocalizedName(null);
+    task.setLocalizedDescription(null);
     
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
@@ -1084,12 +1082,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (languageNameNode != null && languageNameNode.isNull() == false) {
-            taskEntity.setLocalizedName(languageNameNode.asText());
+            task.setLocalizedName(languageNameNode.asText());
           }
           
           JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
           if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
-            taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
+            task.setLocalizedDescription(languageDescriptionNode.asText());
           }
         }
       }

@@ -26,7 +26,6 @@ import org.activiti5.engine.history.HistoricProcessInstanceQuery;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
-import org.activiti5.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -550,24 +549,23 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   protected void localize(HistoricProcessInstance processInstance, CommandContext commandContext) {
-    HistoricProcessInstanceEntity processInstanceEntity = (HistoricProcessInstanceEntity) processInstance;
-    processInstanceEntity.setLocalizedName(null);
-    processInstanceEntity.setLocalizedDescription(null);
+    processInstance.setLocalizedName(null);
+    processInstance.setLocalizedDescription(null);
 
     if (locale != null && processInstance.getProcessDefinitionId() != null) {
-      ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
+      ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
       ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinition.getKey(), 
-          processInstanceEntity.getProcessDefinitionId(), withLocalizationFallback);
+          processInstance.getProcessDefinitionId(), withLocalizationFallback);
       
       if (languageNode != null) {
         JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
         if (languageNameNode != null && languageNameNode.isNull() == false) {
-          processInstanceEntity.setLocalizedName(languageNameNode.asText());
+          processInstance.setLocalizedName(languageNameNode.asText());
         }
 
         JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
         if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
-          processInstanceEntity.setLocalizedDescription(languageDescriptionNode.asText());
+          processInstance.setLocalizedDescription(languageDescriptionNode.asText());
         }
       }
     }
