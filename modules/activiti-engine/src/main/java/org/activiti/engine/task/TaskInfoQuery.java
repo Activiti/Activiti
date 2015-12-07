@@ -542,6 +542,11 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   T locale(String locale);
   
   /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  T withLocalizationFallback();
+  
+  /**
    * All query clauses called will be added to a single or-statement. This or-statement will be
    * included with the other already existing clauses in the query, joined by an 'and'.
    * 
