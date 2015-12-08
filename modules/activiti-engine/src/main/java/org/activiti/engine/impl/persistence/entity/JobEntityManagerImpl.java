@@ -268,21 +268,35 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   public void delete(JobEntity jobEntity) {
     super.delete(jobEntity);
 
-    ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();
+    deleteExceptionByteArrayRef(jobEntity);
 
-    // Also delete the job's exception byte array
-    exceptionByteArrayRef.delete();
-
-    // remove link to execution
-    if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getJobs().remove(this);
-    }
+    removeExecutionLink(jobEntity);
     
     // Send event
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
     }
+  }
+
+  /**
+   * Removes the job's execution's reference to this job, iff the job has an associated execution.
+   * Subclasses may override to provide custom implementations.
+   */
+  protected void removeExecutionLink(JobEntity jobEntity) {
+    if (jobEntity.getExecutionId() != null) {
+      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
+      execution.getJobs().remove(this);
+    }
+  }
+
+  /**
+   * Deletes a the byte array used to store the exception information.  Subclasses may override
+   * to provide custom implementations. 
+   */
+  protected void deleteExceptionByteArrayRef(JobEntity jobEntity) {
+    ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();
+
+    exceptionByteArrayRef.delete();
   }
   
   // Job Execution logic ////////////////////////////////////////////////////////////////////
