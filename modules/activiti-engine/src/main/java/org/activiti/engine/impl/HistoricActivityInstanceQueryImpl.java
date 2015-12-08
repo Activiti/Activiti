@@ -116,6 +116,10 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     this.tenantId = tenantId;
     return this;
   }
+  
+  public String getTenantId() {
+    return tenantId;
+  }
 
   public HistoricActivityInstanceQueryImpl activityTenantIdLike(String tenantIdLike) {
     if (tenantIdLike == null) {
@@ -124,11 +128,19 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     this.tenantIdLike = tenantIdLike;
     return this;
   }
+  
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
 
   public HistoricActivityInstanceQueryImpl activityWithoutTenantId() {
     this.withoutTenantId = true;
     return this;
   }
+  
+  public boolean isWithoutTenantId() {
+    return withoutTenantId;
+  }  
 
   // ordering
   // /////////////////////////////////////////////////////////////////
