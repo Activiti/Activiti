@@ -47,11 +47,42 @@ public class VariablesTest extends PluggableActivitiTestCase {
     byte[] bytes1 = "somebytes1".getBytes();
     byte[] bytes2 = "somebytes2".getBytes();
 
+    // 2000 characters * 2 bytes = 4000 bytes
+    StringBuilder long2000StringBuilder = new StringBuilder();
+    for (int i = 0; i < 2000; i++) {
+      long2000StringBuilder.append("z");
+    }
+
+    // 2001 characters * 2 bytes  = 4002 bytes
+    StringBuilder long2001StringBuilder = new StringBuilder();
+
+    for (int i = 0; i < 2000; i++) {
+      long2001StringBuilder.append("a");
+    }
+    long2001StringBuilder.append("a");
+
+
+    // 8000 bytes (2000 chars * 4 bytes/characters)
+    StringBuilder long4000StringBuilder = new StringBuilder();
+    for (int i = 0; i < 2000; i++) {
+      long4000StringBuilder.append("\uD841\uDF31");
+    }
+
+    // 4002 characters
+    StringBuilder long4001StringBuilder = new StringBuilder();
+
+    for (int i = 0; i < 4000; i++) {
+      long4001StringBuilder.append("a");
+    }
+    long4001StringBuilder.append("a");
+
     // Start process instance with different types of variables
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("longVar", 928374L);
     variables.put("shortVar", (short) 123);
     variables.put("integerVar", 1234);
+    variables.put("longString4000chars", long4000StringBuilder.toString());
+    variables.put("longString2000chars", long2000StringBuilder.toString());
     variables.put("stringVar", "coca-cola");
     variables.put("dateVar", now);
     variables.put("nullVar", null);
@@ -66,19 +97,23 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals((short) 123, variables.get("shortVar"));
     assertEquals(1234, variables.get("integerVar"));
     assertEquals("coca-cola", variables.get("stringVar"));
+    assertEquals(long2000StringBuilder.toString(), variables.get("longString2000chars"));
+    assertEquals(long4000StringBuilder.toString(), variables.get("longString4000chars"));
     assertEquals(now, variables.get("dateVar"));
     assertEquals(null, variables.get("nullVar"));
     assertEquals(serializable, variables.get("serializableVar"));
     assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
     assertEquals(new CustomType(bytes2), variables.get("customVar1"));
     assertEquals(null, variables.get("customVar2"));
-    assertEquals(10, variables.size());
+    assertEquals(12, variables.size());
 
     // Set all existing variables values to null
     runtimeService.setVariable(processInstance.getId(), "longVar", null);
     runtimeService.setVariable(processInstance.getId(), "shortVar", null);
     runtimeService.setVariable(processInstance.getId(), "integerVar", null);
     runtimeService.setVariable(processInstance.getId(), "stringVar", null);
+    runtimeService.setVariable(processInstance.getId(), "longString2000chars", null);
+    runtimeService.setVariable(processInstance.getId(), "longString4000chars", null);
     runtimeService.setVariable(processInstance.getId(), "dateVar", null);
     runtimeService.setVariable(processInstance.getId(), "nullVar", null);
     runtimeService.setVariable(processInstance.getId(), "serializableVar", null);
@@ -91,13 +126,15 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(null, variables.get("shortVar"));
     assertEquals(null, variables.get("integerVar"));
     assertEquals(null, variables.get("stringVar"));
+    assertEquals(null, variables.get("longString2000chars"));
+    assertEquals(null, variables.get("longString4000chars"));
     assertEquals(null, variables.get("dateVar"));
     assertEquals(null, variables.get("nullVar"));
     assertEquals(null, variables.get("serializableVar"));
     assertEquals(null, variables.get("bytesVar"));
     assertEquals(null, variables.get("customVar1"));
     assertEquals(null, variables.get("customVar2"));
-    assertEquals(10, variables.size());
+    assertEquals(12, variables.size());
 
     // Update existing variable values again, and add a new variable
     runtimeService.setVariable(processInstance.getId(), "new var", "hi");
@@ -105,6 +142,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "shortVar", (short) 456);
     runtimeService.setVariable(processInstance.getId(), "integerVar", 4567);
     runtimeService.setVariable(processInstance.getId(), "stringVar", "colgate");
+    runtimeService.setVariable(processInstance.getId(), "longString2000chars", long2001StringBuilder.toString());
+    runtimeService.setVariable(processInstance.getId(), "longString4000chars", long4001StringBuilder.toString());
     runtimeService.setVariable(processInstance.getId(), "dateVar", now);
     runtimeService.setVariable(processInstance.getId(), "serializableVar", serializable);
     runtimeService.setVariable(processInstance.getId(), "bytesVar", bytes1);
@@ -117,13 +156,15 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals((short) 456, variables.get("shortVar"));
     assertEquals(4567, variables.get("integerVar"));
     assertEquals("colgate", variables.get("stringVar"));
+    assertEquals(long2001StringBuilder.toString(), variables.get("longString2000chars"));
+    assertEquals(long4001StringBuilder.toString(), variables.get("longString4000chars"));
     assertEquals(now, variables.get("dateVar"));
     assertEquals(null, variables.get("nullVar"));
     assertEquals(serializable, variables.get("serializableVar"));
     assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
     assertEquals(new CustomType(bytes2), variables.get("customVar1"));
     assertEquals(new CustomType(bytes1), variables.get("customVar2"));
-    assertEquals(11, variables.size());
+    assertEquals(13, variables.size());
 
     Collection<String> varFilter = new ArrayList<String>(2);
     varFilter.add("stringVar");
@@ -333,8 +374,10 @@ class CustomType {
       return true;
     if (obj == null)
       return false;
+    
     if (getClass() != obj.getClass())
       return false;
+
     CustomType other = (CustomType) obj;
     if (!Arrays.equals(value, other.value))
       return false;
@@ -344,7 +387,7 @@ class CustomType {
 
 /**
  * A custom variable type for testing byte array value handling.
- * 
+ *
  * @author Marcus Klimstra (CGI)
  */
 class CustomVariableType implements VariableType {

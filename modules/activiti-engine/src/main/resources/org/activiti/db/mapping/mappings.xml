@@ -5,6 +5,7 @@
 <configuration>
   <settings>
     <setting name="lazyLoadingEnabled" value="false" />
+    <setting name="jdbcTypeForNull" value="NULL" />
   </settings>
   <typeAliases>
     <typeAlias type="org.activiti.engine.impl.persistence.ByteArrayRefTypeHandler" alias="ByteArrayRefTypeHandler"/>

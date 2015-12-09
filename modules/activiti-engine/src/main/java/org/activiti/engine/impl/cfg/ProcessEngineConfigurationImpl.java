@@ -333,7 +333,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
   private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
-
+  
+  public static final int DEFAULT_GENERIC_MAX_LENGTH_STRING= 4000;
+  public static final int DEFAULT_ORACLE_MAX_LENGTH_STRING= 2000;
+  
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
 
@@ -566,7 +569,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   *  Define a max length for storing String variable types in the database.
   *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
   */
-  protected int maxLengthStringVariableType = 4000;
+  protected int maxLengthStringVariableType = -1;
   
   /**
    * If set to true, enables bulk insert (grouping sql inserts together).
@@ -643,6 +646,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initProcessDiagramGenerator();
     initHistoryLevel();
     initExpressionManager();
+    
+    if (usingRelationalDatabase) {
+      initDataSource();
+    }
+    
     initVariableTypes();
     initBeans();
     initFormEngines();
@@ -662,11 +670,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initJobHandlers();
     initJobExecutor();
     initAsyncExecutor();
-    
-    if (usingRelationalDatabase) {
-      initDataSource();
-    }
-    
     initTransactionFactory();
     
     if (usingRelationalDatabase) {
@@ -1698,8 +1701,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
       }
       variableTypes.addType(new NullType());
-      variableTypes.addType(new StringType(maxLengthStringVariableType));
-      variableTypes.addType(new LongStringType(maxLengthStringVariableType + 1));
+      variableTypes.addType(new StringType(getMaxLengthString()));
+      variableTypes.addType(new LongStringType(getMaxLengthString() + 1));
       variableTypes.addType(new BooleanType());
       variableTypes.addType(new ShortType());
       variableTypes.addType(new IntegerType());
@@ -1707,8 +1710,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DateType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
-      variableTypes.addType(new JsonType(maxLengthStringVariableType, objectMapper));
-      variableTypes.addType(new LongJsonType(maxLengthStringVariableType + 1, objectMapper));
+      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));
+      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper));
       variableTypes.addType(new ByteArrayType());
       variableTypes.addType(new SerializableType());
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
@@ -1718,6 +1721,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           variableTypes.addType(customVariableType);
         }
       }
+    }
+  }
+
+  protected int getMaxLengthString() {
+    if (maxLengthStringVariableType == -1) {
+      if ("oracle".equalsIgnoreCase(databaseType) == true) {
+        return DEFAULT_ORACLE_MAX_LENGTH_STRING;
+      } else {
+        return DEFAULT_GENERIC_MAX_LENGTH_STRING;
+      }
+    } else {
+      return maxLengthStringVariableType;
     }
   }
 
