@@ -142,9 +142,6 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return userId;
   }
 
-  public static long getSerialversionuid() {
-    return serialVersionUID;
-  }
 
   public String getProcDefId() {
     return procDefId;
