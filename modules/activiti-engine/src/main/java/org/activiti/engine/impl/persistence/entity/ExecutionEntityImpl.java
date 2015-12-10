@@ -765,7 +765,15 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     this.isDeleted = isDeleted;
   }
   
-  // toString /////////////////////////////////////////////////////////////////
+  public int getCachedEntityState() {
+    return cachedEntityState;
+  }
+
+  public String getActivityName() {
+    return activityName;
+  }
+  
+//toString /////////////////////////////////////////////////////////////////
 
   public String toString() {
     if (isProcessInstanceType()) {

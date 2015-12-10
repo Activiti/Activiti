@@ -389,6 +389,22 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   public boolean isWithoutTenantId() {
     return withoutTenantId;
   }
+  
+  public String getAuthorizationUserId() {
+    return authorizationUserId;
+  }
+
+  public String getProcDefId() {
+    return procDefId;
+  }
+
+  public String getEventSubscriptionName() {
+    return eventSubscriptionName;
+  }
+
+  public String getEventSubscriptionType() {
+    return eventSubscriptionType;
+  }
 
   public ProcessDefinitionQueryImpl startableByUser(String userId) {
     if (userId == null) {

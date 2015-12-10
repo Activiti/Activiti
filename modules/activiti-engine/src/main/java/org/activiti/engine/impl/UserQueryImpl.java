@@ -198,4 +198,12 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     return fullNameLike;
   }
 
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  public String getProcDefId() {
+    return procDefId;
+  }
+  
 }

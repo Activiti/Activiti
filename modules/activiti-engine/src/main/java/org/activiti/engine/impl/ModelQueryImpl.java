@@ -243,4 +243,41 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   public String getCategoryNotEquals() {
     return categoryNotEquals;
   }
+
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public boolean isLatest() {
+    return latest;
+  }
+
+  public String getDeploymentId() {
+    return deploymentId;
+  }
+
+  public boolean isNotDeployed() {
+    return notDeployed;
+  }
+
+  public boolean isDeployed() {
+    return deployed;
+  }
+
+  public String getTenantId() {
+    return tenantId;
+  }
+
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
+
+  public boolean isWithoutTenantId() {
+    return withoutTenantId;
+  }
+  
 }

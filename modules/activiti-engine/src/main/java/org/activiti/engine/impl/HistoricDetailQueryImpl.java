@@ -172,6 +172,10 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
 
   // getters and setters
   // //////////////////////////////////////////////////////
+  
+  public String getId() {
+    return id;
+  }
 
   public String getProcessInstanceId() {
     return processInstanceId;
@@ -192,4 +196,13 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   public boolean getExcludeTaskRelated() {
     return excludeTaskRelated;
   }
+
+  public String getExecutionId() {
+    return executionId;
+  }
+
+  public String getActivityInstanceId() {
+    return activityInstanceId;
+  }
+  
 }

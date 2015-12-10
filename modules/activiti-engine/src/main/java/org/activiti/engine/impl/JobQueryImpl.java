@@ -279,4 +279,44 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return withoutTenantId;
   }
 
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public boolean isOnlyTimers() {
+    return onlyTimers;
+  }
+
+  public boolean isOnlyMessages() {
+    return onlyMessages;
+  }
+
+  public Date getDuedateHigherThan() {
+    return duedateHigherThan;
+  }
+
+  public Date getDuedateLowerThan() {
+    return duedateLowerThan;
+  }
+
+  public Date getDuedateHigherThanOrEqual() {
+    return duedateHigherThanOrEqual;
+  }
+
+  public Date getDuedateLowerThanOrEqual() {
+    return duedateLowerThanOrEqual;
+  }
+
+  public boolean isNoRetriesLeft() {
+    return noRetriesLeft;
+  }
+  
 }
