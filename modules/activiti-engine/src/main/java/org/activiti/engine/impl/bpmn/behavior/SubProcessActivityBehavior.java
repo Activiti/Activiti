@@ -25,7 +25,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess defined within another process definition.
@@ -40,13 +40,13 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     SubProcess subProcess = getSubProcessFromExecution(execution);
 
     FlowElement startElement = null;
-    if (CollectionUtils.isNotEmpty(subProcess.getFlowElements())) {
+    if (CollectionUtil.isNotEmpty(subProcess.getFlowElements())) {
       for (FlowElement subElement : subProcess.getFlowElements()) {
         if (subElement instanceof StartEvent) {
           StartEvent startEvent = (StartEvent) subElement;
 
           // start none event
-          if (CollectionUtils.isEmpty(startEvent.getEventDefinitions())) {
+          if (CollectionUtil.isEmpty(startEvent.getEventDefinitions())) {
             startElement = startEvent;
             break;
           }

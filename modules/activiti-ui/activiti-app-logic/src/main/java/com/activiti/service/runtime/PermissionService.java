@@ -17,18 +17,14 @@
  */
 package com.activiti.service.runtime;
 
-import com.activiti.domain.idm.Group;
-import com.activiti.domain.idm.User;
-import com.activiti.domain.runtime.RelatedContent;
-import com.activiti.domain.runtime.RuntimeAppDeployment;
-import com.activiti.repository.runtime.RuntimeAppDeploymentRepository;
-import com.activiti.repository.runtime.RuntimeAppRepository;
-import com.activiti.service.exception.NotFoundException;
-import com.activiti.service.exception.NotPermittedException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -39,14 +35,19 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.activiti.domain.idm.Group;
+import com.activiti.domain.idm.User;
+import com.activiti.domain.runtime.RelatedContent;
+import com.activiti.domain.runtime.RuntimeAppDeployment;
+import com.activiti.repository.runtime.RuntimeAppDeploymentRepository;
+import com.activiti.repository.runtime.RuntimeAppRepository;
+import com.activiti.service.exception.NotFoundException;
+import com.activiti.service.exception.NotPermittedException;
 
 /**
  * Centralized service for all permission-checks.

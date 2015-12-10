@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -174,7 +172,7 @@ public class FormDefinitionRepresentation {
     }
 
     protected void collectSubFields(List<FormFieldRepresentation> fields, List<FormFieldRepresentation> listOfAllFields) {
-        if (CollectionUtils.isNotEmpty(fields)) {
+        if (fields != null && fields.size() > 0) {
             for (FormFieldRepresentation field : fields) {
                 listOfAllFields.add(field);
                 if (field instanceof ContainerRepresentation) {

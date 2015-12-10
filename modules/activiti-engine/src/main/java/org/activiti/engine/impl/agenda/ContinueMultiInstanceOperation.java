@@ -11,8 +11,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.logging.LogMDC;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
   protected void continueThroughFlowNode(FlowNode flowNode) {
     // Execution listener
-    if (CollectionUtils.isNotEmpty(flowNode.getExecutionListeners())) {
+    if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
     

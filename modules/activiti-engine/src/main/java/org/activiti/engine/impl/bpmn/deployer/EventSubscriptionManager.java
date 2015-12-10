@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
+import java.util.List;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
@@ -31,9 +33,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.apache.commons.collections.CollectionUtils;
-
-import java.util.List;
+import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * Manages event subscriptions for newly-deployed process definitions and their previous versions.
@@ -66,11 +66,11 @@ public class EventSubscriptionManager {
   }
 
   protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, Process process, BpmnModel bpmnModel) {
-    if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+    if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
           StartEvent startEvent = (StartEvent) element;
-          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+          if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof MessageEventDefinition) {
               MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
@@ -117,11 +117,11 @@ public class EventSubscriptionManager {
   }
 
   protected void addSignalEventSubscriptions(CommandContext commandContext, ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
-    if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+    if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
           StartEvent startEvent = (StartEvent) element;
-          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+          if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof SignalEventDefinition) {
               SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;

@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.activiti.domain.editor.AbstractModel;

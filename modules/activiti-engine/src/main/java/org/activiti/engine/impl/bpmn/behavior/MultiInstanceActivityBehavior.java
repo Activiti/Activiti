@@ -38,8 +38,8 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,12 +113,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
     //Execute compensation boundary events
     Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowElement);
-    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+    if (CollectionUtil.isNotEmpty(boundaryEvents)) {
       
       // The parent execution becomes a scope, and a child execution is created for each of the boundary events
       for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
-        if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+        if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
           continue;
         }
 
@@ -300,7 +300,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     // TODO: needs to be made generic with callActivityEndListeners and calling activiti listeners in general!
     
     List<ActivitiListener> listeners = activity.getExecutionListeners();
-    if (CollectionUtils.isNotEmpty(listeners)) {
+    if (CollectionUtil.isNotEmpty(listeners)) {
       
       ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
       
@@ -346,7 +346,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    */
   protected void callActivityEndListeners(DelegateExecution execution) {
     List<ActivitiListener> listeners = activity.getExecutionListeners();
-    if (CollectionUtils.isNotEmpty(listeners)) {
+    if (CollectionUtil.isNotEmpty(listeners)) {
       
       ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
       

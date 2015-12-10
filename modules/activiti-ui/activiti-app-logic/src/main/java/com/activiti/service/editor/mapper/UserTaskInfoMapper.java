@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.UserTask;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class UserTaskInfoMapper extends AbstractInfoMapper {

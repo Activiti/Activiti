@@ -25,8 +25,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.
@@ -46,7 +46,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
   public void leave(DelegateExecution execution) {
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
     Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);
-    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+    if (CollectionUtil.isNotEmpty(boundaryEvents)) {
       executeCompensateBoundaryEvents(boundaryEvents, execution);
     }
     if (!hasLoopCharacteristics()) {
@@ -61,7 +61,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
     // The parent execution becomes a scope, and a child execution is created for each of the boundary events
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
-      if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+      if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
         continue;
       }
       

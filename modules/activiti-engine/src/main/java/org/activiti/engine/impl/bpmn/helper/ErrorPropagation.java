@@ -39,11 +39,11 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -150,7 +150,7 @@ public class ErrorPropagation {
         
         for (String refId : eventMap.keySet()) {
           List<Event> events = eventMap.get(refId);
-          if (CollectionUtils.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
+          if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
             if (currentContainer.getFlowElement(refId) != null) {
               matchingEvent = events.get(0);
             }
@@ -229,7 +229,7 @@ public class ErrorPropagation {
       for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
         if (flowElement instanceof StartEvent) {
           StartEvent startEvent = (StartEvent) flowElement;
-          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+          if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
             ErrorEventDefinition errorEventDef = (ErrorEventDefinition) startEvent.getEventDefinitions().get(0);
             String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorCode());
             
@@ -245,7 +245,7 @@ public class ErrorPropagation {
     
     List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
-      if (boundaryEvent.getAttachedToRefId() != null && CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+      if (boundaryEvent.getAttachedToRefId() != null && CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
 
         ErrorEventDefinition errorEventDef = (ErrorEventDefinition) boundaryEvent.getEventDefinitions().get(0);
         String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorCode());
@@ -287,7 +287,7 @@ public class ErrorPropagation {
       
       if (callActivityExecution != null) {
         CallActivity callActivity = (CallActivity) callActivityExecution.getCurrentFlowElement();
-        if (CollectionUtils.isNotEmpty(callActivity.getMapExceptions())) {
+        if (CollectionUtil.isNotEmpty(callActivity.getMapExceptions())) {
           errorCode = findMatchingExceptionMapping(e, callActivity.getMapExceptions());
           if (errorCode != null) {
             propagateError(errorCode, callActivityExecution);

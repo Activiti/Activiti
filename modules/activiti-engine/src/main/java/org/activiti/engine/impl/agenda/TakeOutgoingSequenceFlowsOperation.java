@@ -21,8 +21,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +56,11 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     
     } else if (currentFlowElement instanceof Activity) {
       Activity activity = (Activity) currentFlowElement;
-      if (CollectionUtils.isNotEmpty(activity.getBoundaryEvents())) {
+      if (CollectionUtil.isNotEmpty(activity.getBoundaryEvents())) {
         
         List<String> notToDeleteEvents = new ArrayList<String>();
         for (BoundaryEvent event : activity.getBoundaryEvents()) {
-          if (CollectionUtils.isNotEmpty(event.getEventDefinitions()) && 
+          if (CollectionUtil.isNotEmpty(event.getEventDefinitions()) && 
               event.getEventDefinitions().get(0) instanceof CancelEventDefinition) {
             
             notToDeleteEvents.add(event.getId());
@@ -78,7 +78,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     }
     
     // Execution listener for end: the flow node is now ended
-    if (CollectionUtils.isNotEmpty(currentFlowElement.getExecutionListeners())
+    if (CollectionUtil.isNotEmpty(currentFlowElement.getExecutionListeners())
         && !execution.isProcessInstanceType()) { // a process instance execution can never leave a flownode, but it can pass here whilst cleaning up
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }

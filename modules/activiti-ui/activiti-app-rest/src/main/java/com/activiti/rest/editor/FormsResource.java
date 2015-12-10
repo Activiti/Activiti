@@ -26,8 +26,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import com.activiti.model.editor.form.ContainerRepresentation;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -47,6 +46,7 @@ import com.activiti.model.editor.EditorValuesRepresentation;
 import com.activiti.model.editor.FormFieldSummaryRepresentation;
 import com.activiti.model.editor.FormFieldValuesRepresentation;
 import com.activiti.model.editor.OutcomeValuesRepresentation;
+import com.activiti.model.editor.form.ContainerRepresentation;
 import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.model.editor.form.FormFieldRepresentation;
 import com.activiti.model.editor.form.FormRepresentation;

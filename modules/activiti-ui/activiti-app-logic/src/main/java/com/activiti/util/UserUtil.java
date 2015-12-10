@@ -20,7 +20,7 @@ package com.activiti.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 
 import com.activiti.domain.idm.Group;
 import com.activiti.domain.idm.User;

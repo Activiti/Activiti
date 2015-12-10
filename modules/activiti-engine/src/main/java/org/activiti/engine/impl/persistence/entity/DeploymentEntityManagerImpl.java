@@ -31,13 +31,13 @@ import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
-import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Tom Baeyens
@@ -159,11 +159,11 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
         if (previousProcessDefinition != null) {
 
           org.activiti.bpmn.model.Process previousProcess = ProcessDefinitionUtil.getProcess(previousProcessDefinition.getId());
-          if (CollectionUtils.isNotEmpty(previousProcess.getFlowElements())) {
+          if (CollectionUtil.isNotEmpty(previousProcess.getFlowElements())) {
             List<StartEvent> startEvents = previousProcess.findFlowElementsOfType(StartEvent.class);
-            if (CollectionUtils.isNotEmpty(startEvents)) {
+            if (CollectionUtil.isNotEmpty(startEvents)) {
               for (StartEvent startEvent : startEvents) {
-                if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+                if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
                   EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                   if (eventDefinition instanceof TimerEventDefinition) {
                     TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;

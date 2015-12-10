@@ -26,7 +26,7 @@ import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * @author Joram Barrez
@@ -105,9 +105,9 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
         for (FlowElement subElement : subProcess.getFlowElements()) {
           if (subElement instanceof Activity) {
             Activity subActivity = (Activity) subElement;
-            if (CollectionUtils.isNotEmpty(subActivity.getBoundaryEvents())) {
+            if (CollectionUtil.isNotEmpty(subActivity.getBoundaryEvents())) {
               for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
-                if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                if (CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
                     boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                   
                   hasCompensation = true;

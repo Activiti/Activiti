@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * @author Joram Barrez
@@ -40,7 +40,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
   @Override
   protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
     if (element.getSubProcess() != null && element.getSubProcess() instanceof EventSubProcess) {
-      if (CollectionUtils.isNotEmpty(element.getEventDefinitions())) {
+      if (CollectionUtil.isNotEmpty(element.getEventDefinitions())) {
         EventDefinition eventDefinition = element.getEventDefinitions().get(0);
         if (eventDefinition instanceof MessageEventDefinition) {
           MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
@@ -58,11 +58,11 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
         }
       }
       
-    } else if (CollectionUtils.isEmpty(element.getEventDefinitions())) {
+    } else if (CollectionUtil.isEmpty(element.getEventDefinitions())) {
       element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
     }
     
-    if (element.getSubProcess() == null && (CollectionUtils.isEmpty(element.getEventDefinitions()) || 
+    if (element.getSubProcess() == null && (CollectionUtil.isEmpty(element.getEventDefinitions()) || 
         bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
 
       bpmnParse.getCurrentProcess().setInitialFlowElement(element);

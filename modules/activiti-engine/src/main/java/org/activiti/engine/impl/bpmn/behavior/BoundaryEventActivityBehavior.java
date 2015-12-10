@@ -21,7 +21,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * @author Joram Barrez
@@ -138,7 +138,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
-    if (CollectionUtils.isNotEmpty(childExecutions)) {
+    if (CollectionUtil.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getId().equals(notToDeleteExecution.getId()) == false) {
           deleteChildExecutions(childExecution, notToDeleteExecution, commandContext);

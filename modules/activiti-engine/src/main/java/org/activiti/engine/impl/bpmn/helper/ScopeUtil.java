@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * @author Tijs Rademakers
@@ -84,7 +84,7 @@ public class ScopeUtil {
       }
     }
 
-    if (CollectionUtils.isNotEmpty(compensateEventSubscriptions)) {
+    if (CollectionUtil.isNotEmpty(compensateEventSubscriptions)) {
       ExecutionEntity eventScopeExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(parentScopeExecution); 
       eventScopeExecution.setActive(false);
       eventScopeExecution.setConcurrent(false);

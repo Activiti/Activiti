@@ -22,8 +22,8 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,9 +102,9 @@ public class EndExecutionOperation extends AbstractOperation {
             for (FlowElement subElement : subProcess.getFlowElements()) {
               if (subElement instanceof Activity) {
                 Activity subActivity = (Activity) subElement;
-                if (CollectionUtils.isNotEmpty(subActivity.getBoundaryEvents())) {
+                if (CollectionUtil.isNotEmpty(subActivity.getBoundaryEvents())) {
                   for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
-                    if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                    if (CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
                         boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                       
                       hasCompensation = true;
@@ -175,7 +175,7 @@ public class EndExecutionOperation extends AbstractOperation {
       Process process = getProcess(executionEntity.getProcessDefinitionId());
       
       // Execute execution listeners for process end.
-      if (CollectionUtils.isNotEmpty(process.getExecutionListeners())) { 
+      if (CollectionUtil.isNotEmpty(process.getExecutionListeners())) { 
         executeExecutionListeners(process, executionEntity, ExecutionListener.EVENTNAME_END, false);
       }
       

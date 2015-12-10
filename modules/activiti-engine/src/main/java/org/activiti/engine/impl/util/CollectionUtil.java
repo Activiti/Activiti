@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.util;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,14 @@ public class CollectionUtil {
     }
 
     return map;
+  }
+  
+  public static boolean isEmpty(@SuppressWarnings("rawtypes") Collection collection) {
+    return (collection == null || collection.isEmpty());
+  }
+
+  public static boolean isNotEmpty(@SuppressWarnings("rawtypes") Collection collection) {
+    return !isEmpty(collection);
   }
 
 }

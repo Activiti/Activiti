@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;

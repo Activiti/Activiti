@@ -32,9 +32,9 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -161,9 +161,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
           for (FlowElement subElement : subProcess.getFlowElements()) {
             if (subElement instanceof Activity) {
               Activity subActivity = (Activity) subElement;
-              if (CollectionUtils.isNotEmpty(subActivity.getBoundaryEvents())) {
+              if (CollectionUtil.isNotEmpty(subActivity.getBoundaryEvents())) {
                 for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
-                  if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                  if (CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
                       boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                     
                     hasCompensation = true;
@@ -237,7 +237,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
-    if (CollectionUtils.isNotEmpty(childExecutions)) {
+    if (CollectionUtil.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
         deleteChildExecutions(childExecution, true, commandContext);
       }

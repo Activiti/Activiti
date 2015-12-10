@@ -33,7 +33,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Tijs Rademakers
@@ -115,7 +114,7 @@ public class ProcessInstanceUtil {
     for (FlowElement flowElement : process.getFlowElements()) {
       if (flowElement instanceof StartEvent) {
         StartEvent startEvent = (StartEvent) flowElement;
-        if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
+        if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
 
           MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
           if (messageEventDefinition.getMessageRef().equals(messageName)) {
@@ -181,7 +180,7 @@ public class ProcessInstanceUtil {
         for (FlowElement subElement : eventSubProcess.getFlowElements()) {
           if (subElement instanceof StartEvent) {
             StartEvent startEvent = (StartEvent) subElement;
-            if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+            if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
               EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
               if (eventDefinition instanceof MessageEventDefinition) {
                 MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;

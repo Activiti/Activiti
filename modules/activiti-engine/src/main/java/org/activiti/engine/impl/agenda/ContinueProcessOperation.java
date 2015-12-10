@@ -19,9 +19,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.logging.LogMDC;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,14 +96,14 @@ public class ContinueProcessOperation extends AbstractOperation {
     // Synchronous execution
 
     // Execution listener
-    if (CollectionUtils.isNotEmpty(flowNode.getExecutionListeners())) {
+    if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
 
     // Execute any boundary events
     if (inCompensation == false) {
       Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
-      if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+      if (CollectionUtil.isNotEmpty(boundaryEvents)) {
         executeBoundaryEvents(boundaryEvents, execution);
       }
     }
@@ -137,7 +137,7 @@ public class ContinueProcessOperation extends AbstractOperation {
   protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
 
     // Execution listener
-    if (CollectionUtils.isNotEmpty(sequenceFlow.getExecutionListeners())) {
+    if (CollectionUtil.isNotEmpty(sequenceFlow.getExecutionListeners())) {
       executeExecutionListeners(sequenceFlow, null, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
     }
     
@@ -187,7 +187,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     // The parent execution becomes a scope, and a child execution is created for each of the boundary events
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
-      if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+      if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
         continue;
       }
       

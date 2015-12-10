@@ -12,8 +12,12 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -23,13 +27,9 @@ import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.runtime.Job;
-import org.apache.commons.collections.CollectionUtils;
-import org.activiti.bpmn.model.Process;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Manages timers for newly-deployed process definitions and their previous versions.
@@ -63,11 +63,11 @@ public class TimerManager {
   
   protected List<TimerEntity> getTimerDeclarations(ProcessDefinitionEntity processDefinition, Process process) {
     List<TimerEntity> timers = new ArrayList<TimerEntity>();
-    if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+    if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
           StartEvent startEvent = (StartEvent) element;
-          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+          if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof TimerEventDefinition) {
               TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
