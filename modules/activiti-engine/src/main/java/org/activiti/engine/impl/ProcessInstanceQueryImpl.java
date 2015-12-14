@@ -20,11 +20,17 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -58,6 +64,8 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
+  protected String locale;
+  protected boolean withLocalizationFallback;
   
   protected String tenantId;
   protected String tenantIdLike;
@@ -472,6 +480,16 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       return variableValueLike(name, value, false);
     }
   }
+  
+  public ProcessInstanceQuery locale(String locale) {
+    this.locale = locale;
+    return this;
+  }
+  
+  public ProcessInstanceQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
+    return this;
+  }
 
   public ProcessInstanceQuery orderByProcessInstanceId() {
     this.orderProperty = ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID;
@@ -516,15 +534,18 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
+    List<ProcessInstance> processInstances = null;
     if (includeProcessVariables) {
-      return commandContext
-          .getExecutionEntityManager()
-          .findProcessInstanceAndVariablesByQueryCriteria(this);
+      processInstances = commandContext.getExecutionEntityManager().findProcessInstanceAndVariablesByQueryCriteria(this);
     } else {
-      return commandContext
-          .getExecutionEntityManager()
-          .findProcessInstanceByQueryCriteria(this);
+      processInstances = commandContext.getExecutionEntityManager().findProcessInstanceByQueryCriteria(this);
     }
+    
+    for (ProcessInstance processInstance : processInstances) {
+      localize(processInstance);
+    }
+    
+    return processInstances;
   }
   
   @Override
@@ -533,6 +554,30 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     
     for (ProcessInstanceQueryImpl orQueryObject : orQueryObjects) {
       orQueryObject.ensureVariablesInitialized();
+    }
+  }
+  
+  protected void localize(ProcessInstance processInstance) {
+    ExecutionEntity processInstanceExecution = (ExecutionEntity) processInstance;
+    processInstanceExecution.setLocalizedName(null);
+    processInstanceExecution.setLocalizedDescription(null);
+
+    if (locale != null) {
+      String processDefinitionId = processInstanceExecution.getProcessDefinitionId();
+      if (processDefinitionId != null) {
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processInstanceExecution.getProcessDefinitionKey(), processDefinitionId, withLocalizationFallback);
+        if (languageNode != null) {
+          JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+          if (languageNameNode != null && languageNameNode.isNull() == false) {
+            processInstanceExecution.setLocalizedName(languageNameNode.asText());
+          }
+
+          JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+            processInstanceExecution.setLocalizedDescription(languageDescriptionNode.asText());
+          }
+        }
+      }
     }
   }
   

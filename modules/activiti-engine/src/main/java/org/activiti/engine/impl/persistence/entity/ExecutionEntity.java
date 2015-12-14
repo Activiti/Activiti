@@ -117,6 +117,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   /** The tenant identifier (if any) */
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected String name;
+  protected String description;
+  protected String localizedName;
+  protected String localizedDescription;
   
   protected Date lockTime;
   
@@ -339,10 +342,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // initialize the lists of referenced objects (prevents db queries)
     variableInstances = new HashMap<String, VariableInstanceEntity>();
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
-    jobs = new ArrayList<JobEntity>();
-    tasks = new ArrayList<TaskEntity>();
     
-    // Cached entity-state initialized to null, all bits are zore, indicating NO entities present
+    // Cached entity-state initialized to null, all bits are zero, indicating NO entities present
     cachedEntityState = 0;
     
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
@@ -1598,11 +1599,43 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   @Override
   public String getName() {
-    return this.name;
+    if (localizedName != null && localizedName.length() > 0) {
+      return localizedName;
+    } else {
+      return name;
+    }
   }
   
   public void setName(String name) {
     this.name = name;
+  }
+  
+  public String getDescription() {
+    if (localizedDescription != null && localizedDescription.length() > 0) {
+      return localizedDescription;
+    } else {
+      return description;
+    }
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
+  }
+  
+  public String getLocalizedName() {
+    return localizedName;
+  }
+  
+  public void setLocalizedName(String localizedName) {
+    this.localizedName = localizedName;
+  }
+  
+  public String getLocalizedDescription() {
+    return localizedDescription;
+  }
+  
+  public void setLocalizedDescription(String localizedDescription) {
+    this.localizedDescription = localizedDescription;
   }
   
   public String getTenantId() {

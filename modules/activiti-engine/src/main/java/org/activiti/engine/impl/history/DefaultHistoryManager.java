@@ -18,9 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -48,6 +51,7 @@ import org.slf4j.LoggerFactory;
  * that are originated from inside the engine.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class DefaultHistoryManager extends AbstractManager implements HistoryManager {
   
@@ -60,10 +64,10 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryLevelAtLeast(org.activiti.engine.impl.history.HistoryLevel)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryLevelAtLeast(org.activiti.engine.impl.history.HistoryLevel)
+   */
   @Override
-public boolean isHistoryLevelAtLeast(HistoryLevel level) {
+  public boolean isHistoryLevelAtLeast(HistoryLevel level) {
     if(log.isDebugEnabled()) {
       log.debug("Current history level: {}, level required: {}", historyLevel, level);
     }
@@ -72,10 +76,10 @@ public boolean isHistoryLevelAtLeast(HistoryLevel level) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryEnabled()
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryEnabled()
+   */
   @Override
-public boolean isHistoryEnabled() {
+  public boolean isHistoryEnabled() {
     if(log.isDebugEnabled()) {
       log.debug("Current history level: {}", historyLevel);
     }
@@ -85,10 +89,10 @@ public boolean isHistoryEnabled() {
   // Process related history
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
+   */
   @Override
-public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
+  public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
     
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager()
@@ -97,6 +101,13 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
       if (historicProcessInstance!=null) {
         historicProcessInstance.markEnded(deleteReason);
         historicProcessInstance.setEndActivityId(activityId);
+        
+        // Fire event
+        ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+    		if (config != null && config.getEventDispatcher().isEnabled()) {
+    			config.getEventDispatcher().dispatchEvent(
+    					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED, historicProcessInstance));
+    		}
       }
     }
   }
@@ -114,15 +125,22 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+   */
   @Override
-public void recordProcessInstanceStart(ExecutionEntity processInstance) {
+  public void recordProcessInstanceStart(ExecutionEntity processInstance) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
       
       // Insert historic process-instance
       getDbSqlSession().insert(historicProcessInstance);
+      
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+  		if (config != null && config.getEventDispatcher().isEnabled()) {
+  			config.getEventDispatcher().dispatchEvent(
+  					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED, historicProcessInstance));
+  		}
   
       // Also record the start-event manually, as there is no "start" activity history listener for this
       IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
@@ -148,14 +166,20 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
       }
       
       getDbSqlSession().insert(historicActivityInstance);
+      
+      // Fire event
+  		if (config != null && config.getEventDispatcher().isEnabled()) {
+  			config.getEventDispatcher().dispatchEvent(
+  					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstance));
+  		}
     }
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordSubProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordSubProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+   */
   @Override
-public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance) {
+  public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
@@ -167,6 +191,13 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       	initialActivity = subProcessInstance.getProcessDefinition().getInitial();
       }
       getDbSqlSession().insert(historicProcessInstance);
+      
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+  		if (config != null && config.getEventDispatcher().isEnabled()) {
+  			config.getEventDispatcher().dispatchEvent(
+  					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED, historicProcessInstance));
+  		}
       
       
       HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution);
@@ -189,8 +220,13 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
       historicActivityInstance.setStartTime(now);
       
-      getDbSqlSession()
-        .insert(historicActivityInstance);
+      getDbSqlSession().insert(historicActivityInstance);
+      
+      // Fire event
+  		if (config != null && config.getEventDispatcher().isEnabled()) {
+  			config.getEventDispatcher().dispatchEvent(
+  					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstance));
+  		}
     }
   }
   
@@ -225,28 +261,43 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         }
     		
     		getDbSqlSession().insert(historicActivityInstance);
+    		
+        // Fire event
+        ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+    		if (config != null && config.getEventDispatcher().isEnabled()) {
+    			config.getEventDispatcher().dispatchEvent(
+    					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstance));
+    		}
     	}
     }
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityEnd(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityEnd(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+  */
   @Override
-public void recordActivityEnd(ExecutionEntity executionEntity) {
+  public void recordActivityEnd(ExecutionEntity executionEntity) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
       if (historicActivityInstance!=null) {
         historicActivityInstance.markEnded(null);
+        
+        // Fire event
+        ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+    		if (config != null && config.getEventDispatcher().isEnabled()) {
+    			config.getEventDispatcher().dispatchEvent(
+    					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+    		}
+    		
       }
     }
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordStartEventEnded(java.lang.String, java.lang.String)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordStartEventEnded(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordStartEventEnded(String executionId, String activityId) {
+  public void recordStartEventEnded(String executionId, String activityId) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       
       // Interrupted executions might not have an activityId set, skip recording history.
@@ -261,7 +312,16 @@ public void recordStartEventEnded(String executionId, String activityId) {
                 && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
                 && (cachedHistoricActivityInstance.getEndTime()==null)
                 ) {
+        	
           cachedHistoricActivityInstance.markEnded(null);
+          
+          // Fire event
+          ProcessEngineConfigurationImpl config = getProcessEngineConfiguration();
+      		if (config != null && config.getEventDispatcher().isEnabled()) {
+      			config.getEventDispatcher().dispatchEvent(
+      					ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, cachedHistoricActivityInstance));
+      		}
+          
           return;
         }
       }
@@ -392,10 +452,10 @@ public void recordTaskClaim(String taskId) {
 
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskId(org.activiti.engine.impl.persistence.entity.TaskEntity)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskId(org.activiti.engine.impl.persistence.entity.TaskEntity)
+  */
   @Override
-public void recordTaskId(TaskEntity task) {
+  public void recordTaskId(TaskEntity task) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       ExecutionEntity execution = task.getExecution();
       if (execution != null) {
@@ -408,10 +468,10 @@ public void recordTaskId(TaskEntity task) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskEnd(java.lang.String, java.lang.String)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskEnd(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordTaskEnd(String taskId, String deleteReason) {
+  public void recordTaskEnd(String taskId, String deleteReason) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -421,10 +481,10 @@ public void recordTaskEnd(String taskId, String deleteReason) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskAssigneeChange(java.lang.String, java.lang.String)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskAssigneeChange(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordTaskAssigneeChange(String taskId, String assignee) {
+  public void recordTaskAssigneeChange(String taskId, String assignee) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -434,10 +494,10 @@ public void recordTaskAssigneeChange(String taskId, String assignee) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskOwnerChange(java.lang.String, java.lang.String)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskOwnerChange(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordTaskOwnerChange(String taskId, String owner) {
+  public void recordTaskOwnerChange(String taskId, String owner) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -447,10 +507,10 @@ public void recordTaskOwnerChange(String taskId, String owner) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskNameChange(java.lang.String, java.lang.String)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskNameChange(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordTaskNameChange(String taskId, String taskName) {
+  public void recordTaskNameChange(String taskId, String taskName) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -460,10 +520,10 @@ public void recordTaskNameChange(String taskId, String taskName) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDescriptionChange(java.lang.String, java.lang.String)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDescriptionChange(java.lang.String, java.lang.String)
+   */
   @Override
-public void recordTaskDescriptionChange(String taskId, String description) {
+  public void recordTaskDescriptionChange(String taskId, String description) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -473,10 +533,10 @@ public void recordTaskDescriptionChange(String taskId, String description) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDueDateChange(java.lang.String, java.util.Date)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDueDateChange(java.lang.String, java.util.Date)
+   */
   @Override
-public void recordTaskDueDateChange(String taskId, Date dueDate) {
+  public void recordTaskDueDateChange(String taskId, Date dueDate) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -486,10 +546,10 @@ public void recordTaskDueDateChange(String taskId, Date dueDate) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskPriorityChange(java.lang.String, int)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskPriorityChange(java.lang.String, int)
+   */
   @Override
-public void recordTaskPriorityChange(String taskId, int priority) {
+  public void recordTaskPriorityChange(String taskId, int priority) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -523,10 +583,10 @@ public void recordTaskPriorityChange(String taskId, int priority) {
 
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskParentTaskIdChange(java.lang.String, java.lang.String)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskParentTaskIdChange(java.lang.String, java.lang.String)
+   */
   @Override
-public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
+  public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -536,10 +596,10 @@ public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskExecutionIdChange(java.lang.String, java.lang.String)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskExecutionIdChange(java.lang.String, java.lang.String)
+   */
   @Override
-public void recordTaskExecutionIdChange(String taskId, String executionId) {
+  public void recordTaskExecutionIdChange(String taskId, String executionId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -549,10 +609,10 @@ public void recordTaskExecutionIdChange(String taskId, String executionId) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionKeyChange(org.activiti.engine.impl.persistence.entity.TaskEntity, java.lang.String)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionKeyChange(org.activiti.engine.impl.persistence.entity.TaskEntity, java.lang.String)
+   */
   @Override
-public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
+  public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, task.getId());
       if (historicTaskInstance != null) {
@@ -575,10 +635,10 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
   // Variables related history
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableCreate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableCreate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
+  */
   @Override
-public void recordVariableCreate(VariableInstanceEntity variable) {
+  public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity.copyAndInsert(variable);
@@ -586,10 +646,10 @@ public void recordVariableCreate(VariableInstanceEntity variable) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordHistoricDetailVariableCreate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity, boolean)
- */
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordHistoricDetailVariableCreate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity, org.activiti.engine.impl.persistence.entity.ExecutionEntity, boolean)
+  */
   @Override
-public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
+  public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
     if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
       
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = 
@@ -652,18 +712,18 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
   // Comment related history
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+   */
   @Override
-public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
+  public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
     createIdentityLinkComment(taskId, userId, groupId, type, create, false);
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean)
+   */
   @Override
-public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
+  public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
     if(isHistoryEnabled()) {
       String authenticatedUserId = Authentication.getAuthenticatedUserId();
       CommentEntity comment = new CommentEntity();
@@ -724,10 +784,10 @@ public void createIdentityLinkComment(String taskId, String userId, String group
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#createAttachmentComment(java.lang.String, java.lang.String, java.lang.String, boolean)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#createAttachmentComment(java.lang.String, java.lang.String, java.lang.String, boolean)
+   */
   @Override
-public void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create) {
+  public void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create) {
     if (isHistoryEnabled()) {
       String userId = Authentication.getAuthenticatedUserId();
       CommentEntity comment = new CommentEntity();
@@ -747,10 +807,10 @@ public void createAttachmentComment(String taskId, String processInstanceId, Str
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#reportFormPropertiesSubmitted(org.activiti.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#reportFormPropertiesSubmitted(org.activiti.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
+   */
   @Override
-public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
+  public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       for (String propertyId: properties.keySet()) {
         String propertyValue = properties.get(propertyId);
@@ -762,10 +822,10 @@ public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<S
   
   // Identity link related history
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordIdentityLinkCreated(org.activiti.engine.impl.persistence.entity.IdentityLinkEntity)
- */
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordIdentityLinkCreated(org.activiti.engine.impl.persistence.entity.IdentityLinkEntity)
+   */
   @Override
-public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
+  public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
     // It makes no sense storing historic counterpart for an identity-link that is related
     // to a process-definition only as this is never kept in history
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT) && (identityLink.getProcessInstanceId() != null || identityLink.getTaskId() != null)) {
@@ -775,31 +835,33 @@ public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#deleteHistoricIdentityLink(java.lang.String)
- */
-@Override
-public void deleteHistoricIdentityLink(String id) {
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#deleteHistoricIdentityLink(java.lang.String)
+   */
+  @Override
+  public void deleteHistoricIdentityLink(String id) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLink(id);
     }
   }
   
   /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#updateProcessBusinessKeyInHistory(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
- */
-@Override
-public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
-    if (isHistoryEnabled()) {
-      if(log.isDebugEnabled()) {
-        log.debug("updateProcessBusinessKeyInHistory : {}", processInstance.getId());
-      }
-      if (processInstance != null) {
-        HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
-        if (historicProcessInstance != null) {
-          historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
-          getDbSqlSession().update(historicProcessInstance);
-        }
-      }
-    }
-  }
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#updateProcessBusinessKeyInHistory(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+   */
+  @Override
+	public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
+		if (isHistoryEnabled()) {
+			if (log.isDebugEnabled()) {
+				log.debug("updateProcessBusinessKeyInHistory : {}",processInstance.getId());
+			}
+			if (processInstance != null) {
+				HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession()
+				    .selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
+				if (historicProcessInstance != null) {
+					historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
+					getDbSqlSession().update(historicProcessInstance);
+				}
+			}
+		}
+	}
+  
 }

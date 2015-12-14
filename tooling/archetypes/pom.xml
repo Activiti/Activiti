@@ -14,7 +14,7 @@
 
 
   <artifactId>archetypes</artifactId>
-  <name>Activiti  Archetypes</name>
+  <name>Activiti Archetypes</name>
   <description>Activiti Archetypes</description>
   <packaging>pom</packaging>
 </project>

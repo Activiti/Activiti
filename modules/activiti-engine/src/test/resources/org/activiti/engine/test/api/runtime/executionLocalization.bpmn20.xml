@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.engine.test.api.runtime">
+
+  <process id="executionLocalization" name="Process Name">
+  	<documentation>Process Description</documentation>
+    <extensionElements>
+   		<activiti:localization locale="es" name="Nombre del proceso">
+    		<activiti:documentation>Descripción del proceso</activiti:documentation>
+    	</activiti:localization>
+    </extensionElements>
+    	
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
+    <subProcess id="subProcess" name="SubProcess Name">
+      <documentation>SubProcess Description</documentation>
+    	
+      <startEvent id="subStart" />
+      <sequenceFlow id="flow3" sourceRef="subStart" targetRef="subTask" />
+      <userTask id="subTask" name="sub task">
+      	<extensionElements>
+	    	<activiti:localization locale="es" name="Nombre Subproceso">
+	    		<activiti:documentation>Subproceso Descripción</activiti:documentation>
+	    	</activiti:localization>
+      	</extensionElements>
+      </userTask>
+      <sequenceFlow id="flow4" sourceRef="subTask" targetRef="subEnd" />
+      <endEvent id="subEnd" />
+    </subProcess>
+    <sequenceFlow id="flow5" sourceRef="subProcess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+</definitions>

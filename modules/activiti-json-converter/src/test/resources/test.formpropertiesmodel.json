@@ -1,303 +1,385 @@
 {
-    "resourceId": "canvas",
+    "resourceId": "1744",
     "properties": {
+        "process_id": "formPropertiesProcess",
         "name": "User registration",
         "documentation": "",
-        "process_id": "formPropertiesProcess",
         "process_author": "",
-        "process_executable": "Yes",
         "process_version": "",
         "process_namespace": "http://www.activiti.org/processdef",
-        "executionlisteners": ""
+        "executionlisteners": "",
+        "eventlisteners": "",
+        "signaldefinitions": "",
+        "messagedefinitions": ""
     },
     "stencil": {
         "id": "BPMNDiagram"
     },
-    "childShapes": [{
-        "resourceId": "cadastrar",
-        "properties": {
-            "overrideid": "register",
-            "name": "Insert Data",
-            "documentation": "",
-            "formproperties": "{\"totalCount\": 5, \"items\": [{\"formproperty_id\": \"duplicated\", \"formproperty_name\": \"duplicated\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"duplicated\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"name\", \"formproperty_name\": \"name\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"name\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"age\", \"formproperty_name\": \"age\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"age\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"isMan\", \"formproperty_name\": \"isMan\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"isMan\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"remove\", \"formproperty_name\": \"remove\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"remove\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}]}",
-            "initiator": "",
-            "formkeydefinition": "teste",
-            "executionlisteners": ""
-        },
-        "stencil": {
-            "id": "StartNoneEvent"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 75,
-                "y": 70
+    "childShapes": [
+        {
+            "resourceId": "sid-4B2D3C15-D74C-44CF-9A05-774564C8A48F",
+            "properties": {
+                "overrideid": "startNode",
+                "name": "",
+                "documentation": "",
+                "executionlisteners": "",
+                "initiator": "",
+                "formkeydefinition": "",
+                "formproperties": {
+                    "formProperties": [
+                        {
+                            "id": "new_property_1",
+                            "name": "v000",
+                            "type": "string",
+                            "readable": false,
+                            "writable": false,
+                            "expression": "",
+                            "variable": "v111",
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_2",
+                            "name": "v001",
+                            "type": "long",
+                            "readable": false,
+                            "writable": true,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_3",
+                            "name": "v010",
+                            "type": "boolean",
+                            "readable": true,
+                            "writable": false,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_4",
+                            "name": "v011",
+                            "type": "date",
+                            "readable": true,
+                            "writable": true,
+                            "datePattern": "MM-dd-yyyy hh:mm",
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_5",
+                            "name": "v100",
+                            "type": "enum",
+                            "readable": false,
+                            "writable": false,
+                            "required": true,
+                            "enumValues": [
+                                {
+                                    "id": "value1",
+                                    "name": "Value 1"
+                                },
+                                {
+                                    "id": "value2",
+                                    "name": "Value 2"
+                                },
+                                {
+                                    "id": "value3",
+                                    "name": "Value 3"
+                                },
+                                {
+                                    "id": "value4",
+                                    "name": "Value 4"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "new_property_6",
+                            "name": "v101",
+                            "type": "string",
+                            "readable": false,
+                            "writable": true,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_7",
+                            "name": "v110",
+                            "type": "string",
+                            "readable": true,
+                            "writable": false,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_8",
+                            "name": "v111",
+                            "type": "string",
+                            "readable": true,
+                            "writable": true,
+                            "required": true
+                        }
+                    ]
+                }
             },
-            "upperLeft": {
-                "x": 45,
-                "y": 40
+            "stencil": {
+                "id": "StartNoneEvent"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 191.25,
+                    "y": 193
+                },
+                "upperLeft": {
+                    "x": 161.25,
+                    "y": 163
+                }
+            },
+            "dockers": []
+        },
+        {
+            "resourceId": "sid-2640A22A-A7FE-4BEB-A245-0AFE5E907291",
+            "properties": {
+                "overrideid": "userTask",
+                "name": "",
+                "documentation": "",
+                "asynchronousdefinition": "false",
+                "exclusivedefinition": "false",
+                "executionlisteners": "",
+                "multiinstance_type": "None",
+                "multiinstance_cardinality": "",
+                "multiinstance_collection": "",
+                "multiinstance_variable": "",
+                "multiinstance_condition": "",
+                "isforcompensation": "false",
+                "usertaskassignment": "",
+                "formkeydefinition": "",
+                "duedatedefinition": "",
+                "prioritydefinition": "",
+                "formproperties": {
+                    "formProperties": [
+                        {
+                            "id": "new_property_1",
+                            "name": "v000",
+                            "type": "string",
+                            "readable": false,
+                            "writable": false,
+                            "expression": "",
+                            "variable": "v111",
+                            "required": false
+                        },
+                        {
+                            "id": "new_property_2",
+                            "name": "v001",
+                            "type": "long",
+                            "readable": false,
+                            "writable": true,
+                            "required": false
+                        },
+                        {
+                            "id": "new_property_3",
+                            "name": "v010",
+                            "type": "boolean",
+                            "readable": true,
+                            "writable": false
+                        },
+                        {
+                            "id": "new_property_4",
+                            "name": "v011",
+                            "type": "date",
+                            "readable": true,
+                            "writable": true,
+                            "datePattern": "MM-dd-yyyy hh:mm"
+                        },
+                        {
+                            "id": "new_property_5",
+                            "name": "v100",
+                            "type": "enum",
+                            "readable": false,
+                            "writable": false,
+                            "enumValues": [
+                                {
+                                    "id": "value1",
+                                    "name": "Value 1"
+                                },
+                                {
+                                    "id": "value2",
+                                    "name": "Value 2"
+                                },
+                                {
+                                    "id": "value3",
+                                    "name": "Value 3"
+                                },
+                                {
+                                    "id": "value4",
+                                    "name": "Value 4"
+                                }
+                            ],
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_6",
+                            "name": "v101",
+                            "type": "string",
+                            "readable": false,
+                            "writable": true,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_7",
+                            "name": "v110",
+                            "type": "string",
+                            "readable": true,
+                            "writable": false,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_8",
+                            "name": "v111",
+                            "type": "string",
+                            "readable": true,
+                            "writable": true,
+                            "required": true
+                        }
+                    ]
+                },
+                "tasklisteners": ""
+            },
+            "stencil": {
+                "id": "UserTask"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-F5607957-26B8-4781-B424-513C79A4ABBA"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 340,
+                    "y": 218
+                },
+                "upperLeft": {
+                    "x": 240,
+                    "y": 138
+                }
+            },
+            "dockers": []
+        },
+        {
+            "resourceId": "sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E",
+            "properties": {
+                "overrideid": "",
+                "name": "",
+                "documentation": "",
+                "conditionsequenceflow": "",
+                "executionlisteners": "",
+                "defaultflow": "false"
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-2640A22A-A7FE-4BEB-A245-0AFE5E907291"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 239.234375,
+                    "y": 178
+                },
+                "upperLeft": {
+                    "x": 191.46875,
+                    "y": 178
+                }
+            },
+            "dockers": [
+                {
+                    "x": 15,
+                    "y": 15
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "target": {
+                "resourceId": "sid-2640A22A-A7FE-4BEB-A245-0AFE5E907291"
             }
         },
-        "dockers": []
-    }, {
-        "resourceId": "editar",
-        "properties": {
-            "overrideid": "edit",
-            "name": "Edit",
-            "documentation": "",
-            "formkeydefinition": "teste2",
-            "duedatedefinition": "",
-            "prioritydefinition": "",
-            "usertaskassignment": {
-                "totalCount": 1,
-                "items": [{
-                    "assignment_type": "assignee",
-                    "resourceassignmentexpr": "kermit"
-                }]
+        {
+            "resourceId": "sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A",
+            "properties": {
+                "overrideid": "",
+                "name": "",
+                "documentation": "",
+                "executionlisteners": ""
             },
-            "formproperties": "{\"totalCount\": 5, \"items\": [{\"formproperty_id\": \"duplicated\", \"formproperty_name\": \"duplicated\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"duplicated\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"name\", \"formproperty_name\": \"name\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"name\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"age\", \"formproperty_name\": \"age\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"age\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"No\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"isMan\", \"formproperty_name\": \"isMan\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"isMan\", \"formproperty_required\": \"\", \"formproperty_readable\": \"No\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"remove\", \"formproperty_name\": \"remove\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"remove\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"},{\"formproperty_id\": \"testEnum\", \"formproperty_name\": \"testEnum\", \"formproperty_type\": \"enum\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"testEnum\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"{\\\"totalCount\\\": 2, \\\"items\\\": [{\\\"formproperty_formvalue_id\\\": \\\"enum1\\\", \\\"formproperty_formvalue_name\\\": \\\"enum1\\\"}, {\\\"formproperty_formvalue_id\\\": \\\"enum2\\\", \\\"formproperty_formvalue_name\\\": \\\"enum2\\\"}]}\"}]}",
-            "tasklisteners": "{\"totalCount\":0,\"items\":[]}",
-            "asynchronousdefinition": "No",
-            "exclusivedefinition": "Yes",
-            "looptype": "None",
-            "multiinstance_sequential": "Yes",
-            "multiinstance_cardinality": "",
-            "multiinstance_collection": "",
-            "multiinstance_variable": "",
-            "multiinstance_condition": "",
-            "isforcompensation": "false"
-        },
-        "stencil": {
-            "id": "UserTask"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "sid-288E87B0-A482-45EE-A36F-458C624FFF50"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 235,
-                "y": 95
+            "stencil": {
+                "id": "EndNoneEvent"
             },
-            "upperLeft": {
-                "x": 135,
-                "y": 15
+            "childShapes": [],
+            "outgoing": [],
+            "bounds": {
+                "lowerRight": {
+                    "x": 413,
+                    "y": 192
+                },
+                "upperLeft": {
+                    "x": 385,
+                    "y": 164
+                }
+            },
+            "dockers": []
+        },
+        {
+            "resourceId": "sid-F5607957-26B8-4781-B424-513C79A4ABBA",
+            "properties": {
+                "overrideid": "",
+                "name": "",
+                "documentation": "",
+                "conditionsequenceflow": "",
+                "executionlisteners": "",
+                "defaultflow": "false"
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 384.375,
+                    "y": 178
+                },
+                "upperLeft": {
+                    "x": 340.390625,
+                    "y": 178
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 14,
+                    "y": 14
+                }
+            ],
+            "target": {
+                "resourceId": "sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A"
             }
-        },
-        "dockers": []
-    }, {
-        "resourceId": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6",
-        "properties": {
-            "overrideid": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6",
-            "name": "",
-            "documentation": ""
-        },
-        "stencil": {
-            "id": "ExclusiveGateway"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "removerInd"
-        }, {
-            "resourceId": "naoRemoverInd"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 355,
-                "y": 75
-            },
-            "upperLeft": {
-                "x": 315,
-                "y": 35
-            }
-        },
-        "dockers": []
-    }, {
-        "resourceId": "fim",
-        "properties": {
-            "overrideid": "fim",
-            "name": "End",
-            "documentation": "",
-            "executionlisteners": ""
-        },
-        "stencil": {
-            "id": "EndNoneEvent"
-        },
-        "childShapes": [],
-        "outgoing": [],
-        "bounds": {
-            "lowerRight": {
-                "x": 538,
-                "y": 69
-            },
-            "upperLeft": {
-                "x": 510,
-                "y": 41
-            }
-        },
-        "dockers": []
-    }, {
-        "resourceId": "sid-288E87B0-A482-45EE-A36F-458C624FFF50",
-        "properties": {
-            "overrideid": "sid-288E87B0-A482-45EE-A36F-458C624FFF50",
-            "name": "",
-            "documentation": "",
-            "conditionsequenceflow": "",
-            "defaultflow": "None",
-            "conditionalflow": "None"
-        },
-        "stencil": {
-            "id": "SequenceFlow"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 315.25,
-                "y": 55
-            },
-            "upperLeft": {
-                "x": 235.21875,
-                "y": 55
-            }
-        },
-        "dockers": [{
-            "x": 50,
-            "y": 40
-        }, {
-            "x": 20,
-            "y": 20
-        }],
-        "target": {
-            "resourceId": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"
         }
-    }, {
-        "resourceId": "sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6",
-        "properties": {
-            "showdiamondmarker": false,
-            "overrideid": "sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6",
-            "name": "",
-            "documentation": "",
-            "conditionsequenceflow": "",
-            "defaultflow": "None",
-            "conditionalflow": "None"
-        },
-        "stencil": {
-            "id": "SequenceFlow"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "editar"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 134.51315307617188,
-                "y": 55
-            },
-            "upperLeft": {
-                "x": 75.54327392578125,
-                "y": 55
-            }
-        },
-        "dockers": [{
-            "x": 15,
-            "y": 15
-        }, {
-            "x": 68.1953125,
-            "y": 40
-        }],
-        "target": {
-            "resourceId": "editar"
-        }
-    }, {
-        "resourceId": "removerInd",
-        "properties": {
-            "overrideid": "removerInd",
-            "name": "Remove Data",
-            "documentation": "",
-            "conditionsequenceflow": "${execution.getVariable(\"remove\") == true}",
-            "defaultflow": "None",
-            "conditionalflow": "None"
-        },
-        "stencil": {
-            "id": "SequenceFlow"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "fim"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 509.7109375,
-                "y": 55
-            },
-            "upperLeft": {
-                "x": 355.1953125,
-                "y": 55
-            }
-        },
-        "dockers": [{
-            "x": 20,
-            "y": 20
-        }, {
-            "x": 14,
-            "y": 14
-        }],
-        "target": {
-            "resourceId": "fim"
-        }
-    }, {
-        "resourceId": "naoRemoverInd",
-        "properties": {
-            "overrideid": "naoRemoverInd",
-            "name": "",
-            "documentation": "",
-            "conditionsequenceflow": "${execution.getVariable(\"remove\") == false}",
-            "defaultflow": "None",
-            "conditionalflow": "None"
-        },
-        "stencil": {
-            "id": "SequenceFlow"
-        },
-        "childShapes": [],
-        "outgoing": [{
-            "resourceId": "editar"
-        }],
-        "bounds": {
-            "lowerRight": {
-                "x": 334.7529677861486,
-                "y": 134
-            },
-            "upperLeft": {
-                "x": 185,
-                "y": 74.5155448942603
-            }
-        },
-        "dockers": [{
-            "x": 20,
-            "y": 20
-        }, {
-            "x": 334,
-            "y": 134
-        }, {
-            "x": 185,
-            "y": 134
-        }, {
-            "x": 50,
-            "y": 40
-        }],
-        "target": {
-            "resourceId": "editar"
-        }
-    }],
+    ],
     "bounds": {
         "lowerRight": {
-            "x": 1485,
+            "x": 1200,
             "y": 1050
         },
         "upperLeft": {
@@ -306,8 +388,9 @@
         }
     },
     "stencilset": {
-        "url": "../stencilsets/bpmn2.0/bpmn2.0.json",
+        "url": "stencilsets/bpmn2.0/bpmn2.0.json",
         "namespace": "http://b3mn.org/stencilset/bpmn2.0#"
     },
     "ssextensions": []
 }
+

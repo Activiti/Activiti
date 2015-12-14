@@ -14,12 +14,22 @@ package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -56,9 +66,11 @@ import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.IdentityLinkType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -82,6 +94,7 @@ public class BpmnDeployer implements Deployer {
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
+    Map<String, BpmnModel> bpmnModelMap = new HashMap<String, BpmnModel>();
 
     final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     for (String resourceName : resources.keySet()) {
@@ -148,6 +161,7 @@ public class BpmnDeployer implements Deployer {
           
           processDefinition.setDiagramResourceName(diagramResourceName);
           processDefinitions.add(processDefinition);
+          bpmnModelMap.put(processDefinition.getKey(), bpmnParse.getBpmnModel());
         }
       }
     }
@@ -247,6 +261,8 @@ public class BpmnDeployer implements Deployer {
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
+      
+      createLocalizationValues(processDefinition.getId(), bpmnModelMap.get(processDefinition.getKey()).getProcessById(processDefinition.getKey()));
     }
   }
   
@@ -439,6 +455,117 @@ public class BpmnDeployer implements Deployer {
          }	 
        }
      }      
+  }
+  
+  protected void createLocalizationValues(String processDefinitionId, Process process) {
+    if (process == null) return;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
+    ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processDefinitionId);
+
+    boolean localizationValuesChanged = false;
+    List<ExtensionElement> localizationElements = process.getExtensionElements().get("localization");
+    if (localizationElements != null) {
+      for (ExtensionElement localizationElement : localizationElements) {
+        if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
+          String locale = localizationElement.getAttributeValue(null, "locale");
+          String name = localizationElement.getAttributeValue(null, "name");
+          String documentation = null;
+          List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+          if (documentationElements != null) {
+            for (ExtensionElement documentationElement : documentationElements) {
+              documentation = StringUtils.trimToNull(documentationElement.getElementText());
+              break;
+            }
+          }
+
+          String processId = process.getId();
+          if (isEqualToCurrentLocalizationValue(locale, processId, "name", name, infoNode) == false) {
+            dynamicBpmnService.changeLocalizationName(locale, processId, name, infoNode);
+            localizationValuesChanged = true;
+          }
+          
+          if (documentation != null && isEqualToCurrentLocalizationValue(locale, processId, "description", documentation, infoNode) == false) {
+            dynamicBpmnService.changeLocalizationDescription(locale, processId, documentation, infoNode);
+            localizationValuesChanged = true;
+          }
+          
+          break;
+        }
+      }
+    }
+
+    boolean isFlowElementLocalizationChanged = localizeFlowElements(process.getFlowElements(), infoNode);
+    if (isFlowElementLocalizationChanged) {
+      localizationValuesChanged = true;
+    }
+
+    if (localizationValuesChanged) {
+      dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+    }
+  }
+  
+  protected boolean localizeFlowElements(Collection<FlowElement> flowElements, ObjectNode infoNode) {
+    boolean localizationValuesChanged = false;
+    
+    if (flowElements == null) return localizationValuesChanged;
+    
+    CommandContext commandContext = Context.getCommandContext();
+    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
+    
+    for (FlowElement flowElement : flowElements) {
+      if (flowElement instanceof UserTask || flowElement instanceof SubProcess) {
+        List<ExtensionElement> localizationElements = flowElement.getExtensionElements().get("localization");
+        if (localizationElements != null) {
+          for (ExtensionElement localizationElement : localizationElements) {
+            if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
+              String locale = localizationElement.getAttributeValue(null, "locale");
+              String name = localizationElement.getAttributeValue(null, "name");
+              String documentation = null;
+              List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+              if (documentationElements != null) {
+                for (ExtensionElement documentationElement : documentationElements) {
+                  documentation = StringUtils.trimToNull(documentationElement.getElementText());
+                  break;
+                }
+              }
+
+              String flowElementId = flowElement.getId();
+              if (isEqualToCurrentLocalizationValue(locale, flowElementId, "name", name, infoNode) == false) {
+                dynamicBpmnService.changeLocalizationName(locale, flowElementId, name, infoNode);
+                localizationValuesChanged = true;
+              }
+              
+              if (documentation != null && isEqualToCurrentLocalizationValue(locale, flowElementId, "description", documentation, infoNode) == false) {
+                dynamicBpmnService.changeLocalizationDescription(locale, flowElementId, documentation, infoNode);
+                localizationValuesChanged = true;
+              }
+              
+              break;
+            }
+          }
+        }
+        
+        if (flowElement instanceof SubProcess) {
+          boolean isSubProcessLocalized = localizeFlowElements(((SubProcess) flowElement).getFlowElements(), infoNode);
+          if (isSubProcessLocalized) {
+            localizationValuesChanged = true;
+          }
+        }
+      }
+    }
+    
+    return localizationValuesChanged;
+  }
+  
+  protected boolean isEqualToCurrentLocalizationValue(String language, String id, String propertyName, String propertyValue, ObjectNode infoNode) {
+    boolean isEqual = false;
+    JsonNode localizationNode = infoNode.path("localization").path(language).path(id).path(propertyName);
+    if (localizationNode.isMissingNode() == false && localizationNode.isNull() == false && localizationNode.asText().equals(propertyValue)) {
+      isEqual = true;
+    }
+    return isEqual;
   }
   
   enum ExprType {

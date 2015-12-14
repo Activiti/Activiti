@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.data.PrimitiveStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -52,6 +53,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JJavaName;
+import com.sun.codemodel.JType;
 import com.sun.tools.xjc.ConsoleErrorReporter;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.Mapping;
@@ -92,13 +94,15 @@ public class CxfWSDLImporter implements XMLImporter {
       } else {
           throw new UncheckedException(new Exception("Unresolved import against " + parse.getSourceSystemId()));
       }
-    this.transferImportsToParse(parse);
+      
+      this.transferImportsToParse(parse);
+      
     } catch (final IOException e) {
       throw new UncheckedException(e);
     }
   }
   
-  private void transferImportsToParse(BpmnParse parse) {
+  protected void transferImportsToParse(BpmnParse parse) {
     if (parse != null) {
       for (StructureDefinition structure : this.structures.values()) {
         parse.addStructure(structure);
@@ -145,13 +149,13 @@ public class CxfWSDLImporter implements XMLImporter {
           throw new ActivitiException("The JAXB binding definitions are not found for activiti-cxf: " + JAXB_BINDINGS_RESOURCE);
       }
     } catch (WSDLException e) {
-      e.printStackTrace();
+        e.printStackTrace();
     } catch (IOException e) {
         throw new ActivitiException("Error retrieveing the JAXB binding definitions", e);
     }
   }
   
-  private WSService importService(ServiceInfo service) {
+  protected WSService importService(ServiceInfo service) {
     String name = service.getName().getLocalPart();
     String location = "";
     
@@ -169,12 +173,12 @@ public class CxfWSDLImporter implements XMLImporter {
     return wsService;
   }
 
-  private WSOperation importOperation(OperationInfo operation, WSService service) {
+  protected WSOperation importOperation(OperationInfo operation, WSService service) {
     WSOperation wsOperation = new WSOperation(this.namespace + operation.getName().getLocalPart(), operation.getName().getLocalPart(), service);
     return wsOperation;
   }
   
-  private void importTypes(Types types) {
+  protected void importTypes(Types types) {
     SchemaCompiler compiler = XJC.createSchemaCompiler();
     ErrorListener elForRun = new ConsoleErrorReporter();
     compiler.setErrorListener(elForRun);
@@ -188,22 +192,35 @@ public class CxfWSDLImporter implements XMLImporter {
       this.importStructure(mapping);
     }
   }
-
-  private void importStructure(Mapping mapping) {
+  
+  protected void importStructure(Mapping mapping) {
     QName qname = mapping.getElement();
-    JDefinedClass theClass = (JDefinedClass) mapping.getType().getTypeClass();
-    SimpleStructureDefinition structure = new SimpleStructureDefinition(this.namespace + qname.getLocalPart());
-    this.structures.put(structure.getId(), structure);
-    
-    importFields(theClass, structure);
+    final JType type = mapping.getType().getTypeClass();
+    if (type.isPrimitive()) {
+        final Class<?> primitiveClass = ReflectUtil.loadClass(type.boxify().fullName());
+        final StructureDefinition structure = new PrimitiveStructureDefinition(this.namespace + qname.getLocalPart(), primitiveClass);
+        this.structures.put(structure.getId(), structure);
+        
+    } else if (type instanceof JDefinedClass) {
+        JDefinedClass theClass = (JDefinedClass) type;
+        SimpleStructureDefinition structure = new SimpleStructureDefinition(this.namespace + qname.getLocalPart());
+        this.structures.put(structure.getId(), structure);
+        
+        importFields(theClass, structure);
+        
+    } else {
+        final Class<?> referencedClass = ReflectUtil.loadClass(type.fullName());
+        final StructureDefinition structure = new PrimitiveStructureDefinition(this.namespace + qname.getLocalPart(), referencedClass);
+        this.structures.put(structure.getId(), structure);
+    } 
   }
   
-  private static void importFields(final JDefinedClass theClass, final SimpleStructureDefinition structure) {
+  protected static void importFields(final JDefinedClass theClass, final SimpleStructureDefinition structure) {
     final AtomicInteger index = new AtomicInteger(0);
     _importFields(theClass, index, structure);
   }
   
-  private static void _importFields(final JDefinedClass theClass, final AtomicInteger index, final SimpleStructureDefinition structure) {
+  protected static void _importFields(final JDefinedClass theClass, final AtomicInteger index, final SimpleStructureDefinition structure) {
       
     final JClass parentClass = theClass._extends();
     if (parentClass != null && parentClass instanceof JDefinedClass) {
@@ -223,8 +240,7 @@ public class CxfWSDLImporter implements XMLImporter {
     }
   }
   
-  private S2JJAXBModel compileModel(Types types, SchemaCompiler compiler, org.w3c.dom.Element rootTypes) {
-
+  protected S2JJAXBModel compileModel(Types types, SchemaCompiler compiler, org.w3c.dom.Element rootTypes) {
     Schema schema = (Schema) types.getExtensibilityElements().get(0);
     compiler.parseSchema(schema.getDocumentBaseURI() + "#types1", rootTypes);
     S2JJAXBModel intermediateModel = compiler.bind();

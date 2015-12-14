@@ -290,6 +290,16 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    */
   ExecutionQuery messageEventSubscriptionName(String messageName);
   
+  /**
+   * Localize execution name and description to specified locale.
+   */
+  ExecutionQuery locale(String locale);
+  
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  ExecutionQuery withLocalizationFallback();
+  
   //ordering //////////////////////////////////////////////////////////////
   
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */

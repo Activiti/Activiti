@@ -101,6 +101,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected String locale;
+  protected boolean withLocalizationFallback;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
   protected List<HistoricTaskInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricTaskInstanceQueryImpl>();
@@ -159,7 +160,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
       if (processDefinitionId != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId);
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (languageNameNode != null && languageNameNode.isNull() == false) {
@@ -1080,6 +1081,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery locale(String locale) {
     this.locale = locale;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery withLocalizationFallback() {
+    withLocalizationFallback = true;
     return this;
   }
   

@@ -38,9 +38,10 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.WebConfigurer;
 import org.activiti.rest.conf.ApplicationConfiguration;
 import org.activiti.rest.service.api.RestUrlBuilder;
+import org.activiti.rest.util.TestServerUtil;
+import org.activiti.rest.util.TestServerUtil.TestServer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -59,17 +60,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.session.HashSessionIdManager;
-import org.eclipse.jetty.server.session.HashSessionManager;
-import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -81,12 +77,12 @@ public class BaseSpringRestTestCase extends PvmTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseSpringRestTestCase.class);
   
-  protected static final int HTTP_SERVER_PORT = 9797;
-  protected static final String SERVER_URL_PREFIX = "http://localhost:9797/service/";
-  protected static final RestUrlBuilder URL_BUILDER = RestUrlBuilder.usingBaseUrl(SERVER_URL_PREFIX);
   protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
   );
+  
+  protected static String SERVER_URL_PREFIX;
+  protected static RestUrlBuilder URL_BUILDER;
   
   protected static Server server;
   protected static ApplicationContext appContext;
@@ -112,7 +108,12 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   protected ISO8601DateFormat dateFormat = new ISO8601DateFormat();
   
   static {
-    createAndStartServer();
+  	
+  	TestServer testServer = TestServerUtil.createAndStartServer(ApplicationConfiguration.class);
+  	server = testServer.getServer();
+  	appContext = testServer.getApplicationContext();
+  	SERVER_URL_PREFIX = testServer.getServerUrlPrefix();
+  	URL_BUILDER = RestUrlBuilder.usingBaseUrl(SERVER_URL_PREFIX);
     
     // Lookup services
     processEngine = appContext.getBean("processEngine", ProcessEngine.class);
@@ -200,40 +201,6 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     identityService.saveGroup(group);
     
     identityService.createMembership(user.getId(), group.getId());
-  }
-  
-  public static void createAndStartServer() {
-    server = new Server(HTTP_SERVER_PORT);
-      
-    HashSessionIdManager idmanager = new HashSessionIdManager();
-    server.setSessionIdManager(idmanager);
-    
-    AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
-    applicationContext.register(ApplicationConfiguration.class);
-    applicationContext.refresh();
-      
-    appContext = applicationContext;
-      
-    try {
-      server.setHandler(getServletContextHandler(applicationContext));
-      server.start();
-    } catch (Exception e) {
-      log.error("Error starting server", e);
-    }
-  }
-  
-  private static ServletContextHandler getServletContextHandler(AnnotationConfigWebApplicationContext context) throws IOException {
-    ServletContextHandler contextHandler = new ServletContextHandler();
-    WebConfigurer configurer = new WebConfigurer();
-    configurer.setContext(context);
-    contextHandler.addEventListener(configurer);
-    
-    // Create the SessionHandler (wrapper) to handle the sessions
-    HashSessionManager manager = new HashSessionManager();
-    SessionHandler sessions = new SessionHandler(manager);
-    contextHandler.setHandler(sessions);
-    
-    return contextHandler;
   }
   
   /**

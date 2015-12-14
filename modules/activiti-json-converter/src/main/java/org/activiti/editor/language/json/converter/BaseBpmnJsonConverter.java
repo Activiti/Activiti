@@ -51,8 +51,8 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -419,7 +419,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 ArrayNode valuesNode = objectMapper.createArrayNode();
                 for (FormValue formValue : property.getFormValues()) {
                     ObjectNode valueNode = objectMapper.createObjectNode();
-                    valueNode.put("value", formValue.getName());
+                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_NAME, formValue.getName());
+                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_ID, formValue.getId());
                     valuesNode.add(valueNode);
                 }
                 propertyItemNode.put(PROPERTY_FORM_ENUM_VALUES, valuesNode);
@@ -515,19 +516,29 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                         formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE, formNode));
                         formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION, formNode));
                         formProperty.setVariable(getValueAsString(PROPERTY_FORM_VARIABLE, formNode));
+                        
                         if ("date".equalsIgnoreCase(formProperty.getType())) {
                             formProperty.setDatePattern(getValueAsString(PROPERTY_FORM_DATE_PATTERN, formNode));
+                            
                         } else if ("enum".equalsIgnoreCase(formProperty.getType())) {
                             JsonNode enumValuesNode = formNode.get(PROPERTY_FORM_ENUM_VALUES);
                             if (enumValuesNode != null) {
                                 List<FormValue> formValueList = new ArrayList<FormValue>();
                                 for (JsonNode enumNode : enumValuesNode) {
-                                    if (enumNode.get("value") != null && enumNode.get("value").isNull() == false) {
-                                        FormValue formValue = new FormValue();
-                                        formValue.setId(enumNode.get("value").asText());
-                                        formValue.setName(enumNode.get("value").asText());
-                                        formValueList.add(formValue);
-                                    }
+                                  if (enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID) != null && enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).isNull() == false &&
+                                      enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME) != null && enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).isNull() == false) {
+                                    
+                                    FormValue formValue = new FormValue();
+                                    formValue.setId(enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).asText());
+                                    formValue.setName(enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).asText());
+                                    formValueList.add(formValue);
+                                    
+                                  } else if (enumNode.get("value") != null && enumNode.get("value").isNull() == false) {
+                                    FormValue formValue = new FormValue();
+                                    formValue.setId(enumNode.get("value").asText());
+                                    formValue.setName(enumNode.get("value").asText());
+                                    formValueList.add(formValue);
+                                  }
                                 }
                                 formProperty.setFormValues(formValueList);
                             }
