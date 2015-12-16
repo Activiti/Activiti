@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
@@ -577,6 +578,61 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     assertEquals("Wait2", task.getName());
+  }
+  
+  /**
+   * From https://forums.activiti.org/content/boundary-signal-causes-already-taking-transition
+   */
+  @Deployment
+  public void testSignalThrowAndCatchInSameTransaction() {
+    
+    String fileExistsVar = "fileexists";
+
+    // remove mock file
+    FileExistsMock.getInstance().removeFile();
+
+    // create first instance
+    ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("signalBoundaryProcess");
+    System.out.println("First proc inst " + firstProcessInstance.getId());
+    assertNotNull(firstProcessInstance);
+
+    // task should be "add a file"
+    Task firstTask = taskService.createTaskQuery().singleResult();
+    assertEquals("Add a file", firstTask.getName());
+
+    Map<String, Object> vars = runtimeService.getVariables(firstTask.getExecutionId());
+    // file does not exists
+    assertEquals(false, vars.get(fileExistsVar));
+
+    // create second instance
+    ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("signalBoundaryProcess");
+    System.out.println("Proc inst is " + secondProcessInstance.getId());
+    assertNotNull(secondProcessInstance);
+
+    // there should be two open tasks
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(2, tasks.size());
+
+    // get current second task
+    Task secondTask = taskService.createTaskQuery().processInstanceId(secondProcessInstance.getProcessInstanceId()).singleResult();
+    // must be also in "add a file"
+    assertEquals("Add a file", secondTask.getName());
+
+    // file does not exists yet
+    vars = runtimeService.getVariables(secondTask.getExecutionId());
+    assertEquals(false, vars.get(fileExistsVar));
+
+    // now, we "add a file"
+    taskService.claim(firstTask.getId(), "user");
+    // create the file
+    FileExistsMock.getInstance().touchFile();
+    // complete the task - this should cancel all tasks waiting in "Add a file"
+    // using the "fileAddedSignal"
+    // FIXME: this causes the exception:
+    taskService.complete(firstTask.getId());
+
+    List<Task> usingTask = taskService.createTaskQuery().taskName("Use the file").list();
+    assertEquals(1, usingTask.size());
   }
 
 }
