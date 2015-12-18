@@ -27,6 +27,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public interface HistoricTaskInstanceDataManager extends DataManager<HistoricTaskInstanceEntity> {
   
   HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution);
+  
+  List<HistoricTaskInstanceEntity> findHistoricTasksByParentTaskId(String parentTaskId);
 
   List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(String processInstanceId);
   

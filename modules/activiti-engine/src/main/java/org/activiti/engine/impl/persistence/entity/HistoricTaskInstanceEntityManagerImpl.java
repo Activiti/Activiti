@@ -97,6 +97,11 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
           activiti5CompatibilityHandler.deleteHistoricTask(id);
           return;
         }
+        
+        List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(historicTaskInstance.getId());
+        for (HistoricTaskInstance subTask: subTasks) {
+          delete(subTask.getId());
+        }
 
         getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(id);
         getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(id);

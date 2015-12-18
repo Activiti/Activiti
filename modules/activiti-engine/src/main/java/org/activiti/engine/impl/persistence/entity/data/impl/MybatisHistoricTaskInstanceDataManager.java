@@ -50,6 +50,12 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
     return new HistoricTaskInstanceEntityImpl(task, execution);
   }
   
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<HistoricTaskInstanceEntity> findHistoricTasksByParentTaskId(String parentTaskId) {
+    return getDbSqlSession().selectList("selectHistoricTasksByParentTaskId", parentTaskId);
+  }
+  
   @Override
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(String processInstanceId) {
