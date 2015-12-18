@@ -1272,8 +1272,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initCommandContextFactory() {
     if (commandContextFactory==null) {
       commandContextFactory = new CommandContextFactory();
-      commandContextFactory.setProcessEngineConfiguration(this);
     }
+    commandContextFactory.setProcessEngineConfiguration(this);
   }
 
   protected void initTransactionContextFactory() {
