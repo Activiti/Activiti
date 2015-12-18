@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
 import activiti.Application;
 import activiti.mappers.CustomMybatisMapper;
+
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -57,12 +59,13 @@ public class CustomMybatisMapperConfigurationTest {
         Assert.assertNotNull("the processDefinitionDeploymentId should not be null!", processDefinitionDeploymentId);
     }
 
-    private AnnotationConfigApplicationContext context(Class<?>... clzz) throws IOException {
+    private AnnotationConfigApplicationContext context(Class<?>... clzz) throws Exception {
         AnnotationConfigApplicationContext annotationConfigApplicationContext
                 = new AnnotationConfigApplicationContext();
         annotationConfigApplicationContext.register(clzz);
 
-        File springBootPropertiesFile = new File("src/test/resources/config/application.properties");
+        URL propertiesUrl = this.getClass().getClassLoader().getResource("config/application.properties");
+        File springBootPropertiesFile = new File(propertiesUrl.toURI());
         Properties springBootProperties = new Properties();
         springBootProperties.load(new FileInputStream(springBootPropertiesFile));
 

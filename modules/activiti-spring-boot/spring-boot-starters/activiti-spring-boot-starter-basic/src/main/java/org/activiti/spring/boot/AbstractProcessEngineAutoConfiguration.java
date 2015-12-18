@@ -119,20 +119,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
     return conf;
   }
   
-  private Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
-    Set<Class<?>> mybatisMappers = new HashSet<Class<?>>();
-    for (String customMybatisMapperClassName : customMyBatisMappers) {
-      try {
-        Class customMybatisClass = Class.forName(customMybatisMapperClassName);
-        mybatisMappers.add(customMybatisClass);
-      } catch (ClassNotFoundException e) {
-        throw new IllegalArgumentException("Class " + customMybatisMapperClassName + " has not been found.", e);
-      }
-    }
-    return mybatisMappers;
-  }
-
-  private Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
+  protected Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
     Set<Class<?>> mybatisMappers = new HashSet<Class<?>>();
     for (String customMybatisMapperClassName : customMyBatisMappers) {
       try {
@@ -146,7 +133,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
   }
 
 
-  private String defaultText(String deploymentName, String deploymentName1) {
+  protected String defaultText(String deploymentName, String deploymentName1) {
     if (StringUtils.hasText(deploymentName))
       return deploymentName;
     return deploymentName1;
