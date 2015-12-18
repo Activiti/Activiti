@@ -29,7 +29,7 @@ create table ACT_RE_DEPLOYMENT (
     NAME_ varchar(255),
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
-    DEPLOY_TIME_ timestamp,
+    DEPLOY_TIME_ timestamp NULL,
     ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
@@ -128,7 +128,7 @@ create table ACT_RU_TASK (
     ASSIGNEE_ varchar(255),
     DELEGATION_ varchar(64),
     PRIORITY_ integer,
-    CREATE_TIME_ timestamp,
+    CREATE_TIME_ timestamp NULL,
     DUE_DATE_ datetime,
     CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,
