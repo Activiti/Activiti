@@ -82,4 +82,18 @@ public class WebServiceMockImpl implements WebServiceMock {
   public WebServiceDataStructure getDataStructure() {
     return this.dataStructure;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String noNameResult(String prefix, String suffix) {
+    return prefix + this.getCount() + suffix;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String reservedWordAsName(String prefix, String suffix) {
+    return prefix + this.getCount() + suffix;
+  }
 }

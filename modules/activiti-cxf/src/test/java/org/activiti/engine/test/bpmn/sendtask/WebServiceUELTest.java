@@ -35,12 +35,17 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
   public void testAsyncInvocationWithDataFlowUEL() throws Exception {
     assertEquals(-1, webServiceMock.getCount());
 
-    ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
-      public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
-      }
-    });
-
+    ProcessDefinitionEntity processDefinition = processEngineConfiguration
+      .getCommandExecutor()
+      .execute(new Command<ProcessDefinitionEntity>() {
+        public ProcessDefinitionEntity execute(CommandContext commandContext) {
+          return Context
+            .getProcessEngineConfiguration()
+            .getDeploymentManager()
+            .findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
+        }
+      });
+    
     ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();

@@ -16,11 +16,23 @@
 <message name="setToResponse">
 <part name="parameters" element="tns:setToResponse"></part>
 </message>
-<message name="prettyPrintCount">
+<message name="noNameResult">
+<part name="parameters" element="tns:noNameResult"></part>
+</message>
+    <message name="prettyPrintCount">
 <part name="parameters" element="tns:prettyPrintCount"></part>
 </message>
 <message name="prettyPrintCountResponse">
 <part name="parameters" element="tns:prettyPrintCountResponse"></part>
+</message>
+    <message name="reservedWordAsName">
+<part name="parameters" element="tns:reservedWordAsName"></part>
+</message>
+<message name="reservedWordAsNameResponse">
+<part name="parameters" element="tns:reservedWordAsNameResponse"></part>
+</message>
+    <message name="noNameResultResponse">
+<part name="parameters" element="tns:noNameResultResponse"></part>
 </message>
 <message name="reset">
 <part name="parameters" element="tns:reset"></part>
@@ -46,6 +58,15 @@
 <operation name="prettyPrintCount">
 <input message="tns:prettyPrintCount"></input>
 <output message="tns:prettyPrintCountResponse"></output>
+</operation>
+
+    <operation name="reservedWordAsName">
+<input message="tns:reservedWordAsName"></input>
+<output message="tns:reservedWordAsNameResponse"></output>
+</operation>
+    <operation name="noNameResult">
+<input message="tns:noNameResult"></input>
+<output message="tns:noNameResultResponse"></output>
 </operation>
 <operation name="reset">
 <input message="tns:reset"></input>
@@ -77,6 +98,24 @@
 </output>
 </operation>
 <operation name="prettyPrintCount">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+</operation>
+    <operation name="reservedWordAsName">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+</operation>
+    <operation name="noNameResult">
 <soap:operation soapAction=""></soap:operation>
 <input>
 <soap:body use="literal"></soap:body>

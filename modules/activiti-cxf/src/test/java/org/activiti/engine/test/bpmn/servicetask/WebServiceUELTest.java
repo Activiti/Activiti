@@ -32,13 +32,18 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   @Deployment
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
-    ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
-      public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("webServiceInvocationWithDataFlowUEL");
-      }
-    });
-
-    ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
+    ProcessDefinitionEntity processDefinition = processEngineConfiguration
+      .getCommandExecutor()
+      .execute(new Command<ProcessDefinitionEntity>() {
+        public ProcessDefinitionEntity execute(CommandContext commandContext) {
+          return Context
+            .getProcessEngineConfiguration()
+            .getDeploymentManager()
+            .findDeployedLatestProcessDefinitionByKey("webServiceInvocationWithDataFlowUEL");
+        }
+      });
+  
+      ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();
     FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();

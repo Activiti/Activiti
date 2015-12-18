@@ -27,7 +27,7 @@ public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
   protected boolean isValidating() {
     return false;
   }
-
+  
   @Deployment
   public void testAsyncInvocationWithSimplisticDataFlow() throws Exception {
     assertEquals(-1, webServiceMock.getCount());
