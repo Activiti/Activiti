@@ -765,45 +765,45 @@ angular.module('activitiModeler')
                 var parentAbs = $scope.dragCurrentParent.absoluteXY();
                 pos.x -= parentAbs.x;
                 pos.y -= parentAbs.y;
-                
+
+                var containedStencil = undefined;
+                var stencilSets = $scope.editor.getStencilSets().values();
+                for (var i = 0; i < stencilSets.length; i++)
+                {
+                    var stencilSet = stencilSets[i];
+                    var nodes = stencilSet.nodes();
+                    for (var j = 0; j < nodes.length; j++)
+                    {
+                        if (nodes[j].idWithoutNs() === ui.draggable[0].id)
+                        {
+                            containedStencil = nodes[j];
+                            break;
+                        }
+                    }
+
+                    if (!containedStencil)
+                    {
+                        var edges = stencilSet.edges();
+                        for (var j = 0; j < edges.length; j++)
+                        {
+                            if (edges[j].idWithoutNs() === ui.draggable[0].id)
+                            {
+                                containedStencil = edges[j];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!containedStencil) return;
+
             	if ($scope.quickMenu)
             	{
             		var shapes = $scope.editor.getSelection();
             		if (shapes && shapes.length == 1)
             		{
             			var currentSelectedShape = shapes.first();
-            		
-	            		var containedStencil = undefined;
-	                	var stencilSets = $scope.editor.getStencilSets().values();
-	                	for (var i = 0; i < stencilSets.length; i++)
-	                	{
-	                		var stencilSet = stencilSets[i];
-	            			var nodes = stencilSet.nodes();
-	            			for (var j = 0; j < nodes.length; j++)
-	                    	{
-	            				if (nodes[j].idWithoutNs() === ui.draggable[0].id)
-	            				{
-	            					containedStencil = nodes[j];
-	            					break;
-	            				}
-	                    	}
-	            			
-	            			if (!containedStencil)
-	            			{
-	            				var edges = stencilSet.edges();
-	                			for (var j = 0; j < edges.length; j++)
-	                        	{
-	                				if (edges[j].idWithoutNs() === ui.draggable[0].id)
-	                				{
-	                					containedStencil = edges[j];
-	                					break;
-	                				}
-	                        	}
-	            			}
-	                	}
-	                	
-	                	if (!containedStencil) return;
-	        			
+
 	        			var option = {};
 	        			option.type = currentSelectedShape.getStencil().namespace() + ui.draggable[0].id;
 	        			option.namespace = currentSelectedShape.getStencil().namespace();
@@ -845,74 +845,86 @@ angular.module('activitiModeler')
             	}
             	else
             	{
+                    var canAttach = false;
+                    if (containedStencil.idWithoutNs() === 'BoundaryErrorEvent' || containedStencil.idWithoutNs() === 'BoundaryTimerEvent' ||
+                        containedStencil.idWithoutNs() === 'BoundarySignalEvent' || containedStencil.idWithoutNs() === 'BoundaryMessageEvent' ||
+                        containedStencil.idWithoutNs() === 'BoundaryCancelEvent' || containedStencil.idWithoutNs() === 'BoundaryCompensationEvent') {
+                        // Modify position, otherwise boundary event will get position related to left corner of the canvas instead of the container
+                        pos = $scope.editor.eventCoordinates( event );
+                        canAttach = true;
+                    }
 
-	                var option = {};
-	                option['type'] = $scope.modelData.model.stencilset.namespace + item.id;
-					option['namespace'] = $scope.modelData.model.stencilset.namespace;
-					option['position'] = pos;
-					option['parent'] = $scope.dragCurrentParent;
-	
-	                var commandClass = ORYX.Core.Command.extend({
-	                    construct: function (option, currentParent, canAttach, position, facade) {
-	                        this.option = option;
-	                        this.currentParent = currentParent;
-	                        this.canAttach = canAttach;
-	                        this.position = position;
-	                        this.facade = facade;
-	                        this.selection = this.facade.getSelection();
-	                        this.shape;
-	                        this.parent;
-	                    },
-	                    execute: function () {
-	                        if (!this.shape) {
-	                            this.shape = this.facade.createShape(option);
-	                            this.parent = this.shape.parent;
-	                        } else {
-	                            this.parent.add(this.shape);
-	                        }
-	
-	                        if (this.canAttach && this.currentParent instanceof ORYX.Core.Node && this.shape.dockers.length > 0) {
-	
-	                            var docker = this.shape.dockers[0];
-	
-	                            if (this.currentParent.parent instanceof ORYX.Core.Node) {
-	                                this.currentParent.parent.add(docker.parent);
-	                            }
-	
-	                            docker.bounds.centerMoveTo(this.position);
-	                            docker.setDockedShape(this.currentParent);
-	                            //docker.update();
-	                        }
-	
-	                        this.facade.setSelection([this.shape]);
-	                        this.facade.getCanvas().update();
-	                        this.facade.updateSelection();
-	
-	                    },
-	                    rollback: function () {
-	                        this.facade.deleteShape(this.shape);
-	
-	                        //this.currentParent.update();
-	
-	                        this.facade.setSelection(this.selection.without(this.shape));
-	                        this.facade.getCanvas().update();
-	                        this.facade.updateSelection();
-	
-	                    }
-	                });
-	
-	                // Update canvas
-	                var command = new commandClass(option, $scope.dragCurrentParent, false, pos, $scope.editor);
-	                $scope.editor.executeCommands([command]);
-	
-	                // Fire event to all who want to know about this
-	                var dropEvent = {
-	                    type: KISBPM.eventBus.EVENT_TYPE_ITEM_DROPPED,
-	                    droppedItem: item,
-	                    position: pos
-	                };
-	                KISBPM.eventBus.dispatch(dropEvent.type, dropEvent);
-            	}
+                    var option = {};
+                    option['type'] = $scope.modelData.model.stencilset.namespace + item.id;
+                    option['namespace'] = $scope.modelData.model.stencilset.namespace;
+                    option['position'] = pos;
+                    option['parent'] = $scope.dragCurrentParent;
+
+                    var commandClass = ORYX.Core.Command.extend({
+                        construct: function(option, dockedShape, canAttach, position, facade){
+                            this.option = option;
+                            this.docker = null;
+                            this.dockedShape = dockedShape;
+                            this.dockedShapeParent = dockedShape.parent || facade.getCanvas();
+                            this.position = position;
+                            this.facade	= facade;
+                            this.selection = this.facade.getSelection();
+                            this.shape = null;
+                            this.parent = null;
+                            this.canAttach = canAttach;
+                        },
+                        execute: function(){
+                            if (!this.shape) {
+                                this.shape = this.facade.createShape(option);
+                                this.parent = this.shape.parent;
+                            } else if (this.parent) {
+                                this.parent.add(this.shape);
+                            }
+
+                            if (this.canAttach && this.shape.dockers && this.shape.dockers.length) {
+                                this.docker = this.shape.dockers[0];
+
+                                this.dockedShapeParent.add(this.docker.parent);
+
+                                // Set the Docker to the new Shape
+                                this.docker.setDockedShape(undefined);
+                                this.docker.bounds.centerMoveTo(this.position);
+                                if (this.dockedShape !== this.facade.getCanvas()) {
+                                    this.docker.setDockedShape(this.dockedShape);
+                                }
+                                this.facade.setSelection( [this.docker.parent] );
+                            }
+
+                            this.facade.getCanvas().update();
+                            this.facade.updateSelection();
+
+                        },
+                        rollback: function(){
+                            if (this.shape) {
+                                this.facade.setSelection(this.selection.without(this.shape));
+                                this.facade.deleteShape(this.shape);
+                            }
+                            if (this.canAttach && this.docker) {
+                                this.docker.setDockedShape(undefined);
+                            }
+                            this.facade.getCanvas().update();
+                            this.facade.updateSelection();
+
+                        }
+                    });
+
+                    // Update canvas
+                    var command = new commandClass(option, $scope.dragCurrentParent, canAttach, pos, $scope.editor);
+                    $scope.editor.executeCommands([command]);
+
+                    // Fire event to all who want to know about this
+                    var dropEvent = {
+                        type: KISBPM.eventBus.EVENT_TYPE_ITEM_DROPPED,
+                        droppedItem: item,
+                        position: pos
+                    };
+                    KISBPM.eventBus.dispatch(dropEvent.type, dropEvent);
+                }
             }
 
             $scope.dragCurrentParent = undefined;
@@ -935,6 +947,9 @@ angular.module('activitiModeler')
         $scope.startDragCallback = function (event, ui) {
             $scope.dragModeOver = false;
             $scope.quickMenu = false;
+            if (!ui.helper.hasClass('stencil-item-dragged')) {
+                ui.helper.addClass('stencil-item-dragged');
+            }
         };
         
         $scope.startDragCallbackQuickMenu = function (event, ui) {
@@ -1322,7 +1337,6 @@ KISBPM.CreateCommand = ORYX.Core.Command.extend({
 				this.shape.dockers.first().setDockedShape(this.connectedShape);
 				this.shape.dockers.first().setReferencePoint(this.sourceRefPos);
 			}
-			resume = true;
 		}
 		else {
 			this.shape = this.facade.createShape(this.option);
