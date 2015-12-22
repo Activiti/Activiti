@@ -39,7 +39,7 @@ public class ScriptBindings implements Bindings {
    * This list contains the keywords for JUEL, Javascript and Groovy.
    */
   protected static final Set<String> UNSTORED_KEYS = 
-    new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println"));
+    new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println", "nashorn.global"));
 
   protected List<Resolver> scriptResolvers;
   protected VariableScope variableScope;
@@ -125,4 +125,9 @@ public class ScriptBindings implements Bindings {
   public boolean isEmpty() {
     throw new UnsupportedOperationException();
   }
+  
+  public void addUnstoredKey(String unstoredKey) {
+  	UNSTORED_KEYS.add(unstoredKey);
+  }
+  
 }

@@ -101,11 +101,21 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
     return null;
   }
   
+  @SuppressWarnings("unchecked")
+  public List<HistoricTaskInstance> findHistoricTasksByParentTaskId(String parentTaskId) {
+    return getDbSqlSession().selectList("selectHistoricTasksByParentTaskId", parentTaskId);
+  }
+  
   public void deleteHistoricTaskInstanceById(String taskId) {
     if (getHistoryManager().isHistoryEnabled()) {
       HistoricTaskInstanceEntity historicTaskInstance = findHistoricTaskInstanceById(taskId);
-      if(historicTaskInstance!=null) {
+      if (historicTaskInstance != null) {
         CommandContext commandContext = Context.getCommandContext();
+        
+        List<HistoricTaskInstance> subTasks = findHistoricTasksByParentTaskId(taskId);
+        for (HistoricTaskInstance subTask: subTasks) {
+          deleteHistoricTaskInstanceById(subTask.getId());
+        }
         
         commandContext
           .getHistoricDetailEntityManager()

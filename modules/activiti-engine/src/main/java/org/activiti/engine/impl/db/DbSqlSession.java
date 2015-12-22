@@ -113,6 +113,8 @@ public class DbSqlSession implements Session {
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.1"));
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.2"));
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.0"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.1"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.20.0.0"));
 	  
 	  /* Current */
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));

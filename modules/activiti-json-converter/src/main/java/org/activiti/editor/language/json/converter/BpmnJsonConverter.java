@@ -53,8 +53,8 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -695,7 +695,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                     ((FlowNode) sourceFlowElement).getOutgoingFlows().add(sequenceFlow);
                     JsonNode edgeNode = edgeMap.get(sequenceFlow.getId());
                     if (edgeNode != null) {
-                      boolean isDefault = JsonConverterUtil.getPropertyValueAsBoolean("defaultflow", edgeNode);
+                      boolean isDefault = JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_SEQUENCEFLOW_DEFAULT, edgeNode);
                       if (isDefault) {
                           if (sourceFlowElement instanceof Activity) {
                               ((Activity) sourceFlowElement).setDefaultFlow(sequenceFlow.getId());

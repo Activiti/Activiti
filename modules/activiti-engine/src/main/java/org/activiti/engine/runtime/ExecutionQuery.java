@@ -186,6 +186,16 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    */
   ExecutionQuery variableValueLike(String name, String value);
   
+  /** 
+   * Only select executions which have a local variable value like the given value (case insensitive).
+   * This be used on string variables only.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null. The string can include the
+   * wildcard character '%' to express like-strategy: 
+   * starts with (string%), ends with (%string) or contains (%string%).
+   */
+  ExecutionQuery variableValueLikeIgnoreCase(String name, String value);
+  
   /**
    * Only select executions which are part of a process that have a variable
    * with the given name set to the given value.
@@ -238,6 +248,18 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    */
   ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
   
+  /**
+   * Only select executions which are part of a process that have at least one variable like the given value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
+   */
+  ExecutionQuery processVariableValueLike(String name, String value);
+  
+  /**
+   * Only select executions which are part of a process that have at least one variable like the given value (case insensitive).
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
+   */
+  ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value);
+  
   // event subscriptions //////////////////////////////////////////////////
   
   /** 
@@ -267,6 +289,16 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * @param messageName the name of the message the execution has subscribed to
    */
   ExecutionQuery messageEventSubscriptionName(String messageName);
+  
+  /**
+   * Localize execution name and description to specified locale.
+   */
+  ExecutionQuery locale(String locale);
+  
+  /**
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   */
+  ExecutionQuery withLocalizationFallback();
   
   //ordering //////////////////////////////////////////////////////////////
   

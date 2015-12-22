@@ -265,6 +265,10 @@
     select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId, jdbcType=VARCHAR}
   </select>
   
+  <select id="selectHistoricTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicTaskInstanceResultMap">
+    select * from ${prefix}ACT_HI_TASKINST where PARENT_TASK_ID_ = #{parameter}
+  </select>
+  
   <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" >
     select ID_ 
     from ${prefix}ACT_HI_TASKINST 
@@ -642,7 +646,7 @@
         <!-- Variable value -->
         <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
           <choose>
-            <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+            <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
               and lower(A${index}.TEXT_)
             </when>
             <otherwise>
@@ -650,7 +654,7 @@
             </otherwise>
           </choose> 
           <choose>
-              <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+              <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
               <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
           #{queryVar.textValue}
@@ -933,7 +937,7 @@
               <!-- Variable value -->
               <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
                 <choose>
-                  <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+                  <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
                     and lower(A_OR${orIndex}_${index}.TEXT_)
                   </when>
                   <otherwise>
@@ -941,7 +945,7 @@
                   </otherwise>
                 </choose> 
                 <choose>
-                    <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+                    <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
                     <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>          
                 #{queryVar.textValue}

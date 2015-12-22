@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://java.sun.com/products/jsp/"
+  targetNamespace="org.activiti.engine.test.bpmn.servicetask"
+  xmlns:tns="org.activiti.engine.test.bpmn.servicetask"
+  xmlns:counter="http://webservice.activiti.org/">
+  <!--
+    XML Schema is used as type language for the model whereas the Java
+    Unified Expression Language serves as language for Expressions.
+  -->
+
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+          location="http://localhost:63081/webservicemock?wsdl"
+          namespace="http://webservice.activiti.org/" />
+
+  <process id="webServiceInvocationWithSimplisticDataFlow">
+
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="webService" />
+
+    <serviceTask id="webService"
+                 name="Web service invocation"
+                 implementation="##WebService"
+                 operationRef="tns:reservedWordAsNameOperation">
+      <!--
+        Warning: The following code abuses the syntax of Data Associations
+        for a radical shortcut.
+      -->
+      <dataInputAssociation>
+        <sourceRef>PrefixVariable</sourceRef><!-- name of an Activiti variable -->
+        <targetRef>prefix</targetRef><!-- name of an element of the input message -->
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>SuffixVariable</sourceRef><!-- name of an Activiti variable -->
+        <targetRef>suffix</targetRef><!-- name of an element of the input message -->
+      </dataInputAssociation>
+      <dataOutputAssociation>
+      	<sourceRef>static</sourceRef><!-- name of an element of the output message -->
+      	<targetRef>OutputVariable</targetRef><!-- name of an Activiti variable -->
+      </dataOutputAssociation>
+    </serviceTask>
+
+    <sequenceFlow id="flow2" sourceRef="webService" targetRef="waitState" />
+
+    <receiveTask id="waitState" />
+
+    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+  <itemDefinition id="PrefixVariable" structureRef="string" />
+  <itemDefinition id="prefix" structureRef="string" />
+  <itemDefinition id="SuffixVariable" structureRef="string" />
+  <itemDefinition id="suffix" structureRef="string" />
+
+  <itemDefinition id="static" structureRef="string" />
+  <itemDefinition id="OutputVariable" structureRef="string" />
+
+  <!-- Interface: implementationRef = QName of WSDL Port Type -->
+  <interface name="Counter Interface" implementationRef="counter:Counter">
+    <!-- Operation: implementationRef = QName of WSDL Operation -->
+    <operation id="reservedWordAsNameOperation" name="reservedWordAsName Operation" implementationRef="counter:reservedWordAsName">
+      <inMessageRef>tns:reservedWordAsNameRequestMessage</inMessageRef>
+      <outMessageRef>tns:reservedWordAsNameResponseMessage</outMessageRef>
+    </operation>
+  </interface>
+
+  <message id="reservedWordAsNameRequestMessage" itemRef="tns:reservedWordAsNameRequestItem" />
+  <message id="reservedWordAsNameResponseMessage" itemRef="tns:reservedWordAsNameResponseItem" />
+
+  <itemDefinition id="reservedWordAsNameRequestItem" structureRef="counter:reservedWordAsName" /><!-- QName of input element -->
+  <itemDefinition id="reservedWordAsNameResponseItem" structureRef="counter:reservedWordAsNameResponse" /><!-- QName of output element -->
+
+</definitions>

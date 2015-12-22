@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.18.0.1', 1);
+values ('schema.version', '5.20.0.1', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.18.0.1)', 1);
+values ('schema.history', 'create(5.20.0.1)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -29,7 +29,7 @@ create table ACT_RE_DEPLOYMENT (
     NAME_ varchar(255),
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
-    DEPLOY_TIME_ timestamp(3),
+    DEPLOY_TIME_ timestamp(3) NULL,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -124,7 +124,7 @@ create table ACT_RU_TASK (
     ASSIGNEE_ varchar(255),
     DELEGATION_ varchar(64),
     PRIORITY_ integer,
-    CREATE_TIME_ timestamp(3),
+    CREATE_TIME_ timestamp(3) NULL,
     DUE_DATE_ datetime(3),
     CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,

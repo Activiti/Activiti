@@ -5,10 +5,9 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>archetypes</artifactId>
-    <version>5.18.1-SNAPSHOT</version>
+    <version>5.20.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.activiti.archetypes</groupId>
   <artifactId>activiti-archetype-unittest</artifactId>
   <description>Creates a new Activiti unit test.</description>
   <packaging>jar</packaging>  

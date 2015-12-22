@@ -126,6 +126,42 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
     return this;
   }
+  
+  public HistoricVariableInstanceQuery variableValueNotEquals(String variableName, Object variableValue) {
+    if (variableName == null) {
+      throw new ActivitiIllegalArgumentException("variableName is null");
+    }
+    if (variableValue == null) {
+      throw new ActivitiIllegalArgumentException("variableValue is null");
+    }
+    this.variableName = variableName;
+    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true);
+    return this;
+  }
+  
+  public HistoricVariableInstanceQuery variableValueLike(String variableName, String variableValue) {
+    if (variableName == null) {
+      throw new ActivitiIllegalArgumentException("variableName is null");
+    }
+    if (variableValue == null) {
+      throw new ActivitiIllegalArgumentException("variableValue is null");
+    }
+    this.variableName = variableName;
+    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.LIKE, true);
+    return this;
+  }
+  
+  public HistoricVariableInstanceQuery variableValueLikeIgnoreCase(String variableName, String variableValue) {
+    if (variableName == null) {
+      throw new ActivitiIllegalArgumentException("variableName is null");
+    }
+    if (variableValue == null) {
+      throw new ActivitiIllegalArgumentException("variableValue is null");
+    }
+    this.variableName = variableName;
+    queryVariableValue = new QueryVariableValue(variableName, variableValue.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, true);
+    return this;
+  }
 
   public HistoricVariableInstanceQuery variableNameLike(String variableNameLike) {
     if (variableNameLike == null) {

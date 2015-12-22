@@ -177,6 +177,8 @@ public interface StencilConstants {
   final String PROPERTY_FORM_READABLE = "readable";
   final String PROPERTY_FORM_WRITABLE = "writable";
   final String PROPERTY_FORM_ENUM_VALUES = "enumValues";
+  final String PROPERTY_FORM_ENUM_VALUES_NAME = "name";
+  final String PROPERTY_FORM_ENUM_VALUES_ID = "id";
   
   final String PROPERTY_DATA_PROPERTIES = "dataproperties";
   final String PROPERTY_DATA_ID = "dataproperty_id";
@@ -216,6 +218,7 @@ public interface StencilConstants {
   final String PROPERTY_MULETASK_PAYLOAD_EXPRESSION= "muletaskpayloadexpression";
   final String PROPERTY_MULETASK_RESULT_VARIABLE= "muletaskresultvariable";
 
+  final String PROPERTY_SEQUENCEFLOW_DEFAULT = "defaultflow";
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
   final String PROPERTY_SEQUENCEFLOW_ORDER = "sequencefloworder";
   
@@ -229,5 +232,5 @@ public interface StencilConstants {
   final String PROPERTY_SIGNAL_DEFINITION_NAME = "name";
   final String PROPERTY_SIGNAL_DEFINITION_SCOPE = "scope";
   
-  final String PROPERTY_TERMINATE_ALL = "terminateAll";
+  final String PROPERTY_TERMINATE_ALL = "terminateall";
 }

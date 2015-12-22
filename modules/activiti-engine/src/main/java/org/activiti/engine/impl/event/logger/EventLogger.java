@@ -54,13 +54,18 @@ public class EventLogger implements ActivitiEventListener {
 	// Listeners for new events
 	protected List<EventLoggerListener> listeners;
 	
+	public EventLogger() {
+		initializeDefaultHandlers();
+	}
+	
 	public EventLogger(Clock clock, ObjectMapper objectMapper) {
+		this();
 		this.clock = clock;
 		this.objectMapper = objectMapper;
-		
-		// Initialization of all event handlers
-		
-		addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
+	}
+
+	protected void initializeDefaultHandlers() {
+	  addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
 		
@@ -76,7 +81,7 @@ public class EventLogger implements ActivitiEventListener {
 		addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
 		addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
-	}
+  }
 	
 	@Override
 	public void onEvent(ActivitiEvent event) {
