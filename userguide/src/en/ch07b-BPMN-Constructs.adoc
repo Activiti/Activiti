@@ -90,7 +90,7 @@ It accepts as value either static values link:$$http://en.wikipedia.org/wiki/ISO
 
 If both are specified then the endDate specified as attribute will be used by the system.
 
- Currently only the _BoundaryTimerEvents_ and _CatchTimerEvent_ supports _EndDate_ functionality.
+Currently only the _BoundaryTimerEvents_ and _CatchTimerEvent_ supports _EndDate_ functionality.
 
 Additionally, you can specify time cycle using cron expressions, example below shows trigger firing every 5 minutes, starting at full hour:
 
