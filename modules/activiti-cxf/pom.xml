@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>6.0.0.Beta2-SNAPSHOT</version>
+    <version>6.0.0.Beta2</version>
   </parent>
   
   <properties>
@@ -194,6 +194,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <excludePackageNames>org.activiti.impl*,org.activiti.engine.impl*</excludePackageNames>
+          <additionalparam>-Xdoclint:none</additionalparam>
         </configuration>
       </plugin>
     </plugins>

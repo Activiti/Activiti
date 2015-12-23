@@ -18,8 +18,9 @@ public class ActivitiFailedjobRetryParser extends BaseChildElementParser {
     if (!(parentElement instanceof Activity))
       return;
     String cycle = xtr.getElementText();
-    if (cycle == null | cycle.isEmpty())
+    if (cycle == null || cycle.isEmpty()) {
       return;
+    }
     ((Activity) parentElement).setFailedJobRetryTimeCycleValue(cycle);
   }
 

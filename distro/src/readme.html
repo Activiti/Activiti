@@ -34,6 +34,19 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
+<h3>Release Notes - Activiti - 6.0.0.Beta2</h3>
+
+<h4>Highlights</h4>
+<ul>
+    <li>We've seriously refactored the persistence logic of the engine, making the persistence layer completely pluggable! Read more about it <a href="http://www.jorambarrez.be/blog/2015/09/17/pluggable-persistence-in-activiti-6/">here</a>.</li>
+    <li>Refactored the BpmnDeployer class and related logic to allow for easier pluggability/extensibility.</li>
+    <li>Refactored the internal execution tree structure when using multi instance behavior: there will now always be one execution to demarcate the 'scope' of the multi instance. This opens up future use cases (storing variables on that scope only, terminating only one instance or all, etc.)</li>
+    <li>Extended the 'terminate all event' behaviour to cover more use cases and be fully consistent with the BPMN spec. Also, </li> 
+    <li>Added the DynamicBpmnService. Read more about it <a href="http://bpmn20inaction.blogspot.nl/2015/10/adding-dynamic-behaviour-to-activiti.html">here</a>.
+    <li>Various and many small bugfixes all around.
+</ul>    
+
+
 <h3>Release Notes - Activiti - 6.0.0.Beta1</h3>
 
 <p>First public release of the new major version of Activiti. We are looking for feedback from the community, particularly to test the Activiti 5 compatibility.
