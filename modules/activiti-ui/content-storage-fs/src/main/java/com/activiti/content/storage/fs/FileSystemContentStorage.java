@@ -152,9 +152,9 @@ public class FileSystemContentStorage implements ContentStorage {
     public void deleteContentObject(String id) {
         try {
             File contentFile = getFileForId(id, true);
-            Files.delete(contentFile.toPath());
-        } catch(IOException ioe) {
-            throw new ContentStorageException("Error while deleting content", ioe);
+            contentFile.delete();
+        } catch(Exception e) {
+            throw new ContentStorageException("Error while deleting content", e);
         }
     }
     

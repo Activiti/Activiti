@@ -29,7 +29,7 @@ public class ContentStorageException extends RuntimeException {
     }
 
     public ContentStorageException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(message, cause);
     }
 
     public ContentStorageException(String message, Throwable cause) {
