@@ -140,7 +140,7 @@ public class TimerDeclarationImpl implements Serializable {
         // Joda DateTime support
         duedate = ((DateTime) endDateValue).toDate();
       } else {
-        throw new ActivitiException("Timer '" + executionEntity.getActivityId() + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+        throw new ActivitiException("Timer '" + (executionEntity != null ? executionEntity.getActivityId() : "null") + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
       }
 
       if (endDate == null) {
@@ -158,7 +158,7 @@ public class TimerDeclarationImpl implements Serializable {
       duedate = ((DateTime) dueDateValue).toDate();
     } else if (dueDateValue != null) {
       //dueDateValue==null is OK - but unexpected class type must throw an error.
-      throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+      throw new ActivitiException("Timer '"+(executionEntity != null ? executionEntity.getActivityId() : "null")+"' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
     }
     
     if (duedate == null && dueDateString != null) {      

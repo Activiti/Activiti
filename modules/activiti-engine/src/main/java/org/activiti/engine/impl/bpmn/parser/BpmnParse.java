@@ -191,7 +191,9 @@ public class BpmnParse implements BpmnXMLConstants {
       
       // XSD validation goes first, then process/semantic validation
       if (validateProcess) {
-      	ProcessValidator processValidator = processEngineConfiguration.getProcessValidator();
+      	ProcessValidator processValidator = processEngineConfiguration != null
+                ? processEngineConfiguration.getProcessValidator()
+                : null;
       	if (processValidator == null) {
       		LOGGER.warn("Process should be validated, but no process validator is configured on the process engine configuration!");
       	} else {

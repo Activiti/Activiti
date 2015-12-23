@@ -88,9 +88,9 @@ public class JobTestHelper {
 
     } finally {
     	if (shutdownExecutorWhenFinished) {
-	      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+	      if (jobExecutor != null) {
 	        jobExecutor.shutdown();
-	      } else {
+	      } else if (asyncExecutor != null) {
 	        asyncExecutor.shutdown();
 	      }
     	}
@@ -138,9 +138,9 @@ public class JobTestHelper {
       }
 
     } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      if (jobExecutor != null) {
         jobExecutor.shutdown();
-      } else {
+      } else if (asyncExecutor != null) {
         asyncExecutor.shutdown();
       }
     }

@@ -70,7 +70,7 @@ public class DataAssociationParser implements BpmnXMLConstants {
           }
           
         } else if (xtr.isEndElement() && ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())) {
-          if (StringUtils.isNotEmpty(assignment.getFrom()) && StringUtils.isNotEmpty(assignment.getTo())) {
+          if (assignment != null && StringUtils.isNotEmpty(assignment.getFrom()) && StringUtils.isNotEmpty(assignment.getTo())) {
             dataAssociation.getAssignments().add(assignment);
           }
           
