@@ -235,4 +235,5 @@ public interface StencilConstants {
   final String PROPERTY_SIGNAL_DEFINITION_SCOPE = "scope";
   
   final String PROPERTY_TERMINATE_ALL = "terminateall";
+  final String PROPERTY_TERMINATE_MULTI_INSTANCE = "terminateMultiInstance";
 }

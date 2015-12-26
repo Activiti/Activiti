@@ -421,12 +421,19 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
   public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent) {
     boolean terminateAll = false;
+    boolean terminateMultiInstance = false;
+    
     if (endEvent.getEventDefinitions() != null 
         && endEvent.getEventDefinitions().size() > 0
         && endEvent.getEventDefinitions().get(0) instanceof TerminateEventDefinition) {
       terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateAll();
+      terminateMultiInstance = ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateMultiInstance();
     }
-    return new TerminateEndEventActivityBehavior(terminateAll);
+    
+    TerminateEndEventActivityBehavior terminateEndEventActivityBehavior = new TerminateEndEventActivityBehavior();
+    terminateEndEventActivityBehavior.setTerminateAll(terminateAll);
+    terminateEndEventActivityBehavior.setTerminateMultiInstance(terminateMultiInstance);
+    return terminateEndEventActivityBehavior;
   }
 
   // Boundary Events

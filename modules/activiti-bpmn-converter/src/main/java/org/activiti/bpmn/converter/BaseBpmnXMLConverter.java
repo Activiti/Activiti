@@ -500,6 +500,10 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     	writeQualifiedAttribute(ATTRIBUTE_TERMINATE_ALL, "true", xtw);
     }
     
+    if (terminateDefinition.isTerminateMultiInstance()) {
+      writeQualifiedAttribute(ATTRIBUTE_TERMINATE_MULTI_INSTANCE, "true", xtw);
+    }
+    
     boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(terminateDefinition, false, xtw);
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();

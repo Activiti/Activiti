@@ -34,13 +34,10 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   private static final long serialVersionUID = 1L;
 
   protected boolean terminateAll;
+  protected boolean terminateMultiInstance;
 
   public TerminateEndEventActivityBehavior() {
 
-  }
-
-  public TerminateEndEventActivityBehavior(boolean terminateAll) {
-    this.terminateAll = terminateAll;
   }
 
   @Override
@@ -52,77 +49,90 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
 
     if (terminateAll) {
-
       deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
-
+    } else if (terminateMultiInstance) {
+      terminateMultiInstanceRoot(execution, commandContext, executionEntityManager, executionTree);
     } else {
-
-      ExecutionTreeNode scopeTreeNode = findFirstScope(execution, executionTree);
-
-      ExecutionEntity scopeExecutionEntity = scopeTreeNode.getExecutionEntity();
-      sendProcessInstanceCancelledEvent(scopeExecutionEntity, execution.getCurrentFlowElement());
-
-      // If the scope is the process instance, we can just terminate it all
-      // Special treatment is needed when the terminated activity is a subprocess (embedded/callactivity/..)
-      // The subprocess is destroyed, but the execution calling it, continues further on.
-      // In case of a multi-instance subprocess, only one instance is terminated, the other instances continue to exist.
-
-      if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
-
-        deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
-
-      } else if (scopeExecutionEntity.getCurrentFlowElement() != null 
-          && scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) { // SubProcess
-
-        SubProcess subProcess = (SubProcess) scopeExecutionEntity.getCurrentFlowElement();
-
-        if (subProcess.hasMultiInstanceLoopCharacteristics()) {
-          
-          commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-          
-          MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
-          multiInstanceBehavior.leave(scopeExecutionEntity);
-          
-        } else {
-          commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-          commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
-        }
-
-      } else if (scopeExecutionEntity.getParentId() == null 
-          && scopeExecutionEntity.getSuperExecutionId() != null) { // CallActivity
-
-        ExecutionEntity callActivityExecution = scopeExecutionEntity.getSuperExecution();
-        CallActivity callActivity = (CallActivity) callActivityExecution.getCurrentFlowElement();
-
-        if (callActivity.hasMultiInstanceLoopCharacteristics()) {
-
-          MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) callActivity.getBehavior();
-          multiInstanceBehavior.leave(callActivityExecution);
-          executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
-
-        } else {
-
-          executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
-          ExecutionEntity superExecutionEntity = executionEntityManager.findById(scopeExecutionEntity.getSuperExecutionId());
-          commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
-
-        }
-        
-      }
-
+      defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager, executionTree);
     }
   }
 
-  protected ExecutionTreeNode findFirstScope(DelegateExecution execution, ExecutionTree executionTree) {
-    ExecutionTreeNode scopeTreeNode = executionTree.getTreeNode(execution.getId());
-    while (!scopeTreeNode.getExecutionEntity().isScope()) {
-      scopeTreeNode = scopeTreeNode.getParent();
+  protected void defaultTerminateEndEventBehaviour(DelegateExecution execution, CommandContext commandContext,
+      ExecutionEntityManager executionEntityManager, ExecutionTree executionTree) {
+    
+    ExecutionTreeNode scopeTreeNode = executionTree.getTreeNode(execution.getId()).findFirstScope(); // There will always be one (the process instance), so no null checking needed
+    ExecutionEntity scopeExecutionEntity = scopeTreeNode.getExecutionEntity();
+    sendProcessInstanceCancelledEvent(scopeExecutionEntity, execution.getCurrentFlowElement());
 
-      if (scopeTreeNode == null) {
-        break;
+    // If the scope is the process instance, we can just terminate it all
+    // Special treatment is needed when the terminated activity is a subprocess (embedded/callactivity/..)
+    // The subprocess is destroyed, but the execution calling it, continues further on.
+    // In case of a multi-instance subprocess, only one instance is terminated, the other instances continue to exist.
+
+    if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
+
+      deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+
+    } else if (scopeExecutionEntity.getCurrentFlowElement() != null 
+        && scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) { // SubProcess
+
+      SubProcess subProcess = (SubProcess) scopeExecutionEntity.getCurrentFlowElement();
+
+      if (subProcess.hasMultiInstanceLoopCharacteristics()) {
+        
+        commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
+        
+        MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
+        multiInstanceBehavior.leave(scopeExecutionEntity);
+        
+      } else {
+        commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
       }
+
+    } else if (scopeExecutionEntity.getParentId() == null 
+        && scopeExecutionEntity.getSuperExecutionId() != null) { // CallActivity
+
+      ExecutionEntity callActivityExecution = scopeExecutionEntity.getSuperExecution();
+      CallActivity callActivity = (CallActivity) callActivityExecution.getCurrentFlowElement();
+
+      if (callActivity.hasMultiInstanceLoopCharacteristics()) {
+
+        MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) callActivity.getBehavior();
+        multiInstanceBehavior.leave(callActivityExecution);
+        executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
+
+      } else {
+
+        executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
+        ExecutionEntity superExecutionEntity = executionEntityManager.findById(scopeExecutionEntity.getSuperExecutionId());
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
+
+      }
+      
     }
-    return scopeTreeNode;
+  }
+  
+  protected void terminateMultiInstanceRoot(DelegateExecution execution, CommandContext commandContext,
+      ExecutionEntityManager executionEntityManager, ExecutionTree executionTree) {
+    
+    // When terminateMultiInstance is 'true', we look for the multi instance root and delete it from there.
+    
+    ExecutionTreeNode currentTreeNode = executionTree.getTreeNode(execution.getId());
+    ExecutionTreeNode multiInstanceRootTreeNode = currentTreeNode.findFirstMultiInstanceRoot();
+    if (multiInstanceRootTreeNode != null) {
+      
+      // Create sibling execution to continue process instance execution before deletion
+      ExecutionEntity multiInstanceRootExecution = multiInstanceRootTreeNode.getExecutionEntity();
+      ExecutionEntity siblingExecution = executionEntityManager.createChildExecution(multiInstanceRootExecution.getParent());
+      siblingExecution.setCurrentFlowElement(multiInstanceRootExecution.getCurrentFlowElement());
+      
+      deleteExecutionEntities(commandContext, executionEntityManager, multiInstanceRootTreeNode.leafsFirstIterator());
+      
+      commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(siblingExecution);
+    } else {
+      defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager, executionTree);
+    }
   }
 
   protected void deleteExecutionEntities(CommandContext commandContext, ExecutionEntityManager executionEntityManager, ExecutionTreeBfsIterator treeIterator) {
@@ -178,20 +188,20 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
                     .getBehavior().getClass().getCanonicalName(), terminateEndEvent));
   }
 
-  protected boolean hasMultiInstanceParent(FlowNode flowNode) {
-    boolean hasMultiInstanceParent = false;
-    if (flowNode.getSubProcess() != null) {
-      if (flowNode.getSubProcess().getLoopCharacteristics() != null) {
-        hasMultiInstanceParent = true;
-      } else {
-        boolean hasNestedMultiInstanceParent = hasMultiInstanceParent(flowNode.getSubProcess());
-        if (hasNestedMultiInstanceParent) {
-          hasMultiInstanceParent = true;
-        }
-      }
-    }
-
-    return hasMultiInstanceParent;
+  public boolean isTerminateAll() {
+    return terminateAll;
   }
 
+  public void setTerminateAll(boolean terminateAll) {
+    this.terminateAll = terminateAll;
+  }
+
+  public boolean isTerminateMultiInstance() {
+    return terminateMultiInstance;
+  }
+
+  public void setTerminateMultiInstance(boolean terminateMultiInstance) {
+    this.terminateMultiInstance = terminateMultiInstance;
+  }
+  
 }

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.util.tree;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
@@ -61,6 +62,40 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
 
   public ExecutionTreeBfsIterator leafsFirstIterator() {
     return new ExecutionTreeBfsIterator(this, true);
+  }
+  
+  /**
+   * Starts from this {@link ExecutionTreeNode} and goes up via the parents 
+   * to find a {@link ExecutionTreeNode} that is a scope.
+   */
+  public ExecutionTreeNode findFirstScope() {
+    if (getExecutionEntity().isScope()) {
+      return this;
+    }
+    
+    ExecutionTreeNode parentNode = getParent();
+    if (parentNode != null) {
+      return parentNode.findFirstScope();
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Starts from this {@link ExecutionTreeNode} and goes up via the parents 
+   * to find a {@link ExecutionTreeNode} that is a multi instance root.
+   */
+  public ExecutionTreeNode findFirstMultiInstanceRoot() {
+    if (getExecutionEntity().isMultiInstanceRoot()) {
+      return this;
+    }
+    
+    ExecutionTreeNode parentNode = getParent();
+    if (parentNode != null) {
+      return parentNode.findFirstMultiInstanceRoot();
+    }
+    
+    return null;
   }
 
   /* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
