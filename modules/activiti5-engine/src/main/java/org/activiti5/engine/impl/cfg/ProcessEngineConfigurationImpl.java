@@ -1275,8 +1275,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initCommandContextFactory() {
     if (commandContextFactory==null) {
       commandContextFactory = new CommandContextFactory();
-      commandContextFactory.setProcessEngineConfiguration(this);
     }
+    commandContextFactory.setProcessEngineConfiguration(this);
   }
 
   protected void initTransactionContextFactory() {
@@ -1473,7 +1473,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   	if (enableDatabaseEventLogging) {
   		// Database event logging uses the default logging mechanism and adds
   		// a specific event listener to the list of event listeners
-  		getEventDispatcher().addEventListener(new EventLogger(clock));
+  		getEventDispatcher().addEventListener(new EventLogger(clock, objectMapper));
   	}
   }
 

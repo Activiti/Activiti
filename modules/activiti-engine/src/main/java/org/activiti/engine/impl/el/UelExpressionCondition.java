@@ -32,7 +32,7 @@ public class UelExpressionCondition implements Condition {
     this.expression = expression;
   }
 
-  public boolean evaluate(DelegateExecution execution) {
+  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
     Object result = expression.getValue(execution);
 
     if (result == null) {

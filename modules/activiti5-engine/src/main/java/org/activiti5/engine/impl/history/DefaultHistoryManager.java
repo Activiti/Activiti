@@ -18,9 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.history.HistoricActivityInstance;
 import org.activiti5.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti5.engine.impl.cfg.IdGenerator;
+import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.identity.Authentication;
 import org.activiti5.engine.impl.persistence.AbstractManager;
@@ -48,6 +51,7 @@ import org.slf4j.LoggerFactory;
  * that are originated from inside the engine.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class DefaultHistoryManager extends AbstractManager implements HistoryManager {
   
@@ -97,6 +101,13 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
       if (historicProcessInstance!=null) {
         historicProcessInstance.markEnded(deleteReason);
         historicProcessInstance.setEndActivityId(activityId);
+        
+        // Fire event
+        ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+        if (config != null && config.getEventDispatcher().isEnabled()) {
+          config.getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED, historicProcessInstance));
+        }
       }
     }
   }
@@ -123,6 +134,13 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
       
       // Insert historic process-instance
       getDbSqlSession().insert(historicProcessInstance);
+      
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED, historicProcessInstance));
+      }
   
       // Also record the start-event manually, as there is no "start" activity history listener for this
       IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
@@ -148,6 +166,13 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
       }
       
       getDbSqlSession().insert(historicActivityInstance);
+      
+      // Fire event
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstance));
+      }
+      
     }
   }
   
@@ -168,6 +193,12 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       }
       getDbSqlSession().insert(historicProcessInstance);
       
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED, historicProcessInstance));
+      }
       
       HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution);
       if (activitiyInstance != null) {
@@ -189,8 +220,14 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
       historicActivityInstance.setStartTime(now);
       
-      getDbSqlSession()
-        .insert(historicActivityInstance);
+      getDbSqlSession().insert(historicActivityInstance);
+      
+      // Fire event
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstance));
+      }
+      
     }
   }
   
@@ -225,6 +262,14 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         }
     		
     		getDbSqlSession().insert(historicActivityInstance);
+    		
+    		// Fire event
+    		ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+    		if (config != null && config.getEventDispatcher().isEnabled()) {
+    		  config.getEventDispatcher().dispatchEvent(
+    		      ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED, historicActivityInstance));
+    		}
+    		 
     	}
     }
   }
@@ -238,6 +283,14 @@ public void recordActivityEnd(ExecutionEntity executionEntity) {
       HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
       if (historicActivityInstance!=null) {
         historicActivityInstance.markEnded(null);
+        
+        // Fire event
+        ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+        if (config != null && config.getEventDispatcher().isEnabled()) {
+          config.getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+        }
+        
       }
     }
   }
@@ -262,6 +315,14 @@ public void recordStartEventEnded(String executionId, String activityId) {
                 && (cachedHistoricActivityInstance.getEndTime()==null)
                 ) {
           cachedHistoricActivityInstance.markEnded(null);
+          
+          // Fire event
+          ProcessEngineConfigurationImpl config = getProcessEngineConfiguration();
+          if (config != null && config.getEventDispatcher().isEnabled()) {
+            config.getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, cachedHistoricActivityInstance));
+          }
+          
           return;
         }
       }

@@ -12,8 +12,6 @@ fi
 
 cd modules/activiti5-engine/
 mvn clean install -DskipTests
-cd ../..
-
 STATUS=$?
 if [ $STATUS -ne 0 ]
 then
@@ -21,9 +19,10 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti5-compatibility/
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -32,20 +31,24 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti5-test
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
 then
   echo "Error while building activiti5-test. Exiting."
   exit $?
+else
+  echo "All Activiti 5 tests succeeded"
 fi
+
+cd ../..
 
 cd modules/activiti5-spring
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -54,9 +57,10 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti5-spring-compatibility/
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -65,9 +69,10 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti5-spring-test/
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -76,9 +81,10 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti-cxf/
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -87,9 +93,10 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti5-cxf-test/
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -98,9 +105,10 @@ then
   exit $?
 fi
 
+cd ../..
+
 cd modules/activiti-camel/
 mvn clean install
-cd ../..
 
 STATUS=$?
 if [ $STATUS -ne 0 ]
@@ -108,6 +116,8 @@ then
   echo "Error while building activiti5-camel. Exiting."
   exit $?
 fi
+
+cd ../..
 
 cd modules/activiti5-camel-test/
 mvn clean install

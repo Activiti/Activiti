@@ -38,7 +38,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  processEngineConfiguration.resetClock();
-	  databaseEventLogger = new EventLogger(activiti5ProcessEngineConfig.getClock());
+    databaseEventLogger = new EventLogger(activiti5ProcessEngineConfig.getClock(), activiti5ProcessEngineConfig.getObjectMapper());
 	  processEngineConfiguration.getActiviti5CompatibilityHandler().addEventListener(databaseEventLogger);
 	}
 	

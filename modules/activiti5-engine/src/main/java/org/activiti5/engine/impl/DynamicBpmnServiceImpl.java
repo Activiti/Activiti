@@ -72,6 +72,16 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     setElementProperty(id, SERVICE_TASK_DELEGATE_EXPRESSION, expression, infoNode);
   }
   
+  public ObjectNode changeScriptTaskScript(String id, String script) {
+    ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
+    changeScriptTaskScript(id, script, infoNode);
+    return infoNode;
+  }
+
+  public void changeScriptTaskScript(String id, String script, ObjectNode infoNode) {
+    setElementProperty(id, SCRIPT_TASK_SCRIPT, script, infoNode);
+  }
+  
   public ObjectNode changeUserTaskName(String id, String name) {
     ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
     changeUserTaskName(id, name, infoNode);

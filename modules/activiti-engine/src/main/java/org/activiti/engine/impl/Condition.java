@@ -18,8 +18,9 @@ import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * @author Tom Baeyens
+ * @author Tijs Rademakers
  */
 public interface Condition extends Serializable {
 
-  boolean evaluate(DelegateExecution execution);
+  boolean evaluate(String sequenceFlowId, DelegateExecution execution);
 }
