@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -200,5 +201,103 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     assertEquals("AfterMi", afterMiTasks.get(0).getName());
     assertEquals("Parallel task", afterMiTasks.get(1).getName());
   }
-
+  
+  @Deployment
+  public void testTerminateNestedMiEmbeddedSubprocess() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+        "terminateNestedMiEmbeddedSubprocess", CollectionUtil.singletonMap("var", "notEnd"));
+    
+    List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
+    assertEquals(12, aTasks.size());
+    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    assertEquals(72, bTasks.size());
+    
+    // Completing a few B's will create a subprocess with some C's
+    int nrOfBTasksCompleted = 3;
+    for (int i=0; i<nrOfBTasksCompleted; i++) {
+      taskService.complete(bTasks.get(i).getId());
+    }
+    
+    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    assertEquals(72 - nrOfBTasksCompleted, bTasks.size());
+    
+    // Firing the timer --> inner MI gets destroyed
+    List<Job> timers = managementService.createJobQuery().list();
+    assertEquals(nrOfBTasksCompleted, timers.size());
+    managementService.executeJob(timers.get(0).getId());
+    
+    // We only comnpleted 3 B's. 3 other ones should be destroyed too (as one inner multi instance are 6 instances of B)
+    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    assertEquals(66, bTasks.size());
+   
+    // One of the inner multi instances should have been killed
+    List<Task> afterInnerMiTasks = taskService.createTaskQuery().taskName("AfterInnerMi").list();
+    assertEquals(1, afterInnerMiTasks.size());
+    
+    for (Task aTask : aTasks) {
+      taskService.complete(aTask.getId());
+    }
+    
+    // Finish
+    List<Task> nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    while (nextTasks != null && nextTasks.size() > 0) {
+      taskService.complete(nextTasks.get(0).getId());
+      nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    }
+    
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateNestedMiEmbeddedSubprocess.bpmn20.xml")
+  public void testTerminateNestedMiEmbeddedSubprocess2() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+        "terminateNestedMiEmbeddedSubprocess", CollectionUtil.singletonMap("var", "toEnd"));
+    
+    List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
+    assertEquals(12, aTasks.size());
+    List<Task> afterInnerMiTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("AfterInnerMi").list();
+    assertEquals(12, afterInnerMiTasks.size());
+    
+  }
+  
+  @Deployment
+  public void testTerminateNestedMiEmbeddedSubprocessWithOneLoopCardinality() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+        "terminateNestedMiEmbeddedSubprocess", CollectionUtil.singletonMap("var", "notEnd"));
+    
+    List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
+    assertEquals(1, aTasks.size());
+    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    assertEquals(1, bTasks.size());
+    
+    taskService.complete(bTasks.get(0).getId());
+    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    assertEquals(0, bTasks.size());
+    
+    // Firing the timer --> inner MI gets destroyed
+    List<Job> timers = managementService.createJobQuery().list();
+    assertEquals(1, timers.size());
+    managementService.executeJob(timers.get(0).getId());
+    
+    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    assertEquals(0, bTasks.size());
+   
+    // One of the inner multi instances should have been killed
+    List<Task> afterInnerMiTasks = taskService.createTaskQuery().taskName("AfterInnerMi").list();
+    assertEquals(1, afterInnerMiTasks.size());
+    
+    for (Task aTask : aTasks) {
+      taskService.complete(aTask.getId());
+    }
+    
+    // Finish
+    List<Task> nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    while (nextTasks != null && nextTasks.size() > 0) {
+      taskService.complete(nextTasks.get(0).getId());
+      nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    }
+    
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
 }
