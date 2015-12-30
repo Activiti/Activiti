@@ -84,10 +84,17 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
       endEvent.getEventDefinitions().add(eventDefinition);
     } else if (STENCIL_EVENT_END_TERMINATE.equals(stencilId)) {
       TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+      
       String terminateAllStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_ALL, elementNode);
       if (StringUtils.isNotEmpty(terminateAllStringValue)) {
      		eventDefinition.setTerminateAll("true".equals(terminateAllStringValue));
       }
+      
+      String terminateMiStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_MULTI_INSTANCE, elementNode);
+      if (StringUtils.isNotEmpty(terminateMiStringValue)) {
+        eventDefinition.setTerminateMultiInstance("true".equals(terminateMiStringValue));
+      }
+      
       endEvent.getEventDefinitions().add(eventDefinition);
     }
     return endEvent;

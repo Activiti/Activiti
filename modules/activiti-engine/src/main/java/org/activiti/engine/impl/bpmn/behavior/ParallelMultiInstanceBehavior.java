@@ -127,9 +127,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       return;
     }
 
-    if (execution.getParent() != null) { // will be null in case of empty collection
-      setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
-      setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
+    DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
+    if (miRootExecution != null) { // will be null in case of empty collection
+      setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+      setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
     
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);

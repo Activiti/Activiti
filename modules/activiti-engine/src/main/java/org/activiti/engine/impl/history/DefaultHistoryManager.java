@@ -628,7 +628,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = getHistoricDetailEntityManager().copyAndInsertHistoricDetailVariableInstanceUpdateEntity(variable);
 
       if (useActivityId && sourceActivityExecution != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, true, false);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, false, false);
         if (historicActivityInstance != null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
         }

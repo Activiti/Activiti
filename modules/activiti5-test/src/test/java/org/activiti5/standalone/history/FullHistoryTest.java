@@ -225,6 +225,19 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(123456789L, historicVariable.getValue());
     assertNotNull(historicVariable.getCreateTime());
     assertNotNull(historicVariable.getLastUpdatedTime());
+    
+    historicVariable = historyService.createHistoricVariableInstanceQuery().variableValueLike("number", "tw%").singleResult();
+    assertNotNull(historicVariable);
+    assertEquals("number", historicVariable.getVariableName());
+    assertEquals("two", historicVariable.getValue());
+
+    historicVariable = historyService.createHistoricVariableInstanceQuery().variableValueLikeIgnoreCase("number", "TW%").singleResult();
+    assertNotNull(historicVariable);
+    assertEquals("number", historicVariable.getVariableName());
+    assertEquals("two", historicVariable.getValue());
+
+    historicVariable = historyService.createHistoricVariableInstanceQuery().variableValueLikeIgnoreCase("number", "TW2%").singleResult();
+    assertNull(historicVariable);
   }
   
   @Deployment(resources={"org/activiti5/engine/test/history/oneTaskProcess.bpmn20.xml"})

@@ -38,16 +38,30 @@ public class TerminateEventDefinitionParser extends BaseChildElementParser {
 
     TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
     
+    parseTerminateAllAttribute(xtr, eventDefinition);
+    parseTerminateMultiInstanceAttribute(xtr, eventDefinition);
+    
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TERMINATEDEFINITION, eventDefinition, xtr, model);
+
+    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+  }
+
+  protected void parseTerminateAllAttribute(XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
     String terminateAllValue = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_ALL);
     if (terminateAllValue != null && "true".equals(terminateAllValue)) {
     	eventDefinition.setTerminateAll(true);
     } else {
     	eventDefinition.setTerminateAll(false);
     }
-    
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TERMINATEDEFINITION, eventDefinition, xtr, model);
-
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+  }
+  
+  protected void parseTerminateMultiInstanceAttribute(XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
+    String terminateMiValue = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_MULTI_INSTANCE);
+    if (terminateMiValue != null && "true".equals(terminateMiValue)) {
+      eventDefinition.setTerminateMultiInstance(true);
+    } else {
+      eventDefinition.setTerminateMultiInstance(false);
+    }
   }
 }

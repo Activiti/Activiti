@@ -30,7 +30,7 @@ public class ScriptCondition implements Condition {
     this.language = language;
   }
 
-  public boolean evaluate(DelegateExecution execution) {
+  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
     Object result = scriptingEngines.evaluate(expression, language, execution);

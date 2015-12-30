@@ -345,10 +345,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // initialize the lists of referenced objects (prevents db queries)
     variableInstances = new HashMap<String, VariableInstanceEntity>();
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
-    jobs = new ArrayList<JobEntity>();
-    tasks = new ArrayList<TaskEntity>();
     
-    // Cached entity-state initialized to null, all bits are zore, indicating NO entities present
+    // Cached entity-state initialized to null, all bits are zero, indicating NO entities present
     cachedEntityState = 0;
     
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
@@ -1287,6 +1285,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     performOperation(AtomicOperation.DELETE_CASCADE);
   }
   
+  public void setDeleteRoot(boolean deleteRoot) {
+    this.deleteRoot = deleteRoot;
+  }
+  
   public int getRevisionNext() {
     return revision+1;
   }
@@ -1559,6 +1561,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   public boolean isEnded() {
     return isEnded;
+  }
+  public void setEnded(boolean ended) {
+    this.isEnded = ended;
   }
   public String getEventName() {
     return eventName;

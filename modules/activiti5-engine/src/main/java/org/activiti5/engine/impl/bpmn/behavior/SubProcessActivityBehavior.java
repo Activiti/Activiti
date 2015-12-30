@@ -19,6 +19,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -46,6 +47,12 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
 
     // initialize the template-defined data objects as variables
     initializeDataObjects(activityExecution, activity);
+    
+    if (initialActivity.getActivityBehavior() != null 
+          && initialActivity.getActivityBehavior() instanceof NoneStartEventActivityBehavior) { // embedded subprocess: only none start allowed
+        ((ExecutionEntity) execution).setActivity(initialActivity);
+        Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+    }
 
     activityExecution.executeActivity(initialActivity);
   }

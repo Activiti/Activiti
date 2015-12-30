@@ -246,6 +246,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return variableValueNotEqualsIgnoreCase(name, value, false);
   }
   
+  public ExecutionQuery processVariableValueLike(String name, String value) {
+    return variableValueLike(name, value, false);
+  }
+
+  public ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value) {
+    return variableValueLikeIgnoreCase(name, value, false);
+   }
+  
   @Override
   public ExecutionQuery locale(String locale) {
     this.locale = locale;

@@ -56,8 +56,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager()
         .createChildExecution((ExecutionEntity) multiInstanceExecution);
     execution.setCurrentFlowElement(multiInstanceExecution.getCurrentFlowElement());
-    multiInstanceExecution.setCurrentFlowElement(null);
     multiInstanceExecution.setMultiInstanceRoot(true);
+    multiInstanceExecution.setActive(false);
     
     // Set Multi Instance variables
     setLoopVariable(multiInstanceExecution, NUMBER_OF_INSTANCES, nrOfInstances);

@@ -25,8 +25,8 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
+import org.activiti.validation.validator.Problems;
 import org.activiti5.engine.impl.RepositoryServiceImpl;
-import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.IoUtil;
@@ -74,17 +74,46 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     return new String(bytes);
   }
   
-  public void FAILING_testViolateProcessDefinitionIdMaximumLength() {
+  public void testViolateBPMNIdMaximumLength() {
+    try {
+      repositoryService.createDeployment()
+          .addClasspathResource("org/activiti5/engine/test/bpmn/deployment/definitionWithLongTargetNamespace.bpmn20.xml")
+          .deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, e.getMessage());
+    }
+
+    // Verify that nothing is deployed
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+  }
+
+
+  public void testViolateProcessDefinitionIdMaximumLength() {
     try {
       repositoryService.createDeployment()
         .addClasspathResource("org/activiti5/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml")
-        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("id can be maximum 64 characters", e.getMessage());
+      assertTextPresent(Problems.PROCESS_DEFINITION_ID_TOO_LONG, e.getMessage());
     }
     
+    // Verify that nothing is deployed
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+  }
+
+  public void testViolateProcessDefinitionNameAndDescriptionMaximumLength() {
+    try {
+      repositoryService.createDeployment()
+          .addClasspathResource("org/activiti5/engine/test/bpmn/deployment/processWithLongNameAndDescription.bpmn20.xml")
+          .deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent(Problems.PROCESS_DEFINITION_NAME_TOO_LONG, e.getMessage());
+      assertTextPresent(Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG, e.getMessage());
+    }
+
     // Verify that nothing is deployed
     assertEquals(0, repositoryService.createDeploymentQuery().count());
   }
