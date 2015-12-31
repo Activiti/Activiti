@@ -25,11 +25,12 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -43,6 +44,10 @@ public class DeploymentManager {
   protected ProcessDefinitionInfoCache processDefinitionInfoCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
+  
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected ProcessDefinitionEntityManager processDefinitionEntityManager;
+  protected DeploymentEntityManager deploymentEntityManager;
 
   public void deploy(DeploymentEntity deployment) {
     deploy(deployment, null);
@@ -64,7 +69,7 @@ public class DeploymentManager {
     ProcessDefinitionEntity processDefinition = cacheEntry != null ? cacheEntry.getProcessDefinitionEntity() : null;
 
     if (processDefinition == null) {
-      processDefinition = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefinitionId);
+      processDefinition = processDefinitionEntityManager.findById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
       }
@@ -74,7 +79,7 @@ public class DeploymentManager {
   }
 
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
-    ProcessDefinitionEntity processDefinition = Context.getCommandContext().getProcessDefinitionEntityManager().findLatestProcessDefinitionByKey(processDefinitionKey);
+    ProcessDefinitionEntity processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKey(processDefinitionKey);
 
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key '" + processDefinitionKey + "'", ProcessDefinition.class);
@@ -84,7 +89,7 @@ public class DeploymentManager {
   }
 
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
-    ProcessDefinitionEntity processDefinition = Context.getCommandContext().getProcessDefinitionEntityManager().findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    ProcessDefinitionEntity processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key '" + processDefinitionKey + "' for tenant identifier '" + tenantId + "'", ProcessDefinition.class);
     }
@@ -93,7 +98,7 @@ public class DeploymentManager {
   }
 
   public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId) {
-    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context.getCommandContext().getProcessDefinitionEntityManager()
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) processDefinitionEntityManager
         .findProcessDefinitionByKeyAndVersionAndTenantId(processDefinitionKey, processDefinitionVersion, tenantId);
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'", ProcessDefinition.class);
@@ -112,7 +117,7 @@ public class DeploymentManager {
     ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
 
     if (cachedProcessDefinition == null) {
-      DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
+      DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
       deployment.setNew(false);
       deploy(deployment, null);
       cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
@@ -125,23 +130,21 @@ public class DeploymentManager {
   }
 
   public void removeDeployment(String deploymentId, boolean cascade) {
-    CommandContext commandContext = Context.getCommandContext();
-    DeploymentEntityManager deploymentEntityManager = commandContext.getDeploymentEntityManager();
 
     DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", DeploymentEntity.class);
     }
-    
-    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
+
+    if (processEngineConfiguration.isActiviti5CompatibilityEnabled() && 
         Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(deployment.getEngineVersion())) {
       
-      commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().deleteDeployment(deploymentId, cascade);
+      processEngineConfiguration.getActiviti5CompatibilityHandler().deleteDeployment(deploymentId, cascade);
       return;
     }
 
     // Remove any process definition from the cache
-    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(commandContext).deploymentId(deploymentId).list();
+    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
 
     for (ProcessDefinition processDefinition : processDefinitions) {
@@ -199,5 +202,29 @@ public class DeploymentManager {
   public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
     this.knowledgeBaseCache = knowledgeBaseCache;
   }
+  
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
 
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
+
+  public ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
+    return processDefinitionEntityManager;
+  }
+
+  public void setProcessDefinitionEntityManager(ProcessDefinitionEntityManager processDefinitionEntityManager) {
+    this.processDefinitionEntityManager = processDefinitionEntityManager;
+  }
+
+  public DeploymentEntityManager getDeploymentEntityManager() {
+    return deploymentEntityManager;
+  }
+
+  public void setDeploymentEntityManager(DeploymentEntityManager deploymentEntityManager) {
+    this.deploymentEntityManager = deploymentEntityManager;
+  }
+  
 }

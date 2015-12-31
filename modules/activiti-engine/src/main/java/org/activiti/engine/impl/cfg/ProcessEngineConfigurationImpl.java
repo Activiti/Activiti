@@ -666,7 +666,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initBehaviorFactory();
     initListenerFactory();
     initBpmnParser();
-    initDeployers();
+    initProcessDefinitionCache();
+    initProcessDefinitionInfoCache();
+    initKnowledgeBaseCache();
     initJobHandlers();
     initJobExecutor();
     initAsyncExecutor();
@@ -683,6 +685,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEntityManagers();
     initHistoryManager();
     initJpa();
+    initDeployers();
     initDelegateInterceptor();
     initEventHandlers();
     initFailedJobCommandFactory();
@@ -1327,6 +1330,36 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // deployers
   // ////////////////////////////////////////////////////////////////
+  
+  protected void initProcessDefinitionCache() {
+    if (processDefinitionCache == null) {
+      if (processDefinitionCacheLimit <= 0) {
+        processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>();
+      } else {
+        processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>(processDefinitionCacheLimit);
+      }
+    }
+  }
+  
+  protected void initProcessDefinitionInfoCache() {
+    if (processDefinitionInfoCache == null) {
+      if (processDefinitionInfoCacheLimit <= 0) {
+        processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor);
+      } else {
+        processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor, processDefinitionInfoCacheLimit);
+      }
+    }
+  }
+  
+  protected void initKnowledgeBaseCache() {
+    if (knowledgeBaseCache == null) {
+      if (knowledgeBaseCacheLimit <= 0) {
+        knowledgeBaseCache = new DefaultDeploymentCache<Object>();
+      } else {
+        knowledgeBaseCache = new DefaultDeploymentCache<Object>(knowledgeBaseCacheLimit);
+      }
+    }
+  }
 
   protected void initDeployers() {
     if (this.deployers == null) {
@@ -1339,39 +1372,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         this.deployers.addAll(customPostDeployers);
       }
     }
+    
     if (deploymentManager == null) {
       deploymentManager = new DeploymentManager();
       deploymentManager.setDeployers(deployers);
 
-      // Process Definition cache
-      if (processDefinitionCache == null) {
-        if (processDefinitionCacheLimit <= 0) {
-          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>();
-        } else {
-          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>(processDefinitionCacheLimit);
-        }
-      }
-      
-      if (processDefinitionInfoCache == null) {
-        if (processDefinitionInfoCacheLimit <= 0) {
-          processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor);
-        } else {
-          processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor, processDefinitionInfoCacheLimit);
-        }
-      }
-
-      // Knowledge base cache (used for Drools business task)
-      if (knowledgeBaseCache == null) {
-        if (knowledgeBaseCacheLimit <= 0) {
-          knowledgeBaseCache = new DefaultDeploymentCache<Object>();
-        } else {
-          knowledgeBaseCache = new DefaultDeploymentCache<Object>(knowledgeBaseCacheLimit);
-        }
-      }
-
       deploymentManager.setProcessDefinitionCache(processDefinitionCache);
       deploymentManager.setProcessDefinitionInfoCache(processDefinitionInfoCache);
       deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
+      deploymentManager.setProcessEngineConfiguration(this);
+      deploymentManager.setProcessDefinitionEntityManager(processDefinitionEntityManager);
+      deploymentManager.setDeploymentEntityManager(deploymentEntityManager);
     }
   }
 
