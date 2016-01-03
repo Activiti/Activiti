@@ -186,3 +186,64 @@ You can modify java unit test case and its corresponding process model, or add n
 If you are using the project to articulate a bug or a feature, test case should fail initially. It should then pass
 after the desired bug is fixed or the desired feature is implemented.
 Please make sure to clean the project by typing *mvn clean* before sending it.
+
+[[docker]]
+
+=== Docker images
+[[dockerIntroduction]]
+
+==== Introduction
+
+https://www.docker.com/[Docker] is a fantastic virtualization tool. It allows you package an application with all of its dependencies into a
+standardized unit for software development. People can build pretested images and put them in a shared hub. Other people can pull
+the images and easily bring up and run the software.
+
+Purpose of Activiti docker image is running the activiti explorer and the rest-api rapidly without dealing with gory details of setting up development environment.
+It is specially beneficiary for the people who want to run, test and evaluate the Activiti as fast as possible.
+It may also be valuable for demonstrations and presentations.
+
+[[dockerSingleImage]]
+==== Usage
+The first step is to install docker if it is not already done. https://docs.docker.com/engine/installation/[Installation] is very easy and straight forward. Binary installation media is available for nearly every major OS.
+After installation of Docker, the activiti image and its dependencies should be pulled into the local machine: This command will do the job:
+
+[source]
+docker pull activiti/activiti-single-image:latest explorer
+
+
+It may take some time depending on the Internet connection speed for the images to be downloaded.
+Pulling is required only the first time or when there is a new version of the image available on the hub.
+The next step is to run the image and create the container:
+
+[source]
+docker run -p 8080:8080  -t -i activiti/activiti-single-image:latest explorer
+
+That is it, the image is up, and explorer web application is running. You can access it in your browser using this URL:
+
+[source]
+localhost:8080/activiti-explorer
+
+The port number on the local machine can be changed by modifying the second part of the 8080:8080 argument.
+
+The last parameter, determines the application to run. There are two options possible:
+
+* explorer
+* rest
+
+Selecting "rest" causes the rest-api to run. For example this Url will get back list of deployments:
+[source]
+http://kermit:kermit@localhost:8080/activiti-rest/service/repository/deployments
+
+If no parameter is provided, the default would be "explorer".
+
+
+[[dockerBuild]]
+==== Build docker image
+Docker is built using a Dockerfile located in tooling/dockerImage/singleImage directory. A utility batch file, named "buildImage.sh" contains the command line for building the image.
+If the built image is going to be used by others, it should be pushed into the docker hub using a command like:
+[source]
+docker push activit/activiti-single-image:latest
+
+
+
+[[jmxQuickStart]]
