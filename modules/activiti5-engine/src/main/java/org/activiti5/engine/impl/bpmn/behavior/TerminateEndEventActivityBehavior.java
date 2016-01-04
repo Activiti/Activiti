@@ -68,7 +68,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       terminateProcessInstanceExecution(execution, terminateEndEventActivity, processInstanceExecution);
     } else {
       ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(activityExecution);
-      terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+      if (scopeExecution != null) {
+        terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+      }
     }
     
   }
