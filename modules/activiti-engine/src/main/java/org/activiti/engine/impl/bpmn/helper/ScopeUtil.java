@@ -34,6 +34,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 /**
  * @author Daniel Meyer
  * @author Nico Rehwaldt
+ * @author Joram Barrez
  */
 public class ScopeUtil {
  
@@ -47,11 +48,11 @@ public class ScopeUtil {
    */
   public static ActivityExecution findScopeExecution(ActivityExecution execution) {
     
-    while(!execution.isScope()) {
+    while(execution.getParentId() != null && !execution.isScope()) {
       execution = execution.getParent();
     }
     
-    if(execution.isConcurrent()) {
+    if(execution != null && execution.isConcurrent()) {
       execution = execution.getParent();
     }
     
