@@ -24,6 +24,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.ValuedDataObject;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -92,7 +94,7 @@ public class BpmnDeployer implements Deployer {
     
     for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
       BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
-      createLocalizationValues(processDefinition.getId(), bpmnModel.getProcessById(processDefinition.getKey()));  
+      createLocalizationValues(processDefinition.getId(), bpmnModel.getProcessById(processDefinition.getKey()));
     }
   }
 
@@ -247,7 +249,7 @@ public class BpmnDeployer implements Deployer {
       }
     }
   }
-  
+
   protected void createLocalizationValues(String processDefinitionId, Process process) {
     if (process == null) return;
     
@@ -281,16 +283,14 @@ public class BpmnDeployer implements Deployer {
             dynamicBpmnService.changeLocalizationDescription(locale, processId, documentation, infoNode);
             localizationValuesChanged = true;
           }
-          
+
           break;
         }
       }
     }
 
-    boolean isFlowElementLocalizationChanged = localizeFlowElements(process.getFlowElements(), infoNode);
-    if (isFlowElementLocalizationChanged) {
-      localizationValuesChanged = true;
-    }
+    localizationValuesChanged = localizeFlowElements(process.getFlowElements(), infoNode) || localizationValuesChanged;
+    localizationValuesChanged = localizeDataObjectElements(process.getDataObjects(), infoNode) || localizationValuesChanged;
 
     if (localizationValuesChanged) {
       dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
@@ -339,10 +339,9 @@ public class BpmnDeployer implements Deployer {
         }
         
         if (flowElement instanceof SubProcess) {
-          boolean isSubProcessLocalized = localizeFlowElements(((SubProcess) flowElement).getFlowElements(), infoNode);
-          if (isSubProcessLocalized) {
-            localizationValuesChanged = true;
-          }
+          SubProcess subprocess = (SubProcess) flowElement;
+          localizationValuesChanged = localizeDataObjectElements(subprocess.getDataObjects(), infoNode) || localizationValuesChanged;
+          localizationValuesChanged = localizeFlowElements((subprocess).getFlowElements(), infoNode) || localizationValuesChanged;
         }
       }
     }
@@ -359,6 +358,48 @@ public class BpmnDeployer implements Deployer {
     return isEqual;
   }
   
+  protected boolean localizeDataObjectElements(List<ValuedDataObject> dataObjects, ObjectNode infoNode) {
+    boolean localizationValuesChanged = false;
+    CommandContext commandContext = Context.getCommandContext();
+    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
+
+    for(ValuedDataObject dataObject : dataObjects) {
+      String description = dataObject.getDocumentation();
+      if(description != null && isEqualToCurrentLocalizationValue(DynamicBpmnConstants.LOCALIZATION_DEFAULT_LANGUAGE, dataObject.getName(), DynamicBpmnConstants.LOCALIZATION_DESCRIPTION, description, infoNode) == false) {  
+        dynamicBpmnService.changeLocalizationDescription(DynamicBpmnConstants.LOCALIZATION_DEFAULT_LANGUAGE, dataObject.getName(), description, infoNode);
+        localizationValuesChanged = true;
+      }
+
+      List<ExtensionElement> localizationElements = dataObject.getExtensionElements().get("localization");
+      if (localizationElements != null) {
+        for (ExtensionElement localizationElement : localizationElements) {
+          if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
+            String locale = localizationElement.getAttributeValue(null, "locale");
+            String name = localizationElement.getAttributeValue(null, "name");
+            String documentation = null;
+
+            List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+            if (documentationElements != null) {
+              for (ExtensionElement documentationElement : documentationElements) {
+                documentation = StringUtils.trimToNull(documentationElement.getElementText());
+                break;
+              }
+            }
+            if(name != null && isEqualToCurrentLocalizationValue(locale, dataObject.getName(), DynamicBpmnConstants.LOCALIZATION_NAME, name, infoNode) == false) {
+              dynamicBpmnService.changeLocalizationName(locale, dataObject.getName(), name, infoNode);
+              localizationValuesChanged = true;
+            }
+            if(documentation != null && isEqualToCurrentLocalizationValue(locale, dataObject.getName(), DynamicBpmnConstants.LOCALIZATION_DESCRIPTION, documentation, infoNode) == false) {
+              dynamicBpmnService.changeLocalizationDescription(locale, dataObject.getName(), documentation, infoNode);
+              localizationValuesChanged = true;
+            }
+          }
+        }
+      }
+    }
+    return localizationValuesChanged;
+  }
+
   public IdGenerator getIdGenerator() {
     return idGenerator;
   }
