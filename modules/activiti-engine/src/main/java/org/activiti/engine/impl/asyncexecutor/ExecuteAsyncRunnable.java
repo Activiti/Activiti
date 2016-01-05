@@ -46,6 +46,21 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   public void run() {
+    
+    if(isHandledByActiviti5Engine()) {
+      return;
+    }
+    
+    boolean lockNotNeededOrSuccess = lockJobIfNeeded();
+
+    if (lockNotNeededOrSuccess) {
+      executeJob();
+      unlockJobIfNeeded();
+    }
+
+  }
+
+  protected boolean isHandledByActiviti5Engine() {
     Boolean isActiviti5ProcessDefinition = commandExecutor.execute(new Command<Boolean>() {
 
       @Override
@@ -58,30 +73,10 @@ public class ExecuteAsyncRunnable implements Runnable {
       }
     });
     
-    if (isActiviti5ProcessDefinition) {  
-      return;
-    }
-    
-    try {
-      if (job.isExclusive()) {
-        commandExecutor.execute(new LockExclusiveJobCmd(job));
-      }
+    return isActiviti5ProcessDefinition;
+  }
 
-    } catch (Throwable lockException) {
-      if (log.isDebugEnabled()) {
-        log.debug("Exception during exclusive job acquisition. Retrying job.", lockException.getMessage());
-      }
-
-      commandExecutor.execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          commandContext.getJobEntityManager().retryAsyncJob(job);
-          return null;
-        }
-      });
-      return;
-      
-    }
-
+  protected void executeJob() {
     try {
       commandExecutor.execute(new ExecuteAsyncJobCmd(job));
 
@@ -104,7 +99,9 @@ public class ExecuteAsyncRunnable implements Runnable {
       String message = "Job " + job.getId() + " failed";
       log.error(message, exception);
     }
-
+  }
+  
+  protected void unlockJobIfNeeded() {
     try {
       if (job.isExclusive()) {
         commandExecutor.execute(new UnlockExclusiveJobCmd(job));
@@ -118,12 +115,38 @@ public class ExecuteAsyncRunnable implements Runnable {
             + "Exception message: {}", optimisticLockingException.getMessage());
       }
 
-      return;
-
     } catch (Throwable t) {
       log.error("Error while unlocking exclusive job " + job.getId(), t);
-      return;
     }
+  }
+
+  /**
+   * Returns true if lock succeeded, or no lock was needed.
+   * Returns false if locking was unsuccessfull. 
+   */
+  protected boolean lockJobIfNeeded() {
+    try {
+      if (job.isExclusive()) {
+        commandExecutor.execute(new LockExclusiveJobCmd(job));
+      }
+
+    } catch (Throwable lockException) {
+      if (log.isDebugEnabled()) {
+        log.debug("Exception during exclusive job acquisition. Retrying job.", lockException.getMessage());
+      }
+
+      commandExecutor.execute(new Command<Void>() {
+        public Void execute(CommandContext commandContext) {
+          commandContext.getJobEntityManager().retryAsyncJob(job);
+          return null;
+        }
+      });
+      
+      return false;
+      
+    }
+    
+    return true;
   }
 
   protected void handleFailedJob(final Throwable exception) {

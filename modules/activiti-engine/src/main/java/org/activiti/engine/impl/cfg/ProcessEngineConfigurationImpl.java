@@ -30,6 +30,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -65,6 +67,7 @@ import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
+import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnableFactory;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeploymentHelper;
@@ -477,6 +480,176 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
+  
+  // ASYNC EXECUTOR ///////////////////////////////////////////////////////////
+  
+  /**
+   * The minimal number of threads that are kept alive in the threadpool for job
+   * execution. Default value = 2. (This property is only applicable when using
+   * the {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorCorePoolSize = 2;
+
+  /**
+   * The maximum number of threads that are kept alive in the threadpool for job
+   * execution. Default value = 10. (This property is only applicable when using
+   * the {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorMaxPoolSize = 10;
+
+  /**
+   * The time (in milliseconds) a thread used for job execution must be kept
+   * alive before it is destroyed. Default setting is 5 seconds. Having a
+   * setting > 0 takes resources, but in the case of many job executions it
+   * avoids creating new threads all the time. If 0, threads will be destroyed
+   * after they've been used for job execution.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected long asyncExecutorThreadKeepAliveTime = 5000L;
+
+  /**
+   * The size of the queue on which jobs to be executed are placed, before they
+   * are actually executed. Default value = 100. (This property is only
+   * applicable when using the {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorThreadPoolQueueSize = 100;
+
+  /**
+   * The queue onto which jobs will be placed before they are actually executed.
+   * Threads form the async executor threadpool will take work from this queue.
+   * 
+   * By default null. If null, an {@link ArrayBlockingQueue} will be created of
+   * size {@link #asyncExecutorThreadPoolQueueSize}.
+   * 
+   * When the queue is full, the job will be executed by the calling thread
+   * (ThreadPoolExecutor.CallerRunsPolicy())
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected BlockingQueue<Runnable> asyncExecutorThreadPoolQueue;
+
+  /**
+   * The time (in seconds) that is waited to gracefully shut down the threadpool
+   * used for job execution when the a shutdown on the executor (or process
+   * engine) is requested. Default value = 60.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected long asyncExecutorSecondsToWaitOnShutdown = 60L;
+
+  /**
+   * The number of timer jobs that are acquired during one query (before a job
+   * is executed, an acquirement thread fetches jobs from the database and puts
+   * them on the queue).
+   * 
+   * Default value = 1, as this lowers the potential on optimistic locking
+   * exceptions. Change this value if you know what you are doing.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorMaxTimerJobsPerAcquisition = 1;
+
+  /**
+   * The number of async jobs that are acquired during one query (before a job
+   * is executed, an acquirement thread fetches jobs from the database and puts
+   * them on the queue).
+   * 
+   * Default value = 1, as this lowers the potential on optimistic locking
+   * exceptions. Change this value if you know what you are doing.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorMaxAsyncJobsDuePerAcquisition = 1;
+
+  /**
+   * The time (in milliseconds) the timer acquisition thread will wait to
+   * execute the next acquirement query. This happens when no new timer jobs
+   * were found or when less timer jobs have been fetched than set in
+   * {@link #asyncExecutorMaxTimerJobsPerAcquisition}. Default value = 10
+   * seconds.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorTimerJobAcquireWaitTime = 10 * 1000;
+
+  /**
+   * The time (in milliseconds) the async job acquisition thread will wait to
+   * execute the next acquirement query. This happens when no new async jobs
+   * were found or when less async jobs have been fetched than set in
+   * {@link #asyncExecutorMaxAsyncJobsDuePerAcquisition}. Default value = 10
+   * seconds.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorDefaultAsyncJobAcquireWaitTime = 10 * 1000;
+
+  /**
+   * When a job is acquired, it is locked so other async executors can't lock
+   * and execute it. While doing this, the 'name' of the lock owner is written
+   * into a column of the job.
+   * 
+   * By default, a random UUID will be generated when the executor is created.
+   * 
+   * It is important that each async executor instance in a cluster of Activiti
+   * engines has a different name!
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected String asyncExecutorLockOwner;
+
+  /**
+   * The amount of time (in milliseconds) a timer job is locked when acquired by
+   * the async executor. During this period of time, no other async executor
+   * will try to acquire and lock this job.
+   * 
+   * Default value = 5 minutes;
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorTimerLockTimeInMillis = 5 * 60 * 1000;
+
+  /**
+   * The amount of time (in milliseconds) an async job is locked when acquired
+   * by the async executor. During this period of time, no other async executor
+   * will try to acquire and lock this job.
+   * 
+   * Default value = 5 minutes;
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorAsyncJobLockTimeInMillis = 5 * 60 * 1000;
+
+  /**
+   * The amount of time (in milliseconds) that is waited before trying locking
+   * again, when an exclusive job is tried to be locked, but fails and the
+   * locking.
+   * 
+   * Default value = 500. If 0, this would stress database traffic a lot in case
+   * when a retry is needed, as exclusive jobs would be constantly tried to be
+   * locked.
+   * 
+   * (This property is only applicable when using the
+   * {@link DefaultAsyncJobExecutor}).
+   */
+  protected int asyncExecutorLockRetryWaitTimeInMillis = 500;
+ 
+ /**
+  * Allows to define a custom factory for creating the {@link Runnable} that is executed by the async executor.
+  * 
+  * (This property is only applicable when using the {@link DefaultAsyncJobExecutor}).
+  */
+  protected ExecuteAsyncRunnableFactory asyncExecutorExecuteAsyncRunnableFactory;
 
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
 
@@ -1642,9 +1815,39 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initAsyncExecutor() {
     if (isAsyncExecutorEnabled()) {
       if (asyncExecutor == null) {
-        asyncExecutor = new DefaultAsyncJobExecutor();
+        DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
+        
+        // Thread pool config
+        defaultAsyncExecutor.setCorePoolSize(asyncExecutorCorePoolSize);
+        defaultAsyncExecutor.setMaxPoolSize(asyncExecutorMaxPoolSize);
+        defaultAsyncExecutor.setKeepAliveTime(asyncExecutorThreadKeepAliveTime);
+        
+        // Threadpool queue
+        if (asyncExecutorThreadPoolQueue != null) {
+          defaultAsyncExecutor.setThreadPoolQueue(asyncExecutorThreadPoolQueue);
+        }
+        defaultAsyncExecutor.setQueueSize(asyncExecutorThreadPoolQueueSize);
+        
+        // Acquisition wait time
+        defaultAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(asyncExecutorTimerJobAcquireWaitTime);
+        defaultAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(asyncExecutorDefaultAsyncJobAcquireWaitTime);
+        
+        // Job locking
+        defaultAsyncExecutor.setTimerLockTimeInMillis(asyncExecutorTimerLockTimeInMillis);
+        defaultAsyncExecutor.setAsyncJobLockTimeInMillis(asyncExecutorAsyncJobLockTimeInMillis);
+        if (asyncExecutorLockOwner != null) {
+          defaultAsyncExecutor.setLockOwner(asyncExecutorLockOwner);
+        }
+        
+        // Retry
+        defaultAsyncExecutor.setRetryWaitTimeInMillis(asyncExecutorLockRetryWaitTimeInMillis);
+        
+        // Shutdown
+        defaultAsyncExecutor.setSecondsToWaitOnShutdown(asyncExecutorSecondsToWaitOnShutdown);
+        
+        asyncExecutor = defaultAsyncExecutor;
       }
-
+  
       asyncExecutor.setCommandExecutor(commandExecutor);
       asyncExecutor.setAutoActivate(asyncExecutorActivate);
     }
