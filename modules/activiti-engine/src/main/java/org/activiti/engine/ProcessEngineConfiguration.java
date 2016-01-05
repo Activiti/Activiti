@@ -147,6 +147,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected Clock clock;
   protected JobExecutor jobExecutor;
   protected AsyncExecutor asyncExecutor;
+  
   /** 
    * Define the default lock time for an async job in seconds.
    * The lock time is used when creating an async job and when it expires the async executor
