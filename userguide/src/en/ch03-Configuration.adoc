@@ -417,7 +417,7 @@ This can be done by defining two properties
 ----
 
 The asyncExecutorEnabled property is to enable the Async executor instead of the old Job executor.
-The second property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup. 
+The second property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup.
 
 [[mailServerConfiguration]]
 
@@ -695,22 +695,6 @@ The snippet below adds 2 listeners to a process-definition. The first listener w
 ----
 
 For events related to entities, it's also possible to add listeners to a process-definition that get only notified when entity-events occur for a certain entity type. The snippet below shows how this can be achieved. It can be used along for ALL entity-events (first example) or for specific event types only (second example).
-
-[source,xml,linenums]
-----
-<process id="testEventListeners">
-  <extensionElements>
-    <activiti:eventListener class="org.activiti.engine.test.MyEventListener" entityType="task" />
-    <activiti:eventListener delegateExpression="${testEventListener}" events="ENTITY_CREATED" entityType="task" />
-  </extensionElements>
-
-  ...
-
-</process>
-----
-
-For events related to entities, it's also possible to add listeners to a process-definition that get notified only entity-events occur for a certain entity type. The snippet below shows how this can be done. It can be used along for ALL entity-events (first example) or for specific event types only (second example).
-
 
 [source,xml,linenums]
 ----
