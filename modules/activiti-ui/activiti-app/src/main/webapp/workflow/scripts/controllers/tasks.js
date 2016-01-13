@@ -28,28 +28,32 @@ angular.module('activitiApp')
                 page: 0,
                 initialLoad: false
             };
+            
+            $scope.translateFilters = function() {
+                // Init sort options
+                $scope.model.sorts = [
+                    { id: 'created-desc', title: $translate.instant('TASK.FILTER.CREATED-DESC') },
+                    { id: 'created-asc', title: $translate.instant('TASK.FILTER.CREATED-ASC') },
+                    { id: 'due-desc', title: $translate.instant('TASK.FILTER.DUE-DESC') },
+                    { id: 'due-asc', title: $translate.instant('TASK.FILTER.DUE-ASC') }
+                ];
 
-            // Init sort options
-            $scope.model.sorts = [
-                { id: 'created-desc', title: 'TASK.FILTER.CREATED-DESC' },
-                { id: 'created-asc', title: 'TASK.FILTER.CREATED-ASC' },
-                { id: 'due-desc', title: 'TASK.FILTER.DUE-DESC' },
-                { id: 'due-asc', title: 'TASK.FILTER.DUE-ASC' }
-            ];
+                // Init state options
+                $scope.model.stateFilterOptions  = [
+                    { id: 'open', title: $translate.instant('TASK.FILTER.STATE-OPEN') },
+                    { id: 'completed', title: $translate.instant('TASK.FILTER.STATE-COMPLETED') }
+                ];
 
-            // Init state options
-            $scope.model.stateFilterOptions  = [
-                { id: 'open', title: 'TASK.FILTER.STATE-OPEN' },
-                { id: 'completed', title: 'TASK.FILTER.STATE-COMPLETED' }
-            ];
-
-            // Init assignment options
-            $scope.model.assignmentOptions = [
-                { id: 'involved', title: $translate.instant('TASK.FILTER.ASSIGNMENT-INVOLVED') },
-                { id: 'assignee', title: $translate.instant('TASK.FILTER.ASSIGNMENT-ASSIGNEE') },
-                { id: 'candidate', title: $translate.instant('TASK.FILTER.ASSIGNMENT-CANDIDATE') }
-            ];
-
+                // Init assignment options
+                $scope.model.assignmentOptions = [
+                    { id: 'involved', title: $translate.instant('TASK.FILTER.ASSIGNMENT-INVOLVED') },
+                    { id: 'assignee', title: $translate.instant('TASK.FILTER.ASSIGNMENT-ASSIGNEE') },
+                    { id: 'candidate', title: $translate.instant('TASK.FILTER.ASSIGNMENT-CANDIDATE') }
+                ];
+            };
+            
+            $scope.translateFilters();
+            
             if ($scope.account && $scope.account.groups && $scope.account.groups.length > 0) {
                 for (var i=0; i < $scope.account.groups.length; i++) {
                     if ($scope.account.groups[i].type == 1) {
@@ -333,6 +337,16 @@ angular.module('activitiApp')
                 $scope.resetFilters(true);
                 $scope.resetPaging();
                 $scope.refreshFilter();
+            });
+            
+            // on successful applying translations by angular-translate
+            $rootScope.$on('$translateChangeSuccess', function (event, data) {
+                $scope.translateFilters();
+                // Had to reset selectedTask to let moment.locale() change DOM
+                $scope.selectedTask = undefined;
+                $scope.resetPaging();
+                $scope.refreshFilter();
+                
             });
 
             // Load process definitions for the filter dropdown
