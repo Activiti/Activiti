@@ -1,0 +1,334 @@
+{
+    "COMMON" : {
+        "SELECT-FOLDER": "Выберите папку..."
+    },
+    "GENERAL": {
+        "MAIN-TITLE": "Мои задачи",
+        "ERROR": {
+            "GENERIC": "Sorry, an error occured...",
+            "UNKNOWN": "Sorry, an error occured while performing the requested operation.",
+            "BAD_REQUEST": "An error occured while performing the requested operation",
+            "NOT_FOUND": "The resource you are trying to access does not exist",
+            "UNAUTHORIZED": "You should sign in in order to perform the requested operation.",
+            "FORBIDDEN": "You are not allowed to perform the requested operation",
+            "INTERNAL_SERVER_ERROR": "Sorry, an unexpected error occured while performing the requested operation.",
+            "UPLOAD-LIMIT-EXCEEDED": "The file you are trying to upload is too large",
+            "UPLOAD-LIMIT-EXCEEDED-TRIAL-USER": "The file you are trying to upload is too large. Upgrade to enterprise to upload files larger than {{quota}}!",
+            "QUOTA-EXCEEDED-RUNTIME-PROCESSES": "As a trial user, you can only have {{quota}} active processes running at the same time.",
+            "QUOTA-EXCEEDED-COMPLETED-PROCESSES": "As a trial user, you can only have {{quota}} completed processes. Delete a completed process in order to start a new one.",
+            "QUOTA-EXCEEDED-TOTAL-CONTENT-SIZE": "As a trial user, you can only store a total of {{quota}} of content. Delete content or complete processes to free up space for new content."
+        },
+        "NAVIGATION": {
+            "TASKS": "Задачи",
+            "PROCESSES": "Процессы",
+            "DESIGN": "Дизайн",
+            "CREATE": "+ Создать",
+            "LOGIN": "Выйти"
+        },
+        "TITLE": {
+            "ADD-COMMENT": "Создать комментарий",
+            "INVOLVE-PEOPLE": "Выберите участника",
+            "RECENT-PEOPLE": "Предыдущие участники",
+            "MATCHING-PEOPLE": "Выбранные участники",
+            "SELECT-GROUP": "Выберите группу",
+            "MATCHING-GROUPS": "Выбранные группы",
+            "FILTER": "Фильтр",
+            "SELECT-DATE": "Укажите дату"
+        },
+        "ACTION": {
+            "LOGOUT": "Выйти",
+            "ADD-COMMENT": "Добавить комментарий",
+            "SAVE": "Сохранить",
+            "CANCEL": "Отмена",
+            "CLOSE": "Выход",
+            "CONFIRM": "Подтверждение",
+            "SHOW-MORE": "Больше..."
+        },
+        "MESSAGE": {
+            "SELECT-PEOPLE-HELP": "Используйте &uparrow; и &downarrow; для выбора и нажмите Enter для подтвердения",
+            "SELECT-GROUP-HELP": "Используйте &uparrow; и &downarrow; для выбора и нажмите Enter для подтвердения",
+            "SELECT-GROUP-SEARCH-PLACEHOLDER": "Поиск группы",
+            "SELECT-GROUP-NO-MATCHING-RESULTS": "Используйте поле Поиск вверху для быстрого поиска группы.",
+            "UPLOAD-CONTENT": "Выберите файл или перенесите его в поле ввода",
+            "UPLOAD-CONTENT-NO-DROP": "Выберите файл для загрузки",
+            "DROPZONE": "Перенесите файл для загрузки",
+            "YES": "Да",
+            "NO": "Нет"
+        },
+        "TIME": {
+            "HOURS": "часов",
+            "MINUTES": "минут",
+            "SECONDS": "секунд"
+        },
+        "ABOUT": {
+            "TYPE": "Тип",
+            "LICENSED-TO": "Лицензия",
+            "EXPIRES": "Expires",
+            "COPYRIGHT": "© 2005-2015 Alfresco Software Inc. All rights reserved.",
+            "LEGAL": "Legal and License"
+        }
+    },
+    "LOGIN": {
+        "TITLE": "Войти",
+        "USERNAME": "Имя пользователя",
+        "USERNAME-PLACEHOLDER": "Введите Ваше имя пользователя",
+        "PASSWORD": "Пароль",
+        "PASSWORD-PLACEHOLDER": "Введите пароль",
+        "ACTION": {
+            "CONFIRM": "Войти"
+        }
+    },
+    "TASK": {
+        "SECTION": {
+            "PEOPLE": "Люди",
+            "CONTENT": "Контент",
+            "COMMENTS": "Комментарии",
+            "NOTES": "Заметки"
+        },
+        "FILTER": {
+            "CREATED-DESC": "Вначале новые",
+            "CREATED-ASC": "Вначале старые",
+            "DUE-DESC": "По сроку (вначале новые)",
+            "DUE-ASC": "По сроку (вначале старые)",
+            "TEXT": "Фильтр",
+            "TEXT-PLACEHOLDER": "Поиск по названию задачи",
+            "TEXT-SUMMARY": "Фильтр по: {{text}}",
+            "PROCESS-DEFINITION": "Определение Процесса",
+            "PROCESS-DEFINITION-PLACEHOLDER": "Выберите нужное определение процесса ...",
+            "STATE": "Статус",
+            "STATE-OPEN": "открыта",
+            "STATE-COMPLETED": "завершена",
+            "ASSIGNMENT": "Назначение",
+            "ASSIGNMENT-INVOLVED": "Задачи, в которых я участник",
+            "ASSIGNMENT-ASSIGNEE": "Задачи, в которых я исполнитель",
+            "ASSIGNMENT-CANDIDATE": "Задачи, в которых я один из возможных кандидатов",
+            "ASSIGNMENT-GROUP": "Задачи, назначенные на группу \"{{name}}\"",
+            "RESET": "Сбросить фильтры"
+        },
+        "ALERT": {
+            "COMMENT-ADDED": "Комментарий был добавлен к \"{{name}}\"",
+            "PERSON-INVOLVED": "{{firstName}} {{lastName}} вовлечен(а) к \"{{taskName}}\"",
+            "PERSON-NO-LONGER-INVOLVED": "{{firstName}} {{lastName}} больше не вовлечен(а) в \"{{taskName}}\"",
+            "CREATED": "Задача \"{{name}}\" была создана",
+            "COMPLETED": "Задача выполнена",
+            "SAVED": "Форма для задачи создана",
+            "ASSIGNED": "Задача \"{{taskName}}\" назначена пользователю {{firstName}} {{lastName}}",
+            "RELATED-CONTENT-ADDED": "\"{{name}}\" был добавлен к Контенту",
+            "RELATED-CONTENT-ADDED-LOADING": "\"{{name}}\" был добавлен к задаче. Контент будет доступен после его получения из внешнего источника."
+        },
+        "ACTION": {
+            "COMPLETE-TASK-WITH-FORM": "Завершение Формы",
+            "COMPLETE": "Завершить",
+            "CLAIM": "Запросить",
+            "ASSIGN": "Назначить",
+            "REASSIGN": "Переназначить",
+            "CREATE": "+ Создать задачу",
+            "CREATE-CONFIRM": "Создать",
+            "INVOLVE": "+ Добавить участников",
+            "ADD-COMMENT": "+ Комментарии",
+            "ADD-COMMENT-CONFIRM": "Добавить комментарий",
+            "ADD-CONTENT": "+ Контент",
+            "CLEAR-DUEDATE": "Очистить срок",
+            "DUE-TODAY": "Срок до сегодня",
+            "CLEAR-DATE": "Очистить дату",
+            "DATE-TODAY": "Сегодня",
+            "AUDIT-LOG": "Журнал операций"
+        },
+        "TITLE": {
+            "ASSIGN": "Назначить исполнителя",
+            "ASSIGNEE": "Исполнитель",
+            "CONTENT": "Связанный контент",
+            "CREATE-NEW": "Новая задача",
+            "FORM": "Форма",
+            "DETAILS": "Дополнительно",
+            "ADD-RELATED-CONTENT": "Добавьте связанный контент",
+            "SELECT-DUEDATE": "Укажите дату завершения",
+            "SELECT-DATE": "Выберите дату",
+            "NO-CONTENT-ITEMS": "Нет данных",
+            "NO-PEOPLE-INVOLVED": "Нет участников",
+            "NO-COMMENTS": "Без комментариев",
+            "COMMENT-COUNT": "комментарий",
+            "COMMENTS-COUNT": "комментария(ев)",
+            "SHOW-DETAILS": "Показать детали",
+            "SHOW-FORM": "показать форму"
+        },
+        "FIELD": {
+            "NAME": "Имя",
+            "DESCRIPTION": "Описание",
+            "ASSIGNEE": "Исполнитель",
+            "DUE": "Срок",
+            "PROCESS-INSTANCE": "Часть процесса",
+            "ENDED": "Завершено",
+            "DURATION": "Длительность"
+        },
+        "MESSAGE": {
+            "NO-NAME": "Задача без названия",
+            "NO-ASSIGNEE": "Без исполнителя",
+            "NO-DUEDATE": "Без срока",
+            "DUE-ON": "Срок",
+            "CREATED-ON": "Создано",
+            "ENDED-ON": "Выполнено",
+            "COMPLETED-BY": "Выполнено пользователем {{firstName}} {{lastName}}, ",
+            "NO-DESCRIPTION": "Задача без описания",
+            "NO-RELATED-CONTENT": "Для данной задачи пока нет контента...",
+            "NO-PEOPLE-INVOLVED": "У данной задачи пока нет участников...",
+            "NO-COMMENTS": "Данная задача пока без комментариев...",
+            "INVOLVE-PEOPLE-PLACEHOLDER": "+ Добавить участника",
+            "CONTENT-UPLOADED-BY": "Добавил(а) ",
+            "ASSIGNEE": "Исполнитель {{firstName}} {{lastName}}",
+            "NEW-COMMENT-PLACEHOLDER": "Введите комментарий для добавления к Задаче",
+            "COMMENT-HEADER": "Добавил(а) {{createdBy | username}}, {{created | dateformat:\"fromNow\"}}",
+            "NO-FILTER": "Просмотр Ваших задач (без фильтра)",
+            "FILTERED": "Просмотр Ваших задач (с фильтром)",
+            "NO-TASKS": "Задач, соответствующих заданным условиям фильтра, не найдено...",
+            "DURATION": "Заняло {{duration}}",
+            "CLAIM-TASK-FIRST": "Для просмотра и заполнения формы данной задачи, Вам нужно выполнить команду \"Запросить\". Вы можете это сделать, нажав синюю кнопку в правой верхней части данной страницы.",
+            "NO-TASKS-HELP": "Похоже, для Вас пока нет задач! Для начала работы Вы можете:",
+            "NO-SUCH-TASK-HELP": "Задача, которую Вы ищете, не найдена! Вы можете:",
+            "NO-SUCH-TASK-RETURN-TO-LIST": "Вернуться в список Ваших Задач",
+            "NO-TASKS-CREATE-TASK": "Создать новую задачу для себя, либо назначить ее другому",
+            "NO-TASKS-CREATE-PROCESS": "Запустить новый процесс и следить за его выполнением"
+
+        },
+        "HELP" : {
+            "DESCRIPTION": "Для данной задачи пока нет описания. Вы можете это исправить, выполнив одно из следующих действий:",
+            "COMPLETED-DESCRIPTION": "Данная завершенная задача не имеет описания.",
+            "DESCRIPTION-WITH-CLAIM": "Для данной задачи пока нет описания. Вы можете это исправить, выполнив одно из следующих действий. Также, длязавешения задачи Вам необходимо в начале выполнить команду \"Запросить\". Вы можете это сделать, нажав синюю кнопку в правой верхней части данной страницы.",
+            "ADD-PEOPLE": "Добавьте нового участника и начните обсуждение",
+            "ADD-COMMENT": "Помогите другим участникам, добавив подробное описание",
+            "ADD-CONTENT": "Добавьте документ(ы), поделитесь подробной информацией о задаче"
+        }
+    },
+    "PROCESS": {
+        "ALERT": {
+            "COMMENT-ADDED": "Комментарий был добавлен",
+            "STARTED": "Запущен новый процесс номер \"{{processDefinitionName}}\" ",
+            "START-PROCESS-CONTENT-ADD-FAILED": "Не удалось добавить {{noOfFiles}} файл(ов) к процессу"
+        },
+        "TITLE": {
+            "DIAGRAM": "Диаграмма процесса"
+        },
+        "FILTER": {
+            "CREATED-DESC": "Вначале новые",
+            "CREATED-ASC": "Вначале старые",
+            "ENDED-DESC": "Недавно выполненные",
+            "ENDED-ASC": "Давно выполненные",
+            "STATE-SUMMARY": "Просмотр процессов со статусом \"{{state.title | translate}}\"",
+            "STATE": "Статус процесса",
+            "STATE-RUNNING": "выполняется",
+            "STATE-COMPLETED": "завершен",
+            "STATE-ALL": "все статусы"
+        },
+        "MESSAGE": {
+            "NO-DESCRIPTION": "Данный экземпляр процесса не содержит описания",
+            "NO-FILTER": "Просмотр всех процессов (без фильтра)",
+            "NO-INSTANCES": "Процессов, соответствующих заданным условиям фильтра, не найдено ...",
+            "NO-INSTANCES-HELP": "На текущий момент нет ни одного выполняющегося процесса. Если Ваш процесс уже завершен, Вы можете его найти, используя фильтр для списка процессов, который находится слева. Возможно Вам также будут полезны следующие действия:",
+            "NO-INSTANCES-HELP-START": "Запустить новый процесс и следить за его выполнением",
+            "NO-TASKS": "Нет активных задач ...",
+            "NO-COMPLETED-TASKS": "Пока нет завершенных задач ...",
+            "NO-BUSINESS-KEY": "Бизнес-ключ не указан",
+            "CATEGORY": "Категория: {{processDefinitionCategory}}",
+            "NEW-COMMENT-PLACEHOLDER": "Введите комментарий для добавления его к процессу",
+            "COMMENT-HEADER": "Добавил(а) {{createdBy | username}}, {{created | dateformat:\"fromNow\"}}",
+            "SELECT-DEFINITION": "Выберите из списка процесс для запуска",
+            "NO-PROCESS-DEFINITIONS": "Вы пока не можете запустить процесс, так как нет ни одного определения процесса",
+            "START-PROCESS": "Запустить процесс",
+            "STARTED-BY": "Инициатор {{firstName}} {{lastName}}",
+            "NO-PROCESS-DEFINITION-SELECTED-HELP": "Пожалуйста выберите определение процесса"
+        },
+        "ACTION" : {
+            "CREATE": "+ Запустить процесс",
+            "BACK-TO-LIST": "Вернуться к экземплярам процессов",
+            "SHOW-DIAGRAM": "Показать диаграмму",
+            "CANCEL": "Отменить процесс",
+            "DELETE": "Удалить процесс",
+            "ADD-COMMENT": "+ Добавить комментарий",
+            "ADD-COMMENT-CONFIRM": "Добавить комментарий",
+            "AUDIT-LOG": "ЖУрнал операций"
+        },
+        "FIELD": {
+            "BUSINESS-KEY": "Бизнес-ключ",
+            "CATEGORY": "Категория",
+            "PROCESS-DEFINITION": "Определение процесса",
+            "STARTED": "Запущен",
+            "STARTED-BY": "Инициатор",
+            "ENDED": "Завершен",
+            "NAME": "Имя экземпляра процесса",
+            "NAME-PLACEHOLDER" : "Укажите дополнительное название для запущенного процесса"
+        },
+        "SECTION": {
+            "ACTIVE-TASKS": "Активные задачи",
+            "START-FORM": "Стартоврая форма",
+            "COMPLETED-TASKS": "Выполненные задачи",
+            "COMMENTS": "Комментарии",
+            "CONTENT" : "Контент"
+        },
+        "POPUP": {
+            "CANCEL-TITLE": "Отменить процесс?",
+            "CANCEL-DESCRIPTION": "Вы уверены, что хотите отменить процесс {{name}}?",
+            "DELETE-TITLE": "Удалить процесс?",
+            "DELETE-DESCRIPTION": "Вы уверены, что хотите удалить процесс {{name}}? Все задачи, контент и комментарии, связанные с процессом будут также уничтожены."
+        }
+    },
+    "INVOLVE-PEOPLE": {
+        "NO-MATCHING-RESULTS": "Используйте окно поиска сверху для выбора пользователя или ",
+        "SEARCH-PLACEHOLDER": "Найти пользователя",
+        "USE-EMAIL": "осуществите поиск по email пользователя",
+        "EMAIL-PLACEHOLDER": "Введите email адрес",
+        "EMAIL-HELP": "Нажмите на кнопку \"Выбор\" либо клавишу Enter для продолжения. Данный пользователь получит уведомление на почту для регистрации в системе",
+        "BACK-TO-SEARCH": "Вернуться к поиску",
+        "ACTION-SELECT": "Выбор"
+    },
+    "INTEGRATION": {
+        "ALERT": {
+        }
+    },
+    "CONTENT": {
+        "SIMPLE-TYPE": {
+            "WORD": "Документ",
+            "EXCEL": "Excel таблица",
+            "PDF": "PDF документ",
+            "IMAGE": "Картинка",
+            "FOLDER": "Папка",
+            "CONTENT": "Контент"
+        },
+        "MESSAGE": {
+            "NO-PREVIEW-AVAILABLE": "Предварительный просмотр не доступен",
+            "PREVIEW-PENDING": "Создаем предварительный просмотр...",
+            "CONTENT-PENDING": "Получаем контент...",
+            "NOT-FOUND": "Контент не найден",
+            "DELETE-CONFIRMATION": "Вы уверены, что хотите удалить {{name}}?",
+            "DROP": "Перенесите мышкой файл в это поле или нажмите кнопку",
+            "SELECT": "Выберите файл",
+            "DRAGOVER": "Перенесите файл для загрузки",
+            "EXTERNAL-ONLY": "Укажите источник контента"
+        },
+        "TITLE": {
+            "DELETE": "Удалить контент",
+            "NOT-FOUND": "Файл не найден"
+        },
+        "ACTION":  {
+        }
+    },
+    "FORM" : {
+        "ACTION": {
+            "SAVE": "Сохранить"
+        },
+        "DEFAULT-OUTCOME": {
+            "COMPLETE": "Завершить",
+            "START-PROCESS": "Запустить процесс"
+        },
+        "MESSAGE" : {
+            "SELECT-PERSON": "Не указан частник(и)...",
+            "SELECT-GROUP": "Не указана группа(ы)...",
+            "EMPTY": "(пусто)"
+        }
+    },
+    "APP-DEFINITION" : {
+        "MESSAGE" : {
+            "NOT-FOUND": "No app definition found with the given id",
+            "MISSING": "Activiti is running in integration mode, but the required app definition is missing"
+        }
+    }
+}
