@@ -460,7 +460,6 @@ activitiApp
     .filter('dateformat', function() {
         return function(date, format) {
             if (date) {
-                var r = moment(date).fromNow();
                 if(format == 'fromNow') {
                     return moment(date).fromNow();
                 } else if(format == 'fromNowFull') {
