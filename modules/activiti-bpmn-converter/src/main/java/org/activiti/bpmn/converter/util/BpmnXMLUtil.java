@@ -40,8 +40,11 @@ import org.activiti.bpmn.converter.child.TimeCycleParser;
 import org.activiti.bpmn.converter.child.TimeDateParser;
 import org.activiti.bpmn.converter.child.TimeDurationParser;
 import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
-import org.activiti.bpmn.converter.export.ProcessExport;
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.bpmn.model.GraphicInfo;
 import org.apache.commons.lang3.StringUtils;
 
 public class BpmnXMLUtil implements BpmnXMLConstants {
@@ -258,7 +261,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       }
       
       if (extensionElement.getElementText() != null) {
-        xtw.writeCharacters(extensionElement.getElementText());
+        xtw.writeCData(extensionElement.getElementText());
       } else {
         for (List<ExtensionElement> childElements : extensionElement.getChildElements().values()) {
           for (ExtensionElement childElement : childElements) {
