@@ -27,7 +27,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertProperty_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertProperty" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="property" index="index">
       INTO ${prefix}ACT_GE_PROPERTY (NAME_, VALUE_, REV_) VALUES

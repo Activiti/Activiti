@@ -89,7 +89,7 @@
          </foreach>
   </insert>
   
-  <insert id="bulkInsertHistoricProcessInstance_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertHistoricProcessInstance" databaseId="oracle" parameterType="java.util.List">
       INSERT ALL 
         <foreach collection="list" item="historicProcessInstance" index="index">
           INTO ${prefix}ACT_HI_PROCINST (

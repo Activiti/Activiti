@@ -55,7 +55,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertAttachment_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertAttachment" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="attachment" index="index"> 
         INTO ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_) VALUES 

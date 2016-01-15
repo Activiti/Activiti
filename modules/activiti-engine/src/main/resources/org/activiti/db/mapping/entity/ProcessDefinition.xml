@@ -46,7 +46,7 @@
     </foreach>
   </insert>
 
-  <insert id="bulkInsertProcessDefinition_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertProcessDefinition" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="processDefinition" index="index"> 
       INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_,

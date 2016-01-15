@@ -61,7 +61,7 @@
        </foreach>
   </insert>
 
-  <insert id="bulkInsertHistoricVariableInstance_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertHistoricVariableInstance" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="historicVariable" index="index">
       INTO ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_,

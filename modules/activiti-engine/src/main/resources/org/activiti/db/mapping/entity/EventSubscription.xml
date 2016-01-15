@@ -284,7 +284,7 @@
       </foreach>
   </insert>
   
-  <insert id="bulkInsertMessageEventSubscription_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertMessageEventSubscription" databaseId="oracle" parameterType="java.util.List">
   INSERT ALL 
       <foreach collection="list" item="messageEventSubscription" index="index">
         into ${prefix}ACT_RU_EVENT_SUBSCR (
@@ -394,7 +394,7 @@
      </foreach>
   </insert>
 
-  <insert id="bulkInsertSignalEventSubscription_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertSignalEventSubscription" databaseId="oracle" parameterType="java.util.List">
    INSERT ALL 
       <foreach collection="list" item="signalEventSubscription" index="index">
          into ${prefix}ACT_RU_EVENT_SUBSCR (
@@ -504,7 +504,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertCompensateEventSubscription_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertCompensateEventSubscription" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="compensateEventSubscription" index="index">
         into ${prefix}ACT_RU_EVENT_SUBSCR (

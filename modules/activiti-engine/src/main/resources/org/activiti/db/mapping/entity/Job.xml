@@ -420,7 +420,7 @@
     </foreach>
   </insert>
 
-  <insert id="bulkInsertTimer_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertTimer" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="job" index="index"> 
       INTO ${prefix}ACT_RU_JOB (
@@ -562,7 +562,7 @@
     </foreach>
   </insert>
 
-  <insert id="bulkInsertMessage_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertMessage" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="job" index="index">
       INTO ${prefix}ACT_RU_JOB (

@@ -27,7 +27,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertGroup_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertGroup" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="group" index="index">
         INTO ${prefix}ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_) VALUES 

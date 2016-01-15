@@ -30,7 +30,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertUser_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertUser" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="user" index="index">
         INTO ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_) VALUES 

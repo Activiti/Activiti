@@ -23,7 +23,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertDeployment_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertDeployment" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="deployment" index="index">
         into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_) VALUES 

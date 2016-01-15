@@ -113,7 +113,7 @@
         </foreach>
   </insert>
 
-  <insert id="bulkInsertHistoricTaskInstance_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertHistoricTaskInstance" databaseId="oracle" parameterType="java.util.List">
       INSERT ALL 
         <foreach collection="list" item="historicTask" index="index">
           INTO ${prefix}ACT_HI_TASKINST (

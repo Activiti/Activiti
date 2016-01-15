@@ -52,7 +52,7 @@
       #{taskId, jdbcType=VARCHAR},   
       #{timeStamp, jdbcType=TIMESTAMP}, 
       #{userId, jdbcType=VARCHAR},
-      #{data, jdbcType=BLOB},
+      #{data, jdbcType=${blobType}},
       #{lockOwner, jdbcType=VARCHAR},
       #{lockTime, jdbcType=TIMESTAMP},
       #{isProcessed, jdbcType=INTEGER} 
@@ -72,7 +72,7 @@
              #{eventLogEntry.taskId, jdbcType=VARCHAR},   
              #{eventLogEntry.timeStamp, jdbcType=TIMESTAMP}, 
              #{eventLogEntry.userId, jdbcType=VARCHAR},
-             #{eventLogEntry.data, jdbcType=BLOB},
+             #{eventLogEntry.data, jdbcType=${blobType}},
              #{eventLogEntry.lockOwner, jdbcType=VARCHAR},
              #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
              #{eventLogEntry.isProcessed, jdbcType=INTEGER})

@@ -49,7 +49,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertVariableInstance_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertVariableInstance" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL
       <foreach collection="list" item="variable" index="index">
           INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,

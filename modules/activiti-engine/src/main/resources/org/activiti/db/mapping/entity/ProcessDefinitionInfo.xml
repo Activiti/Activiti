@@ -25,7 +25,7 @@
      </foreach>
   </insert>
 
-  <insert id="bulkInsertProcessDefinitionInfo_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertProcessDefinitionInfo" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="processDefinitionInfo" index="index"> 
         INTO ${prefix}ACT_PROCDEF_INFO(ID_, PROC_DEF_ID_, REV_, INFO_JSON_ID_) VALUES 

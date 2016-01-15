@@ -51,7 +51,7 @@
     </foreach>
   </insert>
 
-  <insert id="bulkInsertHistoricFormProperty_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertHistoricFormProperty" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="historicFormProperty" index="index">
       INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_) VALUES 
@@ -111,7 +111,7 @@
       </foreach>
   </insert>
   
-  <insert id="bulkInsertHistoricDetailVariableInstanceUpdate_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertHistoricDetailVariableInstanceUpdate" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="historicDetailVariableInstance" index="index">
         INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_,

@@ -43,7 +43,7 @@
      </foreach>
   </insert>
 
-  <insert id="bulkInsertModel_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertModel" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="model" index="index"> 
         INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_,

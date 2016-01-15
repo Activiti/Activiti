@@ -73,7 +73,7 @@
     </foreach>
   </insert>
 
-  <insert id="bulkInsertTask_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertTask" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="task" index="index">
         INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
