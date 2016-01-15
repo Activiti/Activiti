@@ -20,6 +20,15 @@
                         <span class="glyphicon glyphicon-plus"></span>
                         <span>{{'SHARE-INFO.ACTION.ADD' | translate}}</span>
                 </a>
+                <br/>
+                <a style="font-size: 15px;" 
+                      select-group-popover 
+                      placement="bottom-left"
+                      on-group-selected="addGroup(group, groupField)" 
+                      select-group-form-fields="assignmentFormFields" >
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <span>{{'SHARE-INFO.ACTION.ADD-GROUP' | translate}}</span>
+                </a>
 
             	<div class="sharing-info">
 
@@ -49,7 +58,9 @@
                                     <tr class="sharing-entry" ng-repeat="info in popup.shareInfo.data">
                                         <td style="width:70%">
                                             <i class="glyphicon glyphicon-user" ng-if="info.person"></i>
+                                            <i class="glyphicon glyphicon-list" ng-if="info.group"></i>
                                             <span user-name="info.person" ng-if="info.person"></span>
+                                            <span group-name="info.group" ng-if="info.group"></span>
                                         </td>
                                         <td style="width:15%"  class="text-center">
                                             <i class="glyphicon glyphicon-eye-open"

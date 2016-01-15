@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelShareInfo;
 import com.activiti.domain.idm.User;
+import com.activiti.domain.idm.Group;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.ModelShareInfoRepresentation;
 import com.activiti.model.editor.ShareInfoPermissionRepresentation;
@@ -150,7 +151,15 @@ public class ModelShareInfoResource extends BaseModelResource {
                     }
                     
                     shareService.shareModelWithUser(model, userToShareWith, permission.getSharePermission(), currentUser);
-                }
+                
+                } else if (permission.getGroupId() != null) {
+            		
+                	Group groupToShareWith = null;
+                	groupToShareWith = groupService.getGroup(permission.getGroupId());
+                	
+                	shareService.shareModelWithGroup(model, groupToShareWith, permission.getSharePermission());
+                	
+            	}
             }
             
         }
