@@ -1128,7 +1128,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         properties.put("limitBetween" , "");
         properties.put("limitOuterJoinBetween" , "");
         properties.put("limitBeforeNativeQuery" , "");
-        properties.put("orderBy" , "order by ${orderBy}");
+        properties.put("orderBy" , "order by ${orderByColumns}");
         properties.put("blobType" , "BLOB");
         properties.put("boolValue" , "TRUE");
         
