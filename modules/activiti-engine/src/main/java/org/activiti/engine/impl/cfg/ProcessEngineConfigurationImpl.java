@@ -1122,13 +1122,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         Reader reader = new InputStreamReader(inputStream);
         Properties properties = new Properties();
         properties.put("prefix", databaseTablePrefix);
+        //set default properties
+        properties.put("limitBefore" , "");
+        properties.put("limitAfter" , "");
+        properties.put("limitBetween" , "");
+        properties.put("limitOuterJoinBetween" , "");
+        properties.put("limitBeforeNativeQuery" , "");
+        properties.put("orderBy" , "order by ${orderBy}");
+        properties.put("blobType" , "BLOB");
+        properties.put("boolValue" , "TRUE");
+        
         if (databaseType != null) {
-          properties.put("limitBefore", DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
-          properties.put("limitAfter", DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
-          properties.put("limitBetween", DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
-          properties.put("limitOuterJoinBetween", DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
-          properties.put("orderBy", DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
-          properties.put("limitBeforeNativeQuery", String.valueOf(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
+            properties.load(getResourceAsStream("org/activiti/db/properties/"+databaseType+".properties"));
         }
 
         Configuration configuration = initMybatisConfiguration(environment, reader, properties);
@@ -1145,6 +1150,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Configuration initMybatisConfiguration(Environment environment, Reader reader, Properties properties) {
     XMLConfigBuilder parser = new XMLConfigBuilder(reader, "", properties);
     Configuration configuration = parser.getConfiguration();
+    
+    if(databaseType != null) {
+        configuration.setDatabaseId(databaseType);
+    }
+    
     configuration.setEnvironment(environment);
 
     initMybatisTypeHandlers(configuration);

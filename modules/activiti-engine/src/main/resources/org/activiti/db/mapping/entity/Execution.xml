@@ -55,7 +55,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertExecution_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertExecution" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="execution" index="index">
         into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_,
@@ -119,7 +119,7 @@
   
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
-  <update id="updateExecutionTenantIdForDeployment_mysql" parameterType="java.util.Map">
+  <update id="updateExecutionTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_EXECUTION set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where
@@ -391,20 +391,23 @@
   </sql>
   
   <select id="selectProcessInstanceWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceAndVariablesResultMap">
-    ${limitBefore}
+    <include refid="selectProcessInstanceWithVariablesByQueryCriteriaColumns"/> 
+    <include refid="selectProcessInstanceWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectProcessInstanceWithVariablesByQueryCriteriaColumns">
+   ${limitBefore}
+   <if test="_databaseId != 'db2' and _databaseId != 'mssql'">  
     select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId, 
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
     VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LONG_ as VAR_LONG_
     ${limitBetween}
-    <include refid="selectProcessInstanceWithVariablesByQueryCriteriaSql"/> 
-    ${orderBy}
-    ${limitAfter}
-  </select>
-  
-  <select id="selectProcessInstanceWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceAndVariablesResultMap">
-    ${limitBefore}
+   </if>
+   <if test="_databaseId == 'db2' || _databaseId == 'mssql'">
     select distinct TEMPRES_ID_ as ID_, TEMPP_KEY_ as ProcessDefinitionKey, TEMPP_ID_ as ProcessDefinitionId, TEMPP_NAME_ as ProcessDefinitionName, TEMPP_VERSION_ as ProcessDefinitionVersion, TEMPP_DEPLOYMENT_ID_ as DeploymentId, 
     TEMPRES_REV_ as REV_, TEMPRES_ACT_ID_ as ACT_ID_,
     TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, TEMPRES_IS_ACTIVE_ as IS_ACTIVE_,
@@ -431,10 +434,8 @@
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
     VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LONG_ as TEMPVAR_LONG_
-    <include refid="selectProcessInstanceWithVariablesByQueryCriteriaSql"/> 
-    ${orderBy}
-    ${limitAfter}
-  </select>
+   </if>
+  </sql>
   
   <sql id="selectProcessInstanceWithVariablesByQueryCriteriaSql">  
     from ${prefix}ACT_RU_EXECUTION RES
@@ -830,23 +831,7 @@
   </select>
   
   <select id="selectExecutionByNativeQuery" parameterType="java.util.Map" resultMap="executionResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-  		${limitBefore}
-  	</if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-    	${limitAfter}
-    </if>
-  </select>
-  
-  <select id="selectExecutionByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="executionResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-        ${limitBeforeNativeQuery}
-  	</if>
-  	${sql} 
-    <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
+  	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectExecutionCountByNativeQuery" parameterType="java.util.Map" resultType="long">

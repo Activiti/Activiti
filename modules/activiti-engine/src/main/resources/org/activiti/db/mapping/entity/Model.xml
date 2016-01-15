@@ -178,29 +178,13 @@
   </select>
   
   <!-- mysql specific -->
-  <select id="selectModelCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
+  <select id="selectModelCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectModelsByQueryCriteriaSql"/>
   </select>
 
   <select id="selectModelByNativeQuery" parameterType="java.util.Map" resultMap="modelResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBefore}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
-  </select>
-
-  <select id="selectModelByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="modelResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBeforeNativeQuery}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectModelCountByNativeQuery" parameterType="java.util.Map" resultType="long">
