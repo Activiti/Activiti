@@ -113,7 +113,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   	persistentState.put("doubleValue", doubleValue);
   	persistentState.put("longValue", longValue);
   	persistentState.put("byteArrayRef", byteArrayRef.getId());
-  	
   	persistentState.put("createTime", createTime);
   	persistentState.put("lastUpdatedTime", lastUpdatedTime);
   	

@@ -31,6 +31,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -836,4 +837,38 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
     repositoryService.deleteDeployment(deployment.getId());
   }
+  
+  // Unit test for ACT-4101 : NPE when there are multiple routes to terminateEndEvent, and both are reached
+  @Deployment
+  public void testThreeExecutionsArrivingInTerminateEndEvent() {
+  	 Map<String, Object> variableMap = new HashMap<String, Object>();
+     variableMap.put("passed_QC", false);
+     variableMap.put("has_bad_pixel_pattern", true);
+     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("skybox_image_pull_request", variableMap);
+     String processInstanceId = processInstance.getId();
+     assertNotNull(processInstance);
+     while(processInstance != null) {
+       List<Execution> executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
+       String activityId = "";
+       for (Execution execution : executionList) {
+         activityId = execution.getActivityId();
+         if (activityId == null
+             || activityId.equalsIgnoreCase("quality_control_passed_gateway")
+             || activityId.equalsIgnoreCase("parallelgateway1")
+             || activityId.equalsIgnoreCase("catch_bad_pixel_signal")
+             || activityId.equalsIgnoreCase("throw_bad_pixel_signal")
+             || activityId.equalsIgnoreCase("has_bad_pixel_pattern")
+             || activityId.equalsIgnoreCase("")) {
+               continue;
+             }
+         System.out.println("Current Activity:" + activityId);
+         runtimeService.signal(execution.getId());
+       }
+       processInstance =
+           runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+     }
+     
+     assertProcessEnded(processInstanceId);
+  }
+  
 }

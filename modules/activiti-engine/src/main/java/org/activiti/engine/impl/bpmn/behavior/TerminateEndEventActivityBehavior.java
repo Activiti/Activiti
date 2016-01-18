@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.activiti.bpmn.model.EndEvent;
@@ -23,7 +22,6 @@ import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -67,7 +65,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     	terminateProcessInstanceExecution(execution, terminateEndEventActivity, processInstanceExecution);
     } else {
     	ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
-    	terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+    	if (scopeExecution != null) {
+    		terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+    	} 
     }
     
   }

@@ -27,7 +27,22 @@ public interface ValueFields {
    * @return the name of the variable
    */
   String getName();
+  
+  /**
+   * @return the process instance id of the variable
+   */
+  String getProcessInstanceId();
+  
+  /**
+   * @return the execution id of the variable
+   */
+  String getExecutionId();
 
+  /**
+   * @return the task id of the variable
+   */
+  String getTaskId();
+  
   /**
    * @return the first text value, if any, or null.
    */
