@@ -114,7 +114,12 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
 
   public Object execute(CommandContext commandContext) {
     if (resultType == ResultType.LIST) {
-      return executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
+      Map<String, Object> parameterMap = getParameterMap();
+      if (StringUtils.isBlank(ObjectUtils.toString(parameterMap.get("orderBy")))) {
+        parameterMap.put("orderBy", "RES.ID_ asc");
+      }
+      return executeList(commandContext, parameterMap, 0, Integer.MAX_VALUE);
+      
     } else if (resultType == ResultType.LIST_PAGE) {
       Map<String, Object> parameterMap = getParameterMap();
       parameterMap.put("resultType", "LIST_PAGE");
