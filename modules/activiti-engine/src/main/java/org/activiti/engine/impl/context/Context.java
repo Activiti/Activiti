@@ -14,7 +14,12 @@
 package org.activiti.engine.impl.context;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Stack;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -37,6 +42,7 @@ public class Context {
   protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
   protected static ThreadLocal<JobExecutorContext> jobExecutorContextThreadLocal = new ThreadLocal<JobExecutorContext>();
   protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
+  protected static ResourceBundle.Control resourceBundleControl = new ResourceBundleControl();
 
   public static CommandContext getCommandContext() {
     Stack<CommandContext> stack = getStack(commandContextThreadLocal);
@@ -117,12 +123,27 @@ public class Context {
     return elementProperties;
   }
   
-  public static ObjectNode getLocalizationElementProperties(String language, String id, String processDefinitionId) {
+  public static ObjectNode getLocalizationElementProperties(String language, String id, String processDefinitionId, boolean useFallback) {
     ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
     ObjectNode localizationProperties = null;
     if (definitionInfoNode != null) {
-      localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
-          language, id, definitionInfoNode);
+      if (useFallback == false) {
+        localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
+            language, id, definitionInfoNode);
+        
+      } else {
+        HashSet<Locale> candidateLocales = new LinkedHashSet<Locale>();
+        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, new Locale(language)));
+        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, Locale.getDefault()));
+        for (Locale locale : candidateLocales) {
+          localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
+              locale.getLanguage(), id, definitionInfoNode);
+          
+          if (localizationProperties != null) {
+            break;
+          }
+        }
+      }
     }
     return localizationProperties;
   }
@@ -159,5 +180,12 @@ public class Context {
       bpmnOverrideContextThreadLocal.set(bpmnOverrideMap);
     }
     bpmnOverrideMap.put(id, infoNode);
+  }
+  
+  static class ResourceBundleControl extends ResourceBundle.Control {
+    @Override
+    public List<Locale> getCandidateLocales(String baseName, Locale locale) {
+      return super.getCandidateLocales(baseName, locale);
+    }
   }
 }

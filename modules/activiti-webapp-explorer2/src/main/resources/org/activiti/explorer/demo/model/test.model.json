@@ -51,29 +51,36 @@
             "exclusivedefinition" : "Yes",
             "executionlisteners" : "",
             "formkeydefinition" : "",
-            "formproperties" : { "items" : [ 
-                    { "formproperty_id" : "number",
-                      "formproperty_name" : "Number",
-                      "formproperty_type" : "long",
-                      "formproperty_expression":null,
-                      "formproperty_variable":null,
-                      "formproperty_required":"No",
-                      "formproperty_readable":"Yes",
-                      "formproperty_writeable":"Yes",
-                      "formproperty_formvalues": "undefined"
+            "formproperties" : { "formProperties" : [ 
+                    { "id" : "number",
+                      "name" : "Number",
+                      "type" : "enum",
+                      "required": false,
+                      "readable": true,
+                      "writeable": true,
+                      "enumValues": [
+	                        {
+	                            "value": "value1"
+	                        },
+	                        {
+	                            "value": "value2"
+	                        },
+	                        {
+	                            "value": "value3"
+	                        },
+	                        {
+	                            "value": "value4"
+	                        }
+	                    ]
                     },
-                    { "formproperty_id" : "message",
-                      "formproperty_name" : "Message",
-                      "formproperty_type" : "string",
-                      "formproperty_expression":null,
-                      "formproperty_variable":null,
-                      "formproperty_required":"No",
-                      "formproperty_readable":"Yes",
-                      "formproperty_writeable":"Yes",
-                      "formproperty_formvalues": "undefined"
+                    { "id" : "message",
+                      "name" : "Message",
+                      "type" : "string",
+                      "required": true,
+                      "readable": true,
+                      "writeable": true
                     }
-                  ],
-                "totalCount" : 2
+                  ]
               },
             "inputdataitem" : "",
             "isforcompensation" : "",

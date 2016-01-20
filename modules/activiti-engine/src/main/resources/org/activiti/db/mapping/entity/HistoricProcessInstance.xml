@@ -455,7 +455,7 @@
         </if>
         <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
           <choose>
-            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">
               and lower(A${index}.TEXT_)
             </when>
             <otherwise>
@@ -463,7 +463,7 @@
             </otherwise>
           </choose>
           <choose>
-            <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>
           #{queryVariableValue.textValue}
@@ -613,7 +613,7 @@
               </if>
               <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
-                  <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+                  <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">
                     and lower(A_OR${orIndex}_${index}.TEXT_)
                   </when>
                   <otherwise>
@@ -621,28 +621,28 @@
                   </otherwise>
                 </choose>
                 <choose>
-                  <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+                  <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>
                 #{queryVariableValue.textValue}
               </if>
               <if test="queryVariableValue.textValue2 != null">
-              and A_OR${orIndex}_${index}.TEXT2_
-              <choose>
-                <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
-                <otherwise><include refid="executionVariableOperator" /></otherwise>
-              </choose>
+                and A_OR${orIndex}_${index}.TEXT2_
+                <choose>
+                  <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+                  <otherwise><include refid="executionVariableOperator" /></otherwise>
+                </choose>
                 #{queryVariableValue.textValue2}
               </if>
               <if test="queryVariableValue.longValue != null">
-              and A_OR${orIndex}_${index}.LONG_
-              <include refid="executionVariableOperator" />
-              #{queryVariableValue.longValue}
+                and A_OR${orIndex}_${index}.LONG_
+                <include refid="executionVariableOperator" />
+                #{queryVariableValue.longValue}
               </if>
               <if test="queryVariableValue.doubleValue != null">
-              and A_OR${orIndex}_${index}.DOUBLE_
-              <include refid="executionVariableOperator" />
-              #{queryVariableValue.doubleValue}
+                and A_OR${orIndex}_${index}.DOUBLE_
+                <include refid="executionVariableOperator" />
+                #{queryVariableValue.doubleValue}
               </if>
               <!-- Null variable type -->
               <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">

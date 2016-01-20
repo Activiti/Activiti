@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
@@ -34,6 +35,7 @@ import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -44,10 +46,20 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class BaseExecutionVariableResource {
   
   @Autowired
+  protected Environment env;
+	
+	@Autowired
   protected RestResponseFactory restResponseFactory;
   
   @Autowired
   protected RuntimeService runtimeService;
+  
+  protected boolean isSerializableVariableAllowed;
+  
+  @PostConstruct
+  protected void postConstruct() {
+  	isSerializableVariableAllowed = env.getProperty("rest.variables.allow.serializable", Boolean.class, true);
+  }
   
   protected byte[] getVariableDataByteArray(Execution execution, String variableName, String scope,
       HttpServletResponse response) {
@@ -139,12 +151,14 @@ public class BaseExecutionVariableResource {
         byte[] variableBytes = IOUtils.toByteArray(file.getInputStream());
         setVariable(execution, variableName, variableBytes, scope, isNew);
         
+      } else if (isSerializableVariableAllowed) {
+	        // Try deserializing the object
+	        ObjectInputStream stream = new ObjectInputStream(file.getInputStream());
+	        Object value = stream.readObject();
+	        setVariable(execution, variableName, value, scope, isNew);
+	        stream.close();
       } else {
-        // Try deserializing the object
-        ObjectInputStream stream = new ObjectInputStream(file.getInputStream());
-        Object value = stream.readObject();
-        setVariable(execution, variableName, value, scope, isNew);
-        stream.close();
+      	throw new ActivitiContentNotSupportedException("Serialized objects are not allowed");
       }
       
       if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {

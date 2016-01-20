@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-samples</artifactId>
-        <version>5.18.1-SNAPSHOT</version>
+        <version>5.20.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>spring-boot-sample-rest-api-security</artifactId>
@@ -15,13 +15,13 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-boot-starter-rest-api</artifactId>
-            <version>5.18.1-SNAPSHOT</version>
+            <version>5.20.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-boot-starter-security</artifactId>
-            <version>5.18.1-SNAPSHOT</version>
+            <version>5.20.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>

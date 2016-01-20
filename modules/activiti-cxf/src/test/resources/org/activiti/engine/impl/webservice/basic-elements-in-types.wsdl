@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="Counter" targetNamespace="http://webservice.activiti.org/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.activiti.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <wsdl:types>
+      <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.activiti.org/"
+         xmlns:tns="http://webservice.activiti.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+         <xs:element name="int" type="xsd:int" />
+         <xs:element name="long" type="xsd:long" />
+         <xs:element name="short" type="xsd:short" />
+         <xs:element name="boolean" type="xsd:boolean" />
+         <xs:element name="double" type="xsd:double" />
+         <xs:element name="string" type="xsd:string" />
+         <xs:element name="date" type="xsd:date" />
+         <xs:element name="uri" type="xsd:anyURI" />
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="int">
+      <wsdl:part element="tns:int" name="int" />
+   </wsdl:message>
+   <wsdl:message name="long">
+      <wsdl:part element="tns:long" name="long" />
+   </wsdl:message>
+   <wsdl:message name="short">
+      <wsdl:part element="tns:short" name="short" />
+   </wsdl:message>
+   <wsdl:message name="boolean">
+      <wsdl:part element="tns:boolean" name="boolean" />
+   </wsdl:message>
+   <wsdl:message name="double">
+      <wsdl:part element="tns:double" name="double" />
+   </wsdl:message>
+   <wsdl:message name="string">
+      <wsdl:part element="tns:string" name="string" />
+   </wsdl:message>
+   <wsdl:message name="date">
+      <wsdl:part element="tns:date" name="date" />
+   </wsdl:message>
+   <wsdl:message name="uri">
+      <wsdl:part element="tns:uri" name="uri" />
+   </wsdl:message>
+   <wsdl:portType name="Basic">
+      <wsdl:operation name="op1">
+         <wsdl:input message="tns:int" name="int" />
+         <wsdl:output message="tns:long" name="long" />
+      </wsdl:operation>
+      <wsdl:operation name="op2">
+         <wsdl:input message="tns:short" name="short" />
+         <wsdl:output message="tns:boolean" name="boolean" />
+      </wsdl:operation>
+      <wsdl:operation name="op3">
+         <wsdl:input message="tns:double" name="double" />
+         <wsdl:output message="tns:string" name="string" />
+      </wsdl:operation>
+      <wsdl:operation name="op4">
+         <wsdl:input message="tns:date" name="date" />
+         <wsdl:output message="tns:uri" name="uri" />
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="BasicSoapBinding" type="tns:Basic">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+      <wsdl:operation name="op1">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="int">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="long">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="op2">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="short">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="boolean">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="op3">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="double">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="string">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="op4">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="date">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="uri">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="Basic">
+      <wsdl:port binding="tns:BasicSoapBinding" name="BasicImplPort">
+         <soap:address location="http://localhost:63081/basic" />
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

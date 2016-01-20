@@ -163,7 +163,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 	    assertEquals("myVar1", historicVariable1.getName());
 	    assertEquals("test789", historicVariable1.getTextValue());
 	    
-	    assertEquals(15, historyService.createHistoricActivityInstanceQuery().count());
+	    assertEquals(18, historyService.createHistoricActivityInstanceQuery().count());
 	    assertEquals(7, historyService.createHistoricDetailQuery().count());
   	}
   }

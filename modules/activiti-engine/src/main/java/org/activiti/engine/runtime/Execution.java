@@ -58,4 +58,14 @@ public interface Execution {
    */
   String getTenantId();
   
+  /**
+   * Returns the name of this execution.
+   */
+  String getName();
+  
+  /**
+   * Returns the description of this execution.
+   */
+  String getDescription();
+  
 }

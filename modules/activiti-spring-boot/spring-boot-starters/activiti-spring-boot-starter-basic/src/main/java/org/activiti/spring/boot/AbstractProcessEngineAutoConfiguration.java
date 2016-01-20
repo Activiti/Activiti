@@ -1,7 +1,21 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.boot;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -40,6 +54,9 @@ public abstract class AbstractProcessEngineAutoConfiguration
 
   @Autowired
   private ResourcePatternResolver resourceLoader;
+  
+  @Autowired(required=false)
+  private ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer;
 
   @Bean
   public SpringAsyncExecutor springAsyncExecutor(TaskExecutor taskExecutor) {
@@ -56,7 +73,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
 
     List<Resource> procDefResources = this.discoverProcessDefinitionResources(
         this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
-        this.activitiProperties.getProcessDefinitionLocationSuffix(),
+        this.activitiProperties.getProcessDefinitionLocationSuffixes(),
         this.activitiProperties.isCheckProcessDefinitions());
 
     SpringProcessEngineConfiguration conf = super.processEngineConfigurationBean(
@@ -79,8 +96,32 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
+    if (activitiProperties.getCustomMybatisMappers() != null) {
+      conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
+    }
+
+    if (activitiProperties.getCustomMybatisXMLMappers() != null) {
+      conf.setCustomMybatisXMLMappers(new HashSet<String>(activitiProperties.getCustomMybatisXMLMappers()));
+    }
+    
+    if (processEngineConfigurationConfigurer != null) {
+    	processEngineConfigurationConfigurer.configure(conf);
+    }
 
     return conf;
+  }
+
+  private Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
+    Set<Class<?>> mybatisMappers = new HashSet<Class<?>>();
+    for (String customMybatisMapperClassName : customMyBatisMappers) {
+      try {
+        Class customMybatisClass = Class.forName(customMybatisMapperClassName);
+        mybatisMappers.add(customMybatisClass);
+      } catch (ClassNotFoundException e) {
+        throw new IllegalArgumentException("Class " + customMybatisMapperClassName + " has not been found.", e);
+      }
+    }
+    return mybatisMappers;
   }
 
 

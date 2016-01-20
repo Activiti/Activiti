@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -44,6 +45,12 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
 
     // initialize the template-defined data objects as variables
     initializeDataObjects(execution, activity);
+    
+    if (initialActivity.getActivityBehavior() != null 
+    		&& initialActivity.getActivityBehavior() instanceof NoneStartEventActivityBehavior) { // embedded subprocess: only none start allowed
+    	((ExecutionEntity) execution).setActivity(initialActivity);
+    	Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+    }
 
     execution.executeActivity(initialActivity);
   }

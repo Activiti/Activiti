@@ -14,8 +14,10 @@ package org.activiti.editor.language.json.converter;
 
 import java.util.Map;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
@@ -96,6 +98,25 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
 
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
       propertiesNode.put(PROPERTY_SEQUENCEFLOW_CONDITION, sequenceFlow.getConditionExpression());
+    }
+    
+    if (StringUtils.isNotEmpty(sequenceFlow.getSourceRef())) {
+      FlowElement sourceFlowElement = container.getFlowElement(sequenceFlow.getSourceRef());
+      if (sourceFlowElement != null) {
+        String defaultFlowId = null;
+        if (sourceFlowElement instanceof ExclusiveGateway) {
+          ExclusiveGateway parentExclusiveGateway = (ExclusiveGateway) sourceFlowElement;
+          defaultFlowId = parentExclusiveGateway.getDefaultFlow();
+          
+        } else if (sourceFlowElement instanceof Activity) {
+          Activity parentActivity = (Activity) sourceFlowElement;
+          defaultFlowId = parentActivity.getDefaultFlow();
+        }
+
+        if (defaultFlowId != null && defaultFlowId.equals(sequenceFlow.getId())) {
+          propertiesNode.put(PROPERTY_SEQUENCEFLOW_DEFAULT, true);
+        }
+      }
     }
 
     if (sequenceFlow.getExecutionListeners().size() > 0) {

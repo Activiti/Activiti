@@ -831,6 +831,34 @@ Note that the _errorRef_ must comply with the BPMN 2.0 schema, and must be a val
 
 [[bpmnCancelEndEvent]]
 
+==== Terminate End Event
+
+===== Description
+
+When a _terminate end event_ is reached, the current process instance or sub-process will be terminated. Conceptually, when an execution arrives in a terminate end event, the first _scope_ (process or sub-process) will be determined and ended. Note that in BPMN 2.0, a sub-process can be an embedded sub-process, call activity, event sub-process or transaction sub-process. This rule applies in general: when for example there is a multi-instance call activity or embedded subprocess, only that instance will be ended, the other instances and the process instance are not affected.
+
+There is an optional attribute _terminateAll_ that can be added. When _true_, regardless of the placement of the terminate end event in the process definition and regardless of being in a sub-process (even nested), the (root) process instance will be terminated.
+
+===== Graphical notation
+
+A cancel end event visualized as a typical end event (circle with thick outline), with a full black circle inside.
+
+image::images/bpmn.terminate.end.event.png[align="center"]
+
+
+===== XML representation
+
+A terminate end event is represented as an end event, with a _terminateEventDefinition_ child element.
+
+Note that the _terminateAll_ attribute is optional (and _false_ by default).
+
+[source,xml,linenums]
+----
+<endEvent id="myEndEvent >
+  <terminateEventDefinition activiti:terminateAll="true"></terminateEventDefinition>
+</endEvent>
+----
+
 
 ==== Cancel End Event
 
@@ -2890,7 +2918,7 @@ This mechanism should be used *only for business faults* that shall be handled b
 
 ====== Exception mapping
 
-It is also possible to directly map a java exception to business exception by using +mapException+ extention. Single mapping is the simplest form:
+It is also possible to directly map a java exception to business exception by using +mapException+ extension. Single mapping is the simplest form:
 [source,xml,linenums]
 ----
 <serviceTask id="servicetask1" name="Service Task" activiti:class="...">
@@ -2931,7 +2959,7 @@ The most generic mapping is a default map. Default map is a map with no class. I
 </serviceTask>
 ----
 
-The mappings are checked in order, from top to buttom and the first found match will be followed, except for the default map. Default map is selected only after all maps are unsuccessfully checked.
+The mappings are checked in order, from top to bottom and the first found match will be followed, except for the default map. Default map is selected only after all maps are unsuccessfully checked.
 Only the first map with no class will be considered as default map. +includeChildExceptions+ is ignored for default Map.
 
 
@@ -3641,7 +3669,7 @@ The above table explains how Activiti variables are going to be transferred to C
 What is mentioned above about passing variables, only holds for start side of the variable transfer, in both directions from Camel to Activiti and vice versa. +
 It is important to notice that because of special non blocking behavior of Activiti, variables are not automatically returned back from Activiti to Camel.
 For that to happen, a special syntax is available. There can be one or more parameters in Camel route URL in format of +var.return.someVariableName+.
-All variabls having a name equal to one of these parameters without +var.return+ part, will be considered as output variables and will be copied back as camel properties with the same names. +
+All variables having a name equal to one of these parameters without +var.return+ part, will be considered as output variables and will be copied back as camel properties with the same names. +
 For example in a route like:
 ----
 from("direct:start").to("activiti:process?var.return.exampleVar").to("mock:result");
@@ -4264,7 +4292,7 @@ However, when the activity is multi instance, the behavior is different:
 The same reasoning applies for the end event:
 
 * When the actual activity is left, an end even is thrown. The _loopCounter_ variable is set.
-* When the multi instance activity has finised as a whole, an end event is thrown. The _loopCounter_ variable is not set.
+* When the multi instance activity has finished as a whole, an end event is thrown. The _loopCounter_ variable is not set.
 
 For example:
 
@@ -4628,7 +4656,7 @@ You can pass process variables to the sub process and vice versa. The data is co
 <callActivity id="callSubProcess" calledElement="checkCreditProcess" >
   <extensionElements>
 	  <activiti:in source="someVariableInMainProcess" target="nameOfVariableInSubProcess" />
-	  <activiti:out source="someVariableInSubProcss" target="nameOfVariableInMainProcess" />
+	  <activiti:out source="someVariableInSubProcess" target="nameOfVariableInMainProcess" />
   </extensionElements>
 </callActivity>
 ----

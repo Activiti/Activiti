@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
-import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BooleanDataObject;
 import org.activiti.bpmn.model.BpmnModel;
@@ -25,6 +24,7 @@ import org.activiti.bpmn.model.DateDataObject;
 import org.activiti.bpmn.model.DoubleDataObject;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.FieldExtension;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntegerDataObject;
 import org.activiti.bpmn.model.ItemDefinition;
@@ -38,7 +38,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
-import org.apache.commons.collections.CollectionUtils;
+import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -350,8 +350,8 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
           } else {
             ((UserTask) element).getExecutionListeners().add(listener);
           }
-        } else if (element instanceof Activity) {
-          ((Activity) element).getExecutionListeners().add(listener);
+        }  else if (element instanceof FlowElement) {
+          ((FlowElement) element).getExecutionListeners().add(listener);
         }
       }
     }
