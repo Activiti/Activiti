@@ -52,12 +52,12 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
-  protected Map<Class<?>,String>  insertStatements = new ConcurrentHashMap<Class<?>, String>();
-  protected Map<Class<?>,String>  bulkInsertStatements = new ConcurrentHashMap<Class<?>, String>();
-  protected Map<Class<?>,String>  updateStatements = new ConcurrentHashMap<Class<?>, String>();
-  protected Map<Class<?>,String>  deleteStatements = new ConcurrentHashMap<Class<?>, String>();
-  protected Map<Class<?>,String>  bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
-  protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String> insertStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String> bulkInsertStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String> updateStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String> deleteStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String> bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String> selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected int maxNrOfStatementsInBulkInsert = 100;
