@@ -74,7 +74,7 @@ public class ListQueryParameterObject {
   }
   
   public String getOrderByColumns() {
-      return getOrderBy();
+    return getOrderBy();
   }
   
   public void setDatabaseType(String databaseType) {
