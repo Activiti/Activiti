@@ -114,11 +114,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
 
   public Object execute(CommandContext commandContext) {
     if (resultType == ResultType.LIST) {
-      Map<String, Object> parameterMap = getParameterMap();
-      if (StringUtils.isBlank(ObjectUtils.toString(parameterMap.get("orderBy")))) {
-        parameterMap.put("orderBy", "RES.ID_ asc");
-      }
-      return executeList(commandContext, parameterMap, 0, Integer.MAX_VALUE);
+      return executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
       
     } else if (resultType == ResultType.LIST_PAGE) {
       Map<String, Object> parameterMap = getParameterMap();
@@ -126,9 +122,9 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
       parameterMap.put("firstResult", firstResult);
       parameterMap.put("maxResults", maxResults);
       if (StringUtils.isNotBlank(ObjectUtils.toString(parameterMap.get("orderBy")))) {
-        parameterMap.put("orderBy", "RES." + parameterMap.get("orderBy"));
+        parameterMap.put("orderByColumns", "RES." + parameterMap.get("orderBy"));
       } else {
-        parameterMap.put("orderBy", "RES.ID_ asc");
+        parameterMap.put("orderByColumns", "RES.ID_ asc");
       }
       
       int firstRow = firstResult + 1;
