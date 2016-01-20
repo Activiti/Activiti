@@ -640,7 +640,7 @@ To add in JPA support for Activiti in Spring Boot, add following dependency:
 ----
 <dependency>
 	<groupId>org.activiti</groupId>
-	<artifactId>spring-boot-starter-jpa</artifactId>
+	<artifactId>activiti-spring-boot-starter-jpa</artifactId>
 	<version>${activiti.version}</version>
 </dependency>
 ----
