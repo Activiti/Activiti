@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160121101240973" modeler:modelId="970269" modeler:modelVersion="1" modeler:modelLastUpdated="1453371158334">
+  <process id="testAsyncExecutor" name="testAsyncExecutor" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <userTask id="sid-21A6B407-6414-46F1-BCB8-20CEBB6E5B72" name="The task">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-52BFE1B0-A9EE-4564-8BEC-04671BA56324" sourceRef="startEvent1" targetRef="sid-21A6B407-6414-46F1-BCB8-20CEBB6E5B72"/>
+    <endEvent id="sid-AF91D9C1-0757-4951-BB0A-49A2F6AE1D3C"/>
+    <sequenceFlow id="sid-155DCAFA-779C-4F1D-B73F-378A50440BAD" sourceRef="sid-21A6B407-6414-46F1-BCB8-20CEBB6E5B72" targetRef="sid-AF91D9C1-0757-4951-BB0A-49A2F6AE1D3C"/>
+    <boundaryEvent id="sid-4FB51C1A-85C8-4672-B786-329BBD8135E4" attachedToRef="sid-21A6B407-6414-46F1-BCB8-20CEBB6E5B72" cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>0 0 9 ? * MON-FRI *</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <scriptTask id="theScriptTask" name="The Script task" activiti:async="true" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>java.lang.System.out.println('Executing script');</script>
+    </scriptTask>
+    <sequenceFlow id="sid-4B829DAB-4214-48B7-8483-32EC612C254E" sourceRef="sid-4FB51C1A-85C8-4672-B786-329BBD8135E4" targetRef="theScriptTask"/>
+    <serviceTask id="theServiceTask" name="The Service task" activiti:async="true" activiti:class="org.activiti.engine.test.jobexecutor.AsyncExecutorQueueOverflowTestDelegate"/>
+    <sequenceFlow id="sid-5DE7FFC5-0E2C-4668-AF90-98D6F0DA6923" sourceRef="theScriptTask" targetRef="theServiceTask"/>
+    <endEvent id="sid-96635F23-3CA3-4684-9EEF-A6DBA6EC16D0"/>
+    <sequenceFlow id="sid-A292FF93-9456-41F0-9FAB-CBCFC1586DC3" sourceRef="theServiceTask" targetRef="sid-96635F23-3CA3-4684-9EEF-A6DBA6EC16D0"/>
+  </process>
+</definitions>

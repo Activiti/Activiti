@@ -5,9 +5,13 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
@@ -72,7 +76,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   
   protected CommandExecutor commandExecutor;
   
-  public void executeAsyncJob(JobEntity job) {
+  public void executeAsyncJob(final JobEntity job) {
   	Runnable runnable = null;
     if (isActive) {
     	if (executeAsyncRunnableFactory == null) {
@@ -80,10 +84,42 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     	} else {
     		runnable = executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, commandExecutor);
     	}
-    	executorService.execute(runnable);
+    	
+    	try {
+    		executorService.execute(runnable);
+    	} catch (RejectedExecutionException e) {
+    	  
+    	  // When a RejectedExecutionException is caught, this means that the queue for holding the jobs 
+    	  // that are to be executed is full and can't store more.
+    	  // The job is now 'unlocked', meaning that the lock owner/time is set to null,
+    	  // so other executors can pick the job up (or this async executor, the next time the 
+    	  // acquire query is executed.
+    	  
+    	  // This can happen while already in a command context (for example in a transaction listener
+    	  // after the async executor has been hinted that a new async job is created)
+    	  // or not (when executed in the aquire thread runnable)
+    	  
+    		CommandContext commandContext = Context.getCommandContext();
+    		if (commandContext != null) {
+    		  unlockJob(job, commandContext);
+    		} else {
+    		  commandExecutor.execute(new Command<Void>() {
+            public Void execute(CommandContext commandContext) {
+              unlockJob(job, commandContext);
+              return null;
+            }
+          });
+    		}
+    		
+    	}
+    	
     } else {
       temporaryJobQueue.add(job);
     }
+  }
+
+  protected void unlockJob(final JobEntity job, CommandContext commandContext) {
+    commandContext.getJobEntityManager().unlockJob(job.getId());
   }
   
   /** Starts the async executor */
@@ -135,10 +171,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     	log.info("Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}",
     			corePoolSize, maxPoolSize, keepAliveTime);
     	
-    	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
-    	threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-    	executorService = threadPoolExecutor;
-    	
+    	executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
     }
     
     startJobAcquisitionThread();
