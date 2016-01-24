@@ -11,6 +11,10 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.variable.CacheableVariable;
+import org.activiti.engine.impl.variable.JPAEntityListVariableType;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
 /**
  * @author Joram Barrez
@@ -110,6 +114,18 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 			List<HistoricVariableInstance> variables = commandContext.getHistoricVariableInstanceEntityManager()
 					.findHistoricVariableInstancesByQueryCriteria(
 							new HistoricVariableInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
+			
+			// Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
+			for (HistoricVariableInstance historicVariableInstance : variables) {
+				historicVariableInstance.getValue();
+				
+				// make sure JPA entities are cached for later retrieval
+				HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+				if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+					((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
+				}
+			}
+			
 			processInstanceHistoryLog.addHistoricData(variables);
 		}
 		
