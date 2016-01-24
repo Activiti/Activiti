@@ -53,8 +53,12 @@ public class AcquireTimerJobsRunnable implements Runnable {
             asyncExecutor.getLockOwner(), asyncExecutor.getTimerLockTimeInMillis(), 
             asyncExecutor.getMaxTimerJobsPerAcquisition()));
         
+        boolean allJobsSuccessfullyOffered = true; 
         for (JobEntity job : acquiredJobs.getJobs()) {
-          asyncExecutor.executeAsyncJob(job);
+          boolean jobSuccessFullyOffered = asyncExecutor.executeAsyncJob(job);
+          if (!jobSuccessFullyOffered) {
+            allJobsSuccessfullyOffered = false;
+          }
         }
         
         // if all jobs were executed
@@ -62,6 +66,11 @@ public class AcquireTimerJobsRunnable implements Runnable {
         int jobsAcquired = acquiredJobs.size();
         if (jobsAcquired >= asyncExecutor.getMaxTimerJobsPerAcquisition()) {
           millisToWait = 0; 
+        }
+        
+        // If the queue was full, we wait too (even if we got enough jobs back), as not overload the queue
+        if (millisToWait == 0 && !allJobsSuccessfullyOffered) {
+          millisToWait = asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis();
         }
 
       } catch (ActivitiOptimisticLockingException optimisticLockingException) { 

@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.LinkedList;
@@ -64,6 +76,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   protected int maxAsyncJobsDuePerAcquisition = 1;
   protected int defaultTimerJobAcquireWaitTimeInMillis = 10 * 1000;
   protected int defaultAsyncJobAcquireWaitTimeInMillis = 10 * 1000;
+  protected int defaultQueueSizeFullWaitTime = 0; 
   
   protected String lockOwner = UUID.randomUUID().toString();
   protected int timerLockTimeInMillis = 5 * 60 * 1000;
@@ -76,15 +89,9 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   
   protected CommandExecutor commandExecutor;
   
-  public void executeAsyncJob(final JobEntity job) {
-  	Runnable runnable = null;
+  public boolean executeAsyncJob(final JobEntity job) {
     if (isActive) {
-    	if (executeAsyncRunnableFactory == null) {
-    		runnable = new ExecuteAsyncRunnable(job, commandExecutor);
-    	} else {
-    		runnable = executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, commandExecutor);
-    	}
-    	
+      Runnable runnable = createRunnableForJob(job);
     	try {
     		executorService.execute(runnable);
     	} catch (RejectedExecutionException e) {
@@ -111,13 +118,25 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
           });
     		}
     		
+    		// Job queue full, returning true so (if wanted) the acquiring can be throttled
+    		return false;
     	}
     	
     } else {
       temporaryJobQueue.add(job);
     }
+    
+    return true;
   }
-
+  
+  protected Runnable createRunnableForJob(final JobEntity job) {
+    if (executeAsyncRunnableFactory == null) {
+      return new ExecuteAsyncRunnable(job, commandExecutor);
+    } else {
+      return executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, commandExecutor);
+    }
+  }
+ 
   protected void unlockJob(final JobEntity job, CommandContext commandContext) {
     commandContext.getJobEntityManager().unlockJob(job.getId());
   }
@@ -360,6 +379,14 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
 
   public void setDefaultAsyncJobAcquireWaitTimeInMillis(int defaultAsyncJobAcquireWaitTimeInMillis) {
     this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
+  }
+  
+  public int getDefaultQueueSizeFullWaitTimeInMillis() {
+    return defaultQueueSizeFullWaitTime;
+  }
+
+  public void setDefaultQueueSizeFullWaitTimeInMillis(int defaultQueueSizeFullWaitTime) {
+    this.defaultQueueSizeFullWaitTime = defaultQueueSizeFullWaitTime;
   }
 
   public void setTimerJobRunnable(AcquireTimerJobsRunnable timerJobRunnable) {
