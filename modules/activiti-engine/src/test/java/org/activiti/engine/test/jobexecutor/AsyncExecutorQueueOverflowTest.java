@@ -65,14 +65,19 @@ protected static DataSource dataSource;
     processEngine.getProcessEngineConfiguration().getClock().setCurrentTime(mondayMorningDate);
     
     boolean allJobsProcessed = false;
+    Date waitTimeStartDate = new Date(); 
     while (!allJobsProcessed) {
       
       long count = historyService.createHistoricActivityInstanceQuery().activityId("theServiceTask").unfinished().count();
-      System.out.println("COUNT = " + count);
       allJobsProcessed = count == nrOfProcessInstances; 
       
       if (!allJobsProcessed) {
         Thread.sleep(1000L);
+      }
+      
+      // To avoid looping forever
+      if (new Date().getTime() - waitTimeStartDate.getTime() > (5L * 60L * 1000L)) {
+        Assert.fail("Wait time for executing jobs expired");
       }
       
     }
