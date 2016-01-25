@@ -45,7 +45,6 @@ public class AsyncExecutorQueueOverflowTest extends PluggableActivitiTestCase {
   public void testQueueOverflow() throws Exception {
     
     ProcessEngine processEngine = initProcessEngineWithJobQueueSize(100);
-    org.h2.tools.Server.createWebServer("-web").start();
     
     // Start date = Wed 20 january 2016 7:00 GMT
     Date startDate = createDate(2016, 0, 20, 7, 0, 0); 
