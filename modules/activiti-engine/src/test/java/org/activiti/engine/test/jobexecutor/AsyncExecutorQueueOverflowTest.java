@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -21,6 +22,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -33,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Joram Barrez
  */
-public class AsyncExecutorQueueOverflowTest {
+public class AsyncExecutorQueueOverflowTest extends PluggableActivitiTestCase {
   
   private static final Logger logger = LoggerFactory.getLogger(AsyncExecutorQueueOverflowTest.class);
   
@@ -43,9 +45,11 @@ public class AsyncExecutorQueueOverflowTest {
   public void testQueueOverflow() throws Exception {
     
     ProcessEngine processEngine = initProcessEngineWithJobQueueSize(100);
+    org.h2.tools.Server.createWebServer("-web").start();
     
     // Start date = Wed 20 january 2016 7:00 GMT
-    Date startDate = new Date(1453273200000L);
+    Date startDate = createDate(2016, 0, 20, 7, 0, 0); 
+    logger.info("Test start date = " + startDate);
     processEngine.getProcessEngineConfiguration().getClock().setCurrentTime(startDate);
     
     final RepositoryService repositoryService = processEngine.getRepositoryService();
@@ -63,9 +67,10 @@ public class AsyncExecutorQueueOverflowTest {
     
     Assert.assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
     
-    // Move date to Monday 9:01, triggering all timers
-    Date mondayMorningDate = new Date(1453280460000L);
+    // Move date to Weds 9:01, triggering all timers
+    Date mondayMorningDate = createDate(2016, 0, 20, 9, 1, 0); 
     processEngine.getProcessEngineConfiguration().getClock().setCurrentTime(mondayMorningDate);
+    logger.info("Changed the process engine clock to " + processEngine.getProcessEngineConfiguration().getClock().getCurrentTime());
     
     boolean allJobsProcessed = false;
     Date waitTimeStartDate = new Date(); 
@@ -106,6 +111,17 @@ public class AsyncExecutorQueueOverflowTest {
     config.setDataSource(dataSource);
 
     return config.buildProcessEngine();  
+  }
+  
+  protected static Date createDate(int year, int month, int day, int hour, int minute, int seconds) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.YEAR, 2016);
+    calendar.set(Calendar.MONTH, month);
+    calendar.set(Calendar.DAY_OF_MONTH, day);
+    calendar.set(Calendar.HOUR_OF_DAY, hour);
+    calendar.set(Calendar.MINUTE, minute);
+    calendar.set(Calendar.SECOND, seconds);
+    return calendar.getTime();
   }
   
 }
