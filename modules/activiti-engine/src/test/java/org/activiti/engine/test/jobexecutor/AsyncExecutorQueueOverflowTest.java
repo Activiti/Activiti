@@ -13,7 +13,6 @@
 package org.activiti.engine.test.jobexecutor;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
@@ -24,6 +23,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This test specifically overflows the job queue used by the async executor.
@@ -33,8 +34,10 @@ import org.junit.Test;
  * @author Joram Barrez
  */
 public class AsyncExecutorQueueOverflowTest {
-
-protected static DataSource dataSource;
+  
+  private static final Logger logger = LoggerFactory.getLogger(AsyncExecutorQueueOverflowTest.class);
+  
+  protected static DataSource dataSource;
   
   @Test
   public void testQueueOverflow() throws Exception {
@@ -72,6 +75,7 @@ protected static DataSource dataSource;
       allJobsProcessed = count == nrOfProcessInstances; 
       
       if (!allJobsProcessed) {
+        logger.info("Waiting a bit longer, not all jobs have been finished. Current count = " + count);
         Thread.sleep(1000L);
       }
       
