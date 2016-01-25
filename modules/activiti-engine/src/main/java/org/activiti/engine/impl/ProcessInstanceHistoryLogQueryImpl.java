@@ -110,6 +110,12 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 			List<HistoricVariableInstance> variables = commandContext.getHistoricVariableInstanceEntityManager()
 					.findHistoricVariableInstancesByQueryCriteria(
 							new HistoricVariableInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
+			
+			// Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
+			for (HistoricVariableInstance historicVariableInstance : variables) {
+				historicVariableInstance.getValue();
+			}
+			
 			processInstanceHistoryLog.addHistoricData(variables);
 		}
 		

@@ -44,7 +44,19 @@ public class ExecuteAsyncRunnable implements Runnable {
 	}
 
 	public void run() {
+	  boolean lockNotNeededOrSuccess = lockJobIfNeeded();
 	  
+	  if (lockNotNeededOrSuccess) {
+	  	executeJob();
+	  	unlockJobIfNeeded();
+	  }
+	}
+
+	/**
+	 * Returns true if lock succeeded, or no lock was needed.
+	 * Returns false if locking was unsuccessfull. 
+	 */
+	protected boolean lockJobIfNeeded() {
 	  try {
   		if (job.isExclusive()) {
   	    commandExecutor.execute(new LockExclusiveJobCmd(job));
@@ -61,11 +73,16 @@ public class ExecuteAsyncRunnable implements Runnable {
       		return null;
       	}
       });
-      return;
+      
+      return false;
     
 		}
-		
-		try {
+	  
+	  return true;
+  }
+
+	protected void executeJob() {
+	  try {
 			commandExecutor.execute(new ExecuteAsyncJobCmd(job));
 			
 		} catch (final ActivitiOptimisticLockingException e) {
@@ -87,8 +104,10 @@ public class ExecuteAsyncRunnable implements Runnable {
       String message = "Job " + job.getId() + " failed";
       log.error(message, exception);
     }
-		
-		try {
+  }
+
+	protected void unlockJobIfNeeded() {
+	  try {
 			if (job.isExclusive()) {
 			  commandExecutor.execute(new UnlockExclusiveJobCmd(job));
 			}
@@ -102,13 +121,10 @@ public class ExecuteAsyncRunnable implements Runnable {
             "Exception message: {}", optimisticLockingException.getMessage());
       }
       
-      return;
-    
     } catch (Throwable t) {
       log.error("Error while unlocking exclusive job " + job.getId(), t);
-      return;
     }
-	}
+  }
 	
 	protected void handleFailedJob(final Throwable exception) {
 	  commandExecutor.execute(new Command<Void>() {

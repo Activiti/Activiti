@@ -158,6 +158,12 @@
     font-size: 17px;
 }
 
+.ui-draggable.stencil-item.stencil-item-dragged {
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 
 /* Modeling Canvas
 -------------------------------- */
