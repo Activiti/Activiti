@@ -242,6 +242,10 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U> extends ListQueryP
       return orderBy;
     }
   }
+  
+  public String getOrderByColumns() {
+      return getOrderBy();
+  }
 
   public String getDatabaseType() {
     return databaseType;

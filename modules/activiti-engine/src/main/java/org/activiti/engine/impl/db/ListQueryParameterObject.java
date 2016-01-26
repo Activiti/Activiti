@@ -71,6 +71,10 @@ public class ListQueryParameterObject {
     // the default order column
     return "RES.ID_ asc";
   }
+  
+  public String getOrderByColumns() {
+      return getOrderBy();
+  }
 
   public void setDatabaseType(String databaseType) {
     this.databaseType = databaseType;

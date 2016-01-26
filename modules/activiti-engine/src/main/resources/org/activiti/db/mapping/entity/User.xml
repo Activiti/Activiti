@@ -30,7 +30,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertUser_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertUser" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="user" index="index">
         INTO ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_) VALUES 
@@ -137,23 +137,7 @@
   </sql>
 
   <select id="selectUserByNativeQuery" parameterType="java.util.Map" resultMap="userResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBefore}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
-  </select>
-
-  <select id="selectUserByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="userResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBeforeNativeQuery}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectUserCountByNativeQuery" parameterType="java.util.Map" resultType="long">

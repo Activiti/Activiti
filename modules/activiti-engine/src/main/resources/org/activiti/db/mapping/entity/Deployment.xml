@@ -23,7 +23,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertDeployment_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertDeployment" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="deployment" index="index">
         into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_) VALUES 
@@ -125,7 +125,7 @@
   </select>
 
   <!-- mysql specific -->
-  <select id="selectDeploymentsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+  <select id="selectDeploymentsByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
@@ -134,29 +134,13 @@
   </select>
   
   <!-- mysql specific -->
-  <select id="selectDeploymentCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+  <select id="selectDeploymentCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>
 
   <select id="selectDeploymentByNativeQuery" parameterType="java.util.Map" resultMap="deploymentResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBefore}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
-  </select>
-
-  <select id="selectDeploymentByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="deploymentResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBeforeNativeQuery}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectDeploymentCountByNativeQuery" parameterType="java.util.Map" resultType="long">

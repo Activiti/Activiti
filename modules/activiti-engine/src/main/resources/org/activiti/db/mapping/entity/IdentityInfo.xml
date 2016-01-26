@@ -15,7 +15,7 @@
       #{type ,jdbcType=VARCHAR},
       #{key ,jdbcType=VARCHAR},
       #{value ,jdbcType=VARCHAR},
-      #{passwordBytes ,jdbcType=BLOB},
+      #{passwordBytes ,jdbcType=${blobType}},
       #{parentId ,jdbcType=VARCHAR}
     )
   </insert>
@@ -35,7 +35,7 @@
       </foreach>
   </insert>
 
-  <insert id="bulkInsertIdentityInfo_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertIdentityInfo" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="identityInfo" index="index">
         INTO ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_) VALUES 
@@ -45,56 +45,18 @@
            #{identityInfo.type ,jdbcType=VARCHAR},
            #{identityInfo.key ,jdbcType=VARCHAR},
            #{identityInfo.value ,jdbcType=VARCHAR},
-           #{identityInfo.passwordBytes ,jdbcType=BLOB},
+           #{identityInfo.passwordBytes ,jdbcType=${blobType}},
            #{identityInfo.parentId ,jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
   </insert>
 
-   <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl">
-    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
-    values (
-      #{id ,jdbcType=VARCHAR},
-      1,
-      #{userId ,jdbcType=VARCHAR},
-      #{type ,jdbcType=VARCHAR},
-      #{key ,jdbcType=VARCHAR},
-      #{value ,jdbcType=VARCHAR},
-      #{passwordBytes ,jdbcType=BINARY},
-      #{parentId ,jdbcType=VARCHAR}
-    )
-  </insert>
-
-  <insert id="bulkInsertIdentityInfo_postgres" parameterType="java.util.List">
-    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
-    values 
-      <foreach collection="list" item="identityInfo" index="index" separator=",">
-        (#{identityInfo.id ,jdbcType=VARCHAR},
-         1,
-         #{identityInfo.userId ,jdbcType=VARCHAR},
-         #{identityInfo.type ,jdbcType=VARCHAR},
-         #{identityInfo.key ,jdbcType=VARCHAR},
-         #{identityInfo.value ,jdbcType=VARCHAR},
-         #{identityInfo.passwordBytes ,jdbcType=BINARY},
-         #{identityInfo.parentId ,jdbcType=VARCHAR})
-      </foreach>
-  </insert>
-  
   <!-- INFO UPDATE -->
   <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl">
     update ${prefix}ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
-        PASSWORD_ = #{passwordBytes ,jdbcType=BLOB}
-    where ID_ = #{id}
-      and REV_ = #{revision}
-  </update>
-  
-  <update id="updateIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl">
-    update ${prefix}ACT_ID_INFO 
-    set REV_ = #{revisionNext ,jdbcType=INTEGER},
-        VALUE_ = #{value ,jdbcType=VARCHAR},
-        PASSWORD_ = #{passwordBytes ,jdbcType=BINARY}
+        PASSWORD_ = #{passwordBytes ,jdbcType=${blobType}}
     where ID_ = #{id}
       and REV_ = #{revision}
   </update>
@@ -115,18 +77,7 @@
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="value" column="VALUE_" jdbcType="VARCHAR" />
-    <result property="passwordBytes" column="PASSWORD_" jdbcType="BLOB" />
-    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
-  </resultMap>
-  
-  <resultMap id="identityInfoResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
-    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
-    <result property="key" column="KEY_" jdbcType="VARCHAR" />
-    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
-    <result property="passwordBytes" column="PASSWORD_" jdbcType="BINARY" />
+    <result property="passwordBytes" column="PASSWORD_" jdbcType="${blobType}" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
@@ -136,18 +87,7 @@
     select * from ${prefix}ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectIdentityInfoById_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ${prefix}ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
-  </select>
-  
   <select id="selectIdentityInfoByUserIdAndKey" parameterType="map" resultMap="identityInfoResultMap">
-    select * from ${prefix}ACT_ID_INFO 
-    where USER_ID_ = #{userId,jdbcType=VARCHAR}
-      and KEY_ =  #{key,jdbcType=VARCHAR}
-      and PARENT_ID_ is null
-  </select>
-  
-   <select id="selectIdentityInfoByUserIdAndKey_postgres" parameterType="map" resultMap="identityInfoResultMap_postgres">
     select * from ${prefix}ACT_ID_INFO 
     where USER_ID_ = #{userId,jdbcType=VARCHAR}
       and KEY_ =  #{key,jdbcType=VARCHAR}
@@ -165,17 +105,8 @@
     select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectIdentityInfoByUserId_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{parameter,jdbcType=VARCHAR}
-  </select>
-
   <select id="selectIdentityInfoDetails" parameterType="string" resultMap="identityInfoResultMap">
     select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectIdentityInfoDetails_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
-    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parameter,jdbcType=VARCHAR}
-  </select>
-  
-  
 </mapper>

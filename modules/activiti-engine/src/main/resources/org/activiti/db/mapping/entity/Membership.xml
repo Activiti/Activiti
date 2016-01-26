@@ -23,7 +23,7 @@
     </foreach>
   </insert>
 
-  <insert id="bulkInsertMembership_oracle" parameterType="java.util.List">
+  <insert id="bulkInsertMembership" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="membership" index="index">
       INTO ${prefix}ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_) VALUES  
