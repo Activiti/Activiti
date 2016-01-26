@@ -840,6 +840,7 @@
                 <exclude>**/HistoricProcessInstanceQueryVersionTest.java</exclude>
                 <exclude>**/NonCascadeDeleteTest.java</exclude>
                 <exclude>**/HistoricProcessInstanceQueryAndWithExceptionTest.java</exclude>
+                <exclude>**/HistoricJPAVariableTest.java</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
             </configuration>
