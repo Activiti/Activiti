@@ -193,4 +193,12 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     getDbSqlSession().update("updateJobTenantIdForDeployment", params);
   }
   
+  @Override
+  public void unlockJob(String jobId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("id", jobId);
+    params.put("dueDate", new Date(getProcessEngineConfiguration().getClock().getCurrentTime().getTime()));
+    getDbSqlSession().update("unlockJob", params);
+  }
+  
 }

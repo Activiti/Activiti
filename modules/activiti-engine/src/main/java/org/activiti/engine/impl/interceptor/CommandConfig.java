@@ -23,6 +23,11 @@ public class CommandConfig {
     this.contextReusePossible = contextReusePossible;
     this.propagation = TransactionPropagation.REQUIRED;
   }
+  
+  public CommandConfig(boolean contextReusePossible, TransactionPropagation transactionPropagation) {
+    this.contextReusePossible = contextReusePossible;
+    this.propagation = transactionPropagation;
+  }
 
   protected CommandConfig(CommandConfig commandConfig) {
     this.contextReusePossible = commandConfig.contextReusePossible;

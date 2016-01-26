@@ -147,7 +147,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     // No outgoing found. Ending the execution
     if (outgoingSequenceFlow.size() == 0) {
       if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
-        logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
+        logger.debug("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
         
         if (flowNode.getSubProcess() != null && flowNode.getSubProcess() instanceof EventSubProcess) {
           

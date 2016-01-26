@@ -71,4 +71,6 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
 
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
   
+  void unlockJob(String jobId);
+  
 }
