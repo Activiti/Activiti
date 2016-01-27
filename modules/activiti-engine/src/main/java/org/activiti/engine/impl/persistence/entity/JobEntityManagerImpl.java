@@ -263,6 +263,11 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
     jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
   }
+  
+  @Override
+  public void unlockJob(String jobId) {
+    jobDataManager.unlockJob(jobId);
+  }
 
   @Override
   public void delete(JobEntity jobEntity) {

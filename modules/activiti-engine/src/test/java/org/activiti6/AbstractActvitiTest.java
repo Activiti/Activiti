@@ -22,6 +22,8 @@ import org.h2.tools.Server;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parent class for internal Activiti tests.
@@ -33,6 +35,8 @@ import org.junit.Rule;
  * @author Joram Barrez
  */
 public class AbstractActvitiTest {
+  
+  private static final Logger logger = LoggerFactory.getLogger(AbstractActvitiTest.class);
 
   public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
 
@@ -120,7 +124,7 @@ public class AbstractActvitiTest {
       server.start();
 
     } catch (SQLException e) {
-      throw new ActivitiException("Could not start H2 web app", e);
+      logger.warn("Could not start H2 webapp", e);
     }
   }
 

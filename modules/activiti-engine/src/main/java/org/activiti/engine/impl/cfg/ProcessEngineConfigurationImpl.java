@@ -590,6 +590,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * {@link DefaultAsyncJobExecutor}).
    */
   protected int asyncExecutorDefaultAsyncJobAcquireWaitTime = 10 * 1000;
+  
+  /**
+   * The time (in milliseconds) the async job (both timer and async continuations) acquisition thread will 
+   * wait when the queueu is full to execute the next query. By default set to 0 (for backwards compatibility)
+   */
+  protected int asyncExecutorDefaultQueueSizeFullWaitTime = 0;
 
   /**
    * When a job is acquired, it is locked so other async executors can't lock
@@ -1841,6 +1847,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         // Acquisition wait time
         defaultAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(asyncExecutorTimerJobAcquireWaitTime);
         defaultAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(asyncExecutorDefaultAsyncJobAcquireWaitTime);
+        
+        // Queue full wait time
+        defaultAsyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(asyncExecutorDefaultQueueSizeFullWaitTime);
         
         // Job locking
         defaultAsyncExecutor.setTimerLockTimeInMillis(asyncExecutorTimerLockTimeInMillis);
@@ -3557,4 +3566,150 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.activiti5TypedEventListeners = activiti5TypedEventListeners;
     return this;
   }
+
+  public int getAsyncExecutorCorePoolSize() {
+    return asyncExecutorCorePoolSize;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorCorePoolSize(int asyncExecutorCorePoolSize) {
+    this.asyncExecutorCorePoolSize = asyncExecutorCorePoolSize;
+    return this;
+  }
+
+  public int getAsyncExecutorMaxPoolSize() {
+    return asyncExecutorMaxPoolSize;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorMaxPoolSize(int asyncExecutorMaxPoolSize) {
+    this.asyncExecutorMaxPoolSize = asyncExecutorMaxPoolSize;
+    return this;
+  }
+
+  public long getAsyncExecutorThreadKeepAliveTime() {
+    return asyncExecutorThreadKeepAliveTime;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorThreadKeepAliveTime(long asyncExecutorThreadKeepAliveTime) {
+    this.asyncExecutorThreadKeepAliveTime = asyncExecutorThreadKeepAliveTime;
+    return this;
+  }
+
+  public int getAsyncExecutorThreadPoolQueueSize() {
+    return asyncExecutorThreadPoolQueueSize;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorThreadPoolQueueSize(int asyncExecutorThreadPoolQueueSize) {
+    this.asyncExecutorThreadPoolQueueSize = asyncExecutorThreadPoolQueueSize;
+    return this;
+  }
+
+  public BlockingQueue<Runnable> getAsyncExecutorThreadPoolQueue() {
+    return asyncExecutorThreadPoolQueue;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorThreadPoolQueue(BlockingQueue<Runnable> asyncExecutorThreadPoolQueue) {
+    this.asyncExecutorThreadPoolQueue = asyncExecutorThreadPoolQueue;
+    return this;
+  }
+
+  public long getAsyncExecutorSecondsToWaitOnShutdown() {
+    return asyncExecutorSecondsToWaitOnShutdown;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorSecondsToWaitOnShutdown(long asyncExecutorSecondsToWaitOnShutdown) {
+    this.asyncExecutorSecondsToWaitOnShutdown = asyncExecutorSecondsToWaitOnShutdown;
+    return this;
+  }
+
+  public int getAsyncExecutorMaxTimerJobsPerAcquisition() {
+    return asyncExecutorMaxTimerJobsPerAcquisition;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorMaxTimerJobsPerAcquisition(int asyncExecutorMaxTimerJobsPerAcquisition) {
+    this.asyncExecutorMaxTimerJobsPerAcquisition = asyncExecutorMaxTimerJobsPerAcquisition;
+    return this;
+  }
+
+  public int getAsyncExecutorMaxAsyncJobsDuePerAcquisition() {
+    return asyncExecutorMaxAsyncJobsDuePerAcquisition;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorMaxAsyncJobsDuePerAcquisition(int asyncExecutorMaxAsyncJobsDuePerAcquisition) {
+    this.asyncExecutorMaxAsyncJobsDuePerAcquisition = asyncExecutorMaxAsyncJobsDuePerAcquisition;
+    return this;
+  }
+
+  public int getAsyncExecutorTimerJobAcquireWaitTime() {
+    return asyncExecutorTimerJobAcquireWaitTime;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorTimerJobAcquireWaitTime(int asyncExecutorTimerJobAcquireWaitTime) {
+    this.asyncExecutorTimerJobAcquireWaitTime = asyncExecutorTimerJobAcquireWaitTime;
+    return this;
+  }
+
+  public int getAsyncExecutorDefaultAsyncJobAcquireWaitTime() {
+    return asyncExecutorDefaultAsyncJobAcquireWaitTime;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorDefaultAsyncJobAcquireWaitTime(int asyncExecutorDefaultAsyncJobAcquireWaitTime) {
+    this.asyncExecutorDefaultAsyncJobAcquireWaitTime = asyncExecutorDefaultAsyncJobAcquireWaitTime;
+    return this;
+  }
+
+  public int getAsyncExecutorDefaultQueueSizeFullWaitTime() {
+    return asyncExecutorDefaultQueueSizeFullWaitTime;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorDefaultQueueSizeFullWaitTime(int asyncExecutorDefaultQueueSizeFullWaitTime) {
+    this.asyncExecutorDefaultQueueSizeFullWaitTime = asyncExecutorDefaultQueueSizeFullWaitTime;
+    return this;
+  }
+
+  public String getAsyncExecutorLockOwner() {
+    return asyncExecutorLockOwner;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorLockOwner(String asyncExecutorLockOwner) {
+    this.asyncExecutorLockOwner = asyncExecutorLockOwner;
+    return this;
+  }
+
+  public int getAsyncExecutorTimerLockTimeInMillis() {
+    return asyncExecutorTimerLockTimeInMillis;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorTimerLockTimeInMillis(int asyncExecutorTimerLockTimeInMillis) {
+    this.asyncExecutorTimerLockTimeInMillis = asyncExecutorTimerLockTimeInMillis;
+    return this;
+  }
+
+  public int getAsyncExecutorAsyncJobLockTimeInMillis() {
+    return asyncExecutorAsyncJobLockTimeInMillis;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorAsyncJobLockTimeInMillis(int asyncExecutorAsyncJobLockTimeInMillis) {
+    this.asyncExecutorAsyncJobLockTimeInMillis = asyncExecutorAsyncJobLockTimeInMillis;
+    return this;
+  }
+
+  public int getAsyncExecutorLockRetryWaitTimeInMillis() {
+    return asyncExecutorLockRetryWaitTimeInMillis;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorLockRetryWaitTimeInMillis(int asyncExecutorLockRetryWaitTimeInMillis) {
+    this.asyncExecutorLockRetryWaitTimeInMillis = asyncExecutorLockRetryWaitTimeInMillis;
+    return this;
+  }
+
+  public ExecuteAsyncRunnableFactory getAsyncExecutorExecuteAsyncRunnableFactory() {
+    return asyncExecutorExecuteAsyncRunnableFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorExecuteAsyncRunnableFactory(ExecuteAsyncRunnableFactory asyncExecutorExecuteAsyncRunnableFactory) {
+    this.asyncExecutorExecuteAsyncRunnableFactory = asyncExecutorExecuteAsyncRunnableFactory;
+    return this;
+  }
+  
+  
 }
