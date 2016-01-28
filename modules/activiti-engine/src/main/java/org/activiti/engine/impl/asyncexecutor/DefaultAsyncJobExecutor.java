@@ -138,7 +138,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   }
  
   protected void unlockJob(final JobEntity job, CommandContext commandContext) {
-    commandContext.getJobEntityManager().unlockJob(job.getId());
+    commandContext.getJobEntityManager().unacquireJob(job.getId());
   }
   
   /** Starts the async executor */
