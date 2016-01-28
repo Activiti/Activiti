@@ -415,6 +415,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int asyncExecutorDefaultAsyncJobAcquireWaitTime = 10 * 1000;
   
   /**
+   * The time (in milliseconds) the async job (both timer and async continuations) acquisition thread will 
+   * wait when the queueu is full to execute the next query. By default set to 0 (for backwards compatibility)
+   */
+  protected int asyncExecutorDefaultQueueSizeFullWaitTime = 0;
+  
+  /**
    * When a job is acquired, it is locked so other async executors can't lock and execute it.
    * While doing this, the 'name' of the lock owner is written into a column of the job.
    * 
@@ -1383,6 +1389,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         defaultAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(asyncExecutorTimerJobAcquireWaitTime);
         defaultAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(asyncExecutorDefaultAsyncJobAcquireWaitTime);
         
+        // Queue full wait time
+        defaultAsyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(asyncExecutorDefaultQueueSizeFullWaitTime);
+        
         // Job locking
         defaultAsyncExecutor.setTimerLockTimeInMillis(asyncExecutorTimerLockTimeInMillis);
         defaultAsyncExecutor.setAsyncJobLockTimeInMillis(asyncExecutorAsyncJobLockTimeInMillis);
@@ -2065,8 +2074,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 		this.asyncExecutorDefaultAsyncJobAcquireWaitTime = asyncExecutorDefaultAsyncJobAcquireWaitTime;
 		return this;
 	}
+	
+	public int getAsyncExecutorDefaultQueueSizeFullWaitTime() {
+    return asyncExecutorDefaultQueueSizeFullWaitTime;
+  }
 
-	public String getAsyncExecutorLockOwner() {
+  public ProcessEngineConfigurationImpl setAsyncExecutorDefaultQueueSizeFullWaitTime(int asyncExecutorDefaultQueueSizeFullWaitTime) {
+    this.asyncExecutorDefaultQueueSizeFullWaitTime = asyncExecutorDefaultQueueSizeFullWaitTime;
+    return this;
+  }
+
+  public String getAsyncExecutorLockOwner() {
 		return asyncExecutorLockOwner;
 	}
 
