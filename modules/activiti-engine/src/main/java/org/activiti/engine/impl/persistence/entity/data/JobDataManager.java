@@ -61,6 +61,6 @@ public interface JobDataManager extends DataManager<JobEntity> {
 
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
   
-  void unlockJob(String jobId);
+  void unacquireJob(String jobId);
 
 }

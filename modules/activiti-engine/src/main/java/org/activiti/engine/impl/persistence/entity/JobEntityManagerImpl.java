@@ -265,8 +265,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   @Override
-  public void unlockJob(String jobId) {
-    jobDataManager.unlockJob(jobId);
+  public void unacquireJob(String jobId) {
+    jobDataManager.unacquireJob(jobId);
   }
 
   @Override

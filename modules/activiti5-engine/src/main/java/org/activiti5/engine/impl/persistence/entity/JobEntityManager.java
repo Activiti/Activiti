@@ -89,6 +89,8 @@ public class JobEntityManager extends AbstractManager {
     }
   }
   
+  /*"Not used anymore. Will be removed in a future release." */
+  @Deprecated
   public void retryAsyncJob(JobEntity job) {
     AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
     try {
@@ -223,11 +225,11 @@ public class JobEntityManager extends AbstractManager {
      return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionId", params);
   }
   
-  public void unlockJob(String jobId) {
+  public void unacquireJob(String jobId) {
     Map<String, Object> params = new HashMap<String, Object>(2);
     params.put("id", jobId);
     params.put("dueDate", new Date(getProcessEngineConfiguration().getClock().getCurrentTime().getTime()));
-    getDbSqlSession().update("unlockJob", params);
+    getDbSqlSession().update("unacquireJob", params);
   }
 
   public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {

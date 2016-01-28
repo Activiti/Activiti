@@ -6,6 +6,7 @@ import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti5.engine.impl.cmd.LockExclusiveJobCmd;
 import org.activiti5.engine.impl.cmd.UnlockExclusiveJobCmd;
+import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandConfig;
 import org.activiti5.engine.impl.interceptor.CommandContext;
@@ -27,15 +28,10 @@ public class AsyncJobUtil {
       
     } catch (Throwable lockException) { 
       if (log.isDebugEnabled()) {
-        log.debug("Exception during exclusive job acquisition. Retrying job.", lockException.getMessage());
+        log.debug("Could not lock exclusive job. Unlocking job so it can be acquired again. Catched exception: " + lockException.getMessage());
       }
       
-      commandExecutor.execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          commandContext.getJobEntityManager().retryAsyncJob(job);
-          return null;
-        }
-      });
+      unacquireJob(commandExecutor, job);
       return;
     
     }
@@ -82,6 +78,20 @@ public class AsyncJobUtil {
     } catch (Throwable t) {
       log.error("Error while unlocking exclusive job " + job.getId(), t);
       return;
+    }
+  }
+  
+  protected static void unacquireJob(final CommandExecutor commandExecutor, final JobEntity job) {
+    CommandContext commandContext = Context.getCommandContext();
+    if (commandContext != null) {
+      commandContext.getJobEntityManager().unacquireJob(job.getId());
+    } else {
+      commandExecutor.execute(new Command<Void>() {
+        public Void execute(CommandContext commandContext) {
+          commandContext.getJobEntityManager().unacquireJob(job.getId());
+          return null;
+        }
+      });
     }
   }
   

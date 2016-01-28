@@ -108,11 +108,11 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
         
         CommandContext commandContext = Context.getCommandContext();
         if (commandContext != null) {
-          unlockJob(job, commandContext);
+          unacquireJob(job, commandContext);
         } else {
           commandExecutor.execute(new Command<Void>() {
             public Void execute(CommandContext commandContext) {
-              unlockJob(job, commandContext);
+              unacquireJob(job, commandContext);
               return null;
             }
           });
@@ -137,8 +137,8 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     }
   }
  
-  protected void unlockJob(final JobEntity job, CommandContext commandContext) {
-    commandContext.getJobEntityManager().unlockJob(job.getId());
+  protected void unacquireJob(final JobEntity job, CommandContext commandContext) {
+    commandContext.getJobEntityManager().unacquireJob(job.getId());
   }
   
   /** Starts the async executor */
