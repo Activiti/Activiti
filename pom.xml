@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.20.0-SNAPSHOT</version>
+  <version>5.19.0.2</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
@@ -795,6 +795,9 @@
                 <goals>
                   <goal>jar</goal>
                 </goals>
+                <configuration>
+                  <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -939,6 +942,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
 					</execution>
 				</executions>
 			</plugin>
