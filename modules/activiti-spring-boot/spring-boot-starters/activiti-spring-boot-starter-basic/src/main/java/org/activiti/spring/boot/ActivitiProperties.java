@@ -15,10 +15,8 @@ package org.activiti.spring.boot;
 import java.util.Arrays;
 import java.util.List;
 
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Josh Long
@@ -42,6 +40,9 @@ public class ActivitiProperties {
   private boolean mailServerUseTls;
   private String databaseSchemaUpdate = "true";
   private String databaseSchema;
+  private boolean isDbIdentityUsed = true;
+  private boolean isDbHistoryUsed = true;
+  private HistoryLevel historyLevel = HistoryLevel.AUDIT;
   private String processDefinitionLocationPrefix = "classpath:/processes/";
   private List<String> processDefinitionLocationSuffixes = Arrays.asList("**.bpmn20.xml", "**.bpmn");
   private String restApiMapping = "/api/*";
@@ -136,6 +137,30 @@ public class ActivitiProperties {
 
   public void setDatabaseSchema(String databaseSchema) {
     this.databaseSchema = databaseSchema;
+  }
+
+  public boolean isDbIdentityUsed() {
+    return isDbIdentityUsed;
+  }
+
+  public void setDbIdentityUsed(boolean isDbIdentityUsed) {
+    this.isDbIdentityUsed = isDbIdentityUsed;
+  }
+
+  public boolean isDbHistoryUsed() {
+    return isDbHistoryUsed;
+  }
+
+  public void setDbHistoryUsed(boolean isDbHistoryUsed) {
+    this.isDbHistoryUsed = isDbHistoryUsed;
+  }
+
+  public HistoryLevel getHistoryLevel() {
+    return historyLevel;
+  }
+
+  public void setHistoryLevel(HistoryLevel historyLevel) {
+    this.historyLevel = historyLevel;
   }
 
   public String getProcessDefinitionLocationPrefix() {
