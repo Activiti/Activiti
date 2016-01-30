@@ -259,7 +259,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       }
 
       if (extensionElement.getElementText() != null) {
-        xtw.writeCharacters(extensionElement.getElementText());
+        xtw.writeCData(extensionElement.getElementText());
       } else {
         for (List<ExtensionElement> childElements : extensionElement.getChildElements().values()) {
           for (ExtensionElement childElement : childElements) {
