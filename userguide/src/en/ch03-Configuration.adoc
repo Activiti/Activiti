@@ -244,7 +244,7 @@ As an optional step, you can now delete the unused db.properties files in both t
 
 Configuration of the JNDI datasource will differ depending on what servlet container application you are using. The instructions below will work for Tomcat, but for other container applications, please refer to the documentation for your container app.
 
-If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.war). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
+If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.xml). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
 
 [source,xml,linenums]
 ----
@@ -522,14 +522,14 @@ As of version 5.13, Activiti supports Mapped Diagnostic Contexts feature of sl4j
 
 * processDefinition Id as mdcProcessDefinitionID
 * processInstance Id as mdcProcessInstanceID
-* execution Id as mdcexecutionId
+* execution Id as mdcExecutionId
 
 None of these information are logged by default. The logger can be configured to show them in desired format, extra to the usual logged messages. For example in log4j the following sample layout definition  causes the logger to show the above mentioned information:
 
 [source,properties,linenums]
 ----
- log4j.appender.consoleAppender.layout.ConversionPattern =ProcessDefinitionId=%X{mdcProcessDefinitionID}
-executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n"
+log4j.appender.consoleAppender.layout.ConversionPattern=ProcessDefinitionId=%X{mdcProcessDefinitionID}
+executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n
 ----
 
 This is useful where the systems are mission critical and logs should be seriously checked,  by means of a log analyzer for example.
