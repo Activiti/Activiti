@@ -22,7 +22,12 @@ public abstract class ValuedDataObject extends DataObject {
     }
   }
 
-  public boolean equals(ValuedDataObject otherObject) {
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    
+    ValuedDataObject otherObject = (ValuedDataObject) o;
 
     if (!otherObject.getItemSubjectRef().getStructureRef().equals(this.itemSubjectRef.getStructureRef()))
       return false;
