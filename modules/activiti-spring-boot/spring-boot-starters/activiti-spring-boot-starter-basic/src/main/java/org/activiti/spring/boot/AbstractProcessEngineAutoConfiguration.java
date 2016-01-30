@@ -46,6 +46,7 @@ import org.springframework.util.StringUtils;
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
  *
  * @author Josh Long
+ * @author Vedran Pavic
  */
 public abstract class AbstractProcessEngineAutoConfiguration
         extends AbstractProcessEngineConfiguration {
@@ -83,7 +84,9 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setDeploymentName(defaultText(activitiProperties.getDeploymentName(), conf.getDeploymentName()));
     conf.setDatabaseSchema(defaultText(activitiProperties.getDatabaseSchema(), conf.getDatabaseSchema()));
     conf.setDatabaseSchemaUpdate(defaultText(activitiProperties.getDatabaseSchemaUpdate(), conf.getDatabaseSchemaUpdate()));
-    
+    conf.setDbIdentityUsed(activitiProperties.isDbIdentityUsed());
+    conf.setDbHistoryUsed(activitiProperties.isDbHistoryUsed());
+
     conf.setJobExecutorActivate(activitiProperties.isJobExecutorActivate());
     conf.setAsyncExecutorEnabled(activitiProperties.isAsyncExecutorEnabled());
     conf.setAsyncExecutorActivate(activitiProperties.isAsyncExecutorActivate());
@@ -95,6 +98,8 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerDefaultFrom(activitiProperties.getMailServerDefaultFrom());
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
+
+    conf.setHistoryLevel(activitiProperties.getHistoryLevel());
 
     if (activitiProperties.getCustomMybatisMappers() != null) {
       conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
