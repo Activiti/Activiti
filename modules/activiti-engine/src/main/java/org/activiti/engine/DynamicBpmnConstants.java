@@ -41,4 +41,5 @@ public interface DynamicBpmnConstants {
   String LOCALIZATION_LANGUAGE = "language";
   String LOCALIZATION_NAME = "name";
   String LOCALIZATION_DESCRIPTION = "description";
+  String LOCALIZATION_DEFAULT_LANGUAGE = "default-language";
 }
