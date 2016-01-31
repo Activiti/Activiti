@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="Examples">
+  
+  <process id="localizeVariables" name="Localize Variables">
+    <dataObject id="dObj1" name="stringVar" itemSubjectRef="xsd:string">
+        <documentation>stringVar 'default' description</documentation>
+    
+        <extensionElements>
+            <activiti:localization locale="es" name="stringVar 'es' Name">
+            <activiti:documentation>stringVar 'es' Description</activiti:documentation>
+            </activiti:localization>
+        </extensionElements>    
+    </dataObject>
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess1" />
+
+    <subProcess id="subprocess1" name="subprocess">
+      <dataObject id="dObj2" name="intVar" itemSubjectRef="xsd:int">
+          <documentation>intVar 'default' description</documentation>
+      
+          <extensionElements>
+              <activiti:localization locale="es" name="intVar 'es' Name">
+              <activiti:documentation>intVar 'es' Description</activiti:documentation>
+              </activiti:localization>
+          </extensionElements>    
+      </dataObject>
+          
+      <startEvent id="subStart" />
+      <sequenceFlow id="flow3" sourceRef="subStart" targetRef="theTask" />
+      
+      <userTask id="theTask" name="Schedule meeting" >
+        <documentation>
+          Schedule an engineering meeting for next week with the new hire.
+        </documentation>
+        <humanPerformer>
+          <resourceAssignmentExpression>
+            <formalExpression>kermit</formalExpression>
+          </resourceAssignmentExpression>
+        </humanPerformer>
+      </userTask>
+        
+      <sequenceFlow id="flow4" sourceRef="theTask" targetRef="subEnd" />
+      <endEvent id="subEnd" />
+    </subProcess>
+    
+    <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

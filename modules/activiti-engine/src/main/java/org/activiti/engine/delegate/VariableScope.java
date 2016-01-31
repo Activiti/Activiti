@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -25,23 +27,43 @@ public interface VariableScope {
 
   Map<String, Object> getVariables();
   
+  Map<String, VariableInstance> getVariableInstances();
+  
   Map<String, Object> getVariables(Collection<String> variableNames);
   
+  Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames);
+  
   Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables);
+  
+  Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables);
 
   Map<String, Object> getVariablesLocal();
   
- Map<String, Object> getVariablesLocal(Collection<String> variableNames);
+  Map<String, VariableInstance> getVariableInstancesLocal();
+  
+  Map<String, Object> getVariablesLocal(Collection<String> variableNames);
+  
+  Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames);
   
   Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables);
   
+  Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables);
+  
   Object getVariable(String variableName);
   
+  VariableInstance getVariableInstance(String variableName);
+  
   Object getVariable(String variableName, boolean fetchAllVariables);
+  
+  VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables);
 
   Object getVariableLocal(String variableName);
   
+  VariableInstance getVariableInstanceLocal(String variableName);
+  
   Object getVariableLocal(String variableName, boolean fetchAllVariables);
+  
+  VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables);
 
   <T> T getVariable(String variableName, Class<T> variableClass);
 
