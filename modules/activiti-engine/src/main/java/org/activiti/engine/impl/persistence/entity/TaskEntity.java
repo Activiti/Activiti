@@ -59,7 +59,7 @@ public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, H
   
   void setTaskDefinitionKey(String taskDefinitionKey);
   
-  Map<String, VariableInstanceEntity> getVariableInstances();
+  Map<String, VariableInstanceEntity> getVariableInstanceEntities();
 
   void forceUpdate();
   

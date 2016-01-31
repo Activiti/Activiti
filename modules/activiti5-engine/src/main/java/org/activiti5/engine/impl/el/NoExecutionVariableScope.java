@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 
 
 /**
@@ -117,6 +118,56 @@ public class NoExecutionVariableScope implements VariableScope {
   public Set<String> getVariableNamesLocal() {
     return null;
   }
+  
+  @Override
+  public Map<String, VariableInstance> getVariableInstances() {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames) {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal() {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames) {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstance(String variableName) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstanceLocal(String variableName) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
   public void setVariable(String variableName, Object value) {
     throw new UnsupportedOperationException("No execution active, no variables can be set");
@@ -191,5 +242,4 @@ public class NoExecutionVariableScope implements VariableScope {
   public void removeVariablesLocal(Collection<String> variableNames) {
     throw new UnsupportedOperationException("No execution active, no variables can be removed");
   }
-
 }

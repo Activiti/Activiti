@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti5.engine.impl.pvm.PvmActivity;
 import org.activiti5.engine.impl.pvm.PvmException;
@@ -865,6 +867,37 @@ public class ExecutionImpl implements
     return currentActivityName;
   }
 
+  public Map<String, VariableInstance> getVariableInstances() {
+    return null;
+  }
+  
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames) {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstancesLocal() {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames) {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  public VariableInstance getVariableInstance(String variableName) {
+    return null;
+  }
+
+  public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
   public void createVariableLocal(String variableName, Object value) {
   }
@@ -876,20 +909,28 @@ public class ExecutionImpl implements
     return null;
   }
   
+  public VariableInstanceEntity getVariableInstanceLocal(String variableName) {
+    return null;
+  }
+  
   @Override
   public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
   	return getVariableLocal(variableName); // No support for fetchAllVariables
   }
+  
+  public VariableInstanceEntity getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
-    @Override
-    public <T> T getVariable(String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariable(variableName));
-    }
+  @Override
+  public <T> T getVariable(String variableName, Class<T> variableClass) {
+      return variableClass.cast(getVariable(variableName));
+  }
 
-    @Override
-    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariableLocal(variableName));
-    }
+  @Override
+  public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+      return variableClass.cast(getVariableLocal(variableName));
+  }
 
   public Set<String> getVariableNames() {
     return null;
@@ -902,7 +943,6 @@ public class ExecutionImpl implements
   public Map<String, Object> getVariablesLocal() {
     return null;
   }
-  
   
   @Override
   public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {

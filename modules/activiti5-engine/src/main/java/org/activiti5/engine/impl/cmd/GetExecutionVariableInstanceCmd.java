@@ -10,21 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
+package org.activiti5.engine.impl.cmd;
 
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnConstants;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.util.Activiti5Util;
-import org.activiti.engine.runtime.Execution;
+import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.interceptor.Command;
+import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti5.engine.runtime.Execution;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -60,23 +58,17 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
     
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
     
     VariableInstance variableEntity = null;
-    if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      variableEntity = activiti5CompatibilityHandler.getExecutionVariableInstance(executionId, variableName, isLocal);
-      
-    } else {  
-      if (isLocal) {
-        variableEntity = execution.getVariableInstanceLocal(variableName, false);
-      } else {
-        variableEntity = execution.getVariableInstance(variableName, false);
-      }
+    if (isLocal) {
+      variableEntity = execution.getVariableInstanceLocal(variableName, false);
+    } else {
+      variableEntity = execution.getVariableInstance(variableName, false);
     }
 
     if (locale != null) {

@@ -12,9 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.impl.db.Entity;
-import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
@@ -22,42 +19,19 @@ import org.activiti.engine.impl.variable.VariableType;
  * @author Marcus Klimstra (CGI)
  * @author Joram Barrez
  */
-public interface VariableInstanceEntity extends ValueFields, Entity, HasRevision{
+public interface VariableInstanceEntity extends VariableInstance {
   
-  void setName(String name);
+  void setDeleted(boolean isDeleted);
 
+  boolean isDeleted();
+  
   void setExecution(ExecutionEntity execution);
 
   void forceUpdate();
 
-  void setDeleted(boolean isDeleted);
-
-  boolean isDeleted();
-
-  void setProcessInstanceId(String processInstanceId);
-
-  void setExecutionId(String executionId);
-
   ByteArrayRef getByteArrayRef();
-
-  Object getValue();
-
-  void setValue(Object value);
-
-  String getTypeName();
-
-  void setTypeName(String typeName);
 
   VariableType getType();
 
   void setType(VariableType type);
-
-  String getProcessInstanceId();
-
-  String getTaskId();
-
-  void setTaskId(String taskId);
-
-  String getExecutionId();
-
 }

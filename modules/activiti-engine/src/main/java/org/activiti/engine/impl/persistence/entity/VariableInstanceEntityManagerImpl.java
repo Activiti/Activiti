@@ -107,7 +107,7 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
 
   @Override
   public void deleteVariableInstanceByTask(TaskEntity task) {
-    Map<String, VariableInstanceEntity> variableInstances = task.getVariableInstances();
+    Map<String, VariableInstanceEntity> variableInstances = task.getVariableInstanceEntities();
     if (variableInstances != null) {
       for (VariableInstanceEntity variableInstance : variableInstances.values()) {
         delete(variableInstance);

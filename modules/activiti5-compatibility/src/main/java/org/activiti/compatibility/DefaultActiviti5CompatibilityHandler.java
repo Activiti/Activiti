@@ -47,6 +47,7 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -361,12 +362,38 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public VariableInstance getExecutionVariableInstance(String executionId, String variableName, boolean isLocal) {
+    try {
+      if (isLocal) {
+        return getProcessEngine().getRuntimeService().getVariableInstanceLocal(executionId, variableName);
+      } else {
+        return getProcessEngine().getRuntimeService().getVariableInstance(executionId, variableName);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
+  }
+  
   public Map<String, Object> getExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal) {
     try {
       if (isLocal) {
         return getProcessEngine().getRuntimeService().getVariablesLocal(executionId, variableNames);
       } else {
         return getProcessEngine().getRuntimeService().getVariables(executionId, variableNames);
+      }
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return null;
+    }
+  }
+  
+  public Map<String, VariableInstance> getExecutionVariableInstances(String executionId, Collection<String> variableNames, boolean isLocal) {
+    try {
+      if (isLocal) {
+        return getProcessEngine().getRuntimeService().getVariableInstancesLocal(executionId, variableNames);
+      } else {
+        return getProcessEngine().getRuntimeService().getVariableInstances(executionId, variableNames);
       }
     } catch (org.activiti5.engine.ActivitiException e) {
       handleActivitiException(e);

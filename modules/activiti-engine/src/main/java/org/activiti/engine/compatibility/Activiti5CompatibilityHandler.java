@@ -25,6 +25,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -80,7 +82,11 @@ public interface Activiti5CompatibilityHandler {
   
   Object getExecutionVariable(String executionId, String variableName, boolean isLocal);
   
+  VariableInstance getExecutionVariableInstance(String executionId, String variableName, boolean isLocal);
+  
   Map<String, Object> getExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal);
+  
+  Map<String, VariableInstance> getExecutionVariableInstances(String executionId, Collection<String> variableNames, boolean isLocal);
   
   void setExecutionVariables(String executionId, Map<String, ? extends Object> variables, boolean isLocal);
   

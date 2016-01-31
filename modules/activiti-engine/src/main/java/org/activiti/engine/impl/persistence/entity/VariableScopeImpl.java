@@ -74,9 +74,17 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public Map<String, Object> getVariables() {
     return collectVariables(new HashMap<String, Object>());
   }
+  
+  public Map<String, VariableInstance> getVariableInstances() {
+    return collectVariableInstances(new HashMap<String, VariableInstance>());
+  }
 
   public Map<String, Object> getVariables(Collection<String> variableNames) {
     return getVariables(variableNames, true);
+  }
+  
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames) {
+    return getVariableInstances(variableNames, true);
   }
 
   public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
@@ -123,6 +131,50 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     }
 
   }
+  
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+
+    Map<String, VariableInstance> requestedVariables = new HashMap<String, VariableInstance>();
+    Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
+
+    // The values in the fetch-cache will be more recent, so they can
+    // override any existing ones
+    for (String variableName : variableNames) {
+      if (usedVariablesCache.containsKey(variableName)) {
+        requestedVariables.put(variableName, usedVariablesCache.get(variableName));
+        variableNamesToFetch.remove(variableName);
+      }
+    }
+
+    if (fetchAllVariables == true) {
+
+      // getVariables() will go up the execution hierarchy, no need to do it here
+      // also, the cached values will already be applied too
+      Map<String, VariableInstance> allVariables = getVariableInstances();
+      for (String variableName : variableNamesToFetch) {
+        requestedVariables.put(variableName, allVariables.get(variableName));
+      }
+      return requestedVariables;
+
+    } else {
+
+      // Fetch variables on this scope
+      List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
+      for (VariableInstanceEntity variable : variables) {
+        requestedVariables.put(variable.getName(), variable);
+      }
+
+      // Go up if needed
+      VariableScope parent = getParentVariableScope();
+      if (parent != null) {
+        requestedVariables.putAll(parent.getVariableInstances(variableNamesToFetch, fetchAllVariables));
+      }
+
+      return requestedVariables;
+
+    }
+
+  }
 
   protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
     ensureVariableInstancesInitialized();
@@ -141,9 +193,31 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
     return variables;
   }
+  
+  protected Map<String, VariableInstance> collectVariableInstances(HashMap<String, VariableInstance> variables) {
+    ensureVariableInstancesInitialized();
+    VariableScopeImpl parentScope = getParentVariableScope();
+    if (parentScope != null) {
+      variables.putAll(parentScope.collectVariableInstances(variables));
+    }
+
+    for (VariableInstance variableInstance : variableInstances.values()) {
+      variables.put(variableInstance.getName(), variableInstance);
+    }
+
+    for (String variableName : usedVariablesCache.keySet()) {
+      variables.put(variableName, usedVariablesCache.get(variableName));
+    }
+
+    return variables;
+  }
 
   public Object getVariable(String variableName) {
     return getVariable(variableName, true);
+  }
+  
+  public VariableInstance getVariableInstance(String variableName) {
+    return getVariableInstance(variableName, true);
   }
 
   /**
@@ -155,23 +229,32 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
    * In case 'false' is used, only the specific variable will be fetched.
    */
   public Object getVariable(String variableName, boolean fetchAllVariables) {
+    Object value = null;
+    VariableInstance variable = getVariableInstance(variableName, fetchAllVariables);
+    if (variable != null) {
+      value = variable.getValue();
+    }
+    return value;
+  }
+  
+  public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
     if (fetchAllVariables == true) {
 
       // Check the local single-fetch cache
       if (usedVariablesCache.containsKey(variableName)) {
-        return usedVariablesCache.get(variableName).getValue();
+        return usedVariablesCache.get(variableName);
       }
 
       ensureVariableInstancesInitialized();
       VariableInstanceEntity variableInstance = variableInstances.get(variableName);
       if (variableInstance != null) {
-        return variableInstance.getValue();
+        return variableInstance;
       }
 
       // Go up the hierarchy
       VariableScope parentScope = getParentVariableScope();
       if (parentScope != null) {
-        return parentScope.getVariable(variableName, true);
+        return parentScope.getVariableInstance(variableName, true);
       }
 
       return null;
@@ -179,23 +262,23 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     } else {
 
       if (usedVariablesCache.containsKey(variableName)) {
-        return usedVariablesCache.get(variableName).getValue();
+        return usedVariablesCache.get(variableName);
       }
 
       if (variableInstances != null && variableInstances.containsKey(variableName)) {
-        return variableInstances.get(variableName).getValue();
+        return variableInstances.get(variableName);
       }
 
       VariableInstanceEntity variable = getSpecificVariable(variableName);
       if (variable != null) {
         usedVariablesCache.put(variableName, variable);
-        return variable.getValue();
+        return variable;
       }
 
       // Go up the hierarchy
       VariableScope parentScope = getParentVariableScope();
       if (parentScope != null) {
-        return parentScope.getVariable(variableName, false);
+        return parentScope.getVariableInstance(variableName, false);
       }
 
       return null;
@@ -208,19 +291,32 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public Object getVariableLocal(String variableName) {
     return getVariableLocal(variableName, true);
   }
+  
+  public VariableInstance getVariableInstanceLocal(String variableName) {
+    return getVariableInstanceLocal(variableName, true);
+  }
 
   public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
+    Object value = null;
+    VariableInstance variable = getVariableInstanceLocal(variableName, fetchAllVariables);
+    if (variable != null) {
+      value = variable.getValue();
+    }
+    return value;
+  }
+  
+  public VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
     if (fetchAllVariables == true) {
 
       if (usedVariablesCache.containsKey(variableName)) {
-        return usedVariablesCache.get(variableName).getValue();
+        return usedVariablesCache.get(variableName);
       }
 
       ensureVariableInstancesInitialized();
 
       VariableInstanceEntity variableInstance = variableInstances.get(variableName);
       if (variableInstance != null) {
-        return variableInstance.getValue();
+        return variableInstance;
       }
       return null;
 
@@ -229,21 +325,21 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       if (usedVariablesCache.containsKey(variableName)) {
         VariableInstanceEntity variable = usedVariablesCache.get(variableName);
         if (variable != null) {
-          return variable.getValue();
+          return variable;
         }
       }
 
       if (variableInstances != null && variableInstances.containsKey(variableName)) {
         VariableInstanceEntity variable = variableInstances.get(variableName);
         if (variable != null) {
-          return variableInstances.get(variableName).getValue();
+          return variableInstances.get(variableName);
         }
       }
 
       VariableInstanceEntity variable = getSpecificVariable(variableName);
       if (variable != null) {
         usedVariablesCache.put(variableName, variable);
-        return variable.getValue();
+        return variable;
       }
 
       return null;
@@ -310,9 +406,25 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     }
     return variables;
   }
+  
+  public Map<String, VariableInstance> getVariableInstancesLocal() {
+    Map<String, VariableInstance> variables = new HashMap<String, VariableInstance>();
+    ensureVariableInstancesInitialized();
+    for (VariableInstanceEntity variableInstance : variableInstances.values()) {
+      variables.put(variableInstance.getName(), variableInstance);
+    }
+    for (String variableName : usedVariablesCache.keySet()) {
+      variables.put(variableName, usedVariablesCache.get(variableName));
+    }
+    return variables;
+  }
 
   public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
     return getVariablesLocal(variableNames, true);
+  }
+  
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames) {
+    return getVariableInstancesLocal(variableNames, true);
   }
 
   public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
@@ -346,6 +458,38 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
     return requestedVariables;
   }
+  
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+    Map<String, VariableInstance> requestedVariables = new HashMap<String, VariableInstance>();
+
+    // The values in the fetch-cache will be more recent, so they can
+    // override any existing ones
+    Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
+    for (String variableName : variableNames) {
+      if (usedVariablesCache.containsKey(variableName)) {
+        requestedVariables.put(variableName, usedVariablesCache.get(variableName));
+        variableNamesToFetch.remove(variableName);
+      }
+    }
+
+    if (fetchAllVariables == true) {
+
+      Map<String, VariableInstance> allVariables = getVariableInstancesLocal();
+      for (String variableName : variableNamesToFetch) {
+        requestedVariables.put(variableName, allVariables.get(variableName));
+      }
+
+    } else {
+
+      List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
+      for (VariableInstanceEntity variable : variables) {
+        requestedVariables.put(variable.getName(), variable);
+      }
+
+    }
+
+    return requestedVariables;
+  }
 
   protected abstract List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames);
 
@@ -354,7 +498,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return variableInstances.keySet();
   }
 
-  public Map<String, VariableInstanceEntity> getVariableInstances() {
+  public Map<String, VariableInstanceEntity> getVariableInstanceEntities() {
     ensureVariableInstancesInitialized();
     return Collections.unmodifiableMap(variableInstances);
   }

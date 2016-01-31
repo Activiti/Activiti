@@ -21,6 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
@@ -28,7 +29,6 @@ import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.activiti.engine.runtime.VariableInstance;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -458,6 +458,17 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariables(String executionId);
+  
+  /**
+   * All variables visible from the given execution scope (including parent scopes).
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @return the variable instances or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, VariableInstance> getVariableInstances(String executionId);
 
   /**
    * All variables visible from the given execution scope (including parent scopes).
@@ -485,6 +496,18 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariablesLocal(String executionId);
+  
+  /**
+   * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
+   * {@link #getVariableInstancesLocal(String, Collection)} for better performance.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @return the variables or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, VariableInstance> getVariableInstancesLocal(String executionId);
 
   /**
    * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
@@ -514,6 +537,19 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariables(String executionId, Collection<String> variableNames);
+  
+  /**
+   * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
+   * 
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param variableNames
+   *          the collection of variable names that should be retrieved. 
+   * @return the variables or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);
 
   /**
    * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
@@ -544,6 +580,19 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames);
+  
+  /**
+   * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param variableNames
+   *          the collection of variable names that should be retrieved.
+   * @return the variables or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames);
 
   /**
    * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
@@ -575,6 +624,20 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Object getVariable(String executionId, String variableName);
+  
+  /**
+   * The variable. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
+   * name or when the value is set to null.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param variableName
+   *          name of variable, cannot be null.
+   * @return the variable or null if the variable is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  VariableInstance getVariableInstance(String executionId, String variableName);
 
   /**
    * The variable. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
@@ -620,6 +683,20 @@ public interface RuntimeService {
    * name or when the value is set to null.
    */
   Object getVariableLocal(String executionId, String variableName);
+  
+  /**
+   * The variable for an execution. Returns the variable when it is set for the execution (and not searching parent scopes). Returns null when no variable is found with the given
+   * name or when the value is set to null.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param variableName
+   *          name of variable, cannot be null.
+   * @return the variable or null if the variable is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  VariableInstance getVariableInstanceLocal(String executionId, String variableName);
 
   /**
    * The variable for an execution. Returns the variable when it is set for the execution (and not searching parent scopes). Returns null when no variable is found with the given

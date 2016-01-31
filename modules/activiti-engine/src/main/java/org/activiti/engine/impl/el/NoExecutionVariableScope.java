@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 
 /**
  * Variable-scope only used to resolve variables when NO execution is active but expression-resolving is needed. This occurs eg. when start-form properties have default's defined. Even though
@@ -104,6 +105,56 @@ public class NoExecutionVariableScope implements VariableScope {
   public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
     return null;
   }
+  
+  @Override
+  public Map<String, VariableInstance> getVariableInstances() {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames) {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal() {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames) {
+    return null;
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstance(String variableName) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstanceLocal(String variableName) {
+    return null;
+  }
+
+  @Override
+  public VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
   @SuppressWarnings("unchecked")
   public Set<String> getVariableNames() {
@@ -187,5 +238,4 @@ public class NoExecutionVariableScope implements VariableScope {
   public void removeVariablesLocal(Collection<String> variableNames) {
     throw new UnsupportedOperationException("No execution active, no variables can be removed");
   }
-
 }

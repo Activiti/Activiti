@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.db.BulkDeleteable;
 import org.activiti5.engine.impl.db.HasRevision;
@@ -28,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
  */
-public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
+public class VariableInstanceEntity implements VariableInstance, ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -36,6 +37,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected int revision;
 
   protected String name;
+  protected String localizedName;
+  protected String localizedDescription;
   protected VariableType type;
   protected String typeName;
 
@@ -199,6 +202,26 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   public String getName() {
     return name;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
+  
+  public String getLocalizedName() {
+    return localizedName;
+  }
+
+  public void setLocalizedName(String localizedName) {
+    this.localizedName = localizedName;
+  }
+
+  public String getLocalizedDescription() {
+    return localizedDescription;
+  }
+
+  public void setLocalizedDescription(String localizedDescription) {
+    this.localizedDescription = localizedDescription;
   }
 
   public String getTypeName() {

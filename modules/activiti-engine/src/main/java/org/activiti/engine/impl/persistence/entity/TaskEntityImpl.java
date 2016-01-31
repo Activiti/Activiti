@@ -523,7 +523,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return parentTaskId;
   }
 
-  public Map<String, VariableInstanceEntity> getVariableInstances() {
+  public Map<String, VariableInstanceEntity> getVariableInstanceEntities() {
     ensureVariableInstancesInitialized();
     return variableInstances;
   }

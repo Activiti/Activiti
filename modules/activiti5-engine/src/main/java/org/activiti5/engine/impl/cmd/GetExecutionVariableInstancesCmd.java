@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
+package org.activiti5.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -20,14 +20,12 @@ import java.util.Map.Entry;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnConstants;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.util.Activiti5Util;
-import org.activiti.engine.runtime.Execution;
+import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.interceptor.Command;
+import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti5.engine.runtime.Execution;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -62,35 +60,27 @@ public class GetExecutionVariableInstancesCmd implements Command<Map<String, Var
       throw new ActivitiIllegalArgumentException("executionId is null");
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
 
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
     
     Map<String, VariableInstance> variables = null;
-    
-    if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      variables = activiti5CompatibilityHandler.getExecutionVariableInstances(executionId, variableNames, isLocal);
-    
-    } else {
-
-      if (variableNames == null || variableNames.isEmpty()) {
-        // Fetch all
-        if (isLocal) {
-          variables = execution.getVariableInstancesLocal();
-        } else {
-          variables = execution.getVariableInstances();
-        }
-  
+    if (variableNames == null || variableNames.isEmpty()) {
+      // Fetch all
+      if (isLocal) {
+        variables = execution.getVariableInstancesLocal();
       } else {
-        // Fetch specific collection of variables
-        if (isLocal) {
-          variables = execution.getVariableInstancesLocal(variableNames, false);
-        } else {
-          variables = execution.getVariableInstances(variableNames, false);
-        }
+        variables = execution.getVariableInstances();
+      }
+
+    } else {
+      // Fetch specific collection of variables
+      if (isLocal) {
+        variables = execution.getVariableInstancesLocal(variableNames, false);
+      } else {
+        variables = execution.getVariableInstances(variableNames, false);
       }
     }
 
