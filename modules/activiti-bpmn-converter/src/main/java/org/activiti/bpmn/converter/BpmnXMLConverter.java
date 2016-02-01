@@ -545,7 +545,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     }
   }
 
-  private void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw) throws Exception {
 
     if (flowElement instanceof SubProcess) {
 
@@ -614,7 +614,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     }
   }
 
-  private void createXML(Artifact artifact, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void createXML(Artifact artifact, BpmnModel model, XMLStreamWriter xtw) throws Exception {
 
     BaseBpmnXMLConverter converter = convertersToXMLMap.get(artifact.getClass());
 
