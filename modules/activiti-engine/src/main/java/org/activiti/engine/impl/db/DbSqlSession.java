@@ -84,6 +84,8 @@ public class DbSqlSession implements Session {
   
   protected static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
   
+  protected static final String LAST_V5_VERSION = "5.99.0.0";
+  
   protected static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
   static {
 
@@ -115,10 +117,22 @@ public class DbSqlSession implements Session {
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.2"));
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.0"));
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.1"));
+    
+    
+    /*
+     * Version 5.18.0.1 is the latest v5 version in the list here, although if you would look at the v5 code,
+     * you'll see there are a few other releases afterwards.
+     * 
+     * The reasoning is as follows: after 5.18.0.1, no database changes were done anymore.
+     * And if there would be database changes, they would have been part of both 5.x _and_ 6.x upgrade scripts.
+     * The logic below will assume it's one of these releases in case it isn't found in the list here
+     * and do the upgrade from the 'virtual' release 5.99.0.0 to make sure th v6 changes are applied.
+     */
+    
 
     // This is the latest version of the 5 branch. It's a 'virtual' version cause it doesn't exist, but it is
     // there to make sure all previous version can upgrade to the 6 version correctly.
-    ACTIVITI_VERSIONS.add(new ActivitiVersion("5.99.0.0"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion(LAST_V5_VERSION));
     
     // Version 6
     ACTIVITI_VERSIONS.add(new ActivitiVersion("6.0.0.0"));
@@ -1028,13 +1042,12 @@ public class DbSqlSession implements Session {
       String dbVersion = dbVersionProperty.getValue();
 
       // Determine index in the sequence of Activiti releases
-      int index = 0;
-      while (matchingVersionIndex < 0 && index < ACTIVITI_VERSIONS.size()) {
-        if (ACTIVITI_VERSIONS.get(index).matches(dbVersion)) {
-          matchingVersionIndex = index;
-        } else {
-          index++;
-        }
+      matchingVersionIndex = findMatchingVersionIndex(dbVersion);
+      
+      // If no match has been found, but the version starts with '5.x', 
+      // we assume it's the last version (see comment in the VERSIONS list)
+      if (matchingVersionIndex < 0 && dbVersion != null && dbVersion.startsWith("5.")) {
+        matchingVersionIndex = findMatchingVersionIndex(LAST_V5_VERSION);
       }
 
       // Exception when no match was found: unknown/unsupported version
@@ -1086,6 +1099,23 @@ public class DbSqlSession implements Session {
     }
 
     return feedback;
+  }
+
+  /**
+   * Returns the index in the list of {@link #ACTIVITI_VERSIONS} matching the provided string version.
+   * Returns -1 if no match can be found.  
+   */
+  protected int findMatchingVersionIndex(String dbVersion) {
+    int index = 0;
+    int matchingVersionIndex = -1;
+    while (matchingVersionIndex < 0 && index < ACTIVITI_VERSIONS.size()) {
+      if (ACTIVITI_VERSIONS.get(index).matches(dbVersion)) {
+        matchingVersionIndex = index;
+      } else {
+        index++;
+      }
+    }
+    return matchingVersionIndex;
   }
 
   public boolean isEngineTablePresent() {
