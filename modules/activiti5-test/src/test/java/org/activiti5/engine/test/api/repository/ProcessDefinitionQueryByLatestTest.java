@@ -10,7 +10,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCase {
 
-	private static String XML_FILE_PATH = "org/activiti/engine/test/repository/latest/";
+	private static String XML_FILE_PATH = "org/activiti5/engine/test/repository/latest/";
 	
 	  @Override
 	  protected void setUp() throws Exception {
