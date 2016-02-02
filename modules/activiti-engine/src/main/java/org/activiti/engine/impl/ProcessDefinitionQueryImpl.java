@@ -301,11 +301,6 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
   public void checkQueryOk() {
     super.checkQueryOk();
-
-    // latest() makes only sense when used with key() or keyLike()
-    if (latest && ((id != null) || (name != null) || (nameLike != null) || (version != null) || (deploymentId != null))) {
-      throw new ActivitiIllegalArgumentException("Calling latest() can only be used in combination with key(String) and keyLike(String)");
-    }
   }
 
   // getters ////////////////////////////////////////////
