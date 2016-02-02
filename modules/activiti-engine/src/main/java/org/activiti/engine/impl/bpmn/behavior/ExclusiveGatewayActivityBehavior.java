@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,9 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       }
       
     }
+    
+    // We have to record the end here, or else we're already past it
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
 
     // Leave the gateway
     if (outgoingSequenceFlow != null) {

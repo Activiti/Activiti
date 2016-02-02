@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/bpmn2.0" id="definitions">
+    <process id="exclusiveGateway" isExecutable="true">
+        <startEvent id="startevent1" name="Start"></startEvent>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="exclusivegateway2"></sequenceFlow>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <sequenceFlow id="flow2" sourceRef="exclusivegateway2" targetRef="endevent1">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${input == 1}]]></conditionExpression>
+        </sequenceFlow>
+        <endEvent id="endevent2" name="End"></endEvent>
+        <sequenceFlow id="flow3" sourceRef="exclusivegateway2" targetRef="endevent2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${input == 2}]]></conditionExpression>
+        </sequenceFlow>
+    </process>
+</definitions>
