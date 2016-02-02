@@ -99,7 +99,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
   }
   
   @Override
-  protected void initAsyncExecutor() {
+  public void initAsyncExecutor() {
     
     if (asyncExecutor == null) {
       asyncExecutor = new ExecutorPerTenantAsyncExecutor(tenantInfoHolder);
@@ -158,7 +158,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
   }
   
   @Override
-  protected CommandInterceptor createTransactionInterceptor() {
+  public CommandInterceptor createTransactionInterceptor() {
     return null;
   }
 

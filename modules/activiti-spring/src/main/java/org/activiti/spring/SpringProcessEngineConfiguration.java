@@ -73,14 +73,14 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   }
 
   @Override
-  protected void initDefaultCommandConfig() {
+  public void initDefaultCommandConfig() {
     if (defaultCommandConfig == null) {
       defaultCommandConfig = new CommandConfig().setContextReusePossible(true);
     }
   }
 
   @Override
-  protected CommandInterceptor createTransactionInterceptor() {
+  public CommandInterceptor createTransactionInterceptor() {
     if (transactionManager == null) {
       throw new ActivitiException("transactionManager is required property for SpringProcessEngineConfiguration, use " + StandaloneProcessEngineConfiguration.class.getName() + " otherwise");
     }
@@ -89,14 +89,14 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   }
 
   @Override
-  protected void initTransactionContextFactory() {
+  public void initTransactionContextFactory() {
     if (transactionContextFactory == null && transactionManager != null) {
       transactionContextFactory = new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
     }
   }
 
   @Override
-  protected void initJpa() {
+  public void initJpa() {
     super.initJpa();
     if (jpaEntityManagerFactory != null) {
       sessionFactories.put(EntityManagerSession.class, new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));

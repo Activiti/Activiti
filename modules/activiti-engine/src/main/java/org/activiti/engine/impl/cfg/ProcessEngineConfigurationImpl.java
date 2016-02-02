@@ -819,7 +819,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // init
   // /////////////////////////////////////////////////////////////////////
 
-  protected void init() {
+  public void init() {
     initConfigurators();
     configuratorsBeforeInit();
     initProcessDiagramGenerator();
@@ -878,7 +878,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // failedJobCommandFactory
   // ////////////////////////////////////////////////////////
 
-  protected void initFailedJobCommandFactory() {
+  public void initFailedJobCommandFactory() {
     if (failedJobCommandFactory == null) {
       failedJobCommandFactory = new DefaultFailedJobCommandFactory();
     }
@@ -887,7 +887,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // command executors
   // ////////////////////////////////////////////////////////
 
-  protected void initCommandExecutors() {
+  public void initCommandExecutors() {
     initDefaultCommandConfig();
     initSchemaCommandConfig();
     initCommandInvoker();
@@ -895,25 +895,25 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initCommandExecutor();
   }
 
-  protected void initDefaultCommandConfig() {
+  public void initDefaultCommandConfig() {
     if (defaultCommandConfig == null) {
       defaultCommandConfig = new CommandConfig();
     }
   }
 
-  private void initSchemaCommandConfig() {
+  public void initSchemaCommandConfig() {
     if (schemaCommandConfig == null) {
       schemaCommandConfig = new CommandConfig().transactionNotSupported();
     }
   }
 
-  protected void initCommandInvoker() {
+  public void initCommandInvoker() {
     if (commandInvoker == null) {
       commandInvoker = new CommandInvoker();
     }
   }
 
-  protected void initCommandInterceptors() {
+  public void initCommandInterceptors() {
     if (commandInterceptors == null) {
       commandInterceptors = new ArrayList<CommandInterceptor>();
       if (customPreCommandInterceptors != null) {
@@ -927,7 +927,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected Collection<? extends CommandInterceptor> getDefaultCommandInterceptors() {
+  public Collection<? extends CommandInterceptor> getDefaultCommandInterceptors() {
     List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
     interceptors.add(new LogInterceptor());
 
@@ -940,14 +940,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return interceptors;
   }
 
-  protected void initCommandExecutor() {
+  public void initCommandExecutor() {
     if (commandExecutor == null) {
       CommandInterceptor first = initInterceptorChain(commandInterceptors);
       commandExecutor = new CommandExecutorImpl(getDefaultCommandConfig(), first);
     }
   }
 
-  protected CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
+  public CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
     if (chain == null || chain.isEmpty()) {
       throw new ActivitiException("invalid command interceptor chain configuration: " + chain);
     }
@@ -957,12 +957,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return chain.get(0);
   }
 
-  protected abstract CommandInterceptor createTransactionInterceptor();
+  public abstract CommandInterceptor createTransactionInterceptor();
 
   // services
   // /////////////////////////////////////////////////////////////////
 
-  protected void initServices() {
+  public void initServices() {
     initService(repositoryService);
     initService(runtimeService);
     initService(historyService);
@@ -973,7 +973,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initService(dynamicBpmnService);
   }
 
-  protected void initService(Object service) {
+  public void initService(Object service) {
     if (service instanceof ServiceImpl) {
       ((ServiceImpl) service).setCommandExecutor(commandExecutor);
     }
@@ -982,7 +982,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // DataSource
   // ///////////////////////////////////////////////////////////////
 
-  protected void initDataSource() {
+  public void initDataSource() {
     if (dataSource == null) {
       if (dataSourceJndiName != null) {
         try {
@@ -1047,7 +1047,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public static final String DATABASE_TYPE_MSSQL = "mssql";
   public static final String DATABASE_TYPE_DB2 = "db2";
 
-  protected static Properties getDefaultDatabaseTypeMappings() {
+  public static Properties getDefaultDatabaseTypeMappings() {
     Properties databaseTypeMappings = new Properties();
     databaseTypeMappings.setProperty("H2", DATABASE_TYPE_H2);
     databaseTypeMappings.setProperty("HSQL Database Engine", DATABASE_TYPE_HSQL);
@@ -1108,7 +1108,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // myBatis SqlSessionFactory
   // ////////////////////////////////////////////////
 
-  protected void initTransactionFactory() {
+  public void initTransactionFactory() {
     if (transactionFactory == null) {
       if (transactionsExternallyManaged) {
         transactionFactory = new ManagedTransactionFactory();
@@ -1118,7 +1118,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initSqlSessionFactory() {
+  public void initSqlSessionFactory() {
     if (sqlSessionFactory == null) {
       InputStream inputStream = null;
       try {
@@ -1153,7 +1153,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected Configuration initMybatisConfiguration(Environment environment, Reader reader, Properties properties) {
+  public Configuration initMybatisConfiguration(Environment environment, Reader reader, Properties properties) {
     XMLConfigBuilder parser = new XMLConfigBuilder(reader, "", properties);
     Configuration configuration = parser.getConfiguration();
     
@@ -1170,11 +1170,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return configuration;
   }
 
-  protected void initMybatisTypeHandlers(Configuration configuration) {
+  public void initMybatisTypeHandlers(Configuration configuration) {
     configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
   }
 
-  protected void initCustomMybatisMappers(Configuration configuration) {
+  public void initCustomMybatisMappers(Configuration configuration) {
     if (getCustomMybatisMappers() != null) {
       for (Class<?> clazz : getCustomMybatisMappers()) {
         configuration.addMapper(clazz);
@@ -1182,12 +1182,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected Configuration parseMybatisConfiguration(
+  public Configuration parseMybatisConfiguration(
       @SuppressWarnings("unused") Configuration configuration, XMLConfigBuilder parser) {
     return parseCustomMybatisXMLMappers(parser.parse());
   }
 
-  protected Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
+  public Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
     if (getCustomMybatisXMLMappers() != null)
       // see XMLConfigBuilder.mapperElement()
       for (String resource : getCustomMybatisXMLMappers()) {
@@ -1201,7 +1201,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return ReflectUtil.getResourceAsStream(resource);
   }
 
-  protected InputStream getMyBatisXmlConfigurationStream() {
+  public InputStream getMyBatisXmlConfigurationStream() {
     return getResourceAsStream(DEFAULT_MYBATIS_MAPPING_FILE);
   }
 
@@ -1223,7 +1223,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Data managers ///////////////////////////////////////////////////////////
   
-  protected void initDataManagers() {
+  public void initDataManagers() {
     if (attachmentDataManager == null) {
       attachmentDataManager = new MybatisAttachmentDataManager(this);
     }
@@ -1306,7 +1306,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Entity managers //////////////////////////////////////////////////////////
   
-  protected void initEntityManagers() {
+  public void initEntityManagers() {
     if (attachmentEntityManager == null) {
       attachmentEntityManager = new AttachmentEntityManagerImpl(this, attachmentDataManager);
     }
@@ -1392,7 +1392,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // History manager ///////////////////////////////////////////////////////////
   
-  protected void initHistoryManager() {
+  public void initHistoryManager() {
     if(historyManager == null) {
       historyManager = new DefaultHistoryManager(this, historyLevel);
     }
@@ -1400,7 +1400,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // session factories ////////////////////////////////////////////////////////
 
-  protected void initSessionFactories() {
+  public void initSessionFactories() {
     if (sessionFactories == null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
       
@@ -1418,7 +1418,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initDbSqlSessionFactory() {
+  public void initDbSqlSessionFactory() {
     if (dbSqlSessionFactory == null) {
       dbSqlSessionFactory = createDbSqlSessionFactory();
     }
@@ -1436,15 +1436,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     addSessionFactory(dbSqlSessionFactory);
   }
 
-  protected DbSqlSessionFactory createDbSqlSessionFactory() {
+  public DbSqlSessionFactory createDbSqlSessionFactory() {
     return new DbSqlSessionFactory();
   }
 
-  protected void addSessionFactory(SessionFactory sessionFactory) {
+  public void addSessionFactory(SessionFactory sessionFactory) {
     sessionFactories.put(sessionFactory.getSessionType(), sessionFactory);
   }
 
-  protected void initConfigurators() {
+  public void initConfigurators() {
 
     allConfigurators = new ArrayList<ProcessEngineConfigurator>();
 
@@ -1503,14 +1503,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void configuratorsBeforeInit() {
+  public void configuratorsBeforeInit() {
     for (ProcessEngineConfigurator configurator : allConfigurators) {
       log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
       configurator.beforeInit(this);
     }
   }
 
-  protected void configuratorsAfterInit() {
+  public void configuratorsAfterInit() {
     for (ProcessEngineConfigurator configurator : allConfigurators) {
       log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
       configurator.configure(this);
@@ -1520,7 +1520,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // deployers
   // ////////////////////////////////////////////////////////////////
   
-  protected void initProcessDefinitionCache() {
+  public void initProcessDefinitionCache() {
     if (processDefinitionCache == null) {
       if (processDefinitionCacheLimit <= 0) {
         processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>();
@@ -1530,7 +1530,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
-  protected void initProcessDefinitionInfoCache() {
+  public void initProcessDefinitionInfoCache() {
     if (processDefinitionInfoCache == null) {
       if (processDefinitionInfoCacheLimit <= 0) {
         processDefinitionInfoCache = new ProcessDefinitionInfoCache(commandExecutor);
@@ -1540,7 +1540,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
-  protected void initKnowledgeBaseCache() {
+  public void initKnowledgeBaseCache() {
     if (knowledgeBaseCache == null) {
       if (knowledgeBaseCacheLimit <= 0) {
         knowledgeBaseCache = new DefaultDeploymentCache<Object>();
@@ -1550,7 +1550,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initDeployers() {
+  public void initDeployers() {
     if (this.deployers == null) {
       this.deployers = new ArrayList<Deployer>();
       if (customPreDeployers != null) {
@@ -1611,7 +1611,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
-  protected Collection<? extends Deployer> getDefaultDeployers() {
+  public Collection<? extends Deployer> getDefaultDeployers() {
     List<Deployer> defaultDeployers = new ArrayList<Deployer>();
 
     if (bpmnDeployer == null) {
@@ -1630,7 +1630,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return defaultDeployers;
   }
 
-  protected void initListenerFactory() {
+  public void initListenerFactory() {
     if (listenerFactory == null) {
       DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
       defaultListenerFactory.setExpressionManager(expressionManager);
@@ -1640,7 +1640,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initBehaviorFactory() {
+  public void initBehaviorFactory() {
     if (activityBehaviorFactory == null) {
       DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
       defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
@@ -1678,7 +1678,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParser.setBpmnParserHandlers(bpmnParseHandlers);
   }
 
-  protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
+  public List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
 
     // Alphabetic list of default parse handler classes
     List<BpmnParseHandler> bpmnParserHandlers = new ArrayList<BpmnParseHandler>();
@@ -1751,7 +1751,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return bpmnParserHandlers;
   }
 
-  protected List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
+  public List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
     List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
     parseHandlers.add(new FlowNodeHistoryParseHandler());
     // parseHandlers.add(new ProcessHistoryParseHandler());
@@ -1760,19 +1760,19 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return parseHandlers;
   }
 
-  private void initClock() {
+  public void initClock() {
     if (clock == null) {
       clock = new DefaultClockImpl();
     }
   }
 
-  protected void initProcessDiagramGenerator() {
+  public void initProcessDiagramGenerator() {
     if (processDiagramGenerator == null) {
       processDiagramGenerator = new DefaultProcessDiagramGenerator();
     }
   }
 
-  protected void initJobHandlers() {
+  public void initJobHandlers() {
     jobHandlers = new HashMap<String, JobHandler>();
     
     TriggerTimerEventJobHandler triggerTimerEventJobHandler = new TriggerTimerEventJobHandler();
@@ -1804,7 +1804,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // job executor
   // /////////////////////////////////////////////////////////////
 
-  protected void initJobExecutor() {
+  public void initJobExecutor() {
     if (isAsyncExecutorEnabled() == false) {
       if (jobExecutor == null) {
         jobExecutor = new DefaultJobExecutor();
@@ -1828,7 +1828,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // async executor
   // /////////////////////////////////////////////////////////////
 
-  protected void initAsyncExecutor() {
+  public void initAsyncExecutor() {
     if (isAsyncExecutorEnabled()) {
       if (asyncExecutor == null) {
         DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
@@ -1884,7 +1884,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // id generator
   // /////////////////////////////////////////////////////////////
 
-  protected void initIdGenerator() {
+  public void initIdGenerator() {
     if (idGenerator == null) {
       CommandExecutor idGeneratorCommandExecutor = null;
       if (idGeneratorDataSource != null) {
@@ -1914,20 +1914,20 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // OTHER
   // ////////////////////////////////////////////////////////////////////
 
-  protected void initCommandContextFactory() {
+  public void initCommandContextFactory() {
     if (commandContextFactory == null) {
       commandContextFactory = new CommandContextFactory();
     }
     commandContextFactory.setProcessEngineConfiguration(this);
   }
 
-  protected void initTransactionContextFactory() {
+  public void initTransactionContextFactory() {
     if (transactionContextFactory == null) {
       transactionContextFactory = new StandaloneMybatisTransactionContextFactory();
     }
   }
 
-  protected void initVariableTypes() {
+  public void initVariableTypes() {
     if (variableTypes == null) {
       variableTypes = new DefaultVariableTypes();
       if (customPreVariableTypes != null) {
@@ -1959,7 +1959,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
-  protected int getMaxLengthString() {
+  public int getMaxLengthString() {
     if (maxLengthStringVariableType == -1) {
       if ("oracle".equalsIgnoreCase(databaseType) == true) {
         return DEFAULT_ORACLE_MAX_LENGTH_STRING;
@@ -1971,7 +1971,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initFormEngines() {
+  public void initFormEngines() {
     if (formEngines == null) {
       formEngines = new HashMap<String, FormEngine>();
       FormEngine defaultFormEngine = new JuelFormEngine();
@@ -1986,7 +1986,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initFormTypes() {
+  public void initFormTypes() {
     if (formTypes == null) {
       formTypes = new FormTypes();
       formTypes.addFormType(new StringFormType());
@@ -2002,7 +2002,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initScriptingEngines() {
+  public void initScriptingEngines() {
     if (resolverFactories == null) {
       resolverFactories = new ArrayList<ResolverFactory>();
       resolverFactories.add(new VariableScopeResolverFactory());
@@ -2013,13 +2013,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initExpressionManager() {
+  public void initExpressionManager() {
     if (expressionManager == null) {
       expressionManager = new ExpressionManager(beans);
     }
   }
 
-  protected void initBusinessCalendarManager() {
+  public void initBusinessCalendarManager() {
     if (businessCalendarManager == null) {
       MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
       mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(this.clock));
@@ -2030,13 +2030,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initDelegateInterceptor() {
+  public void initDelegateInterceptor() {
     if (delegateInterceptor == null) {
       delegateInterceptor = new DefaultDelegateInterceptor();
     }
   }
 
-  protected void initEventHandlers() {
+  public void initEventHandlers() {
     if (eventHandlers == null) {
       eventHandlers = new HashMap<String, EventHandler>();
 
@@ -2060,7 +2060,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // JPA
   // //////////////////////////////////////////////////////////////////////
 
-  protected void initJpa() {
+  public void initJpa() {
     if (jpaPersistenceUnitName != null) {
       jpaEntityManagerFactory = JpaHelper.createEntityManagerFactory(jpaPersistenceUnitName);
     }
@@ -2088,13 +2088,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initBeans() {
+  public void initBeans() {
     if (beans == null) {
       beans = new HashMap<Object, Object>();
     }
   }
 
-  protected void initEventDispatcher() {
+  public void initEventDispatcher() {
     if (this.eventDispatcher == null) {
       this.eventDispatcher = new ActivitiEventDispatcherImpl();
     }
@@ -2120,13 +2120,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   }
 
-  protected void initProcessValidator() {
+  public void initProcessValidator() {
     if (this.processValidator == null) {
       this.processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
     }
   }
 
-  protected void initDatabaseEventLogging() {
+  public void initDatabaseEventLogging() {
     if (enableDatabaseEventLogging) {
       // Database event logging uses the default logging mechanism and adds
       // a specific event listener to the list of event listeners
@@ -2134,7 +2134,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initActiviti5CompatibilityHandler() {
+  public void initActiviti5CompatibilityHandler() {
 
     // If Activiti 5 compatibility is disabled, no need to do anything
     // If handler is injected, no need to do anything
