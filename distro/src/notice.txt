@@ -154,7 +154,7 @@ geronimo-jta_1.1_spec-1.1.1.jar : http://www.apache.org/licenses/LICENSE-2.0.htm
 geronimo-servlet_2.5_spec-1.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 geronimo-stax-api_1.0_spec-1.0.1.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 geronimo-ws-metadata_2.0_spec-1.1.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-groovy-1.7.5.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+groovy-2.4.5.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 h2-1.2.132.jar: http://www.mozilla.org/MPL & http://opensource.org/licenses/eclipse-1.0.php
 hamcrest-core-1.1.jar : http://www.opensource.org/licenses/bsd-license.php
 htmlparser-1.0.5.jar : http://www.opensource.org/licenses/cpl1.0.php
