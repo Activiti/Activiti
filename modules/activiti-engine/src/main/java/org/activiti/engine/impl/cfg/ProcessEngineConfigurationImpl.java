@@ -1575,7 +1575,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected void initBpmnDeployerDependencies() {
+  public void initBpmnDeployerDependencies() {
     
     if (parsedDeploymentBuilderFactory == null) {
       parsedDeploymentBuilderFactory = new ParsedDeploymentBuilderFactory();
@@ -1650,7 +1650,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
   
-  protected void initBpmnParser() {
+  public void initBpmnParser() {
     if (bpmnParser == null) {
       bpmnParser = new BpmnParser();
     }
