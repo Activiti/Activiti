@@ -143,11 +143,6 @@ public class ProcessDefinitionCollectionResourceTest extends BaseSpringRestTestC
       url = baseUrl + "?suspended=false";
       assertResultsPresentInDataResponse(url, latestOneTaskProcess.getId(), oneTaskProcess.getId(), oneTaskWithDiProcess.getId());
       
-      // Test using latest without key -> not allowed
-      url = baseUrl + "?latest=true&name=anyname";
-      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + url);
-      closeResponse(executeRequest(httpGet, HttpStatus.SC_BAD_REQUEST));
-      
     } finally {
       // Always cleanup any created deployments, even if the test failed
       List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
