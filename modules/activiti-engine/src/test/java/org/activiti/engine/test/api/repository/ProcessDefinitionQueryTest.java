@@ -224,33 +224,6 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 1);
   }
   
-  public void testInvalidUsageOfLatest() {
-    try {
-      repositoryService.createProcessDefinitionQuery().processDefinitionId("test").latestVersion().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {}
-    
-    try {
-      repositoryService.createProcessDefinitionQuery().processDefinitionName("test").latestVersion().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {}
-    
-    try {
-      repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("test").latestVersion().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {}
-    
-    try {
-      repositoryService.createProcessDefinitionQuery().processDefinitionVersion(1).latestVersion().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {}
-    
-    try {
-      repositoryService.createProcessDefinitionQuery().deploymentId("test").latestVersion().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {}
-  }
-  
   public void testQuerySorting() {
     
     // asc 
