@@ -16,6 +16,7 @@ package org.activiti.engine.test.bpmn.deployment;
 import java.util.List;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -375,7 +376,10 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
       runtimeService.signalEventReceived("mySignal");
       assertEquals(2, getAllEventSubscriptions().size());
     }
-    assertEquals(9, historyService.createHistoricProcessInstanceQuery().count());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      assertEquals(9, historyService.createHistoricProcessInstanceQuery().count());
+    }
     assertEquals(2, getAllEventSubscriptions().size()); 
     assertEventSubscriptionLatestCount(1);
     

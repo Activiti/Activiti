@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -403,7 +404,10 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
       // Every iteration will signal the boundary event of the previous iteration!
       runtimeService.startProcessInstanceByMessage("myMessage");
     }
-    assertEquals(9, historyService.createHistoricProcessInstanceQuery().count());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      assertEquals(9, historyService.createHistoricProcessInstanceQuery().count());
+    }
     assertEquals(10, getAllEventSubscriptions().size()); // 1 for the start, 9 for boundary
     assertEventSubscriptionLatestCount(1);
     

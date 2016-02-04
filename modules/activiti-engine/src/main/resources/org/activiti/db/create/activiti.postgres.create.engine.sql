@@ -173,7 +173,7 @@ create table ACT_RU_EVENT_SUBSCR (
     CREATED_ timestamp not null,
     PROC_DEF_ID_ varchar(64),
     PROC_DEF_KEY_ varchar(255),
-    IS_LATEST_ bit,
+    IS_LATEST_ boolean,
     TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 );
