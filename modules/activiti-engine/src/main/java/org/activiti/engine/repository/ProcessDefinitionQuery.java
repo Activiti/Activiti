@@ -83,6 +83,26 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   ProcessDefinitionQuery processDefinitionVersion(Integer processDefinitionVersion);
   
   /**
+   * Only select process definitions which version are greater than a certain version.
+   */
+  ProcessDefinitionQuery processDefinitionVersionGreaterThan(Integer processDefinitionVersion);
+  
+  /**
+   * Only select process definitions which version are greater than or equals a certain version.
+   */
+  ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion);
+  
+  /**
+   * Only select process definitions which version are lower than a certain version.
+   */
+  ProcessDefinitionQuery processDefinitionVersionLowerThan(Integer processDefinitionVersion);
+  
+  /**
+   * Only select process definitions which version are lower than or equals a certain version.
+   */
+  ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion);
+  
+  /**
    * Only select the process definitions which are the latest deployed
    * (ie. which have the highest version number for the given key).
    * 

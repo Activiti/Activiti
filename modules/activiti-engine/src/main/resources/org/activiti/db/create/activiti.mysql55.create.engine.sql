@@ -172,6 +172,8 @@ create table ACT_RU_EVENT_SUBSCR (
     CONFIGURATION_ varchar(255),
     CREATED_ timestamp not null DEFAULT CURRENT_TIMESTAMP,
     PROC_DEF_ID_ varchar(64),
+    PROC_DEF_KEY_ varchar(255),
+    IS_LATEST_ tinyint,
     TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;

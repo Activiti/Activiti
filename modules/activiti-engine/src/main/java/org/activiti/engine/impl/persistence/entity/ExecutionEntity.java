@@ -801,6 +801,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
     this.processDefinitionId = processDefinition.getId();
+    this.processDefinitionKey = processDefinition.getKey();
   }
 
   // process instance /////////////////////////////////////////////////////////

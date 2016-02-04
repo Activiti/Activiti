@@ -48,6 +48,8 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   protected String configuration;
   protected Date created;
   protected String processDefinitionId;
+  protected String processDefinitionKey;
+  protected boolean isLatest;
   protected String tenantId;
   
   // runtime state /////////////////////////////
@@ -66,6 +68,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     setActivity(execution.getActivity());
     this.processInstanceId = executionEntity.getProcessInstanceId();
     this.processDefinitionId = executionEntity.getProcessDefinitionId();
+    this.processDefinitionKey = executionEntity.getProcessDefinitionKey();
   }
   
   // processing /////////////////////////////
@@ -147,6 +150,9 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     HashMap<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("executionId", executionId);
     persistentState.put("configuration", configuration);
+    persistentState.put("processDefinitionId", processDefinitionId);
+    persistentState.put("processDefinitionKey", processDefinitionKey);
+    persistentState.put("isLatest", isLatest);
     return persistentState;
   }
   
@@ -269,8 +275,24 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 	public void setProcessDefinitionId(String processDefinitionId) {
 		this.processDefinitionId = processDefinitionId;
 	}
+	
+	public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
 
-	public String getTenantId() {
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+  }
+
+  public boolean isLatest() {
+    return isLatest;
+  }
+
+  public void setLatest(boolean isLatest) {
+    this.isLatest = isLatest;
+  }
+
+  public String getTenantId() {
 		return tenantId;
 	}
 
