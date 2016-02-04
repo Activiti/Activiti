@@ -38,6 +38,7 @@ public interface EntityCache extends Session {
    * 
    * @param entity The {@link Entity} instance
    * @param storeState If true, the current state {@link Entity#getPersistentState()} will be stored for future diffing.
+   *                   Note that, if false, the {@link Entity} will always be seen as changed.
    */
   CachedEntity put(Entity entity, boolean storeState);
   

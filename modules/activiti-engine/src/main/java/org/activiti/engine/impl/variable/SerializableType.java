@@ -36,8 +36,18 @@ public class SerializableType extends ByteArrayType {
 
   public static final String TYPE_NAME = "serializable";
   
+  protected boolean trackDeserializedObjects;
+  
   public String getTypeName() {
     return TYPE_NAME;
+  }
+  
+  public SerializableType() {
+    
+  }
+  
+  public SerializableType(boolean trackDeserializedObjects) {
+    this.trackDeserializedObjects = trackDeserializedObjects;
   }
 
   public Object getValue(ValueFields valueFields) {
@@ -48,16 +58,13 @@ public class SerializableType extends ByteArrayType {
     
     byte[] bytes = (byte[]) super.getValue(valueFields);
     if (bytes != null) {
+      
 	    Object deserializedObject = deserialize(bytes, valueFields);
-	    
       valueFields.setCachedValue(deserializedObject);
       
-      if (valueFields instanceof VariableInstanceEntity) {
-        // we need to register the deserialized object for dirty checking, 
-        // so that it can be serialized again if it was changed. 
-        Context.getCommandContext()
-          .getDbSqlSession()
-          .addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
+      if (trackDeserializedObjects && valueFields instanceof VariableInstanceEntity) {
+        Context.getCommandContext().addCloseListener(new VerifyDeserializedObjectCommandContextCloseListener(
+            new DeserializedObject(this, valueFields.getCachedValue(), bytes, (VariableInstanceEntity)valueFields)));
       }
 
       return deserializedObject;
@@ -66,20 +73,16 @@ public class SerializableType extends ByteArrayType {
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    byte[] byteArray = serialize(value, valueFields);
+    byte[] bytes = serialize(value, valueFields);
     valueFields.setCachedValue(value);
-
-    if (valueFields.getBytes() == null) {
-      // TODO why the null check? won't this cause issues when setValue is called the second this with a different object?
-      if (valueFields instanceof VariableInstanceEntity) {
-        // register the deserialized object for dirty checking.
-        Context.getCommandContext()
-          .getDbSqlSession()
-          .addDeserializedObject(new DeserializedObject(this, valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields));
-      }
+    
+    super.setValue(bytes, valueFields);
+    
+    if (trackDeserializedObjects && valueFields instanceof VariableInstanceEntity) {
+      Context.getCommandContext().addCloseListener(new VerifyDeserializedObjectCommandContextCloseListener(
+          new DeserializedObject(this, valueFields.getCachedValue(), bytes, (VariableInstanceEntity)valueFields)));
     }
 
-    super.setValue(byteArray, valueFields);
   }
 
   public byte[] serialize(Object value, ValueFields valueFields) {

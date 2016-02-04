@@ -695,6 +695,20 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<VariableType> customPreVariableTypes;
   protected List<VariableType> customPostVariableTypes;
   protected VariableTypes variableTypes;
+  
+  /**
+   * This flag determines whether variables of the type 'serializable' will be tracked.
+   * This means that, when true, in a JavaDelegate you can write
+   * 
+   * MySerializableVariable myVariable = (MySerializableVariable) execution.getVariable("myVariable");
+   * myVariable.setNumber(123);
+   * 
+   * And the changes to the java object will be reflected in the database.
+   * Otherwise, a manual call to setVariable will be needed.
+   * 
+   * By default true for backwards compatibility.
+   */
+  protected boolean serializableVariableTypeTrackDeserializedObjects = true;
 
   protected ExpressionManager expressionManager;
   protected List<String> customScriptingEngineClasses;
@@ -1948,7 +1962,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));
       variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper));
       variableTypes.addType(new ByteArrayType());
-      variableTypes.addType(new SerializableType());
+      variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
       variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
       if (customPostVariableTypes != null) {
@@ -2458,6 +2472,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setVariableTypes(VariableTypes variableTypes) {
     this.variableTypes = variableTypes;
     return this;
+  }
+  
+  public boolean isSerializableVariableTypeTrackDeserializedObjects() {
+    return serializableVariableTypeTrackDeserializedObjects;
+  }
+
+  public void setSerializableVariableTypeTrackDeserializedObjects(boolean serializableVariableTypeTrackDeserializedObjects) {
+    this.serializableVariableTypeTrackDeserializedObjects = serializableVariableTypeTrackDeserializedObjects;
   }
 
   public ExpressionManager getExpressionManager() {

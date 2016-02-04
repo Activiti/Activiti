@@ -47,7 +47,7 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   protected Double doubleValue;
   protected String textValue;
   protected String textValue2;
-  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
+  protected ByteArrayRef byteArrayRef;
 
   protected Object cachedValue;
   protected boolean forcedUpdate;
@@ -71,7 +71,7 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
     if (textValue2 != null) {
       persistentState.put("textValue2", textValue2);
     }
-    if (byteArrayRef.getId() != null) {
+    if (byteArrayRef != null && byteArrayRef.getId() != null) {
       persistentState.put("byteArrayValueId", byteArrayRef.getId());
     }
     if (forcedUpdate) {
@@ -114,16 +114,24 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
 
   @Override
   public byte[] getBytes() {
+    ensureByteArrayRefInitialized();
     return byteArrayRef.getBytes();
   }
 
   @Override
   public void setBytes(byte[] bytes) {
+    ensureByteArrayRefInitialized();
     byteArrayRef.setValue("var-" + name, bytes);
   }
 
   public ByteArrayRef getByteArrayRef() {
     return byteArrayRef;
+  }
+  
+  protected void ensureByteArrayRefInitialized() {
+    if (byteArrayRef == null) {
+      byteArrayRef = new ByteArrayRef();
+    }
   }
 
   // value //////////////////////////////////////////////////////////////////////
@@ -275,7 +283,7 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
     if (textValue2 != null) {
       sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
     }
-    if (byteArrayRef.getId() != null) {
+    if (byteArrayRef != null && byteArrayRef.getId() != null) {
       sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
     }
     sb.append("]");

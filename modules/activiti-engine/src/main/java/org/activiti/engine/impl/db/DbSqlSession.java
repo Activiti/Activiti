@@ -67,14 +67,11 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.engine.impl.variable.DeserializedObject;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * responsibilities: - delayed flushing of inserts updates and deletes - optional dirty checking - db specific statement name mapping
- * 
  * @author Tom Baeyens
  * @author Joram Barrez
  */
@@ -146,7 +143,6 @@ public class DbSqlSession implements Session {
   protected EntityCache entityCache;
   protected Map<Class<? extends Entity>, List<Entity>> insertedObjects = new HashMap<Class<? extends Entity>, List<Entity>>();
   protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
-  protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
 
@@ -179,14 +175,14 @@ public class DbSqlSession implements Session {
     }
     
     insertedObjects.get(clazz).add(entity);
-    entityCache.put(entity, false);
+    entityCache.put(entity, false); // False -> entity is inserted, so always changed
   }
 
   // update
   // ///////////////////////////////////////////////////////////////////
 
   public void update(Entity entity) {
-    entityCache.put(entity, false);
+    entityCache.put(entity, false); // false -> we don't store state, meaning it will always be seen as changed 
   }
 
   public int update(String statement, Object parameters) {
@@ -446,7 +442,7 @@ public class DbSqlSession implements Session {
       return Collections.EMPTY_LIST;
     }
     List loadedObjects = sqlSession.selectList(statement, parameter);
-    return filterLoadedObjects(loadedObjects);
+    return cacheLoadOrStore(loadedObjects);
   }
 
   @SuppressWarnings({ "rawtypes" })
@@ -463,7 +459,7 @@ public class DbSqlSession implements Session {
     Object result = sqlSession.selectOne(statement, parameter);
     if (result instanceof Entity) {
       Entity loadedObject = (Entity) result;
-      result = cacheFilter(loadedObject);
+      result = cacheLoadOrStore(loadedObject);
     }
     return result;
   }
@@ -489,7 +485,7 @@ public class DbSqlSession implements Session {
     if (entity == null) {
       return null;
     }
-    entityCache.put(entity, true);
+    entityCache.put(entity, true); // true -> store state so we can see later if it is updated later on
     return entity;
   }
 
@@ -497,7 +493,7 @@ public class DbSqlSession implements Session {
   // ///////////////////////////////////////////////////
 
   @SuppressWarnings("rawtypes")
-  protected List filterLoadedObjects(List<Object> loadedObjects) {
+  protected List cacheLoadOrStore(List<Object> loadedObjects) {
     if (loadedObjects.isEmpty()) {
       return loadedObjects;
     }
@@ -507,17 +503,17 @@ public class DbSqlSession implements Session {
 
     List<Entity> filteredObjects = new ArrayList<Entity>(loadedObjects.size());
     for (Object loadedObject : loadedObjects) {
-      Entity cachedEntity = cacheFilter((Entity) loadedObject);
+      Entity cachedEntity = cacheLoadOrStore((Entity) loadedObject);
       filteredObjects.add(cachedEntity);
     }
     return filteredObjects;
   }
 
   /**
-   * returns the object in the cache. if this object was loaded before, then the original object is returned. if this is the first time this object is loaded, then the loadedObject is added to the
-   * cache.
+   * Returns the object in the cache. If this object was loaded before, then the original object is returned (the cached version is more recent). 
+   * If this is the first time this object is loaded, then the loadedObject is added to the cache.
    */
-  protected Entity cacheFilter(Entity entity) {
+  protected Entity cacheLoadOrStore(Entity entity) {
     Entity cachedEntity = entityCache.findInCache(entity.getClass(), entity.getId());
     if (cachedEntity != null) {
       return cachedEntity;
@@ -526,20 +522,12 @@ public class DbSqlSession implements Session {
     return entity;
   }
 
-  // deserialized objects
-  // /////////////////////////////////////////////////////
-
-  public void addDeserializedObject(DeserializedObject deserializedObject) {
-    deserializedObjects.add(deserializedObject);
-  }
-
   // flush
   // ////////////////////////////////////////////////////////////////////
 
   public void flush() {
     List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
 
-    flushDeserializedObjects();
     List<Entity> updatedObjects = getUpdatedObjects();
 
     if (log.isDebugEnabled()) {
@@ -682,12 +670,6 @@ public class DbSqlSession implements Session {
     return deleteOperation instanceof CheckedDeleteOperation && ((CheckedDeleteOperation) deleteOperation).getEntity() instanceof ExecutionEntity;
   }
   
-  protected void flushDeserializedObjects() {
-    for (DeserializedObject deserializedObject : deserializedObjects) {
-      deserializedObject.flush();
-    }
-  }
-
   public List<Entity> getUpdatedObjects() {
     List<Entity> updatedObjects = new ArrayList<Entity>();
     Map<Class<?>, Map<String, CachedEntity>> cachedObjects = entityCache.getAllCachedEntities();
