@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160202153022052" modeler:modelId="972239" modeler:modelVersion="1" modeler:modelLastUpdated="1454427018058">
+  <message id="myMessage" name="myMessage"/>
+  <process id="messageTest" name="messageTest" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <userTask id="sid-37CAD721-44AB-4989-8E78-47E2978CB284" name="My Task">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-E6231AED-9648-4D65-AE62-E909FE3D486F" sourceRef="startEvent1" targetRef="sid-37CAD721-44AB-4989-8E78-47E2978CB284"/>
+    <endEvent id="sid-B2155612-5ADA-433C-B294-CD4AF4EF7573"/>
+    <sequenceFlow id="sid-505FE71D-6EA7-4DA4-A9EB-464058AB4FEC" sourceRef="sid-37CAD721-44AB-4989-8E78-47E2978CB284" targetRef="sid-B2155612-5ADA-433C-B294-CD4AF4EF7573"/>
+    <boundaryEvent id="sid-8BD1B1A8-A4EA-48E1-A03A-A2802B37D702" attachedToRef="sid-37CAD721-44AB-4989-8E78-47E2978CB284" cancelActivity="true">
+      <messageEventDefinition messageRef="myMessage"/>
+    </boundaryEvent>
+    <userTask id="sid-21AD671C-5714-49B7-9F64-A8769DB4291C" name="Task after message">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-9A85E942-97C7-44F8-B3DE-FD3F3A8FEA4F" sourceRef="sid-8BD1B1A8-A4EA-48E1-A03A-A2802B37D702" targetRef="sid-21AD671C-5714-49B7-9F64-A8769DB4291C"/>
+    <endEvent id="sid-72AA6F46-6481-47D4-B07F-18D9A5D420EB"/>
+    <sequenceFlow id="sid-444F6544-A25E-4383-8674-F53E27A360B8" sourceRef="sid-21AD671C-5714-49B7-9F64-A8769DB4291C" targetRef="sid-72AA6F46-6481-47D4-B07F-18D9A5D420EB"/>
+  </process>
+</definitions>
