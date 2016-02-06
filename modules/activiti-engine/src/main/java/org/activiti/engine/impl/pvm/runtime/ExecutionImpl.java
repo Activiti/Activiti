@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
@@ -843,6 +844,37 @@ public class ExecutionImpl implements
     return currentActivityName;
   }
 
+  public Map<String, VariableInstance> getVariableInstances() {
+    return null;
+  }
+  
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames) {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstancesLocal() {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames) {
+    return null;
+  }
+
+  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+    return null;
+  }
+
+  public VariableInstance getVariableInstance(String variableName) {
+    return null;
+  }
+
+  public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
   public void createVariableLocal(String variableName, Object value) {
   }
@@ -854,20 +886,28 @@ public class ExecutionImpl implements
     return null;
   }
   
+  public VariableInstance getVariableInstanceLocal(String variableName) {
+    return null;
+  }
+  
   @Override
   public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
   	return getVariableLocal(variableName); // No support for fetchAllVariables
   }
+  
+  public VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
-    @Override
-    public <T> T getVariable(String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariable(variableName));
-    }
+  @Override
+  public <T> T getVariable(String variableName, Class<T> variableClass) {
+      return variableClass.cast(getVariable(variableName));
+  }
 
-    @Override
-    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariableLocal(variableName));
-    }
+  @Override
+  public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+      return variableClass.cast(getVariableLocal(variableName));
+  }
 
   public Set<String> getVariableNames() {
     return null;

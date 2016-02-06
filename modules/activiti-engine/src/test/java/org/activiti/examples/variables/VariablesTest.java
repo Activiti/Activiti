@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
@@ -31,6 +32,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tom Baeyens
@@ -178,6 +181,214 @@ public class VariablesTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
+  }
+  
+  @Deployment
+  public void testLocalizeVariables() {
+    // Start process instance with different types of variables
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("stringVar", "coca-cola");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("localizeVariables", variables);
+
+    ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processInstance.getProcessDefinitionId());
+    dynamicBpmnService.changeLocalizationName("en-US", "stringVar", "stringVar 'en-US' Name", infoNode);
+    dynamicBpmnService.changeLocalizationDescription("en-US", "stringVar", "stringVar 'en-US' Description", infoNode);
+    dynamicBpmnService.changeLocalizationName("en-AU", "stringVar", "stringVar 'en-AU' Name", infoNode);
+    dynamicBpmnService.changeLocalizationDescription("en-AU", "stringVar", "stringVar 'en-AU' Description", infoNode);
+    dynamicBpmnService.changeLocalizationName("en", "stringVar", "stringVar 'en' Name", infoNode);
+    dynamicBpmnService.changeLocalizationDescription("en", "stringVar", "stringVar 'en' Description", infoNode);
+    dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
+
+    Map<String, VariableInstance> variableInstances = runtimeService.getVariableInstances(processInstance.getId(), "es", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'es' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'es' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    // getVariableInstances
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), "en-US", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-US' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), "en-AU", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-AU' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), "en-GB", true);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), "en-GB", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedName());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedDescription());
+
+    List<String> variableNames = new ArrayList<String>();
+    variableNames.add("stringVar");
+
+    // getVariablesInstances via names
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), variableNames, "en-US", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-US' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), variableNames, "en-AU", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-AU' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), variableNames, "en-GB", true);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstances(processInstance.getId(), variableNames, "en-GB", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedName());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedDescription());
+
+    // getVariableInstancesLocal
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), "en-US", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-US' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), "en-AU", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-AU' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), "en-GB", true);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), "en-GB", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedName());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedDescription());
+
+    // getVariableInstancesLocal via names
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), variableNames, "en-US", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-US' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), variableNames, "en-AU", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en-AU' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), variableNames, "en-GB", true);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("stringVar 'en' Name", variableInstances.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en' Description", variableInstances.get("stringVar").getLocalizedDescription());
+
+    variableInstances = runtimeService.getVariableInstancesLocal(processInstance.getId(), variableNames, "en-GB", false);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedName());
+    assertEquals(null, variableInstances.get("stringVar").getLocalizedDescription());
+
+    // getVariableInstance
+    VariableInstance variableInstance = runtimeService.getVariableInstance(processInstance.getId(), "stringVar", "en-GB", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals(null, variableInstance.getLocalizedName());
+    assertEquals(null, variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstance(processInstance.getId(), "stringVar","en-US", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals("stringVar 'en-US' Name", variableInstance.getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstance(processInstance.getId(), "stringVar", "en-AU", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals("stringVar 'en-AU' Name", variableInstance.getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstance(processInstance.getId(), "stringVar", "en-GB", true);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals("stringVar 'en' Name", variableInstance.getLocalizedName());
+    assertEquals("stringVar 'en' Description", variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstance(processInstance.getId(), "stringVar", "en-GB", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals(null, variableInstance.getLocalizedName());
+    assertEquals(null, variableInstance.getLocalizedDescription());
+
+    // getVariableInstanceLocal
+    variableInstance = runtimeService.getVariableInstanceLocal(processInstance.getId(), "stringVar", "en-US", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals("stringVar 'en-US' Name", variableInstance.getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstanceLocal(processInstance.getId(), "stringVar", "en-AU", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals("stringVar 'en-AU' Name", variableInstance.getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstanceLocal(processInstance.getId(), "stringVar", "en-GB", true);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals("stringVar 'en' Name", variableInstance.getLocalizedName());
+    assertEquals("stringVar 'en' Description", variableInstance.getLocalizedDescription());
+
+    variableInstance = runtimeService.getVariableInstanceLocal(processInstance.getId(), "stringVar", "en-GB", false);
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("coca-cola", variableInstance.getValue());
+    assertEquals(null, variableInstance.getLocalizedName());
+    assertEquals(null, variableInstance.getLocalizedDescription());
   }
 
   // Test case for ACT-1839

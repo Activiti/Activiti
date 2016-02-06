@@ -179,6 +179,18 @@
       <if test="version != null">
         and RES.VERSION_ = #{version}
       </if>
+      <if test="versionGt != null">
+        and RES.VERSION_ &gt; #{versionGt}
+      </if>
+      <if test="versionGte != null">
+        and RES.VERSION_ &gt;= #{versionGte}
+      </if>
+      <if test="versionLt != null">
+        and RES.VERSION_ &lt; #{versionLt}
+      </if>
+      <if test="versionLte != null">
+        and RES.VERSION_ &lt;= #{versionLte}
+      </if>
       <if test="deploymentId != null">
         and RES.DEPLOYMENT_ID_ = #{deploymentId}
       </if>

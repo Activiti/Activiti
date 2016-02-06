@@ -27,6 +27,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class MessageStartEventTest extends PluggableActivitiTestCase {
   
@@ -100,19 +101,35 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
         
-    assertEquals(1, newEventSubscriptions.size());
+    assertEquals(2, newEventSubscriptions.size());
+    int latestCount = 0;
+    for (EventSubscriptionEntity eventSubscriptionEntity : newEventSubscriptions) {
+      if (eventSubscriptionEntity.isLatest()) {
+        latestCount++;
+      }
+    }
+    assertEquals(1, latestCount);
+    
     assertEquals(2, newProcessDefinitions.size());
+    int version1Count = 0;
+    int version2Count = 0;
     for (ProcessDefinition processDefinition : newProcessDefinitions) {
       if(processDefinition.getVersion() == 1) {
         for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-          assertFalse(subscription.getConfiguration().equals(processDefinition.getId()));         
+          if (subscription.getConfiguration().equals(processDefinition.getId())) {
+            version1Count++;
+          }
         }
       } else {
         for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-          assertTrue(subscription.getConfiguration().equals(processDefinition.getId()));         
+          if (subscription.getConfiguration().equals(processDefinition.getId())) {
+            version2Count++;
+          }
         }
       }
     }
+    assertEquals(1, version1Count);
+    assertEquals(1, version2Count);
     assertFalse(eventSubscriptions.equals(newEventSubscriptions));
     
     repositoryService.deleteDeployment(deploymentId);   
