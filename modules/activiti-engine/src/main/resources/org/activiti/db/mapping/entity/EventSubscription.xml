@@ -35,8 +35,6 @@
     <result property="configuration" column="CONFIGURATION_" jdbcType="VARCHAR" />
     <result property="created" column="CREATED_" jdbcType="TIMESTAMP" />   
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="VARCHAR" />
-    <result property="isLatest" column="IS_LATEST_" jdbcType="BOOLEAN" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />     
     <discriminator javaType="string" column="EVENT_TYPE_">
       <case value="message" resultMap="messageResultMap"/> 
@@ -105,7 +103,7 @@
     where EVENT_TYPE_ = 'signal'
     	and EVENT_NAME_ = #{parameter.eventName}
     	and (
-    	 (EVT.EXECUTION_ID_ is null and EVT.IS_LATEST_ = TRUE) 
+    	 (EVT.EXECUTION_ID_ is null) 
     	 or 
     	 (EVT.EXECUTION_ID_ is not null AND EXC.SUSPENSION_STATE_ = 1) 
     	)
@@ -124,7 +122,7 @@
     where EVENT_TYPE_ = 'signal'
       and EVENT_NAME_ = #{parameter.eventName}
       and (
-       (EVT.EXECUTION_ID_ is null and EVT.IS_LATEST_ = 1) 
+       (EVT.EXECUTION_ID_ is null) 
        or 
        (EVT.EXECUTION_ID_ is not null AND EXC.SUSPENSION_STATE_ = 1) 
       )
@@ -247,7 +245,6 @@
     where (EVENT_TYPE_ = 'message')
     	and (EVENT_NAME_ = #{eventName})
     	and EXECUTION_ID_ is null
-    	and IS_LATEST_ = TRUE
     <if test="tenantId != null">
         and TENANT_ID_ = #{tenantId}
     </if>  
@@ -262,7 +259,6 @@
     where (EVENT_TYPE_ = 'message')
       and (EVENT_NAME_ = #{eventName})
       and EXECUTION_ID_ is null
-      and IS_LATEST_ = 1
     <if test="tenantId != null">
         and TENANT_ID_ = #{tenantId}
     </if>  
@@ -286,8 +282,6 @@
            	CONFIGURATION_,
            	CREATED_,
            	PROC_DEF_ID_,
-           	PROC_DEF_KEY_,
-           	IS_LATEST_,
            	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
@@ -300,8 +294,6 @@
             #{configuration, jdbcType=VARCHAR},
             #{created, jdbcType=TIMESTAMP},
             #{processDefinitionId, jdbcType=VARCHAR},
-            #{processDefinitionKey, jdbcType=VARCHAR},
-            #{isLatest, jdbcType=BOOLEAN},
             #{tenantId, jdbcType=VARCHAR}
     )
   </insert>
@@ -318,8 +310,6 @@
             CONFIGURATION_,
             CREATED_,
             PROC_DEF_ID_,
-            PROC_DEF_KEY_,
-            IS_LATEST_,
             TENANT_ID_
     )
     values 
@@ -334,8 +324,6 @@
            #{messageEventSubscription.configuration, jdbcType=VARCHAR},
            #{messageEventSubscription.created, jdbcType=TIMESTAMP},
            #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-           #{messageEventSubscription.processDefinitionKey, jdbcType=VARCHAR},
-           #{messageEventSubscription.isLatest, jdbcType=BOOLEAN},
            #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
       </foreach>
   </insert>
@@ -354,8 +342,6 @@
             CONFIGURATION_,
             CREATED_,
             PROC_DEF_ID_,
-            PROC_DEF_KEY_,
-            IS_LATEST_,
             TENANT_ID_
           ) VALUES 
           (#{messageEventSubscription.id, jdbcType=VARCHAR},
@@ -368,8 +354,6 @@
            #{messageEventSubscription.configuration, jdbcType=VARCHAR},
            #{messageEventSubscription.created, jdbcType=TIMESTAMP},
            #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-           #{messageEventSubscription.processDefinitionKey, jdbcType=VARCHAR},
-           #{messageEventSubscription.isLatest, jdbcType=BOOLEAN},
            #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
@@ -388,8 +372,6 @@
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
        CREATED_ = #{created, jdbcType=TIMESTAMP},
        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-       PROC_DEF_KEY_ = #{processDefinitionKey, jdbcType=VARCHAR},
-       IS_LATEST_ = #{isLatest, jdbcType=BOOLEAN},
        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
@@ -400,7 +382,7 @@
   
   <insert id="insertSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
    insert into ${prefix}ACT_RU_EVENT_SUBSCR (
-             ID_, 
+            ID_, 
             REV_,
             EVENT_TYPE_,
            	EVENT_NAME_,
@@ -410,8 +392,6 @@
            	CONFIGURATION_,
            	CREATED_,
            	PROC_DEF_ID_,
-           	PROC_DEF_KEY_,
-            IS_LATEST_,
            	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
@@ -424,8 +404,6 @@
             #{configuration, jdbcType=VARCHAR},
             #{created, jdbcType=TIMESTAMP},
             #{processDefinitionId, jdbcType=VARCHAR},
-            #{processDefinitionKey, jdbcType=VARCHAR},
-            #{isLatest, jdbcType=BOOLEAN},
             #{tenantId, jdbcType=VARCHAR}         
     )
   </insert>
@@ -442,8 +420,6 @@
             CONFIGURATION_,
             CREATED_,
             PROC_DEF_ID_,
-            PROC_DEF_KEY_,
-            IS_LATEST_,
             TENANT_ID_
     )
     values 
@@ -458,8 +434,6 @@
          #{signalEventSubscription.configuration, jdbcType=VARCHAR},
          #{signalEventSubscription.created, jdbcType=TIMESTAMP},
          #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-         #{signalEventSubscription.processDefinitionKey, jdbcType=VARCHAR},
-         #{signalEventSubscription.isLatest, jdbcType=BOOLEAN},
          #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
      </foreach>
   </insert>
@@ -478,8 +452,6 @@
           CONFIGURATION_,
           CREATED_,
           PROC_DEF_ID_,
-          PROC_DEF_KEY_,
-          IS_LATEST_,
           TENANT_ID_
           )
           VALUES 
@@ -493,8 +465,6 @@
            #{signalEventSubscription.configuration, jdbcType=VARCHAR},
            #{signalEventSubscription.created, jdbcType=TIMESTAMP},
            #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-           #{signalEventSubscription.processDefinitionKey, jdbcType=VARCHAR},
-           #{signalEventSubscription.isLatest, jdbcType=BOOLEAN},
            #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
      </foreach>
     SELECT * FROM dual
@@ -513,8 +483,6 @@
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
        CREATED_ = #{created, jdbcType=TIMESTAMP},
        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-       PROC_DEF_KEY_ = #{processDefinitionKey, jdbcType=VARCHAR},
-       IS_LATEST_ = #{isLatest, jdbcType=BOOLEAN},
        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
@@ -535,8 +503,6 @@
            	CONFIGURATION_,
            	CREATED_,
            	PROC_DEF_ID_,
-           	PROC_DEF_KEY_,
-            IS_LATEST_,
            	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
@@ -549,8 +515,6 @@
             #{configuration, jdbcType=VARCHAR},
             #{created, jdbcType=TIMESTAMP},
             #{processDefinitionId, jdbcType=VARCHAR},
-            #{processDefinitionKey, jdbcType=VARCHAR},
-            #{isLatest, jdbcType=BOOLEAN},
             #{tenantId, jdbcType=VARCHAR}
     )
   </insert>
@@ -567,8 +531,6 @@
             CONFIGURATION_,
             CREATED_,
             PROC_DEF_ID_,
-            PROC_DEF_KEY_,
-            IS_LATEST_,
             TENANT_ID_
     )
     values 
@@ -583,8 +545,6 @@
          #{compensateEventSubscription.configuration, jdbcType=VARCHAR},
          #{compensateEventSubscription.created, jdbcType=TIMESTAMP},
          #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.processDefinitionKey, jdbcType=VARCHAR},
-         #{compensateEventSubscription.isLatest, jdbcType=BOOLEAN},
          #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
       </foreach>
   </insert>
@@ -603,8 +563,6 @@
           CONFIGURATION_,
           CREATED_,
           PROC_DEF_ID_,
-          PROC_DEF_KEY_,
-          IS_LATEST_,
           TENANT_ID_
         )
         VALUES
@@ -618,8 +576,6 @@
          #{compensateEventSubscription.configuration, jdbcType=VARCHAR},
          #{compensateEventSubscription.created, jdbcType=TIMESTAMP},
          #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.processDefinitionKey, jdbcType=VARCHAR},
-         #{compensateEventSubscription.isLatest, jdbcType=BOOLEAN},
          #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
@@ -638,8 +594,6 @@
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
        CREATED_ = #{created, jdbcType=TIMESTAMP},
        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-       PROC_DEF_KEY_ = #{processDefinitionKey, jdbcType=VARCHAR},
-       IS_LATEST_ = #{isLatest, jdbcType=BOOLEAN},
        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}

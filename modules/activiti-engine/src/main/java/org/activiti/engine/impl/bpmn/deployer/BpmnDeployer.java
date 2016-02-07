@@ -223,10 +223,10 @@ public class BpmnDeployer implements Deployer {
         removeObsoleteTimers(processDefinition);
         addTimerDeclarations(processDefinition, timers);
         
-        disableExistingMessageEventSubscriptions(processDefinition, latestProcessDefinition);
+        removeExistingMessageEventSubscriptions(processDefinition, latestProcessDefinition);
         addMessageEventSubscriptions(processDefinition);
         
-        disableExistingSignalEventSubScription(processDefinition, latestProcessDefinition);
+        removeExistingSignalEventSubScription(processDefinition, latestProcessDefinition);
         addSignalEventSubscriptions(processDefinition);
 
         dbSqlSession.insert(processDefinition);
@@ -356,7 +356,7 @@ public class BpmnDeployer implements Deployer {
   	}
   }
   
-  protected void disableExistingMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+  protected void removeExistingMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     if(latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
@@ -365,7 +365,7 @@ public class BpmnDeployer implements Deployer {
         .findEventSubscriptionsByTypeAndProcessDefinitionId(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDisable) {
-        eventSubscriptionEntity.setLatest(false);        
+        eventSubscriptionEntity.delete();        
       } 
       
     }
@@ -413,17 +413,8 @@ public class BpmnDeployer implements Deployer {
           for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
             // throw exception only if there's already a subscription as start event
             
-            // Backwards compatibility: before, the process def key was stored in configuration.
-            String eventSubscriptionProcessDefinitionId = eventSubscriptionEntity.getConfiguration();
-            String eventSubscriptionPdKey = eventSubscriptionEntity.getProcessDefinitionKey();
-            if (eventSubscriptionPdKey == null) {
-              ProcessDefinitionEntity pd = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(eventSubscriptionProcessDefinitionId);
-              eventSubscriptionPdKey = pd.getKey();
-            }
-            
             // no process instance-id = it's a message start event
-            if(StringUtils.isEmpty(eventSubscriptionEntity.getProcessInstanceId()) 
-                && !processDefinition.getKey().equals(eventSubscriptionPdKey)) {
+            if(StringUtils.isEmpty(eventSubscriptionEntity.getProcessInstanceId())) {
               throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
                       + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
             }
@@ -434,8 +425,6 @@ public class BpmnDeployer implements Deployer {
           newSubscription.setActivityId(eventDefinition.getActivityId());
           newSubscription.setConfiguration(processDefinition.getId());
           newSubscription.setProcessDefinitionId(processDefinition.getId());
-          newSubscription.setProcessDefinitionKey(processDefinition.getKey());
-          newSubscription.setLatest(true);
 
           if (processDefinition.getTenantId() != null) {
           	newSubscription.setTenantId(processDefinition.getTenantId());
@@ -447,7 +436,7 @@ public class BpmnDeployer implements Deployer {
     }      
   }
   
-  protected void disableExistingSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+  protected void removeExistingSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     if(latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
@@ -456,7 +445,7 @@ public class BpmnDeployer implements Deployer {
         .findEventSubscriptionsByTypeAndProcessDefinitionId(SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDisable) {
-        eventSubscriptionEntity.setLatest(false);  
+        eventSubscriptionEntity.delete();  
       } 
       
     }
@@ -473,8 +462,6 @@ public class BpmnDeployer implements Deployer {
         	 subscriptionEntity.setEventName(eventDefinition.getEventName());
         	 subscriptionEntity.setActivityId(eventDefinition.getActivityId());
         	 subscriptionEntity.setProcessDefinitionId(processDefinition.getId());
-        	 subscriptionEntity.setProcessDefinitionKey(processDefinition.getKey());
-        	 subscriptionEntity.setLatest(true);
         	 if (processDefinition.getTenantId() != null) {
         		 subscriptionEntity.setTenantId(processDefinition.getTenantId());
            }
