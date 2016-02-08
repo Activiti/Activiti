@@ -300,8 +300,9 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
    */
   protected void deleteExceptionByteArrayRef(JobEntity jobEntity) {
     ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();
-
-    exceptionByteArrayRef.delete();
+    if (exceptionByteArrayRef != null) {
+      exceptionByteArrayRef.delete();
+    }
   }
   
   // Job Execution logic ////////////////////////////////////////////////////////////////////

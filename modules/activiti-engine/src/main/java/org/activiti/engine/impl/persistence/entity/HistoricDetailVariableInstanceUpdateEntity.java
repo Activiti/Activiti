@@ -28,9 +28,9 @@ public interface HistoricDetailVariableInstanceUpdateEntity extends HistoricDeta
   void setName(String name);
   
   ByteArrayRef getByteArrayRef();
-
+  
   VariableType getVariableType();
 
   void setVariableType(VariableType variableType);
-
+  
 }
