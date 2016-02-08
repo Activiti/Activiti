@@ -55,7 +55,7 @@ public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serial
   protected String jobHandlerType;
   protected String jobHandlerConfiguration;
 
-  protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
+  protected ByteArrayRef exceptionByteArrayRef;
 
   protected String exceptionMessage;
 
@@ -69,7 +69,11 @@ public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serial
     persistentState.put("retries", retries);
     persistentState.put("duedate", duedate);
     persistentState.put("exceptionMessage", exceptionMessage);
-    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
+    
+    if (exceptionByteArrayRef != null) {
+      persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
+    }
+    
     return persistentState;
   }
 
@@ -83,6 +87,9 @@ public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serial
   }
 
   public String getExceptionStacktrace() {
+    if (exceptionByteArrayRef == null) {
+      return null;
+    }
     byte[] bytes = exceptionByteArrayRef.getBytes();
     if (bytes == null) {
       return null;
@@ -95,6 +102,9 @@ public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serial
   }
 
   public void setExceptionStacktrace(String exception) {
+    if (exceptionByteArrayRef == null) {
+      exceptionByteArrayRef = new ByteArrayRef();
+    }
     exceptionByteArrayRef.setValue("stacktrace", getUtf8Bytes(exception));
   }
 

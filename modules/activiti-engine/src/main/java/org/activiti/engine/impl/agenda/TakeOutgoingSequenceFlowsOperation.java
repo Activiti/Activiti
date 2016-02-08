@@ -206,8 +206,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         outgoingExecutionEntity.setScope(false);
         outgoingExecutionEntity.setActive(true);
 
-        outgoingExecutionEntity.setParentId(execution.getParentId() != null ? execution.getParentId() : execution.getId());
-
+        ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution; 
+        outgoingExecutionEntity.setParent(parent);
+        parent.addChildExecution(outgoingExecutionEntity);
+        
         sequenceFlow = outgoingSequenceFlow.get(i);
         outgoingExecutionEntity.setCurrentFlowElement(sequenceFlow);
 

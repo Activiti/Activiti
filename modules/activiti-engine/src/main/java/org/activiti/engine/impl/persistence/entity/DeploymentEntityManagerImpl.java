@@ -16,7 +16,12 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.Message;
+import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -70,130 +75,207 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
   @Override
   public void deleteDeployment(String deploymentId, boolean cascade) {
     List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
+    
+    updateRelatedModels(deploymentId);
 
+    if (cascade) {
+      deleteProcessInstancesForProcessDefinitions(processDefinitions);
+    }
+
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      deleteProcessDefinitionIdentityLinks(processDefinition);
+      deleteEventSubscriptions(processDefinition);
+      deleteProcessDefinitionInfo(processDefinition.getId());
+      
+      removeTimerStartJobs(processDefinition);
+      
+      // If previous process definition version has a timer/signal/message start event, it must be added
+      // Only if the currently deleted process definition is the latest version, 
+      // we fall back to the previous timer/signal/messagee start event
+      
+      restorePreviousStartEventsIfNeeded(processDefinition);
+    }
+
+    deleteProcessDefinitionForDeployment(deploymentId);
+    getResourceEntityManager().deleteResourcesByDeploymentId(deploymentId);
+    delete(findById(deploymentId), false);
+  }
+
+  protected void updateRelatedModels(String deploymentId) {
     // Remove the deployment link from any model.
-    // The model will still exists, as a model is a source for a deployment
-    // model and has a different lifecycle
+    // The model will still exists, as a model is a source for a deployment model and has a different lifecycle
     List<Model> models = new ModelQueryImpl().deploymentId(deploymentId).list();
     for (Model model : models) {
       ModelEntity modelEntity = (ModelEntity) model;
       modelEntity.setDeploymentId(null);
       getModelEntityManager().updateModel(modelEntity);
     }
+  }
 
-    if (cascade) {
+  protected void deleteProcessDefinitionIdentityLinks(ProcessDefinition processDefinition) {
+    getIdentityLinkEntityManager().deleteIdentityLinksByProcDef(processDefinition.getId());
+  }
 
-      // delete process instances
-      for (ProcessDefinition processDefinition : processDefinitions) {
-        String processDefinitionId = processDefinition.getId();
+  protected void deleteEventSubscriptions(ProcessDefinition processDefinition) {
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = getEventSubscriptionEntityManager();
+    eventSubscriptionEntityManager.deleteEventSubscriptionsForProcessDefinition(processDefinition.getId());
+  }
 
-        getExecutionEntityManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
-
-      }
-    }
-
-    for (ProcessDefinition processDefinition : processDefinitions) {
-      String processDefinitionId = processDefinition.getId();
-      // remove related authorization parameters in IdentityLink table
-      getIdentityLinkEntityManager().deleteIdentityLinksByProcDef(processDefinitionId);
-
-      // event subscriptions
-      getEventSubscriptionEntityManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
-      
-      getProcessDefinitionInfoEntityManager().deleteProcessDefinitionInfo(processDefinitionId);
-    }
-
-    // delete process definitions from db
+  protected void deleteProcessDefinitionInfo(String processDefinitionId) {
+    getProcessDefinitionInfoEntityManager().deleteProcessDefinitionInfo(processDefinitionId);
+  }
+  
+  protected void deleteProcessDefinitionForDeployment(String deploymentId) {
     getProcessDefinitionEntityManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
+  }
 
+  protected void deleteProcessInstancesForProcessDefinitions(List<ProcessDefinition> processDefinitions) {
     for (ProcessDefinition processDefinition : processDefinitions) {
-
-      // remove timer start events for current process definition:
-      
-      List<Job> timerStartJobs = getJobEntityManager()
-          .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
-      if (timerStartJobs != null && timerStartJobs.size() > 0) {
-        for (Job timerStartJob : timerStartJobs) {
-          if (getEventDispatcher().isEnabled()) {
-            getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
-          }
-
-          getJobEntityManager().delete((JobEntity) timerStartJob);
-        }
-      }
-      
-      // If previous process definition version has a timer start event, it must be added
-      ProcessDefinitionEntity latestProcessDefinition = null;
-      if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-        latestProcessDefinition = getProcessDefinitionEntityManager()
-            .findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
-      } else {
-        latestProcessDefinition = getProcessDefinitionEntityManager()
-            .findLatestProcessDefinitionByKey(processDefinition.getKey());
-      }
-
-      // Only if the currently deleted process definition is the latest version, we fall back to the previous timer start event
-      if (processDefinition.getId().equals(latestProcessDefinition.getId())) { 
-        
-        // Try to find a previous version (it could be some versions are missing due to deletions)
-        int previousVersion = processDefinition.getVersion() - 1;
-        ProcessDefinitionEntity previousProcessDefinition = null;
-        while (previousProcessDefinition == null && previousVersion > 0) {
-          
-          ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl()
-            .processDefinitionVersion(previousVersion)
-            .processDefinitionKey(processDefinition.getKey());
-        
-          if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-            previousProcessDefinitionQuery.processDefinitionTenantId(processDefinition.getTenantId());
-          } else {
-            previousProcessDefinitionQuery.processDefinitionWithoutTenantId();
-          }
-        
-          previousProcessDefinition = (ProcessDefinitionEntity) previousProcessDefinitionQuery.singleResult();
-          previousVersion--;
-          
-        }
-        
-        // TODO: cleanup in a util or something like that
-        if (previousProcessDefinition != null) {
-
-          org.activiti.bpmn.model.Process previousProcess = ProcessDefinitionUtil.getProcess(previousProcessDefinition.getId());
-          if (CollectionUtil.isNotEmpty(previousProcess.getFlowElements())) {
-            List<StartEvent> startEvents = previousProcess.findFlowElementsOfType(StartEvent.class);
-            if (CollectionUtil.isNotEmpty(startEvents)) {
-              for (StartEvent startEvent : startEvents) {
-                if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                  EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-                  if (eventDefinition instanceof TimerEventDefinition) {
-                    TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
-                    TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
-                        TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
-                    
-                    if (timer != null) {
-                      timer.setProcessDefinitionId(previousProcessDefinition.getId());
+      getExecutionEntityManager().deleteProcessInstancesByProcessDefinition(processDefinition.getId(), "deleted deployment", true);
+    }
+  }
   
-                      if (previousProcessDefinition.getTenantId() != null) {
-                        timer.setTenantId(previousProcessDefinition.getTenantId());
-                      }
+  protected void removeTimerStartJobs(ProcessDefinition processDefinition) {
+    List<Job> timerStartJobs = getJobEntityManager()
+        .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
+    if (timerStartJobs != null && timerStartJobs.size() > 0) {
+      for (Job timerStartJob : timerStartJobs) {
+        if (getEventDispatcher().isEnabled()) {
+          getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
+        }
+
+        getJobEntityManager().delete((JobEntity) timerStartJob);
+      }
+    }
+  }
   
-                      getJobEntityManager().schedule(timer);
-                    }
-                  }
+  protected void restorePreviousStartEventsIfNeeded(ProcessDefinition processDefinition) {
+    ProcessDefinitionEntity latestProcessDefinition = findLatestProcessDefinition(processDefinition);
+    if (processDefinition.getId().equals(latestProcessDefinition.getId())) { 
+      
+      // Try to find a previous version (it could be some versions are missing due to deletions)
+      ProcessDefinition previousProcessDefinition = findNewLatestProcessDefinitionAfterRemovalOf(processDefinition);
+      if (previousProcessDefinition != null) {
+
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(previousProcessDefinition.getId());
+        org.activiti.bpmn.model.Process previousProcess = ProcessDefinitionUtil.getProcess(previousProcessDefinition.getId());
+        if (CollectionUtil.isNotEmpty(previousProcess.getFlowElements())) {
+          
+          List<StartEvent> startEvents = previousProcess.findFlowElementsOfType(StartEvent.class);
+          
+          if (CollectionUtil.isNotEmpty(startEvents)) {
+            for (StartEvent startEvent : startEvents) {
+              
+              if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
+                EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                if (eventDefinition instanceof TimerEventDefinition) {
+                  restoreTimerStartEvent(previousProcessDefinition, startEvent, eventDefinition);
+                } else if (eventDefinition instanceof SignalEventDefinition) {
+                  restoreSignalStartEvent(previousProcessDefinition, bpmnModel, startEvent, eventDefinition);
+                } else if (eventDefinition instanceof MessageEventDefinition) {
+                  restoreMessageStartEvent(previousProcessDefinition, bpmnModel, startEvent, eventDefinition);
                 }
+                
               }
+              
             }
-
           }
 
         }
-      }
 
+      }
+    }
+  }
+
+  protected void restoreTimerStartEvent(ProcessDefinition previousProcessDefinition, StartEvent startEvent, EventDefinition eventDefinition) {
+    TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
+    TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+        TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
+    
+    if (timer != null) {
+      timer.setProcessDefinitionId(previousProcessDefinition.getId());
+ 
+      if (previousProcessDefinition.getTenantId() != null) {
+        timer.setTenantId(previousProcessDefinition.getTenantId());
+      }
+ 
+      getJobEntityManager().schedule(timer);
+    }
+  }
+
+  protected void restoreSignalStartEvent(ProcessDefinition previousProcessDefinition, BpmnModel bpmnModel, StartEvent startEvent, EventDefinition eventDefinition) {
+    SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
+    SignalEventSubscriptionEntity subscriptionEntity = getEventSubscriptionEntityManager().createSignalEventSubscription();
+    Signal signal = bpmnModel.getSignal(signalEventDefinition.getSignalRef());
+    if (signal != null) {
+      subscriptionEntity.setEventName(signal.getName());
+    } else {
+      subscriptionEntity.setEventName(signalEventDefinition.getSignalRef());
+    }
+    subscriptionEntity.setActivityId(startEvent.getId());
+    subscriptionEntity.setProcessDefinitionId(previousProcessDefinition.getId());
+    if (previousProcessDefinition.getTenantId() != null) {
+      subscriptionEntity.setTenantId(previousProcessDefinition.getTenantId());
     }
 
-    getResourceEntityManager().deleteResourcesByDeploymentId(deploymentId);
+    getEventSubscriptionEntityManager().insert(subscriptionEntity);
+  }
 
-    delete(findById(deploymentId), false);
+  protected void restoreMessageStartEvent(ProcessDefinition previousProcessDefinition, BpmnModel bpmnModel, StartEvent startEvent, EventDefinition eventDefinition) {
+    MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
+    if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+      Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
+      messageEventDefinition.setMessageRef(message.getName());
+    }
+
+    MessageEventSubscriptionEntity newSubscription = getEventSubscriptionEntityManager().createMessageEventSubscription();
+    newSubscription.setEventName(messageEventDefinition.getMessageRef());
+    newSubscription.setActivityId(startEvent.getId());
+    newSubscription.setConfiguration(previousProcessDefinition.getId());
+    newSubscription.setProcessDefinitionId(previousProcessDefinition.getId());
+
+    if (previousProcessDefinition.getTenantId() != null) {
+      newSubscription.setTenantId(previousProcessDefinition.getTenantId());
+    }
+
+    getEventSubscriptionEntityManager().insert(newSubscription);
+  }
+  
+  protected ProcessDefinitionEntity findLatestProcessDefinition(ProcessDefinition processDefinition) {
+    ProcessDefinitionEntity latestProcessDefinition = null;
+    if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+      latestProcessDefinition = getProcessDefinitionEntityManager()
+          .findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
+    } else {
+      latestProcessDefinition = getProcessDefinitionEntityManager()
+          .findLatestProcessDefinitionByKey(processDefinition.getKey());
+    }
+    return latestProcessDefinition;
+  }
+  
+  protected ProcessDefinition findNewLatestProcessDefinitionAfterRemovalOf(ProcessDefinition processDefinitionToBeRemoved) {
+    
+    // The latest process definition is not necessarily the one with 'version -1' (some versions could have been deleted)
+    // Hence, the following logic
+    
+    ProcessDefinitionQueryImpl query = new ProcessDefinitionQueryImpl();
+    query.processDefinitionKey(processDefinitionToBeRemoved.getKey());
+    
+    if (processDefinitionToBeRemoved.getTenantId() != null 
+        && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinitionToBeRemoved.getTenantId())) {
+      query.processDefinitionTenantId(processDefinitionToBeRemoved.getTenantId());
+    } else {
+      query.processDefinitionWithoutTenantId();
+    }
+    
+    query.processDefinitionVersionLowerThan(processDefinitionToBeRemoved.getVersion());
+    query.orderByProcessDefinitionVersion().desc();
+    
+    List<ProcessDefinition> processDefinitions = getProcessDefinitionEntityManager().findProcessDefinitionsByQueryCriteria(query, new Page(0, 1));
+    if (processDefinitions != null && processDefinitions.size() > 0) {
+      return processDefinitions.get(0);
+    } 
+    return null;
   }
 
   @Override

@@ -15,7 +15,6 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -42,7 +41,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public Process() {
 
   }
-
+  
   public String getDocumentation() {
     return documentation;
   }
@@ -303,6 +302,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public void setValues(Process otherElement) {
     super.setValues(otherElement);
 
+//    setBpmnModel(bpmnModel);
     setName(otherElement.getName());
     setExecutable(otherElement.isExecutable());
     setDocumentation(otherElement.getDocumentation());

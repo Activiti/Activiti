@@ -159,19 +159,6 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
   }
 
   @Override
-  public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(final String executionId) {
-    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByExecution", executionId, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            &&  eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
-      }
-      
-    }, true));
-  }
-
-  @Override
   public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(final String name, final String executionId) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
@@ -239,15 +226,17 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId) {
-    final String query = "selectEventSubscriptionsByConfiguration";
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("eventType", type);
-    params.put("configuration", configuration);
+  public List<EventSubscriptionEntity> findEventSubscriptionsByTypeAndProcessDefinitionId(String type, String processDefinitionId, String tenantId) {
+    final String query = "selectEventSubscriptionsByTypeAndProcessDefinitionId";    
+    Map<String,String> params = new HashMap<String, String>();
+    if (type != null) {
+      params.put("eventType", type);
+    }
+    params.put("processDefinitionId", processDefinitionId);
     if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
       params.put("tenantId", tenantId);
     }
-    return getDbSqlSession().selectList(query, params);
+    return getDbSqlSession().selectList(query, params);            
   }
 
   @Override

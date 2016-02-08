@@ -415,6 +415,10 @@ public class DbSqlSession implements Session {
   
   @SuppressWarnings("rawtypes")
   public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
+    if (page != null) {
+      parameter.setFirstResult(page.getFirstResult());
+      parameter.setMaxResults(page.getMaxResults());
+    }
     return selectList(statement, parameter);
   }
 
