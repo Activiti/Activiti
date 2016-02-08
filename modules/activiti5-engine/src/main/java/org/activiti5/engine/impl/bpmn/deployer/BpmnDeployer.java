@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -224,10 +225,10 @@ public class BpmnDeployer implements Deployer {
         removeObsoleteTimers(processDefinition);
         addTimerDeclarations(processDefinition, timers);
         
-        removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
+        removeExistingMessageEventSubscriptions(processDefinition, latestProcessDefinition);
         addMessageEventSubscriptions(processDefinition);
         
-        removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
+        removeExistingSignalEventSubScription(processDefinition, latestProcessDefinition);
         addSignalEventSubscriptions(processDefinition);
 
         dbSqlSession.insert(processDefinition);
@@ -357,14 +358,14 @@ public class BpmnDeployer implements Deployer {
   	}
   }
   
-  protected void removeObsoleteMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+  protected void removeExistingMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     // remove all subscriptions for the previous version    
     if(latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
       List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
         .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+        .findEventSubscriptionsByTypeAndProcessDefinitionId(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
         eventSubscriptionEntity.delete();        
@@ -377,9 +378,19 @@ public class BpmnDeployer implements Deployer {
   protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition) {
     CommandContext commandContext = Context.getCommandContext();
     List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-    if(eventDefinitions != null) {     
+    if(eventDefinitions != null) {   
+      
+      Set<String> messageNames = new HashSet<String>();
       for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
         if(eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
+          
+          if (!messageNames.contains(eventDefinition.getEventName())) {
+            messageNames.add(eventDefinition.getEventName());
+          } else {
+            throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
+                + "': there multiple message event subscriptions for the message with name '" + eventDefinition.getEventName() + "'.");
+          }
+          
           // look for subscriptions for the same name in db:
           List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager()
             .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, 
@@ -424,14 +435,14 @@ public class BpmnDeployer implements Deployer {
     }      
   }
   
-  protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+  protected void removeExistingSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     // remove all subscriptions for the previous version    
     if(latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
       List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
         .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+        .findEventSubscriptionsByTypeAndProcessDefinitionId(SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
         eventSubscriptionEntity.delete();        

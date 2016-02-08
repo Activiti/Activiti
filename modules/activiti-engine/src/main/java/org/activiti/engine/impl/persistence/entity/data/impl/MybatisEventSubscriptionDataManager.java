@@ -249,6 +249,21 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     }
     return getDbSqlSession().selectList(query, params);
   }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<EventSubscriptionEntity> findEventSubscriptionsByTypeAndProcessDefinitionId(String type, String processDefinitionId, String tenantId) {
+    final String query = "selectEventSubscriptionsByTypeAndProcessDefinitionId";    
+    Map<String,String> params = new HashMap<String, String>();
+    if (type != null) {
+      params.put("eventType", type);
+    }
+    params.put("processDefinitionId", processDefinitionId);
+    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+      params.put("tenantId", tenantId);
+    }
+    return getDbSqlSession().selectList(query, params);            
+  }
 
   @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByName(final String type, final String eventName, final String tenantId) {

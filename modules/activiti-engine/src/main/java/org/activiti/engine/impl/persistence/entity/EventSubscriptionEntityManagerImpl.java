@@ -206,6 +206,11 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId) {
     return eventSubscriptionDataManager.findEventSubscriptionsByConfiguration(type, configuration, tenantId);
   }
+  
+  @Override
+  public List<EventSubscriptionEntity> findEventSubscriptionsByTypeAndProcessDefinitionId(String type, String processDefinitionId, String tenantId) {
+    return eventSubscriptionDataManager.findEventSubscriptionsByTypeAndProcessDefinitionId(type, processDefinitionId, tenantId);
+  }
 
   @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId) {

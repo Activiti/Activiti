@@ -62,6 +62,8 @@ public interface EventSubscriptionEntityManager extends EntityManager<EventSubsc
   List<EventSubscriptionEntity> findEventSubscriptionsByExecution(String executionId);
 
   List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId);
+  
+  List<EventSubscriptionEntity> findEventSubscriptionsByTypeAndProcessDefinitionId(String type, String processDefinitionId, String tenantId);
 
   List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId);
 

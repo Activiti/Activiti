@@ -43,8 +43,8 @@ public class EventSubscriptionManager {
   protected void removeObsoleteEventSubscriptionsImpl(ProcessDefinitionEntity processDefinition, String eventHandlerType) {
     // remove all subscriptions for the previous version
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-    List<EventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findEventSubscriptionsByConfiguration(eventHandlerType,
-        processDefinition.getId(), processDefinition.getTenantId());
+    List<EventSubscriptionEntity> subscriptionsToDelete = 
+        eventSubscriptionEntityManager.findEventSubscriptionsByTypeAndProcessDefinitionId(eventHandlerType, processDefinition.getId(), processDefinition.getTenantId());
 
     for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
       eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
