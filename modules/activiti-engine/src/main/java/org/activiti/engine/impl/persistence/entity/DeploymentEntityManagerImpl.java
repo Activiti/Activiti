@@ -118,11 +118,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
   protected void deleteEventSubscriptions(ProcessDefinition processDefinition) {
     EventSubscriptionEntityManager eventSubscriptionEntityManager = getEventSubscriptionEntityManager();
-    List<EventSubscriptionEntity> eventSubscriptionEntities = eventSubscriptionEntityManager  
-        .findEventSubscriptionsByTypeAndProcessDefinitionId(null, processDefinition.getId(), processDefinition.getTenantId()); // null type ==> all types
-    for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptionEntities) {
-      eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
-    }
+    eventSubscriptionEntityManager.deleteEventSubscriptionsForProcessDefinition(processDefinition.getId());
   }
 
   protected void deleteProcessDefinitionInfo(String processDefinitionId) {

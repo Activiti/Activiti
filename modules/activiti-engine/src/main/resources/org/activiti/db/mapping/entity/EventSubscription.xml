@@ -19,7 +19,10 @@
   </delete>
   
   <delete id="deleteEventSubscriptionsForProcessDefinition" parameterType="string">
-    delete from ${prefix}ACT_RU_EVENT_SUBSCR where PROC_DEF_ID_ = #{processDefinitionId}
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR 
+    where PROC_DEF_ID_ = #{processDefinitionId} 
+    and EXECUTION_ID_ is null
+    and PROC_INST_ID_ is null
   </delete>
   
   <!-- RESULTMAP -->
@@ -131,13 +134,6 @@
         and PROC_INST_ID_ = #{parameter.processInstanceId}
   </select> 
   
-  <select id="selectSignalEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-    select * 
-    from ${prefix}ACT_RU_EVENT_SUBSCR
-    where (EVENT_TYPE_ = 'signal')
-        and (EXECUTION_ID_ = #{parameter})  
-  </select>
-  
   <select id="selectSignalEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
@@ -173,23 +169,6 @@
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (PROC_INST_ID_ = #{parameter.processInstanceId})
     	and (ACTIVITY_ID_ = #{parameter.activityId})
-  </select>
-  
-  <select id="selectEventSubscriptionsByConfiguration" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-    select * 
-    from ${prefix}ACT_RU_EVENT_SUBSCR
-    where (EVENT_TYPE_ = #{parameter.eventType})
-    	and ( 
-    	   (CONFIGURATION_ = #{parameter.configuration})
-    	   or
-    	   (PROC_DEF_ID_ = #{parameter.configuration})
-    	)
-     <if test="parameter.tenantId != null">
-        and TENANT_ID_ = #{parameter.tenantId}
-    </if>  
-    <if test="parameter.tenantId == null">
-        and (TENANT_ID_ = '' or TENANT_ID_ is null)
-    </if>   	
   </select>
   
   <select id="selectEventSubscriptionsByTypeAndProcessDefinitionId" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

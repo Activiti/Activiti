@@ -25,6 +25,8 @@ import org.activiti.engine.impl.Page;
  */
 public interface EventSubscriptionEntityManager extends EntityManager<EventSubscriptionEntity> {
   
+  /* Create entity */
+  
   MessageEventSubscriptionEntity createMessageEventSubscription();
   
   SignalEventSubscriptionEntity createSignalEventSubscription();
@@ -32,9 +34,8 @@ public interface EventSubscriptionEntityManager extends EntityManager<EventSubsc
   CompensateEventSubscriptionEntity createCompensateEventSubscription();
   
   
-  void eventReceived(EventSubscriptionEntity eventSubscriptionEntity, Object payload, boolean processASync);
+  /* Create and insert */
   
-
   SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution);
 
   MessageEventSubscriptionEntity insertMessageEvent(MessageEventDefinition messageEventDefinition, ExecutionEntity execution);
@@ -42,34 +43,57 @@ public interface EventSubscriptionEntityManager extends EntityManager<EventSubsc
   CompensateEventSubscriptionEntity insertCompensationEvent(ExecutionEntity execution, String activityId);
   
   
-
-  List<EventSubscriptionEntity> findEventSubscriptionsByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl, Page page);
-
-  List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName);
-
-  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(String eventName, String tenantId);
-
-  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName);
-
-  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByExecution(String executionId);
-
-  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(String name, String executionId);
-
-  List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(String executionId, String type);
-
-  List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(String processInstanceId, String activityId, String type);
-
+  /* Update */
+  
+  void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId);
+  
+  
+  /* Delete */
+  
+  void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId);
+  
+  
+  /* Event receival */
+  
+  void eventReceived(EventSubscriptionEntity eventSubscriptionEntity, Object payload, boolean processASync);
+  
+  
+  /* Find (generic) */
+  
+  List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId);
+  
+  List<EventSubscriptionEntity> findEventSubscriptionsByNameAndExecution(String type, String eventName, String executionId);
+  
   List<EventSubscriptionEntity> findEventSubscriptionsByExecution(String executionId);
 
-  List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId);
+  List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(String executionId, String type);
+  
+  List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(String processInstanceId, String activityId, String type);
   
   List<EventSubscriptionEntity> findEventSubscriptionsByTypeAndProcessDefinitionId(String type, String processDefinitionId, String tenantId);
-
-  List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId);
-
-  List<EventSubscriptionEntity> findEventSubscriptionsByNameAndExecution(String type, String eventName, String executionId);
-
+  
+  List<EventSubscriptionEntity> findEventSubscriptionsByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl, Page page);
+  
+  long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl);
+  
+  
+  /* Find (signal) */
+  
+  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(String eventName, String tenantId);
+  
+  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName);
+  
+  List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(String name, String executionId);
+  
+  
+  /* Find (message) */
+  
   MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId);
+  
+  List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName);
+  
+  
+  /* Find (compensation) */
   
   List<CompensateEventSubscriptionEntity> findCompensateEventSubscriptionsByExecutionId(String executionId);
 
@@ -77,12 +101,5 @@ public interface EventSubscriptionEntityManager extends EntityManager<EventSubsc
 
   List<CompensateEventSubscriptionEntity> findCompensateEventSubscriptionsByProcessInstanceIdAndActivityId(String processInstanceId, String activityId);
   
-  long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl);
-
-
-  void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId);
-
-  
-  void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId);
 
 }
