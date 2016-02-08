@@ -483,6 +483,7 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
         List<EventSubscriptionEntity> eventSubscriptionEntities = query.list();
         for (EventSubscriptionEntity entity : eventSubscriptionEntities) {
           assertEquals("message", entity.getEventType());
+          assertNotNull(entity.getProcessDefinitionId());
         }
         return eventSubscriptionEntities;
       }

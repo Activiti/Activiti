@@ -385,7 +385,7 @@ public class BpmnDeployer implements Deployer {
             messageNames.add(eventDefinition.getEventName());
           } else {
             throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
-                + "': there multiple message event subscriptions for the message with name '" + eventDefinition.getEventName() + "'.");
+                + "': there are multiple message event subscriptions for the message with name '" + eventDefinition.getEventName() + "'.");
           }
           
           // look for subscriptions for the same name in db:

@@ -433,6 +433,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
         List<EventSubscriptionEntity> eventSubscriptionEntities = query.list();
         for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptionEntities) {
           assertEquals("signal", eventSubscriptionEntity.getEventType());
+          assertNotNull(eventSubscriptionEntity.getProcessDefinitionId());
         }
         return eventSubscriptionEntities;
       }
