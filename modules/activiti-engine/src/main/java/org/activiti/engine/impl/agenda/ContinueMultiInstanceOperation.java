@@ -53,6 +53,8 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
     
+    commandContext.getHistoryManager().recordActivityStart(execution);
+    
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     if (activityBehavior != null) {

@@ -121,6 +121,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
     
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     callActivityEndListeners(execution);
     
     if (zeroNrOfInstances) {

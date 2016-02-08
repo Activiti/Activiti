@@ -94,6 +94,8 @@ public class ContinueProcessOperation extends AbstractOperation {
     }
 
     // Synchronous execution
+    
+    commandContext.getHistoryManager().recordActivityStart(execution);
 
     // Execution listener
     if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
@@ -199,7 +201,7 @@ public class ContinueProcessOperation extends AbstractOperation {
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
       childExecutionEntity.setScope(false);
-
+      
       ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
       logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
       boundaryEventBehavior.execute(childExecutionEntity);

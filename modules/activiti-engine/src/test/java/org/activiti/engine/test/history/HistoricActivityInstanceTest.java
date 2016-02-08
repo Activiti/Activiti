@@ -279,6 +279,8 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("boundary").processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull(historicActivityInstance);
+    assertNotNull(historicActivityInstance.getStartTime());
+    assertNotNull(historicActivityInstance.getEndTime());
   }
 
   /**

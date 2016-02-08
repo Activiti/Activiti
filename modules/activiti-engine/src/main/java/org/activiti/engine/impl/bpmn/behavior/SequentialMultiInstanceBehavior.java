@@ -91,6 +91,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     callActivityEndListeners(execution);
     
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);

@@ -83,6 +83,8 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }
     
+    commandContext.getHistoryManager().recordActivityEnd(execution);
+    
     // No scope, can continue
     if (currentFlowElement instanceof FlowNode) {
       

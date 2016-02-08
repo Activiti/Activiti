@@ -141,7 +141,6 @@ import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.history.HistoryManager;
-import org.activiti.engine.impl.history.parse.FlowNodeHistoryParseHandler;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
@@ -1757,21 +1756,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
 
-    // History
-    for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
-      bpmnParserHandlers.add(handler);
-    }
-
     return bpmnParserHandlers;
-  }
-
-  public List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
-    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
-    parseHandlers.add(new FlowNodeHistoryParseHandler());
-    // parseHandlers.add(new ProcessHistoryParseHandler());
-    // parseHandlers.add(new StartEventHistoryParseHandler());
-//    parseHandlers.add(new UserTaskHistoryParseHandler());
-    return parseHandlers;
   }
 
   public void initClock() {

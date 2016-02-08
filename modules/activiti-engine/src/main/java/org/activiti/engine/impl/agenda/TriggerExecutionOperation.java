@@ -1,5 +1,6 @@
 package org.activiti.engine.impl.agenda;
 
+import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
@@ -31,7 +32,16 @@ public class TriggerExecutionOperation extends AbstractOperation {
       FlowNode flowNode = (FlowNode) currentFlowElement;
       ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
       if (activityBehavior instanceof TriggerableActivityBehavior) {
+        if (flowNode instanceof BoundaryEvent) {
+          commandContext.getHistoryManager().recordActivityStart(execution);
+        }
+        
         ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
+        
+        if (flowNode instanceof BoundaryEvent) {
+          commandContext.getHistoryManager().recordActivityEnd(execution);
+        }
+        
       } else {
         throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getCanonicalName());
       }
