@@ -64,9 +64,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(DelegateExecution execution) {
-    Date currentTime =
-        Context.getCommandContext().getProcessEngineConfiguration().getClock().getCurrentTime();
-    TaskEntity task = Context.getCommandContext().getTaskEntityManager().create(currentTime);
+    TaskEntity task = Context.getCommandContext().getTaskEntityManager().create();
     task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinitionKey(userTask.getId());
     Context.getCommandContext().getTaskEntityManager().insert(task, (ExecutionEntity) execution);

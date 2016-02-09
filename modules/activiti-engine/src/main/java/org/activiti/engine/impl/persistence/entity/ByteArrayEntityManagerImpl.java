@@ -37,20 +37,6 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
   }
   
   @Override
-  public ByteArrayEntity createAndInsert(byte[] bytes) {
-    return createAndInsert(null, bytes);
-  }
-  
-  @Override
-  public ByteArrayEntity createAndInsert(String name, byte[] bytes) {
-    ByteArrayEntity byteArrayEntity =  byteArrayDataManager.create();
-    byteArrayEntity.setName(name);
-    byteArrayEntity.setBytes(bytes);
-    byteArrayDataManager.insert(byteArrayEntity);
-    return byteArrayEntity;
-  }
-
-  @Override
   public void deleteByteArrayById(String byteArrayEntityId) {
     byteArrayDataManager.deleteByteArrayNoRevisionCheck(byteArrayEntityId);
   }
