@@ -10,6 +10,9 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
     
     <subProcess id="subProcess">
+      <extensionElements>
+        <activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.subprocess.SubProcessStubExecutionListener" />
+      </extensionElements>
       <startEvent id="subProcessStart" />
       <sequenceFlow id="flow2" sourceRef="subProcessStart" targetRef="subProcessTask" />
       <userTask id="subProcessTask" name="Task in subprocess" />
