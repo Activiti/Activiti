@@ -61,6 +61,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
+  protected boolean withException;
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
@@ -332,7 +333,12 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     this.includeProcessVariables = true;
     return this;
   }
-
+  
+  public ProcessInstanceQuery withException() {
+    this.withException = true;
+    return this;
+  }
+  
   @Override
   public ProcessInstanceQuery processInstanceName(String name) {
     if (inOrStatement) {
@@ -702,7 +708,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public boolean isIncludeProcessVariables() {
     return includeProcessVariables;
   }
-
+  
+  public boolean iswithException() {
+    return withException;
+  }
+  
   public String getNameLikeIgnoreCase() {
     return nameLikeIgnoreCase;
   }
