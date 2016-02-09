@@ -31,22 +31,6 @@ public class TimerEntityImpl extends JobEntityImpl implements TimerEntity {
     this.jobType = "timer";
   }
 
-  public TimerEntityImpl(TimerEntityImpl te) {
-    jobHandlerConfiguration = te.jobHandlerConfiguration;
-    jobHandlerType = te.jobHandlerType;
-    isExclusive = te.isExclusive;
-    repeat = te.repeat;
-    retries = te.retries;
-    endDate = te.endDate;
-    executionId = te.executionId;
-    processInstanceId = te.processInstanceId;
-    processDefinitionId = te.processDefinitionId;
-
-    // Inherit tenant
-    tenantId = te.tenantId;
-    this.jobType = "timer";
-  }
-
   public String getRepeat() {
     return repeat;
   }

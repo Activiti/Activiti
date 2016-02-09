@@ -39,10 +39,6 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
   public UserEntityImpl() {
   }
 
-  public UserEntityImpl(String id) {
-    this.id = id;
-  }
-
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("firstName", firstName);

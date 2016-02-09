@@ -45,6 +45,7 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntityImpl() {
+    
   }
 
   public HistoricProcessInstanceEntityImpl(ExecutionEntity processInstance) {

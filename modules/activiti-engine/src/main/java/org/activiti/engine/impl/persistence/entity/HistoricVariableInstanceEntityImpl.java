@@ -50,8 +50,8 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
 
   protected Object cachedValue;
 
-  // Default constructor for SQL mapping
   public HistoricVariableInstanceEntityImpl() {
+    
   }
 
   public Object getPersistentState() {

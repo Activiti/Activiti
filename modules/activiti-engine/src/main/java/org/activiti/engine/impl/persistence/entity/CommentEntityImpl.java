@@ -38,6 +38,10 @@ public class CommentEntityImpl implements CommentEntity, Serializable {
   protected String action;
   protected String message;
   protected String fullMessage;
+  
+  public CommentEntityImpl() {
+    
+  }
 
   public Object getPersistentState() {
     return CommentEntityImpl.class;

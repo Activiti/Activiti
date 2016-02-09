@@ -181,6 +181,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected boolean isDeleted; // TODO: should be in entity superclass probably
 
   public ExecutionEntityImpl() {
+    
   }
   
   //persistent state /////////////////////////////////////////////////////////

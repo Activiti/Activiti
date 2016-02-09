@@ -48,6 +48,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricTaskInstanceEntityImpl() {
+    
   }
 
   public HistoricTaskInstanceEntityImpl(TaskEntity task, ExecutionEntity execution) {

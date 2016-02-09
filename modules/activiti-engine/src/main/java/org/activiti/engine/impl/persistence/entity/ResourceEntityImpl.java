@@ -28,6 +28,10 @@ public class ResourceEntityImpl implements ResourceEntity, Serializable {
   protected String deploymentId;
   protected boolean generated;
 
+  public ResourceEntityImpl() {
+    
+  }
+  
   public String getId() {
     return id;
   }

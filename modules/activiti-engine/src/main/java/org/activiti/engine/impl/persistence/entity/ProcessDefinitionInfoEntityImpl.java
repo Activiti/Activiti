@@ -29,6 +29,10 @@ public class ProcessDefinitionInfoEntityImpl implements ProcessDefinitionInfoEnt
   protected String processDefinitionId;
   protected int revision = 1;
   protected String infoJsonId;
+  
+  public ProcessDefinitionInfoEntityImpl() {
+    
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();

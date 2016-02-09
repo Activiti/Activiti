@@ -34,6 +34,10 @@ public class IdentityInfoEntityImpl implements IdentityInfoEntity, Serializable 
   protected byte[] passwordBytes;
   protected String parentId;
   protected Map<String, String> details;
+  
+  public IdentityInfoEntityImpl() {
+    
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
