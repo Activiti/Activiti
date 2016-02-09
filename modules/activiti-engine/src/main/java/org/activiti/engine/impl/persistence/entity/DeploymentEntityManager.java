@@ -23,6 +23,7 @@ import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -89,24 +90,6 @@ public class DeploymentEntityManager extends AbstractManager {
         eventSubscriptionEntity.delete();
       }
       
-      // If process definition was the latest version, we need to enable the event subscriptions of the next version
-      ProcessDefinition latestProcessDefinitionWithSameKey = findLatestProcessDefinition(processDefinition); 
-      if (processDefinition.getId().equals(latestProcessDefinitionWithSameKey.getId())) {
-        ProcessDefinition newLatestProcessDefinition = findNewLatestProcessDefinitionAfterRemovalOf(processDefinition);
-        if (newLatestProcessDefinition != null) {
-          List<EventSubscriptionEntity> eventSubscriptionsForNewLatestPd = getEventSubscriptionManager()
-              .findEventSubscriptionsByTypeAndProcessDefinitionId(
-                  null,
-                  newLatestProcessDefinition.getId(),
-                  newLatestProcessDefinition.getTenantId());
-          if (eventSubscriptionsForNewLatestPd != null) {
-            for (EventSubscriptionEntity eventSubscriptionForLatestPd : eventSubscriptionsForNewLatestPd) {
-              eventSubscriptionForLatestPd.setLatest(true);
-            }
-          }
-        }
-      }
-      
       getProcessDefinitionInfoManager().deleteProcessDefinitionInfo(processDefinitionId);
       
     }
@@ -133,10 +116,10 @@ public class DeploymentEntityManager extends AbstractManager {
     		}
     	}
     	
-    	// If previous process definition version has a timer start event, it must be added
+    	// If previous process definition version has a timer/message/signal start event, it must be added
     	ProcessDefinitionEntity latestProcessDefinition = findLatestProcessDefinition(processDefinition);
 
-      // Only if the currently deleted process definition is the latest version, we fall back to the previous timer start event
+      // Only if the currently deleted process definition is the latest version, we fall back to the previous start event type
     	if (processDefinition.getId().equals(latestProcessDefinition.getId())) { 
     		
     		// Try to find a previous version (it could be some versions are missing due to deletions)
@@ -147,7 +130,9 @@ public class DeploymentEntityManager extends AbstractManager {
     			ProcessDefinitionEntity resolvedProcessDefinition = Context.getProcessEngineConfiguration()
     					.getDeploymentManager().resolveProcessDefinition((ProcessDefinitionEntity) previousProcessDefinition);
     			
-    			List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) resolvedProcessDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
+    			// Timer start
+    			List<TimerDeclarationImpl> timerDeclarations = 
+    					(List<TimerDeclarationImpl>) resolvedProcessDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     	    if (timerDeclarations != null) {
     	      for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
     	        TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
@@ -160,6 +145,33 @@ public class DeploymentEntityManager extends AbstractManager {
     	        Context.getCommandContext().getJobEntityManager().schedule(timer);
     	      }
     	    }
+    	    
+    	    // Signal / Message start
+    	    List<EventSubscriptionDeclaration> signalEventDefinitions = 
+    	    		(List<EventSubscriptionDeclaration>) resolvedProcessDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
+    	     if(signalEventDefinitions != null) {     
+    	       for (EventSubscriptionDeclaration eventDefinition : signalEventDefinitions) {
+    	         if(eventDefinition.getEventType().equals("signal") && eventDefinition.isStartEvent()) {
+    	        	 
+    	        	 SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
+    	        	 subscriptionEntity.setEventName(eventDefinition.getEventName());
+    	        	 subscriptionEntity.setActivityId(eventDefinition.getActivityId());
+    	        	 subscriptionEntity.setProcessDefinitionId(previousProcessDefinition.getId());
+   	        		 subscriptionEntity.setTenantId(previousProcessDefinition.getTenantId());
+    	        	 subscriptionEntity.insert();
+    	        	 
+    	         } else if (eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
+    	        	 MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
+                 newSubscription.setEventName(eventDefinition.getEventName());
+                 newSubscription.setActivityId(eventDefinition.getActivityId());
+                 newSubscription.setConfiguration(previousProcessDefinition.getId());
+                 newSubscription.setProcessDefinitionId(previousProcessDefinition.getId());
+                 newSubscription.setTenantId(previousProcessDefinition.getTenantId());
+                 newSubscription.insert();
+    	         }
+    	       }
+    	     }    
+    	    
     		}
     		
     	}

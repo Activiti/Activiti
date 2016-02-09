@@ -135,9 +135,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     String deploymentId2 = deployStartSignalTestProcess();
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(2, runtimeService.createProcessInstanceQuery().count());
-    assertEquals(2, getAllEventSubscriptions().size());
-    
-    assertEventSubscriptionLatestCount(1);
+    assertEquals(1, getAllEventSubscriptions().size());
     
     cleanup(deploymentId1, deploymentId2);
   }
@@ -149,18 +147,14 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     String deploymentId1 = deployStartSignalTestProcess();
     List<EventSubscriptionEntity> eventSubscriptions = getAllEventSubscriptions();
     assertEquals(1, eventSubscriptions.size());
-    assertTrue(eventSubscriptions.get(0).isLatest());
 
     String deploymentId2 = deployStartSignalTestProcess();
     eventSubscriptions = getAllEventSubscriptions();
-    assertEquals(2, eventSubscriptions.size());
-    
-    assertEventSubscriptionLatestCount(1);
+    assertEquals(1, eventSubscriptions.size());
     
     repositoryService.deleteDeployment(deploymentId2, true);
     eventSubscriptions = getAllEventSubscriptions();
     assertEquals(1, eventSubscriptions.size());
-    assertTrue(eventSubscriptions.get(0).isLatest());
     
     cleanup(deploymentId1);
     assertEquals(0, getAllEventSubscriptions().size());
@@ -168,11 +162,10 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     // Deploy two versions of process definition, delete the first
     deploymentId1 = deployStartSignalTestProcess();
     deploymentId2 = deployStartSignalTestProcess();
-    assertEquals(2, getAllEventSubscriptions().size());
+    assertEquals(1, getAllEventSubscriptions().size());
     repositoryService.deleteDeployment(deploymentId1, true);
     eventSubscriptions = getAllEventSubscriptions();
     assertEquals(1, eventSubscriptions.size());
-    assertTrue(eventSubscriptions.get(0).isLatest());
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId2).singleResult().getId(), eventSubscriptions.get(0).getProcessDefinitionId());
     
     cleanup(deploymentId2);
@@ -191,21 +184,21 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(1);
     
     String deploymentId2 = deployProcessWithoutEvents();
+    assertEquals(0, getAllEventSubscriptions().size());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    runtimeService.signalEventReceived("myStartSignal");
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEventSubscriptionsCount(0);
+    
+    String deploymentId3 = deployStartSignalTestProcess();
     assertEquals(1, getAllEventSubscriptions().size());
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     runtimeService.signalEventReceived("myStartSignal");
-    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
-    assertEventSubscriptionLatestCount(0);
-    
-    String deploymentId3 = deployStartSignalTestProcess();
-    assertEquals(2, getAllEventSubscriptions().size());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
-    runtimeService.signalEventReceived("myStartSignal");
     assertEquals(2, runtimeService.createProcessInstanceQuery().count());
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(1);
     
     List<EventSubscriptionEntity> eventSubscriptions = getAllEventSubscriptions();
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId(), 
@@ -220,7 +213,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     deploymentId2 = deployProcessWithoutEvents();
     deploymentId3 = deployStartSignalTestProcess();
     repositoryService.deleteDeployment(deploymentId3, true);
-    assertEventSubscriptionLatestCount(0); // the latest is now the one without a signal start
+    assertEventSubscriptionsCount(0); // the latest is now the one without a signal start
     cleanup(deploymentId1, deploymentId2);
   }
   
@@ -229,7 +222,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     String deploymentId2 = deployProcessWithoutEvents();
     String deploymentId3 = deployStartSignalTestProcess();
     repositoryService.deleteDeployment(deploymentId2, true);
-    assertEventSubscriptionLatestCount(1); // the latest is now the one with the signal
+    assertEventSubscriptionsCount(1); // the latest is now the one with the signal
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId(),
         runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId());
@@ -241,7 +234,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     String deploymentId2 = deployProcessWithoutEvents();
     String deploymentId3 = deployStartSignalTestProcess();
     repositoryService.deleteDeployment(deploymentId1, true);
-    assertEventSubscriptionLatestCount(1); // the latest is now the one with the signal
+    assertEventSubscriptionsCount(1); // the latest is now the one with the signal
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId(),
         runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId());
@@ -254,7 +247,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     String deploymentId3 = deployStartSignalTestProcess();
     repositoryService.deleteDeployment(deploymentId2, true);
     repositoryService.deleteDeployment(deploymentId3, true);
-    assertEventSubscriptionLatestCount(1); // the latest is now the one with the signal
+    assertEventSubscriptionsCount(1); // the latest is now the one with the signal
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId(),
         runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId());
@@ -264,11 +257,11 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
   public void testDeleteDeploymentWithStartSignalEvents5() {
     String deploymentId1 = deployStartSignalTestProcess();
     String deploymentId2 = deployProcessWithoutEvents();
-    assertEventSubscriptionLatestCount(0);
+    assertEventSubscriptionsCount(0);
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(0, runtimeService.createExecutionQuery().count());
     repositoryService.deleteDeployment(deploymentId2, true);
-    assertEventSubscriptionLatestCount(1); // the first is now the one with the signal
+    assertEventSubscriptionsCount(1); // the first is now the one with the signal
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId(),
         runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId());
@@ -323,32 +316,31 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     // Deploy process with both boundary and start event
     
     String deploymentId1 = deployProcessWithBothStartAndBoundarySignal();
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(1);
     assertEquals(0, runtimeService.createExecutionQuery().count());
     
     runtimeService.signalEventReceived("myStartSignal");
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(2, runtimeService.createProcessInstanceQuery().count());
     assertEquals(3, getAllEventSubscriptions().size()); // 1 for the start, 2 for the boundary
-    assertEventSubscriptionLatestCount(1);
     
     // Deploy version with only a boundary signal
     String deploymentId2 = deployBoundarySignalTestProcess();
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(2, runtimeService.createProcessInstanceQuery().count());
-    assertEventSubscriptionLatestCount(0);
+    assertEventSubscriptionsCount(2);
     
     // Deploy version with signal start 
     String deploymentId3 = deployStartSignalTestProcess();
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(3, runtimeService.createProcessInstanceQuery().count());
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(3);
     
     // Delete last version again, making the one with the boundary the latest
     repositoryService.deleteDeployment(deploymentId3, true);
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(2, runtimeService.createProcessInstanceQuery().count()); // -1, cause process instance of deploymentId3 is gone too
-    assertEventSubscriptionLatestCount(0);
+    assertEventSubscriptionsCount(2);
     
     // Test the boundary signal
     runtimeService.signalEventReceived("myBoundarySignal");
@@ -358,7 +350,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     repositoryService.deleteDeployment(deploymentId2, true);
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(3, runtimeService.createProcessInstanceQuery().count()); // -1, cause process instance of deploymentId3 is gone too
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(2);
     
     cleanup(deploymentId1);
   }
@@ -368,7 +360,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     // Deploy process with both boundary and start event
     
     String deploymentId1 = deployProcessWithBothStartAndBoundarySignalSameSignal();
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(1);
     assertEquals(0, runtimeService.createExecutionQuery().count());
     
     for (int i=0; i<9; i++) {
@@ -381,7 +373,6 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
       assertEquals(9, historyService.createHistoricProcessInstanceQuery().count());
     }
     assertEquals(2, getAllEventSubscriptions().size()); 
-    assertEventSubscriptionLatestCount(1);
     
     runtimeService.signalEventReceived("myStartSignal");
     
@@ -389,7 +380,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
     String deploymentId2 = deployStartSignalTestProcess();
     runtimeService.signalEventReceived("myStartSignal");
     assertEquals(2, runtimeService.createProcessInstanceQuery().count());
-    assertEventSubscriptionLatestCount(1);
+    assertEventSubscriptionsCount(2);
     
     cleanup(deploymentId1, deploymentId2);
   }
@@ -442,26 +433,15 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
         List<EventSubscriptionEntity> eventSubscriptionEntities = query.list();
         for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptionEntities) {
           assertEquals("signal", eventSubscriptionEntity.getEventType());
+          assertNotNull(eventSubscriptionEntity.getProcessDefinitionId());
         }
         return eventSubscriptionEntities;
       }
     });
   }
   
-  private void assertEventSubscriptionLatestCount(int expectedCount) {
-    List<EventSubscriptionEntity> eventSubscriptions = getAllEventSubscriptions();
-    int latestCount = 0;
-    for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      if (eventSubscription.isLatest()) {
-        latestCount++;
-        
-        assertEquals("signal", eventSubscription.getEventType());
-        
-        // Start messages should not have execution/process instance id
-        assertTrue(eventSubscription.getExecutionId() == null && eventSubscription.getProcessInstanceId() == null);
-      }
-    }
-    assertEquals(expectedCount, latestCount);
+  private void assertEventSubscriptionsCount(long count) {
+  	assertEquals(count, getAllEventSubscriptions().size());
   }
-
+  
 }
