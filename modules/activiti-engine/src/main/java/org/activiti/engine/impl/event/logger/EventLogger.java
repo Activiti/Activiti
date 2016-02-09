@@ -117,6 +117,13 @@ public class EventLogger implements ActivitiEventListener {
 									}
 								}
 					    }
+
+              public void closingSessionsFlushed(CommandContext commandContext) {
+              }
+
+              @Override
+              public void closeFailure(CommandContext commandContext) {
+              }
 					    
 				    });
 			}

@@ -162,6 +162,16 @@ public class OptimisticLockingExceptionTest extends AbstractActvitiTest {
     public void closed(CommandContext commandContext) {
       
     }
+
+    @Override
+    public void closingSessionsFlushed(CommandContext commandContext) {
+      
+    }
+
+    @Override
+    public void closeFailure(CommandContext commandContext) {
+      
+    }
     
   }
   

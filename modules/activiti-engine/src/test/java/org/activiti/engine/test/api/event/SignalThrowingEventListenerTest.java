@@ -187,7 +187,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 
       Job failedJob = managementService.createJobQuery().withException().processInstanceId(processInstance.getId()).singleResult();
 
-      assertNotNull(failedJob);
+      assertNotNull("Expected job with exception, found no such job", failedJob);
       assertEquals(2, failedJob.getRetries());
 
       // Three retries should each have triggered dispatching of a
