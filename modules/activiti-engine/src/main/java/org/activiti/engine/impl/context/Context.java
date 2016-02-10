@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -41,7 +40,6 @@ public class Context {
 
   protected static ThreadLocal<Stack<CommandContext>> commandContextThreadLocal = new ThreadLocal<Stack<CommandContext>>();
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
-  protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
   protected static ThreadLocal<JobExecutorContext> jobExecutorContextThreadLocal = new ThreadLocal<JobExecutorContext>();
   protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
   protected static ThreadLocal<Activiti5CompatibilityHandler> activiti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
@@ -82,23 +80,6 @@ public class Context {
 
   public static void removeProcessEngineConfiguration() {
     getStack(processEngineConfigurationStackThreadLocal).pop();
-  }
-
-  public static ExecutionContext getExecutionContext() {
-    return getStack(executionContextStackThreadLocal).peek();
-  }
-
-  public static boolean isExecutionContextActive() {
-    Stack<ExecutionContext> stack = executionContextStackThreadLocal.get();
-    return stack != null && !stack.isEmpty();
-  }
-
-  public static void setExecutionContext(ExecutionEntity execution) {
-    getStack(executionContextStackThreadLocal).push(new ExecutionContext(execution));
-  }
-
-  public static void removeExecutionContext() {
-    getStack(executionContextStackThreadLocal).pop();
   }
 
   protected static <T> Stack<T> getStack(ThreadLocal<Stack<T>> threadLocal) {
