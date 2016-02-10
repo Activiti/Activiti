@@ -47,9 +47,18 @@ public class GetEnabledActivitiesForAdhocSubProcessCmd implements Command<List<F
     if (execution.getCurrentFlowElement() instanceof AdhocSubProcess == false) {
       throw new ActivitiException("The current flow element of the requested execution is not an ad-hoc sub process");
     }
-
+    
     List<FlowNode> enabledFlowNodes = new ArrayList<FlowNode>();
+
     AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
+    
+    // if sequential ordering, only one child execution can be active, so no enabled activities
+    if (adhocSubProcess.hasSequentialOrdering()) {
+      if (execution.getExecutions().size() > 0) {
+        return enabledFlowNodes;
+      }
+    }
+    
     for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
       if (flowElement instanceof FlowNode) {
         FlowNode flowNode = (FlowNode) flowElement;

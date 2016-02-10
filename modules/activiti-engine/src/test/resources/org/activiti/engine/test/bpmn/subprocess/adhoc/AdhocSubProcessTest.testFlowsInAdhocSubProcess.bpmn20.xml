@@ -9,15 +9,19 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="adhocSubProcess" />
     
-    <adHocSubProcess id="adhocSubProcess" ordering="Parallel">
+    <adHocSubProcess id="adhocSubProcess" ordering="Sequential">
     
       <userTask id="subProcessTask" name="Task in subprocess" />
+      
+      <sequenceFlow id="subflow1" sourceRef="subProcessTask" targetRef="sequentialTask" />
+      
+      <userTask id="sequentialTask" name="The next task" />
+      
       <userTask id="subProcessTask2" name="Task2 in subprocess" />
       
       <completionCondition>${completed}</completionCondition>
     
     </adHocSubProcess>
-    
     <sequenceFlow id="flow2" sourceRef="adhocSubProcess" targetRef="afterTask" />
     
     <userTask id="afterTask" name="After task" />

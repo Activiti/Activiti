@@ -22,6 +22,7 @@ public class AdhocSubProcess extends SubProcess {
   
   protected String completionCondition;
   protected String ordering = ORDERING_PARALLEL;
+  protected boolean cancelRemainingInstances = true;
 
   public String getCompletionCondition() {
     return completionCondition;
@@ -45,5 +46,13 @@ public class AdhocSubProcess extends SubProcess {
   
   public boolean hasSequentialOrdering() {
     return ORDERING_SEQUENTIALL.equals(ordering);
+  }
+
+  public boolean isCancelRemainingInstances() {
+    return cancelRemainingInstances;
+  }
+
+  public void setCancelRemainingInstances(boolean cancelRemainingInstances) {
+    this.cancelRemainingInstances = cancelRemainingInstances;
   }
 }

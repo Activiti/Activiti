@@ -590,6 +590,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         
       } else if (subProcess instanceof AdhocSubProcess) {
         AdhocSubProcess adhocSubProcess = (AdhocSubProcess) subProcess;
+        BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_CANCEL_REMAINING_INSTANCES, String.valueOf(adhocSubProcess.isCancelRemainingInstances()), xtw);
         if (StringUtils.isNotEmpty(adhocSubProcess.getOrdering())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_ORDERING, adhocSubProcess.getOrdering(), xtw);
         }

@@ -9,7 +9,7 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="adhocSubProcess" />
     
-    <adHocSubProcess id="adhocSubProcess" ordering="Parallel">
+    <adHocSubProcess id="adhocSubProcess" ordering="Sequential">
     
       <userTask id="subProcessTask" name="Task in subprocess" />
       <userTask id="subProcessTask2" name="Task2 in subprocess" />

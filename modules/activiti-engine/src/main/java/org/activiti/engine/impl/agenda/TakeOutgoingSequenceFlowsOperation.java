@@ -115,10 +115,27 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
           }
         }
         
-        if (completeAdhocSubProcess) {
+        if (flowNode.getOutgoingFlows().size() > 0) {
           leaveFlowNode(flowNode);
         } else {
           commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
+        }
+        
+        if (completeAdhocSubProcess) {
+          boolean endAdhocSubProcess = true;
+          if (adhocSubProcess.isCancelRemainingInstances() == false) {
+            List<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getParentId());
+            for (ExecutionEntity executionEntity : childExecutions) {
+              if (executionEntity.getId().equals(execution.getId()) == false) {
+                endAdhocSubProcess = false;
+                break;
+              }
+            }
+          }
+          
+          if (endAdhocSubProcess) {
+            agenda.planEndExecutionOperation(execution.getParent());
+          }
         }
       
       } else {

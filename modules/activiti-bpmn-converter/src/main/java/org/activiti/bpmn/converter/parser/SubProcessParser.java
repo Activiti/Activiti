@@ -41,6 +41,11 @@ public class SubProcessParser implements BpmnXMLConstants {
       if (StringUtils.isNotEmpty(orderingAttributeValue)) {
         adhocSubProcess.setOrdering(orderingAttributeValue);
       }
+      
+      if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_CANCEL_REMAINING_INSTANCES))) {
+        adhocSubProcess.setCancelRemainingInstances(false);
+      }
+      
       subProcess = adhocSubProcess;
       
     } else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {

@@ -52,6 +52,14 @@ public class EnableActivityForAdhocSubProcessCmd implements Command<Execution>, 
 
     FlowNode foundNode = null;
     AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
+    
+    // if sequential ordering, only one child execution can be active
+    if (adhocSubProcess.hasSequentialOrdering()) {
+      if (execution.getExecutions().size() > 0) {
+        throw new ActivitiException("Sequential ad-hoc sub process already has an active execution");
+      }
+    }
+    
     for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
       if (activityId.equals(flowElement.getId()) && flowElement instanceof FlowNode) {
         FlowNode flowNode = (FlowNode) flowElement;
