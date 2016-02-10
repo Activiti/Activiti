@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -34,8 +33,7 @@ public class NewTaskCmd implements Command<Task>, Serializable {
   }
 
   public Task execute(CommandContext commandContext) {
-    Date currentTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-    TaskEntity task = commandContext.getTaskEntityManager().create(currentTime); 
+    TaskEntity task = commandContext.getTaskEntityManager().create(); 
     task.setId(taskId);
     return task;
   }

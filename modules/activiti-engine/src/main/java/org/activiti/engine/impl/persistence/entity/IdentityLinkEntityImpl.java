@@ -46,6 +46,10 @@ public class IdentityLinkEntityImpl implements IdentityLinkEntity, Serializable,
   protected ExecutionEntity processInstance;
 
   protected ProcessDefinitionEntity processDef;
+  
+  public IdentityLinkEntityImpl() {
+    
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();

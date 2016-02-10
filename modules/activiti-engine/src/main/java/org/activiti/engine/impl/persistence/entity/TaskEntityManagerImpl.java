@@ -23,7 +23,6 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -59,22 +58,11 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     return taskDataManager;
   }
   
-  /**
-   * Creates a new task. This task still will have to be persisted. See {@link #insert(ExecutionEntity))}.
-   */
   @Override
-  public TaskEntity create(Date createTime) {
-    TaskEntity task = create();
-    task.setCreateTime(createTime);
-    return task;
-  }
-  
-  /** creates and initializes a new persistent task. */
-  @Override
-  public TaskEntity createAndInsert(DelegateExecution execution) {
-    TaskEntity task = create(getClock().getCurrentTime());
-    insert(task, (ExecutionEntity) execution);
-    return task;
+  public TaskEntity create() {
+    TaskEntity taskEntity = super.create();
+    taskEntity.setCreateTime(getClock().getCurrentTime());
+    return taskEntity;
   }
   
   @Override

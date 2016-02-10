@@ -64,9 +64,10 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(DelegateExecution execution) {
-    TaskEntity task = Context.getCommandContext().getTaskEntityManager().createAndInsert(execution); 
+    TaskEntity task = Context.getCommandContext().getTaskEntityManager().create();
     task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinitionKey(userTask.getId());
+    Context.getCommandContext().getTaskEntityManager().insert(task, (ExecutionEntity) execution);
     
     String activeTaskName = null;
     String activeTaskDescription = null;

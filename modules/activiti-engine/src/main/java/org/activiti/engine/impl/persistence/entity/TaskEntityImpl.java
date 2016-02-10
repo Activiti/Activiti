@@ -92,6 +92,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected boolean forcedUpdate;
 
   public TaskEntityImpl() {
+    
   }
 
   public Object getPersistentState() {

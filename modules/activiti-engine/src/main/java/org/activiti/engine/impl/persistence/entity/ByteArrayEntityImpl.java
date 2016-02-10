@@ -33,15 +33,7 @@ public class ByteArrayEntityImpl implements ByteArrayEntity, Serializable {
   protected String deploymentId;
 
   public ByteArrayEntityImpl() {
-  }
-
-  public ByteArrayEntityImpl(String name, byte[] bytes) {
-    this.name = name;
-    this.bytes = bytes;
-  }
-
-  public ByteArrayEntityImpl(byte[] bytes) {
-    this.bytes = bytes;
+    
   }
 
   public byte[] getBytes() {

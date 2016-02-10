@@ -41,6 +41,10 @@ public class ModelEntityImpl implements ModelEntity, Serializable {
   protected String editorSourceValueId;
   protected String editorSourceExtraValueId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  
+  public ModelEntityImpl() {
+    
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();

@@ -53,8 +53,8 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   protected boolean forcedUpdate;
   protected boolean deleted;
 
-  // Default constructor for SQL mapping
   public VariableInstanceEntityImpl() {
+    
   }
   
   public Object getPersistentState() {

@@ -17,10 +17,6 @@ package org.activiti.engine.impl.persistence.entity;
  */
 public interface ByteArrayEntityManager extends EntityManager<ByteArrayEntity> {
 
-  ByteArrayEntity createAndInsert(byte[] bytes);
-
-  ByteArrayEntity createAndInsert(String name, byte[] bytes);
-
   /**
    * Deletes the {@link ByteArrayEntity} with the given id from the database. 
    * Important: this operation will NOT do any optimistic locking, to avoid loading the bytes in memory. So use this method

@@ -1,22 +1,12 @@
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.Task;
 
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
-
-  /**
-   * Creates a new task. This task still will have to be persisted. See {@link #insert(ExecutionEntity))}.
-   */
-  TaskEntity create(Date createTime);
-
-  /** creates and initializes a new persistent task. */
-  TaskEntity createAndInsert(DelegateExecution execution);
 
   void insert(TaskEntity taskEntity, ExecutionEntity execution);
 
