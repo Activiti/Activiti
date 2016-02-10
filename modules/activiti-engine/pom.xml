@@ -4,6 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti - Engine</name>
+  <groupId>eu.europa.ec.digit.dorsale.third.org.activiti</groupId>
   <artifactId>activiti-engine</artifactId>
 
   <parent>
@@ -12,6 +13,30 @@
     <relativePath>../..</relativePath>
     <version>5.17.0</version>
   </parent>
+  
+  <repositories>
+		<repository>
+			<id>3rd_party</id>
+			<url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/digit/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>3rd_party</id>
+			<url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/digit/</url>
+		</repository>
+		<snapshotRepository>
+			<id>3rd_party</id>
+			<url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/digit/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
   <dependencies>
     <dependency>
