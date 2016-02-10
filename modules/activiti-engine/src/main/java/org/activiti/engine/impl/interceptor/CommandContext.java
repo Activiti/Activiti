@@ -130,10 +130,7 @@ public class CommandContext {
               transactionContext.rollback();
               executeCloseListenerCloseFailure(); // Needs to be done here
             }
-          }
-          
-          // Exception could have been thrown by closeFailure listeners
-          if (exception == null) {
+          } else {
             executeCloseListenerClosed();
           }
           
