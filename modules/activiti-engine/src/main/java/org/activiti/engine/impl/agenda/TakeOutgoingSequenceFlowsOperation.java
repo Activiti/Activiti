@@ -83,12 +83,12 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     
     // Execution listener for end: the flow node is now ended
     if (CollectionUtil.isNotEmpty(currentFlowElement.getExecutionListeners())
-        && !execution.isProcessInstanceType()) { // a process instance execution can never leave a flownode, but it can pass here whilst cleaning up
+        && !execution.isProcessInstanceType()) { // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }
     
-    // a process instance execution can never leave a flownode, but it can pass here whilst cleaning up
-    if (!execution.isProcessInstanceType()) {
+    // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
+    if (!execution.isProcessInstanceType() && currentFlowElement instanceof SequenceFlow == false) {
       commandContext.getHistoryManager().recordActivityEnd(execution);
     }
     
