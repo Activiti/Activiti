@@ -45,7 +45,7 @@ public class VerifyDeserializedObjectCommandContextCloseListener implements Comm
     
   }
 
-  public void closingSessionsFlushed(CommandContext commandContext) {
+  public void afterSessionsFlush(CommandContext commandContext) {
     
   }
 

@@ -20,8 +20,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class CommandContextInterceptor extends AbstractCommandInterceptor {
+  
   private static final Logger log = LoggerFactory.getLogger(CommandContextInterceptor.class);
 
   protected CommandContextFactory commandContextFactory;
@@ -46,9 +48,11 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
     } else {
       log.debug("Valid context found. Reusing it for the current command '{}'", command.getClass().getCanonicalName());
       contextReused = true;
+      context.setReused(true);
     }
 
     try {
+      
       // Push on stack
       Context.setCommandContext(context);
       Context.setProcessEngineConfiguration(processEngineConfiguration);

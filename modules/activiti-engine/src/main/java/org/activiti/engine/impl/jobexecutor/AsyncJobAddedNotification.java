@@ -56,7 +56,7 @@ public class AsyncJobAddedNotification implements CommandContextCloseListener {
   }
 
   @Override
-  public void closingSessionsFlushed(CommandContext commandContext) {
+  public void afterSessionsFlush(CommandContext commandContext) {
   }
 
   @Override

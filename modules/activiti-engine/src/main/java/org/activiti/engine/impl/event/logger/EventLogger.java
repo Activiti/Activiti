@@ -118,7 +118,7 @@ public class EventLogger implements ActivitiEventListener {
 								}
 					    }
 
-              public void closingSessionsFlushed(CommandContext commandContext) {
+              public void afterSessionsFlush(CommandContext commandContext) {
               }
 
               @Override

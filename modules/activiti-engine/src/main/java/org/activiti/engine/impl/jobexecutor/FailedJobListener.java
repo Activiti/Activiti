@@ -46,7 +46,7 @@ public class FailedJobListener implements CommandContextCloseListener {
   }
 
   @Override
-  public void closingSessionsFlushed(CommandContext commandContext) {
+  public void afterSessionsFlush(CommandContext commandContext) {
   }
 
   @Override

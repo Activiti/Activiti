@@ -26,8 +26,6 @@ import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionContext;
-import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
@@ -74,7 +72,6 @@ public class CommandContext {
   private static Logger log = LoggerFactory.getLogger(CommandContext.class);
 
   protected Command<?> command;
-  protected TransactionContext transactionContext;
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected Map<Class<?>, Session> sessions = new HashMap<Class<?>, Session>();
   protected Throwable exception;
@@ -82,6 +79,7 @@ public class CommandContext {
   protected FailedJobCommandFactory failedJobCommandFactory;
   protected List<CommandContextCloseListener> closeListeners;
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
+  protected boolean reused;
 
   protected Agenda agenda = new Agenda(this);
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
@@ -92,11 +90,6 @@ public class CommandContext {
     this.processEngineConfiguration = processEngineConfiguration;
     this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
-    
-    TransactionContextFactory transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
-    if (transactionContextFactory != null) {
-      this.transactionContext = transactionContextFactory.openTransactionContext(this);
-    }
   }
 
   public void close() {
@@ -110,15 +103,14 @@ public class CommandContext {
           executeCloseListenersClosing();
           if (exception == null) {
             flushSessions();
-            executeCloseListenersSessionsFlushed();
           }
         } catch (Throwable exception) {
           exception(exception);
         } finally {
           
           try {
-            if (exception == null && transactionContext != null) {
-              transactionContext.commit();
+            if (exception == null) {
+              executeCloseListenersAfterSessionFlushed();
             }
           } catch (Throwable exception) {
             exception(exception);
@@ -126,12 +118,9 @@ public class CommandContext {
           
           if (exception != null) {
             logException();
-            if (transactionContext != null) {
-              transactionContext.rollback();
-              executeCloseListenerCloseFailure(); // Needs to be done here
-            }
+            executeCloseListenersCloseFailure();
           } else {
-            executeCloseListenerClosed();
+            executeCloseListenersClosed();
           }
           
         }
@@ -197,11 +186,11 @@ public class CommandContext {
     }
   }
   
-  protected void executeCloseListenersSessionsFlushed() {
+  protected void executeCloseListenersAfterSessionFlushed() {
     if (closeListeners != null) {
       try {
         for (CommandContextCloseListener listener : closeListeners) {
-          listener.closingSessionsFlushed(this);
+          listener.afterSessionsFlush(this);
         }
       } catch (Throwable exception) {
         exception(exception);
@@ -209,7 +198,7 @@ public class CommandContext {
     }
   }
   
-  protected void executeCloseListenerClosed() {
+  protected void executeCloseListenersClosed() {
     if (closeListeners != null) {
       try {
         for (CommandContextCloseListener listener : closeListeners) {
@@ -221,7 +210,7 @@ public class CommandContext {
     }
   }
   
-  protected void executeCloseListenerCloseFailure() {
+  protected void executeCloseListenersCloseFailure() {
     if (closeListeners != null) {
       try {
         for (CommandContextCloseListener listener : closeListeners) {
@@ -437,10 +426,6 @@ public class CommandContext {
   // getters and setters
   // //////////////////////////////////////////////////////
 
-  public TransactionContext getTransactionContext() {
-    return transactionContext;
-  }
-
   public Command<?> getCommand() {
     return command;
   }
@@ -477,4 +462,12 @@ public class CommandContext {
     resultStack.add(result);
   }
 
+  public boolean isReused() {
+    return reused;
+  }
+
+  public void setReused(boolean reused) {
+    this.reused = reused;
+  }
+  
 }

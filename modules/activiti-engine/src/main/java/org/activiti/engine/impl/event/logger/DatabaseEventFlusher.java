@@ -30,7 +30,7 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
     }
   }
 
-  public void closingSessionsFlushed(CommandContext commandContext) {
+  public void afterSessionsFlush(CommandContext commandContext) {
     
   }
 

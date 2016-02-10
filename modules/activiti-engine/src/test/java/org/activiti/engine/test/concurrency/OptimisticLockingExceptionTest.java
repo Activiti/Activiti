@@ -164,7 +164,7 @@ public class OptimisticLockingExceptionTest extends AbstractActvitiTest {
     }
 
     @Override
-    public void closingSessionsFlushed(CommandContext commandContext) {
+    public void afterSessionsFlush(CommandContext commandContext) {
       
     }
 

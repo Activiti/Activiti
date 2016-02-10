@@ -23,12 +23,13 @@ public interface CommandContextCloseListener {
   
   /**
    * Called when the {@link Session} have been successfully flushed.
+   * When an exception happened during the flushing of the sessions, this method will not be called.
    * 
    * If an exception happens and it is not caught in this method:
    * - The {@link Session} instances will *not* be flushed
    * - The {@link TransactionContext} will be rolled back (if applicable) 
    */
-  void closingSessionsFlushed(CommandContext commandContext);
+  void afterSessionsFlush(CommandContext commandContext);
 
   /**
    * Called when the {@link CommandContext} is successfully closed.
