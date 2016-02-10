@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -1087,6 +1088,34 @@ public interface RuntimeService {
    *           when the given process instance does not exist.
    */
   void setProcessInstanceName(String processInstanceId, String name);
+  
+  /**
+   * Gets enabled activities from ad-hoc sub process
+   * 
+   * @param executionId
+   *          id of the execution that has an ad-hoc sub process as current flow element
+   * @return a list of enabled activities
+   */
+  List<FlowNode> getEnabledActivitiesFromAdhocSubProcess(String executionId);
+  
+  /**
+   * Enables an activity in a ad-hoc sub process
+   * 
+   * @param executionId
+   *          id of the execution that has an ad-hoc sub process as current flow element
+   * @param activityId
+   *          id of the activity id to enable
+   * @return the newly created execution of the enabled activity
+   */
+  Execution enableActivityInAdhocSubProcess(String executionId, String activityId);
+  
+  /**
+   * Completes the ad-hoc sub process
+   * 
+   * @param executionId
+   *          id of the execution that has an ad-hoc sub process as current flow element
+   */
+  void completeAdhocSubProcess(String executionId);
 
   /** The all events related to the given Process Instance. */
   List<Event> getProcessInstanceEvents(String processInstanceId);

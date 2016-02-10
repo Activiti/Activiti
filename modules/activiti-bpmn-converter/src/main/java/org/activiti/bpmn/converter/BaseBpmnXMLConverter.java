@@ -136,9 +136,6 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         
         SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
         subProcess.addFlowElement(currentFlowElement);
-        if (currentFlowElement instanceof FlowNode) {
-          ((FlowNode) currentFlowElement).setSubProcess(subProcess);
-        }
 
       } else {
         activeProcess.addFlowElement(currentFlowElement);

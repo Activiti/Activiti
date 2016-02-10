@@ -49,6 +49,7 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -284,6 +285,11 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   @Override
   public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition) {
     return wrappedActivityBehaviorFactory.createEventSubProcessMessageStartEventActivityBehavior(startEvent, messageEventDefinition);
+  }
+  
+  @Override
+  public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
+    return wrappedActivityBehaviorFactory.createAdhocSubprocessActivityBehavior(subProcess);
   }
 
   @Override

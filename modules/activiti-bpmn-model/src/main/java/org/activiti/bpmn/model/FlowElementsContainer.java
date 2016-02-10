@@ -24,8 +24,12 @@ public interface FlowElementsContainer {
   Collection<FlowElement> getFlowElements();
 
   void addFlowElement(FlowElement element);
+  
+  void addFlowElementToMap(FlowElement element);
 
   void removeFlowElement(String elementId);
+  
+  void removeFlowElementFromMap(String elementId);
 
   Artifact getArtifact(String id);
 

@@ -33,7 +33,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
 
-    FlowElement flowElement = model.getMainProcess().getFlowElement("start");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("start", true);
     assertTrue(flowElement instanceof StartEvent);
 
     StartEvent startEvent = (StartEvent) flowElement;

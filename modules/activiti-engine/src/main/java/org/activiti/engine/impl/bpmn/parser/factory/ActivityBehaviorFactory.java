@@ -41,6 +41,7 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -165,6 +166,8 @@ public interface ActivityBehaviorFactory {
   
   public abstract EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition);
 
+  public abstract AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess);
+  
   public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
 
   public abstract TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction);

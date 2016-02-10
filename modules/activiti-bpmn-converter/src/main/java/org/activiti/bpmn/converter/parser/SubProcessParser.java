@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
+import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
@@ -33,11 +34,22 @@ public class SubProcessParser implements BpmnXMLConstants {
     SubProcess subProcess = null;
     if (ELEMENT_TRANSACTION.equalsIgnoreCase(xtr.getLocalName())) {
       subProcess = new Transaction();
+      
+    } else if (ELEMENT_ADHOC_SUBPROCESS.equalsIgnoreCase(xtr.getLocalName())) {
+      AdhocSubProcess adhocSubProcess = new AdhocSubProcess();
+      String orderingAttributeValue = xtr.getAttributeValue(null, ATTRIBUTE_ORDERING);
+      if (StringUtils.isNotEmpty(orderingAttributeValue)) {
+        adhocSubProcess.setOrdering(orderingAttributeValue);
+      }
+      subProcess = adhocSubProcess;
+      
     } else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
       subProcess = new EventSubProcess();
+      
     } else {
       subProcess = new SubProcess();
     }
+    
     BpmnXMLUtil.addXMLLocation(subProcess, xtr);
     activeSubProcessList.add(subProcess);
 
@@ -72,7 +84,6 @@ public class SubProcessParser implements BpmnXMLConstants {
     if (activeSubProcessList.size() > 1) {
       SubProcess parentSubProcess = activeSubProcessList.get(activeSubProcessList.size() - 2);
       parentSubProcess.addFlowElement(subProcess);
-      subProcess.setSubProcess(parentSubProcess);
 
     } else {
       activeProcess.addFlowElement(subProcess);

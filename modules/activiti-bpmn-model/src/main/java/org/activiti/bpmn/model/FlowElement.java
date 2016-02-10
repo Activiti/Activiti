@@ -15,6 +15,8 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Tijs Rademakers
  */
@@ -23,6 +25,7 @@ public abstract class FlowElement extends BaseElement implements HasExecutionLis
   protected String name;
   protected String documentation;
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
+  protected FlowElementsContainer parentContainer;
 
   public String getName() {
     return name;
@@ -46,6 +49,25 @@ public abstract class FlowElement extends BaseElement implements HasExecutionLis
 
   public void setExecutionListeners(List<ActivitiListener> executionListeners) {
     this.executionListeners = executionListeners;
+  }
+  
+  @JsonIgnore
+  public FlowElementsContainer getParentContainer() {
+    return parentContainer;
+  }
+  
+  @JsonIgnore
+  public SubProcess getSubProcess() {
+    SubProcess subProcess = null;
+    if (parentContainer != null && parentContainer instanceof SubProcess) {
+      subProcess = (SubProcess) parentContainer;
+    }
+    
+    return subProcess;
+  }
+  
+  public void setParentContainer(FlowElementsContainer parentContainer) {
+    this.parentContainer = parentContainer;
   }
 
   public abstract FlowElement clone();

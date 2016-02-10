@@ -37,7 +37,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("usertask");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("usertask", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof UserTask);
     assertEquals("usertask", flowElement.getId());
@@ -90,13 +90,13 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals("${someDelegateExpression}", listener.getImplementation());
     assertEquals("complete", listener.getEvent());
 
-    flowElement = model.getMainProcess().getFlowElement("start");
+    flowElement = model.getMainProcess().getFlowElement("start", true);
     assertTrue(flowElement instanceof StartEvent);
 
     StartEvent startEvent = (StartEvent) flowElement;
     assertTrue(startEvent.getOutgoingFlows().size() == 1);
 
-    flowElement = model.getMainProcess().getFlowElement("flow1");
+    flowElement = model.getMainProcess().getFlowElement("flow1", true);
     assertTrue(flowElement instanceof SequenceFlow);
 
     SequenceFlow flow = (SequenceFlow) flowElement;

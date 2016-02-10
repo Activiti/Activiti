@@ -34,7 +34,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof ServiceTask);
     assertEquals("servicetask", flowElement.getId());

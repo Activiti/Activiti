@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -27,10 +28,13 @@ import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.AddEventListenerCommand;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.CompleteAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DispatchEventCommand;
+import org.activiti.engine.impl.cmd.EnableActivityForAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
+import org.activiti.engine.impl.cmd.GetEnabledActivitiesForAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableInstanceCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableInstancesCmd;
@@ -52,6 +56,7 @@ import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.TriggerCmd;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
@@ -452,6 +457,21 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   @Override
   public List<Event> getProcessInstanceEvents(String processInstanceId) {
     return commandExecutor.execute(new GetProcessInstanceEventsCmd(processInstanceId));
+  }
+  
+  @Override
+  public List<FlowNode> getEnabledActivitiesFromAdhocSubProcess(String executionId) {
+    return commandExecutor.execute(new GetEnabledActivitiesForAdhocSubProcessCmd(executionId));
+  }
+  
+  @Override
+  public Execution enableActivityInAdhocSubProcess(String executionId, String activityId) {
+    return commandExecutor.execute(new EnableActivityForAdhocSubProcessCmd(executionId, activityId));
+  }
+  
+  @Override
+  public void completeAdhocSubProcess(String executionId) {
+    commandExecutor.execute(new CompleteAdhocSubProcessCmd(executionId));
   }
 
   @Override

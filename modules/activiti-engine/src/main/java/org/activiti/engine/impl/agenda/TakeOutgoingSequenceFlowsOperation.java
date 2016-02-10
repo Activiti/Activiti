@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
@@ -14,10 +15,13 @@ import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.UelExpressionCondition;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -83,7 +87,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }
     
-    commandContext.getHistoryManager().recordActivityEnd(execution);
+    // a process instance execution can never leave a flownode, but it can pass here whilst cleaning up
+    if (!execution.isProcessInstanceType()) {
+      commandContext.getHistoryManager().recordActivityEnd(execution);
+    }
     
     // No scope, can continue
     if (currentFlowElement instanceof FlowNode) {
@@ -96,7 +103,27 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
       }
       
-      leaveFlowNode(flowNode);
+      if (flowNode.getParentContainer() != null && flowNode.getParentContainer() instanceof AdhocSubProcess) {
+        
+        boolean completeAdhocSubProcess = false;
+        AdhocSubProcess adhocSubProcess = (AdhocSubProcess) flowNode.getParentContainer();
+        if (adhocSubProcess.getCompletionCondition() != null) {
+          Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(adhocSubProcess.getCompletionCondition());
+          Condition condition = new UelExpressionCondition(expression);
+          if (condition.evaluate(adhocSubProcess.getId(), execution)) {
+            completeAdhocSubProcess = true;
+          }
+        }
+        
+        if (completeAdhocSubProcess) {
+          leaveFlowNode(flowNode);
+        } else {
+          commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
+        }
+      
+      } else {
+        leaveFlowNode(flowNode);
+      }
       
     } else if (currentFlowElement instanceof SequenceFlow) {
       // Nothing to do here. The operation wasn't really needed, so simply pass it through

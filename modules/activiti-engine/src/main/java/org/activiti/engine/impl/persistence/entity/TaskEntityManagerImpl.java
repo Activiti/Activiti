@@ -241,7 +241,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     if (taskEntity.getProcessDefinitionId() != null) {
       
       org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(taskEntity.getProcessDefinitionId());
-      FlowElement flowElement = process.getFlowElement(taskEntity.getTaskDefinitionKey());
+      FlowElement flowElement = process.getFlowElement(taskEntity.getTaskDefinitionKey(), true);
       if (flowElement != null && flowElement instanceof UserTask) {
         UserTask userTask = (UserTask) flowElement;
         for (ActivitiListener activitiListener : userTask.getTaskListeners()) {

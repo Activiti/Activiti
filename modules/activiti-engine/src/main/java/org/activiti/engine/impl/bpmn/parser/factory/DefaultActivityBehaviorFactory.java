@@ -48,6 +48,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -349,6 +350,10 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   
   public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition) {
     return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition);
+  }
+  
+  public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
+    return new AdhocSubProcessActivityBehavior();
   }
 
   // Call activity

@@ -23,7 +23,7 @@ public class FlowNodeInSubProcessConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("subprocess1");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("subprocess1", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SubProcess);
     SubProcess subProcess = (SubProcess) flowElement;

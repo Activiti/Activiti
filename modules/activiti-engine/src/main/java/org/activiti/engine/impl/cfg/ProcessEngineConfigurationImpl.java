@@ -83,6 +83,7 @@ import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
+import org.activiti.engine.impl.bpmn.parser.handler.AdhocSubProcessParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.BoundaryEventParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.BusinessRuleParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.CallActivityParseHandler;
@@ -1720,6 +1721,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParserHandlers.add(new StartEventParseHandler());
     bpmnParserHandlers.add(new SubProcessParseHandler());
     bpmnParserHandlers.add(new EventSubProcessParseHandler());
+    bpmnParserHandlers.add(new AdhocSubProcessParseHandler());
     bpmnParserHandlers.add(new TaskParseHandler());
     bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
     bpmnParserHandlers.add(new TransactionParseHandler());
