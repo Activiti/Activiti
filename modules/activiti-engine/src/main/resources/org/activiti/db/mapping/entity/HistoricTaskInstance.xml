@@ -241,7 +241,7 @@
     from ${prefix}ACT_HI_TASKINST RES
     <choose>
       <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
-        left outer join ${prefix}ACT_HI_VARINST VAR ON RES.ID_ = VAR.TASK_ID_ or RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
+        left outer join ${prefix}ACT_HI_VARINST VAR ON RES.ID_ = VAR.TASK_ID_ or (RES.PROC_INST_ID_ = VAR.EXECUTION_ID_ and VAR.TASK_ID_ is null)
       </when>
       <otherwise>
         <if test="includeTaskLocalVariables">
