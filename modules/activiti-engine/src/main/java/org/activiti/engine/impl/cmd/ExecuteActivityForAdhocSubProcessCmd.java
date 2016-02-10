@@ -29,13 +29,13 @@ import org.activiti.engine.runtime.Execution;
 /**
  * @author Tijs Rademakers
  */
-public class EnableActivityForAdhocSubProcessCmd implements Command<Execution>, Serializable {
+public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String executionId;
   protected String activityId;
 
-  public EnableActivityForAdhocSubProcessCmd(String executionId, String activityId) {
+  public ExecuteActivityForAdhocSubProcessCmd(String executionId, String activityId) {
     this.executionId = executionId;
     this.activityId = activityId;
   }

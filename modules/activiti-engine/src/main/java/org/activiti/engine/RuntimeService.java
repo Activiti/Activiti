@@ -1099,7 +1099,7 @@ public interface RuntimeService {
   List<FlowNode> getEnabledActivitiesFromAdhocSubProcess(String executionId);
   
   /**
-   * Enables an activity in a ad-hoc sub process
+   * Executes an activity in a ad-hoc sub process
    * 
    * @param executionId
    *          id of the execution that has an ad-hoc sub process as current flow element
@@ -1107,7 +1107,7 @@ public interface RuntimeService {
    *          id of the activity id to enable
    * @return the newly created execution of the enabled activity
    */
-  Execution enableActivityInAdhocSubProcess(String executionId, String activityId);
+  Execution executeActivityInAdhocSubProcess(String executionId, String activityId);
   
   /**
    * Completes the ad-hoc sub process
