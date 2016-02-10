@@ -16,8 +16,12 @@ package org.activiti.spring;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.cfg.TransactionPropagation;
 import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.springframework.core.Ordered;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -75,7 +79,14 @@ public class SpringTransactionContext implements TransactionContext {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCommit() {
-                    transactionListener.execute(commandContext);
+                  CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor(); 
+                  CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW); 
+                  commandExecutor.execute(commandConfig, new Command<Void>() {
+                    public Void execute(CommandContext commandContext) {
+                      transactionListener.execute(commandContext);
+                      return null;
+                    }
+                  });
                 }
             });
 
@@ -94,7 +105,14 @@ public class SpringTransactionContext implements TransactionContext {
                 @Override
                 public void afterCompletion(int status) {
                     if (TransactionSynchronization.STATUS_ROLLED_BACK == status) {
-                        transactionListener.execute(commandContext);
+                      CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor(); 
+                      CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW); 
+                      commandExecutor.execute(commandConfig, new Command<Void>() {
+                        public Void execute(CommandContext commandContext) {
+                          transactionListener.execute(commandContext);
+                          return null;
+                        }
+                      });
                     }
                 }
             });

@@ -76,7 +76,7 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
    * @param transactionState The {@link TransactionState} for which the listeners will be called.
    * @param executeInNewContext If true, the listeners will be called in a new command context.
    *                            This is needed for example when firing the {@link TransactionState#COMMITTED}
-   *                            event: the transacation is already committed and executing logic in the same
+   *                            event: the transaction is already committed and executing logic in the same
    *                            context could lead to strange behaviour (for example doing a {@link SqlSession#update(String)}
    *                            would actually roll back the update (as the MyBatis context is already committed
    *                            and the internal flags have not been correctly set).
