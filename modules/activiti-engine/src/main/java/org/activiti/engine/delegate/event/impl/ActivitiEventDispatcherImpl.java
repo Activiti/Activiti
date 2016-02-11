@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -65,13 +65,12 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
       eventSupport.dispatchEvent(event);
     }
 
-    // Try getting hold of the Process definition, based on the process
-    // definition-key, if a context is active
+    // Try getting hold of the Process definition, based on the process definition key, if a context is active
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {
-      ProcessDefinitionEntity processDefinition = extractProcessDefinitionEntityFromEvent(event);
-      if (processDefinition != null) {
-        processDefinition.getEventSupport().dispatchEvent(event);
+      BpmnModel bpmnModel = extractBpmnModelFromEvent(event);
+      if (bpmnModel != null) {
+        ((ActivitiEventSupport) bpmnModel.getEventSupport()).dispatchEvent(event);
       }
     }
     
@@ -87,23 +86,16 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
    * @param event
    * @return
    */
-  protected ProcessDefinitionEntity extractProcessDefinitionEntityFromEvent(ActivitiEvent event) {
-    ProcessDefinitionEntity result = null;
-
-    if (event instanceof ActivitiEntityEvent) {
-      Object entity = ((ActivitiEntityEvent) event).getEntity();
-      if (entity instanceof ProcessDefinitionEntity) {
-        result = (ProcessDefinitionEntity) entity;
-      }
-    }
-
+  protected BpmnModel extractBpmnModelFromEvent(ActivitiEvent event) {
+    BpmnModel result = null;
+    
     if (result == null && event.getProcessDefinitionId() != null) {
-      result = ProcessDefinitionUtil.getProcessDefinitionEntity(event.getProcessDefinitionId(), true);
-      if (result != null) {
-        result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(result).getProcessDefinitionEntity();
+      ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(event.getProcessDefinitionId(), true);
+      if (processDefinition != null) {
+        result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(processDefinition).getBpmnModel();
       }
     }
-
+    
     return result;
   }
 

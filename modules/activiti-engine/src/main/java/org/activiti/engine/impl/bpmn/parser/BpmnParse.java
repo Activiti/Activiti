@@ -31,31 +31,18 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.Import;
-import org.activiti.bpmn.model.Interface;
-import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
-import org.activiti.engine.impl.bpmn.data.ItemDefinition;
-import org.activiti.engine.impl.bpmn.data.ItemKind;
-import org.activiti.engine.impl.bpmn.data.StructureDefinition;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
-import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
-import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
-import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
-import org.activiti.engine.impl.bpmn.webservice.Operation;
-import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
@@ -63,7 +50,6 @@ import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.impl.util.io.UrlStreamSource;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ValidationError;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
+public class BpmnParse implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 
@@ -125,18 +111,9 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
    * 
    * All the map's elements are defined outside the process definition(s), which means that this map doesn't need to be re-initialized for each new process definition.
    */
-  protected Map<String, MessageDefinition> messages = new HashMap<String, MessageDefinition>();
-  protected Map<String, StructureDefinition> structures = new HashMap<String, StructureDefinition>();
-  protected Map<String, BpmnInterfaceImplementation> interfaceImplementations = new HashMap<String, BpmnInterfaceImplementation>();
-  protected Map<String, OperationImplementation> operationImplementations = new HashMap<String, OperationImplementation>();
-  protected Map<String, ItemDefinition> itemDefinitions = new HashMap<String, ItemDefinition>();
-  protected Map<String, BpmnInterface> bpmnInterfaces = new HashMap<String, BpmnInterface>();
-  protected Map<String, Operation> operations = new HashMap<String, Operation>();
-  protected Map<String, XMLImporter> importers = new HashMap<String, XMLImporter>();
   protected Map<String, String> prefixs = new HashMap<String, String>();
 
   // Factories
-  protected ExpressionManager expressionManager;
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
 
@@ -144,15 +121,9 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
    * Constructor to be called by the {@link BpmnParser}.
    */
   public BpmnParse(BpmnParser parser) {
-    this.expressionManager = parser.getExpressionManager();
     this.activityBehaviorFactory = parser.getActivityBehaviorFactory();
     this.listenerFactory = parser.getListenerFactory();
     this.bpmnParserHandlers = parser.getBpmnParserHandlers();
-    this.initializeXSDItemDefinitions();
-  }
-
-  protected void initializeXSDItemDefinitions() {
-    this.itemDefinitions.put("http://www.w3.org/2001/XMLSchema:string", new ItemDefinition("http://www.w3.org/2001/XMLSchema:string", new ClassStructureDefinition(String.class)));
   }
 
   public BpmnParse deployment(DeploymentEntity deployment) {
@@ -214,14 +185,11 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
           }
         }
       }
+      
+      bpmnModel.setSourceSystemId(sourceSystemId);
+      bpmnModel.setEventSupport(new ActivitiEventSupport());
 
       // Validation successful (or no validation)
-
-      // Continue with creating side artifacts: imports, item defs, messages and operations
-      createImports();
-      createItemDefinitions();
-      createMessages();
-      createOperations();
 
       // Attach logic to the processes (eg. map ActivityBehaviors to bpmn model elements)
       applyParseHandlers();
@@ -298,102 +266,9 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
     this.streamSource = streamSource;
   }
   
-  public String getSourceSystemId() {
-    return sourceSystemId;
-  }
-
   public BpmnParse setSourceSystemId(String sourceSystemId) {
     this.sourceSystemId = sourceSystemId;
     return this;
-  }
-
-  protected void createImports() {
-    for (Import theImport : bpmnModel.getImports()) {
-      XMLImporter importer = this.getImporter(theImport);
-      if (importer == null) {
-        throw new ActivitiException("Could not import item of type " + theImport.getImportType());
-      } else {
-        importer.importFrom(theImport, this);
-      }
-    }
-  }
-
-  protected XMLImporter getImporter(Import theImport) {
-    if (this.importers.containsKey(theImport.getImportType())) {
-      return this.importers.get(theImport.getImportType());
-    } else {
-      if (theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/")) {
-        Class<?> wsdlImporterClass;
-        try {
-          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
-          XMLImporter newInstance = (XMLImporter) wsdlImporterClass.newInstance();
-          this.importers.put(theImport.getImportType(), newInstance);
-          return newInstance;
-        } catch (Exception e) {
-          throw new ActivitiException("Could not find importer for type " + theImport.getImportType());
-        }
-      }
-      return null;
-    }
-  }
-
-  public void createMessages() {
-    for (Message messageElement : bpmnModel.getMessages()) {
-      MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId(), name);
-      if (StringUtils.isNotEmpty(messageElement.getItemRef())) {
-        if (this.itemDefinitions.containsKey(messageElement.getItemRef())) {
-          ItemDefinition itemDefinition = this.itemDefinitions.get(messageElement.getItemRef());
-          messageDefinition.setItemDefinition(itemDefinition);
-        }
-      }
-      this.messages.put(messageDefinition.getId(), messageDefinition);
-
-    }
-  }
-
-  protected void createItemDefinitions() {
-    for (org.activiti.bpmn.model.ItemDefinition itemDefinitionElement : bpmnModel.getItemDefinitions().values()) {
-      StructureDefinition structure = null;
-
-      try {
-        // it is a class
-        Class<?> classStructure = ReflectUtil.loadClass(itemDefinitionElement.getStructureRef());
-        structure = new ClassStructureDefinition(classStructure);
-      } catch (ActivitiException e) {
-        // it is a reference to a different structure
-        structure = this.structures.get(itemDefinitionElement.getStructureRef());
-      }
-
-      ItemDefinition itemDefinition = new ItemDefinition(itemDefinitionElement.getId(), structure);
-      if (StringUtils.isNotEmpty(itemDefinitionElement.getItemKind())) {
-        itemDefinition.setItemKind(ItemKind.valueOf(itemDefinitionElement.getItemKind()));
-      }
-      itemDefinitions.put(itemDefinition.getId(), itemDefinition);
-    }
-  }
-
-  protected void createOperations() {
-    for (Interface interfaceObject : bpmnModel.getInterfaces()) {
-      BpmnInterface bpmnInterface = new BpmnInterface(interfaceObject.getId(), interfaceObject.getName());
-      bpmnInterface.setImplementation(this.interfaceImplementations.get(interfaceObject.getImplementationRef()));
-
-      for (org.activiti.bpmn.model.Operation operationObject : interfaceObject.getOperations()) {
-        if (this.messages.containsKey(operationObject.getInMessageRef())) {
-          MessageDefinition inMessage = this.messages.get(operationObject.getInMessageRef());
-          Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
-          operation.setImplementation(this.operationImplementations.get(operationObject.getImplementationRef()));
-
-          if (StringUtils.isNotEmpty(operationObject.getOutMessageRef())) {
-            if (this.messages.containsKey(operationObject.getOutMessageRef())) {
-              MessageDefinition outMessage = this.messages.get(operationObject.getOutMessageRef());
-              operation.setOutMessage(outMessage);
-            }
-          }
-
-          operations.put(operation.getId(), operation);
-        }
-      }
-    }
   }
 
   /**
@@ -544,18 +419,6 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
     return null;
   }
 
-  public void addStructure(StructureDefinition structure) {
-    this.structures.put(structure.getId(), structure);
-  }
-
-  public void addService(BpmnInterfaceImplementation bpmnInterfaceImplementation) {
-    this.interfaceImplementations.put(bpmnInterfaceImplementation.getName(), bpmnInterfaceImplementation);
-  }
-
-  public void addOperation(OperationImplementation operationImplementation) {
-    this.operationImplementations.put(operationImplementation.getId(), operationImplementation);
-  }
-
   /*
    * ------------------- GETTERS AND SETTERS -------------------
    */
@@ -624,40 +487,8 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
     this.listenerFactory = listenerFactory;
   }
 
-  public ExpressionManager getExpressionManager() {
-    return expressionManager;
-  }
-
-  public void setExpressionManager(ExpressionManager expressionManager) {
-    this.expressionManager = expressionManager;
-  }
-
   public Map<String, SequenceFlow> getSequenceFlows() {
     return sequenceFlows;
-  }
-
-  public Map<String, MessageDefinition> getMessages() {
-    return messages;
-  }
-
-  public Map<String, BpmnInterfaceImplementation> getInterfaceImplementations() {
-    return interfaceImplementations;
-  }
-
-  public Map<String, ItemDefinition> getItemDefinitions() {
-    return itemDefinitions;
-  }
-
-  public Map<String, XMLImporter> getImporters() {
-    return importers;
-  }
-
-  public Map<String, Operation> getOperations() {
-    return operations;
-  }
-
-  public void setOperations(Map<String, Operation> operations) {
-    this.operations = operations;
   }
 
   public ProcessDefinitionEntity getCurrentProcessDefinition() {

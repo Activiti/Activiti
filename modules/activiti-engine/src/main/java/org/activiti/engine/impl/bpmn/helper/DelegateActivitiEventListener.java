@@ -30,7 +30,7 @@ public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 
   protected String className;
   protected ActivitiEventListener delegateInstance;
-  protected boolean failOnException = true;
+  protected boolean failOnException = false;
 
   public DelegateActivitiEventListener(String className, Class<?> entityClass) {
     this.className = className;

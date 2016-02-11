@@ -15,12 +15,11 @@ package org.activiti.engine.impl.bpmn.parser;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.cfg.BpmnParseFactory;
-import org.activiti.engine.impl.el.ExpressionManager;
 
 /**
  * Parser for BPMN 2.0 process models.
  * 
- * There is only one instance of this parser in the process engine. This {@link Parser} creates {@link BpmnParse} instances that can be used to actually parse the BPMN 2.0 XML process definitions.
+ * There is only one instance of this parser in the process engine. This {@link BpmnParser} creates {@link BpmnParse} instances that can be used to actually parse the BPMN 2.0 XML process definitions.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -42,7 +41,6 @@ public class BpmnParser {
    */
   public static final String OMG_DI_NS = "http://www.omg.org/spec/DD/20100524/DI";
 
-  protected ExpressionManager expressionManager;
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
@@ -77,14 +75,6 @@ public class BpmnParser {
 
   public void setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
     this.bpmnParseFactory = bpmnParseFactory;
-  }
-
-  public ExpressionManager getExpressionManager() {
-    return expressionManager;
-  }
-
-  public void setExpressionManager(ExpressionManager expressionManager) {
-    this.expressionManager = expressionManager;
   }
 
   public BpmnParseHandlers getBpmnParserHandlers() {

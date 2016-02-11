@@ -12,19 +12,13 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 
@@ -54,22 +48,10 @@ public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Ser
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   protected boolean isIdentityLinksInitialized;
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
-  protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
-  protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
-  protected transient ActivitiEventSupport eventSupport;
   protected IOSpecification ioSpecification;
 
   // Backwards compatibility
   protected String engineVersion;
-
-  public ProcessDefinitionEntityImpl() {
-    eventSupport = new ActivitiEventSupport();
-  }
-
-  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-    in.defaultReadObject();
-    eventSupport = new ActivitiEventSupport();
-  }
   
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -236,26 +218,6 @@ public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Ser
 
   public boolean isSuspended() {
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
-  }
-
-  public Set<Expression> getCandidateStarterUserIdExpressions() {
-    return candidateStarterUserIdExpressions;
-  }
-
-  public void addCandidateStarterUserIdExpression(Expression userId) {
-    candidateStarterUserIdExpressions.add(userId);
-  }
-
-  public Set<Expression> getCandidateStarterGroupIdExpressions() {
-    return candidateStarterGroupIdExpressions;
-  }
-
-  public void addCandidateStarterGroupIdExpression(Expression groupId) {
-    candidateStarterGroupIdExpressions.add(groupId);
-  }
-
-  public ActivitiEventSupport getEventSupport() {
-    return eventSupport;
   }
 
   public String getEngineVersion() {

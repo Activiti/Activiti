@@ -55,11 +55,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskActivityBehavior.class);
   
-  protected ExpressionManager expressionManager;
   protected UserTask userTask;
 
-  public UserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask) {
-    this.expressionManager = expressionManager;
+  public UserTaskActivityBehavior(UserTask userTask) {
     this.userTask = userTask;
   }
 
@@ -80,6 +78,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     String activeTaskOwner = null;
     List<String> activeTaskCandidateUsers = null;
     List<String> activeTaskCandidateGroups = null;
+    
+    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
     
     if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
       ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTask.getId(), execution.getProcessDefinitionId());
@@ -184,7 +184,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
 
-    handleAssignments(activeTaskAssignee, activeTaskOwner, activeTaskCandidateUsers, activeTaskCandidateGroups, task, execution);
+    handleAssignments(activeTaskAssignee, activeTaskOwner, activeTaskCandidateUsers, activeTaskCandidateGroups, task, expressionManager, execution);
 
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -219,7 +219,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(String assignee, String owner, List<String> candidateUsers,
-      List<String> candidateGroups, TaskEntity task, DelegateExecution execution) {
+      List<String> candidateGroups, TaskEntity task, ExpressionManager expressionManager, DelegateExecution execution) {
     
     if (StringUtils.isNotEmpty(assignee)) {
       Object assigneeExpressionValue = expressionManager.createExpression(assignee).getValue(execution);
