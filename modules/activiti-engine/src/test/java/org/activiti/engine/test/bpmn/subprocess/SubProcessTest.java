@@ -49,6 +49,20 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
   }
   
+  @Deployment
+  public void testSubProcessWithEndExecutionListener() {
+    SubProcessStubExecutionListener.executionCounter = 0;
+    SubProcessStubExecutionListener.endExecutionCounter = 0;
+    
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess");
+    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    assertEquals("Task in subprocess", subProcessTask.getName());
+    
+    runtimeService.deleteProcessInstance(pi.getProcessInstanceId(), "because");
+    assertEquals(1, SubProcessStubExecutionListener.executionCounter);
+    assertEquals(0, SubProcessStubExecutionListener.endExecutionCounter);
+  }
+  
   /**
    * Same test case as before, but now with all automatic steps
    */

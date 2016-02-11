@@ -81,8 +81,8 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     return tenantExecutors.get(tenantInfoHolder.getCurrentTenantId());
   }
 
-  public void executeAsyncJob(JobEntity job) {
-    determineAsyncExecutor().executeAsyncJob(job);
+  public boolean executeAsyncJob(JobEntity job) {
+    return determineAsyncExecutor().executeAsyncJob(job);
   }
 
   public void setCommandExecutor(CommandExecutor commandExecutor) {
@@ -165,6 +165,18 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   public void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis) {
     for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
       asyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(waitTimeInMillis);
+    }
+  }
+  
+  @Override
+  public int getDefaultQueueSizeFullWaitTimeInMillis() {
+    return determineAsyncExecutor().getDefaultQueueSizeFullWaitTimeInMillis();
+  }
+  
+  @Override
+  public void setDefaultQueueSizeFullWaitTimeInMillis(int defaultQueueSizeFullWaitTime) {
+    for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
+      asyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(defaultQueueSizeFullWaitTime);
     }
   }
 

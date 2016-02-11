@@ -147,6 +147,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     HashMap<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("executionId", executionId);
     persistentState.put("configuration", configuration);
+    persistentState.put("processDefinitionId", processDefinitionId);
     return persistentState;
   }
   
@@ -269,8 +270,8 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 	public void setProcessDefinitionId(String processDefinitionId) {
 		this.processDefinitionId = processDefinitionId;
 	}
-
-	public String getTenantId() {
+	
+  public String getTenantId() {
 		return tenantId;
 	}
 

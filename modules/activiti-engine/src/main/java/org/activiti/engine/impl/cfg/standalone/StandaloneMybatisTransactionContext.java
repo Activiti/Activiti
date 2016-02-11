@@ -19,15 +19,21 @@ import java.util.Map;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.cfg.TransactionPropagation;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class StandaloneMybatisTransactionContext implements TransactionContext {
   
@@ -53,28 +59,59 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
   }
   
   public void commit() {
+    
     log.debug("firing event committing...");
-    fireTransactionEvent(TransactionState.COMMITTING);
+    fireTransactionEvent(TransactionState.COMMITTING, false);
+    
     log.debug("committing the ibatis sql session...");
     getDbSqlSession().commit();
     log.debug("firing event committed...");
-    fireTransactionEvent(TransactionState.COMMITTED);
+    fireTransactionEvent(TransactionState.COMMITTED, true);
+    
   }
 
-  protected void fireTransactionEvent(TransactionState transactionState) {
+  /**
+   * Fires the event for the provided {@link TransactionState}.
+   * 
+   * @param transactionState The {@link TransactionState} for which the listeners will be called.
+   * @param executeInNewContext If true, the listeners will be called in a new command context.
+   *                            This is needed for example when firing the {@link TransactionState#COMMITTED}
+   *                            event: the transaction is already committed and executing logic in the same
+   *                            context could lead to strange behaviour (for example doing a {@link SqlSession#update(String)}
+   *                            would actually roll back the update (as the MyBatis context is already committed
+   *                            and the internal flags have not been correctly set).
+   */
+  protected void fireTransactionEvent(TransactionState transactionState, boolean executeInNewContext) {
     if (stateTransactionListeners==null) {
       return;
     }
-    List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
+    final List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
     if (transactionListeners==null) {
       return;
     }
-    for (TransactionListener transactionListener: transactionListeners) {
+    
+    if (executeInNewContext) {
+      CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor(); 
+      CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW); 
+      commandExecutor.execute(commandConfig, new Command<Void>() {
+        public Void execute(CommandContext commandContext) {
+          executeTransactionListeners(transactionListeners, commandContext);
+          return null;
+        }
+      });
+    } else {
+      executeTransactionListeners(transactionListeners, commandContext);
+    }
+    
+  }
+
+  protected void executeTransactionListeners(List<TransactionListener> transactionListeners, CommandContext commandContext) {
+    for (TransactionListener transactionListener : transactionListeners) {
       transactionListener.execute(commandContext);
     }
   }
-
-  private DbSqlSession getDbSqlSession() {
+  
+  protected DbSqlSession getDbSqlSession() {
     return commandContext.getSession(DbSqlSession.class);
   }
 
@@ -82,7 +119,7 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
     try {
       try {
         log.debug("firing event rolling back...");
-        fireTransactionEvent(TransactionState.ROLLINGBACK);
+        fireTransactionEvent(TransactionState.ROLLINGBACK, false);
         
       } catch (Throwable exception) {
         log.info("Exception during transaction: {}",exception.getMessage());
@@ -98,7 +135,7 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
 
     } finally {
       log.debug("firing event rolled back...");
-      fireTransactionEvent(TransactionState.ROLLED_BACK);
+      fireTransactionEvent(TransactionState.ROLLED_BACK, true);
     }
   }
 }

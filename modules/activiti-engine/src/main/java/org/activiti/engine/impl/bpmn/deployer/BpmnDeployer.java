@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,9 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
@@ -220,10 +223,10 @@ public class BpmnDeployer implements Deployer {
         removeObsoleteTimers(processDefinition);
         addTimerDeclarations(processDefinition, timers);
         
-        removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
+        removeExistingMessageEventSubscriptions(processDefinition, latestProcessDefinition);
         addMessageEventSubscriptions(processDefinition);
         
-        removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
+        removeExistingSignalEventSubScription(processDefinition, latestProcessDefinition);
         addSignalEventSubscriptions(processDefinition);
 
         dbSqlSession.insert(processDefinition);
@@ -353,16 +356,15 @@ public class BpmnDeployer implements Deployer {
   	}
   }
   
-  protected void removeObsoleteMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
-    // remove all subscriptions for the previous version    
+  protected void removeExistingMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     if(latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
-      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
+      List<EventSubscriptionEntity> subscriptionsToDisable = commandContext
         .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+        .findEventSubscriptionsByTypeAndProcessDefinitionId(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
-      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDisable) {
         eventSubscriptionEntity.delete();        
       } 
       
@@ -373,14 +375,25 @@ public class BpmnDeployer implements Deployer {
   protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition) {
     CommandContext commandContext = Context.getCommandContext();
     List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-    if(eventDefinitions != null) {     
+    if(eventDefinitions != null) {  
+      
+      Set<String> messageNames = new HashSet<String>();
       for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
         if(eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
+          
+          if (!messageNames.contains(eventDefinition.getEventName())) {
+            messageNames.add(eventDefinition.getEventName());
+          } else {
+            throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
+                + "': there are multiple message event subscriptions for the message with name '" + eventDefinition.getEventName() + "'.");
+          }
+          
           // look for subscriptions for the same name in db:
           List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext
             .getEventSubscriptionEntityManager()
             .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, 
             		eventDefinition.getEventName(), processDefinition.getTenantId());
+          
           // also look for subscriptions created in the session:
           List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext
             .getDbSqlSession()
@@ -390,7 +403,8 @@ public class BpmnDeployer implements Deployer {
                     && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
               subscriptionsForSameMessageName.add(cachedSubscription);
             }
-          }      
+          }
+          
           // remove subscriptions deleted in the same command
           subscriptionsForSameMessageName = commandContext
                   .getDbSqlSession()
@@ -398,8 +412,9 @@ public class BpmnDeployer implements Deployer {
                 
           for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
             // throw exception only if there's already a subscription as start event
-            if(eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
-              // the event subscription has no instance-id, so it's a message start event
+            
+            // no process instance-id = it's a message start event
+            if(StringUtils.isEmpty(eventSubscriptionEntity.getProcessInstanceId())) {
               throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
                       + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
             }
@@ -409,6 +424,7 @@ public class BpmnDeployer implements Deployer {
           newSubscription.setEventName(eventDefinition.getEventName());
           newSubscription.setActivityId(eventDefinition.getActivityId());
           newSubscription.setConfiguration(processDefinition.getId());
+          newSubscription.setProcessDefinitionId(processDefinition.getId());
 
           if (processDefinition.getTenantId() != null) {
           	newSubscription.setTenantId(processDefinition.getTenantId());
@@ -420,17 +436,16 @@ public class BpmnDeployer implements Deployer {
     }      
   }
   
-  protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
-    // remove all subscriptions for the previous version    
+  protected void removeExistingSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     if(latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
-      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
+      List<EventSubscriptionEntity> subscriptionsToDisable = commandContext
         .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+        .findEventSubscriptionsByTypeAndProcessDefinitionId(SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
-      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-        eventSubscriptionEntity.delete();        
+      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDisable) {
+        eventSubscriptionEntity.delete();  
       } 
       
     }
@@ -497,7 +512,8 @@ public class BpmnDeployer implements Deployer {
     }
 
     boolean isFlowElementLocalizationChanged = localizeFlowElements(process.getFlowElements(), infoNode);
-    if (isFlowElementLocalizationChanged) {
+    boolean isDataObjectLocalizationChanged = localizeDataObjectElements(process.getDataObjects(), infoNode);
+    if (isFlowElementLocalizationChanged || isDataObjectLocalizationChanged) {
       localizationValuesChanged = true;
     }
 
@@ -548,8 +564,10 @@ public class BpmnDeployer implements Deployer {
         }
         
         if (flowElement instanceof SubProcess) {
-          boolean isSubProcessLocalized = localizeFlowElements(((SubProcess) flowElement).getFlowElements(), infoNode);
-          if (isSubProcessLocalized) {
+          SubProcess subprocess = (SubProcess) flowElement;
+          boolean isFlowElementLocalizationChanged = localizeFlowElements(subprocess.getFlowElements(), infoNode);
+          boolean isDataObjectLocalizationChanged = localizeDataObjectElements(subprocess.getDataObjects(), infoNode);
+          if (isFlowElementLocalizationChanged || isDataObjectLocalizationChanged) {
             localizationValuesChanged = true;
           }
         }
@@ -566,6 +584,47 @@ public class BpmnDeployer implements Deployer {
       isEqual = true;
     }
     return isEqual;
+  }
+  
+  protected boolean localizeDataObjectElements(List<ValuedDataObject> dataObjects, ObjectNode infoNode) {
+    boolean localizationValuesChanged = false;
+    CommandContext commandContext = Context.getCommandContext();
+    DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
+
+    for(ValuedDataObject dataObject : dataObjects) {
+      List<ExtensionElement> localizationElements = dataObject.getExtensionElements().get("localization");
+      if (localizationElements != null) {
+        for (ExtensionElement localizationElement : localizationElements) {
+          if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
+            String locale = localizationElement.getAttributeValue(null, "locale");
+            String name = localizationElement.getAttributeValue(null, "name");
+            String documentation = null;
+
+            List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+            if (documentationElements != null) {
+              for (ExtensionElement documentationElement : documentationElements) {
+                documentation = StringUtils.trimToNull(documentationElement.getElementText());
+                break;
+              }
+            }
+            
+            if (name != null && isEqualToCurrentLocalizationValue(locale, dataObject.getName(), DynamicBpmnConstants.LOCALIZATION_NAME, name, infoNode) == false) {
+              dynamicBpmnService.changeLocalizationName(locale, dataObject.getName(), name, infoNode);
+              localizationValuesChanged = true;
+            }
+            
+            if (documentation != null && isEqualToCurrentLocalizationValue(locale, dataObject.getName(), 
+                DynamicBpmnConstants.LOCALIZATION_DESCRIPTION, documentation, infoNode) == false) {
+              
+              dynamicBpmnService.changeLocalizationDescription(locale, dataObject.getName(), documentation, infoNode);
+              localizationValuesChanged = true;
+            }
+          }
+        }
+      }
+    }
+    
+    return localizationValuesChanged;
   }
   
   enum ExprType {

@@ -77,12 +77,14 @@ public class SpringAsyncExecutor extends DefaultAsyncJobExecutor {
   }
 
 	@Override
-  public void executeAsyncJob(JobEntity job) {
+  public boolean executeAsyncJob(JobEntity job) {
 	  try {
       taskExecutor.execute(new ExecuteAsyncRunnable(job, commandExecutor));
     } catch (RejectedExecutionException e) {
       rejectedJobsHandler.jobRejected(this, job);
+      return false;
     }
+	  return true;
   }
 
   @Override

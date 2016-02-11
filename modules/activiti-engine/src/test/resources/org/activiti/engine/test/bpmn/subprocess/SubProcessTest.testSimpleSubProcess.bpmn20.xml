@@ -10,7 +10,6 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
     
     <subProcess id="subProcess">
-    
       <startEvent id="subProcessStart" />
       <sequenceFlow id="flow2" sourceRef="subProcessStart" targetRef="subProcessTask" />
       <userTask id="subProcessTask" name="Task in subprocess" />

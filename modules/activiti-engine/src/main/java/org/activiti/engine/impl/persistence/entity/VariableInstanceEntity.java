@@ -18,9 +18,6 @@ import java.util.Map;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.db.HasRevision;
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
  */
-public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
+public class VariableInstanceEntity implements VariableInstance, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -36,6 +33,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected int revision;
 
   protected String name;
+  protected String localizedName;
+  protected String localizedDescription;
   protected VariableType type;
   protected String typeName;
 
@@ -200,7 +199,27 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public String getName() {
     return name;
   }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
 
+  public String getLocalizedName() {
+    return localizedName;
+  }
+
+  public void setLocalizedName(String localizedName) {
+    this.localizedName = localizedName;
+  }
+
+  public String getLocalizedDescription() {
+    return localizedDescription;
+  }
+
+  public void setLocalizedDescription(String localizedDescription) {
+    this.localizedDescription = localizedDescription;
+  }
+  
   public String getTypeName() {
     return typeName;
   }

@@ -649,5 +649,11 @@
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
+  
+  <update id="unacquireJob" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    update ${prefix}ACT_RU_JOB
+    set DUEDATE_ = #{dueDate,jdbcType=TIMESTAMP}, LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
 
 </mapper>

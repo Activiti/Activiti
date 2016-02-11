@@ -31,7 +31,6 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -42,11 +41,6 @@ public class MultiTenantProcessEngineTest {
   private DummyTenantInfoHolder tenantInfoHolder;
   private MultiSchemaMultiTenantProcessEngineConfiguration config;
   private ProcessEngine processEngine;
-  
-  @BeforeClass
-  public static void bootH2Webapp() throws Exception {
-    org.h2.tools.Server.createWebServer("-web").start();
-  }
   
   @Before
   public void setup() {
