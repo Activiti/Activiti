@@ -69,4 +69,12 @@ public class ProcessDefinitionUtil {
       return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getBpmnModel();
     }
   }
+  
+  public static BpmnModel getBpmnModelFromCache(String processDefinitionId) {
+    ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
+    if (cacheEntry != null) {
+      return cacheEntry.getBpmnModel();
+    }
+    return null;
+  }
 }

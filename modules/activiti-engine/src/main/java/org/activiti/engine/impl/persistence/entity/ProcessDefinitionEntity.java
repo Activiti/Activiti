@@ -13,12 +13,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
-import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -49,10 +44,6 @@ public interface ProcessDefinitionEntity extends ProcessDefinition, Entity, HasR
 
   void setHistoryLevel(Integer historyLevel);
 
-  Map<String, Object> getVariables();
-
-  void setVariables(Map<String, Object> variables);
-
   void setCategory(String category);
 
   void setDiagramResourceName(String diagramResourceName);
@@ -71,22 +62,8 @@ public interface ProcessDefinitionEntity extends ProcessDefinition, Entity, HasR
 
   void setSuspensionState(int suspensionState);
 
-  Set<Expression> getCandidateStarterUserIdExpressions();
-
-  void addCandidateStarterUserIdExpression(Expression userId);
-
-  Set<Expression> getCandidateStarterGroupIdExpressions();
-
-  void addCandidateStarterGroupIdExpression(Expression groupId);
-
-  ActivitiEventSupport getEventSupport();
-
   String getEngineVersion();
 
   void setEngineVersion(String engineVersion);
-  
-  IOSpecification getIoSpecification();
-
-  void setIoSpecification(IOSpecification ioSpecification);
   
 }

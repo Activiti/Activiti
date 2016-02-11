@@ -13,17 +13,16 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.bpmn.data.IOSpecification;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,17 +65,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
       currentProcessDefinition.setEngineVersion(bpmnParse.getDeployment().getEngineVersion());
     }
     
-    createEventListeners(bpmnParse, process.getEventListeners(), currentProcessDefinition);
-
-    ExpressionManager expressionManager = bpmnParse.getExpressionManager();
-
-    for (String candidateUser : process.getCandidateStarterUsers()) {
-      currentProcessDefinition.addCandidateStarterUserIdExpression(expressionManager.createExpression(candidateUser));
-    }
-
-    for (String candidateGroup : process.getCandidateStarterGroups()) {
-      currentProcessDefinition.addCandidateStarterGroupIdExpression(expressionManager.createExpression(candidateGroup));
-    }
+    createEventListeners(bpmnParse, process.getEventListeners());
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Parsing process {}", currentProcessDefinition.getKey());
@@ -85,24 +74,10 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     bpmnParse.processFlowElements(process.getFlowElements());
     processArtifacts(bpmnParse, process.getArtifacts());
 
-    // parse out any data objects from the template in order to set up the
-    // necessary process variables
-    Map<String, Object> variables = processDataObjects(bpmnParse, process.getDataObjects());
-    if (null != currentProcessDefinition.getVariables()) {
-      currentProcessDefinition.getVariables().putAll(variables);
-    } else {
-      currentProcessDefinition.setVariables(variables);
-    }
-    
-    if (process.getIoSpecification() != null) {
-      IOSpecification ioSpecification = createIOSpecification(bpmnParse, process.getIoSpecification());
-      currentProcessDefinition.setIoSpecification(ioSpecification);
-    }
-
     return currentProcessDefinition;
   }
 
-  protected void createEventListeners(BpmnParse bpmnParse, List<EventListener> eventListeners, ProcessDefinitionEntity currentProcessDefinition) {
+  protected void createEventListeners(BpmnParse bpmnParse, List<EventListener> eventListeners) {
 
     if (eventListeners != null && !eventListeners.isEmpty()) {
       for (EventListener eventListener : eventListeners) {
@@ -110,17 +85,17 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
         ActivitiEventType[] types = ActivitiEventType.getTypesFromString(eventListener.getEvents());
 
         if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
-          currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener), types);
+          getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener), types);
         
         } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
-          currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener), types);
+          getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener), types);
         
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
         
-          currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
+          getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
         
         } else {
           LOGGER.warn("Unsupported implementation type for EventListener: " + eventListener.getImplementationType() + " for element " + bpmnParse.getCurrentFlowElement().getId());
@@ -128,6 +103,10 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
       }
     }
 
+  }
+  
+  protected ActivitiEventSupport getEventSupport(BpmnModel bpmnModel) {
+    return (ActivitiEventSupport) bpmnModel.getEventSupport();
   }
 
 }

@@ -12,11 +12,16 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -25,12 +30,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Methods for working with deployments.  Much of the actual work of {@link BpmnDeployer} is
@@ -162,35 +161,34 @@ public class BpmnDeploymentHelper  {
     timerManager.scheduleTimers(processDefinition, process);
   }
 
-  enum ExprType {
+  enum ExpressionType {
     USER, GROUP
   }
 
   /**
    * @param processDefinition
    */
-  public void addAuthorizationsForNewProcessDefinition(ProcessDefinitionEntity processDefinition) {
+  public void addAuthorizationsForNewProcessDefinition(Process process, ProcessDefinitionEntity processDefinition) {
     CommandContext commandContext = Context.getCommandContext();
-    addAuthorizationsFromIterator(commandContext, processDefinition.getCandidateStarterUserIdExpressions(), processDefinition, ExprType.USER);
-    addAuthorizationsFromIterator(commandContext, processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
+    
+    addAuthorizationsFromIterator(commandContext, process.getCandidateStarterUsers(), processDefinition, ExpressionType.USER);
+    addAuthorizationsFromIterator(commandContext, process.getCandidateStarterGroups(), processDefinition, ExpressionType.GROUP);
   }
   
-  protected void addAuthorizationsFromIterator(CommandContext commandContext, 
-      Set<Expression> expressions, 
-      ProcessDefinitionEntity processDefinition, 
-      ExprType expressionType) {
+  protected void addAuthorizationsFromIterator(CommandContext commandContext, List<String> expressions, 
+      ProcessDefinitionEntity processDefinition, ExpressionType expressionType) {
     
     if (expressions != null) {
-      Iterator<Expression> iterator = expressions.iterator();
+      Iterator<String> iterator = expressions.iterator();
       while (iterator.hasNext()) {
         @SuppressWarnings("cast")
-        Expression expr = (Expression) iterator.next();
+        String expression = iterator.next();
         IdentityLinkEntity identityLink = commandContext.getIdentityLinkEntityManager().create();
         identityLink.setProcessDef(processDefinition);
-        if (expressionType.equals(ExprType.USER)) {
-          identityLink.setUserId(expr.toString());
-        } else if (expressionType.equals(ExprType.GROUP)) {
-          identityLink.setGroupId(expr.toString());
+        if (expressionType.equals(ExpressionType.USER)) {
+          identityLink.setUserId(expression);
+        } else if (expressionType.equals(ExpressionType.GROUP)) {
+          identityLink.setGroupId(expression);
         }
         identityLink.setType(IdentityLinkType.CANDIDATE);
         commandContext.getIdentityLinkEntityManager().insert(identityLink);

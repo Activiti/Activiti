@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,7 +52,7 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
 
     modelActivity.setBehavior(miActivityBehavior);
 
-    ExpressionManager expressionManager = bpmnParse.getExpressionManager();
+    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
     // loop cardinality
     if (StringUtils.isNotEmpty(loopCharacteristics.getLoopCardinality())) {

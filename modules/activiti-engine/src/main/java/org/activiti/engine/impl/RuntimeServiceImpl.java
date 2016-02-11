@@ -32,7 +32,7 @@ import org.activiti.engine.impl.cmd.CompleteAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DispatchEventCommand;
-import org.activiti.engine.impl.cmd.EnableActivityForAdhocSubProcessCmd;
+import org.activiti.engine.impl.cmd.ExecuteActivityForAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetEnabledActivitiesForAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
@@ -465,8 +465,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
   
   @Override
-  public Execution enableActivityInAdhocSubProcess(String executionId, String activityId) {
-    return commandExecutor.execute(new EnableActivityForAdhocSubProcessCmd(executionId, activityId));
+  public Execution executeActivityInAdhocSubProcess(String executionId, String activityId) {
+    return commandExecutor.execute(new ExecuteActivityForAdhocSubProcessCmd(executionId, activityId));
   }
   
   @Override

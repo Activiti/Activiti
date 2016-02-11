@@ -26,11 +26,8 @@ public class MessageDefinition {
 
   protected ItemDefinition itemDefinition;
 
-  protected String name;
-
-  public MessageDefinition(String id, String name) {
+  public MessageDefinition(String id) {
     this.id = id;
-    this.name = name;
   }
 
   public MessageInstance createInstance() {
@@ -51,13 +48,5 @@ public class MessageDefinition {
 
   public String getId() {
     return this.id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 }

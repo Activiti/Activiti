@@ -14,7 +14,8 @@ package org.activiti.engine.test.api.event;
 
 import java.util.Map;
 
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -41,13 +42,12 @@ public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiT
     ProcessDefinition secondDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdFromDeploymentAnnotation).processDefinitionKey("simpleProcess").singleResult();
     assertNotNull(firstDefinition);
 
-    // Fetch a reference to the process definition entity to add the
-    // listener
+    // Fetch a reference to the process definition entity to add the listener
     TestActivitiEventListener listener = new TestActivitiEventListener();
-    ProcessDefinitionEntity definitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(firstDefinition.getId());
-    assertNotNull(definitionEntity);
+    BpmnModel bpmnModel = repositoryService.getBpmnModel(firstDefinition.getId());
+    assertNotNull(bpmnModel);
 
-    definitionEntity.getEventSupport().addEventListener(listener);
+    ((ActivitiEventSupport) bpmnModel.getEventSupport()).addEventListener(listener);
 
     // Start a process for the first definition, events should be received
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(firstDefinition.getId());
