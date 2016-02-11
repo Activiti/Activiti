@@ -24,8 +24,6 @@ import org.activiti.engine.task.Task;
  */
 public interface TaskDataManager extends DataManager<TaskEntity> {
   
-  TaskEntity findById(String taskId, boolean checkCache);
-
   List<TaskEntity> findTasksByExecutionId(final String executionId);
 
   List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId);

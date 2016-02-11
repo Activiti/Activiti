@@ -36,8 +36,7 @@ public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
     if (task.getOwner() == null) {
       task.setOwner(task.getAssignee());
     }
-    task.setAssignee(userId);
-    commandContext.getTaskEntityManager().update(task);
+    commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
     return null;
   }
 

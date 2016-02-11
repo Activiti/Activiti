@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -99,16 +100,20 @@ public class AdhocSubProcessTest extends PluggableActivitiTestCase {
     
     taskService.complete(afterTask.getId());
     
-    List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery()
-        .processInstanceId(pi.getId())
-        .orderByHistoricTaskInstanceEndTime()
-        .asc()
-        .list();
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
     
-    assertEquals(3, historicTasks.size());
-    assertEquals("subProcessTask", historicTasks.get(0).getTaskDefinitionKey());
-    assertEquals("subProcessTask2", historicTasks.get(1).getTaskDefinitionKey());
-    assertEquals("afterTask", historicTasks.get(2).getTaskDefinitionKey());
+      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery()
+          .processInstanceId(pi.getId())
+          .orderByHistoricTaskInstanceEndTime()
+          .asc()
+          .list();
+      
+      assertEquals(3, historicTasks.size());
+      assertEquals("subProcessTask", historicTasks.get(0).getTaskDefinitionKey());
+      assertEquals("subProcessTask2", historicTasks.get(1).getTaskDefinitionKey());
+      assertEquals("afterTask", historicTasks.get(2).getTaskDefinitionKey());
+      
+    }
     
     assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
   }
