@@ -14,7 +14,7 @@
 package org.activiti.spring.test.autodeployment;
 
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -33,7 +33,7 @@ import java.util.Set;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class SpringAutoDeployTest extends PvmTestCase {
+public class SpringAutoDeployTest extends AbstractTestCase {
 
   protected static final String CTX_PATH = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml";
   protected static final String CTX_NO_DROP_PATH = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-no-drop-context.xml";

@@ -51,7 +51,7 @@ import org.junit.Assert;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public abstract class AbstractActivitiTestCase extends PvmTestCase {
+public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Collections.singletonList("ACT_GE_PROPERTY");
 

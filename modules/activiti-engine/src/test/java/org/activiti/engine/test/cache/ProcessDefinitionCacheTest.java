@@ -24,7 +24,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -34,7 +34,7 @@ import org.activiti.engine.task.Task;
  * 
  * @author Joram Barrez
  */
-public class ProcessDefinitionCacheTest extends PvmTestCase {
+public class ProcessDefinitionCacheTest extends AbstractTestCase {
 
   // Test for a bug: when the process engine is rebooted the
   // cache is cleaned and the deployed process definition is
