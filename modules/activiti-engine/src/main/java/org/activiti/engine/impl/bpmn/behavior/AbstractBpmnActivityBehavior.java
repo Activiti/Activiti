@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -69,12 +69,15 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
         continue;
       }
 
-      ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
+      ExecutionEntity childExecutionEntity = commandContext.getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
       childExecutionEntity.setScope(false);
 
       ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+      if (boundaryEventBehavior instanceof CommandContextAware) {
+        ((CommandContextAware) boundaryEventBehavior).setCommandContext(commandContext);
+      }
       boundaryEventBehavior.execute(childExecutionEntity);
     }
 

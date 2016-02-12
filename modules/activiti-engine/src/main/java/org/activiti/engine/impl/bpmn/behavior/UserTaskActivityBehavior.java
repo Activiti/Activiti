@@ -33,7 +33,6 @@ import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
@@ -62,10 +61,10 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(DelegateExecution execution) {
-    TaskEntity task = Context.getCommandContext().getTaskEntityManager().create();
+    TaskEntity task = commandContext.getTaskEntityManager().create();
     task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinitionKey(userTask.getId());
-    Context.getCommandContext().getTaskEntityManager().insert(task, (ExecutionEntity) execution);
+    commandContext.getTaskEntityManager().insert(task, (ExecutionEntity) execution);
     
     String activeTaskName = null;
     String activeTaskDescription = null;
@@ -191,13 +190,12 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
     
-    Context.getCommandContext().getTaskEntityManager().update(task);
-    Context.getCommandContext().getTaskEntityManager().fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
+    commandContext.getTaskEntityManager().update(task);
+    commandContext.getTaskEntityManager().fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
 
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
       if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
-        CommandContext commandContext = Context.getCommandContext();
         commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
         leave(execution);
       }
@@ -206,7 +204,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     
-    TaskEntityManager taskEntityManager = Context.getCommandContext().getTaskEntityManager();
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     List<TaskEntity> taskEntities = taskEntityManager.findTasksByExecutionId(execution.getId()); // Should be only one
     for (TaskEntity taskEntity : taskEntities) {
       if (!taskEntity.isDeleted()) {
@@ -228,7 +226,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         assigneeValue = assigneeExpressionValue.toString();
       }
       task.setAssignee(assigneeValue);
-      Context.getCommandContext().getTaskEntityManager().update(task);
+      commandContext.getTaskEntityManager().update(task);
     }
 
     if (StringUtils.isNotEmpty(owner)) {
@@ -238,7 +236,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         ownerValue = ownerExpressionValue.toString();
       }
       task.setOwner(ownerValue);
-      Context.getCommandContext().getTaskEntityManager().update(task);
+      commandContext.getTaskEntityManager().update(task);
     }
 
     if (candidateGroups != null && !candidateGroups.isEmpty()) {

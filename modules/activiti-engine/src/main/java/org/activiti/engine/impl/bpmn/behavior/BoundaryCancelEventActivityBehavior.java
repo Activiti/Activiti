@@ -20,7 +20,6 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -36,7 +35,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
   @Override
   public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
-    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     
     ExecutionEntity subProcessExecution = null;
     // TODO: this can be optimized. A full search in the all executions shouldn't bee needed
@@ -52,7 +51,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
       throw new ActivitiException("No execution found for sub process of boundary cancel event " + boundaryEvent.getId());
     }
     
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
     List<CompensateEventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findCompensateEventSubscriptionsByExecutionId(subProcessExecution.getParentId());
 
     if (eventSubscriptions.isEmpty()) {

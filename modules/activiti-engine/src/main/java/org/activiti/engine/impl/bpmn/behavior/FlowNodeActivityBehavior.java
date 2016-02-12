@@ -15,7 +15,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
@@ -25,11 +27,12 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  * 
  * @author Joram Barrez
  */
-public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior {
+public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior, CommandContextAware {
 
   private static final long serialVersionUID = 1L;
 
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
+  protected CommandContext commandContext;
 
   /**
    * Default behaviour: just leave the activity with no extra functionality.
@@ -55,10 +58,13 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
     throw new ActivitiException("this activity isn't waiting for a trigger");
   }
   
+  public void setCommandContext(CommandContext commandContext) {
+    this.commandContext = commandContext;
+  }
+  
   protected String parseActivityType(FlowNode flowNode) {
     String elementType = flowNode.getClass().getSimpleName();
     elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
     return elementType;
   }
-
 }
