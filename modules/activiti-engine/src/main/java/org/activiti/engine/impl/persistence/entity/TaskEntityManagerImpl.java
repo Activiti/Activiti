@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
@@ -38,7 +36,6 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -66,9 +63,17 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   }
   
   @Override
-  public void insert(TaskEntity entity, boolean fireCreateEvent) {
-    super.insert(entity, fireCreateEvent);
-    getHistoryManager().recordTaskId(entity);
+  public void insert(TaskEntity taskEntity, boolean fireCreateEvent) {
+
+    if (taskEntity.getOwner() != null) {
+      addOwnerIdentityLink(taskEntity, taskEntity.getOwner());
+    }
+    if (taskEntity.getAssignee() != null) {
+      addAssigneeIdentityLinks(taskEntity);
+    }
+    
+    super.insert(taskEntity, fireCreateEvent);
+    
   }
   
   @Override
@@ -88,138 +93,72 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       getHistoryManager().recordTaskExecutionIdChange(taskEntity.getId(), taskEntity.getExecutionId());
     }
     
-    super.insert(taskEntity, true);
-
+    insert(taskEntity, true);
+    
+    if (getEventDispatcher().isEnabled()) {
+      if (taskEntity.getAssignee() != null) {
+        getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
+      }
+    }
+    
     getHistoryManager().recordTaskCreated(taskEntity, execution);
+    getHistoryManager().recordTaskId(taskEntity);
   }
   
   @Override
-  public TaskEntity update(TaskEntity taskEntity) {
-    
-    HistoricTaskInstanceEntity historicTaskInstanceEntity = getHistoricTaskInstanceEntityManager().findById(taskEntity.getId());
-    String originalName = null;
-    String originalAssignee = null;
-    String originalOwner = null;
-    String originalDescription = null;
-    Date originalDueDate = null;
-    int originalPriority = -1;
-    String originalCategory = null;
-    String originalFormKey = null;
-    String originalParentTaskId = null;
-    String originalTaskDefinitionKey = null;
-    
-    if (historicTaskInstanceEntity != null) {
+  public void changeTaskAssignee(TaskEntity taskEntity, String assignee) {
+    if ( (taskEntity.getAssignee() != null && !taskEntity.getAssignee().equals(assignee)) 
+        || (taskEntity.getAssignee() == null && assignee != null)) {
+      taskEntity.setAssignee(assignee);
+      fireAssignmentEvents(taskEntity);
       
-      originalName = historicTaskInstanceEntity.getName();
-      originalAssignee = historicTaskInstanceEntity.getAssignee();
-      originalOwner = historicTaskInstanceEntity.getOwner();
-      originalDescription = historicTaskInstanceEntity.getDescription();
-      originalDueDate = historicTaskInstanceEntity.getDueDate();
-      originalPriority = historicTaskInstanceEntity.getPriority();
-      originalCategory = historicTaskInstanceEntity.getCategory();
-      originalFormKey = historicTaskInstanceEntity.getFormKey();
-      originalParentTaskId = historicTaskInstanceEntity.getParentTaskId();
-      originalTaskDefinitionKey = historicTaskInstanceEntity.getTaskDefinitionKey();
-      
-    } else {
-      
-      TaskEntity originalTaskEntity = taskDataManager.findById(taskEntity.getId(), false);
-      
-      if (originalTaskEntity == null) {
-        originalTaskEntity = taskDataManager.findById(taskEntity.getId());
+      if (taskEntity.getId() != null) {
+        getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
+        addAssigneeIdentityLinks(taskEntity);
+        update(taskEntity);
       }
-      
-      if (originalTaskEntity != null) {
-        originalName = originalTaskEntity.getName();
-        originalAssignee = originalTaskEntity.getAssignee();
-        originalOwner = originalTaskEntity.getOwner();
-        originalDescription = originalTaskEntity.getDescription();
-        originalDueDate = originalTaskEntity.getDueDate();
-        originalPriority = originalTaskEntity.getPriority();
-        originalCategory = originalTaskEntity.getCategory();
-        originalFormKey = originalTaskEntity.getFormKey();
-        originalParentTaskId = originalTaskEntity.getParentTaskId();
-        originalTaskDefinitionKey = originalTaskEntity.getTaskDefinitionKey();
-      }
-      
     }
-    
-    if (!StringUtils.equals(originalName, taskEntity.getName())) {
-      getHistoryManager().recordTaskNameChange(taskEntity.getId(), taskEntity.getName());
-    }
-    
-    if (!StringUtils.equals(originalOwner, taskEntity.getOwner())) {
-      updateOwner(taskEntity, taskEntity.getOwner());
-    }
-    
-    if (!StringUtils.equals(originalAssignee, taskEntity.getAssignee())) {
-      updateAssignee(taskEntity, taskEntity.getAssignee(), true);
-    }
-    
-    if (!StringUtils.equals(originalDescription, taskEntity.getDescription())) {
-      getHistoryManager().recordTaskDescriptionChange(taskEntity.getId(), taskEntity.getDescription());
-    }
-    
-    if ( (originalDueDate == null && taskEntity.getDueDate() != null) 
-        || (originalDueDate != null && taskEntity.getDueDate() == null)
-        || (originalDueDate != null && !originalDueDate.equals(taskEntity.getDueDate())) ) {
-      getHistoryManager().recordTaskDueDateChange(taskEntity.getId(), taskEntity.getDueDate());
-    }
-    
-    if (originalPriority != taskEntity.getPriority()) {
-      getHistoryManager().recordTaskPriorityChange(taskEntity.getId(), taskEntity.getPriority());
-    }
-    
-    if (!StringUtils.equals(originalCategory, taskEntity.getCategory())) {
-      getHistoryManager().recordTaskCategoryChange(taskEntity.getId(), taskEntity.getCategory());
-    }
-    
-    if (!StringUtils.equals(originalFormKey, taskEntity.getFormKey())) {
-      getHistoryManager().recordTaskFormKeyChange(taskEntity.getId(), taskEntity.getFormKey());
-    }
-    
-    if (!StringUtils.equals(originalParentTaskId, taskEntity.getParentTaskId())) {
-      getHistoryManager().recordTaskParentTaskIdChange(taskEntity.getId(), taskEntity.getParentTaskId());
-    }
-    
-    if (!StringUtils.equals(originalTaskDefinitionKey, taskEntity.getTaskDefinitionKey())) {
-      getHistoryManager().recordTaskDefinitionKeyChange(taskEntity.getId(), taskEntity.getTaskDefinitionKey());
-    }
-    
-    boolean fireEvent = taskEntity.getRevision() > 0;
-    
-    return super.update(taskEntity, fireEvent);
   }
-
-  protected void updateAssignee(TaskEntity taskEntity, String assignee, boolean dispatchAssignmentEvent) {
-
-    getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), assignee);
-    
-    if (assignee != null && taskEntity.getProcessInstance() != null) {
-      getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), assignee, IdentityLinkType.PARTICIPANT);
+  
+  @Override
+  public void changeTaskOwner(TaskEntity taskEntity, String owner) {
+    if ( (taskEntity.getOwner() != null && !taskEntity.getOwner().equals(owner)) 
+        || (taskEntity.getOwner() == null && owner != null)) {
+      taskEntity.setOwner(owner);
+      
+      if (taskEntity.getId() != null) {
+        getHistoryManager().recordTaskOwnerChange(taskEntity.getId(), taskEntity.getOwner());
+        addOwnerIdentityLink(taskEntity, taskEntity.getOwner());
+        update(taskEntity);
+      }
     }
-    
+  }
+  
+  protected void fireAssignmentEvents(TaskEntity taskEntity) {
+
     fireTaskListenerEvent(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
     getHistoryManager().recordTaskAssignment(taskEntity);
 
     if (getEventDispatcher().isEnabled()) {
-      if (dispatchAssignmentEvent) {
-        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
-      }
-
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
     }
 
   }
+
+  private void addAssigneeIdentityLinks(TaskEntity taskEntity) {
+    if (taskEntity.getAssignee() != null && taskEntity.getProcessInstance() != null) {
+      getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), taskEntity.getAssignee(), IdentityLinkType.PARTICIPANT);
+    }
+  }
   
-  protected void updateOwner(TaskEntity taskEntity, String owner) {
+  protected void addOwnerIdentityLink(TaskEntity taskEntity, String owner) {
     if (owner == null && taskEntity.getOwner() == null) {
       return;
     }
     
-    getHistoryManager().recordTaskOwnerChange(taskEntity.getId(), owner);
-    
     if (owner != null && taskEntity.getProcessInstanceId() != null) {
-      Context.getCommandContext().getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), owner, IdentityLinkType.PARTICIPANT);
+      getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), owner, IdentityLinkType.PARTICIPANT);
     }
   }
   
