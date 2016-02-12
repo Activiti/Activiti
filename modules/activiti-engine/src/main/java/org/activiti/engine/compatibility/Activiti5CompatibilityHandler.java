@@ -26,7 +26,6 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -55,6 +54,8 @@ public interface Activiti5CompatibilityHandler {
   BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
   
   ObjectNode getProcessDefinitionInfo(String processDefinitionId);
+  
+  boolean isProcessDefinitionSuspended(String processDefinitionId);
   
   void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
   
