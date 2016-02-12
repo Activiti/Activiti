@@ -29,7 +29,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -66,7 +65,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     
     List<DelegateExecution> concurrentExecutions = new ArrayList<DelegateExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      DelegateExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
+      DelegateExecution concurrentExecution = commandContext.getExecutionEntityManager()
           .createChildExecution((ExecutionEntity) execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
@@ -121,7 +120,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
     
-    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    commandContext.getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     callActivityEndListeners(execution);
     
     if (zeroNrOfInstances) {
@@ -182,7 +181,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
         
         if (activity instanceof CallActivity) {
-          ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+          ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
           ExecutionTree executionTree = executionEntityManager.findExecutionTree(executionEntity.getRootProcessInstanceId());
           ExecutionTreeNode executionTreeNode = executionTree.getTreeNode(workWithExecution.getId());
           
@@ -205,7 +204,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
           }
         }
         
-        deleteChildExecutions(workWithExecution, false, Context.getCommandContext());
+        deleteChildExecutions(workWithExecution, false);
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(workWithExecution, true);
       }
 
@@ -218,7 +217,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   
   protected void lockFirstParentScope(DelegateExecution execution) {
     
-    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     
     boolean found = false;
     ExecutionEntity parentScopeExecution = null;
@@ -235,13 +234,13 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   }
   
   // TODO: can the ExecutionManager.deleteChildExecution not be used?
-  protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
+  protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution) {
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtil.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
-        deleteChildExecutions(childExecution, true, commandContext);
+        deleteChildExecutions(childExecution, true);
       }
     }
 

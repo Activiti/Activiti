@@ -16,7 +16,6 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
@@ -46,7 +45,7 @@ public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBeh
 
     TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
     if (timer != null) {
-      Context.getCommandContext().getJobEntityManager().schedule(timer);
+      commandContext.getJobEntityManager().schedule(timer);
     }
   }
 

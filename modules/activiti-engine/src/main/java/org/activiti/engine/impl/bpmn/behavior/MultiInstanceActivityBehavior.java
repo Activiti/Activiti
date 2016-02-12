@@ -35,6 +35,7 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -102,6 +103,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       }
       
     } else {
+      innerActivityBehavior.setCommandContext(commandContext);
       innerActivityBehavior.execute(execution);
     }
   }
@@ -122,13 +124,16 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
         }
 
         if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
-          ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager()
+          ExecutionEntity childExecutionEntity = commandContext.getExecutionEntityManager()
               .createChildExecution((ExecutionEntity) execution); 
           childExecutionEntity.setParentId(execution.getId());
           childExecutionEntity.setCurrentFlowElement(boundaryEvent);
           childExecutionEntity.setScope(false);
 
           ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+          if (boundaryEventBehavior instanceof CommandContextAware) {
+            ((CommandContextAware) boundaryEventBehavior).setCommandContext(commandContext);
+          }
           boundaryEventBehavior.execute(childExecutionEntity);
         }
       }
@@ -155,6 +160,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
+    innerActivityBehavior.setCommandContext(commandContext);
     innerActivityBehavior.trigger(execution, signalName, signalData);
   }
 
@@ -226,6 +232,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     // no need to pass through executeActivity again since it will create a new historic activity
     if (loopCounter == 0) {
       callCustomActivityStartListeners(execution);
+      innerActivityBehavior.setCommandContext(commandContext);
       innerActivityBehavior.execute(execution);
     } else {
       execution.setCurrentFlowElement(activity);

@@ -21,8 +21,6 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
@@ -59,7 +57,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
    * For an intermediate catch without type, it's simply leaving the event. 
    */
   public void cancelEvent(DelegateExecution execution) {
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
   
   protected EventGateway getPrecedingEventBasedGateway(DelegateExecution execution) {
@@ -99,7 +97,6 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
       }
     }
     
-    CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     
     // Find the executions

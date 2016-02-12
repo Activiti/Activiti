@@ -23,7 +23,6 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -88,7 +87,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
       throw new ActivitiException("Could not find a scope execution for compensation boundary event " + boundaryEvent.getId());
     }
     
-    Context.getCommandContext().getEventSubscriptionEntityManager().insertCompensationEvent(
+    commandContext.getEventSubscriptionEntityManager().insertCompensationEvent(
         scopeExecution, compensationActivity.getId());
   }
 
@@ -98,7 +97,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 
     if (boundaryEvent.isCancelActivity()) {
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof CompensateEventSubscriptionEntity && eventSubscription.getActivityId().equals(compensateEventDefinition.getActivityRef())) {

@@ -22,7 +22,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
@@ -51,8 +50,6 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
   }
 
   public void execute(DelegateExecution execution) {
-
-    CommandContext commandContext = Context.getCommandContext();
 
     EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;

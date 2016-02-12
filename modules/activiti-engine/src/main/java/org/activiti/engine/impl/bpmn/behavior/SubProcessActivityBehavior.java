@@ -66,7 +66,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
       execution.setVariablesLocal(dataObjectVars);
     }
 
-    ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
+    ExecutionEntity startSubProcessExecution = commandContext.getExecutionEntityManager()
         .createChildExecution((ExecutionEntity) execution); 
     startSubProcessExecution.setCurrentFlowElement(startElement);
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);

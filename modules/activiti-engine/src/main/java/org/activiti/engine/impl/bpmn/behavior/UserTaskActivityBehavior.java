@@ -33,7 +33,6 @@ import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
@@ -60,13 +59,12 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(DelegateExecution execution) {
-    
-    CommandContext commandContext = Context.getCommandContext();
     TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     
     TaskEntity task = taskEntityManager.create();
     task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinitionKey(userTask.getId());
+
     String activeTaskName = null;
     String activeTaskDescription = null;
     String activeTaskDueDate = null;
@@ -209,7 +207,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     
-    TaskEntityManager taskEntityManager = Context.getCommandContext().getTaskEntityManager();
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     List<TaskEntity> taskEntities = taskEntityManager.findTasksByExecutionId(execution.getId()); // Should be only one
     for (TaskEntity taskEntity : taskEntities) {
       if (!taskEntity.isDeleted()) {
@@ -230,6 +228,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (assigneeExpressionValue != null) {
         assigneeValue = assigneeExpressionValue.toString();
       }
+
       taskEntityManager.changeTaskAssignee(task, assigneeValue);;
     }
 
@@ -239,6 +238,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (ownerExpressionValue != null) {
         ownerValue = ownerExpressionValue.toString();
       }
+
       taskEntityManager.changeTaskOwner(task, ownerValue);
     }
 
