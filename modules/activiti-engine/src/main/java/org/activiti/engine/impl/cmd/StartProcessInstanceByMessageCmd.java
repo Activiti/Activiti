@@ -66,17 +66,17 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
       throw new ActivitiException("Cannot start process instance by message: subscription to message with name '"+messageName+"' is not a message start event.");
     }
         
-    DeploymentManager deploymentCache = commandContext
+    DeploymentManager deploymentManager = commandContext
             .getProcessEngineConfiguration()
             .getDeploymentManager();
           
-    ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
     }
 
     // Do not start process a process instance if the process definition is suspended
-    if (processDefinition.isSuspended()) {
+    if (deploymentManager.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiException("Cannot start process instance. Process definition "
           + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }

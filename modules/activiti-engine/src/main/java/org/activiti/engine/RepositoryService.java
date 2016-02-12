@@ -304,6 +304,11 @@ public interface RepositoryService {
    * using regular Java.
    */
   BpmnModel getBpmnModel(String processDefinitionId);
+  
+  /**
+   * Checks if the process definition is suspended.
+   */
+  boolean isProcessDefinitionSuspended(String processDefinitionId);
 
   /**
    * Provides positions and dimensions of elements in a process diagram as
