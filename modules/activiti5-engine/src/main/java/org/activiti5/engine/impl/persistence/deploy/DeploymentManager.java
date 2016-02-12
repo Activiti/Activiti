@@ -79,6 +79,26 @@ public class DeploymentManager {
     return processDefinition;
   }
   
+  public ProcessDefinitionEntity findProcessDefinitionByIdFromDatabase(String processDefinitionId) {
+    if (processDefinitionId == null) {
+      throw new ActivitiIllegalArgumentException("Invalid process definition id : null");
+    }
+    
+    ProcessDefinitionEntity processDefinition = Context.getCommandContext()
+        .getProcessDefinitionEntityManager()
+        .findProcessDefinitionById(processDefinitionId);
+    
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
+    }
+    
+    return processDefinition;
+  }
+  
+  public boolean isProcessDefinitionSuspended(String processDefinitionId) {
+    return findProcessDefinitionByIdFromDatabase(processDefinitionId).isSuspended();
+  }
+  
   public BpmnModel getBpmnModelById(String processDefinitionId) {
     if (processDefinitionId == null) {
       throw new ActivitiIllegalArgumentException("Invalid process definition id : null");

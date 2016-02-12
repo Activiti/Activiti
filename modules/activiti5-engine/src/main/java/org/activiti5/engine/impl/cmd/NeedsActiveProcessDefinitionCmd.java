@@ -15,9 +15,9 @@ package org.activiti5.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.repository.ProcessDefinition;
 
@@ -35,16 +35,10 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
   }
   
   public T execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedProcessDefinitionById(processDefinitionId);
+    DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+    ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
 
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
-    }
-    
-    if (processDefinition.isSuspended()) {
+    if (deploymentManager.isProcessDefinitionSuspended(processDefinitionId)) {
       throw new ActivitiException("Cannot execute operation because process definition '" 
               + processDefinition.getName() + "' (id=" + processDefinition.getId() + ") is supended");
     }

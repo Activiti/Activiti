@@ -18,6 +18,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.exception.ActivitiConflictException;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,7 +76,7 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
 
   protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
 
-    if (!processDefinition.isSuspended()) {
+    if (!ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiConflictException("Process definition with id '" + processDefinition.getId() + " ' is already active");
     }
     repositoryService.activateProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
@@ -90,7 +91,7 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
 
   protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
 
-    if (processDefinition.isSuspended()) {
+    if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiConflictException("Process definition with id '" + processDefinition.getId() + " ' is already suspended");
     }
     repositoryService.suspendProcessDefinitionById(processDefinition.getId(), suspendInstances, date);

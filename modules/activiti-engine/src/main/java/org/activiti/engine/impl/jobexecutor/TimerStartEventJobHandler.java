@@ -39,7 +39,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
 
-    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(job.getProcessDefinitionId()); 
+    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinitionFromDatabase(job.getProcessDefinitionId()); 
     if (processDefinition == null) {
       throw new ActivitiException("Could not find process definition needed for timer start event");
     }

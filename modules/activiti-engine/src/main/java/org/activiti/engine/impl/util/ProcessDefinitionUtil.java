@@ -14,10 +14,12 @@ package org.activiti.engine.impl.util;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 
 /**
  * A utility class that hides the complexity of {@link ProcessDefinitionEntity} and {@link Process} lookup. Use this class rather than accessing the process definition cache or
@@ -76,5 +78,20 @@ public class ProcessDefinitionUtil {
       return cacheEntry.getBpmnModel();
     }
     return null;
+  }
+  
+  public static boolean isProcessDefinitionSuspended(String processDefinitionId) {
+    ProcessDefinitionEntity processDefinition = getProcessDefinitionFromDatabase(processDefinitionId);
+    return processDefinition.isSuspended();
+  }
+  
+  public static ProcessDefinitionEntity getProcessDefinitionFromDatabase(String processDefinitionId) {
+    ProcessDefinitionEntityManager processDefinitionEntityManager = Context.getProcessEngineConfiguration().getProcessDefinitionEntityManager();
+    ProcessDefinitionEntity processDefinition = processDefinitionEntityManager.findById(processDefinitionId);
+    if (processDefinition == null) {
+      throw new ActivitiException("No process definition found with id " + processDefinitionId);
+    }
+    
+    return processDefinition;
   }
 }

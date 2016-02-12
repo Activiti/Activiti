@@ -63,7 +63,7 @@ public class ProcessInstanceUtil {
     }
 
     // Do not start process a process instance if the process definition is suspended
-    if (processDefinition.isSuspended()) {
+    if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }
 
@@ -100,7 +100,7 @@ public class ProcessInstanceUtil {
     }
 
     // Do not start process a process instance if the process definition is suspended
-    if (processDefinition.isSuspended()) {
+    if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }
 
