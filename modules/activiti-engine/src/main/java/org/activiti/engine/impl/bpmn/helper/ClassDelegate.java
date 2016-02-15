@@ -34,7 +34,6 @@ import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBeh
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
@@ -152,10 +151,6 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
         activityBehaviorInstance = getActivityBehaviorInstance(execution);
       }
 
-      if (activityBehaviorInstance instanceof CommandContextAware) {
-        ((CommandContextAware) activityBehaviorInstance).setCommandContext(commandContext);
-      }
-      
       try {
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {
@@ -174,11 +169,6 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     }
 
     if (activityBehaviorInstance instanceof TriggerableActivityBehavior) {
-      
-      if (activityBehaviorInstance instanceof CommandContextAware) {
-        ((CommandContextAware) activityBehaviorInstance).setCommandContext(commandContext);
-      }
-      
       ((TriggerableActivityBehavior) activityBehaviorInstance).trigger(execution, signalName, signalData);
     } else {
       throw new ActivitiException("signal() can only be called on a " + TriggerableActivityBehavior.class.getName() + " instance");

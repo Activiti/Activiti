@@ -79,7 +79,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
           }
           outgoingSequenceFlow = sequenceFlow;
         }
-      } else if (SkipExpressionUtil.shouldSkipFlowElement(commandContext, execution, skipExpressionString)) {
+      } else if (SkipExpressionUtil.shouldSkipFlowElement(Context.getCommandContext(), execution, skipExpressionString)) {
         outgoingSequenceFlow = sequenceFlow;
       }
 
@@ -91,7 +91,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     
     // We have to record the end here, or else we're already past it
-    commandContext.getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
 
     // Leave the gateway
     if (outgoingSequenceFlow != null) {

@@ -73,7 +73,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       multiInstanceExecution = findMultiInstanceParentExecution(execution);
     }
     
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     Collection<ExecutionEntity> joinedExecutions = executionEntityManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(execution.getCurrentActivityId(), execution.getProcessInstanceId());
     if (multiInstanceExecution != null) {
       joinedExecutions = cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
@@ -86,7 +86,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
     // TODO: Verify if this is the correct place! Seems out of place here!
     // Is needed to set the endTime for all historic activity joins
-    commandContext.getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
 
     if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
 

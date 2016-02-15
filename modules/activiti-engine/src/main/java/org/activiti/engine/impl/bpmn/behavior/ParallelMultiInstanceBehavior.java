@@ -29,6 +29,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -65,7 +66,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     
     List<DelegateExecution> concurrentExecutions = new ArrayList<DelegateExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      DelegateExecution concurrentExecution = commandContext.getExecutionEntityManager()
+      DelegateExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
           .createChildExecution((ExecutionEntity) execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
@@ -120,7 +121,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
     
-    commandContext.getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     callActivityEndListeners(execution);
     
     if (zeroNrOfInstances) {
@@ -181,7 +182,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
         
         if (activity instanceof CallActivity) {
-          ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+          ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
           ExecutionTree executionTree = executionEntityManager.findExecutionTree(executionEntity.getRootProcessInstanceId());
           ExecutionTreeNode executionTreeNode = executionTree.getTreeNode(workWithExecution.getId());
           
@@ -204,7 +205,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
           }
         }
         
-        deleteChildExecutions(workWithExecution, false);
+        deleteChildExecutions(workWithExecution, false, Context.getCommandContext());
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(workWithExecution, true);
       }
 
@@ -217,7 +218,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   
   protected void lockFirstParentScope(DelegateExecution execution) {
     
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     
     boolean found = false;
     ExecutionEntity parentScopeExecution = null;
@@ -234,13 +235,13 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   }
   
   // TODO: can the ExecutionManager.deleteChildExecution not be used?
-  protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution) {
+  protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtil.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
-        deleteChildExecutions(childExecution, true);
+        deleteChildExecutions(childExecution, true, commandContext);
       }
     }
 

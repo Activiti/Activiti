@@ -17,6 +17,7 @@ import java.util.List;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -36,7 +37,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
 
   public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
   }
 
   @Override
@@ -48,7 +49,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
   @Override
   public void cancelEvent(DelegateExecution execution) {
     deleteSignalEventSubscription(execution);
-    commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
   protected ExecutionEntity deleteSignalEventSubscription(DelegateExecution execution) {
@@ -61,7 +62,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
       eventName = signalEventDefinition.getSignalRef();
     }
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {

@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -57,11 +56,6 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
             FlowNode flowNode = (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);
             InactiveActivityBehavior inactiveActivityBehavior = ((InactiveActivityBehavior) flowNode.getBehavior());
             logger.debug("Found InactiveActivityBehavior instance of class {} that can be executed on activity '{}'", inactiveActivityBehavior.getClass(), flowNode.getId());
-            
-            if (inactiveActivityBehavior instanceof CommandContextAware) {
-              ((CommandContextAware) inactiveActivityBehavior).setCommandContext(commandContext);
-            }
-            
             inactiveActivityBehavior.executeInactive(inactiveExecution);
           }
         }

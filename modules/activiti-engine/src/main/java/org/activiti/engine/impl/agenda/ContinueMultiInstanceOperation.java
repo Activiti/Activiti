@@ -9,7 +9,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -65,10 +64,6 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
                 execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
-      }
-      
-      if (activityBehavior instanceof CommandContextAware) {
-        ((CommandContextAware) activityBehavior).setCommandContext(commandContext);
       }
       
       try {

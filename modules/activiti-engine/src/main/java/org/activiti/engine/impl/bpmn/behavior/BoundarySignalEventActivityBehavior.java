@@ -18,6 +18,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -43,7 +44,7 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
   @Override
   public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
   }
 
   @Override
@@ -59,7 +60,7 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
         eventName = signalEventDefinition.getSignalRef();
       }
 
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {

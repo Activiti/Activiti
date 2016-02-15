@@ -28,7 +28,6 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
-import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 import org.apache.commons.lang3.StringUtils;
@@ -64,11 +63,6 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
     Object delegate = expression.getValue(execution);
     if (delegate instanceof TriggerableActivityBehavior) {
       ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-      
-      if (delegate instanceof CommandContextAware) {
-        ((CommandContextAware) delegate).setCommandContext(commandContext);
-      }
-      
       ((TriggerableActivityBehavior) delegate).trigger(execution, signalName, signalData);
     }
   }

@@ -23,6 +23,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -52,7 +53,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     }
     
     // Create child execution that will execute the inner behavior
-    ExecutionEntity execution = commandContext.getExecutionEntityManager()
+    ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager()
         .createChildExecution((ExecutionEntity) multiInstanceExecution);
     execution.setCurrentFlowElement(multiInstanceExecution.getCurrentFlowElement());
     multiInstanceExecution.setMultiInstanceRoot(true);
@@ -90,7 +91,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     
-    commandContext.getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     callActivityEndListeners(execution);
     
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
@@ -128,7 +129,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       multiInstanceRootExecution.setMultiInstanceRoot(false);
       multiInstanceRootExecution.setCurrentFlowElement(execution.getCurrentFlowElement());
-      commandContext.getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
+      Context.getCommandContext().getExecutionEntityManager()
+        .deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
       super.leave(multiInstanceRootExecution);
       
     } else {

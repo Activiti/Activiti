@@ -17,6 +17,8 @@ import java.util.Collection;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -47,14 +49,16 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
+    CommandContext commandContext = Context.getCommandContext();
+
     if (interrupting) {
-      executeInterruptingBehavior(executionEntity);
+      executeInterruptingBehavior(executionEntity, commandContext);
     } else {
-      executeNonInterruptingBehavior(executionEntity);
+      executeNonInterruptingBehavior(executionEntity, commandContext);
     }
   }
 
-  protected void executeInterruptingBehavior(ExecutionEntity executionEntity) {
+  protected void executeInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
 
     // The destroy scope operation will look for the parent execution and
     // destroy the whole scope, and leave the boundary event using this parent execution.
@@ -81,7 +85,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
     }
     
-    deleteChildExecutions(attachedRefScopeExecution, executionEntity);
+    deleteChildExecutions(attachedRefScopeExecution, executionEntity, commandContext);
 
     // set new parent for boundary event execution
     executionEntity.setParent(parentScopeExecution);
@@ -89,7 +93,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
   }
 
-  protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity) {
+  protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
 
     // Non-interrupting: the current execution is given the first parent
     // scope (which isn't its direct parent)
@@ -125,7 +129,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);
   }
 
-  protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution) {
+  protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {
     
     // TODO: would be good if this deleteChildExecutions could be removed and the one on the executionEntityManager is used
     // The problem however, is that the 'notToDeleteExecution' is passed here. 
@@ -137,7 +141,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     if (CollectionUtil.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getId().equals(notToDeleteExecution.getId()) == false) {
-          deleteChildExecutions(childExecution, notToDeleteExecution);
+          deleteChildExecutions(childExecution, notToDeleteExecution, commandContext);
         }
       }
     }

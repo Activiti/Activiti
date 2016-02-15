@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -39,20 +40,20 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
         .createTimerEntityForTimerEventDefinition(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, 
             TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate()));
     if (timer != null) {
-      commandContext.getJobEntityManager().schedule(timer);
+      Context.getCommandContext().getJobEntityManager().schedule(timer);
     }
   }
   
   @Override
   public void cancelEvent(DelegateExecution execution) {
-    JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
+    JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
     List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(execution.getId());
     
     for (JobEntity jobEntity : jobEntities) { // Should be only one
       jobEntityManager.delete(jobEntity);
     }
     
-    commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
   @Override

@@ -17,6 +17,7 @@ import java.util.List;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -39,7 +40,7 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
   @Override
   public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
   }
 
   @Override
@@ -48,7 +49,7 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 
     if (boundaryEvent.isCancelActivity()) {
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {

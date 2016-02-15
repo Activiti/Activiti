@@ -5,7 +5,6 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -35,10 +34,6 @@ public class TriggerExecutionOperation extends AbstractOperation {
       if (activityBehavior instanceof TriggerableActivityBehavior) {
         if (flowNode instanceof BoundaryEvent) {
           commandContext.getHistoryManager().recordActivityStart(execution);
-        }
-        
-        if (activityBehavior instanceof CommandContextAware) {
-          ((CommandContextAware) activityBehavior).setCommandContext(commandContext);
         }
         
         ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);

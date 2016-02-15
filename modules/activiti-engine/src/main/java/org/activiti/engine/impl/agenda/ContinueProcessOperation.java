@@ -15,7 +15,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.CommandContextAware;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -123,10 +122,6 @@ public class ContinueProcessOperation extends AbstractOperation {
                 execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
       }
       
-      if (activityBehavior instanceof CommandContextAware) {
-        ((CommandContextAware) activityBehavior).setCommandContext(commandContext);
-      }
-      
       try {
         activityBehavior.execute(execution);
       } catch (RuntimeException e) {
@@ -209,11 +204,6 @@ public class ContinueProcessOperation extends AbstractOperation {
       
       ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
       logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
-      
-      if (boundaryEventBehavior instanceof CommandContextAware) {
-        ((CommandContextAware) boundaryEventBehavior).setCommandContext(commandContext);
-      }
-      
       boundaryEventBehavior.execute(childExecutionEntity);
     }
 

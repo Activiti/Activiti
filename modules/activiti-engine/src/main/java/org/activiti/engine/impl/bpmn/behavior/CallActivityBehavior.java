@@ -110,7 +110,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     // Create the first execution that will visit all the process definition elements
-    ExecutionEntity subProcessInitialExecution = commandContext.getExecutionEntityManager().createChildExecution(subProcessInstance); 
+    ExecutionEntity subProcessInitialExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(subProcessInstance); 
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
     Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
@@ -144,7 +144,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   protected ExecutionEntity createSubProcessInstance(ProcessDefinitionEntity processDefinitionEntity, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
 
-    ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().create(); 
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().create(); 
     subProcessInstance.setProcessDefinitionId(processDefinitionEntity.getId());
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
@@ -156,13 +156,13 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     // Store in database
-    commandContext.getExecutionEntityManager().insert(subProcessInstance, false);
+    Context.getCommandContext().getExecutionEntityManager().insert(subProcessInstance, false);
 
     subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
     superExecutionEntity.setSubProcessInstance(subProcessInstance);
 
     // Fire events manage bidirectional super-subprocess relation
-    commandContext.getHistoryManager().recordSubProcessInstanceStart(superExecutionEntity, subProcessInstance, initialFlowElement);
+    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(superExecutionEntity, subProcessInstance, initialFlowElement);
 
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));

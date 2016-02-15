@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -33,7 +34,7 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
 
   public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
   }
 
   @Override
@@ -45,12 +46,12 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   @Override
   public void cancelEvent(DelegateExecution execution) {
     deleteMessageEventSubScription(execution);
-    commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
   }
 
   protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {

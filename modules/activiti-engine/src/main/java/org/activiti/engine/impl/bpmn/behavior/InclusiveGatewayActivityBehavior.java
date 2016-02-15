@@ -16,7 +16,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ExecutionGraphUtil;
@@ -56,6 +58,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
   }
 
   protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
+    CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     
     lockFirstParentScope(execution);

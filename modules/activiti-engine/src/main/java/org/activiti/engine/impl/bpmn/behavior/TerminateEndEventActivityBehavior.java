@@ -43,6 +43,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   @Override
   public void execute(DelegateExecution execution) {
 
+    CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
     ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
@@ -157,7 +158,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
   protected void dispatchExecutionCancelled(DelegateExecution execution, FlowElement terminateEndEvent) {
 
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
     // subprocesses
     for (DelegateExecution subExecution : executionEntityManager.findChildExecutionsByParentExecutionId(execution.getId())) {
@@ -165,7 +166,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     }
 
     // call activities
-    ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
     if (subProcessInstance != null) {
       dispatchExecutionCancelled(subProcessInstance, terminateEndEvent);
     }
