@@ -219,7 +219,7 @@
 
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}
+    select distinct RES.* ${limitBetween}
     <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
@@ -346,6 +346,9 @@
     </foreach>
     <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
+    </if>
+    <if test="withException">
+      left outer join ${prefix}ACT_RU_JOB JOB ON RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
     </if>
     <where>
       <if test="processInstanceId != null">
@@ -659,6 +662,9 @@
           </foreach>
         </trim>
       </foreach>
+      <if test="withException">
+        and (JOB.EXCEPTION_MSG_ is not null or  JOB.EXCEPTION_STACK_ID_ is not null)
+      </if>
     </where>
   </sql>
   
