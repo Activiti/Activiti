@@ -694,6 +694,67 @@
         </plugins>
       </build>
     </profile>
+    
+    <!-- Same as databasehistoryfull, but for databases that need a schema in the config -->
+    <profile>
+      <id>databasehistoryfullwithschema</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to db ${database}, using FULL history" />
+                    <copy file="${basedir}/../../qa/db/historyfull-with-schema.activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasewithschema}.properties" />
+                    </copy>
+                    <rename src="target/test-classes/historyfull-with-schema.activiti.cfg.xml" dest="target/test-classes/activiti.cfg.xml"/>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema-before</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${databasewithschema}" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema-after</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${databasewithschema}" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
     <!--  check history full -->
     <profile>
