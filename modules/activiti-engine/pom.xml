@@ -664,7 +664,20 @@
                 </configuration>
               </execution>
               <execution>
-                <id>database-test-drop-schema</id>
+                <id>database-test-drop-schema-before</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${database}" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema-after</id>
                 <phase>prepare-package</phase>
                 <goals>
                   <goal>run</goal>
