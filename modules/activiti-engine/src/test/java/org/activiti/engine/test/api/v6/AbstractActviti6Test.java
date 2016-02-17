@@ -1,4 +1,4 @@
-package org.activiti6;
+package org.activiti.engine.test.api.v6;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Joram Barrez
  */
-public class AbstractActvitiTest {
+public class AbstractActviti6Test {
   
-  private static final Logger logger = LoggerFactory.getLogger(AbstractActvitiTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(AbstractActviti6Test.class);
 
   public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
 

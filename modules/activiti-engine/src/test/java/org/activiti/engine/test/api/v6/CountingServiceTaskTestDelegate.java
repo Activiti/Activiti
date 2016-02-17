@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti6;
+package org.activiti.engine.test.api.v6;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
