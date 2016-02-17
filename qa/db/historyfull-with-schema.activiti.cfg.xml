@@ -14,7 +14,7 @@
     <property name="history" value="full" />
     
     <!-- Database configurations -->
-    <property name="databaseSchemaUpdate" value="true" />
+    <property name="databaseSchemaUpdate" value="drop-create" />
     <property name="databaseSchema" value="@jdbc.schema@" />
     
     <!-- job executor configurations -->
