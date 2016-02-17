@@ -4,12 +4,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
   
+    <property name="jdbcUrl" value="@jdbc.url@" />
+    <property name="jdbcDriver" value="@jdbc.driver@" />
+    <property name="jdbcUsername" value="@jdbc.username@" />
+    <property name="jdbcPassword" value="@jdbc.password@" />
+    
     <property name="history" value="full" />
-
+    
     <!-- Database configurations -->
-    <property name="databaseSchemaUpdate" value="drop-create" />
+    <property name="databaseSchemaUpdate" value="true" />
     <property name="databaseSchema" value="@jdbc.schema@" />
     
     <!-- job executor configurations -->
@@ -38,7 +43,7 @@
           </bean>
         </entry>
       </map>
-    </property>    
+    </property>
     
     <property name="enableProcessDefinitionInfoCache" value="true" />
   </bean>
