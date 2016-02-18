@@ -429,9 +429,9 @@ public class DbSqlSession implements Session {
 
   // deserialized objects /////////////////////////////////////////////////////
 
-  	public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
-  	  deserializedObjects.add(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
-  	}
+    public void addDeserializedObject(DeserializedObject deserializedObject) {
+      deserializedObjects.add(deserializedObject);
+    }
   // flush ////////////////////////////////////////////////////////////////////
 
   public void flush() {

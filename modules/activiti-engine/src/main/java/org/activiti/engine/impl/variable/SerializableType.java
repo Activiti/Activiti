@@ -48,27 +48,28 @@ public class SerializableType extends ByteArrayType {
     }
 
     byte[] bytes = (byte[]) super.getValue(valueFields);
-    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-    Object deserializedObject;
-    try {
-      ObjectInputStream ois = createObjectInputStream(bais);
-      deserializedObject = ois.readObject();
+    if (bytes != null) {
+      ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+      try {
+        ObjectInputStream ois = createObjectInputStream(bais);
+        Object deserializedObject = ois.readObject();
+        valueFields.setCachedValue(deserializedObject);
+        
+        if (valueFields instanceof VariableInstanceEntity) {
+          // we need to register the deserialized object for dirty checking, 
+          // so that it can be serialized again if it was changed. 
+          Context.getCommandContext().getDbSqlSession()
+                   .addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
+        }
 
-      valueFields.setCachedValue(deserializedObject);
-
-      if (valueFields instanceof VariableInstanceEntity) {
-        Context
-          .getCommandContext()
-          .getDbSqlSession()
-          .addDeserializedObject(deserializedObject, bytes, (VariableInstanceEntity) valueFields);
+        return deserializedObject;
+      } catch (Exception e) {
+        throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
+      } finally {
+        IoUtil.closeSilently(bais);
       }
-    } catch (Exception e) {
-      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
-    } finally {
-      IoUtil.closeSilently(bais);
     }
-    
-    return deserializedObject;
+    return null; // byte array is null
   }
 
   public void setValue(Object value, ValueFields valueFields) {
@@ -80,7 +81,7 @@ public class SerializableType extends ByteArrayType {
         Context
           .getCommandContext()
           .getDbSqlSession()
-          .addDeserializedObject(valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields);
+          .addDeserializedObject(new DeserializedObject(this, valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields));
       }
     }
         
@@ -102,6 +103,20 @@ public class SerializableType extends ByteArrayType {
       IoUtil.closeSilently(ois);
     }
     return baos.toByteArray();
+  }
+
+  public Object deserialize(byte[] bytes, ValueFields valueFields) {
+    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+    try {
+      ObjectInputStream ois = createObjectInputStream(bais);
+      Object deserializedObject = ois.readObject();
+
+      return deserializedObject;
+    } catch (Exception e) {
+      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
+    } finally {
+      IoUtil.closeSilently(bais);
+    }
   }
 
   public boolean isAbleToStore(Object value) {
