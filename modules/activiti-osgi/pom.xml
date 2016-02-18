@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-alf-20140708</version>
+    <version>5.13-alf-20160218</version>
   </parent>
 
   <build>
