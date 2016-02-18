@@ -44,7 +44,7 @@ public class DeserializedObject {
           byte[] refreshedOriginalBytes = type.serialize(originalObject, variableInstanceEntity);
           
           if (!Arrays.equals(refreshedOriginalBytes, bytes)) {
-            variableInstanceEntity.setByteArrayValue(bytes);
+            variableInstanceEntity.getByteArrayValue().setBytes(bytes);
           }
       }
     }
