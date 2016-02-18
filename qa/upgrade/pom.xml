@@ -6,13 +6,13 @@
   <name>Activiti - Upgrade Fetcher</name>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-upgrade-fetcher</artifactId>
-  <version>5.13-alf-20160218</version>
+  <version>5.13-alf-20160219</version>
 
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-alf-20160218</version>
+    <version>5.13-alf-20160219</version>
   </parent>
 
   <dependencies>
