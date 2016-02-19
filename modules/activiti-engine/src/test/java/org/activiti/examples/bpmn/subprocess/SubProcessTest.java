@@ -15,17 +15,17 @@ package org.activiti.examples.bpmn.subprocess;
 
 import java.util.List;
 
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti6.AbstractActvitiTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class SubProcessTest extends AbstractActvitiTest {
+public class SubProcessTest extends PluggableActivitiTestCase {
 
   @Test
   public void testSimpleSubProcess() {
