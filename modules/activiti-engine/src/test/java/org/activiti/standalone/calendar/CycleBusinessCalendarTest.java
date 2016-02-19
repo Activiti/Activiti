@@ -17,11 +17,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
-public class CycleBusinessCalendarTest extends PvmTestCase {
+public class CycleBusinessCalendarTest extends AbstractTestCase {
 
   public void testSimpleCron() throws Exception {
     Clock testingClock = new DefaultClockImpl();

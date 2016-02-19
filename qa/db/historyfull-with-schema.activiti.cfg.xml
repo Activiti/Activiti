@@ -15,6 +15,7 @@
     
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
+    <property name="databaseSchema" value="@jdbc.schema@" />
     
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />

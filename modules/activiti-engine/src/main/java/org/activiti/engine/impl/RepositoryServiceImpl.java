@@ -41,6 +41,7 @@ import org.activiti.engine.impl.cmd.GetModelCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
 import org.activiti.engine.impl.cmd.IsActiviti5ProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.IsProcessDefinitionSuspendedCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
@@ -146,6 +147,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public ProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
+  }
+  
+  public boolean isProcessDefinitionSuspended(String processDefinitionId) {
+    return commandExecutor.execute(new IsProcessDefinitionSuspendedCmd(processDefinitionId));
   }
 
   public void suspendProcessDefinitionById(String processDefinitionId) {

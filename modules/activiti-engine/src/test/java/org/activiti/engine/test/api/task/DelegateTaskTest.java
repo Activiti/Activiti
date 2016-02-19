@@ -57,8 +57,7 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
     // Start process instance
     Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("approvers", Collections.singletonList("kermit")); // , "gonzo",
-                                                                    // "mispiggy"));
+    variables.put("approvers", Collections.singletonList("kermit")); // , "gonzo", "mispiggy"));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("delegateTaskTest", variables);
 
     // Assert there are three tasks with the default category

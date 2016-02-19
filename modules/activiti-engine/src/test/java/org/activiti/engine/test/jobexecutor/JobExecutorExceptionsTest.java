@@ -16,17 +16,18 @@ import java.util.Date;
 import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.test.JobTestHelper;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti6.AbstractActvitiTest;
+import org.activiti.engine.test.api.v6.AbstractActviti6Test;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class JobExecutorExceptionsTest extends AbstractActvitiTest {
+public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
 
   @Test
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
@@ -37,11 +38,11 @@ public class JobExecutorExceptionsTest extends AbstractActvitiTest {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
     // Timer is set for 4 hours, so move clock 5 hours
-    activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
 
     // The execution is waiting in the first usertask. This contains a
     // boundary timer event which we will execute manual for testing purposes.
-    JobTestHelper.waitForJobExecutorOnCondition(activitiRule, 5000000000L, 100L, new Callable<Boolean>() {
+    JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, 5000L, 100L, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return managementService.createJobQuery().withException().count() == 1;
       }

@@ -17,13 +17,13 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
 /**
  * @author Joram Barrez
  */
-public class ConnectionPoolTest extends PvmTestCase {
+public class ConnectionPoolTest extends AbstractTestCase {
 
   public void testMyBatisConnectionPoolProperlyConfigured() {
     ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration

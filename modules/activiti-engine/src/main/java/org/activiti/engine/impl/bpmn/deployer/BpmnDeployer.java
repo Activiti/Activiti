@@ -194,7 +194,7 @@ public class BpmnDeployer implements Deployer {
     
     for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
       processDefinitionManager.insert(processDefinition, false);
-      bpmnDeploymentHelper.addAuthorizationsForNewProcessDefinition(processDefinition);
+      bpmnDeploymentHelper.addAuthorizationsForNewProcessDefinition(parsedDeployment.getProcessModelForProcessDefinition(processDefinition), processDefinition);
     }
   }
   

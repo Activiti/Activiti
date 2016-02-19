@@ -49,8 +49,8 @@ public class StandaloneDatabaseEventLoggerTest extends PluggableActivitiTestCase
 		
 		List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
 		assertEquals(2, events.size());
-		assertEquals("TASK_CREATED", events.get(0).getType());
-		assertEquals("TASK_ASSIGNED", events.get(1).getType());
+		assertEquals("TASK_ASSIGNED", events.get(0).getType());
+		assertEquals("TASK_CREATED", events.get(1).getType());
 		
 		for (EventLogEntry eventLogEntry : events) {
 			Map<String, Object> data = objectMapper.readValue(eventLogEntry.getData(), new TypeReference<HashMap<String, Object>>(){});

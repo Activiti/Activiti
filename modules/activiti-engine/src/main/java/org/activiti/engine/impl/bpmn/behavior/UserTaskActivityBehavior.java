@@ -45,8 +45,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * activity implementation for the user task.
- * 
  * @author Joram Barrez
  */
 public class UserTaskActivityBehavior extends TaskActivityBehavior {
@@ -55,20 +53,20 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskActivityBehavior.class);
   
-  protected ExpressionManager expressionManager;
   protected UserTask userTask;
 
-  public UserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask) {
-    this.expressionManager = expressionManager;
+  public UserTaskActivityBehavior(UserTask userTask) {
     this.userTask = userTask;
   }
 
   public void execute(DelegateExecution execution) {
-    TaskEntity task = Context.getCommandContext().getTaskEntityManager().create();
+    CommandContext commandContext = Context.getCommandContext();
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
+    
+    TaskEntity task = taskEntityManager.create();
     task.setExecution((ExecutionEntity) execution);
     task.setTaskDefinitionKey(userTask.getId());
-    Context.getCommandContext().getTaskEntityManager().insert(task, (ExecutionEntity) execution);
-    
+
     String activeTaskName = null;
     String activeTaskDescription = null;
     String activeTaskDueDate = null;
@@ -80,6 +78,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     String activeTaskOwner = null;
     List<String> activeTaskCandidateUsers = null;
     List<String> activeTaskCandidateGroups = null;
+    
+    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
     
     if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
       ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTask.getId(), execution.getProcessDefinitionId());
@@ -183,30 +183,33 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         }
       }
     }
-
-    handleAssignments(activeTaskAssignee, activeTaskOwner, activeTaskCandidateUsers, activeTaskCandidateGroups, task, execution);
-
+    
+    taskEntityManager.insert(task, (ExecutionEntity) execution);
+    
+    // Handling assignments need to be done after the task is inserted, to have an id
+    handleAssignments(taskEntityManager, activeTaskAssignee, activeTaskOwner, 
+        activeTaskCandidateUsers, activeTaskCandidateGroups, task, expressionManager, execution);
+    
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
+    taskEntityManager.fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
     
-    Context.getCommandContext().getTaskEntityManager().update(task);
-    Context.getCommandContext().getTaskEntityManager().fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
-
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
       if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
-        CommandContext commandContext = Context.getCommandContext();
-        commandContext.getTaskEntityManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
+        taskEntityManager.deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
         leave(execution);
       }
     }
+    
   }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    
-    TaskEntityManager taskEntityManager = Context.getCommandContext().getTaskEntityManager();
+    CommandContext commandContext = Context.getCommandContext();
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     List<TaskEntity> taskEntities = taskEntityManager.findTasksByExecutionId(execution.getId()); // Should be only one
     for (TaskEntity taskEntity : taskEntities) {
       if (!taskEntity.isDeleted()) {
@@ -218,8 +221,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  protected void handleAssignments(String assignee, String owner, List<String> candidateUsers,
-      List<String> candidateGroups, TaskEntity task, DelegateExecution execution) {
+  protected void handleAssignments(TaskEntityManager taskEntityManager, String assignee, String owner, List<String> candidateUsers,
+      List<String> candidateGroups, TaskEntity task, ExpressionManager expressionManager, DelegateExecution execution) {
     
     if (StringUtils.isNotEmpty(assignee)) {
       Object assigneeExpressionValue = expressionManager.createExpression(assignee).getValue(execution);
@@ -227,8 +230,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (assigneeExpressionValue != null) {
         assigneeValue = assigneeExpressionValue.toString();
       }
-      task.setAssignee(assigneeValue);
-      Context.getCommandContext().getTaskEntityManager().update(task);
+
+      taskEntityManager.changeTaskAssignee(task, assigneeValue);;
     }
 
     if (StringUtils.isNotEmpty(owner)) {
@@ -237,8 +240,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (ownerExpressionValue != null) {
         ownerValue = ownerExpressionValue.toString();
       }
-      task.setOwner(ownerValue);
-      Context.getCommandContext().getTaskEntityManager().update(task);
+
+      taskEntityManager.changeTaskOwner(task, ownerValue);
     }
 
     if (candidateGroups != null && !candidateGroups.isEmpty()) {
@@ -323,7 +326,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
     
   }
-
+  
   /**
    * Extract a candidate list from a string.
    * 

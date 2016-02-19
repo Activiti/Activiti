@@ -40,8 +40,7 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
     }
     
     task.setDelegationState(DelegationState.RESOLVED);
-    task.setAssignee(task.getOwner());
-    commandContext.getTaskEntityManager().update(task);
+    commandContext.getTaskEntityManager().changeTaskAssignee(task, task.getOwner());
     
     return null;
   }

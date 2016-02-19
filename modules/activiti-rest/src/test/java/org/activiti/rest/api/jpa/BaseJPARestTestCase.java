@@ -33,7 +33,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.JPAWebConfigurer;
@@ -74,7 +74,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-public class BaseJPARestTestCase extends PvmTestCase {
+public class BaseJPARestTestCase extends AbstractTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseJPARestTestCase.class);
 

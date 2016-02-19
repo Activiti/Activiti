@@ -10,7 +10,7 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
     
-    <serviceTask id="serviceTask" activiti:class="org.activiti6.CountingServiceTaskTestDelegate"/>
+    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.api.v6.CountingServiceTaskTestDelegate"/>
     <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="exclusiveGw" />
     
     <exclusiveGateway id="exclusiveGw" />

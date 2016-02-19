@@ -54,10 +54,14 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
     String testTenant = "testTenant";
 
-    String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml").tenantId(testTenant).deploy().getId();
+    String deploymentId = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml")
+        .tenantId(testTenant)
+        .deploy().getId();
 
     // Run process to gather data
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld"), testTenant);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("DatabaseEventLoggerProcess", 
+        CollectionUtil.singletonMap("testVar", "helloWorld"), testTenant);
 
     // Verify event log entries
     List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
@@ -512,8 +516,8 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
     List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
     assertEquals(2, events.size());
-    assertEquals("TASK_CREATED", events.get(0).getType());
-    assertEquals("TASK_ASSIGNED", events.get(1).getType());
+    assertEquals("TASK_ASSIGNED", events.get(0).getType());
+    assertEquals("TASK_CREATED", events.get(1).getType());
 
     for (EventLogEntry eventLogEntry : events) {
       Map<String, Object> data = objectMapper.readValue(eventLogEntry.getData(), new TypeReference<HashMap<String, Object>>() {

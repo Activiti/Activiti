@@ -10,13 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti6;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+package org.activiti.engine.test.api.v6;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -34,13 +29,16 @@ import org.activiti.engine.task.Task;
 import org.junit.Test;
 
 /**
+ * These are the first tests ever written for Activiti 6.
+ * Keeping them here for nostalgic reasons.
+ * 
  * @author Joram Barrez
  */
-public class Activiti6Test extends AbstractActvitiTest {
+public class Activiti6Test extends PluggableActivitiTestCase {
 
   @Test
   public void simplestProcessPossible() {
-    repositoryService.createDeployment().addClasspathResource("org/activiti6/Activiti6Test.simplestProcessPossible.bpmn20.xml").deploy();
+    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/v6/Activiti6Test.simplestProcessPossible.bpmn20.xml").deploy();
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");
     assertNotNull(processInstance);
@@ -67,7 +65,7 @@ public class Activiti6Test extends AbstractActvitiTest {
   }
 
   @Test
-  @org.activiti.engine.test.Deployment(resources = "org/activiti6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
+  @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
   public void testOneTaskProcessCleanupInMiddleOfProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertNotNull(processInstance);
@@ -494,7 +492,7 @@ public class Activiti6Test extends AbstractActvitiTest {
    * Simple test that checks if all databases have correcly added the process definition tag.
    */
   @Test
-  @org.activiti.engine.test.Deployment(resources = "org/activiti6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
+  @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
   public void testProcessDefinitionTagCreated() {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     assertNull(((ProcessDefinitionEntity) processDefinition).getEngineVersion());

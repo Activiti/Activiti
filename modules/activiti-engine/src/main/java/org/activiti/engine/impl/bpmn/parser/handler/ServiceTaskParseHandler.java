@@ -13,12 +13,9 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
-import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
-import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Joram Barrez
  */
-public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParseHandler<ServiceTask> {
+public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<ServiceTask> {
 
   private static Logger logger = LoggerFactory.getLogger(ServiceTaskParseHandler.class);
 
@@ -36,13 +33,6 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
   }
 
   protected void executeParse(BpmnParse bpmnParse, ServiceTask serviceTask) {
-
-    // ActivityImpl activity = createActivityOnCurrentScope(bpmnParse,
-    // serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE);
-    // activity.setAsync(serviceTask.isAsynchronous());
-    // activity.setFailedJobRetryTimeCycleValue(serviceTask.getFailedJobRetryTimeCycleValue());
-    // activity.setExclusive(!serviceTask.isNotExclusive());
-    // activity.setMapExceptions(serviceTask.getMapExceptions());
 
     // Email, Mule and Shell service tasks
     if (StringUtils.isNotEmpty(serviceTask.getType())) {
@@ -81,30 +71,9 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
       // Webservice
     } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
 
-      if (!bpmnParse.getOperations().containsKey(serviceTask.getOperationRef())) {
-        logger.warn(serviceTask.getOperationRef() + " does not exist for service task " + serviceTask.getId());
-      } else {
-
-        WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
-        webServiceActivityBehavior.setOperation(bpmnParse.getOperations().get(serviceTask.getOperationRef()));
-
-        if (serviceTask.getIoSpecification() != null) {
-          IOSpecification ioSpecification = createIOSpecification(bpmnParse, serviceTask.getIoSpecification());
-          webServiceActivityBehavior.setIoSpecification(ioSpecification);
-        }
-
-        for (DataAssociation dataAssociationElement : serviceTask.getDataInputAssociations()) {
-          AbstractDataAssociation dataAssociation = createDataInputAssociation(bpmnParse, dataAssociationElement);
-          webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
-        }
-
-        for (DataAssociation dataAssociationElement : serviceTask.getDataOutputAssociations()) {
-          AbstractDataAssociation dataAssociation = createDataOutputAssociation(bpmnParse, dataAssociationElement);
-          webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
-        }
-
-        serviceTask.setBehavior(webServiceActivityBehavior);
-      }
+      WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
+      serviceTask.setBehavior(webServiceActivityBehavior);
+      
     } else {
       logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());
     }

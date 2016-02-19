@@ -41,7 +41,6 @@ import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemKind;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
-import org.activiti.engine.impl.bpmn.parser.BpmnParseXMLImportHandler;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
@@ -79,7 +78,7 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
+public class BpmnParse implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
 
@@ -309,7 +308,10 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
       if (importer == null) {
         throw new ActivitiException("Could not import item of type " + theImport.getImportType());
       } else {
-        importer.importFrom(theImport, this);
+        importer.importFrom(theImport, sourceSystemId);
+        this.structures.putAll(importer.getStructures());
+        this.interfaceImplementations.putAll(importer.getServices());
+        this.operationImplementations.putAll(importer.getOperations());
       }
     }
   }
@@ -335,7 +337,7 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
 
   public void createMessages() {
     for (Message messageElement : bpmnModel.getMessages()) {
-      MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId(), name);
+      MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId());
       if (StringUtils.isNotEmpty(messageElement.getItemRef())) {
         if (this.itemDefinitions.containsKey(messageElement.getItemRef())) {
           ItemDefinition itemDefinition = this.itemDefinitions.get(messageElement.getItemRef());
@@ -556,18 +558,6 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
       }
     }
     return null;
-  }
-
-  public void addStructure(StructureDefinition structure) {
-    this.structures.put(structure.getId(), structure);
-  }
-
-  public void addService(BpmnInterfaceImplementation bpmnInterfaceImplementation) {
-    this.interfaceImplementations.put(bpmnInterfaceImplementation.getName(), bpmnInterfaceImplementation);
-  }
-
-  public void addOperation(OperationImplementation operationImplementation) {
-    this.operationImplementations.put(operationImplementation.getId(), operationImplementation);
   }
 
   /*

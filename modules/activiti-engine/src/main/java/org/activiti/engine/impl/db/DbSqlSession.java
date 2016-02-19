@@ -473,10 +473,10 @@ public class DbSqlSession implements Session {
   }
   
   @SuppressWarnings("unchecked")
-  public <T extends Entity> T selectById(Class<T> entityClass, String id, boolean checkCache) {
+  public <T extends Entity> T selectById(Class<T> entityClass, String id, boolean useCache) {
     T entity = null;
     
-    if (checkCache) {
+    if (useCache) {
       entity = entityCache.findInCache(entityClass, id);
       if (entity != null) {
         return entity;
@@ -489,6 +489,7 @@ public class DbSqlSession implements Session {
     if (entity == null) {
       return null;
     }
+    
     entityCache.put(entity, true); // true -> store state so we can see later if it is updated later on
     return entity;
   }

@@ -295,6 +295,11 @@ public interface RepositoryService {
    * Checks if the process definition should be executed by the Activiti 5 engine.
    */
   Boolean isActiviti5ProcessDefinition(String processDefinitionId);
+  
+  /**
+   * Checks if the process definition is suspended.
+   */
+  boolean isProcessDefinitionSuspended(String processDefinitionId);
 
   /**
    * Returns the {@link BpmnModel} corresponding with the process definition with the provided process definition id. The {@link BpmnModel} is a pojo versions of the BPMN 2.0 xml and can be used to

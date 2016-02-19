@@ -74,12 +74,10 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     
     boolean assignedToNoOne = false;
     if (IdentityLinkType.ASSIGNEE.equals(identityType)) {
-      task.setAssignee(identityId);
-      commandContext.getTaskEntityManager().update(task);
+      commandContext.getTaskEntityManager().changeTaskAssignee(task, identityId);
       assignedToNoOne = identityId == null;
     } else if (IdentityLinkType.OWNER.equals(identityType)) {
-      task.setOwner(identityId);
-      commandContext.getTaskEntityManager().update(task);
+      commandContext.getTaskEntityManager().changeTaskOwner(task, identityId);
     } else if (IDENTITY_USER == identityIdType) {
       task.addUserIdentityLink(identityId, identityType);
     } else if (IDENTITY_GROUP == identityIdType) {

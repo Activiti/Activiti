@@ -24,6 +24,7 @@ import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -70,21 +71,17 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
     }
 
+    DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+    
     ProcessDefinitionEntity processDefinition = null;
     if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
-    	processDefinition = Context
-    			.getProcessEngineConfiguration()
-    			.getDeploymentManager()
-    			.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+    	processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     } else {
-    	processDefinition = Context
-          .getProcessEngineConfiguration()
-          .getDeploymentManager()
-          .findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
+    	processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
     }
 
     // Do not start a process instance if the process definition is suspended
-    if (processDefinition.isSuspended()) {
+    if (deploymentManager.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiException("Cannot start process instance. Process definition "
           + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }
