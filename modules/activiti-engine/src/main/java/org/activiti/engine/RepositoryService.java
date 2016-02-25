@@ -222,7 +222,7 @@ public interface RepositoryService {
    * Activates the process definition with the given id. 
    * 
    * @param activationDate The date on which the process definition will be activated. If null, the
-   *                       process definition is suspended immediately. 
+   *                       process definition is activated immediately. 
    *                       Note: The job executor needs to be active to use this!                                 
    *                                
    * @throws ActivitiObjectNotFoundException if no such processDefinition can be found.
@@ -242,7 +242,7 @@ public interface RepositoryService {
    * Activates the process definition with the given key (=id in the bpmn20.xml file). 
    * 
    * @param activationDate The date on which the process definition will be activated. If null, the
-   *                       process definition is suspended immediately. 
+   *                       process definition is activated immediately. 
    *                       Note: The job executor needs to be active to use this!                                 
    *                                
    * @throws ActivitiObjectNotFoundException if no such processDefinition can be found.
