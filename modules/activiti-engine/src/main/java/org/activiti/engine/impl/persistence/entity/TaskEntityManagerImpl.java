@@ -104,6 +104,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     
     getHistoryManager().recordTaskCreated(taskEntity, execution);
     getHistoryManager().recordTaskId(taskEntity);
+    if (taskEntity.getFormKey() != null) {
+      getHistoryManager().recordTaskFormKeyChange(taskEntity.getId(), taskEntity.getFormKey());
+    }
   }
   
   @Override
