@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
-private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.class);
+  private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.class);
   
   /** The minimal number of threads that are kept alive in the threadpool for job execution */
   protected int corePoolSize = 2;
@@ -50,7 +50,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
    */
   protected long keepAliveTime = 5000L;
 
-	/** The size of the queue on which jobs to be executed are placed */
+  /** The size of the queue on which jobs to be executed are placed */
   protected int queueSize = 100;
   
   /** The queue used for job execution work */
@@ -89,52 +89,53 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   
   protected CommandExecutor commandExecutor;
   
-  public boolean executeAsyncJob(final JobEntity job) {
+  public boolean executeAsyncJob(JobEntity job) {
     if (isActive) {
       Runnable runnable = createRunnableForJob(job);
-    	try {
-    		executorService.execute(runnable);
-    	} catch (RejectedExecutionException e) {
-    	  
-    	  // When a RejectedExecutionException is caught, this means that the queue for holding the jobs 
-    	  // that are to be executed is full and can't store more.
-    	  // The job is now 'unlocked', meaning that the lock owner/time is set to null,
-    	  // so other executors can pick the job up (or this async executor, the next time the 
-    	  // acquire query is executed.
-    	  
-    	  // This can happen while already in a command context (for example in a transaction listener
-    	  // after the async executor has been hinted that a new async job is created)
-    	  // or not (when executed in the aquire thread runnable)
-    	  
-    		CommandContext commandContext = Context.getCommandContext();
-    		if (commandContext != null) {
-    		  unlockJob(job, commandContext);
-    		} else {
-    		  commandExecutor.execute(new Command<Void>() {
-            public Void execute(CommandContext commandContext) {
-              unlockJob(job, commandContext);
-              return null;
-            }
-          });
-    		}
-    		
-    		// Job queue full, returning true so (if wanted) the acquiring can be throttled
-    		return false;
-    	}
-    	
+      boolean result = executeAsyncJob(runnable);
+      if (!result) doUnlockJob(job);
+      return result; // false indicates that the job was rejected.
     } else {
       temporaryJobQueue.add(job);
+      return true;
     }
+  }
+
+  protected boolean executeAsyncJob(Runnable runnable) {
+    try {
+      executorService.execute(runnable);
+      return true;
+    } catch (RejectedExecutionException e) {
+      // When a RejectedExecutionException is caught, this means that the queue for holding the jobs 
+      // that are to be executed is full and can't store more.
+      // Return false so the job can be unlocked and (if wanted) the acquiring can be throttled.
+      return false;
+    }
+  }
+
+  private void doUnlockJob(final JobEntity job) {
+    // The job will now be 'unlocked', meaning that the lock owner/time is set to null,
+    // so other executors can pick the job up (or this async executor, the next time the 
+    // acquire query is executed.
     
-    return true;
+    // This can happen while already in a command context (for example in a transaction listener
+    // after the async executor has been hinted that a new async job is created)
+    // or not (when executed in the aquire thread runnable)
+    CommandContext commandContext = Context.getCommandContext();
+    if (commandContext != null) {
+      unlockJob(job, commandContext);
+    } else {
+      commandExecutor.execute(new Command<Void>() {
+        public Void execute(CommandContext commandContext) {
+          unlockJob(job, commandContext);
+          return null;
+        }
+      });
+    }
   }
   
   protected Runnable createRunnableForJob(final JobEntity job) {
-    if (executeAsyncRunnableFactory == null) {
-      return new ExecuteAsyncRunnable(job, commandExecutor);
-    } else {
-      return executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, commandExecutor);
-    }
+    return executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, commandExecutor);
   }
  
   protected void unlockJob(final JobEntity job, CommandContext commandContext) {
@@ -148,21 +149,28 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     }
     
     log.info("Starting up the default async job executor [{}].", getClass().getName());
+    initialize();
+    startExecutingAsyncJobs();
+    
+    isActive = true;
+        
+    while (temporaryJobQueue.isEmpty() == false) {
+      JobEntity job = temporaryJobQueue.pop();
+      executeAsyncJob(job);
+    }
+    isActive = true;
+  }
+
+  protected void initialize() {
     if (timerJobRunnable == null) {
       timerJobRunnable = new AcquireTimerJobsRunnable(this);
     }
     if (asyncJobsDueRunnable == null) {
       asyncJobsDueRunnable = new AcquireAsyncJobsDueRunnable(this);
     }
-    startExecutingAsyncJobs();
-    
-    isActive = true;
-        
-    while (temporaryJobQueue.isEmpty() == false) {
-    	JobEntity job = temporaryJobQueue.pop();
-      executeAsyncJob(job);
+    if (executeAsyncRunnableFactory == null) {
+      executeAsyncRunnableFactory = new DefaultExecuteAsyncRunnableFactory();
     }
-    isActive = true;
   }
   
   /** Shuts down the whole job executor */
@@ -182,15 +190,15 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
 
   protected void startExecutingAsyncJobs() {
     if (threadPoolQueue==null) {
-    	log.info("Creating thread pool queue of size {}", queueSize);
+      log.info("Creating thread pool queue of size {}", queueSize);
       threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
     }
     
     if (executorService==null) {
-    	log.info("Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}",
-    			corePoolSize, maxPoolSize, keepAliveTime);
-    	
-    	executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
+      log.info("Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}",
+          corePoolSize, maxPoolSize, keepAliveTime);
+      
+      executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
     }
     
     startJobAcquisitionThread();
@@ -200,14 +208,14 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     stopJobAcquisitionThread();
     
     // Ask the thread pool to finish and exit
-  	executorService.shutdown();
+    executorService.shutdown();
 
     // Waits for 1 minute to finish all currently executing jobs
     try {
       if(!executorService.awaitTermination(secondsToWaitOnShutdown, TimeUnit.SECONDS)) {
         log.warn("Timeout during shutdown of async job executor. "
             + "The current running jobs could not end within " 
-        		+ secondsToWaitOnShutdown + " seconds after shutdown operation.");        
+            + secondsToWaitOnShutdown + " seconds after shutdown operation.");        
       }              
     } catch (InterruptedException e) {
       log.warn("Interrupted while shutting down the async job executor. ", e);
@@ -246,7 +254,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     timerJobAcquisitionThread = null;
     asyncJobAcquisitionThread = null;
   }
-	
+  
   /* getters and setters */ 
   
   public CommandExecutor getCommandExecutor() {
@@ -294,22 +302,22 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   }
   
   public long getKeepAliveTime() {
-		return keepAliveTime;
-	}
+    return keepAliveTime;
+  }
 
-	public void setKeepAliveTime(long keepAliveTime) {
-		this.keepAliveTime = keepAliveTime;
-	}
-	
-	public long getSecondsToWaitOnShutdown() {
-		return secondsToWaitOnShutdown;
-	}
+  public void setKeepAliveTime(long keepAliveTime) {
+    this.keepAliveTime = keepAliveTime;
+  }
+  
+  public long getSecondsToWaitOnShutdown() {
+    return secondsToWaitOnShutdown;
+  }
 
-	public void setSecondsToWaitOnShutdown(long secondsToWaitOnShutdown) {
-		this.secondsToWaitOnShutdown = secondsToWaitOnShutdown;
-	}
+  public void setSecondsToWaitOnShutdown(long secondsToWaitOnShutdown) {
+    this.secondsToWaitOnShutdown = secondsToWaitOnShutdown;
+  }
 
-	public BlockingQueue<Runnable> getThreadPoolQueue() {
+  public BlockingQueue<Runnable> getThreadPoolQueue() {
     return threadPoolQueue;
   }
 
@@ -317,13 +325,13 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     this.threadPoolQueue = threadPoolQueue;
   }
 
-	public ExecutorService getExecutorService() {
-		return executorService;
-	}
+  public ExecutorService getExecutorService() {
+    return executorService;
+  }
 
-	public void setExecutorService(ExecutorService executorService) {
-		this.executorService = executorService;
-	}
+  public void setExecutorService(ExecutorService executorService) {
+    this.executorService = executorService;
+  }
 
   public String getLockOwner() {
     return lockOwner;
@@ -397,20 +405,19 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     this.asyncJobsDueRunnable = asyncJobsDueRunnable;
   }
 
-	public int getRetryWaitTimeInMillis() {
-		return retryWaitTimeInMillis;
-	}
+  public int getRetryWaitTimeInMillis() {
+    return retryWaitTimeInMillis;
+  }
 
-	public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
-		this.retryWaitTimeInMillis = retryWaitTimeInMillis;
-	}
+  public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
+    this.retryWaitTimeInMillis = retryWaitTimeInMillis;
+  }
 
-	public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {
-		return executeAsyncRunnableFactory;
-	}
+  public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {
+    return executeAsyncRunnableFactory;
+  }
 
-	public void setExecuteAsyncRunnableFactory(ExecuteAsyncRunnableFactory executeAsyncRunnableFactory) {
-		this.executeAsyncRunnableFactory = executeAsyncRunnableFactory;
-	}
-
+  public void setExecuteAsyncRunnableFactory(ExecuteAsyncRunnableFactory executeAsyncRunnableFactory) {
+    this.executeAsyncRunnableFactory = executeAsyncRunnableFactory;
+  }
 }
