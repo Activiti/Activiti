@@ -45,9 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Decrements the number of retries and unlocks the job.
+ * 
  * @author Saeid Mirzaei
  */
-
 public class JobRetryCmd implements Command<Object> {
 
   private static final Logger log = LoggerFactory.getLogger(JobRetryCmd.class.getName());
@@ -70,11 +71,11 @@ public class JobRetryCmd implements Command<Object> {
     ProcessEngineConfiguration processEngineConfig = commandContext.getProcessEngineConfiguration();
    
     if (activity == null || activity.getFailedJobRetryTimeCycleValue() == null) {
-      log.debug("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
+      log.debug("Activity or FailedJobRetryTimerCycleValue is null in job {}. Only decrementing retries.", jobId);
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
       job.setLockExpirationTime(null);
-      if (job.getDuedate() == null) {
+      if (job.getDuedate() == null) { // XXX is this correct? it seems to assume a null dueDate implies the async executor is used.
         // add wait time for failed async job
         job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
       } else {
@@ -82,26 +83,26 @@ public class JobRetryCmd implements Command<Object> {
         job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getDefaultFailedJobWaitTime(), job.getDuedate()));
       }
       
-    } else {    	
+    } else {      
       String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
       try {
         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, processEngineConfig.getClock());
         job.setLockOwner(null);
         job.setLockExpirationTime(null);
         job.setDuedate(durationHelper.getDateAfter());
-	       
+         
         if (job.getExceptionMessage() == null) {  // is it the first exception 
-          log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+ durationHelper.getTimes()+" retries");
+          log.debug("Applying JobRetryStrategy '{}' the first time for job {} with {} retries", failedJobRetryTimeCycle, job.getId(), durationHelper.getTimes());
           // then change default retries to the ones configured
           job.setRetries(durationHelper.getTimes());
           
         } else {
-          log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
+          log.debug("Decrementing retries of JobRetryStrategy '{}' for job {}", failedJobRetryTimeCycle, job.getId());
         }
         job.setRetries(job.getRetries() - 1);
-	       
+         
       } catch (Exception e) {
-        throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
+        throw new ActivitiException("failedJobRetryTimeCylcle has wrong format: " + failedJobRetryTimeCycle, exception);
       }  
     }
     
@@ -113,10 +114,10 @@ public class JobRetryCmd implements Command<Object> {
     // Dispatch both an update and a retry-decrement event
     ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
     if (eventDispatcher.isEnabled()) {
-    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-    			ActivitiEventType.ENTITY_UPDATED, job));
-    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-    			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+          ActivitiEventType.ENTITY_UPDATED, job));
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+          ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
     }
     
     if (processEngineConfig.isAsyncExecutorEnabled() == false) {
@@ -153,12 +154,11 @@ public class JobRetryCmd implements Command<Object> {
         activity = execution.getProcessDefinition().findActivity(job.getJobHandlerConfiguration());
       }
     } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
-    	DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+      DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
       String processId = job.getJobHandlerConfiguration();
       if (job instanceof TimerEntity) {
          processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
       }
-      
       
       ProcessDefinitionEntity processDefinition = null;
       if (job.getTenantId() != null && job.getTenantId().length() > 0) {
