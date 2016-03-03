@@ -58,16 +58,14 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
     @RequestMapping(value = "/processes/{processDefinitionKey:.*}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     public ResponseEntity processDefinitionDiagram(@PathVariable String processDefinitionKey) {
-        List processDefinitions = repositoryService.createProcessDefinitionQuery()
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(processDefinitionKey)
-                .orderByProcessDefinitionVersion()
-                .desc()
-                .list();
-        if (processDefinitions.isEmpty()) {
+                .latestVersion()
+                .singleResult();
+        if (processDefinition == null) {
             return ResponseEntity.status(NOT_FOUND).body(null);
         }
 
-        ProcessDefinition processDefinition = (ProcessDefinition) processDefinitions.get(0);
         ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
 
