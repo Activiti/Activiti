@@ -315,7 +315,7 @@
   </select>
   
   <select id="selectProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultType="long">
-    select distinct count(RES.ID_)
+    select count(distinct RES.ID_)
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
@@ -411,6 +411,9 @@
     </if>
     <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
+    </if>
+    <if test="onlyProcessInstances &amp;&amp; withJobException">
+      left outer join ${prefix}ACT_RU_JOB JOB ON RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
     </if>
     <where>
       <if test="onlyProcessInstances">
@@ -735,6 +738,9 @@
           </foreach>
         </trim>
       </foreach>
+      <if test="onlyProcessInstances &amp;&amp; withJobException">
+        and (JOB.EXCEPTION_MSG_ is not null or  JOB.EXCEPTION_STACK_ID_ is not null)
+      </if>
     </where>
   </sql>
   
