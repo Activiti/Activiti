@@ -64,7 +64,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Set<String> processInstanceIds;
   protected String involvedUser;
   protected boolean includeProcessVariables;
-  protected boolean withException;
+  protected boolean withJobException;
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
@@ -293,8 +293,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
   
-  public HistoricProcessInstanceQuery withException() {
-    this.withException = true;
+  public HistoricProcessInstanceQuery withJobException() {
+    this.withJobException = true;
     return this;
   }
   
@@ -713,7 +713,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public boolean isWithException() {
-    return withException;
+    return withJobException;
   }
 
   public String getTenantId() {
