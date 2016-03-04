@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -187,7 +188,7 @@ public class TimerEntity extends JobEntity {
   }
 
   private int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
-    List<ActivityImpl> activities = ((ProcessDefinitionEntity) def).getActivities();
+    List<ActivityImpl> activities = getAllActivities(((ProcessDefinitionEntity) def).getActivities());
     for (ActivityImpl activity : activities) {
       List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
       if (activityTimerDeclarations != null) {
@@ -200,6 +201,15 @@ public class TimerEntity extends JobEntity {
       }
     }
     return 1;
+  }
+  
+  private List<ActivityImpl> getAllActivities(List<ActivityImpl> activities) {
+      List<ActivityImpl> subActivities = new ArrayList<ActivityImpl>();
+      for (ActivityImpl activity : activities) {
+          subActivities.addAll(activity.getActivities());
+      }
+      activities.addAll(subActivities);
+      return activities;
   }
 
   private int calculateMaxIterationsValue(String originalExpression) {
