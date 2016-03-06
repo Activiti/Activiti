@@ -35,6 +35,20 @@ public interface HistoricProcessInstance {
   /** The process definition reference. */
   String getProcessDefinitionId();
 
+  /** The name of the process definition of the process instance. */
+  String getProcessDefinitionName();
+  
+  /** The key of the process definition of the process instance. */
+  String getProcessDefinitionKey();
+  
+  /** The version of the process definition of the process instance. */
+  Integer getProcessDefinitionVersion();
+  
+  /**
+   * The deployment id of the process definition of the process instance.
+   */
+  String getDeploymentId();
+  
   /** The time the process was started. */
   Date getStartTime();
 
