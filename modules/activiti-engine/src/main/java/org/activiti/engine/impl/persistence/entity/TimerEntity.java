@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -188,7 +187,12 @@ public class TimerEntity extends JobEntity {
   }
 
   private int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
-    List<ActivityImpl> activities = getAllActivities(((ProcessDefinitionEntity) def).getActivities());
+    return checkBoundaryEventsDefinitions(((ProcessDefinitionEntity) def).getActivities(), embededActivityId);
+  }
+
+  private int checkBoundaryEventsDefinitions(List<ActivityImpl> activities, String embededActivityId) {
+    // should check level by level
+    // first check provided activities list 
     for (ActivityImpl activity : activities) {
       List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
       if (activityTimerDeclarations != null) {
@@ -200,18 +204,13 @@ public class TimerEntity extends JobEntity {
         }
       }
     }
+    // now check sub activities 
+    for (ActivityImpl activity : activities) {
+      return checkBoundaryEventsDefinitions(activity.getActivities(), embededActivityId);
+    }
     return 1;
   }
   
-  private List<ActivityImpl> getAllActivities(List<ActivityImpl> activities) {
-      List<ActivityImpl> subActivities = new ArrayList<ActivityImpl>();
-      for (ActivityImpl activity : activities) {
-          subActivities.addAll(activity.getActivities());
-      }
-      activities.addAll(subActivities);
-      return activities;
-  }
-
   private int calculateMaxIterationsValue(String originalExpression) {
     int times = Integer.MAX_VALUE;
     List<String> expression = Arrays.asList(originalExpression.split("/"));
