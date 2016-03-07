@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  * Allows programmatic querying of {@link HistoricProcessInstance}s.
@@ -285,6 +284,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    */
   HistoricProcessInstanceQuery includeProcessVariables();
 
+  /**
+   * Only select process instances that failed due to an exception happening during a job execution.
+   */
+  HistoricProcessInstanceQuery withJobException();
+  
   /**
    * Only select process instances with the given name.
    */

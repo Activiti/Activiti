@@ -13,8 +13,13 @@
 
 package org.activiti.examples.groovy;
 
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -41,4 +46,21 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
     assertNull(runtimeService.getVariable(pi.getId(), "scriptVar"));
     assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
   }
+  
+  @Deployment
+  public void testAsyncScript() {
+    // Set the clock fixed
+    Date startTime = new Date();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAsyncScript");
+    
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(processInstance.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(1, jobs.size());
+    
+    // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
+    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    assertEquals(0L, jobQuery.count());
+    
+    assertProcessEnded(processInstance.getId());
+  } 
 }
