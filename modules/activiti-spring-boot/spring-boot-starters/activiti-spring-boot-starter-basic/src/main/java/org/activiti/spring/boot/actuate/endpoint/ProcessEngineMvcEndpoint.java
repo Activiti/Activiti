@@ -22,12 +22,16 @@ import org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.InputStream;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * Renders a valid running BPMN process definition as a BPMN diagram.
@@ -53,9 +57,15 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
      */
     @RequestMapping(value = "/processes/{processDefinitionKey:.*}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
-    public Resource processDefinitionDiagram(@PathVariable String processDefinitionKey) {
+    public ResponseEntity processDefinitionDiagram(@PathVariable String processDefinitionKey) {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey(processDefinitionKey).singleResult();
+                .processDefinitionKey(processDefinitionKey)
+                .latestVersion()
+                .singleResult();
+        if (processDefinition == null) {
+            return ResponseEntity.status(NOT_FOUND).body(null);
+        }
+
         ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
 
@@ -65,7 +75,6 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
         }
 
         InputStream is = processDiagramGenerator.generateJpgDiagram(bpmnModel);
-        return new InputStreamResource(is);
+        return ResponseEntity.ok(new InputStreamResource(is));
     }
-
 }

@@ -272,6 +272,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery includeProcessVariables();
   
   /**
+   * Only select process instances that failed due to an exception happening during a job execution.
+   */
+  ProcessInstanceQuery withJobException();
+  
+  /**
    * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
    * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
    */
