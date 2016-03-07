@@ -195,7 +195,7 @@ public class Context {
     fallbackActiviti5CompatibilityHandlerThreadLocal.remove();
   }
   
-  static class ResourceBundleControl extends ResourceBundle.Control {
+  public static class ResourceBundleControl extends ResourceBundle.Control {
     @Override
     public List<Locale> getCandidateLocales(String baseName, Locale locale) {
       return super.getCandidateLocales(baseName, locale);
