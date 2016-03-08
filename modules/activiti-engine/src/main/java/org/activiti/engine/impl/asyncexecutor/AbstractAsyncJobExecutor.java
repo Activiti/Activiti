@@ -69,7 +69,9 @@ public abstract class AbstractAsyncJobExecutor implements AsyncExecutor {
     if (isActive) {
       Runnable runnable = createRunnableForJob(job);
       boolean result = executeAsyncJob(runnable);
-      if (!result) doUnlockJob(job);
+      if (!result) {
+        doUnlockJob(job);
+      }
       return result; // false indicates that the job was rejected.
     } else {
       temporaryJobQueue.add(job);
