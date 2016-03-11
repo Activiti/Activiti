@@ -326,11 +326,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertEquals(4, tasks.size()); // 3 user tasks in MI  +1 (preNormalEnd) = 4 (2 were killed because it went directly to the terminate end event)
     
+    long executionEntitiesCount = runtimeService.createExecutionQuery().count();
+    assertEquals(9, executionEntitiesCount);
+    
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
     taskService.complete(task.getId());
     
-    long executionEntities2 = runtimeService.createExecutionQuery().count();
-    assertEquals(10, executionEntities2);
+    executionEntitiesCount = runtimeService.createExecutionQuery().count();
+    assertEquals(8, executionEntitiesCount);
     
     tasks = taskService.createTaskQuery().list();
     for (Task t : tasks) {
@@ -842,7 +845,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
              || activityId.equalsIgnoreCase("")) {
                continue;
              }
-         System.out.println("Current Activity:" + activityId);
          runtimeService.trigger(execution.getId());
        }
        processInstance =

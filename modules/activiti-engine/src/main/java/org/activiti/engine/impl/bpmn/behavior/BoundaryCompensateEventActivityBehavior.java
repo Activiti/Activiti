@@ -77,6 +77,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
     while (scopeExecution == null && parentExecution != null) {
       if (parentExecution.getCurrentFlowElement() instanceof SubProcess) {
         scopeExecution = parentExecution;
+        
       } else if (parentExecution.getId().equals(parentExecution.getProcessInstanceId())) {
         scopeExecution = parentExecution;
       } else {

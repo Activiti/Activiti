@@ -67,8 +67,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
 
-      deleteExecutionEntities(executionEntityManager, 
-          executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId()));
+      deleteExecutionEntities(executionEntityManager, executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId()));
 
     } else if (scopeExecutionEntity.getCurrentFlowElement() != null 
         && scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) { // SubProcess
@@ -78,13 +77,14 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       if (subProcess.hasMultiInstanceLoopCharacteristics()) {
         
         commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-        
         MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
         multiInstanceBehavior.leave(scopeExecutionEntity);
         
       } else {
         commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
+        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(scopeExecutionEntity.getParent());
+        outgoingFlowExecution.setCurrentFlowElement(scopeExecutionEntity.getCurrentFlowElement());
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution);
       }
 
     } else if (scopeExecutionEntity.getParentId() == null 

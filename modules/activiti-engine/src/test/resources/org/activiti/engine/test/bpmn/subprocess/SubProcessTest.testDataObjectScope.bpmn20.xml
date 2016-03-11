@@ -16,7 +16,7 @@
     <subProcess id="subprocess1" name="subProcess">
       <dataObject id="dObj456" name="StringTest456" itemSubjectRef="xsd:string">
         <extensionElements>
-        <activiti:value>Testing456</activiti:value>
+        	<activiti:value>Testing456</activiti:value>
         </extensionElements>
 	  </dataObject>
       <userTask id="userTask2" name="Complete SubTask" activiti:assignee="kermit"></userTask>

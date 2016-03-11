@@ -13,20 +13,15 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.Activity;
-import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.CompensateEventDefinition;
-import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
-import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
 /**
  * @author Joram Barrez
@@ -59,11 +54,14 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     multiInstanceExecution.setMultiInstanceRoot(true);
     multiInstanceExecution.setActive(false);
     
-    // Set Multi Instance variables
+    // Set Multi-instance variables
     setLoopVariable(multiInstanceExecution, NUMBER_OF_INSTANCES, nrOfInstances);
     setLoopVariable(multiInstanceExecution, NUMBER_OF_COMPLETED_INSTANCES, 0);
     setLoopVariable(multiInstanceExecution, NUMBER_OF_ACTIVE_INSTANCES, 1);
     setLoopVariable(multiInstanceExecution, getCollectionElementIndexVariable(), 0);
+    setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
+    setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
+    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
     setLoopVariable(execution, getCollectionElementIndexVariable(), 0);
     logLoopDetails(multiInstanceExecution, "initialized", 0, 0, 1, nrOfInstances);
 
@@ -79,12 +77,11 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    * the sequential behavior.
    */
   public void leave(DelegateExecution execution) {
-    int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
-    int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable()) + 1;
-    int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
-    int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
-    
     DelegateExecution multiInstanceRootExecution = getMultiInstanceRootExecution(execution);
+    int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
+    int loopCounter = getLoopVariable(multiInstanceRootExecution, getCollectionElementIndexVariable()) + 1;
+    int nrOfCompletedInstances = getLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
+    int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
 
     setLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     setLoopVariable(multiInstanceRootExecution, getCollectionElementIndexVariable(), loopCounter);
@@ -96,56 +93,32 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
 
-    if (loopCounter >= nrOfInstances || completionConditionSatisfied(execution)) {
-      boolean hasCompensation = false;
-      Activity activity = (Activity) execution.getCurrentFlowElement(); 
-      if (activity instanceof Transaction) {
-        hasCompensation = true;
-      } else if (activity instanceof SubProcess) {
-        SubProcess subProcess = (SubProcess) activity;
-        for (FlowElement subElement : subProcess.getFlowElements()) {
-          if (subElement instanceof Activity) {
-            Activity subActivity = (Activity) subElement;
-            if (CollectionUtil.isNotEmpty(subActivity.getBoundaryEvents())) {
-              for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
-                if (CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
-                    boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
-                  
-                  hasCompensation = true;
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      if (hasCompensation) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionEntity, executionEntity.getParent());
-      }
-      
+    if (loopCounter >= nrOfInstances || completionConditionSatisfied(multiInstanceRootExecution)) {
       removeLocalLoopVariable(multiInstanceRootExecution, getCollectionElementIndexVariable());
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       multiInstanceRootExecution.setMultiInstanceRoot(false);
+      multiInstanceRootExecution.setScope(false);
       multiInstanceRootExecution.setCurrentFlowElement(execution.getCurrentFlowElement());
-      Context.getCommandContext().getExecutionEntityManager()
-        .deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
+      Context.getCommandContext().getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
       super.leave(multiInstanceRootExecution);
       
     } else {
       try {
         
-//        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-//        FlowElement currentFlowElement = execution.getCurrentFlowElement();
-//        executionEntityManager.deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
-//        
-//        ExecutionEntity executionToContinue = executionEntityManager.createChildExecution((ExecutionEntity) multiInstanceRootExecution);
-//        executionToContinue.setCurrentFlowElement(currentFlowElement);
-//        
-//        executeOriginalBehavior(executionToContinue, loopCounter);
+        if (execution.getCurrentFlowElement() instanceof SubProcess) {
+          ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+          ExecutionEntity executionToContinue = executionEntityManager.createChildExecution((ExecutionEntity) multiInstanceRootExecution);
+          executionToContinue.setCurrentFlowElement(execution.getCurrentFlowElement());
+          executionToContinue.setScope(true);
+          setLoopVariable(executionToContinue, NUMBER_OF_INSTANCES, nrOfInstances);
+          setLoopVariable(executionToContinue, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+          setLoopVariable(executionToContinue, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
+          setLoopVariable(executionToContinue, getCollectionElementIndexVariable(), loopCounter);
+          executeOriginalBehavior(executionToContinue, loopCounter);
+        } else {
+          executeOriginalBehavior(execution, loopCounter);
+        }
         
-        executeOriginalBehavior(execution, loopCounter);
       } catch (BpmnError error) {
         // re-throw business fault so that it can be caught by an Error
         // Intermediate Event or Error Event Sub-Process in the process
