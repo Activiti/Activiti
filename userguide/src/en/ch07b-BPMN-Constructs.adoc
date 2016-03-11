@@ -488,7 +488,7 @@ _Note:_ when a new version of a process with a start timer event is deployed, th
 
 ===== Graphical notation
 
-A none start event is visualized as a circle with clock inner icon.
+A timer start event is visualized as a circle with clock inner icon.
 
 image::images/bpmn.clock.start.event.png[align="center"]
 
