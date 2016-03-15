@@ -77,6 +77,12 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     }
   }
   
+    @Override
+    public void removeTenantAsyncExecutor(String tenantId) {
+      shutdownTenantExecutor(tenantId);
+      tenantExecutors.remove(tenantId);
+    }
+  
   protected AsyncExecutor determineAsyncExecutor() {
     return tenantExecutors.get(tenantInfoHolder.getCurrentTenantId());
   }
@@ -118,10 +124,14 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
 
   public synchronized void shutdown() {
     for (String tenantId : tenantExecutors.keySet()) {
-      logger.info("Shutting down async executor for tenant " + tenantId);
-      tenantExecutors.get(tenantId).shutdown();
+      shutdownTenantExecutor(tenantId);
     }
     active = false;
+  }
+  
+  protected void shutdownTenantExecutor(String tenantId) {
+    logger.info("Shutting down async executor for tenant " + tenantId);
+    tenantExecutors.get(tenantId).shutdown();
   }
 
   public String getLockOwner() {
