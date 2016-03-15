@@ -26,5 +26,7 @@ import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEng
 public interface TenantAwareAsyncExecutor extends AsyncExecutor {
   
   void addTenantAsyncExecutor(String tenantId, boolean startExecutor);
+  
+  void removeTenantAsyncExecutor(String tenantId);
 
 }
