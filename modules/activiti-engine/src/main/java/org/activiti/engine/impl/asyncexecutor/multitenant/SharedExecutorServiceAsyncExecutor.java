@@ -14,6 +14,7 @@ package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -63,6 +64,11 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
       }
       
     });
+  }
+  
+  @Override
+  public Set<String> getTenantIds() {
+    return timerJobAcquisitionRunnables.keySet();
   }
 
   public void addTenantAsyncExecutor(String tenantId, boolean startExecutor) {
