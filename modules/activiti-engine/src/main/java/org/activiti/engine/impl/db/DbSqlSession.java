@@ -795,6 +795,7 @@ public class DbSqlSession implements Session {
     for (Class<? extends PersistentObject> persistentObjectClass : EntityDependencyOrder.INSERT_ORDER) {
       if (insertedObjects.containsKey(persistentObjectClass)) {
       	flushPersistentObjects(persistentObjectClass, insertedObjects.get(persistentObjectClass));
+      	insertedObjects.remove(persistentObjectClass);
       }
     }
     
@@ -818,7 +819,6 @@ public class DbSqlSession implements Session {
 	  }	else {
 	  	flushBulkInsert(insertedObjects.get(persistentObjectClass), persistentObjectClass);
 	  }
-	  insertedObjects.remove(persistentObjectClass);
   }
   
   protected void flushRegularInsert(PersistentObject persistentObject, Class<? extends PersistentObject> clazz) {
