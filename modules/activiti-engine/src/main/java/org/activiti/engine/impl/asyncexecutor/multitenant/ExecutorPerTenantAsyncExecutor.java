@@ -15,6 +15,7 @@ package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
@@ -50,6 +51,11 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   public ExecutorPerTenantAsyncExecutor(TenantInfoHolder tenantInfoHolder, TenantAwareAsyncExecutorFactory tenantAwareAyncExecutorFactory) {
     this.tenantInfoHolder = tenantInfoHolder;
     this.tenantAwareAyncExecutorFactory = tenantAwareAyncExecutorFactory;
+  }
+  
+  @Override
+  public Set<String> getTenantIds() {
+    return tenantExecutors.keySet();
   }
 
   public void addTenantAsyncExecutor(String tenantId, boolean startExecutor) {
