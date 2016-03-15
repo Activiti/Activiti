@@ -16,8 +16,11 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -130,6 +133,10 @@ public class EndExecutionOperation extends AbstractOperation {
           commandContext.getHistoryManager().recordActivityEnd(parentExecution);
           executionEntityManager.deleteChildExecutions(parentExecution, null, false);
           executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
+          
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, subProcess.getId(), subProcess.getName(),
+                  parentExecution.getId(), parentExecution.getProcessInstanceId(), parentExecution.getProcessDefinitionId(), subProcess));
           
         } else {
           if (executionEntity.getCurrentFlowElement() instanceof Activity) {

@@ -12,6 +12,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
@@ -95,7 +96,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       
       FlowNode flowNode = (FlowNode) currentFlowElement;
       
-      if (execution.getId().equals(execution.getProcessInstanceId()) == false) {
+      if (execution.getId().equals(execution.getProcessInstanceId()) == false && execution.getCurrentFlowElement() instanceof SubProcess == false) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, flowNode.getId(), flowNode.getName(),
                 execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
