@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="activiti">
+
+        <!-- Hibernate sequence table -->
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="varchar(255)" />
+            <column name="sequence_next_hi_value" type="integer" />
+        </createTable>
+
+        <createTable tableName="DMN_DEPLOYMENT">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)" />
+            <column name="category" type="varchar(255)" />
+            <column name="deploy_time" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="tenant_id" type="varchar(255)" />
+        </createTable>
+        
+        <createTable tableName="DMN_DEPLOYMENT_RESOURCE">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)" />
+            <column name="deployment_id" type="bigint" />
+            <column name="resource_bytes" type="longblob">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+        
+        <createTable tableName="DMN_DECISION_TABLE">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)" />
+            <column name="decision_version" type="int" />
+            <column name="decision_key" type="varchar(255)" />
+            <column name="category" type="varchar(255)" />
+            <column name="deployment_id" type="bigint" />
+            <column name="tenant_id" type="varchar(255)" />
+            <column name="resource_name" type="varchar(255)" />
+            <column name="description" type="varchar(255)" />
+        </createTable>
+
+    </changeSet>
+
+
+</databaseChangeLog>

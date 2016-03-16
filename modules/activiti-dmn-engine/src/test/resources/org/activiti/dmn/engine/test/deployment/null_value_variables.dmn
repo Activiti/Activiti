@@ -1,0 +1,140 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20151130" id="definition_10002" name="Risk Assessment" namespace="http://www.activiti.org/dmn">
+  <decision id="RiskAssessmentUpdated" name="Risk Assessment">
+    <decisionTable id="decisionTable_10002" hitPolicy="ANY">
+      <input label="Risk Category 1">
+        <inputExpression id="inputExpression_4" typeRef="string">
+          <text>input1</text>
+        </inputExpression>
+      </input>
+      <input label="Risk Category 2">
+        <inputExpression id="inputExpression_5" typeRef="string">
+          <text>input2</text>
+        </inputExpression>
+      </input>
+      <output id="outputExpression_6" label="Added Insurance Perc" name="addedPerc" typeRef="number"/>
+      <output id="outputExpression_9" label="Amount Due" name="amountDue" typeRef="date"/>
+      <output id="outputExpression_11" label="Eligible" name="eligible" typeRef="boolean"/>
+      <output id="outputExpression_13" label="Outcome" name="outcome" typeRef="string"/>
+      <rule>
+        <inputEntry id="inputEntry_4_1">
+          <text>== "low"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_1">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_1">
+          <text>addedPerc +5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_9_1">
+          <text>fn_addDate(amountDue,0,0,5)</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_11_1">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_13_1">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_4_2">
+          <text>== "medium"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_2">
+          <text>addedPerc + 10</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_9_2">
+          <text>fn_addDate(amountDue,0,0,10)</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_11_2">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_13_2">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_4_3">
+          <text>== "high"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_3">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_3">
+          <text>addedPerc + 20</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_9_3">
+          <text>fn_addDate(amountDue,0,0,20)</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_11_3">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_13_3">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_4_4">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_4">
+          <text>== "green"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_4">
+          <text>addedPerc + 5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_9_4">
+          <text>fn_addDate(amountDue,0,0,5)</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_11_4">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_13_4">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_4_5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_5">
+          <text>== "blue"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_5">
+          <text>addedPerc + 10</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_9_5">
+          <text>fn_addDate(amountDue,0,0,10)</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_11_5">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_13_5">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_4_6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_5_6">
+          <text>== "red"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_6">
+          <text>addedPerc + 20</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_9_6">
+          <text>fn_addDate(amountDue,0,0,20)</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_11_6">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_13_6">
+          <text></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

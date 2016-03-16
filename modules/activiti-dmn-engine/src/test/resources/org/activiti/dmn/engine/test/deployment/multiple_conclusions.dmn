@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151130" id="simple" name="Simple" namespace="http://activiti.org/dmn">
+    <decision id="decision" name="Simple decision">
+        <decisionTable id="decisionTable">
+          <input>
+            <inputExpression id="input1" typeRef="number">
+                <text>input1</text>
+            </inputExpression>
+          </input>
+          <output id="output1" label="Output 1" name="output1" typeRef="string" />
+          <output id="output2" label="Output 2" name="output2" typeRef="number" />
+          <rule>
+            <inputEntry id="inputEntry1">
+                <text><![CDATA[> 10]]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry1_1">
+                <text>'test'</text>
+            </outputEntry>
+            <outputEntry id="outputEntry2_1">
+                <text>1</text>
+            </outputEntry>
+          </rule>
+          <rule>
+            <inputEntry id="inputEntry2">
+                <text><![CDATA[< 10]]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry1_2">
+                <text>'test2'</text>
+            </outputEntry>
+            <outputEntry id="outputEntry2_2">
+                <text>2</text>
+            </outputEntry>
+          </rule>
+          <rule>
+            <inputEntry id="inputEntry3">
+                <text><![CDATA[== 10]]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry1_3">
+                <text>'test3'</text>
+            </outputEntry>
+            <outputEntry id="outputEntry2_3">
+                <text>3</text>
+            </outputEntry>
+          </rule>
+        </decisionTable>
+    </decision>
+</definitions>

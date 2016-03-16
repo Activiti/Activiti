@@ -6,7 +6,6 @@
 === License
 
 Activiti is distributed under link:$$http://www.apache.org/licenses/LICENSE-2.0.html$$[the Apache V2 license].
-The Activiti Modeler uses a different license link:$$http://opensource.org/licenses/LGPL-2.1$$[the LGPL 2.1 license].
 
 [[download]]
 

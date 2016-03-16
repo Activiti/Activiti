@@ -4,7 +4,7 @@
 
 Activiti Modeler is a BPMN web modeler component that's available as part of the <<activitiExplorer,Activiti Explorer>> web application. 
 The Modeler is a fork of the link:$$http://code.google.com/p/signavio-core-components/$$[Signavio Core Components] project. 
-The Activiti Modeler is an Angular JS based application since version 5.17.0 (before it was an Ext-JS based application). The Angular JS part of the Activiti Modeler is released with a LGPL license.
+The Activiti Modeler is an Angular JS based application since version 5.17.0 (before it was an Ext-JS based application).
 A main difference with the previous Activiti Modeler (Signavio Core Components) is that that the new modeler is maintained and developed as part of the Activiti project. 
 The goal of the Activiti Modeler is to support all the BPMN elements and extension supported by the Activiti Engine.
  
