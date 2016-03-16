@@ -52,6 +52,14 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     this.variables = variables;
   }
 
+  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, String processInstanceName, Map<String, Object> variables) {
+	    this.processDefinitionKey = processDefinitionKey;
+	    this.processDefinitionId = processDefinitionId;
+	    this.businessKey = businessKey;
+	    this.processInstanceName = processInstanceName;
+	    this.variables = variables;
+  }
+
   public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables, String tenantId) {
     this(processDefinitionKey, processDefinitionId, businessKey, variables);
     this.tenantId = tenantId;
