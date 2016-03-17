@@ -41,6 +41,7 @@ import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -372,7 +373,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   protected void restoreExtraData(TimerEntity timerEntity) {
     String activityId = timerEntity.getJobHandlerConfiguration();
 
-    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
+    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE) ||
+            timerEntity.getJobHandlerType().equalsIgnoreCase(TriggerTimerEventJobHandler.TYPE)) {
 
       activityId = TimerEventHandler.getActivityIdFromConfiguration(timerEntity.getJobHandlerConfiguration());
       String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(timerEntity.getJobHandlerConfiguration());
@@ -388,7 +390,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
         if (timerEntity.getExecutionId() != null) {
           executionEntity = getExecutionEntityManager().findById(timerEntity.getExecutionId());
         }
-        
+
         if (executionEntity == null) {
           executionEntity = NoExecutionVariableScope.getSharedInstance();
         }
