@@ -242,7 +242,7 @@ If no parameter is provided, the default would be "explorer".
 Docker is built using a Dockerfile located in tooling/dockerImage/singleImage directory. A utility batch file, named "buildImage.sh" contains the command line for building the image.
 If the built image is going to be used by others, it should be pushed into the docker hub using a command like:
 [source]
-docker push activit/activiti-single-image:latest
+docker push activiti/activiti-single-image:latest
 
 
 
