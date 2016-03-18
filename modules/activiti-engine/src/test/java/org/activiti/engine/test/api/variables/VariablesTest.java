@@ -1,7 +1,9 @@
 package org.activiti.engine.test.api.variables;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -421,6 +423,17 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.getVariablesLocal(task.getId(), Arrays.asList("intVar2", "intVar5")).size());
     assertEquals("localTaskVarValue", taskService.getVariable(task.getId(), "localTaskVar"));
     assertEquals("localTaskVarValue", taskService.getVariableLocal(task.getId(), "localTaskVar"));
+
+    // Override process variable
+    Collection<String> varNames = new ArrayList<String>();
+    varNames.add("stringVar1");
+    assertEquals("stringVarValue-1", taskService.getVariable(task.getId(), "stringVar1"));
+    assertEquals("stringVarValue-1", taskService.getVariable(task.getId(), "stringVar1"));
+    assertEquals("stringVarValue-1", taskService.getVariables(task.getId(), varNames).get("stringVar1"));
+    taskService.setVariableLocal(task.getId(), "stringVar1", "Override");
+    assertEquals(51, taskService.getVariables(task.getId()).size());
+    assertEquals("Override", taskService.getVariable(task.getId(), "stringVar1"));
+    assertEquals("Override", taskService.getVariables(task.getId(), varNames).get("stringVar1"));
   }
 
   // Class to test variable serialization
