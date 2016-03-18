@@ -85,6 +85,12 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   @Override
   public ProcessDefinitionQuery processDefinitionIds(Set<String> processDefinitionIds) {
+    if (processDefinitionIds == null) {
+      throw new ActivitiIllegalArgumentException("processDefinitionIds is null");
+    }
+    if (processDefinitionIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("processDefinitionIds is empty");
+    }
   	this.ids = processDefinitionIds;
   	return this;
   }
@@ -139,7 +145,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQueryImpl deploymentIds(Set<String> deploymentIds) {
     if (deploymentIds == null) {
-      throw new ActivitiIllegalArgumentException("ids are null");
+      throw new ActivitiIllegalArgumentException("deploymentIds is null");
+    }
+    if (deploymentIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("deploymentIds is empty");
     }
     this.deploymentIds = deploymentIds;
     return this;
