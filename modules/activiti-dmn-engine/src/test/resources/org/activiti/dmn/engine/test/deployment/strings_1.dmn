@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151130" id="simple" name="Simple" namespace="http://activiti.org/dmn">
+    <decision id="decision" name="Simple decision">
+        <decisionTable id="decisionTable">
+          <input>
+            <inputExpression id="inputExpression1" typeRef="string">
+                <text>input1</text>
+            </inputExpression>
+          </input>
+          <output id="output1" label="Output 1" name="output1" typeRef="string" />
+          <rule>
+            <inputEntry id="inputEntry1">
+              <text><![CDATA[.startsWith('test')]]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry1">
+              <text>'test1'</text>
+            </outputEntry>
+          </rule>
+          <rule>
+            <inputEntry id="inputEntry2">
+              <text><![CDATA[.endsWith('test')]]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry2">
+              <text>'test2'</text>
+            </outputEntry>
+          </rule>
+        </decisionTable>
+    </decision>
+</definitions>

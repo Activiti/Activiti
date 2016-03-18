@@ -35,7 +35,6 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
     if (currentFlowElement == null) {
       currentFlowElement = findCurrentFlowElement(execution);
-      execution.setCurrentFlowElement(currentFlowElement);
     }
     
     if (currentFlowElement instanceof FlowNode) {

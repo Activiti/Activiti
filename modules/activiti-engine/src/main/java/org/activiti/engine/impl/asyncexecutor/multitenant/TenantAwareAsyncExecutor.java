@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.asyncexecutor.multitenant;
 
+import java.util.Set;
+
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEngineConfiguration;
 
@@ -25,6 +27,10 @@ import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEng
  */
 public interface TenantAwareAsyncExecutor extends AsyncExecutor {
   
+  Set<String> getTenantIds();
+  
   void addTenantAsyncExecutor(String tenantId, boolean startExecutor);
+  
+  void removeTenantAsyncExecutor(String tenantId);
 
 }

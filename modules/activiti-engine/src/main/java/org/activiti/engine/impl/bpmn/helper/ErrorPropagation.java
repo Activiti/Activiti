@@ -119,34 +119,28 @@ public class ErrorPropagation {
   protected static void executeCatch(Map<String, List<Event>> eventMap, DelegateExecution delegateExecution, String errorId) {
     Event matchingEvent = null;
     ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
+    ExecutionEntity parentExecution = null;
     
-    /*
-     * ScopeImpl catchingScope = errorHandler.getParent(); if (catchingScope instanceof ActivityImpl) { ActivityImpl catchingScopeActivity = (ActivityImpl) catchingScope; if
-     * (!catchingScopeActivity.isScope()) { // event subprocesses catchingScope = catchingScopeActivity.getParent(); } }
-     */
-
-    // if (catchingScope instanceof PvmProcessDefinition) {
-    // executeEventHandler(errorHandler, ((ExecutionEntity) execution).getProcessInstance(), errorCode);
-
-    // } else {
     if (eventMap.containsKey(currentExecution.getActivityId())) {
       matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
       
       // Check for multi instance
       if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
-        currentExecution = currentExecution.getParent();
+        parentExecution = currentExecution.getParent();
+      } else {
+        parentExecution = currentExecution;
       }
       
     } else {
-      currentExecution = currentExecution.getParent();
+      parentExecution = currentExecution.getParent();
 
       // Traverse parents until one is found that is a scope and matches the activity the boundary event is defined on
-      while (matchingEvent == null && currentExecution != null) {
+      while (matchingEvent == null && parentExecution != null) {
         FlowElementsContainer currentContainer = null;
-        if (currentExecution.getCurrentFlowElement() instanceof FlowElementsContainer) {
-          currentContainer = (FlowElementsContainer) currentExecution.getCurrentFlowElement();
-        } else if (currentExecution.getId().equals(currentExecution.getProcessInstanceId())) {
-          currentContainer = ProcessDefinitionUtil.getProcess(currentExecution.getProcessDefinitionId());
+        if (parentExecution.getCurrentFlowElement() instanceof FlowElementsContainer) {
+          currentContainer = (FlowElementsContainer) parentExecution.getCurrentFlowElement();
+        } else if (parentExecution.getId().equals(parentExecution.getProcessInstanceId())) {
+          currentContainer = ProcessDefinitionUtil.getProcess(parentExecution.getProcessDefinitionId());
         }
         
         for (String refId : eventMap.keySet()) {
@@ -159,32 +153,31 @@ public class ErrorPropagation {
         }
         
         if (matchingEvent == null) {
-          if (eventMap.containsKey(currentExecution.getActivityId())) {
-            matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
+          if (eventMap.containsKey(parentExecution.getActivityId())) {
+            matchingEvent = eventMap.get(parentExecution.getActivityId()).get(0);
             
             // Check for multi instance
-            if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
-              currentExecution = currentExecution.getParent();
+            if (parentExecution.getParentId() != null && parentExecution.getParent().isMultiInstanceRoot()) {
+              parentExecution = parentExecution.getParent();
             }
             
-          } else if (StringUtils.isNotEmpty(currentExecution.getParentId())) {
-            currentExecution = currentExecution.getParent();
+          } else if (StringUtils.isNotEmpty(parentExecution.getParentId())) {
+            parentExecution = parentExecution.getParent();
           } else {
-            currentExecution = null;
+            parentExecution = null;
           }
         }
       }
     }
 
-    if (matchingEvent != null && currentExecution != null) {
-      executeEventHandler(matchingEvent, currentExecution, errorId);
+    if (matchingEvent != null && parentExecution != null) {
+      executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
     } else {
       throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
     }
-    // }
   }
 
-  protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, String errorId) {
+  protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, ExecutionEntity currentExecution, String errorId) {
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
       if (bpmnModel != null) {
@@ -201,19 +194,27 @@ public class ErrorPropagation {
     }
 
     if (event instanceof StartEvent) {
-      parentExecution.setCurrentFlowElement(event);
-      Context.getAgenda().planContinueProcessOperation(parentExecution);
+      ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+      
+      if (currentExecution.getParentId().equals(parentExecution.getId()) == false) {
+        Context.getAgenda().planDestroyScopeOperation(currentExecution);
+      } else {
+        executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
+      }
+      
+      ExecutionEntity eventSubProcessExecution = executionEntityManager.createChildExecution(parentExecution);
+      eventSubProcessExecution.setCurrentFlowElement(event);
+      Context.getAgenda().planContinueProcessOperation(eventSubProcessExecution);
+      
     } else {
       ExecutionEntity boundaryExecution = null;
-      /*if (boundaryParentExecution.isScope() == false) {
-        boundaryParentExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(boundaryParentExecution.getParentId());
-      }*/
       List<? extends ExecutionEntity> childExecutions = parentExecution.getExecutions();
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getActivityId().equals(event.getId())) {
           boundaryExecution = childExecution;
         }
       }
+      
       Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
     }
   }

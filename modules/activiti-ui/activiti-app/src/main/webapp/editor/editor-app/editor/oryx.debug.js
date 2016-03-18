@@ -1,10 +1,15 @@
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * @namespace Oryx name space for different utility methods
@@ -51,13 +56,18 @@ ORYX.Utils = {
 		}
 	}
 }
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 XMLNS = {
 	ATOM:	"http://www.w3.org/2005/Atom",
@@ -135,13 +145,18 @@ var Kickstart = {
 
 // register kickstart as the new onload event listener on current window.
 // previous listener(s) are triggered to launch with kickstart.
-Event.observe(window, 'load', Kickstart.load);/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+Event.observe(window, 'load', Kickstart.load);/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 var ERDF = {
 
@@ -526,13 +541,18 @@ ERDF.Literal = function(literal) {
 	this.toString = function() {
 		return '"' + this.value + '"';
 	}
-};/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+};/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /*
  * Save and triple generation behaviour. Use this area to configure
@@ -1700,13 +1720,18 @@ ResourceManager = {
 			"wrong with either the server, the transport protocol or your " +
 			"online status. Sure you're online?";
 	}
-}/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+}/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * The super class for all classes in ORYX. Adds some OOP feeling to javascript.
@@ -1761,13 +1786,18 @@ Clazz.extend = function(def) {
     //Give this new class the same static extend method    
     classDef.extend = this.extend;        
     return classDef;
-};/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+};/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX) var ORYX = {};
 
@@ -1813,13 +1843,18 @@ ORYX.CONFIG.ORYX_NEW_URL =					"/new";
 ORYX.CONFIG.BPMN_LAYOUTER =					ORYX.CONFIG.ROOT_PATH + "bpmnlayouter";
 
 ORYX.CONFIG.EXPRESSION_METADATA_URL = 			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/expression-metadata";
-ORYX.CONFIG.DATASOURCE_METADATA_URL = 			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/datasource-metadata";/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ORYX.CONFIG.DATASOURCE_METADATA_URL = 			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/datasource-metadata";/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX) var ORYX = {};
 
@@ -2063,13 +2098,18 @@ ORYX.CONFIG.FORM_ELEMENT_TYPE_GROUP = 				'http://b3mn.org/stencilset/xforms#Gro
 ORYX.CONFIG.FORM_ELEMENT_TYPE_REPEATING_GROUP =		'http://b3mn.org/stencilset/xforms#RepeatingGroup';
 ORYX.CONFIG.FORM_ELEMENT_TYPE_LABEL_FIELD = 		'http://b3mn.org/stencilset/xforms#LabelField';
 	
-	/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+	/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 function printf() {
 	
@@ -2406,13 +2446,18 @@ ORYX = Object.extend(ORYX, {
 });
 
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -2778,13 +2823,18 @@ ORYX.Core.SVG.EditPathHandler = Clazz.extend({
 	    this.d = this.d.concat(" z");
 	}
 
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -3058,13 +3108,18 @@ ORYX.Core.SVG.MinMaxPathHandler = Clazz.extend({
 	    return;// do nothing
 	}
 
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -3332,13 +3387,18 @@ ORYX.Core.SVG.PointsPathHandler = Clazz.extend({
 	    return;// do nothing
 	}
 
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  *
@@ -3523,13 +3583,18 @@ ORYX.Core.SVG.SVGMarker = Clazz.extend({
 	},
 	
 	toString: function() { return (this.element) ? "SVGMarker " + this.element.id : "SVGMarker " + this.element;}
- });/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ });/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  *
@@ -4081,13 +4146,18 @@ ORYX.Core.SVG.SVGShape = Clazz.extend({
 	},
 
 	toString: function() { return (this.element) ? "SVGShape " + this.element.id : "SVGShape " + this.element;}
- });/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ });/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -5200,13 +5270,18 @@ ORYX.Core.SVG.Label = Clazz.extend({
 	},
 	
 	toString: function() { return "Label " + this.id }
- });/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ });/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -5722,13 +5797,18 @@ new function(){
 }();
 
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespace
@@ -6135,13 +6215,18 @@ function _evilSafariHack(serializedXML) {
 	
 	return dom;
 }
-	/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+	/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespace
@@ -6594,13 +6679,18 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
 	}
 	
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespace
@@ -6684,13 +6774,18 @@ ORYX.Core.StencilSet.PropertyItem = Clazz.extend({
 	},
 
 	toString: function() { return "PropertyItem " + this.property() + " (" + this.value() + ")"; }
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -6810,13 +6905,18 @@ ORYX.Core.StencilSet.ComplexPropertyItem = Clazz.extend({
 	disable: function() {
 		return this._jsonItem.disable;
 	}
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -8122,13 +8222,18 @@ ORYX.Core.StencilSet.Rules = {
 	toString: function() { return "Rules"; }
 }
 ORYX.Core.StencilSet.Rules = Clazz.extend(ORYX.Core.StencilSet.Rules);
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespace
@@ -8562,13 +8667,18 @@ ORYX.Core.StencilSet.StencilSet = Clazz.extend({
         return "StencilSet " + this.title() + " (" + this.namespace() + ")";
     }
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespace
@@ -8737,13 +8847,18 @@ ORYX.Core.StencilSet.getTranslation = function(jsonObject, name) {
 		
 	return jsonObject[name];
 };
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -8773,13 +8888,18 @@ ORYX.Core.Command = Clazz.extend({
 	}
 	
 	
- });/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ });/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -9189,13 +9309,18 @@ ORYX.Core.Bounds = {
 	}
  };
  
-ORYX.Core.Bounds = Clazz.extend(ORYX.Core.Bounds);/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ORYX.Core.Bounds = Clazz.extend(ORYX.Core.Bounds);/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -9483,13 +9608,18 @@ ORYX.Core.UIObject = {
 	
 	toString: function() { return "UIObject " + this.id }
  };
- ORYX.Core.UIObject = Clazz.extend(ORYX.Core.UIObject);/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ ORYX.Core.UIObject = Clazz.extend(ORYX.Core.UIObject);/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -10015,13 +10145,18 @@ ORYX.Core.AbstractShape.JSONHelper = {
          return JSON.stringify(this);
      }
  }
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -10803,11 +10938,17 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
         
         return json;
     }
- });/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ });/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 var idCounter = 0;
 var ID_PREFIX = "resource";
@@ -12589,13 +12730,18 @@ ORYX.Editor.checkClassType = function( classInst, classType ) {
 		return classInst == classType
 	}
 };
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -12749,13 +12895,18 @@ new function(){
 	});
 	
 }();
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -13659,13 +13810,18 @@ ORYX.Core.Shape = {
 
 	toString: function() { return "ORYX.Core.Shape " + this.getId() }
 };
-ORYX.Core.Shape = ORYX.Core.AbstractShape.extend(ORYX.Core.Shape);/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ORYX.Core.Shape = ORYX.Core.AbstractShape.extend(ORYX.Core.Shape);/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -13681,13 +13837,18 @@ if(!ORYX.Core.Controls) {ORYX.Core.Controls = {};}
 ORYX.Core.Controls.Control = ORYX.Core.UIObject.extend({
 	
 	toString: function() { return "Control " + this.id; }
- });/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+ });/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -14060,13 +14221,18 @@ ORYX.Core.Controls.Docker = ORYX.Core.Controls.Control.extend({
 	},
 	
 	toString: function() { return "Docker " + this.id }
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -14142,13 +14308,18 @@ ORYX.Core.Controls.Magnet = ORYX.Core.Controls.Control.extend({
 		return "Magnet " + this.id;
 	}
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * Init namespaces
@@ -15003,13 +15174,18 @@ ORYX.Core.Node = {
     }
 };
 ORYX.Core.Node = ORYX.Core.Shape.extend(ORYX.Core.Node);
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 NAMESPACE_SVG = "http://www.w3.org/2000/svg";
 NAMESPACE_ORYX = "http://www.b3mn.org/oryx";
@@ -16809,13 +16985,18 @@ ORYX.Core.Edge = {
     }
 };
 ORYX.Core.Edge = ORYX.Core.Shape.extend(ORYX.Core.Edge);
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX){ var ORYX = {} }
 if(!ORYX.Plugins){ ORYX.Plugins = {} }
@@ -17351,13 +17532,18 @@ ORYX.Plugins.AbstractPlugin = Clazz.extend({
 		this.facade.executeCommands([new Command(allEdges, node, offset, this)]);
 
 	}
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX){ var ORYX = {} }
 if(!ORYX.Plugins){ ORYX.Plugins = {} }
@@ -17450,13 +17636,18 @@ ORYX.Plugins.AbstractLayouter = ORYX.Plugins.AbstractPlugin.extend({
 	layout: function(shapes){
 		throw new Error("Layouter has to implement the layout function.")
 	}
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
@@ -17928,13 +18119,18 @@ ORYX.Plugins.Edit.DeleteCommand = ORYX.Core.Command.extend({
 		this.facade.updateSelection();
         
     }
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 /**
  * @namespace Oryx name space for plugins
@@ -18160,22 +18356,33 @@ ORYX.Plugins.View = {
 };
 
 ORYX.Plugins.View = Clazz.extend(ORYX.Plugins.View);
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 if(!Signavio){ var Signavio = {} };
 	if (!Signavio.Core) { Signavio.Core = {} };
 	Signavio.Core.Version = "1.0";
-			/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+			/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!Signavio) {
 	var Signavio = new Object();
@@ -18220,13 +18427,18 @@ new function() {
 
 }();
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!ORYX.Plugins) {
     ORYX.Plugins = new Object();
@@ -18301,11 +18513,17 @@ ORYX.Plugins.Loading = {
 }
 
 ORYX.Plugins.Loading = Clazz.extend(ORYX.Plugins.Loading);
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 if (!ORYX.Plugins) {
     ORYX.Plugins = new Object();
@@ -18525,13 +18743,18 @@ ORYX.Plugins.CanvasResizeButton = Clazz.extend({
 
 });
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
@@ -18801,13 +19024,18 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
 		}
 	}
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -18924,13 +19152,18 @@ ORYX.Plugins.ProcessLink = Clazz.extend({
 				});	
 							
 	}		
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 Array.prototype.insertFrom = function(from, to){
 	to 			= Math.max(0, to);
@@ -19385,13 +19618,18 @@ ORYX.Plugins.Arrangement = ORYX.Plugins.AbstractPlugin.extend({
 		
 		this.facade.executeCommands([command]);	
 	}
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
@@ -19454,13 +19692,18 @@ ORYX.Plugins.Save = Clazz.extend({
 		}	
 	}
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins) 
 	ORYX.Plugins = new Object();
@@ -20987,13 +21230,18 @@ ORYX.Core.Command.Move = ORYX.Core.Command.extend({
 		this.plugin.facade.setSelection( this.selectedShapes );
 	}
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -21539,13 +21787,18 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 
 });
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -21669,13 +21922,18 @@ ORYX.Plugins.AddDocker = Clazz.extend({
     }
 });
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -21875,13 +22133,18 @@ if(!ORYX.Plugins)
 });
 
 
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object(); 
@@ -22112,13 +22375,18 @@ ORYX.Plugins.HighlightingSelectedShapes = Clazz.extend({
 			this.facade.raiseEvent({type:ORYX.CONFIG.EVENT_HIGHLIGHT_HIDE, highlightId:'subselection'});
 		}		
 	}
-});/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+});/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
@@ -22425,13 +22693,18 @@ ORYX.Plugins.Overlay = Clazz.extend({
 
     
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
@@ -22736,13 +23009,18 @@ ORYX.Plugins.KeysMove = ORYX.Plugins.AbstractPlugin.extend({
 //    }
 	
 });
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins) { ORYX.Plugins = {} }
 if(!ORYX.Plugins.Layouter) { ORYX.Plugins.Layouter = {} }
@@ -23026,13 +23304,18 @@ new function(){
 	
 	
 }()
-/*
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();

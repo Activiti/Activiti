@@ -197,6 +197,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
                 ExecutionEntity childExecution = childExecutions.get(i);
                 if (StringUtils.isNotEmpty(childExecution.getSuperExecutionId()) 
                     && callActivityExecutionIds.contains(childExecution.getSuperExecutionId())) {
+                  
                   executionEntityManager.deleteProcessInstanceExecutionEntity(childExecution.getId(), activity.getId(), 
                       "call activity completion condition met", true, false, true);
                 }
@@ -207,6 +208,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
           
         deleteChildExecutions(executionToUse, false, Context.getCommandContext());
+        removeLocalLoopVariable(executionToUse, getCollectionElementIndexVariable());
+        executionToUse.setScope(false);
+        executionToUse.setMultiInstanceRoot(false);
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionToUse, true);
       }
 

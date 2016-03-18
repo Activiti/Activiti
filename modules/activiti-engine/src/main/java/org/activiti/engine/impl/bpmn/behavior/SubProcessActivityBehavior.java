@@ -57,17 +57,18 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     if (startElement == null) {
       throw new ActivitiException("No initial activity found for subprocess " + subProcess.getId());
     }
-
-    execution.setScope(true);
+    
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    executionEntity.setScope(true);
 
     // initialize the template-defined data objects as variables
     Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
     if (dataObjectVars != null) {
-      execution.setVariablesLocal(dataObjectVars);
+      executionEntity.setVariablesLocal(dataObjectVars);
     }
 
     ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
-        .createChildExecution((ExecutionEntity) execution); 
+        .createChildExecution(executionEntity); 
     startSubProcessExecution.setCurrentFlowElement(startElement);
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
   }

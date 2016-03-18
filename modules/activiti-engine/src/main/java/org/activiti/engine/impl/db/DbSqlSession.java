@@ -731,6 +731,7 @@ public class DbSqlSession implements Session {
     for (Class<? extends Entity> entityClass : EntityDependencyOrder.INSERT_ORDER) {
       if (insertedObjects.containsKey(entityClass)) {
       	flushEntities(entityClass, insertedObjects.get(entityClass));
+      	insertedObjects.remove(entityClass);
       }
     }
     
@@ -754,7 +755,6 @@ public class DbSqlSession implements Session {
 	  }	else {
 	  	flushBulkInsert(insertedObjects.get(entityClass), entityClass);
 	  }
-	  insertedObjects.remove(entityClass);
   }
   
   protected void flushRegularInsert(Entity entity, Class<? extends Entity> clazz) {

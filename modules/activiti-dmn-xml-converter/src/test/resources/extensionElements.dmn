@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20130901" xmlns:yourco="http://yourco/bpmn" id="extensions" name="Extension">
+	<description>DMN description</description>
+	<extensionElements>
+        <yourco:i18ln yourco:resourceBundleKeyForName="rbkfn-2" yourco:resourceBundleKeyForDescription="rbkfd-2" yourco:labeledEntityIdForName="leifn-2" yourco:labeledEntityIdForDescription="leifd-2"/>
+        <yourco:attributes>
+          <yourco:attribute yourco:id="3" yourco:name="Attr3" yourco:value="3"/>
+          <yourco:attribute yourco:id="4" yourco:name="Attr4" yourco:value="4"/>
+        </yourco:attributes>
+      </extensionElements>
+    <decision id="decision" name="Simple decision">
+        <decisionTable id="decisionTable" name="Simple decision table" isComplete="true" isConsistent="true">
+        <description>Decision table description</description>
+        <extensionElements>
+        <yourco:i18ln yourco:resourceBundleKeyForName="rbkfn-3" yourco:resourceBundleKeyForDescription="rbkfd-3" yourco:labeledEntityIdForName="leifn-3" yourco:labeledEntityIdForDescription="leifd-3"/>
+        <yourco:attributes>
+          <yourco:attribute yourco:id="5" yourco:name="Attr5" yourco:value="5"/>
+          <yourco:attribute yourco:id="6" yourco:name="Attr6" yourco:value="6"/>
+        </yourco:attributes>
+      </extensionElements>
+            <input id="input1" label="Input 1">
+                <inputExpression id="inputExpression1" typeRef="string">
+                    <text>inputVariable1</text>
+                </inputExpression>
+            </input>
+            <input id="input1" label="Input 2">
+                <inputExpression id="inputExpression1" typeRef="double">
+                    <text>inputVariable2</text>
+                </inputExpression>
+            </input>
+            <input id="input1" label="Input 3">
+                <inputExpression id="inputExpression1" typeRef="date">
+                    <text>inputVariable3</text>
+                </inputExpression>
+            </input>
+            <output id="output1" label="Output 1" name="outputVariable1" typeRef="string" />
+            <rule id="rule1">
+                <inputEntry id="inputEntry1">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry2">
+                    <text><![CDATA[<10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry3">
+                    <text><![CDATA[10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry1">
+                    <text><![CDATA[== 'result1']]></text>
+                </outputEntry>
+            </rule>
+            <rule id="rule2">
+                <inputEntry id="inputEntry4">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry5">
+                    <text><![CDATA[<10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry6">
+                    <text><![CDATA[10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry2">
+                    <text><![CDATA[== 'result2']]></text>
+                </outputEntry>
+            </rule>
+            <rule id="rule3">
+                <inputEntry id="inputEntry7">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry8">
+                    <text><![CDATA[<10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry9">
+                    <text><![CDATA[10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry3">
+                    <text><![CDATA[== 'result3']]></text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+</definitions>

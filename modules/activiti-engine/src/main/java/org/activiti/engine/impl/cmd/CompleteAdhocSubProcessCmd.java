@@ -23,6 +23,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
 /**
  * @author Tijs Rademakers
@@ -38,7 +39,8 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) {
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntity execution = executionEntityManager.findById(executionId);
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("No execution found for id '" + executionId + "'", ExecutionEntity.class);
     }
@@ -52,7 +54,12 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
       throw new ActivitiException("Ad-hoc sub process has running child executions that need to be completed first");
     }
     
-    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution);
+    ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(execution.getParent());
+    outgoingFlowExecution.setCurrentFlowElement(execution.getCurrentFlowElement());
+    
+    executionEntityManager.deleteExecutionAndRelatedData(execution, null, false);
+    
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution);
     
     return null;
   }

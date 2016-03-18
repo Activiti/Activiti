@@ -63,8 +63,8 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // The destroy scope operation will look for the parent execution and
     // destroy the whole scope, and leave the boundary event using this parent execution.
     //
-    // The take outgoing seq flows operation below (the non-interrupting
-    // else clause) on the other hand uses the child execution to leave, which keeps the scope alive.
+    // The take outgoing seq flows operation below (the non-interrupting else clause) on the other hand uses the 
+    // child execution to leave, which keeps the scope alive.
     //
     // Which is what we need.
 
@@ -99,9 +99,8 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // scope (which isn't its direct parent)
     //
     // Why? Because this execution does NOT have anything to do with
-    // the current parent execution (the one where the boundary event is
-    // on): when it is deleted or whatever, this does not impact this new execution at all,
-    // it is completely independent in that regard.
+    // the current parent execution (the one where the boundary event is on): when it is deleted or whatever, 
+    // this does not impact this new execution at all, it is completely independent in that regard.
 
     // Note: if the parent of the parent does not exists, this becomes a concurrent execution in the process instance!
     

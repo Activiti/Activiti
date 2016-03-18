@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
@@ -64,6 +65,7 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    
     StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
     if (startEvent.isInterrupting()) {  
       List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(executionEntity.getParentId());
@@ -82,7 +84,14 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
-    leave(executionEntity);
+    
+    executionEntity.setCurrentFlowElement((SubProcess) executionEntity.getCurrentFlowElement().getParentContainer());
+    executionEntity.setScope(true);
+    
+    ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(executionEntity);
+    outgoingFlowExecution.setCurrentFlowElement(startEvent);
+    
+    leave(outgoingFlowExecution);
   }
 
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {

@@ -130,14 +130,13 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
 
-    if (!processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      return;
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      final HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().activityId("compensationScriptTask");
+      assertEquals(1, query.count());
+      final HistoricActivityInstance compensationScriptTask = query.singleResult();
+      assertNotNull(compensationScriptTask);
+      assertNotNull(compensationScriptTask.getEndTime());
+      assertNotNull(compensationScriptTask.getDurationInMillis());
     }
-    final HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().activityId("compensationScriptTask");
-    assertEquals(1, query.count());
-    final HistoricActivityInstance compensationScriptTask = query.singleResult();
-    assertNotNull(compensationScriptTask);
-    assertNotNull(compensationScriptTask.getEndTime());
-    assertNotNull(compensationScriptTask.getDurationInMillis());
   }
 }

@@ -712,14 +712,16 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     // Complete task
     taskService.complete(task.getId());
 
-    HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
-    assertEquals("my task", historicTask.getName());
-    assertEquals("myFormKey", historicTask.getFormKey());
-    assertEquals("myAssignee", historicTask.getAssignee());
-    assertEquals("myOwner", historicTask.getOwner());
-    assertEquals("myCategory", historicTask.getCategory());
-    assertEquals(60, historicTask.getPriority());
-    assertNotNull(historicTask.getDueDate());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+      assertEquals("my task", historicTask.getName());
+      assertEquals("myFormKey", historicTask.getFormKey());
+      assertEquals("myAssignee", historicTask.getAssignee());
+      assertEquals("myOwner", historicTask.getOwner());
+      assertEquals("myCategory", historicTask.getCategory());
+      assertEquals(60, historicTask.getPriority());
+      assertNotNull(historicTask.getDueDate());
+    }
   }
 
   public void testSetAssignee() {

@@ -1,0 +1,56 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20151130" id="definition_8002" name="OrderCalculation" namespace="http://www.activiti.org/dmn">
+  <decision id="OrderCalculation" name="OrderCalculation">
+    <decisionTable id="decisionTable_8002" hitPolicy="FIRST">
+      <input label="Order Size">
+        <inputExpression id="inputExpression_3" typeRef="number">
+          <text>ordersize</text>
+        </inputExpression>
+      </input>
+      <output id="outputExpression_6" label="Customer Category" name="customercategory" typeRef="string"/>
+      <output id="outputExpression_8" label="Price per Item" name="priceperitem" typeRef="number"/>
+      <output id="outputExpression_10" label="Total Order Sum" name="totalordersum" typeRef="number"/>
+      <rule>
+        <inputEntry id="inputEntry_3_1">
+          <text>&lt; 1000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_1">
+          <text>"bronze"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_8_1">
+          <text>110</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_10_1">
+          <text>priceperitem * ordersize</text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_3_2">
+          <text>== 1000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_2">
+          <text>"silver"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_8_2">
+          <text>100</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_10_2">
+          <text>priceperitem * ordersize</text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_3_3">
+          <text>&gt; 1000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_6_3">
+          <text>"gold"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_8_3">
+          <text>90</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_10_3">
+          <text>priceperitem * ordersize</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
