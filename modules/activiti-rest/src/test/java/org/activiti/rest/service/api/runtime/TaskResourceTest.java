@@ -527,6 +527,53 @@ public class TaskResourceTest extends BaseSpringRestTestCase {
     }
   }
   
+  @Deployment
+  public void testReclaimTask() throws Exception {
+   
+    // Start process instance
+    runtimeService.startProcessInstanceByKey("reclaimTest");
+    
+    // Get task id
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
+    String taskId = ((ArrayNode) dataNode).get(0).get("id").asText();
+    assertNotNull(taskId);
+    
+    // Claim
+    assertEquals(0L, taskService.createTaskQuery().taskAssignee("kermit").count());
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "claim");
+    requestNode.put("assignee", "kermit");
+    
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_OK));
+    
+    assertEquals(1L, taskService.createTaskQuery().taskAssignee("kermit").count());
+    
+    // Unclaim
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "claim");
+    httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_OK));
+    assertEquals(0L, taskService.createTaskQuery().taskAssignee("kermit").count());
+    
+    // Claim again
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "claim");
+    requestNode.put("assignee", "kermit");
+    httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_OK));
+    assertEquals(1L, taskService.createTaskQuery().taskAssignee("kermit").count());
+  }
+  
   /**
    * Test delegating a single task and all exceptional cases related to delegation.
    * POST runtime/tasks/{taskId}
