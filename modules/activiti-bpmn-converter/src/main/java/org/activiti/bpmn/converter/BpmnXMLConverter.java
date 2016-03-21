@@ -557,7 +557,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     }
   }
 
-  private void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw) throws Exception {
 
     if (flowElement instanceof SubProcess) {
 

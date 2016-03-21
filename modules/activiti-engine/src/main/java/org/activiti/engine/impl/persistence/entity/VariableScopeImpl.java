@@ -114,16 +114,16 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
     } else {
 
-      // Fetch variables on this scope
-      List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
-      for (VariableInstanceEntity variable : variables) {
-        requestedVariables.put(variable.getName(), variable.getValue());
-      }
-
       // Go up if needed
       VariableScope parent = getParentVariableScope();
       if (parent != null) {
         requestedVariables.putAll(parent.getVariables(variableNamesToFetch, fetchAllVariables));
+      }
+
+      // Fetch variables on this scope
+      List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
+      for (VariableInstanceEntity variable : variables) {
+        requestedVariables.put(variable.getName(), variable.getValue());
       }
 
       return requestedVariables;
@@ -158,16 +158,16 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
     } else {
 
-      // Fetch variables on this scope
-      List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
-      for (VariableInstanceEntity variable : variables) {
-        requestedVariables.put(variable.getName(), variable);
-      }
-
       // Go up if needed
       VariableScope parent = getParentVariableScope();
       if (parent != null) {
         requestedVariables.putAll(parent.getVariableInstances(variableNamesToFetch, fetchAllVariables));
+      }
+
+      // Fetch variables on this scope
+      List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
+      for (VariableInstanceEntity variable : variables) {
+        requestedVariables.put(variable.getName(), variable);
       }
 
       return requestedVariables;

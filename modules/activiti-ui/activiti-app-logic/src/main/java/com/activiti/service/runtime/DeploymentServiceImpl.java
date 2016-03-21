@@ -221,7 +221,6 @@ public class DeploymentServiceImpl implements DeploymentService {
                 if (formMap != null) {
                 	for (Long formModelId : formMap.keySet()) {
                 		deploymentResult.addFormModelMapping(formModelId, formMap.get(formModelId));
-                		System.out.println("form mapping " + formModelId + " " + formMap.get(formModelId));
                 	}
                 }
                 
