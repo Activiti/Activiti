@@ -61,6 +61,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Date finishedBefore;
   protected Date finishedAfter;
   protected String processDefinitionKey;
+  protected String processDefinitionCategory;
+  protected String processDefinitionName;
+  protected Integer processDefinitionVersion;
   protected Set<String> processInstanceIds;
   protected String involvedUser;
   protected boolean includeProcessVariables;
@@ -137,6 +140,33 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       currentOrQueryObject.processDefinitionKeyIn = processDefinitionKeys;
     } else {
       this.processDefinitionKeyIn = processDefinitionKeys;
+    }
+    return this;
+  }
+
+  public HistoricProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionCategory = processDefinitionCategory;
+    } else {
+      this.processDefinitionCategory = processDefinitionCategory;
+    }
+    return this;
+  }
+
+  public HistoricProcessInstanceQuery processDefinitionName(String processDefinitionName) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionName = processDefinitionName;
+    } else {
+      this.processDefinitionName = processDefinitionName;
+    }
+    return this;
+  }
+
+  public HistoricProcessInstanceQuery processDefinitionVersion(Integer processDefinitionVersion) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionVersion = processDefinitionVersion;
+    } else {
+      this.processDefinitionVersion = processDefinitionVersion;
     }
     return this;
   }
@@ -622,6 +652,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   public String getProcessDefinitionIdLike() {
     return processDefinitionKey + ":%:%";
+  }
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
+  }
+  public String getProcessDefinitionCategory() {
+    return processDefinitionCategory;
+  }
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
   }
   public String getProcessInstanceId() {
     return processInstanceId;

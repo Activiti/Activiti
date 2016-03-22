@@ -391,7 +391,7 @@
       </choose> 
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
-      <if test="orQueryObject.processDefinitionId != null || orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionName != null || (orQueryObject.processDefinitionIds != null &amp;&amp; !orQueryObject.processDefinitionIds.isEmpty()) || (orQueryObject.processDefinitionKeys != null &amp;&amp; !orQueryObject.processDefinitionKeys.isEmpty())">
+      <if test="orQueryObject.processDefinitionId != null || orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionVersion != null || orQueryObject.processDefinitionCategory != null || orQueryObject.processDefinitionName != null || (orQueryObject.processDefinitionIds != null &amp;&amp; !orQueryObject.processDefinitionIds.isEmpty()) || (orQueryObject.processDefinitionKeys != null &amp;&amp; !orQueryObject.processDefinitionKeys.isEmpty())">
         inner join ${prefix}ACT_RE_PROCDEF P_OR${orIndex} on RES.PROC_DEF_ID_ = P_OR${orIndex}.ID_
       </if>
       <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
@@ -437,8 +437,14 @@
           #{item}
         </foreach>
       </if>
+      <if test="processDefinitionCategory != null">
+        and P.CATEGORY_ = #{processDefinitionCategory}
+      </if>
       <if test="processDefinitionName != null">
         and P.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processDefinitionVersion != null">
+        and P.VERSION_ = #{processDefinitionVersion}
       </if>
       <if test="executionId != null">
         and RES.ID_ = #{executionId}
@@ -600,8 +606,14 @@
               #{item}
             </foreach>
           </if>
+          <if test="orQueryObject.processDefinitionCategory != null">
+            or P_OR${orIndex}.CATEGORY_ = #{orQueryObject.processDefinitionCategory}
+          </if>
           <if test="orQueryObject.processDefinitionName != null">
             or P_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
+          </if>
+          <if test="orQueryObject.processDefinitionVersion != null">
+            or P_OR${orIndex}.VERSION_ = #{orQueryObject.processDefinitionVersion}
           </if>
           <if test="orQueryObject.executionId != null">
             or RES.ID_ = #{orQueryObject.executionId}

@@ -51,6 +51,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   private static final String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
   private static final String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
   private static final String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
+  private static final String PROCESS_DEFINITION_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
+  private static final String PROCESS_DEFINITION_CATEGORY_2 = "org.activiti.enginge.test.api.runtime.2Category";
   
   private org.activiti.engine.repository.Deployment deployment;
   private List<String> processInstanceIds;
@@ -314,6 +316,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     } catch (ActivitiException e) {
       // Exception is expected
     }
+  }
+
+  public void testQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).count());
+  }
+  
+  public void testOrQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).processDefinitionId("undefined").endOr().count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).processDefinitionId("undefined").endOr().count());
   }
 
   public void testQueryByProcessDefinitionName() {
