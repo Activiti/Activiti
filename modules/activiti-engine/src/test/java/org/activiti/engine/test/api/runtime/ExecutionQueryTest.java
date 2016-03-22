@@ -59,6 +59,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   private static String SEQUENTIAL_PROCESS_KEY = "oneTaskProcess";
   private static String CONCURRENT_PROCESS_NAME = "concurrentName";
   private static String SEQUENTIAL_PROCESS_NAME = "oneTaskProcessName";
+  private static String CONCURRENT_PROCESS_CATEGORY = "org.activiti.enginge.test.api.runtime.concurrent.Category";
+  private static String SEQUENTIAL_PROCESS_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
   
   private List<String> concurrentProcessInstanceIds;
   private List<String> sequentialProcessInstanceIds;
@@ -105,6 +107,19 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByInvalidProcessDefinitionKey() {
     ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionKey("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+
+  public void testQueryByProcessDefinitionCategory() {
+    // Concurrent process with 3 executions for each process instance
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionCategory(CONCURRENT_PROCESS_CATEGORY).list().size());
+    assertEquals(1, runtimeService.createExecutionQuery().processDefinitionCategory(SEQUENTIAL_PROCESS_CATEGORY).list().size());
+  }
+
+  public void testQueryByInvalidProcessDefinitionCategory() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionCategory("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());

@@ -32,6 +32,7 @@ public class HistoricProcessInstanceQueryProperty implements QueryProperty {
 
   public static final HistoricProcessInstanceQueryProperty PROCESS_INSTANCE_ID_ = new HistoricProcessInstanceQueryProperty("RES.PROC_INST_ID_");
   public static final HistoricProcessInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricProcessInstanceQueryProperty("RES.PROC_DEF_ID_");
+  public static final HistoricProcessInstanceQueryProperty PROCESS_DEFINITION_KEY = new HistoricProcessInstanceQueryProperty("DEF.KEY_");
   public static final HistoricProcessInstanceQueryProperty BUSINESS_KEY = new HistoricProcessInstanceQueryProperty("RES.BUSINESS_KEY_");
   public static final HistoricProcessInstanceQueryProperty START_TIME = new HistoricProcessInstanceQueryProperty("RES.START_TIME_");
   public static final HistoricProcessInstanceQueryProperty END_TIME = new HistoricProcessInstanceQueryProperty("RES.END_TIME_");
