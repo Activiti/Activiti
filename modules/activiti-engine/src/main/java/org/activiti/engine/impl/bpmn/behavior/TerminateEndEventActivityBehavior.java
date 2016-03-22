@@ -61,7 +61,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
     
     if (terminateAll) {
-    	ActivityExecution processInstanceExecution = findProcessInstanceExecution(execution);
+    	ActivityExecution processInstanceExecution = findRootProcessInstanceExecution((ExecutionEntity) execution);
     	terminateProcessInstanceExecution(execution, terminateEndEventActivity, processInstanceExecution);
     } else {
     	ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
@@ -84,6 +84,20 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   	}
   	return currentExecution;
   }
+  
+  
+  protected ActivityExecution findRootProcessInstanceExecution(ExecutionEntity execution) {
+    ExecutionEntity currentExecution = execution;
+    while (currentExecution.getParentId() != null || currentExecution.getSuperExecutionId() != null) {
+      ExecutionEntity parentExecution = currentExecution.getParent();
+      if (parentExecution != null) {
+        currentExecution = parentExecution;
+      } else if (currentExecution.getSuperExecutionId() != null) {
+        currentExecution = currentExecution.getSuperExecution();
+      }
+    }
+    return currentExecution;
+  }
 
   protected void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
     // send cancelled event
@@ -102,10 +116,10 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   
   protected void terminateProcessInstanceExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution processInstanceExecution) {
     sendCancelledEvent( execution, terminateEndEventActivity, processInstanceExecution);
-    deleteProcessInstance((ExecutionEntity) processInstanceExecution, "terminate end event (" + terminateEndEventActivity.getId() + ")");
+    deleteProcessInstance((ExecutionEntity) processInstanceExecution, execution, "terminate end event (" + terminateEndEventActivity.getId() + ")");
   }
   
-  protected void deleteProcessInstance(ExecutionEntity processInstanceExecution, String deleteReason) {
+  protected void deleteProcessInstance(ExecutionEntity processInstanceExecution, ActivityExecution execution, String deleteReason) {
   	
     List<ExecutionEntity> orderedExecutions = orderExecutionsRootToLeaf(processInstanceExecution);
     Collections.reverse(orderedExecutions);
@@ -119,6 +133,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     	executionToDelete.remove();
     }
     
+    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceExecution.getId(), deleteReason, execution.getActivity().getId());
   }
   
   protected List<ExecutionEntity> orderExecutionsRootToLeaf(ExecutionEntity execution) {
