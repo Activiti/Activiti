@@ -307,7 +307,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     deleteProcessInstanceCascade(execution, deleteReason, cascade);
   }
 
-  private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
+  protected void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
     for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
@@ -379,6 +379,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       return;
     }
     
+    // Call activities
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
@@ -401,7 +402,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     // TODO: what about delete reason?
     getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
-    
     processInstanceEntity.setDeleted(true);
   }
   
@@ -415,7 +415,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     List<? extends ExecutionEntity> childExecutions = collectChildren(executionEntity);
     for (int i = childExecutions.size() - 1; i>= 0; i--) {
       ExecutionEntity childExecutionEntity = childExecutions.get(i);
-      if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
+      if (!childExecutionEntity.isEnded()) {
         deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, cancel);
       }
     }
@@ -529,6 +529,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       eventSubscriptionEntityManager.delete(eventSubscription);
     }
+    
   }
 
   // OTHER METHODS

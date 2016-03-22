@@ -46,12 +46,18 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
     if (terminateAll) {
-      deleteExecutionEntities(executionEntityManager, executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId()));
+      terminateAllBehaviour(execution, commandContext, executionEntityManager);
     } else if (terminateMultiInstance) {
       terminateMultiInstanceRoot(execution, commandContext, executionEntityManager);
     } else {
       defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }
+  }
+
+  protected void terminateAllBehaviour(DelegateExecution execution, CommandContext commandContext, ExecutionEntityManager executionEntityManager) {
+    ExecutionEntity rootExecutionEntity = executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId());
+    deleteExecutionEntities(executionEntityManager, rootExecutionEntity);
+    commandContext.getHistoryManager().recordProcessInstanceEnd(rootExecutionEntity.getId(), "", execution.getCurrentActivityId());
   }
 
   protected void defaultTerminateEndEventBehaviour(DelegateExecution execution, CommandContext commandContext,
@@ -67,7 +73,8 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
 
-      deleteExecutionEntities(executionEntityManager, executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId()));
+      deleteExecutionEntities(executionEntityManager, scopeExecutionEntity);
+      commandContext.getHistoryManager().recordProcessInstanceEnd(scopeExecutionEntity.getId(), "", execution.getCurrentActivityId());
 
     } else if (scopeExecutionEntity.getCurrentFlowElement() != null 
         && scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) { // SubProcess
