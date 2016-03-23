@@ -38,7 +38,7 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
 	protected void initializeProcessEngine() {
 		if (cachedProcessEngine==null) {
 			ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-				.createProcessEngineConfigurationFromResource("org/activiti/standalone/jpa/activiti.cfg.xml");
+				.createProcessEngineConfigurationFromResource("org/activiti5/standalone/jpa/activiti.cfg.xml");
 
 			cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
 
