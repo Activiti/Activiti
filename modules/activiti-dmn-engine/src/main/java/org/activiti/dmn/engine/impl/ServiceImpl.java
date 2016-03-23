@@ -13,22 +13,24 @@
 package org.activiti.dmn.engine.impl;
 
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.domain.repository.DmnDecisionTableRepository;
-import org.activiti.dmn.engine.domain.repository.DmnDeploymentRepository;
+import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
 
 public abstract class ServiceImpl {
     
-    protected DmnEngineConfiguration engineConfig;
-    
-    public void setDmnEngineConfiguration(DmnEngineConfiguration engineConfig) {
-        this.engineConfig = engineConfig;
-    }
-    
-    protected DmnDeploymentRepository getDeploymentRepository() {
-        return engineConfig.getDmnRepositoryManager().getDeploymentRepository();
-    }
-    
-    protected DmnDecisionTableRepository getDecisionTableRepository() {
-        return engineConfig.getDmnRepositoryManager().getDecisionTableRepository();
-    }
+  protected DmnEngineConfiguration engineConfig;
+  protected CommandExecutor commandExecutor;
+  
+  public ServiceImpl() {}
+
+  public ServiceImpl(DmnEngineConfiguration engineConfig) {
+    this.engineConfig = engineConfig;
+  }
+  
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
 }

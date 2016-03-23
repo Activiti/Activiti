@@ -31,7 +31,7 @@ public class DecisionExecutionAuditContainer {
     protected String decisionKey;
     protected String decisionName;
     protected String hitPolicy;
-    protected Long dmnDeploymentId;
+    protected String dmnDeploymentId;
     protected Date startTime;
     protected Date endTime;
     protected Map<String, Object> inputVariables;
@@ -141,11 +141,11 @@ public class DecisionExecutionAuditContainer {
         return ruleExecutions;
     }
 
-    public Long getDmnDeploymentId() {
+    public String getDmnDeploymentId() {
         return dmnDeploymentId;
     }
 
-    public void setDmnDeploymentId(Long dmnDeploymentId) {
+    public void setDmnDeploymentId(String dmnDeploymentId) {
         this.dmnDeploymentId = dmnDeploymentId;
     }
 
