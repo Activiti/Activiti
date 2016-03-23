@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.util;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -30,12 +31,15 @@ public class Activiti5Util {
       return false;
     }
     
-    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
-    if (processDefinitionEntity == null) {
+    try {
+      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+      if (processDefinitionEntity == null) {
+        return false;
+      }
+      return isActiviti5ProcessDefinition(commandContext, processDefinitionEntity);
+    } catch (ActivitiObjectNotFoundException e) {
       return false;
     }
-    
-    return isActiviti5ProcessDefinition(commandContext, processDefinitionEntity);
   }
   
   public static boolean isActiviti5ProcessDefinition(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity) {

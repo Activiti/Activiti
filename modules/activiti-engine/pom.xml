@@ -837,6 +837,9 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>**/ProcessInstanceLogQueryTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
+                <exclude>**/HistoricProcessInstanceQueryVersionTest.java</exclude>
+                <exclude>**/NonCascadeDeleteTest.java</exclude>
+                <exclude>**/HistoricProcessInstanceQueryAndWithExceptionTest.java</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
             </configuration>
