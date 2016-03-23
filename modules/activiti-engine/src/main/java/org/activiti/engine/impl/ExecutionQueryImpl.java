@@ -40,7 +40,9 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected String processDefinitionKey;
+  protected String processDefinitionCategory;
   protected String processDefinitionName;
+  protected Integer processDefinitionVersion;
   protected String activityId;
   protected String executionId;
   protected String parentId;
@@ -107,6 +109,15 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
+  
+  @Override
+  public ExecutionQuery processDefinitionCategory(String processDefinitionCategory) {
+    if (processDefinitionCategory == null) {
+      throw new ActivitiIllegalArgumentException("Process definition category is null");
+    }
+    this.processDefinitionCategory = processDefinitionCategory;
+    return this;
+  }
 
   @Override
   public ExecutionQuery processDefinitionName(String processDefinitionName) {
@@ -114,6 +125,15 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       throw new ActivitiIllegalArgumentException("Process definition name is null");
     }
     this.processDefinitionName = processDefinitionName;
+    return this;
+  }
+  
+  @Override
+  public ExecutionQuery processDefinitionVersion(Integer processDefinitionVersion) {
+    if (processDefinitionVersion == null) {
+      throw new ActivitiIllegalArgumentException("Process definition version is null");
+    }
+    this.processDefinitionVersion = processDefinitionVersion;
     return this;
   }
 
@@ -368,9 +388,17 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+  
+  public String getProcessDefinitionCategory() {
+    return processDefinitionCategory;
+  }
 
   public String getProcessDefinitionName() {
     return processDefinitionName;
+  }
+  
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
   }
 
   public String getActivityId() {

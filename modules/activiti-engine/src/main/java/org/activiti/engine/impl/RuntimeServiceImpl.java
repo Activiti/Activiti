@@ -182,11 +182,11 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
   
   public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false));
+    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, true));
   }
 
   public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false, locale, withLocalizationFallback));
+    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, true, locale, withLocalizationFallback));
   }
 
   public Object getVariable(String executionId, String variableName) {

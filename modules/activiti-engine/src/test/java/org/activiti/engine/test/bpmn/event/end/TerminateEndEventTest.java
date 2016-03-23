@@ -27,6 +27,8 @@ import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -79,16 +81,18 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
-  
+
   @Deployment
   public void testProcessTerminateAll() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateTask").singleResult();
     taskService.complete(task.getId());
-
+    
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
 
   @Deployment
@@ -103,6 +107,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -118,6 +123,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -129,6 +135,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment(resources={
@@ -142,6 +149,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
 	@Deployment(resources = {
@@ -155,6 +163,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		taskService.complete(task.getId());
 
 		assertProcessEnded(pi.getId());
+		assertHistoricProcessInstanceDetails(pi);
 	}
 
 
@@ -171,6 +180,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId(), variables);
 
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
 
   @Deployment
@@ -183,6 +193,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId(), variables);
 
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -205,6 +216,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId(), variables);
 
     assertTrue(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count() == 0);
+    assertHistoricProcessInstanceDetails(pi);
   }
 
   @Deployment
@@ -219,12 +231,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   	taskService.complete(task.getId());
 
   	assertProcessEnded(pi.getId());
+  	assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
   public void testTerminateInSubProcessTerminateAll() throws Exception {
   	ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
   	assertProcessEnded(pi.getId());
+  	assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -270,6 +284,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -285,6 +300,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -298,12 +314,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
   public void testTerminateInSubProcessConcurrentTerminateAll() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -317,6 +335,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -341,6 +360,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     }
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -358,12 +378,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     }
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
   public void testTerminateInSubProcessConcurrentMultiInstanceTerminateAll() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
 
   @Deployment(resources = {"org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrentCallActivity.bpmn",
@@ -393,6 +415,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -412,12 +435,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     
     // last task remaining
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
   public void testTerminateInSubProcessSequentialConcurrentMultiInstanceTerminateAll() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment(resources={
@@ -435,6 +460,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment(resources={
@@ -452,6 +478,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
 	@Deployment(resources = {
@@ -460,6 +487,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	public void testTerminateInCallActivityMultiInstanceTerminateAll() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 		assertProcessEnded(pi.getId());
+		assertHistoricProcessInstanceDetails(pi);
 	}
 
   @Deployment(resources={
@@ -477,6 +505,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
   @Deployment
@@ -505,7 +534,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   	
   	taskService.complete(task.getId());
   	assertProcessEnded(processInstance.getId());
-  	
+  	assertHistoricProcessInstanceDetails(processInstance);
   }
   
   @Deployment
@@ -539,7 +568,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   	
   	taskService.complete(task.getId());
   	assertProcessEnded(processInstance.getId());
-  	
+  	assertHistoricProcessInstanceDetails(processInstance);
   	
   }
   
@@ -550,6 +579,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     public void testTerminateInCallActivityConcurrentTerminateAll() throws Exception {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
       assertProcessEnded(pi.getId());
+      assertHistoricProcessInstanceDetails(pi);
     }
   
   @Deployment(resources={
@@ -567,6 +597,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+    assertHistoricProcessInstanceDetails(pi);
   }
   
 	@Deployment(resources = {
@@ -575,6 +606,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	public void testTerminateInCallActivityConcurrentMulitInstanceTerminateALl() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 		assertProcessEnded(pi.getId());
+		assertHistoricProcessInstanceDetails(pi);
 	}
 	
 	@Deployment
@@ -620,6 +652,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		// Completing E leads to a terminate end event with termninate all set to true
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 	}
 	
 	@Deployment
@@ -702,6 +735,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list().get(0);
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 	}
 	
 	@Deployment
@@ -711,6 +745,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 	}
 	
 	@Deployment
@@ -719,6 +754,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list().get(0);
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 	}
 	
 	@Deployment
@@ -728,6 +764,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list().get(0);
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 	}
 	
 	@Deployment
@@ -771,6 +808,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		// Completing 'Before B' should lead to process instance termination
 		taskService.complete(tasks.get(8).getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 		
 		// Completing 'Before C' too
 		processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
@@ -778,6 +816,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
 		taskService.complete(tasks.get(9).getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 		
 		// Now the tricky one. 'Before A' leads to 'callActivity A', which calls subprocess02 which terminates
 		processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
@@ -788,6 +827,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		assertNotNull(task);
 		taskService.complete(task.getId());
 		assertProcessEnded(processInstance.getId());
+		assertHistoricProcessInstanceDetails(processInstance);
 		
 	}
 	
@@ -852,6 +892,29 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
      }
      
      assertProcessEnded(processInstanceId);
+     assertHistoricProcessInstanceDetails(processInstanceId);
+  }
+  
+  protected void assertHistoricProcessInstanceDetails(String processInstanceId) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstanceId).singleResult();
+      assertHistoricProcessInstance(historicProcessInstance);
+    }
+  }
+  
+  protected void assertHistoricProcessInstanceDetails(ProcessInstance pi) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(pi.getId()).singleResult();
+      assertHistoricProcessInstance(historicProcessInstance);
+    }
+  }
+
+  protected void assertHistoricProcessInstance(HistoricProcessInstance historicProcessInstance) {
+    assertNotNull(historicProcessInstance.getEndTime());
+    assertNotNull(historicProcessInstance.getDurationInMillis());
+    assertNotNull(historicProcessInstance.getEndActivityId());
   }
   
 }

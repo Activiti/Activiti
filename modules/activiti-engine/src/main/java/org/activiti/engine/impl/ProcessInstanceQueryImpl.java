@@ -49,7 +49,9 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected String processDefinitionId;
   protected Set<String> processDefinitionIds;
+  protected String processDefinitionCategory;
   protected String processDefinitionName;
+  protected Integer processDefinitionVersion;
   protected Set<String> processInstanceIds;
   protected String processDefinitionKey;
   protected Set<String> processDefinitionKeys;
@@ -178,6 +180,20 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return this;
   }
+  
+  @Override
+  public ProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory) {
+    if (processDefinitionCategory == null) {
+      throw new ActivitiIllegalArgumentException("Process definition category is null");
+    }
+    
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionCategory = processDefinitionCategory;
+    } else {
+      this.processDefinitionCategory = processDefinitionCategory;
+    }
+    return this;
+  }
 
   @Override
   public ProcessInstanceQuery processDefinitionName(String processDefinitionName) {
@@ -189,6 +205,20 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       this.currentOrQueryObject.processDefinitionName = processDefinitionName;
     } else {
       this.processDefinitionName = processDefinitionName;
+    }
+    return this;
+  }
+  
+  @Override
+  public ProcessInstanceQuery processDefinitionVersion(Integer processDefinitionVersion) {
+    if (processDefinitionVersion == null) {
+      throw new ActivitiIllegalArgumentException("Process definition version is null");
+    }
+    
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionVersion = processDefinitionVersion;
+    } else {
+      this.processDefinitionVersion = processDefinitionVersion;
     }
     return this;
   }
@@ -616,9 +646,17 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public Set<String> getProcessDefinitionIds() {
     return processDefinitionIds;
   }
+  
+  public String getProcessDefinitionCategory() {
+    return processDefinitionCategory;
+  }
 
   public String getProcessDefinitionName() {
     return processDefinitionName;
+  }
+  
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
   }
 
   public String getProcessDefinitionKey() {

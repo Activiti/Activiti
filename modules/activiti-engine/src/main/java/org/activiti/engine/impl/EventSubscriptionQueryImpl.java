@@ -44,11 +44,11 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
     super(commandExecutor);
   }
 
-  public EventSubscriptionQueryImpl eventSubscriptionId(String id) {
+  public EventSubscriptionQueryImpl eventSubscriptionId(String eventSubscriptionId) {
     if (eventSubscriptionId == null) {
       throw new ActivitiIllegalArgumentException("Provided event subscription id is null");
     }
-    this.eventSubscriptionId = id;
+    this.eventSubscriptionId = eventSubscriptionId;
     return this;
   }
 
