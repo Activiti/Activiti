@@ -53,6 +53,10 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     processInstanceId = processInstance.getId();
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
+    processDefinitionKey = processInstance.getProcessDefinitionKey();
+    processDefinitionName = processInstance.getProcessDefinitionName();
+    processDefinitionVersion = processInstance.getProcessDefinitionVersion();
+    deploymentId = processInstance.getDeploymentId();
     startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
@@ -75,6 +79,10 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     persistentState.put("endStateName", endActivityId);
     persistentState.put("superProcessInstanceId", superProcessInstanceId);
     persistentState.put("processDefinitionId", processDefinitionId);
+    persistentState.put("processDefinitionKey", processDefinitionKey);
+    persistentState.put("processDefinitionName", processDefinitionName);
+    persistentState.put("processDefinitionVersion", processDefinitionVersion);
+    persistentState.put("deploymentId", deploymentId);
     return persistentState;
   }
 

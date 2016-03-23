@@ -35,6 +35,15 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** Only select executions which have the given process definition id. **/
   ExecutionQuery processDefinitionId(String processDefinitionId);
+  
+  /** Only select executions which have the given process definition category. */
+  ExecutionQuery processDefinitionCategory(String processDefinitionCategory);
+
+  /**
+   * Only select executions which have the given process definition version.
+   * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
+  */
+  ExecutionQuery processDefinitionVersion(Integer processDefinitionVersion);
 
   /** Only select executions which have the given process definition name. */
   ExecutionQuery processDefinitionName(String processDefinitionName);
