@@ -87,7 +87,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class ActivitiDmnRule implements TestRule {
 
     protected String configurationResource = "activiti.dmn.cfg.xml";
-    protected Long deploymentId;
+    protected String deploymentId;
 
     protected DmnEngineConfiguration dmnEngineConfiguration;
     protected DmnEngine dmnEngine;

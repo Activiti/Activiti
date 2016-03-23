@@ -12,24 +12,30 @@
  */
 package org.activiti.dmn.engine.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.DmnRepositoryService;
-import org.activiti.dmn.engine.domain.entity.DmnDecisionTable;
-import org.activiti.dmn.engine.domain.entity.DmnDeployment;
-import org.activiti.dmn.engine.domain.entity.DmnDeploymentResource;
-import org.activiti.dmn.engine.domain.repository.DmnDecisionTableRepository;
-import org.activiti.dmn.engine.domain.repository.DmnDeploymentRepository;
-import org.activiti.dmn.engine.domain.repository.DmnDeploymentResourceRepository;
-import org.activiti.dmn.engine.domain.repository.DmnRepositoryManager;
+import org.activiti.dmn.engine.impl.cmd.DeleteDeploymentCmd;
+import org.activiti.dmn.engine.impl.cmd.DeployCmd;
+import org.activiti.dmn.engine.impl.cmd.GetDeploymentDecisionTableCmd;
+import org.activiti.dmn.engine.impl.cmd.GetDeploymentDmnResourceCmd;
+import org.activiti.dmn.engine.impl.cmd.GetDeploymentResourceCmd;
+import org.activiti.dmn.engine.impl.cmd.GetDeploymentResourceNamesCmd;
+import org.activiti.dmn.engine.impl.cmd.GetDmnDefinitionCmd;
+import org.activiti.dmn.engine.impl.cmd.SetDecisionTableCategoryCmd;
+import org.activiti.dmn.engine.impl.cmd.SetDeploymentCategoryCmd;
+import org.activiti.dmn.engine.impl.cmd.SetDeploymentTenantIdCmd;
+import org.activiti.dmn.engine.impl.interceptor.Command;
+import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.repository.DmnDeploymentBuilderImpl;
+import org.activiti.dmn.engine.repository.DecisionTable;
+import org.activiti.dmn.engine.repository.DecisionTableQuery;
+import org.activiti.dmn.engine.repository.DmnDeployment;
 import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
+import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
+import org.activiti.dmn.engine.repository.NativeDecisionTableQuery;
+import org.activiti.dmn.engine.repository.NativeDmnDeploymentQuery;
 import org.activiti.dmn.model.DmnDefinition;
 
 /**
@@ -38,129 +44,67 @@ import org.activiti.dmn.model.DmnDefinition;
 public class DmnRepositoryServiceImpl extends ServiceImpl implements DmnRepositoryService {
 
     public DmnDeploymentBuilder createDeployment() {
-        return new DmnDeploymentBuilderImpl(this);
-    }
-
-    public DmnDeployment getDeployment(Long deploymentId) {
-        return getDeploymentRepository().getObjectById(deploymentId);
+      return commandExecutor.execute(new Command<DmnDeploymentBuilder>() {
+        @Override
+        public DmnDeploymentBuilder execute(CommandContext commandContext) {
+          return new DmnDeploymentBuilderImpl();
+        }
+      });
     }
     
     public DmnDeployment deploy(DmnDeploymentBuilderImpl deploymentBuilder) {
-        DmnDeployment deployment = deploymentBuilder.getDeployment();
-        deployment.setDeployTime(new Date());
-        getDeploymentRepository().saveObject(deployment);
-
-        // Deployment settings
-        Map<String, Object> deploymentSettings = new HashMap<String, Object>();
-        deploymentSettings.put(DeploymentSettings.IS_DMN_XSD_VALIDATION_ENABLED, deploymentBuilder.isDmnXsdValidationEnabled());
-
-        // Actually deploy
-        engineConfig.getDmnDeployer().deploy(deployment, deploymentBuilder.getResourceMap(), deploymentSettings);
-
-        return deployment;
-    }
-
-    public void deleteDeployment(Long deploymentId) {
-        DmnRepositoryManager repositoryManager = engineConfig.getDmnRepositoryManager();
-        DmnDeploymentRepository deploymentRepo = repositoryManager.getDeploymentRepository();
-        DmnDeploymentResourceRepository deploymentResourceRepo = repositoryManager.getDeploymentResourceRepository();
-        DmnDecisionTableRepository decisionTableRepo = repositoryManager.getDecisionTableRepository();
-
-        DmnDeployment deployment = deploymentRepo.getObjectById(deploymentId);
-        if (deployment == null) {
-            throw new ActivitiDmnObjectNotFoundException("Deployment not found with id " + deploymentId);
-        }
-
-        List<DmnDeploymentResource> resources = deploymentResourceRepo.findResourcesByDeploymentId(deploymentId);
-        if (resources != null && resources.isEmpty() == false) {
-            for (DmnDeploymentResource resource : resources) {
-                deploymentResourceRepo.removeObject(resource);
-            }
-        }
-
-        List<DmnDecisionTable> decisions = decisionTableRepo.findDecisionTablesByDeploymentId(deploymentId);
-        if (decisions != null && decisions.isEmpty() == false) {
-            for (DmnDecisionTable decision : decisions) {
-                decisionTableRepo.removeObject(decision);
-            }
-        }
-
-        deploymentRepo.removeObject(deployment);
-    }
-
-
-    public List<DmnDecisionTable> getDecisionTablesByDeploymentId(long deploymentId) {
-        DmnRepositoryManager repositoryManager = engineConfig.getDmnRepositoryManager();
-        DmnDecisionTableRepository dmnDecisionTableRepository = repositoryManager.getDecisionTableRepository();
-
-        return dmnDecisionTableRepository.findDecisionTablesByDeploymentId(deploymentId);
-    }
-
-
-    public void setDeploymentCategory(Long deploymentId, String category) {
-
-    }
-
-    public List<String> getDeploymentResourceNames(Long deploymentId) {
-        return null;
-    }
-
-    public InputStream getResourceAsStream(Long deploymentId, String resourceName) {
-        DmnRepositoryManager repositoryManager = engineConfig.getDmnRepositoryManager();
-        DmnDeploymentResourceRepository dmnDeploymentResourceRepository = repositoryManager.getDeploymentResourceRepository();
-        DmnDeploymentResource deploymentResource = dmnDeploymentResourceRepository.findResourcesByDeploymentIdAndResourceName(deploymentId, resourceName);
-
-        return new ByteArrayInputStream(deploymentResource.getResourceBytes());
-    }
-
-    public void changeDeploymentTenantId(Long deploymentId, String newTenantId) {
-
-    }
-
-    public InputStream getDecisionModel(Long decisionDefinitionId) {
-        return null;
-    }
-
-    public DmnDecisionTable getDecisionDefinition(Long decisionDefinitionId) {
-        return null;
-    }
-
-    public DmnDefinition getDmnModel(Long decisionDefinitionId) {
-        return null;
-    }
-
-    @Override
-    public DmnDecisionTable findLatestDecisionTableByKeyAndTenantId(String decisionTableKey, String tenantIdForUser) {
-      return getDecisionTableRepository().findLatestDecisionTableByKeyAndTenantId(decisionTableKey, tenantIdForUser);
-    }
-
-    @Override
-    public List<DmnDecisionTable> getDecisionTablesByTenantId(String tenantId) {
-        return getDecisionTableRepository().findDecisionTablesByTenantId(tenantId);
-    }
-
-    @Override
-    public List<DmnDecisionTable> getDecisionTables() {
-        return getDecisionTableRepository().findAll();
-    }
-
-    @Override
-    public DmnDecisionTable getDecisionTable(Long decisionTableId) {
-        return getDecisionTableRepository().getObjectById(decisionTableId);
+      return commandExecutor.execute(new DeployCmd<DmnDeployment>(deploymentBuilder));
     }
     
-    @Override
-    public List<DmnDecisionTable> findDecisionTables(String nameLike, String keyLike, String tenantIdLike, Long deploymentId, String sortBy, String order, Integer start, Integer size) {
-        return getDecisionTableRepository().findDecisionTables(nameLike, keyLike, tenantIdLike, deploymentId, sortBy, order, start, size);
+    public void deleteDeployment(String deploymentId) {
+      commandExecutor.execute(new DeleteDeploymentCmd(deploymentId));
     }
     
-    @Override
-    public Long countDecisionTables(String nameLike, String keyLike, String tenantIdLike, Long deploymentId) {
-        return getDecisionTableRepository().countDecisionTables(nameLike, keyLike, tenantIdLike, deploymentId);
+    public DecisionTableQuery createDecisionTableQuery() {
+      return new DecisionTableQueryImpl(commandExecutor);
+    }
+
+    public NativeDecisionTableQuery createNativeDecisionTableQuery() {
+      return new NativeDecisionTableQueryImpl(commandExecutor);
     }
     
-    @Override
-    public DmnDecisionTable findDecisionTableByDeploymentAndKeyAndTenantId(Long deploymentId, String decisionTableKey, String tenantId) {
-        return getDecisionTableRepository().findDecisionTableByDeploymentAndKeyAndTenantId(deploymentId, decisionTableKey, tenantId);
+    public List<String> getDeploymentResourceNames(String deploymentId) {
+      return commandExecutor.execute(new GetDeploymentResourceNamesCmd(deploymentId));
+    }
+
+    public InputStream getResourceAsStream(String deploymentId, String resourceName) {
+      return commandExecutor.execute(new GetDeploymentResourceCmd(deploymentId, resourceName));
+    }
+
+    public void setDeploymentCategory(String deploymentId, String category) {
+      commandExecutor.execute(new SetDeploymentCategoryCmd(deploymentId, category));
+    }
+    
+    public void setDeploymentTenantId(String deploymentId, String newTenantId) {
+      commandExecutor.execute(new SetDeploymentTenantIdCmd(deploymentId, newTenantId));
+    }
+
+    public DmnDeploymentQuery createDeploymentQuery() {
+      return new DmnDeploymentQueryImpl(commandExecutor);
+    }
+
+    public NativeDmnDeploymentQuery createNativeDeploymentQuery() {
+      return new NativeDmnDeploymentQueryImpl(commandExecutor);
+    }
+    
+    public DecisionTable getDecisionTable(String decisionTableId) {
+      return commandExecutor.execute(new GetDeploymentDecisionTableCmd(decisionTableId));
+    }
+    
+    public DmnDefinition getDmnDefinition(String decisionTableId) {
+      return commandExecutor.execute(new GetDmnDefinitionCmd(decisionTableId));
+    }
+    
+    public InputStream getDmnResource(String decisionTableId) {
+      return commandExecutor.execute(new GetDeploymentDmnResourceCmd(decisionTableId));
+    }
+    
+    public void setDecisionTableCategory(String decisionTableId, String category) {
+      commandExecutor.execute(new SetDecisionTableCategoryCmd(decisionTableId, category));
     }
 }

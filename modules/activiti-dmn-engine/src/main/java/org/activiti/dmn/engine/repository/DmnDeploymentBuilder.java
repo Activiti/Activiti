@@ -14,7 +14,6 @@ package org.activiti.dmn.engine.repository;
 
 import java.io.InputStream;
 
-import org.activiti.dmn.engine.domain.entity.DmnDeployment;
 import org.activiti.dmn.model.DmnDefinition;
 
 /**

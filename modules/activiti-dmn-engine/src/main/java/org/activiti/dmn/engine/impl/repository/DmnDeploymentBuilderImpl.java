@@ -15,13 +15,15 @@ package org.activiti.dmn.engine.impl.repository;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.activiti.dmn.engine.ActivitiDmnException;
-import org.activiti.dmn.engine.domain.entity.DmnDeployment;
-import org.activiti.dmn.engine.domain.entity.DmnDeploymentResource;
+import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.impl.DmnRepositoryServiceImpl;
+import org.activiti.dmn.engine.impl.context.Context;
+import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
+import org.activiti.dmn.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.dmn.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.dmn.engine.repository.DmnDeployment;
 import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.xml.converter.DmnXMLConverter;
@@ -32,112 +34,117 @@ import org.apache.commons.io.IOUtils;
  */
 public class DmnDeploymentBuilderImpl implements DmnDeploymentBuilder, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected static final String DEFAULT_ENCODING = "UTF-8";
+  private static final long serialVersionUID = 1L;
+  protected static final String DEFAULT_ENCODING = "UTF-8";
 
-    protected transient DmnRepositoryServiceImpl repositoryService;
-    protected DmnDeployment deployment = new DmnDeployment();
-    protected Map<String, DmnDeploymentResource> resourceMap = new HashMap<String, DmnDeploymentResource>();
-    protected boolean isDmn20XsdValidationEnabled = true;
+  protected transient DmnRepositoryServiceImpl repositoryService;
+  protected transient ResourceEntityManager resourceEntityManager;
+  
+  protected DmnDeploymentEntity deployment;
+  protected boolean isDmn20XsdValidationEnabled = true;
+  protected boolean isDuplicateFilterEnabled;
 
-    public DmnDeploymentBuilderImpl(DmnRepositoryServiceImpl repositoryService) {
-        this.repositoryService = repositoryService;
+  public DmnDeploymentBuilderImpl() {
+    DmnEngineConfiguration dmnEngineConfiguration = Context.getDmnEngineConfiguration();
+    this.repositoryService = dmnEngineConfiguration.getDmnRepositoryService();
+    this.deployment = dmnEngineConfiguration.getDeploymentEntityManager().create();
+    this.resourceEntityManager = dmnEngineConfiguration.getResourceEntityManager();
+  }
+
+  public DmnDeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
+    if (inputStream == null) {
+      throw new ActivitiDmnException("inputStream for resource '" + resourceName + "' is null");
     }
 
-    public DmnDeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
-        if (inputStream == null) {
-            throw new ActivitiDmnException("inputStream for resource '" + resourceName + "' is null");
-        }
+    byte[] bytes = null;
+    try {
+      bytes = IOUtils.toByteArray(inputStream);
+    } catch (Exception e) {
+      throw new ActivitiDmnException("could not get byte array from resource '" + resourceName + "'");
+    }
+    
+    if (bytes == null) {
+      throw new ActivitiDmnException("byte array for resource '" + resourceName + "' is null");
+    }
+    
+    ResourceEntity resource = resourceEntityManager.create();
+    resource.setName(resourceName);
+    resource.setBytes(bytes);
+    deployment.addResource(resource);
+    return this;
+  }
 
-        try {
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            DmnDeploymentResource resource = new DmnDeploymentResource();
-            resource.setName(resourceName);
-            resource.setResourceBytes(bytes);
-            resourceMap.put(resourceName, resource);
-            return this;
+  public DmnDeploymentBuilder addClasspathResource(String resource) {
+    InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(resource);
+    if (inputStream == null) {
+      throw new ActivitiDmnException("resource '" + resource + "' not found");
+    }
+    return addInputStream(resource, inputStream);
+  }
 
-        } catch (Exception e) {
-            throw new ActivitiDmnException("Resource '" + resourceName + "' can't be created", e);
-        }
+  public DmnDeploymentBuilder addString(String resourceName, String text) {
+    if (text == null) {
+      throw new ActivitiDmnException("text is null");
     }
 
-    public DmnDeploymentBuilder addClasspathResource(String resource) {
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(resource);
-        if (inputStream == null) {
-            throw new ActivitiDmnException("resource '" + resource + "' not found");
-        }
-        return addInputStream(resource, inputStream);
+    ResourceEntity resource = resourceEntityManager.create();
+    resource.setName(resourceName);
+    try {
+      resource.setBytes(text.getBytes(DEFAULT_ENCODING));
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiDmnException("Unable to get process bytes.", e);
     }
+    deployment.addResource(resource);
+    return this;
+  }
 
-    public DmnDeploymentBuilder addString(String resourceName, String text) {
-        if (text == null) {
-            throw new ActivitiDmnException("text is null");
-        }
-
-        DmnDeploymentResource resource = new DmnDeploymentResource();
-        resource.setName(resourceName);
-
-        try {
-            resource.setResourceBytes(text.getBytes(DEFAULT_ENCODING));
-        } catch (UnsupportedEncodingException e) {
-            throw new ActivitiDmnException("Unable to get decision bytes.", e);
-        }
-
-        resourceMap.put(resourceName, resource);
-
-        return this;
+  public DmnDeploymentBuilder addDmnModel(String resourceName, DmnDefinition dmnDefinition) {
+    DmnXMLConverter dmnXMLConverter = new DmnXMLConverter();
+    try {
+      String dmn20Xml = new String(dmnXMLConverter.convertToXML(dmnDefinition), "UTF-8");
+      addString(resourceName, dmn20Xml);
+    } catch (UnsupportedEncodingException e) {
+        throw new ActivitiDmnException("Error while transforming DMN model to xml: not UTF-8 encoded", e);
     }
+    return this;
+  }
 
-    public DmnDeploymentBuilder addDmnModel(String resourceName, DmnDefinition dmnDefinition) {
-        DmnXMLConverter dmnXMLConverter = new DmnXMLConverter();
-        try {
-            String dmn20Xml = new String(dmnXMLConverter.convertToXML(dmnDefinition), "UTF-8");
-            addString(resourceName, dmn20Xml);
-        } catch (UnsupportedEncodingException e) {
-            throw new ActivitiDmnException("Error while transforming DMN model to xml: not UTF-8 encoded", e);
-        }
-        return this;
-    }
+  public DmnDeploymentBuilder name(String name) {
+      deployment.setName(name);
+      return this;
+  }
 
-    public DmnDeploymentBuilder name(String name) {
-        deployment.setName(name);
-        return this;
-    }
+  public DmnDeploymentBuilder category(String category) {
+      deployment.setCategory(category);
+      return this;
+  }
 
-    public DmnDeploymentBuilder category(String category) {
-        deployment.setCategory(category);
-        return this;
-    }
+  public DmnDeploymentBuilder disableSchemaValidation() {
+      this.isDmn20XsdValidationEnabled = false;
+      return this;
+  }
 
-    public DmnDeploymentBuilder disableSchemaValidation() {
-        this.isDmn20XsdValidationEnabled = false;
-        return this;
-    }
+  public DmnDeploymentBuilder tenantId(String tenantId) {
+      deployment.setTenantId(tenantId);
+      return this;
+  }
 
-    public DmnDeploymentBuilder tenantId(String tenantId) {
-        deployment.setTenantId(tenantId);
-        return this;
-    }
+  public DmnDeployment deploy() {
+      return repositoryService.deploy(this);
+  }
 
-    public DmnDeployment deploy() {
-        deployment.setNew(true);
-        return repositoryService.deploy(this);
-    }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  public DmnDeploymentEntity getDeployment() {
+      return deployment;
+  }
 
-    public DmnDeployment getDeployment() {
-        return deployment;
-    }
+  public boolean isDmnXsdValidationEnabled() {
+      return isDmn20XsdValidationEnabled;
+  }
 
-    public Map<String, DmnDeploymentResource> getResourceMap() {
-        return resourceMap;
-    }
-
-    public boolean isDmnXsdValidationEnabled() {
-        return isDmn20XsdValidationEnabled;
-    }
-
+  public boolean isDuplicateFilterEnabled() {
+    return isDuplicateFilterEnabled;
+  }
 }
