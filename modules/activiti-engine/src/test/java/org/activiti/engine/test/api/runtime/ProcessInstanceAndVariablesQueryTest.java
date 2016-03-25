@@ -150,4 +150,14 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
         .listPage(4, 5);
     assertEquals(0, instanceList.size());
   }
+
+  public void testOrProcessVariablesLikeIgnoreCase() {
+      List<ProcessInstance> instanceList = runtimeService
+          .createProcessInstanceQuery().or()
+          .variableValueLikeIgnoreCase("test", "TES%")
+          .variableValueLikeIgnoreCase("test", "%XYZ").endOr()
+          .list();
+      assertEquals(4, instanceList.size());
+  }
+
 }
