@@ -155,6 +155,11 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, executions.size());
   }
 
+  public void testQueryOnlyScopeExecutions() {
+	    List<Execution> executions = runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).onlyScopeExecutions().list();
+	    assertEquals(1, executions.size());
+	  }
+  
   public void testQueryByInvalidExecutionId() {
     ExecutionQuery query = runtimeService.createExecutionQuery().executionId("invalid");
     assertNull(query.singleResult());

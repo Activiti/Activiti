@@ -71,6 +71,11 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
   ExecutionQuery onlyChildExecutions();
 
   /**
+   * Only selects executions that have a scope of true, ie process & subprocess executions.
+   */
+  ExecutionQuery onlyScopeExecutions();
+  
+  /**
    * Only selects executions that have no parent id set, ie process instance executions
    */
   ExecutionQuery onlyProcessInstanceExecutions();
