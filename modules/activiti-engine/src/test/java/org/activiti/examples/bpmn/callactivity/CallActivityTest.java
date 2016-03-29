@@ -45,4 +45,21 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     Task prepareAndShipTask = taskQuery.singleResult();
     assertEquals("Prepare and Ship", prepareAndShipTask.getName());
   }
+
+  @Deployment(resources = { "org/activiti/examples/bpmn/callactivity/mainProcess.bpmn20.xml", "org/activiti/examples/bpmn/callactivity/childProcess.bpmn20.xml" })
+  public void testCallActivityWithModeledDataObjectsInSubProcess() {
+    // After the process has started, the 'verify credit history' task
+    // should be active
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("mainProcess");
+    TaskQuery taskQuery = taskService.createTaskQuery();
+    Task verifyCreditTask = taskQuery.singleResult();
+    assertEquals("User Task 1", verifyCreditTask.getName());
+
+    // Verify with Query API
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertNotNull(subProcessInstance);
+    assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
+
+    assertEquals("Batman", runtimeService.getVariable(subProcessInstance.getId(), "Name"));
+  }
 }
