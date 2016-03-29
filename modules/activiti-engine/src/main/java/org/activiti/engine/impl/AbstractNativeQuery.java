@@ -127,11 +127,9 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implem
 
       int firstRow = firstResult + 1;
       parameterMap.put("firstRow", firstRow);
-      int lastRow = 0;
-      if (maxResults == Integer.MAX_VALUE) {
-        lastRow = maxResults;
-      }
-      lastRow = firstResult + maxResults + 1;
+      int lastRow = firstResult + maxResults + 1;
+      // catch overflow of lastRow value
+      lastRow = lastRow > 0 ? lastRow : Integer.MAX_VALUE;
       parameterMap.put("lastRow", lastRow);
       return executeList(commandContext, parameterMap, firstResult, maxResults);
     } else if (resultType == ResultType.SINGLE_RESULT) {
