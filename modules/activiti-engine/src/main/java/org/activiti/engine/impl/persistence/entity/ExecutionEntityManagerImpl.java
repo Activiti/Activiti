@@ -243,24 +243,22 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // create the new child execution
     ExecutionEntity childExecution = executionDataManager.create();
 
-    // Inherit tenant id (if any)
+    // Inherit parent attributes.
     if (parentExecutionEntity.getTenantId() != null) {
       childExecution.setTenantId(parentExecutionEntity.getTenantId());
     }
+    childExecution.setParent(parentExecutionEntity);
+    childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
+    childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
+        ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
+    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
+    childExecution.setScope(false);
 
     // Insert the child execution
     insert(childExecution, false);
 
     // manage the bidirectional parent-child relation
     parentExecutionEntity.addChildExecution(childExecution);
-    childExecution.setParent(parentExecutionEntity);
-
-    // initialize the new execution
-    childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
-    childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
-        ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
-    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
-    childExecution.setScope(false);
 
     if (logger.isDebugEnabled()) {
       logger.debug("Child execution {} created with parent {}", childExecution, parentExecutionEntity.getId());
