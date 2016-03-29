@@ -130,10 +130,11 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
       int firstRow = firstResult + 1;
       parameterMap.put("firstRow", firstRow);
       int lastRow = 0;
-      if(maxResults == Integer.MAX_VALUE) {
+      if (maxResults == Integer.MAX_VALUE) {
         lastRow = maxResults;
+      } else {
+        lastRow = firstResult + maxResults + 1;
       }
-      lastRow = firstResult + maxResults + 1;
       parameterMap.put("lastRow", lastRow);
       return executeList(commandContext, parameterMap, firstResult, maxResults);
     } else if (resultType == ResultType.SINGLE_RESULT) {
