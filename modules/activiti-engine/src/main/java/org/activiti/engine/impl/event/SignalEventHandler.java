@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.ProcessInstanceUtil;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -58,7 +58,8 @@ public class SignalEventHandler extends AbstractEventHandler {
         variables = (Map<String, Object>) payload;
       }
 
-      ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, null, null, variables);
+      ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
+      processInstanceHelper.createAndStartProcessInstance(processDefinition, null, null, variables);
     } else {
       throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
     }
