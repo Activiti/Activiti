@@ -540,6 +540,9 @@
       <if test="onlyChildExecutions">
       	and RES.PARENT_ID_ is not null
       </if>
+      <if test="onlyScopeExecutions">
+      	and RES.IS_SCOPE_ = 1
+      </if>
       <if test="onlyProcessInstanceExecutions">
         and RES.PARENT_ID_ is null
       </if>

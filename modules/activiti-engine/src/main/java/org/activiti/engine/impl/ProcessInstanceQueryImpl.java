@@ -82,6 +82,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String activityId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
   protected boolean onlyChildExecutions;
+  protected boolean onlyScopeExecutions;
   protected boolean onlyProcessInstanceExecutions;
 
   public ProcessInstanceQueryImpl() {

@@ -47,6 +47,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String executionId;
   protected String parentId;
   protected boolean onlyChildExecutions;
+  protected boolean onlyScopeExecutions;
   protected boolean onlyProcessInstanceExecutions;
   protected String processInstanceId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
@@ -204,7 +205,13 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return this;
   }
 
-  public ExecutionQuery onlyProcessInstanceExecutions() {
+  @Override
+  public ExecutionQuery onlyScopeExecutions() {
+	this.onlyScopeExecutions = true;
+	return this;
+  }
+
+public ExecutionQuery onlyProcessInstanceExecutions() {
     this.onlyProcessInstanceExecutions = true;
     return this;
   }
@@ -481,6 +488,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return onlyChildExecutions;
   }
 
+  public boolean isOnlyScopeExecutions() {
+	  return onlyScopeExecutions;
+  }
+  
   public boolean isOnlyProcessInstanceExecutions() {
     return onlyProcessInstanceExecutions;
   }
