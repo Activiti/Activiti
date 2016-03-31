@@ -513,6 +513,9 @@
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="rootProcessInstanceId != null">
+        and RES.ROOT_PROC_INST_ID_ = #{rootProcessInstanceId}
+      </if>
       <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
         and RES.PROC_INST_ID_ in
         <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
