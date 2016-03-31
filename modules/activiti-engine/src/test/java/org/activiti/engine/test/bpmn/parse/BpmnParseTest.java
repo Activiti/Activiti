@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -20,10 +22,16 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
+import org.apache.commons.io.IOUtils;
 
 /**
  * 
@@ -39,6 +47,32 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     } catch (XMLException e) {
       // expected exception
     }
+  }
+
+    /**
+     * Testing that sequence flows get registered correctly by the
+     * {@link org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler}
+     * when parsing a bpmn
+     */
+  public void testSequenceFlowMap() throws IOException {
+    processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
+      @Override
+      public Object execute(final CommandContext commandContext) {
+        final InputStream bpmn = ReflectUtil.getResourceAsStream("org/activiti/engine/test/bpmn/parse/testSequenceFlowMap.bpmn20.xml");
+        final BpmnParse bpmnParse;
+        try {
+          bpmnParse = processEngineConfiguration.getBpmnParser().createParse().sourceInputStream(
+                  IOUtils.toBufferedInputStream(bpmn));
+          bpmnParse.setValidateProcess(false);
+          bpmnParse.setDeployment(new DeploymentEntityImpl());
+          bpmnParse.execute();
+          assertEquals(2, bpmnParse.getSequenceFlows().size());
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+        return null;
+      }
+    });
   }
 
   public void testParseWithBpmnNamespacePrefix() {
