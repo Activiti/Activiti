@@ -534,6 +534,9 @@
       <if test="onlyChildExecutions">
       	and RES.PARENT_ID_ is not null
       </if>
+      <if test="onlySubProcessExecutions">
+        and ((RES.PARENT_ID_ is not null or RES.SUPER_EXEC_ is not null) and RES.IS_SCOPE_ = #{onlySubProcessExecutions,typeHandler=org.apache.ibatis.type.BooleanTypeHandler})
+      </if>
       <if test="onlyProcessInstanceExecutions">
         and RES.PARENT_ID_ is null
       </if>

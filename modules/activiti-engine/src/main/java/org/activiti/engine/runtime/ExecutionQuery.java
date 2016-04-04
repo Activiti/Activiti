@@ -71,6 +71,11 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
   ExecutionQuery onlyChildExecutions();
 
   /**
+   * Only selects executions that are a subprocess.
+   */
+  ExecutionQuery onlySubProcessExecutions();
+
+  /**
    * Only selects executions that have no parent id set, ie process instance executions
    */
   ExecutionQuery onlyProcessInstanceExecutions();
