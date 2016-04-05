@@ -285,6 +285,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.BooleanType;
 import org.activiti.engine.impl.variable.ByteArrayType;
@@ -480,6 +481,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
+
+  // HELPERS //////////////////////////////////////////////////////////////////
+  protected ProcessInstanceHelper processInstanceHelper;
   
   // ASYNC EXECUTOR ///////////////////////////////////////////////////////////
   
@@ -843,7 +847,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (usingRelationalDatabase) {
       initDataSource();
     }
-    
+
+    initHelpers();
     initVariableTypes();
     initBeans();
     initFormEngines();
@@ -1928,6 +1933,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  public void initHelpers() {
+	if(processInstanceHelper == null) {
+		processInstanceHelper = new ProcessInstanceHelper();
+	}
+  }
+
   public void initVariableTypes() {
     if (variableTypes == null) {
       variableTypes = new DefaultVariableTypes();
@@ -2529,6 +2540,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setJobHandlers(Map<String, JobHandler> jobHandlers) {
     this.jobHandlers = jobHandlers;
+    return this;
+  }
+
+  public ProcessInstanceHelper getProcessInstanceHelper() {
+	return processInstanceHelper;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessInstanceHelper(ProcessInstanceHelper processInstanceHelper) {
+    this.processInstanceHelper = processInstanceHelper;
     return this;
   }
 

@@ -27,7 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
-import org.activiti.engine.impl.util.ProcessInstanceUtil;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -44,6 +44,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   protected String businessKey;
   protected String tenantId;
   protected String processInstanceName;
+  protected ProcessInstanceHelper processInstanceHelper;
 
   public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
     this.processDefinitionKey = processDefinitionKey;
@@ -93,13 +94,14 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
     }
 
+    processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
     ProcessInstance processInstance = createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
 
     return processInstance;
   }
 
   protected ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, String businessKey, String processInstanceName, Map<String,Object> variables) {
-    return ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
+    return processInstanceHelper.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
   }
   
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
