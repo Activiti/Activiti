@@ -34,25 +34,25 @@ public class BoundaryEventConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
 
-    BoundaryEvent errorElement = (BoundaryEvent) model.getMainProcess().getFlowElement("errorEvent");
+    BoundaryEvent errorElement = (BoundaryEvent) model.getMainProcess().getFlowElement("errorEvent", true);
     ErrorEventDefinition errorEvent = (ErrorEventDefinition) extractEventDefinition(errorElement);
     assertTrue(errorElement.isCancelActivity()); // always true
     assertEquals("errorRef", errorEvent.getErrorCode());
     assertEquals("sid-F21E9F4D-EA19-44DF-B1D3-14663A809CAE", errorElement.getAttachedToRefId());
 
-    BoundaryEvent signalElement = (BoundaryEvent) model.getMainProcess().getFlowElement("signalEvent");
+    BoundaryEvent signalElement = (BoundaryEvent) model.getMainProcess().getFlowElement("signalEvent", true);
     SignalEventDefinition signalEvent = (SignalEventDefinition) extractEventDefinition(signalElement);
     assertFalse(signalElement.isCancelActivity());
     assertEquals("signalRef", signalEvent.getSignalRef());
     assertEquals("sid-F21E9F4D-EA19-44DF-B1D3-14663A809CAE", errorElement.getAttachedToRefId());
 
-    BoundaryEvent messageElement = (BoundaryEvent) model.getMainProcess().getFlowElement("messageEvent");
+    BoundaryEvent messageElement = (BoundaryEvent) model.getMainProcess().getFlowElement("messageEvent", true);
     MessageEventDefinition messageEvent = (MessageEventDefinition) extractEventDefinition(messageElement);
     assertFalse(messageElement.isCancelActivity());
     assertEquals("messageRef", messageEvent.getMessageRef());
     assertEquals("sid-F21E9F4D-EA19-44DF-B1D3-14663A809CAE", errorElement.getAttachedToRefId());
 
-    BoundaryEvent timerElement = (BoundaryEvent) model.getMainProcess().getFlowElement("timerEvent");
+    BoundaryEvent timerElement = (BoundaryEvent) model.getMainProcess().getFlowElement("timerEvent", true);
     TimerEventDefinition timerEvent = (TimerEventDefinition) extractEventDefinition(timerElement);
     assertFalse(timerElement.isCancelActivity());
     assertEquals("PT5M", timerEvent.getTimeDuration());

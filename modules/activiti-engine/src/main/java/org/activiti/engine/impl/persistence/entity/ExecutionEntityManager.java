@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
-import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -32,6 +31,11 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
   ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity);
   
+  /**
+   * Finds the {@link ExecutionEntity} for the given root process instance id.
+   * All children will have been fetched and initialized. 
+   */
+  ExecutionEntity findByRootProcessInstanceId(String rootProcessInstanceId);
 
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
 
@@ -66,8 +70,16 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
   long findExecutionCountByNativeQuery(Map<String, Object> parameterMap);
   
 
-  ExecutionTree findExecutionTree(String rootProcessInstanceId);
-
+  /**
+   * Returns all child executions of a given {@link ExecutionEntity}.
+   * In the list, child executions will be behind parent executions. 
+   */
+  List<ExecutionEntity> collectChildren(ExecutionEntity executionEntity);
+  
+  ExecutionEntity findFirstScope(ExecutionEntity executionEntity);
+  
+  ExecutionEntity findFirstMultiInstanceRoot(ExecutionEntity executionEntity);
+  
 
   void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId);
   

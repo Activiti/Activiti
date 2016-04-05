@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20130901" id="simple" name="Simple">
+    <decision id="decision" name="Simple decision">
+        <decisionTable id="decisionTable" name="Simple decision table" isComplete="true" isConsistent="true">
+            <input id="input1" label="Input 1">
+                <inputExpression id="inputExpression1" typeRef="string">
+                    <text>inputVariable1</text>
+                </inputExpression>
+            </input>
+            <input id="input1" label="Input 2">
+                <inputExpression id="inputExpression1" typeRef="double">
+                    <text>inputVariable2</text>
+                </inputExpression>
+            </input>
+            <input id="input1" label="Input 3">
+                <inputExpression id="inputExpression1" typeRef="date">
+                    <text>inputVariable3</text>
+                </inputExpression>
+            </input>
+            <output id="output1" label="Output 1" name="outputVariable1" typeRef="string" />
+            <rule id="rule1">
+                <inputEntry id="inputEntry1">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry2">
+                    <text><![CDATA[<10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry3">
+                    <text><![CDATA[10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry1">
+                    <text><![CDATA[== 'result1']]></text>
+                </outputEntry>
+            </rule>
+            <rule id="rule2">
+                <inputEntry id="inputEntry4">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry5">
+                    <text><![CDATA[<10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry6">
+                    <text><![CDATA[10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry2">
+                    <text><![CDATA[== 'result2']]></text>
+                </outputEntry>
+            </rule>
+            <rule id="rule3">
+                <inputEntry id="inputEntry7">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry8">
+                    <text><![CDATA[<10]]></text>
+                </inputEntry>
+                <inputEntry id="inputEntry9">
+                    <text><![CDATA[10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry3">
+                    <text><![CDATA[== 'result3']]></text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+</definitions>

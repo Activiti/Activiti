@@ -54,13 +54,6 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
   }
   
   @Override
-  public VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
-    VariableInstanceEntity variableInstance = create(name, type, value);
-    insert(variableInstance);
-    return variableInstance;
-  }
-
-  @Override
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
     return variableInstanceDataManager.findVariableInstancesByTaskId(taskId);
   }

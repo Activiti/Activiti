@@ -69,21 +69,21 @@ public class PoolConverterTest extends AbstractConverterTest {
     assertTrue(lane.getFlowReferences().contains("usertask3"));
     assertTrue(lane.getFlowReferences().contains("usertask4"));
 
-    assertNotNull(process.getFlowElement("startevent"));
-    assertNotNull(process.getFlowElement("usertask1"));
-    assertNotNull(process.getFlowElement("usertask2"));
-    assertNotNull(process.getFlowElement("usertask3"));
-    assertNotNull(process.getFlowElement("usertask4"));
-    assertNotNull(process.getFlowElement("usertask5"));
-    assertNotNull(process.getFlowElement("usertask6"));
-    assertNotNull(process.getFlowElement("endevent"));
+    assertNotNull(process.getFlowElement("startevent", true));
+    assertNotNull(process.getFlowElement("usertask1", true));
+    assertNotNull(process.getFlowElement("usertask2", true));
+    assertNotNull(process.getFlowElement("usertask3", true));
+    assertNotNull(process.getFlowElement("usertask4", true));
+    assertNotNull(process.getFlowElement("usertask5", true));
+    assertNotNull(process.getFlowElement("usertask6", true));
+    assertNotNull(process.getFlowElement("endevent", true));
 
-    assertNotNull(process.getFlowElement("flow1"));
-    assertNotNull(process.getFlowElement("flow2"));
-    assertNotNull(process.getFlowElement("flow3"));
-    assertNotNull(process.getFlowElement("flow4"));
-    assertNotNull(process.getFlowElement("flow5"));
-    assertNotNull(process.getFlowElement("flow6"));
-    assertNotNull(process.getFlowElement("flow7"));
+    assertNotNull(process.getFlowElement("flow1", true));
+    assertNotNull(process.getFlowElement("flow2", true));
+    assertNotNull(process.getFlowElement("flow3", true));
+    assertNotNull(process.getFlowElement("flow4", true));
+    assertNotNull(process.getFlowElement("flow5", true));
+    assertNotNull(process.getFlowElement("flow6", true));
+    assertNotNull(process.getFlowElement("flow7", true));
   }
 }

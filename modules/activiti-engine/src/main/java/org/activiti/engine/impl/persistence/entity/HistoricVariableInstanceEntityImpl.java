@@ -46,12 +46,12 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
   protected Double doubleValue;
   protected String textValue;
   protected String textValue2;
-  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
+  protected ByteArrayRef byteArrayRef;
 
   protected Object cachedValue;
 
-  // Default constructor for SQL mapping
   public HistoricVariableInstanceEntityImpl() {
+    
   }
 
   public Object getPersistentState() {
@@ -61,7 +61,10 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
     persistentState.put("textValue2", textValue2);
     persistentState.put("doubleValue", doubleValue);
     persistentState.put("longValue", longValue);
-    persistentState.put("byteArrayRef", byteArrayRef.getId());
+    
+    if (byteArrayRef != null) {
+      persistentState.put("byteArrayRef", byteArrayRef.getId());
+    }
 
     persistentState.put("createTime", createTime);
     persistentState.put("lastUpdatedTime", lastUpdatedTime);
@@ -84,11 +87,17 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
 
   @Override
   public byte[] getBytes() {
-    return byteArrayRef.getBytes();
+    if (byteArrayRef != null) {
+      return byteArrayRef.getBytes();
+    }
+    return null;
   }
 
   @Override
   public void setBytes(byte[] bytes) {
+    if (byteArrayRef == null) {
+      byteArrayRef = new ByteArrayRef();
+    }
     byteArrayRef.setValue("hist.var-" + name, bytes);
   }
 
@@ -244,7 +253,7 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
     if (textValue2 != null) {
       sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
     }
-    if (byteArrayRef.getId() != null) {
+    if (byteArrayRef != null && byteArrayRef.getId() != null) {
       sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
     }
     sb.append("]");

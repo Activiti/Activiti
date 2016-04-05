@@ -83,6 +83,7 @@ import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
+import org.activiti.engine.impl.bpmn.parser.handler.AdhocSubProcessParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.BoundaryEventParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.BusinessRuleParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.CallActivityParseHandler;
@@ -141,7 +142,6 @@ import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.history.HistoryManager;
-import org.activiti.engine.impl.history.parse.FlowNodeHistoryParseHandler;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
@@ -285,6 +285,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.BooleanType;
 import org.activiti.engine.impl.variable.ByteArrayType;
@@ -480,6 +481,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
+
+  // HELPERS //////////////////////////////////////////////////////////////////
+  protected ProcessInstanceHelper processInstanceHelper;
   
   // ASYNC EXECUTOR ///////////////////////////////////////////////////////////
   
@@ -695,6 +699,20 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<VariableType> customPreVariableTypes;
   protected List<VariableType> customPostVariableTypes;
   protected VariableTypes variableTypes;
+  
+  /**
+   * This flag determines whether variables of the type 'serializable' will be tracked.
+   * This means that, when true, in a JavaDelegate you can write
+   * 
+   * MySerializableVariable myVariable = (MySerializableVariable) execution.getVariable("myVariable");
+   * myVariable.setNumber(123);
+   * 
+   * And the changes to the java object will be reflected in the database.
+   * Otherwise, a manual call to setVariable will be needed.
+   * 
+   * By default true for backwards compatibility.
+   */
+  protected boolean serializableVariableTypeTrackDeserializedObjects = true;
 
   protected ExpressionManager expressionManager;
   protected List<String> customScriptingEngineClasses;
@@ -829,7 +847,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (usingRelationalDatabase) {
       initDataSource();
     }
-    
+
+    initHelpers();
     initVariableTypes();
     initBeans();
     initFormEngines();
@@ -1065,6 +1084,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2/LINUXX8664", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/LINUXZ64", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/LINUXPPC64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXPPC64LE",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/400 SQL", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/6000", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2 UDB iSeries", DATABASE_TYPE_DB2);
@@ -1658,8 +1678,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (bpmnParseFactory == null) {
       bpmnParseFactory = new DefaultBpmnParseFactory();
     }
-
-    bpmnParser.setExpressionManager(expressionManager);
+    
     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
     bpmnParser.setListenerFactory(listenerFactory);
@@ -1707,6 +1726,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParserHandlers.add(new StartEventParseHandler());
     bpmnParserHandlers.add(new SubProcessParseHandler());
     bpmnParserHandlers.add(new EventSubProcessParseHandler());
+    bpmnParserHandlers.add(new AdhocSubProcessParseHandler());
     bpmnParserHandlers.add(new TaskParseHandler());
     bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
     bpmnParserHandlers.add(new TransactionParseHandler());
@@ -1743,21 +1763,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
 
-    // History
-    for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
-      bpmnParserHandlers.add(handler);
-    }
-
     return bpmnParserHandlers;
-  }
-
-  public List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
-    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
-    parseHandlers.add(new FlowNodeHistoryParseHandler());
-    // parseHandlers.add(new ProcessHistoryParseHandler());
-    // parseHandlers.add(new StartEventHistoryParseHandler());
-//    parseHandlers.add(new UserTaskHistoryParseHandler());
-    return parseHandlers;
   }
 
   public void initClock() {
@@ -1927,6 +1933,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  public void initHelpers() {
+    if (processInstanceHelper == null) {
+      processInstanceHelper = new ProcessInstanceHelper();
+    }
+  }
+
   public void initVariableTypes() {
     if (variableTypes == null) {
       variableTypes = new DefaultVariableTypes();
@@ -1948,7 +1960,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));
       variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper));
       variableTypes.addType(new ByteArrayType());
-      variableTypes.addType(new SerializableType());
+      variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
       variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
       if (customPostVariableTypes != null) {
@@ -2459,6 +2471,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.variableTypes = variableTypes;
     return this;
   }
+  
+  public boolean isSerializableVariableTypeTrackDeserializedObjects() {
+    return serializableVariableTypeTrackDeserializedObjects;
+  }
+
+  public void setSerializableVariableTypeTrackDeserializedObjects(boolean serializableVariableTypeTrackDeserializedObjects) {
+    this.serializableVariableTypeTrackDeserializedObjects = serializableVariableTypeTrackDeserializedObjects;
+  }
 
   public ExpressionManager getExpressionManager() {
     return expressionManager;
@@ -2520,6 +2540,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setJobHandlers(Map<String, JobHandler> jobHandlers) {
     this.jobHandlers = jobHandlers;
+    return this;
+  }
+
+  public ProcessInstanceHelper getProcessInstanceHelper() {
+    return processInstanceHelper;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessInstanceHelper(ProcessInstanceHelper processInstanceHelper) {
+    this.processInstanceHelper = processInstanceHelper;
     return this;
   }
 

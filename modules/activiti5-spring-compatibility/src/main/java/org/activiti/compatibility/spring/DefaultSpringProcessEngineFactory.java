@@ -30,7 +30,7 @@ public class DefaultSpringProcessEngineFactory extends DefaultProcessEngineFacto
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration = null;
     if (activiti6Configuration instanceof SpringProcessEngineConfiguration) {
       activiti5Configuration = new org.activiti5.spring.SpringProcessEngineConfiguration();
-      copyConfigItems(activiti6Configuration, activiti5Configuration);
+      super.copyConfigItems(activiti6Configuration, activiti5Configuration);
       copySpringConfigItems((SpringProcessEngineConfiguration) activiti6Configuration, (org.activiti5.spring.SpringProcessEngineConfiguration) activiti5Configuration);
       return activiti5Configuration.buildProcessEngine();
     

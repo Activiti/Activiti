@@ -23,8 +23,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class FlowNode extends FlowElement {
 
-  protected SubProcess subProcess;
-
   protected boolean asynchronous;
   protected boolean notExclusive;
 
@@ -67,14 +65,6 @@ public abstract class FlowNode extends FlowElement {
 
   public void setBehavior(Object behavior) {
     this.behavior = behavior;
-  }
-
-  public SubProcess getSubProcess() {
-    return subProcess;
-  }
-
-  public void setSubProcess(SubProcess subProcess) {
-    this.subProcess = subProcess;
   }
 
   public List<SequenceFlow> getIncomingFlows() {

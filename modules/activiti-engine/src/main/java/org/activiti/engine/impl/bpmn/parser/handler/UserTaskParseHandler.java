@@ -27,7 +27,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
 
   @Override
   protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
-    userTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(bpmnParse.getExpressionManager(), userTask));
+    userTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(userTask));
   }
 
 }

@@ -17,14 +17,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
 /**
  * @author Tom Baeyens
  */
-public class DurationBusinessCalendarTest extends PvmTestCase {
+public class DurationBusinessCalendarTest extends AbstractTestCase {
 
   public void testSimpleDuration() throws Exception {
     Clock testingClock = new DefaultClockImpl();

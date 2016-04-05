@@ -49,7 +49,9 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected String processDefinitionId;
   protected Set<String> processDefinitionIds;
+  protected String processDefinitionCategory;
   protected String processDefinitionName;
+  protected Integer processDefinitionVersion;
   protected Set<String> processInstanceIds;
   protected String processDefinitionKey;
   protected Set<String> processDefinitionKeys;
@@ -61,6 +63,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
+  protected boolean withJobException;
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
@@ -177,6 +180,20 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return this;
   }
+  
+  @Override
+  public ProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory) {
+    if (processDefinitionCategory == null) {
+      throw new ActivitiIllegalArgumentException("Process definition category is null");
+    }
+    
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionCategory = processDefinitionCategory;
+    } else {
+      this.processDefinitionCategory = processDefinitionCategory;
+    }
+    return this;
+  }
 
   @Override
   public ProcessInstanceQuery processDefinitionName(String processDefinitionName) {
@@ -188,6 +205,20 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       this.currentOrQueryObject.processDefinitionName = processDefinitionName;
     } else {
       this.processDefinitionName = processDefinitionName;
+    }
+    return this;
+  }
+  
+  @Override
+  public ProcessInstanceQuery processDefinitionVersion(Integer processDefinitionVersion) {
+    if (processDefinitionVersion == null) {
+      throw new ActivitiIllegalArgumentException("Process definition version is null");
+    }
+    
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionVersion = processDefinitionVersion;
+    } else {
+      this.processDefinitionVersion = processDefinitionVersion;
     }
     return this;
   }
@@ -332,7 +363,12 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     this.includeProcessVariables = true;
     return this;
   }
-
+  
+  public ProcessInstanceQuery withJobException() {
+    this.withJobException = true;
+    return this;
+  }
+  
   @Override
   public ProcessInstanceQuery processInstanceName(String name) {
     if (inOrStatement) {
@@ -482,6 +518,16 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       return variableValueLike(name, value, false);
     }
   }
+
+  @Override
+  public ProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value) {
+    if (inOrStatement) {
+        currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
+        return this;
+    } else {
+        return variableValueLikeIgnoreCase(name, value, false);
+    }
+  }
   
   public ProcessInstanceQuery locale(String locale) {
     this.locale = locale;
@@ -610,9 +656,17 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public Set<String> getProcessDefinitionIds() {
     return processDefinitionIds;
   }
+  
+  public String getProcessDefinitionCategory() {
+    return processDefinitionCategory;
+  }
 
   public String getProcessDefinitionName() {
     return processDefinitionName;
+  }
+  
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
   }
 
   public String getProcessDefinitionKey() {
@@ -702,7 +756,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public boolean isIncludeProcessVariables() {
     return includeProcessVariables;
   }
-
+  
+  public boolean iswithException() {
+    return withJobException;
+  }
+  
   public String getNameLikeIgnoreCase() {
     return nameLikeIgnoreCase;
   }

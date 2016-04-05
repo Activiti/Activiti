@@ -40,12 +40,12 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -60,6 +60,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   private static String SEQUENTIAL_PROCESS_KEY = "oneTaskProcess";
   private static String CONCURRENT_PROCESS_NAME = "concurrentName";
   private static String SEQUENTIAL_PROCESS_NAME = "oneTaskProcessName";
+  private static String CONCURRENT_PROCESS_CATEGORY = "org.activiti.enginge.test.api.runtime.concurrent.Category";
+  private static String SEQUENTIAL_PROCESS_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
   
   private List<String> concurrentProcessInstanceIds;
   private List<String> sequentialProcessInstanceIds;
@@ -107,6 +109,19 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByInvalidProcessDefinitionKey() {
     ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionKey("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+
+  public void testQueryByProcessDefinitionCategory() {
+    // Concurrent process with 3 executions for each process instance
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionCategory(CONCURRENT_PROCESS_CATEGORY).list().size());
+    assertEquals(1, runtimeService.createExecutionQuery().processDefinitionCategory(SEQUENTIAL_PROCESS_CATEGORY).list().size());
+  }
+
+  public void testQueryByInvalidProcessDefinitionCategory() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionCategory("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
@@ -174,7 +189,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByInvalidActivityId() {
-  	ExecutionQuery query = runtimeService.createExecutionQuery().activityId("invalid");
+    ExecutionQuery query = runtimeService.createExecutionQuery().activityId("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
@@ -185,7 +200,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
    */
   public void testQueryByActivityIdAndBusinessKeyWithChildren() {
     ExecutionQuery query = runtimeService.createExecutionQuery().activityId("receivePayment")
-    		.processInstanceBusinessKey("BUSINESS-KEY-1", true);
+        .processInstanceBusinessKey("BUSINESS-KEY-1", true);
     assertEquals(1, query.list().size());
     assertEquals(1, query.count());
     

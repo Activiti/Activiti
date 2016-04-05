@@ -215,7 +215,7 @@ public interface RepositoryService {
    * Activates the process definition with the given id.
    * 
    * @param activationDate
-   *          The date on which the process definition will be activated. If null, the process definition is suspended immediately. Note: The job executor needs to be active to use this!
+   *          The date on which the process definition will be activated. If null, the process definition is activated immediately. Note: The job executor needs to be active to use this!
    * 
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found.
@@ -238,7 +238,7 @@ public interface RepositoryService {
    * Activates the process definition with the given key (=id in the bpmn20.xml file).
    * 
    * @param activationDate
-   *          The date on which the process definition will be activated. If null, the process definition is suspended immediately. Note: The job executor needs to be active to use this!
+   *          The date on which the process definition will be activated. If null, the process definition is activated immediately. Note: The job executor needs to be active to use this!
    * 
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found.
@@ -295,6 +295,11 @@ public interface RepositoryService {
    * Checks if the process definition should be executed by the Activiti 5 engine.
    */
   Boolean isActiviti5ProcessDefinition(String processDefinitionId);
+  
+  /**
+   * Checks if the process definition is suspended.
+   */
+  boolean isProcessDefinitionSuspended(String processDefinitionId);
 
   /**
    * Returns the {@link BpmnModel} corresponding with the process definition with the provided process definition id. The {@link BpmnModel} is a pojo versions of the BPMN 2.0 xml and can be used to

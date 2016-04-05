@@ -22,17 +22,17 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cmd.TriggerCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti6.AbstractActvitiTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class OptimisticLockingExceptionTest extends AbstractActvitiTest {
+public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
   
   @Test
   @Deployment(resources = { "org/activiti/engine/test/concurrency/CompetingJoinTest.testCompetingJoins.bpmn20.xml" })
@@ -50,8 +50,8 @@ public class OptimisticLockingExceptionTest extends AbstractActvitiTest {
       Execution execution1 = runtimeService.createExecutionQuery().activityId("wait1").processInstanceId(processInstance.getId()).singleResult();
       Execution execution2 = runtimeService.createExecutionQuery().activityId("wait2").processInstanceId(processInstance.getId()).singleResult();
       
-      TestTriggerableThread t1 = new TestTriggerableThread(activitiRule.getProcessEngine(), execution1.getId());
-      TestTriggerableThread t2 = new TestTriggerableThread(activitiRule.getProcessEngine(), execution2.getId());
+      TestTriggerableThread t1 = new TestTriggerableThread(processEngine, execution1.getId());
+      TestTriggerableThread t2 = new TestTriggerableThread(processEngine, execution2.getId());
       
       // Start the two trigger threads. They will wait at the barrier
       t1.start();

@@ -24,8 +24,6 @@ public interface VariableInstanceEntityManager extends EntityManager<VariableIns
 
   VariableInstanceEntity create(String name, VariableType type, Object value);
 
-  VariableInstanceEntity createAndInsert(String name, VariableType type, Object value);
-
   List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
 
   Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);

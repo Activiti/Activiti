@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
@@ -44,9 +46,11 @@ public class BpmnModel {
   protected List<Resource> resources = new ArrayList<Resource>();
   protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
   protected String targetNamespace;
+  protected String sourceSystemId;
   protected List<String> userTaskFormTypes;
   protected List<String> startEventFormTypes;
   protected int nextFlowIdCounter = 1;
+  protected Object eventSupport;
 
   public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
     return definitionsAttributes;
@@ -528,6 +532,14 @@ public class BpmnModel {
     this.targetNamespace = targetNamespace;
   }
 
+  public String getSourceSystemId() {
+    return sourceSystemId;
+  }
+
+  public void setSourceSystemId(String sourceSystemId) {
+    this.sourceSystemId = sourceSystemId;
+  }
+
   public List<String> getUserTaskFormTypes() {
     return userTaskFormTypes;
   }
@@ -542,5 +554,14 @@ public class BpmnModel {
 
   public void setStartEventFormTypes(List<String> startEventFormTypes) {
     this.startEventFormTypes = startEventFormTypes;
+  }
+
+  @JsonIgnore
+  public Object getEventSupport() {
+    return eventSupport;
+  }
+
+  public void setEventSupport(Object eventSupport) {
+    this.eventSupport = eventSupport;
   }
 }

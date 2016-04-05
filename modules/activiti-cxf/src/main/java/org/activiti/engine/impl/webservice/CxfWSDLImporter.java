@@ -34,7 +34,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.PrimitiveStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
-import org.activiti.engine.impl.bpmn.parser.BpmnParseXMLImportHandler;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.cxf.Bus;
@@ -79,10 +78,10 @@ public class CxfWSDLImporter implements XMLImporter {
     this.namespace = "";
   }
   
-  public void importFrom(Import theImport, BpmnParseXMLImportHandler parseHandler) {
+  public void importFrom(Import theImport, String sourceSystemId) {
     this.namespace = theImport.getNamespace() == null ? "" : theImport.getNamespace() + ":";
     try {
-      final URIResolver uriResolver = new URIResolver(parseHandler.getSourceSystemId(), theImport.getLocation());
+      final URIResolver uriResolver = new URIResolver(sourceSystemId, theImport.getLocation());
       if (uriResolver.isResolved()) {
           if (uriResolver.getURI() != null) {
               this.importFrom(uriResolver.getURI().toString());
@@ -92,25 +91,11 @@ public class CxfWSDLImporter implements XMLImporter {
               this.importFrom(uriResolver.getURL().toString());
           }
       } else {
-          throw new UncheckedException(new Exception("Unresolved import against " + parseHandler.getSourceSystemId()));
+          throw new UncheckedException(new Exception("Unresolved import against " + sourceSystemId));
       }
-      this.transferImportsToParse(parseHandler);
+      
     } catch (final IOException e) {
       throw new UncheckedException(e);
-    }
-  }
-  
-  protected void transferImportsToParse(BpmnParseXMLImportHandler parseHandler) {
-    if (parseHandler != null) {
-      for (StructureDefinition structure : this.structures.values()) {
-        parseHandler.addStructure(structure);
-      }
-      for (WSService service : this.wsServices.values()) {
-        parseHandler.addService(service);
-      }
-      for (WSOperation operation : this.wsOperations.values()) {
-        parseHandler.addOperation(operation);
-      }
     }
   }
 
@@ -246,15 +231,15 @@ public class CxfWSDLImporter implements XMLImporter {
   }
 
 
-  public Collection<StructureDefinition> getStructures() {
-    return this.structures.values();
+  public Map<String, StructureDefinition> getStructures() {
+    return this.structures;
   }
 
-  public Collection<WSService> getServices() {
-    return this.wsServices.values();
+  public Map<String, WSService> getServices() {
+    return this.wsServices;
   }
 
-  public Collection<WSOperation> getOperations() {
-    return this.wsOperations.values();
+  public Map<String, WSOperation> getOperations() {
+    return this.wsOperations;
   }
 }

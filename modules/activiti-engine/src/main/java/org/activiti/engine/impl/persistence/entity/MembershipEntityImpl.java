@@ -24,6 +24,10 @@ public class MembershipEntityImpl implements MembershipEntity, Serializable {
 
   protected String userId;
   protected String groupId;
+  
+  public MembershipEntityImpl() {
+    
+  }
 
   public Object getPersistentState() {
     // membership is not updatable

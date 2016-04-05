@@ -33,7 +33,7 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDeta
   protected Double doubleValue;
   protected String textValue;
   protected String textValue2;
-  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
+  protected ByteArrayRef byteArrayRef;
 
   protected Object cachedValue;
 
@@ -66,16 +66,22 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDeta
 
   @Override
   public byte[] getBytes() {
-    return byteArrayRef.getBytes();
+    if (byteArrayRef != null) {
+      return byteArrayRef.getBytes();
+    } 
+    return null;
   }
 
   public ByteArrayRef getByteArrayRef() {
     return byteArrayRef;
   }
 
-  @Override
   public void setBytes(byte[] bytes) {
-    throw new UnsupportedOperationException("HistoricDetailVariableInstanceUpdateEntity is immutable");
+    String byteArrayName = "hist.detail.var-" + name;
+    if (byteArrayRef == null) {
+      byteArrayRef = new ByteArrayRef();
+    }
+    byteArrayRef.setValue(byteArrayName, bytes);
   }
 
   // getters and setters ////////////////////////////////////////////////////////
@@ -169,7 +175,7 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDeta
     if (textValue2 != null) {
       sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
     }
-    if (byteArrayRef.getId() != null) {
+    if (byteArrayRef != null && byteArrayRef.getId() != null) {
       sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
     }
     sb.append("]");

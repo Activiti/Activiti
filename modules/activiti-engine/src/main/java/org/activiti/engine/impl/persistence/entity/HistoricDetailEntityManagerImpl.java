@@ -79,8 +79,7 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
     historicVariableUpdate.setLongValue(variableInstance.getLongValue());
 
     if (variableInstance.getBytes() != null) {
-      String byteArrayName = "hist.detail.var-" + variableInstance.getName();
-      historicVariableUpdate.getByteArrayRef().setValue(byteArrayName, variableInstance.getBytes());
+      historicVariableUpdate.setBytes(variableInstance.getBytes());
     }
 
     insert(historicVariableUpdate);
@@ -92,7 +91,10 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
     super.delete(entity, fireDeleteEvent);
     
     if (entity instanceof HistoricDetailVariableInstanceUpdateEntity) {
-      ((HistoricDetailVariableInstanceUpdateEntity) entity).getByteArrayRef().delete();
+      HistoricDetailVariableInstanceUpdateEntity historicDetailVariableInstanceUpdateEntity = ((HistoricDetailVariableInstanceUpdateEntity) entity);
+      if (historicDetailVariableInstanceUpdateEntity.getByteArrayRef() != null) {
+        historicDetailVariableInstanceUpdateEntity.getByteArrayRef().delete();
+      }
     }
   }
 

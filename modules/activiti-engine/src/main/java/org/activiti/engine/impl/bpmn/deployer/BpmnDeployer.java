@@ -194,7 +194,7 @@ public class BpmnDeployer implements Deployer {
     
     for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
       processDefinitionManager.insert(processDefinition, false);
-      bpmnDeploymentHelper.addAuthorizationsForNewProcessDefinition(processDefinition);
+      bpmnDeploymentHelper.addAuthorizationsForNewProcessDefinition(parsedDeployment.getProcessModelForProcessDefinition(processDefinition), processDefinition);
     }
   }
   
@@ -220,6 +220,8 @@ public class BpmnDeployer implements Deployer {
   /**
    * Returns the ID to use for a new process definition; subclasses may override this to provide
    * their own identification scheme.
+   * 
+   * Process definition ids NEED to be unique accross the whole engine!
    */
   protected String getIdForNewProcessDefinition(ProcessDefinitionEntity processDefinition) {
     String nextId = idGenerator.getNextId();

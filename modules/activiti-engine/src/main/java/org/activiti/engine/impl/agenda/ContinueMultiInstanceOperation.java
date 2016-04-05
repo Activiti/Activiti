@@ -35,7 +35,6 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
     if (currentFlowElement == null) {
       currentFlowElement = findCurrentFlowElement(execution);
-      execution.setCurrentFlowElement(currentFlowElement);
     }
     
     if (currentFlowElement instanceof FlowNode) {
@@ -52,6 +51,8 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
     if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
+    
+    commandContext.getHistoryManager().recordActivityStart(execution);
     
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();

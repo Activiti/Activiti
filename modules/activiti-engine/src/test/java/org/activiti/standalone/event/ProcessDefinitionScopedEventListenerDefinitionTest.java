@@ -14,14 +14,12 @@ package org.activiti.standalone.event;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -52,22 +50,15 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
-    // Check if the listener (defined as bean) received events (only
-    // creation, not other events)
+    // Check if the listener (defined as bean) received events (only creation, not other events)
     assertFalse(testListenerBean.getEventsReceived().isEmpty());
     for (ActivitiEvent event : testListenerBean.getEventsReceived()) {
       assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     }
 
-    // First event received should be creation of Process-definition
+    // First event received should be creation of Process-instance
     assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
     ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
-    assertTrue(event.getEntity() instanceof ProcessDefinition);
-    assertEquals(processInstance.getProcessDefinitionId(), ((ProcessDefinition) event.getEntity()).getId());
-
-    // First event received should be creation of Process-instance
-    assertTrue(testListenerBean.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
-    event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(1);
     assertTrue(event.getEntity() instanceof ProcessInstance);
     assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
 
@@ -95,26 +86,15 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
   public void testProcessDefinitionListenerDefinitionError() throws Exception {
 
     // Deploy process with expression which references an unexisting bean
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml").deploy();
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertEquals("Exception while executing event-listener", ae.getMessage());
-      assertTrue(ae.getCause() instanceof ActivitiException);
-      assertEquals("Unknown property used in expression: ${unexistingBean}", ae.getCause().getMessage());
-    }
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml").deploy();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventExpression");
+    assertNotNull(processInstance);
+    repositoryService.deleteDeployment(deployment.getId(), true);
 
     // Deploy process with listener which references an unexisting class
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerClass.bpmn20.xml").deploy();
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertEquals("Exception while executing event-listener", ae.getMessage());
-      assertTrue(ae.getCause() instanceof ActivitiException);
-      assertEquals("couldn't instantiate class org.activiti.engine.test.api.event.UnexistingClass", ae.getCause().getMessage());
-      assertTrue(ae.getCause().getCause() instanceof ActivitiClassLoadingException);
-      assertTrue(ae.getCause().getCause().getCause() instanceof ClassNotFoundException);
-    }
+    deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerClass.bpmn20.xml").deploy();
+    processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventClass");
+    repositoryService.deleteDeployment(deployment.getId(), true);
   }
 
   /**

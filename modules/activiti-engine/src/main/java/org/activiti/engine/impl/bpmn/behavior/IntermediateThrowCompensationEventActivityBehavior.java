@@ -60,18 +60,20 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
       for (FlowElement flowElement : process.getFlowElements()) {
         if (flowElement instanceof Activity) {
           Activity activity = (Activity) flowElement;
-          if (activity.isForCompensation()) {
+          if (activityRef == null || activity.getId().equals(activityRef)) {
             rootCompensationActivities.add(activity.getId());
           }
         }
       }
     }
-      
-    List<ExecutionEntity> processInstanceExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
-    for (ExecutionEntity childExecution : processInstanceExecutions) {
-      if (childExecution.getCurrentFlowElement() != null && childExecution.getCurrentFlowElement().getId().equals(activityRef)) {
-        subProcessExecution = childExecution;
-        break;
+    
+    if (rootCompensationActivities.isEmpty()) {
+      List<ExecutionEntity> processInstanceExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
+      for (ExecutionEntity childExecution : processInstanceExecutions) {
+        if (childExecution.getCurrentFlowElement() != null && childExecution.getCurrentFlowElement().getId().equals(activityRef)) {
+          subProcessExecution = childExecution;
+          break;
+        }
       }
     }
     

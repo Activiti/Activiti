@@ -29,7 +29,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
@@ -56,7 +55,6 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected AsyncExecutor asyncExecutor;
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
-  protected ExpressionManager expressionManager;
   protected TransactionContextFactory transactionContextFactory;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 

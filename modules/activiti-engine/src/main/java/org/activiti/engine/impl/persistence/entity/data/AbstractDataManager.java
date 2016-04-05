@@ -51,28 +51,20 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
   
   @Override
   public EntityImpl findById(String entityId) {
-    return findById(entityId, true);
-  }
-
-  // Not exposed on interface. Subclasses should expose it themselves.
-  public EntityImpl findById(String entityId, boolean checkCache) {
-    
     if (entityId == null) {
       return null;
     }
 
     // Cache
-    if (checkCache) {
-      EntityImpl cachedEntity = getEntityCache().findInCache(getManagedEntityClass(), entityId);
-      if (cachedEntity != null) {
-        return cachedEntity;
-      }
+    EntityImpl cachedEntity = getEntityCache().findInCache(getManagedEntityClass(), entityId);
+    if (cachedEntity != null) {
+      return cachedEntity;
     }
     
     // Database
     return getDbSqlSession().selectById(getManagedEntityClass(), entityId, false);
   }
-  
+
   @Override
   public void insert(EntityImpl entity) {
     getDbSqlSession().insert(entity);

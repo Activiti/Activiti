@@ -13,11 +13,12 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +32,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
-import org.activiti.engine.impl.util.tree.ExecutionTree;
-import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
-import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
@@ -117,18 +115,47 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
   
   @Override
-  public ExecutionTree findExecutionTree(String rootProcessInstanceId) {
-    return ExecutionTreeUtil.buildExecutionTree(executionDataManager.findExecutionsByRootProcessInstanceId(rootProcessInstanceId));
+  public ExecutionEntity findByRootProcessInstanceId(String rootProcessInstanceId) {
+    ExecutionEntity rootExecution = null;
+    List<ExecutionEntity> executions = executionDataManager.findExecutionsByRootProcessInstanceId(rootProcessInstanceId);
+    
+    // Collect executions
+    Map<String, ExecutionEntity> executionMap = new HashMap<String, ExecutionEntity>(executions.size());
+    for (ExecutionEntity executionEntity : executions) {
+      if (executionEntity.getId().equals(rootProcessInstanceId)) {
+        rootExecution = executionEntity;
+      }
+      executionMap.put(executionEntity.getId(), executionEntity);
+    }
+    
+    // Set relationships
+    for (ExecutionEntity executionEntity : executions) {
+      
+      // Process instance relationship
+      if (executionEntity.getProcessInstanceId() != null) {
+        executionEntity.setProcessInstance(executionMap.get(executionEntity.getProcessInstanceId()));
+      }
+      
+      // Parent - child relationship
+      if (executionEntity.getParentId() != null) {
+        ExecutionEntity parentExecutionEntity = executionMap.get(executionEntity.getParentId());
+        executionEntity.setParent(parentExecutionEntity);
+        parentExecutionEntity.addChildExecution(executionEntity);
+      }
+      
+      // Super - sub execution relationship
+      if (executionEntity.getSuperExecution() != null) {
+        ExecutionEntity superExecutionEntity = executionMap.get(executionEntity.getSuperExecutionId());
+        executionEntity.setSuperExecution(superExecutionEntity);
+        superExecutionEntity.setSubProcessInstance(executionEntity);
+      }
+      
+    }
+    
+    return rootExecution;
+    
   }
   
-  /**
-   * Does not fetches the whole tree, but stops at the process instance 
-   * (i.e. does not treat the id as the root process instance id and fetches everything for that root process instance id) 
-   */
-  protected ExecutionTree findExecutionTreeInCurrentProcessInstance(final String processInstanceId) {
-    return ExecutionTreeUtil.buildExecutionTreeForProcessInstance(executionDataManager.findExecutionsByProcessInstanceId(processInstanceId));
-  }
-
   @Override
   public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
     return executionDataManager.findProcessInstanceAndVariablesByQueryCriteria(executionQuery);
@@ -216,24 +243,22 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // create the new child execution
     ExecutionEntity childExecution = executionDataManager.create();
 
-    // Inherit tenant id (if any)
+    // Inherit parent attributes.
     if (parentExecutionEntity.getTenantId() != null) {
       childExecution.setTenantId(parentExecutionEntity.getTenantId());
     }
+    childExecution.setParent(parentExecutionEntity);
+    childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
+    childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
+        ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
+    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
+    childExecution.setScope(false);
 
     // Insert the child execution
     insert(childExecution, false);
 
     // manage the bidirectional parent-child relation
     parentExecutionEntity.addChildExecution(childExecution);
-    childExecution.setParent(parentExecutionEntity);
-
-    // initialize the new execution
-    childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
-    childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
-        ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
-    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
-    childExecution.setScope(false);
 
     if (logger.isDebugEnabled()) {
       logger.debug("Child execution {} created with parent {}", childExecution, parentExecutionEntity.getId());
@@ -280,7 +305,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     deleteProcessInstanceCascade(execution, deleteReason, cascade);
   }
 
-  private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
+  protected void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
     for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
@@ -298,21 +323,32 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // delete the execution BEFORE we delete the history, otherwise we will
     // produce orphan HistoricVariableInstance instances
     
-    ExecutionTree executionTree = findExecutionTreeInCurrentProcessInstance(execution.getProcessInstanceId());
-    ExecutionTreeNode executionTreeNode = null;
-    if (executionTree.getRoot() != null) {
-      executionTreeNode = executionTree.getTreeNode(execution.getId());
-    }
-    
-    if (executionTreeNode == null) {
+    ExecutionEntity processInstanceExecutionEntity = execution.getProcessInstance();
+    if (processInstanceExecutionEntity == null) {
       return;
     }
     
-    Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
-    while (iterator.hasNext()) {
-      ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
+    List<ExecutionEntity> childExecutions = collectChildren(execution.getProcessInstance());
+    for (int i=childExecutions.size()-1; i>=0; i--) {
+      ExecutionEntity childExecutionEntity = childExecutions.get(i);
       deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
     }
+    
+//    ExecutionTree executionTree = findExecutionTreeInCurrentProcessInstance(execution.getProcessInstanceId());
+//    ExecutionTreeNode executionTreeNode = null;
+//    if (executionTree.getRoot() != null) {
+//      executionTreeNode = executionTree.getTreeNode(execution.getId());
+//    }
+//    
+//    if (executionTreeNode == null) {
+//      return;
+//    }
+//    
+//    Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
+//    while (iterator.hasNext()) {
+//      ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
+//      deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
+//    }
     
     deleteExecutionAndRelatedData(execution, deleteReason, false);
 
@@ -341,6 +377,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       return;
     }
     
+    // Call activities
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
@@ -363,7 +400,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     // TODO: what about delete reason?
     getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
-    
     processInstanceEntity.setDeleted(true);
   }
   
@@ -374,23 +410,72 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // (taking care of foreign keys between child-parent)
     // the leafs of this tree must be deleted first before the parents elements.
     
-    ExecutionTree executionTree = findExecutionTree(executionEntity.getRootProcessInstanceId());
-    ExecutionTreeNode executionTreeNode = executionTree.getTreeNode(executionEntity.getId());
-    
-    if (executionTreeNode == null) {
-      return;
-    }
-    
-    Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
-    while (iterator.hasNext()) {
-      ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
-      if (childExecutionEntity.isActive() 
-          && !childExecutionEntity.isEnded()
-          && !executionTreeNode.getExecutionEntity().getId().equals(childExecutionEntity.getId())) { // Not the root of the tree is deleted here
+    List<? extends ExecutionEntity> childExecutions = collectChildren(executionEntity);
+    for (int i = childExecutions.size() - 1; i>= 0; i--) {
+      ExecutionEntity childExecutionEntity = childExecutions.get(i);
+      if (!childExecutionEntity.isEnded()) {
         deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, cancel);
       }
     }
-
+    
+  }
+  
+  public List<ExecutionEntity> collectChildren(ExecutionEntity executionEntity) {
+    List<ExecutionEntity> childExecutions = new ArrayList<ExecutionEntity>();
+    collectChildren(executionEntity, childExecutions);
+    return childExecutions;
+  }
+  
+  protected void collectChildren(ExecutionEntity executionEntity, List<ExecutionEntity> collectedChildExecution) {
+    List<ExecutionEntity> childExecutions = (List<ExecutionEntity>) executionEntity.getExecutions();
+    if (childExecutions != null && childExecutions.size() > 0) {
+      for (ExecutionEntity childExecution : childExecutions) {
+        if (!childExecution.isDeleted()) {
+          collectedChildExecution.add(childExecution);
+          collectChildren(childExecution, collectedChildExecution);
+        }
+      }
+    }
+    
+    ExecutionEntity subProcessInstance = executionEntity.getSubProcessInstance();
+    if (subProcessInstance != null && !subProcessInstance.isDeleted()) {
+      collectedChildExecution.add(subProcessInstance);
+      collectChildren(subProcessInstance, collectedChildExecution);
+    }
+  }
+  
+  @Override
+  public ExecutionEntity findFirstScope(ExecutionEntity executionEntity) {
+    ExecutionEntity currentExecutionEntity = executionEntity;
+    while (currentExecutionEntity != null) {
+      if (currentExecutionEntity.isScope()) {
+        return currentExecutionEntity;
+      }
+      
+      ExecutionEntity parentExecutionEntity = currentExecutionEntity.getParent();
+      if (parentExecutionEntity == null) {
+        parentExecutionEntity = currentExecutionEntity.getSuperExecution();
+      }
+      currentExecutionEntity = parentExecutionEntity;
+    }
+    return null;
+  }
+  
+  @Override
+  public ExecutionEntity findFirstMultiInstanceRoot(ExecutionEntity executionEntity) {
+    ExecutionEntity currentExecutionEntity = executionEntity;
+    while (currentExecutionEntity != null) {
+      if (currentExecutionEntity.isMultiInstanceRoot()) {
+        return currentExecutionEntity;
+      }
+      
+      ExecutionEntity parentExecutionEntity = currentExecutionEntity.getParent();
+      if (parentExecutionEntity == null) {
+        parentExecutionEntity = currentExecutionEntity.getSuperExecution();
+      }
+      currentExecutionEntity = parentExecutionEntity;
+    }
+    return null;
   }
   
   @Override
@@ -442,6 +527,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       eventSubscriptionEntityManager.delete(eventSubscription);
     }
+    
   }
 
   // OTHER METHODS

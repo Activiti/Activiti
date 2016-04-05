@@ -23,6 +23,7 @@ import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.repository.ProcessDefinition;
+import org.activiti5.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
   }
   
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    DeploymentManager deploymentCache = Context
+    DeploymentManager deploymentManager = Context
             .getProcessEngineConfiguration()
             .getDeploymentManager();
 
@@ -46,9 +47,9 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
 
     ProcessDefinition processDefinition = null;
     if (job.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(job.getTenantId())) {
-    		processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(nestedActivityId);
+      processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(nestedActivityId);
     } else {
-    	processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(nestedActivityId, job.getTenantId());
+    	processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(nestedActivityId, job.getTenantId());
     }
     
     if (processDefinition == null) {
@@ -56,13 +57,13 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
     }
     
     try {
-      if(!processDefinition.isSuspended()) {
+      if (!deploymentManager.isProcessDefinitionSuspended(processDefinition.getId())) {
         if (commandContext.getEventDispatcher().isEnabled()) {
           commandContext.getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
         }
 
-        new StartProcessInstanceCmd(nestedActivityId, null, null, null, job.getTenantId()).execute(commandContext);
+        new StartProcessInstanceCmd<ProcessInstance>(nestedActivityId, null, null, null, job.getTenantId()).execute(commandContext);
       } else {
         log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
       }

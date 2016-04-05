@@ -12,8 +12,8 @@
  */
 package org.activiti.cdi.impl;
 
+import org.activiti.cdi.impl.context.ExecutionContextHolder;
 import org.activiti.engine.impl.agenda.AbstractOperation;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
@@ -35,7 +35,7 @@ public class CdiCommandInvoker extends CommandInvoker {
     if (runnable instanceof AbstractOperation) {
       AbstractOperation operation = (AbstractOperation) runnable;
       if (operation.getExecution() != null) {
-        Context.setExecutionContext((ExecutionEntity) operation.getExecution());
+        ExecutionContextHolder.setExecutionContext((ExecutionEntity) operation.getExecution());
         executionContextSet = true;
       }
     }
@@ -43,7 +43,7 @@ public class CdiCommandInvoker extends CommandInvoker {
     super.executeOperation(runnable);
     
     if (executionContextSet) {
-      Context.removeExecutionContext();
+      ExecutionContextHolder.removeExecutionContext();
     }
     
   }

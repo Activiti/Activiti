@@ -29,7 +29,7 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
 public class DelegateExpressionActivitiEventListener extends BaseDelegateEventListener {
 
   protected Expression expression;
-  protected boolean failOnException = true;
+  protected boolean failOnException = false;
 
   public DelegateExpressionActivitiEventListener(Expression expression, Class<?> entityClass) {
     this.expression = expression;

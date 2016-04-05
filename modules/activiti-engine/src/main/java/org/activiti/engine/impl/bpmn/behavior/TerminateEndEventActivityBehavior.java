@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -22,9 +24,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.util.tree.ExecutionTree;
-import org.activiti.engine.impl.util.tree.ExecutionTreeBfsIterator;
-import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
 
 /**
  * @author Joram Barrez
@@ -46,22 +45,25 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
-    ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
-
     if (terminateAll) {
-      deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+      terminateAllBehaviour(execution, commandContext, executionEntityManager);
     } else if (terminateMultiInstance) {
-      terminateMultiInstanceRoot(execution, commandContext, executionEntityManager, executionTree);
+      terminateMultiInstanceRoot(execution, commandContext, executionEntityManager);
     } else {
-      defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager, executionTree);
+      defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }
   }
 
+  protected void terminateAllBehaviour(DelegateExecution execution, CommandContext commandContext, ExecutionEntityManager executionEntityManager) {
+    ExecutionEntity rootExecutionEntity = executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId());
+    deleteExecutionEntities(executionEntityManager, rootExecutionEntity);
+    commandContext.getHistoryManager().recordProcessInstanceEnd(rootExecutionEntity.getId(), "", execution.getCurrentActivityId());
+  }
+
   protected void defaultTerminateEndEventBehaviour(DelegateExecution execution, CommandContext commandContext,
-      ExecutionEntityManager executionEntityManager, ExecutionTree executionTree) {
+      ExecutionEntityManager executionEntityManager) {
     
-    ExecutionTreeNode scopeTreeNode = executionTree.getTreeNode(execution.getId()).findFirstScope(); // There will always be one (the process instance), so no null checking needed
-    ExecutionEntity scopeExecutionEntity = scopeTreeNode.getExecutionEntity();
+    ExecutionEntity scopeExecutionEntity = executionEntityManager.findFirstScope((ExecutionEntity) execution);
     sendProcessInstanceCancelledEvent(scopeExecutionEntity, execution.getCurrentFlowElement());
 
     // If the scope is the process instance, we can just terminate it all
@@ -71,7 +73,8 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
 
-      deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+      deleteExecutionEntities(executionEntityManager, scopeExecutionEntity);
+      commandContext.getHistoryManager().recordProcessInstanceEnd(scopeExecutionEntity.getId(), "", execution.getCurrentActivityId());
 
     } else if (scopeExecutionEntity.getCurrentFlowElement() != null 
         && scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) { // SubProcess
@@ -81,13 +84,14 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       if (subProcess.hasMultiInstanceLoopCharacteristics()) {
         
         commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-        
         MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
         multiInstanceBehavior.leave(scopeExecutionEntity);
         
       } else {
         commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
+        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(scopeExecutionEntity.getParent());
+        outgoingFlowExecution.setCurrentFlowElement(scopeExecutionEntity.getCurrentFlowElement());
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution);
       }
 
     } else if (scopeExecutionEntity.getParentId() == null 
@@ -114,37 +118,31 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   }
   
   protected void terminateMultiInstanceRoot(DelegateExecution execution, CommandContext commandContext,
-      ExecutionEntityManager executionEntityManager, ExecutionTree executionTree) {
+      ExecutionEntityManager executionEntityManager) {
     
     // When terminateMultiInstance is 'true', we look for the multi instance root and delete it from there.
-    
-    ExecutionTreeNode currentTreeNode = executionTree.getTreeNode(execution.getId());
-    ExecutionTreeNode multiInstanceRootTreeNode = currentTreeNode.findFirstMultiInstanceRoot();
-    if (multiInstanceRootTreeNode != null) {
+    ExecutionEntity miRootExecutionEntity = executionEntityManager.findFirstMultiInstanceRoot((ExecutionEntity) execution);
+    if (miRootExecutionEntity != null) {
       
       // Create sibling execution to continue process instance execution before deletion
-      ExecutionEntity multiInstanceRootExecution = multiInstanceRootTreeNode.getExecutionEntity();
-      ExecutionEntity siblingExecution = executionEntityManager.createChildExecution(multiInstanceRootExecution.getParent());
-      siblingExecution.setCurrentFlowElement(multiInstanceRootExecution.getCurrentFlowElement());
+      ExecutionEntity siblingExecution = executionEntityManager.createChildExecution(miRootExecutionEntity.getParent());
+      siblingExecution.setCurrentFlowElement(miRootExecutionEntity.getCurrentFlowElement());
       
-      deleteExecutionEntities(commandContext, executionEntityManager, multiInstanceRootTreeNode.leafsFirstIterator());
+      deleteExecutionEntities(executionEntityManager, miRootExecutionEntity);
       
       commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(siblingExecution);
     } else {
-      defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager, executionTree);
+      defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }
   }
 
-  protected void deleteExecutionEntities(CommandContext commandContext, ExecutionEntityManager executionEntityManager, ExecutionTreeBfsIterator treeIterator) {
-
-    // Delete the execution in leafs-first order to avoid foreign key
-    // constraints firing
-
-    while (treeIterator.hasNext()) {
-      ExecutionTreeNode treeNode = treeIterator.next();
-      ExecutionEntity executionEntity = treeNode.getExecutionEntity();
-      executionEntityManager.deleteExecutionAndRelatedData(executionEntity, null, false);
+  protected void deleteExecutionEntities(ExecutionEntityManager executionEntityManager, ExecutionEntity rootExecutionEntity) {
+    
+    List<ExecutionEntity> childExecutions = executionEntityManager.collectChildren(rootExecutionEntity);
+    for (int i=childExecutions.size()-1; i>=0; i--) {
+      executionEntityManager.deleteExecutionAndRelatedData(childExecutions.get(i), null, false);
     }
+    executionEntityManager.deleteExecutionAndRelatedData(rootExecutionEntity, null, false);
   }
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {

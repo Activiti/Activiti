@@ -229,6 +229,16 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-dmn-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-dmn-xml-converter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-camel</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -640,8 +650,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>

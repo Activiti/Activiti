@@ -42,7 +42,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("start1", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof StartEvent);
     assertEquals("start1", flowElement.getId());
@@ -96,7 +96,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
       }
     }
 
-    flowElement = model.getMainProcess().getFlowElement("subprocess1");
+    flowElement = model.getMainProcess().getFlowElement("subprocess1", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SubProcess);
     assertEquals("subprocess1", flowElement.getId());

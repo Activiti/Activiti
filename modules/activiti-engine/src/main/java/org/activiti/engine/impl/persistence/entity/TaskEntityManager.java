@@ -1,24 +1,30 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.Task;
 
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
-  /**
-   * Creates a new task. This task still will have to be persisted. See {@link #insert(ExecutionEntity))}.
-   */
-  TaskEntity create(Date createTime);
-
-  /** creates and initializes a new persistent task. */
-  TaskEntity createAndInsert(DelegateExecution execution);
-
   void insert(TaskEntity taskEntity, ExecutionEntity execution);
+  
+  void changeTaskAssignee(TaskEntity taskEntity, String assignee);
+  
+  void changeTaskOwner(TaskEntity taskEntity, String owner);
 
   List<TaskEntity> findTasksByExecutionId(String executionId);
 
@@ -36,8 +42,6 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   List<Task> findTasksByParentTaskId(String parentTaskId);
 
-  TaskEntity update(TaskEntity taskEntity);
-  
   void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
 
   void deleteTask(String taskId, String deleteReason, boolean cascade);

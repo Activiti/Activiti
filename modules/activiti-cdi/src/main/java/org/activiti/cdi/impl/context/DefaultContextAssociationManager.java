@@ -220,7 +220,7 @@ public class DefaultContextAssociationManager implements ContextAssociationManag
 
   protected ExecutionEntity getExecutionFromContext() {
     if (Context.getCommandContext() != null) {
-      ExecutionContext executionContext = Context.getExecutionContext();
+      ExecutionContext executionContext = ExecutionContextHolder.getExecutionContext();
       if (executionContext != null) {
         return executionContext.getExecution();
       }

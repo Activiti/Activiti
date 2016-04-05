@@ -48,6 +48,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -94,7 +95,6 @@ import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.StringUtils;
 
@@ -136,8 +136,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
 
   @Override
-  public UserTaskActivityBehavior createUserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask) {
-    return new UserTaskActivityBehavior(expressionManager, userTask);
+  public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
+    return new UserTaskActivityBehavior(userTask);
   }
 
   // Service task
@@ -349,6 +349,10 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   
   public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition) {
     return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition);
+  }
+  
+  public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
+    return new AdhocSubProcessActivityBehavior();
   }
 
   // Call activity

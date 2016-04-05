@@ -36,7 +36,6 @@ import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -311,11 +310,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
           ExecutionListener executionListener = null;
 
           if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            
-            // Sad that we have to do this, but it's the only way I could find (which is also safe for backwards compatibility)
-            if (!ActivityInstanceStartHandler.class.getName().equals(activitiListener.getImplementation())) {
-              executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-            }
+            executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
             
           } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);

@@ -266,6 +266,12 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     
     
   public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean createOnNotFound, boolean validateEndTimeNull) {
+    
+    // No use looking for the HistoricActivityInstance when no activityId is provided.
+    if (activityId == null) {
+      return null;
+    }
+    
     String executionId = execution.getId();
 
     // search for the historic activity instance in the DbSqlSession cache

@@ -9,21 +9,9 @@ import org.activiti.engine.impl.context.Context;
  * Encapsulates the logic for transparently working with {@link ByteArrayEntity} .
  * </p>
  * 
- * <p>
- * Make sure that instance variables (i.e. fields) of this type are always initialized, and thus <strong>never</strong> null.
- * </p>
- * 
- * <p>
- * For example:
- * </p>
- * 
- * <pre>
- * private final ByteArrayRef byteArrayRef = new ByteArrayRef();
- * </pre>
- * 
  * @author Marcus Klimstra (CGI)
  */
-public final class ByteArrayRef implements Serializable {
+public class ByteArrayRef implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -61,7 +49,11 @@ public final class ByteArrayRef implements Serializable {
   private void setBytes(byte[] bytes) {
     if (id == null) {
       if (bytes != null) {
-        entity = Context.getCommandContext().getByteArrayEntityManager().createAndInsert(name, bytes);
+        ByteArrayEntityManager byteArrayEntityManager = Context.getCommandContext().getByteArrayEntityManager();
+        entity = byteArrayEntityManager.create();
+        entity.setName(name);
+        entity.setBytes(bytes);
+        byteArrayEntityManager.insert(entity);
         id = entity.getId();
       }
     } else {

@@ -31,10 +31,6 @@ public class GroupEntityImpl implements GroupEntity, Serializable {
   public GroupEntityImpl() {
   }
 
-  public GroupEntityImpl(String id) {
-    this.id = id;
-  }
-
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("name", name);

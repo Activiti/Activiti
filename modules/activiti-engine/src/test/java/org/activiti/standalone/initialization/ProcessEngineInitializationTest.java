@@ -22,14 +22,14 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEngineInitializationTest extends PvmTestCase {
+public class ProcessEngineInitializationTest extends AbstractTestCase {
 
   public void testNoTables() {
     try {

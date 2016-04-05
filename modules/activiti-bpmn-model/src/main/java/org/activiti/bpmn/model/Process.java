@@ -14,8 +14,11 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -35,6 +38,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
   protected List<EventListener> eventListeners = new ArrayList<EventListener>();
+  protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<String, FlowElement>();
   
   // Added during process definition parsing
   protected FlowElement initialFlowElement;
@@ -42,7 +46,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public Process() {
 
   }
-
+  
   public String getDocumentation() {
     return documentation;
   }
@@ -90,6 +94,18 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public void setLanes(List<Lane> lanes) {
     this.lanes = lanes;
   }
+  
+  public Map<String, FlowElement> getFlowElementMap() {
+    return flowElementMap;
+  }
+
+  public void setFlowElementMap(Map<String, FlowElement> flowElementMap) {
+    this.flowElementMap = flowElementMap;
+  }
+  
+  public boolean containsFlowElementId(String id) {
+    return flowElementMap.containsKey(id);
+  }
 
   public FlowElement getFlowElement(String flowElementId) {
     return getFlowElement(flowElementId, false);
@@ -100,24 +116,10 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
    */
   public FlowElement getFlowElement(String flowElementId, boolean searchRecurive) {
     if (searchRecurive) {
-      return getFlowElementRecursive(this, flowElementId);
+      return flowElementMap.get(flowElementId);
     } else {
       return findFlowElementInList(flowElementId);
     }
-  }
-
-  protected FlowElement getFlowElementRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
-    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
-      if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
-        return flowElement;
-      } else if (flowElement instanceof FlowElementsContainer) {
-        FlowElement result = getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
-        if (result != null) {
-          return result;
-        }
-      }
-    }
-    return null;
   }
   
   public List<Association> findAssociationsWithSourceRefRecursive(FlowElementsContainer flowElementsContainer, String sourceRef) {
@@ -159,7 +161,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     }
     return null;
   }
-
+  
   protected FlowElement findFlowElementInList(String flowElementId) {
     for (FlowElement f : flowElementList) {
       if (f.getId() != null && f.getId().equals(flowElementId)) {
@@ -175,12 +177,29 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
 
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
+    element.setParentContainer(this);
+    if (element != null && StringUtils.isNotEmpty(element.getId())) {
+      flowElementMap.put(element.getId(), element);
+    }
+  }
+  
+  public void addFlowElementToMap(FlowElement element) {
+    if (element != null && StringUtils.isNotEmpty(element.getId())) {
+      flowElementMap.put(element.getId(), element);
+    }
   }
 
   public void removeFlowElement(String elementId) {
-    FlowElement element = findFlowElementInList(elementId);
+    FlowElement element = flowElementMap.get(elementId);
     if (element != null) {
       flowElementList.remove(element);
+      flowElementMap.remove(element.getId());
+    }
+  }
+  
+  public void removeFlowElementFromMap(String elementId) {
+    if (StringUtils.isNotEmpty(elementId)) {
+      flowElementMap.remove(elementId);
     }
   }
 
@@ -303,6 +322,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public void setValues(Process otherElement) {
     super.setValues(otherElement);
 
+//    setBpmnModel(bpmnModel);
     setName(otherElement.getName());
     setExecutable(otherElement.isExecutable());
     setDocumentation(otherElement.getDocumentation());

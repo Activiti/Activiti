@@ -33,12 +33,12 @@ public class CompleteConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("userTask1");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("userTask1", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof UserTask);
     assertEquals("userTask1", flowElement.getId());
 
-    flowElement = model.getMainProcess().getFlowElement("catchsignal");
+    flowElement = model.getMainProcess().getFlowElement("catchsignal", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof IntermediateCatchEvent);
     assertEquals("catchsignal", flowElement.getId());
@@ -48,7 +48,7 @@ public class CompleteConverterTest extends AbstractConverterTest {
     SignalEventDefinition signalEvent = (SignalEventDefinition) catchEvent.getEventDefinitions().get(0);
     assertEquals("testSignal", signalEvent.getSignalRef());
 
-    flowElement = model.getMainProcess().getFlowElement("subprocess");
+    flowElement = model.getMainProcess().getFlowElement("subprocess", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SubProcess);
     assertEquals("subprocess", flowElement.getId());

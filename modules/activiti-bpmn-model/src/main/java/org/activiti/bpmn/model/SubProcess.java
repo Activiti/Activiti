@@ -14,7 +14,9 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SubProcess extends Activity implements FlowElementsContainer {
 
+  protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<String, FlowElement>();
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
@@ -30,12 +33,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
   public FlowElement getFlowElement(String id) {
     FlowElement foundElement = null;
     if (StringUtils.isNotEmpty(id)) {
-      for (FlowElement element : flowElementList) {
-        if (id.equals(element.getId())) {
-          foundElement = element;
-          break;
-        }
-      }
+      foundElement = flowElementMap.get(id);
     }
     return foundElement;
   }
@@ -46,13 +44,51 @@ public class SubProcess extends Activity implements FlowElementsContainer {
 
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
+    element.setParentContainer(this);
+    if (StringUtils.isNotEmpty(element.getId())) {
+      flowElementMap.put(element.getId(), element);
+      if (getParentContainer() != null) {
+        getParentContainer().addFlowElementToMap(element);
+      }
+    }
   }
 
+  public void addFlowElementToMap(FlowElement element) {
+    if (element != null && StringUtils.isNotEmpty(element.getId())) {
+      flowElementMap.put(element.getId(), element);
+      if (getParentContainer() != null) {
+        getParentContainer().addFlowElementToMap(element);
+      }
+    }
+  }
+  
   public void removeFlowElement(String elementId) {
     FlowElement element = getFlowElement(elementId);
     if (element != null) {
       flowElementList.remove(element);
+      flowElementMap.remove(elementId);
+      if (element.getParentContainer() != null) {
+        element.getParentContainer().removeFlowElementFromMap(elementId);
+      }
     }
+  }
+  
+  public void removeFlowElementFromMap(String elementId) {
+    if (StringUtils.isNotEmpty(elementId)) {
+      flowElementMap.remove(elementId);
+    }
+  }
+  
+  public Map<String, FlowElement> getFlowElementMap() {
+    return flowElementMap;
+  }
+
+  public void setFlowElementMap(Map<String, FlowElement> flowElementMap) {
+    this.flowElementMap = flowElementMap;
+  }
+  
+  public boolean containsFlowElementId(String id) {
+    return flowElementMap.containsKey(id);
   }
 
   public Artifact getArtifact(String id) {

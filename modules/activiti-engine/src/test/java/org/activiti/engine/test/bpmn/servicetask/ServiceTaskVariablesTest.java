@@ -18,6 +18,7 @@ import java.io.Serializable;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -26,8 +27,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
 
-  static boolean isNullInDelegate2;
-  static boolean isNullInDelegate3;
+  static boolean isOkInDelegate2;
+  static boolean isOkInDelegate3;
 
   public static class Variable implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -50,7 +51,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
       Variable v = (Variable) execution.getVariable("variable");
       synchronized (ServiceTaskVariablesTest.class) {
         // we expect this to be 'true'
-        isNullInDelegate2 = (v.value != null && v.value.equals("delegate1"));
+        isOkInDelegate2 = (v.value != null && v.value.equals("delegate1"));
       }
       v.value = "delegate2";
     }
@@ -63,7 +64,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
       Variable v = (Variable) execution.getVariable("variable");
       synchronized (ServiceTaskVariablesTest.class) {
         // we expect this to be 'true' as well
-        isNullInDelegate3 = (v.value != null && v.value.equals("delegate2"));
+        isOkInDelegate3 = (v.value != null && v.value.equals("delegate2"));
       }
     }
 
@@ -76,12 +77,17 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
     // third service task in the sequence
 
     runtimeService.startProcessInstanceByKey("process");
-    waitForJobExecutorToProcessAllJobs(10000, 500);
     
-    synchronized (ServiceTaskVariablesTest.class) {
-      assertTrue(isNullInDelegate2);
-      assertTrue(isNullInDelegate3);
-    }
+    Job job = managementService.createJobQuery().singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
+    
+    job = managementService.createJobQuery().singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
+    
+    assertTrue(isOkInDelegate2);
+    assertTrue(isOkInDelegate3);
   }
 
   @Deployment
@@ -93,8 +99,8 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(10000, 500);
     
     synchronized (ServiceTaskVariablesTest.class) {
-      assertTrue(isNullInDelegate2);
-      assertTrue(isNullInDelegate3);
+      assertTrue(isOkInDelegate2);
+      assertTrue(isOkInDelegate3);
     }
 
   }

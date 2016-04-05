@@ -52,6 +52,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected String resourceName;
   protected String resourceNameLike;
   protected Integer version;
+  protected Integer versionGt;
+  protected Integer versionGte;
+  protected Integer versionLt;
+  protected Integer versionLte;
   protected boolean latest = false;
   protected SuspensionState suspensionState;
   protected String authorizationUserId;
@@ -174,13 +178,41 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }
   
   public ProcessDefinitionQueryImpl processDefinitionVersion(Integer version) {
+    checkVersion(version);
+    this.version = version;
+    return this;
+  }
+
+  public ProcessDefinitionQuery processDefinitionVersionGreaterThan(Integer processDefinitionVersion) {
+    checkVersion(processDefinitionVersion);
+    this.versionGt = processDefinitionVersion;
+    return this;
+  }
+
+  public ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion) {
+    checkVersion(processDefinitionVersion);
+    this.versionGte = processDefinitionVersion;
+    return this;
+  }
+
+  public ProcessDefinitionQuery processDefinitionVersionLowerThan(Integer processDefinitionVersion) {
+    checkVersion(processDefinitionVersion);
+    this.versionLt = processDefinitionVersion;
+    return this;
+  }
+
+  public ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion) {
+    checkVersion(processDefinitionVersion);
+    this.versionLte = processDefinitionVersion;
+    return this;
+  }
+  
+  protected void checkVersion(Integer version) {
     if (version == null) {
       throw new ActivitiIllegalArgumentException("version is null");
     } else if (version <= 0) {
       throw new ActivitiIllegalArgumentException("version must be positive");
     }
-    this.version = version;
-    return this;
   }
   
   public ProcessDefinitionQueryImpl latestVersion() {
@@ -339,6 +371,18 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }
   public Integer getVersion() {
     return version;
+  }
+  public Integer getVersionGt() {
+    return versionGt;
+  }
+  public Integer getVersionGte() {
+    return versionGte;
+  }
+  public Integer getVersionLt() {
+    return versionLt;
+  }
+  public Integer getVersionLte() {
+    return versionLte;
   }
   public boolean isLatest() {
     return latest;

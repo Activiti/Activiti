@@ -25,7 +25,7 @@ public class FlowNodeConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("sid-B074A0DD-934A-4053-A537-20ADF0781023");
+    FlowElement flowElement = model.getMainProcess().getFlowElement("sid-B074A0DD-934A-4053-A537-20ADF0781023", true);
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof ExclusiveGateway);
     ExclusiveGateway gateway = (ExclusiveGateway) flowElement;

@@ -49,6 +49,7 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -94,7 +95,6 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.bpmn.parser.factory.AbstractBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.test.NoOpServiceTask;
 
@@ -150,8 +150,8 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
   
   @Override
-  public UserTaskActivityBehavior createUserTaskActivityBehavior(ExpressionManager expressionManager, UserTask userTask) {
-    return wrappedActivityBehaviorFactory.createUserTaskActivityBehavior(expressionManager, userTask);
+  public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
+    return wrappedActivityBehaviorFactory.createUserTaskActivityBehavior(userTask);
   }
 
   @Override
@@ -284,6 +284,11 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   @Override
   public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition) {
     return wrappedActivityBehaviorFactory.createEventSubProcessMessageStartEventActivityBehavior(startEvent, messageEventDefinition);
+  }
+  
+  @Override
+  public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
+    return wrappedActivityBehaviorFactory.createAdhocSubprocessActivityBehavior(subProcess);
   }
 
   @Override

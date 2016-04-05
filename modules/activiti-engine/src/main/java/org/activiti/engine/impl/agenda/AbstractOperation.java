@@ -48,12 +48,16 @@ public abstract class AbstractOperation implements Runnable {
    * Helper method to match the activityId of an execution with a FlowElement of the process definition referenced by the execution.
    */
   protected FlowElement findCurrentFlowElement(final ExecutionEntity execution) {
-    String processDefinitionId = execution.getProcessDefinitionId();
-    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
-    String activityId = execution.getCurrentActivityId();
-    FlowElement currentFlowElement = process.getFlowElement(activityId, true);
-    execution.setCurrentFlowElement(currentFlowElement);
-    return currentFlowElement;
+    if (execution.getCurrentActivityId() != null) {
+      String processDefinitionId = execution.getProcessDefinitionId();
+      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+      String activityId = execution.getCurrentActivityId();
+      FlowElement currentFlowElement = process.getFlowElement(activityId, true);
+      execution.setCurrentFlowElement(currentFlowElement);
+      return currentFlowElement;
+    }
+    
+    return null;
   }
 
   /**

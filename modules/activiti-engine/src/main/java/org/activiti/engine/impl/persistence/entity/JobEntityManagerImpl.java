@@ -290,7 +290,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   protected void removeExecutionLink(JobEntity jobEntity) {
     if (jobEntity.getExecutionId() != null) {
       ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getJobs().remove(this);
+      execution.getJobs().remove(jobEntity);
     }
   }
 
@@ -300,8 +300,9 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
    */
   protected void deleteExceptionByteArrayRef(JobEntity jobEntity) {
     ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();
-
-    exceptionByteArrayRef.delete();
+    if (exceptionByteArrayRef != null) {
+      exceptionByteArrayRef.delete();
+    }
   }
   
   // Job Execution logic ////////////////////////////////////////////////////////////////////

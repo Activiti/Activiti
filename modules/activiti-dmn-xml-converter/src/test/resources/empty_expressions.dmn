@@ -1,0 +1,36 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20153011" id="simple" name="Simple">
+    <decision id="decision" name="Simple decision">
+        <decisionTable id="decisionTable">
+            <input id="input1" label="Input 1">
+                <inputExpression id="inputExpression1" typeRef="string">
+                  <text>input1</text>
+                </inputExpression>
+            </input>
+            <output id="output1" label="Output 1" name="output1" typeRef="number" />
+            <rule id="rule1">
+                <inputEntry id="inputEntry1">
+                    <text><![CDATA[>10]]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry1">
+                    <text>test</text>
+                </outputEntry>
+            </rule>
+            <rule id="rule2">
+                <inputEntry id="inputEntry2">
+                    <text><![CDATA[== 'test1']]></text>
+                </inputEntry>
+                <outputEntry id="outputEntry2">
+                    <text>test2</text>
+                </outputEntry>
+            </rule>
+            <rule id="rule3">
+                <inputEntry id="inputEntry3">
+                    <text></text>
+                </inputEntry>
+                <outputEntry id="outputEntry3">
+                    <text></text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+</definitions>

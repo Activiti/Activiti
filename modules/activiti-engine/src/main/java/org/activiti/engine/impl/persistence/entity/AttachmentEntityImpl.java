@@ -39,6 +39,7 @@ public class AttachmentEntityImpl implements AttachmentEntity, Serializable {
   protected Date time;
 
   public AttachmentEntityImpl() {
+    
   }
 
   public Object getPersistentState() {

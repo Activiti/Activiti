@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -52,6 +51,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   private static final String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
   private static final String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
   private static final String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
+  private static final String PROCESS_DEFINITION_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
+  private static final String PROCESS_DEFINITION_CATEGORY_2 = "org.activiti.enginge.test.api.runtime.2Category";
+  
 
   private org.activiti.engine.repository.Deployment deployment;
   private List<String> processInstanceIds;
@@ -156,6 +158,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
       assertNotNull(runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult());
       assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).list().size());
     }
+  }
+  
+  public void testQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).count());
+  }
+  
+  public void testOrQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).processDefinitionId("undefined").endOr().count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).processDefinitionId("undefined").endOr().count());
   }
 
   public void testQueryByProcessInstanceName() {
@@ -1430,11 +1442,6 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     vars = new HashMap<String, Object>();
     vars.put("nullVarByte", "testbytes".getBytes());
     ProcessInstance processInstance5 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
-
-    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
-    for (HistoricVariableInstance historicVariableInstance : variables) {
-      System.out.println("historicVariableInstance " + historicVariableInstance.getProcessInstanceId() + " " + historicVariableInstance.getVariableName() + " " + historicVariableInstance.getValue());
-    }
 
     // Query on null value, should return one value
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().variableValueEquals("nullVar", null);

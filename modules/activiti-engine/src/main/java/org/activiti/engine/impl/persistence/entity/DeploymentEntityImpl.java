@@ -41,11 +41,15 @@ public class DeploymentEntityImpl implements DeploymentEntity, Serializable {
 
   // Backwards compatibility
   protected String engineVersion;
-
+  
   /**
    * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
+  
+  public DeploymentEntityImpl() {
+    
+  }
 
   public void addResource(ResourceEntity resource) {
     if (resources == null) {

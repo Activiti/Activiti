@@ -1,0 +1,39 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20153011" id="full" name="Full">
+  <decision id="decision" name="Full Decision">
+    <decisionTable id="decisionTable">
+        <input id="input1" label="Input 1">
+            <inputExpression id="inputExpression1" typeRef="double">
+              <text>inputVariable1</text>
+            </inputExpression>
+        </input>
+        <input id="input2" label="Input 2">
+            <inputExpression id="inputExpression22" typeRef="string">
+              <text>inputVariable2</text>
+            </inputExpression>
+        </input>
+        <output id="output1" label="Output 1" name="outputVariable1" typeRef="string" />
+        <rule id="rule1">
+            <inputEntry id="inputEntry1">
+                <text><![CDATA[== 1]]></text>
+            </inputEntry>
+            <inputEntry id="inputEntry2">
+                <text><![CDATA[== 'test1']]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry1">
+                <text><![CDATA[== 'result1']]></text>
+            </outputEntry>
+        </rule>
+        <rule id="rule2">
+            <inputEntry id="inputEntry3">
+                <text><![CDATA[!= 1]]></text>
+            </inputEntry>
+            <inputEntry id="inputEntry4">
+                <text><![CDATA[== 'test2']]></text>
+            </inputEntry>
+            <outputEntry id="outputEntry2">
+                <text><![CDATA[== 'result2']]></text>
+            </outputEntry>
+        </rule>
+    </decisionTable>
+  </decision>
+</definitions>

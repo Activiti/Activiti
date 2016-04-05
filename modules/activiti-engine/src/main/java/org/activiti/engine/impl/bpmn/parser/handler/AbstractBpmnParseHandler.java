@@ -13,9 +13,7 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.model.ActivitiListener;
@@ -23,18 +21,12 @@ import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.DataSpec;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.impl.bpmn.data.Data;
-import org.activiti.engine.impl.bpmn.data.DataRef;
-import org.activiti.engine.impl.bpmn.data.IOSpecification;
-import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
@@ -94,34 +86,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     return eventBasedGatewayId;
   }
 
-  protected IOSpecification createIOSpecification(BpmnParse bpmnParse, org.activiti.bpmn.model.IOSpecification specificationModel) {
-    IOSpecification ioSpecification = new IOSpecification();
-
-    for (DataSpec dataInputElement : specificationModel.getDataInputs()) {
-      ItemDefinition itemDefinition = bpmnParse.getItemDefinitions().get(dataInputElement.getItemSubjectRef());
-      Data dataInput = new Data(bpmnParse.getTargetNamespace() + ":" + dataInputElement.getId(), dataInputElement.getId(), itemDefinition);
-      ioSpecification.addInput(dataInput);
-    }
-
-    for (DataSpec dataOutputElement : specificationModel.getDataOutputs()) {
-      ItemDefinition itemDefinition = bpmnParse.getItemDefinitions().get(dataOutputElement.getItemSubjectRef());
-      Data dataOutput = new Data(bpmnParse.getTargetNamespace() + ":" + dataOutputElement.getId(), dataOutputElement.getId(), itemDefinition);
-      ioSpecification.addOutput(dataOutput);
-    }
-
-    for (String dataInputRef : specificationModel.getDataInputRefs()) {
-      DataRef dataRef = new DataRef(dataInputRef);
-      ioSpecification.addInputRef(dataRef);
-    }
-
-    for (String dataOutputRef : specificationModel.getDataOutputRefs()) {
-      DataRef dataRef = new DataRef(dataOutputRef);
-      ioSpecification.addOutputRef(dataRef);
-    }
-
-    return ioSpecification;
-  }
-
   protected void processArtifacts(BpmnParse bpmnParse, Collection<Artifact> artifacts) {
     // associations
     for (Artifact artifact : artifacts) {
@@ -162,16 +126,5 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
      * (isForCompensation == null || !(Boolean) isForCompensation) { logger.warn( "compensation boundary catch must be connected to element with isForCompensation=true" ); } else { ActivityImpl
      * compensatedActivity = sourceActivity.getParentActivity(); compensatedActivity.setProperty(BpmnParse .PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId()); } } }
      */
-  }
-
-  protected Map<String, Object> processDataObjects(BpmnParse bpmnParse, Collection<ValuedDataObject> dataObjects) {
-    Map<String, Object> variablesMap = new HashMap<String, Object>();
-    // convert data objects to process variables
-    if (dataObjects != null) {
-      for (ValuedDataObject dataObject : dataObjects) {
-        variablesMap.put(dataObject.getName(), dataObject.getValue());
-      }
-    }
-    return variablesMap;
   }
 }

@@ -81,8 +81,7 @@ public class DestroyScopeOperation extends AbstractOperation {
     }
 
     // Not a scope anymore
-    parentScopeExecution.setScope(false);
-    parentScopeExecution.setCurrentFlowElement(currentFlowElement);
+    executionEntityManager.delete(parentScopeExecution);
   }
 
 }

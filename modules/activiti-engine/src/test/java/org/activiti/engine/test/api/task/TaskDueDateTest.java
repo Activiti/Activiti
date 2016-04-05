@@ -42,22 +42,10 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
     Date now = processEngineConfiguration.getClock().getCurrentTime();
 
     // 4 tasks with a due date
-    createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4
-                                                                                        // weeks
-                                                                                        // in
-                                                                                        // future
-    createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2
-                                                                                  // days
-                                                                                  // in
-                                                                                  // future
-    createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1
-                                                                                   // week
-                                                                                   // in
-                                                                                   // future
-    createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1
-                                                                              // day
-                                                                              // in
-                                                                              // future
+    createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
+    createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
+    createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
+    createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1 day in future
 
     // 2 tasks without a due date
     createTask("task4", null);

@@ -34,13 +34,9 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
   protected String email;
   protected String password;
 
-  protected final ByteArrayRef pictureByteArrayRef = new ByteArrayRef();
+  protected ByteArrayRef pictureByteArrayRef;
 
   public UserEntityImpl() {
-  }
-
-  public UserEntityImpl(String id) {
-    this.id = id;
   }
 
   public Object getPersistentState() {
@@ -49,7 +45,11 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
     persistentState.put("lastName", lastName);
     persistentState.put("email", email);
     persistentState.put("password", password);
-    persistentState.put("pictureByteArrayId", pictureByteArrayRef.getId());
+    
+    if (pictureByteArrayRef != null) {
+      persistentState.put("pictureByteArrayId", pictureByteArrayRef.getId());
+    }
+    
     return persistentState;
   }
 
@@ -58,7 +58,7 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
   }
 
   public Picture getPicture() {
-    if (pictureByteArrayRef.getId() != null) {
+    if (pictureByteArrayRef != null && pictureByteArrayRef.getId() != null) {
       return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
     }
     return null;
@@ -73,11 +73,16 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
   }
 
   protected void savePicture(Picture picture) {
+    if (pictureByteArrayRef != null) {
+      pictureByteArrayRef = new ByteArrayRef();
+    }
     pictureByteArrayRef.setValue(picture.getMimeType(), picture.getBytes());
   }
   
   protected void deletePicture() {
-    pictureByteArrayRef.delete();
+    if (pictureByteArrayRef != null) {
+      pictureByteArrayRef.delete();
+    }
   }
   
   public String getId() {
@@ -129,7 +134,7 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
   }
 
   public boolean isPictureSet() {
-    return pictureByteArrayRef.getId() != null;
+    return pictureByteArrayRef != null && pictureByteArrayRef.getId() != null;
   }
 
   public ByteArrayRef getPictureByteArrayRef() {

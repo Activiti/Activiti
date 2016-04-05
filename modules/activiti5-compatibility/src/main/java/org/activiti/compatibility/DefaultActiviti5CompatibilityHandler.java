@@ -169,6 +169,16 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
+  public boolean isProcessDefinitionSuspended(String processDefinitionId) {
+    try {
+      return getProcessEngine().getRepositoryService().isProcessDefinitionSuspended(processDefinitionId);
+      
+    } catch (org.activiti5.engine.ActivitiException e) {
+      handleActivitiException(e);
+      return false;
+    }
+  }
+  
   public void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode) {
     try {
       getProcessEngine().getDynamicBpmnService().saveProcessDefinitionInfo(processDefinitionId, infoNode);
