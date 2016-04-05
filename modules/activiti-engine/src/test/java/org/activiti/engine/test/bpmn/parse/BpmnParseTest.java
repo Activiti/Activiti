@@ -13,8 +13,6 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -22,22 +20,10 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Appender;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.varia.NullAppender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
