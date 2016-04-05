@@ -107,9 +107,6 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
   /** The end result of the parsing: a list of process definition. */
   protected List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
 
-  /** A map for storing sequence flow based on their id during parsing. */
-  protected Map<String, SequenceFlow> sequenceFlows;
-
   protected BpmnParseHandlers bpmnParserHandlers;
 
   protected ProcessDefinitionEntity currentProcessDefinition;
@@ -400,7 +397,6 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
    * Parses the 'definitions' root element
    */
   protected void applyParseHandlers() {
-    sequenceFlows = new HashMap<String, SequenceFlow>();
     for (Process process : bpmnModel.getProcesses()) {
       currentProcess = process;
       if (process.isExecutable()) {
@@ -506,32 +502,8 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
         ProcessDefinitionEntity processDefinition = getProcessDefinition(process.getId());
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
-          
-          for (String edgeId : bpmnModel.getFlowLocationMap().keySet()) {
-            if (bpmnModel.getFlowElement(edgeId) != null) {
-              createBPMNEdge(edgeId, bpmnModel.getFlowLocationGraphicInfo(edgeId));
-            }
-          }
         }
       }
-    }
-  }
-
-  public void createBPMNEdge(String key, List<GraphicInfo> graphicList) {
-    FlowElement flowElement = bpmnModel.getFlowElement(key);
-    if (flowElement != null && sequenceFlows.containsKey(key)) {
-      SequenceFlow sequenceFlow = sequenceFlows.get(key);
-      List<Integer> waypoints = new ArrayList<Integer>();
-      for (GraphicInfo waypointInfo : graphicList) {
-        waypoints.add((int) waypointInfo.getX());
-        waypoints.add((int) waypointInfo.getY());
-      }
-      sequenceFlow.setWaypoints(waypoints);
-      
-    } else if (bpmnModel.getArtifact(key) != null) {
-      // it's an association, so nothing to do
-    } else {
-      LOGGER.warn("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + key + " not found");
     }
   }
 
@@ -630,10 +602,6 @@ public class BpmnParse implements BpmnParseXMLImportHandler, BpmnXMLConstants {
 
   public void setExpressionManager(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
-  }
-
-  public Map<String, SequenceFlow> getSequenceFlows() {
-    return sequenceFlows;
   }
 
   public Map<String, MessageDefinition> getMessages() {

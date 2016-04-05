@@ -32,6 +32,12 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Appender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.varia.NullAppender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -47,32 +53,6 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     } catch (XMLException e) {
       // expected exception
     }
-  }
-
-    /**
-     * Testing that sequence flows get registered correctly by the
-     * {@link org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler}
-     * when parsing a bpmn
-     */
-  public void testSequenceFlowMap() throws IOException {
-    processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
-      @Override
-      public Object execute(final CommandContext commandContext) {
-        final InputStream bpmn = ReflectUtil.getResourceAsStream("org/activiti/engine/test/bpmn/parse/testSequenceFlowMap.bpmn20.xml");
-        final BpmnParse bpmnParse;
-        try {
-          bpmnParse = processEngineConfiguration.getBpmnParser().createParse().sourceInputStream(
-                  IOUtils.toBufferedInputStream(bpmn));
-          bpmnParse.setValidateProcess(false);
-          bpmnParse.setDeployment(new DeploymentEntityImpl());
-          bpmnParse.execute();
-          assertEquals(2, bpmnParse.getSequenceFlows().size());
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-        return null;
-      }
-    });
   }
 
   public void testParseWithBpmnNamespacePrefix() {

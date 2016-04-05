@@ -32,7 +32,6 @@ public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceF
     org.activiti.bpmn.model.Process process = bpmnParse.getCurrentProcess();
     sequenceFlow.setSourceFlowElement(process.getFlowElement(sequenceFlow.getSourceRef(), true));
     sequenceFlow.setTargetFlowElement(process.getFlowElement(sequenceFlow.getTargetRef(), true));
-    bpmnParse.getSequenceFlows().put(sequenceFlow.getId(), sequenceFlow);
   }
 
 }
