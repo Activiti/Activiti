@@ -122,11 +122,10 @@ public class Context {
         
       } else {
         HashSet<Locale> candidateLocales = new LinkedHashSet<Locale>();
-        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, new Locale(language)));
-        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, Locale.getDefault()));
+        candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, Locale.forLanguageTag(language)));
         for (Locale locale : candidateLocales) {
           localizationProperties = getProcessEngineConfiguration().getDynamicBpmnService().getLocalizationElementProperties(
-              locale.getLanguage(), id, definitionInfoNode);
+              locale.toLanguageTag(), id, definitionInfoNode);
           
           if (localizationProperties != null) {
             break;

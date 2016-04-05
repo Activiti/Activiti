@@ -52,6 +52,11 @@ public interface Execution {
   String getParentId();
 
   /**
+   * Id of the root of the execution tree representing the process instance that has no super execution.
+   */
+  public String getRootProcessInstanceId();
+
+  /**
    * The tenant identifier of this process instance
    */
   String getTenantId();

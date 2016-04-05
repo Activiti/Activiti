@@ -518,6 +518,16 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       return variableValueLike(name, value, false);
     }
   }
+
+  @Override
+  public ProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value) {
+    if (inOrStatement) {
+        currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
+        return this;
+    } else {
+        return variableValueLikeIgnoreCase(name, value, false);
+    }
+  }
   
   public ProcessInstanceQuery locale(String locale) {
     this.locale = locale;
