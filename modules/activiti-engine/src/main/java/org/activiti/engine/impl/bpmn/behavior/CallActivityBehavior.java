@@ -176,10 +176,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   // Allow subclass to determine which version of a process to start.
   protected ProcessDefinitionEntity findProcessDefinition(String processDefinitionKey, String tenantId) {
-	if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
-	  return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
-	} else {
-	  return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-	}
+    if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+    } else {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    }
   }
 }
