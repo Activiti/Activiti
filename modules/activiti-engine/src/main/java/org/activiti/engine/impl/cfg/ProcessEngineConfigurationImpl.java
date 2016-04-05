@@ -1934,9 +1934,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   public void initHelpers() {
-	if(processInstanceHelper == null) {
-		processInstanceHelper = new ProcessInstanceHelper();
-	}
+    if (processInstanceHelper == null) {
+      processInstanceHelper = new ProcessInstanceHelper();
+    }
   }
 
   public void initVariableTypes() {
@@ -2544,7 +2544,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   public ProcessInstanceHelper getProcessInstanceHelper() {
-	return processInstanceHelper;
+    return processInstanceHelper;
   }
 
   public ProcessEngineConfigurationImpl setProcessInstanceHelper(ProcessInstanceHelper processInstanceHelper) {
