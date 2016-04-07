@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="expressionInJavaDelegate">
+    <documentation>This is a process for testing purposes</documentation>
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <serviceTask id="theTask" name="The service task" activiti:class="org.activiti.compatibility.test.delegate.DelegateWithExpression">
+      <extensionElements>
+        <activiti:field name="param" stringValue="helloWorld" />
+      </extensionElements>
+    </serviceTask>    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theUserTask" />
+    <userTask id="theUserTask"/>
+    <sequenceFlow id="flow3" sourceRef="theUserTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

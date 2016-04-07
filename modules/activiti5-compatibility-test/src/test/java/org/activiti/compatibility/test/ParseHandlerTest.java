@@ -24,6 +24,7 @@ public class ParseHandlerTest extends AbstractActiviti6CompatibilityTest {
   @Test
   public void testActiviti5ParseHandlersApplied() {
       Task task = taskService.createTaskQuery().processDefinitionKey("parseHandlerTestProcess").singleResult();
+      assertNotNull(task);
       assertEquals("The task-activiti 5", task.getName());
       
       runtimeService.startProcessInstanceByKey("parseHandlerTestProcess");

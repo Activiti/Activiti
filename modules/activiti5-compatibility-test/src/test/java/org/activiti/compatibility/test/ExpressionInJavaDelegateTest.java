@@ -19,25 +19,29 @@ import java.util.Map;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Test;
 
-public class JavaDelegateTest extends AbstractActiviti6CompatibilityTest {
+public class ExpressionInJavaDelegateTest extends AbstractActiviti6CompatibilityTest {
 
   @Test
   public void testActiviti5JavaDelegate() {
     
+    // This test checks if the usage of an Expression in a JavaDelegate remains the same as in v5
+    
     // Check data for existing process
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("javaDelegateTestProcess").singleResult();
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("expressionInJavaDelegate").singleResult();
     assertNotNull(processInstance);
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
-    assertNotNull(variables.get("testVar"));
+    String varValue = (String) variables.get("testVar");
+    assertEquals("helloWorld", varValue);
     
     // Redploying it. Note that we have a new delegate now!
-    repositoryService.createDeployment().addClasspathResource("javaDelegateProcess-activiti6.bpmn20.xml").deploy();
-    processInstance = runtimeService.startProcessInstanceByKey("javaDelegateTestProcess");
+    repositoryService.createDeployment().addClasspathResource("expressionInJavaDelegateProcess.bpmn20.xml").deploy();
+    processInstance = runtimeService.startProcessInstanceByKey("expressionInJavaDelegate");
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
-    assertNotNull(variables.get("testVarFromActiviti6"));
-    assertNull(variables.get("testVar"));
+    assertEquals(1, variables.size());
+    String varValueV6 = (String) variables.get("testVar");
+    assertEquals("helloWorld", varValueV6);
   }
 
 }
