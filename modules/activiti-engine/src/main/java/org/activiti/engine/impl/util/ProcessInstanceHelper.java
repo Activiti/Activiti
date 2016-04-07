@@ -38,21 +38,21 @@ import org.activiti.engine.runtime.ProcessInstance;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class ProcessInstanceUtil {
+public class ProcessInstanceHelper {
   
-  public static ProcessInstance createProcessInstance(ProcessDefinitionEntity processDefinition, 
+  public ProcessInstance createProcessInstance(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables) {
     
     return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, false);
   }
   
-  public static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
+  public ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables) {
     
     return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, true);
   }
   
-  protected static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
+  protected ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables, boolean startProcessInstance) {
     
     CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
@@ -82,7 +82,7 @@ public class ProcessInstanceUtil {
         processInstanceName, initialFlowElement, process, variables, startProcessInstance);
   }
 
-  public static ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinitionEntity processDefinition, String messageName, Map<String, Object> variables) {
+  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinitionEntity processDefinition, String messageName, Map<String, Object> variables) {
     CommandContext commandContext = Context.getCommandContext();
     if (processDefinition.getEngineVersion() != null) {
       if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
@@ -131,7 +131,7 @@ public class ProcessInstanceUtil {
     return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, true);
   }
 
-  protected static ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, 
+  protected ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, FlowElement initialFlowElement, 
       Process process, Map<String, Object> variables, boolean startProcessInstance) {
 
@@ -206,7 +206,7 @@ public class ProcessInstanceUtil {
     return processInstance;
   }
   
-  public static void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables) {
+  public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables) {
     ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
     commandContext.getAgenda().planContinueProcessOperation(execution);
     
@@ -216,7 +216,7 @@ public class ProcessInstanceUtil {
     }
   }
   
-  protected static Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
     Map<String, Object> variablesMap = new HashMap<String, Object>();
     // convert data objects to process variables
     if (dataObjects != null) {

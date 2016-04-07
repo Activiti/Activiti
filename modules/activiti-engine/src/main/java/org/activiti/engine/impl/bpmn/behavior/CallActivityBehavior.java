@@ -67,12 +67,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       finalProcessDefinitonKey = processDefinitonKey;
     }
 
-    ProcessDefinitionEntity processDefinition = null;
-    if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
-      processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(finalProcessDefinitonKey);
-    } else {
-      processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(finalProcessDefinitonKey, execution.getTenantId());
-    }
+    ProcessDefinitionEntity processDefinition = findProcessDefinition(finalProcessDefinitonKey, execution.getTenantId());
 
     // Get model from cache
     Process subProcess = ProcessDefinitionUtil.getProcess(processDefinition.getId());
@@ -177,5 +172,14 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public String getProcessDefinitonKey() {
     return processDefinitonKey;
+  }
+
+  // Allow subclass to determine which version of a process to start.
+  protected ProcessDefinitionEntity findProcessDefinition(String processDefinitionKey, String tenantId) {
+    if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+    } else {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    }
   }
 }

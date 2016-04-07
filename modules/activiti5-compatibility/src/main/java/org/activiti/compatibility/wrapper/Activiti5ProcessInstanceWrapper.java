@@ -49,6 +49,11 @@ public class Activiti5ProcessInstanceWrapper implements ProcessInstance {
   public String getProcessInstanceId() {
     return activiti5ProcessInstance.getProcessInstanceId();
   }
+  
+  @Override
+  public String getRootProcessInstanceId() {
+    return null;
+  }
 
   @Override
   public String getParentId() {
