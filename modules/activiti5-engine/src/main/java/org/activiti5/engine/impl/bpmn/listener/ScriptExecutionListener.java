@@ -15,8 +15,8 @@ package org.activiti5.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.el.Expression;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
 
 public class ScriptExecutionListener implements ExecutionListener {

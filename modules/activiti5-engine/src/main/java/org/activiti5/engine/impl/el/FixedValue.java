@@ -13,6 +13,7 @@
 
 package org.activiti5.engine.impl.el;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.ActivitiException;
 
