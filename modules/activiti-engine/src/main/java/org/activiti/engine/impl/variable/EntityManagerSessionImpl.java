@@ -100,7 +100,7 @@ public class EntityManagerSessionImpl implements EntityManagerSession {
           }
         };
 
-        TransactionContext transactionContext = Context.getCommandContext().getTransactionContext();
+        TransactionContext transactionContext = Context.getTransactionContext();
         transactionContext.addTransactionListener(TransactionState.COMMITTED, jpaTransactionCommitListener);
         transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, jpaTransactionRollbackListener);
 

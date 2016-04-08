@@ -12,15 +12,20 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.cfg.TransactionPropagation;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class JobAddedNotification implements TransactionListener {
+public class JobAddedNotification implements CommandContextCloseListener {
 
   private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
 
@@ -30,8 +35,29 @@ public class JobAddedNotification implements TransactionListener {
     this.jobExecutor = jobExecutor;
   }
 
-  public void execute(CommandContext commandContext) {
-    log.debug("notifying job executor of new job");
-    jobExecutor.jobWasAdded();
+  @Override
+  public void closed(CommandContext commandContext) {
+    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor(); 
+    CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW); 
+    commandExecutor.execute(commandConfig, new Command<Void>() {
+      public Void execute(CommandContext commandContext) {
+        log.debug("notifying job executor of new job");
+        jobExecutor.jobWasAdded();
+        return null;
+      }
+    });
   }
+  
+  @Override
+  public void closing(CommandContext commandContext) {
+  }
+
+  @Override
+  public void afterSessionsFlush(CommandContext commandContext) {
+  }
+
+  @Override
+  public void closeFailure(CommandContext commandContext) {
+  }
+  
 }

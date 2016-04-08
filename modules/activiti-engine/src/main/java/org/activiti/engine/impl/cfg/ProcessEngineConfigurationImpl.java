@@ -151,6 +151,7 @@ import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.interceptor.TransactionContextInterceptor;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.DefaultFailedJobCommandFactory;
@@ -955,7 +956,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       interceptors.add(transactionInterceptor);
     }
 
-    interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    if (commandContextFactory != null) {
+      interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    }
+    
+    if (transactionContextFactory != null) {
+      interceptors.add(new TransactionContextInterceptor(transactionContextFactory));
+    }
+    
     return interceptors;
   }
 

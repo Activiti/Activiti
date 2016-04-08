@@ -33,8 +33,6 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionListener;
-import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
@@ -176,17 +174,16 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
 
   protected void hintAsyncExecutor(JobEntity job) {
-
     // notify job executor:
-    TransactionListener transactionListener = new AsyncJobAddedNotification(job, getAsyncExecutor());
-    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    AsyncJobAddedNotification asyncJobAddedNotification = new AsyncJobAddedNotification(job, getAsyncExecutor());
+    getCommandContext().addCloseListener(asyncJobAddedNotification);
   }
 
   protected void hintJobExecutor(JobEntity job) {
 
     // notify job executor:
-    TransactionListener transactionListener = new JobAddedNotification(getJobExecutor());
-    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    JobAddedNotification jobAddedNotification = new JobAddedNotification(getJobExecutor());
+    getCommandContext().addCloseListener(jobAddedNotification);
   }
 
   @Override
