@@ -53,8 +53,6 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
 
   List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId);
 
-  Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId);
-
   Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId);
   
   Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId);

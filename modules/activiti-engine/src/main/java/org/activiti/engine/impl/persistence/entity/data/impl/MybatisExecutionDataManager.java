@@ -187,18 +187,6 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   }
 
   @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(2);
-    params.put("activityId", activityId);
-    params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
-      public boolean isRetained(ExecutionEntity entity) {
-        return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
-      }
-    }, true);
-  }
-
-  @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
     HashMap<String, Object> params = new HashMap<String, Object>(2);
     params.put("processInstanceId", processInstanceId);

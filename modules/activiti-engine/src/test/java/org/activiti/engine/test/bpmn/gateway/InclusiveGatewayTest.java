@@ -14,10 +14,12 @@ package org.activiti.engine.test.bpmn.gateway;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -488,6 +490,62 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     varMap.put("input", 3);
     processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwSkipExpression", varMap);
     assertTrue(processInstance.isEnded());
+  }
+  
+  @Deployment
+  public void testMultipleProcessInstancesMergedBug() {
+    
+    // Start first process instance, continue A. Process instance should be in C
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("testMultipleProcessInstancesMergedBug");
+    taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).taskName("A").singleResult().getId());
+    Task taskCInPi1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
+    assertNotNull(taskCInPi1);
+    
+    // Start second process instance, continue A. Process instance should be in B
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("testMultipleProcessInstancesMergedBug", CollectionUtil.singletonMap("var", "goToB"));
+    taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance2.getId()).taskName("A").singleResult().getId());
+    Task taskBInPi2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
+    assertNotNull(taskBInPi2);
+    
+    // Verify there is an inactive execution in the inclusive gateway before the task complete of process instance 1
+    // (cannot combine activityId and inactive together, hence the workaround)
+    assertEquals(2, getInactiveExecutionsInActivityId("inclusiveGw").size());
+    
+    // Completing C of PI 1 should not trigger C 
+    taskService.complete(taskCInPi1.getId());
+    
+    // Verify structure after complete.
+    // Before bugfix: in BOTH process instances the inactive execution was removed (result was 0)
+    assertEquals(1, getInactiveExecutionsInActivityId("inclusiveGw").size());
+    
+    assertEquals(1L, taskService.createTaskQuery().taskName("After Merge").count());
+    
+    // Finish both processes
+    
+    List<Task> tasks = taskService.createTaskQuery().list();
+    while (tasks.size() > 0) {
+      for (Task task : tasks) {
+        taskService.complete(task.getId());
+      }
+      tasks = taskService.createTaskQuery().list();
+    }
+    assertEquals(0L, runtimeService.createProcessInstanceQuery().count());
+    
+  }
+  
+  protected List<Execution> getInactiveExecutionsInActivityId(String activityId) {
+    List<Execution> result = new ArrayList<Execution>();
+    List<Execution> executions = runtimeService.createExecutionQuery().list();
+    Iterator<Execution> iterator = executions.iterator();
+    while (iterator.hasNext()) {
+      Execution execution = iterator.next();
+      if (execution.getActivityId() != null 
+          && execution.getActivityId().equals(activityId) 
+          && !((ExecutionEntity) execution).isActive()) {
+        result.add(execution);
+      }
+    }
+    return result;
   }
 
   /*

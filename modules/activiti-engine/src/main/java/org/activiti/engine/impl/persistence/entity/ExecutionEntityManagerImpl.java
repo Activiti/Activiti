@@ -167,11 +167,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId) {
-    return executionDataManager.findInactiveExecutionsByActivityId(activityId);
-  }
-
-  @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
     return executionDataManager.findInactiveExecutionsByProcessInstanceId(processInstanceId);
   }
