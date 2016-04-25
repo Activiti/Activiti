@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
@@ -35,6 +36,7 @@ import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableInstanceCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableInstancesCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.GetExecutionsVariablesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
@@ -142,6 +144,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public Map<String, VariableInstance> getVariableInstances(String executionId) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, false));
+  }
+  
+  public List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds) {
+    return commandExecutor.execute(new GetExecutionsVariablesCmd(executionIds));
   }
   
   public Map<String, VariableInstance> getVariableInstances(String executionId, String locale, boolean withLocalizationFallback) {
