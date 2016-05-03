@@ -487,6 +487,29 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     }
   }
   
+  
+  // Unit test for https://activiti.atlassian.net/browse/ACT-4152
+  public void testQueryWithIncludeTaskVariableAndTaskCategory() {
+  	List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee("gonzo").list();
+  	for (HistoricTaskInstance task : tasks) {
+  		assertNotNull(task.getCategory());
+  		assertEquals("testCategory", task.getCategory());
+  	}
+  	
+  	tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee("gonzo").includeTaskLocalVariables().list();
+  	for (HistoricTaskInstance task : tasks) {
+  		assertNotNull(task.getCategory());
+  		assertEquals("testCategory", task.getCategory());
+  	}
+  	
+
+  	tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee("gonzo").includeProcessVariables().list();
+  	for (HistoricTaskInstance task : tasks) {
+  		assertNotNull(task.getCategory());
+  		assertEquals("testCategory", task.getCategory());
+  	}
+  }
+  
   /**
    * Generates some test tasks. - 2 tasks where kermit is a candidate and 1 task
    * where gonzo is assignee
@@ -514,6 +537,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     task.setName("gonzoTask");
     task.setDescription("gonzo description");
     task.setPriority(4);    
+    task.setCategory("testCategory");
     taskService.saveTask(task);
     taskService.setAssignee(task.getId(), "gonzo");
     taskService.setVariableLocal(task.getId(), "testVar", "someVariable");
