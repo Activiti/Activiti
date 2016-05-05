@@ -27,6 +27,8 @@ public interface VariableInstanceEntity extends VariableInstance {
   
   void setExecution(ExecutionEntity execution);
 
+  ExecutionEntity getExecution();
+  
   void forceUpdate();
 
   ByteArrayRef getByteArrayRef();

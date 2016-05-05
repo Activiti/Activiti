@@ -25,13 +25,13 @@ public interface VariableInstance extends ValueFields, Entity, HasRevision {
   
   void setName(String name);
   
-  String getLocalizedName();
+//  String getLocalizedName();
+//  
+//  void setLocalizedName(String name);
   
-  void setLocalizedName(String name);
-  
-  String getLocalizedDescription();
-
-  void setLocalizedDescription(String description);
+//  String getLocalizedDescription();
+//
+//  void setLocalizedDescription(String description);
 
   void setProcessInstanceId(String processInstanceId);
 
@@ -53,4 +53,5 @@ public interface VariableInstance extends ValueFields, Entity, HasRevision {
 
   String getExecutionId();
 
+  ExecutionEntity getExecution();
 }
