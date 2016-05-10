@@ -40,6 +40,7 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
     }
     
     if (userId != null) {
+      task.setClaimTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
       if (task.getAssignee() != null) {
         if (!task.getAssignee().equals(userId)) {
@@ -49,7 +50,6 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
           throw new ActivitiTaskAlreadyClaimedException(task.getId(), task.getAssignee());
         }
       } else {
-        task.setClaimTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
         commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
       }
     } else {
