@@ -153,22 +153,30 @@ public class JobRetryCmd implements Command<Object> {
         activity = execution.getProcessDefinition().findActivity(job.getJobHandlerConfiguration());
       }
     } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
-    	DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-      String processId = job.getJobHandlerConfiguration();
-      if (job instanceof TimerEntity) {
-         processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
-      }
       
-      
-      ProcessDefinitionEntity processDefinition = null;
-      if (job.getTenantId() != null && job.getTenantId().length() > 0) {
-        processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
+      DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+      if (TimerEventHandler.hasRealActivityId(job.getJobHandlerConfiguration())) {
+        
+        ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(job.getProcessDefinitionId());
+        String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
+        activity = processDefinition.findActivity(activityId);
+        
       } else {
-        processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processId);
-      }
-      
-      if (processDefinition != null) {
-        activity = processDefinition.getInitial();
+        String processId = job.getJobHandlerConfiguration();
+        if (job instanceof TimerEntity) {
+           processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
+        }
+        
+        ProcessDefinitionEntity processDefinition = null;
+        if (job.getTenantId() != null && job.getTenantId().length() > 0) {
+          processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
+        } else {
+          processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processId);
+        }
+        
+        if (processDefinition != null) {
+          activity = processDefinition.getInitial();
+        }
       }
       
     } else if (AsyncContinuationJobHandler.TYPE.equals(type)) {

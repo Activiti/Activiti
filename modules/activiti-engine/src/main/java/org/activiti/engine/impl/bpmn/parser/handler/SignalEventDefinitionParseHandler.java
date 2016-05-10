@@ -47,6 +47,8 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
     
     ActivityImpl activity = bpmnParse.getCurrentActivity();
     if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
+      
+      activity.setProperty("type", "signalStartEvent");
     
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
       eventSubscriptionDeclaration.setActivityId(activity.getId());

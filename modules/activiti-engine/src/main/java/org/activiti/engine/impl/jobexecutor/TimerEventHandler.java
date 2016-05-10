@@ -20,6 +20,7 @@ public class TimerEventHandler {
 
   public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
   public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
+  public static final String PROPERTYNAME_PROCESS_DEFINITION_KEY = "processDefinitionKey";
 
   public static String createConfiguration(String id, Expression endDate) {
     JSONObject cfgJson = new JSONObject();
@@ -31,29 +32,29 @@ public class TimerEventHandler {
   }
 
   public String setActivityIdToConfiguration(String jobHandlerConfiguration, String activityId) {
-    try{
+    try {
       JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
       cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, activityId);
       return cfgJson.toString();
-    }catch (JSONException ex){
+    } catch (JSONException ex){
       return jobHandlerConfiguration;
     }
   }
 
   public static String getActivityIdFromConfiguration(String jobHandlerConfiguration) {
-   try{
+   try {
      JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
      return  cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID).toString();
-   }catch (JSONException ex){
+   } catch (JSONException ex){
     return jobHandlerConfiguration;
    }
   }
 
   public String setEndDateToConfiguration(String jobHandlerConfiguration, String endDate) {
     JSONObject cfgJson =null;
-    try{
+    try {
       cfgJson = new JSONObject(jobHandlerConfiguration);
-    }catch (JSONException ex){
+    } catch (JSONException ex){
       //create the json config
       cfgJson = new JSONObject();
       cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, jobHandlerConfiguration);
@@ -69,9 +70,47 @@ public class TimerEventHandler {
     try{
       JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
       return  cfgJson.get(PROPERTYNAME_END_DATE_EXPRESSION).toString();
-    }catch (JSONException ex){
+    } catch (JSONException ex){
       return null;
     }
+  }
+  
+  public String setProcessDefinitionKeyToConfiguration(String jobHandlerConfiguration, String activityId) {
+    try{
+      JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
+      cfgJson.put(PROPERTYNAME_PROCESS_DEFINITION_KEY, activityId);
+      return cfgJson.toString();
+    } catch (JSONException ex){
+      return jobHandlerConfiguration;
+    }
+  }
+  
+  public String getProcessDefinitionKeyFromConfiguration(String jobHandlerConfiguration) {
+    try{
+      JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
+      return  cfgJson.get(PROPERTYNAME_PROCESS_DEFINITION_KEY).toString();
+    } catch (JSONException ex){
+      return null;
+    }
+  }
+
+  /**
+   * Before Activiti 5.21, the jobHandlerConfiguration would have as activityId the process definition key
+   * (as only one timer start event was supported). In >= 5.21, this changed and in >= 5.21 the activityId 
+   * is the REAL activity id. It can be recognized by having the 'processDefinitionKey' in the configuration.
+   * A < 5.21 job would not have that.
+   */
+  public static boolean hasRealActivityId(String jobHandlerConfiguration) {
+    try{
+      JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
+      Object processDefinitionKey = cfgJson.get(PROPERTYNAME_PROCESS_DEFINITION_KEY);
+      if (processDefinitionKey != null) {
+        return processDefinitionKey.toString().length() > 0;
+      }
+    }catch (JSONException ex){
+      return false;
+    }
+    return false;
   }
 
 }
