@@ -23,7 +23,7 @@
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_)
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
@@ -42,13 +42,14 @@
             #{category, jdbcType=VARCHAR},
             #{suspensionState, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR},
-            #{formKey, jdbcType=VARCHAR}
+            #{formKey, jdbcType=VARCHAR},
+            #{claimTime, jdbcType=TIMESTAMP}
            )
   </insert>
 
   <insert id="bulkInsertTask" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_)
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_)
     VALUES 
       <foreach collection="list" item="task" index="index" separator=","> 
         (#{task.id, jdbcType=VARCHAR},
@@ -69,7 +70,8 @@
          #{task.category, jdbcType=VARCHAR},
          #{task.suspensionState, jdbcType=INTEGER},
          #{task.tenantId, jdbcType=VARCHAR},
-         #{task.formKey, jdbcType=VARCHAR})
+         #{task.formKey, jdbcType=VARCHAR},
+         #{task.claimTime, jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
@@ -78,7 +80,7 @@
       <foreach collection="list" item="task" index="index">
         INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
              ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
-             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_) VALUES 
+             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_) VALUES
         (#{task.id, jdbcType=VARCHAR},
          1,
          #{task.name, jdbcType=VARCHAR},
@@ -97,7 +99,8 @@
          #{task.category, jdbcType=VARCHAR},
          #{task.suspensionState, jdbcType=INTEGER},
          #{task.tenantId, jdbcType=VARCHAR},
-         #{task.formKey, jdbcType=VARCHAR})
+         #{task.formKey, jdbcType=VARCHAR},
+         #{task.claimTime, jdbcType=TIMESTAMP})
     </foreach>
     SELECT * FROM dual
   </insert>
@@ -121,7 +124,8 @@
       DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
       CATEGORY_ = #{category, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
-      FORM_KEY_ = #{formKey, jdbcType=INTEGER}
+      FORM_KEY_ = #{formKey, jdbcType=INTEGER},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -194,6 +198,7 @@
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
   </resultMap>
   
   <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
@@ -216,6 +221,7 @@
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -295,8 +301,8 @@
     TEMPRES_PARENT_TASK_ID_ as PARENT_TASK_ID_, TEMPRES_DESCRIPTION_ as DESCRIPTION_,
     TEMPRES_PRIORITY_ as PRIORITY_, TEMPRES_CREATE_TIME_ as CREATE_TIME_,
     TEMPRES_OWNER_ as OWNER_, TEMPRES_ASSIGNEE_ as ASSIGNEE_, TEMPRES_DELEGATION_ as DELEGATION_,
-    TEMPRES_FORM_KEY_ as FORM_KEY_, TEMPRES_EXECUTION_ID_ as EXECUTION_ID_, TEMPRES_PROC_INST_ID_ as PROC_INST_ID_,
-    TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_TASK_DEF_KEY_ as TASK_DEF_KEY_,
+    TEMPRES_FORM_KEY_ as FORM_KEY_, TEMPRES_CLAIM_TIME_ as CLAIM_TIME_, TEMPRES_EXECUTION_ID_ as EXECUTION_ID_,
+    TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_TASK_DEF_KEY_ as TASK_DEF_KEY_,
     TEMPRES_DUE_DATE_ as DUE_DATE_, TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_, TEMPRES_CATEGORY_ as CATEGORY_,
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
     TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
@@ -307,8 +313,8 @@
     RES.PARENT_TASK_ID_ as TEMPRES_PARENT_TASK_ID_, RES.DESCRIPTION_ as TEMPRES_DESCRIPTION_,
     RES.PRIORITY_ as TEMPRES_PRIORITY_, RES.CREATE_TIME_ as TEMPRES_CREATE_TIME_,
     RES.OWNER_ as TEMPRES_OWNER_, RES.ASSIGNEE_ as TEMPRES_ASSIGNEE_, RES.DELEGATION_ as TEMPRES_DELEGATION_,
-    RES.FORM_KEY_ as TEMPRES_FORM_KEY_, RES.EXECUTION_ID_ as TEMPRES_EXECUTION_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
-    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.TASK_DEF_KEY_ as TEMPRES_TASK_DEF_KEY_,
+    RES.FORM_KEY_ as TEMPRES_FORM_KEY_, RES.CLAIM_TIME_ as TEMPRES_CLAIM_TIME, RES.EXECUTION_ID_ as TEMPRES_EXECUTION_ID_,
+    RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.TASK_DEF_KEY_ as TEMPRES_TASK_DEF_KEY_,
     RES.DUE_DATE_ as TEMPRES_DUE_DATE_, RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_, RES.CATEGORY_ as TEMPRES_CATEGORY_,
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,

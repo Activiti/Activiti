@@ -136,6 +136,7 @@ create table ACT_RU_TASK (
     SUSPENSION_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',
     FORM_KEY_ nvarchar(255),
+    CLAIM_TIME_ datetime,
     primary key (ID_)
 );
 

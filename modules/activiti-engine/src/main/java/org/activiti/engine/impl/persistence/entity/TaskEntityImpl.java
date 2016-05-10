@@ -91,6 +91,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected boolean forcedUpdate;
 
+  protected Date claimTime;
+
   public TaskEntityImpl() {
     
   }
@@ -127,6 +129,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);
+    }
+
+    if (claimTime != null) {
+      persistentState.put("claimTime", this.claimTime);
     }
 
     return persistentState;
@@ -587,7 +593,15 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
-  
+
+  public Date getClaimTime() {
+    return claimTime;
+  }
+
+  public void setClaimTime(Date claimTime) {
+    this.claimTime = claimTime;
+  }
+
   public String toString() {
     return "Task[id=" + id + ", name=" + name + "]";
   }

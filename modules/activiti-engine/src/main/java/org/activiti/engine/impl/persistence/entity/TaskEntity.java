@@ -67,5 +67,7 @@ public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, H
   
   void setDeleted(boolean isDeleted);
 
-  
+  Date getClaimTime();
+
+  void setClaimTime(Date claimTime);
 }
