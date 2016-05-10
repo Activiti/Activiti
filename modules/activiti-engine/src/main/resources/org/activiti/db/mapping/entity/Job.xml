@@ -104,6 +104,7 @@
     <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
     <result property="exceptionByteArrayRef" column="EXCEPTION_STACK_ID_" typeHandler="ByteArrayRefTypeHandler" />
     <result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="VARCHAR" />
+    <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
     <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="VARCHAR" />
     <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />

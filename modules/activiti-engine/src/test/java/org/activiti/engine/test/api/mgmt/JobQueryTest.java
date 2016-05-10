@@ -205,7 +205,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 1);
     
     query = managementService.createJobQuery().duedateLowerThan(new Date(timerTwoFireTime.getTime() + ONE_SECOND));
-    verifyQueryResults(query, 2);
+    verifyQueryResults(query, 3);
     
     query = managementService.createJobQuery().duedateLowerThan(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 4);
@@ -219,7 +219,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 3);
     
     query = managementService.createJobQuery().duedateHigherThan(timerTwoFireTime);
-    verifyQueryResults(query, 2);
+    verifyQueryResults(query, 1);
     
     query = managementService.createJobQuery().duedateHigherThan(timerThreeFireTime);
     verifyQueryResults(query, 0);
