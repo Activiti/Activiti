@@ -29,6 +29,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -144,6 +145,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
+    subProcessInstance.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
 
     // Inherit tenant id (if any)
     if (processDefinitionEntity.getTenantId() != null) {
