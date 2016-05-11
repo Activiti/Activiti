@@ -131,7 +131,7 @@ public class ProcessInstanceHelper {
     return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, true);
   }
 
-  protected ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, 
+  public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, FlowElement initialFlowElement, 
       Process process, Map<String, Object> variables, boolean startProcessInstance) {
 

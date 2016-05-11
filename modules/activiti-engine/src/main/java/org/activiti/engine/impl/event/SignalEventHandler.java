@@ -15,15 +15,13 @@ package org.activiti.engine.impl.event;
 
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
-import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Daniel Meyer
@@ -41,25 +39,28 @@ public class SignalEventHandler extends AbstractEventHandler {
   @Override
   public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
     if (eventSubscription.getExecutionId() != null) {
+      
       super.handleEvent(eventSubscription, payload, commandContext);
 
     } else if (eventSubscription.getProcessDefinitionId() != null) {
-      // Start event
+      
+      // Find initial flow element matching the signal start event
       String processDefinitionId = eventSubscription.getProcessDefinitionId();
-      DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
-
-      ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-      if (processDefinition == null) {
-        throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+      FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
+      if (flowElement == null) {
+        throw new ActivitiException("Could not find matching FlowElement for activityId " + eventSubscription.getActivityId());
       }
-
+      
+      // Start process instance via that flow element
       Map<String, Object> variables = null;
       if (payload != null && payload instanceof Map) {
         variables = (Map<String, Object>) payload;
       }
-
       ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-      processInstanceHelper.createAndStartProcessInstance(processDefinition, null, null, variables);
+      processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, variables, true);
+      
     } else {
       throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
     }
