@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.LockedJobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +32,9 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteAsyncJobCmd.class);
 
-  protected JobEntity job;
+  protected LockedJobEntity job;
 
-  public ExecuteAsyncJobCmd(JobEntity job) {
+  public ExecuteAsyncJobCmd(LockedJobEntity job) {
     this.job = job;
   }
 
@@ -48,7 +48,7 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
       log.debug("Executing async job {}", job.getId());
     }
 
-    commandContext.getJobEntityManager().execute(job);
+    commandContext.getLockedJobEntityManager().execute(job);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));

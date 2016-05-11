@@ -15,21 +15,17 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+ * @author Vasile Dirla
  */
-public interface TimerEntity extends JobEntity {
+public interface LockedJobEntity extends JobEntity {
 
-  String getRepeat();
+  String getLockOwner();
 
-  void setRepeat(String repeat);
+  void setLockOwner(String claimedBy);
 
-  Date getEndDate();
+  Date getLockExpirationTime();
 
-  void setEndDate(Date endDate);
+  void setLockExpirationTime(Date claimedUntil);
 
-  int getMaxIterations();
-
-  void setMaxIterations(int maxIterations);
 
 }

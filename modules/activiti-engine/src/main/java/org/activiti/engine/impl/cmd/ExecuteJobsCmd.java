@@ -41,24 +41,24 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
   private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
 
   protected String jobId;
-  protected JobEntity job;
-
+  
   public ExecuteJobsCmd(String jobId) {
     this.jobId = jobId;
   }
 
-  public ExecuteJobsCmd(JobEntity job) {
-    this.job = job;
-  }
-
   public Object execute(CommandContext commandContext) {
 
-    if (jobId == null && job == null) {
+    if (jobId == null) {
       throw new ActivitiIllegalArgumentException("jobId and job is null");
     }
 
+    JobEntity job = commandContext.getJobEntityManager().findById(jobId);
     if (job == null) {
-      job = commandContext.getJobEntityManager().findById(jobId);
+      job = commandContext.getTimerJobEntityManager().findById(jobId);
+      
+      if (job == null) {
+        job = commandContext.getLockedJobEntityManager().findById(jobId);
+      }
     }
 
     if (job == null) {
@@ -78,7 +78,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     commandContext.addCloseListener(new ManualJobExecutionCommandContextCloseListener(job));
 
     try {
-      commandContext.getJobEntityManager().execute(job);
+      commandContext.getJobManager().execute(job);
     } catch (Throwable exception) {
       // Finally, Throw the exception to indicate the ExecuteJobCmd failed
       throw new ActivitiException("Job " + jobId + " failed", exception);

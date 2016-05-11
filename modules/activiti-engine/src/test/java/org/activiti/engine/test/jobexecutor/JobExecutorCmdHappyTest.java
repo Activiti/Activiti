@@ -15,14 +15,12 @@ package org.activiti.engine.test.jobexecutor;
 import java.util.Date;
 
 import org.activiti.engine.impl.asyncexecutor.AcquiredJobEntities;
-import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -36,8 +34,8 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageEntity message = createTweetMessage("i'm coding a test");
-        commandContext.getJobEntityManager().send(message);
+        JobEntity message = createTweetMessage("i'm coding a test");
+        commandContext.getJobManager().scheduleAsyncJob(message);
         return message.getId();
       }
     });
@@ -66,8 +64,8 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        TimerEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
-        commandContext.getJobEntityManager().schedule(timer);
+        TimerJobEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
+        commandContext.getJobManager().scheduleTimerJob(timer);
         return timer.getId();
       }
     });

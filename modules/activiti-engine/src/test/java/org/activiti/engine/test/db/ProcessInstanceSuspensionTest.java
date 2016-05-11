@@ -6,12 +6,11 @@ import java.util.List;
 
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.asyncexecutor.AcquiredJobEntities;
-import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
@@ -87,7 +86,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Check if timer is eligible to be executed, when process in not yet
     // suspended
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
+    List<? extends JobEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(1, jobs.size());
 
     // Suspend process instance

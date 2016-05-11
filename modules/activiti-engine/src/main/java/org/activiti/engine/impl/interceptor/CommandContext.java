@@ -25,6 +25,7 @@ import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.agenda.Agenda;
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -49,6 +50,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.LockedJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
@@ -57,6 +59,7 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.logging.LogMDC;
@@ -326,6 +329,14 @@ public class CommandContext {
   public JobEntityManager getJobEntityManager() {
     return processEngineConfiguration.getJobEntityManager();
   }
+  
+  public LockedJobEntityManager getLockedJobEntityManager() {
+    return processEngineConfiguration.getLockedJobEntityManager();
+  }
+  
+  public TimerJobEntityManager getTimerJobEntityManager() {
+    return processEngineConfiguration.getTimerJobEntityManager();
+  }
 
   public UserEntityManager getUserEntityManager() {
     return processEngineConfiguration.getUserEntityManager();
@@ -365,6 +376,10 @@ public class CommandContext {
 
   public HistoryManager getHistoryManager() {
     return processEngineConfiguration.getHistoryManager();
+  }
+  
+  public JobManager getJobManager() {
+    return processEngineConfiguration.getJobManager();
   }
 
   // Involved executions ////////////////////////////////////////////////////////

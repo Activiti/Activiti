@@ -23,7 +23,6 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti5.engine.test.ActivitiRule;
 
 
@@ -51,23 +50,15 @@ public class JobTestHelper {
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
       ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
     
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     org.activiti5.engine.impl.asyncexecutor.AsyncExecutor activiti5AsyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
+    asyncExecutor.start();
       
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-      
-      org.activiti5.engine.ProcessEngineConfiguration activiti5ProcessEngineConfig = (org.activiti5.engine.ProcessEngineConfiguration) 
-          ((ProcessEngineConfigurationImpl) processEngineConfiguration).getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-      activiti5AsyncExecutor = activiti5ProcessEngineConfig.getAsyncExecutor();
-      if (activiti5AsyncExecutor != null) {
-        activiti5AsyncExecutor.start();
-      }
+    org.activiti5.engine.ProcessEngineConfiguration activiti5ProcessEngineConfig = (org.activiti5.engine.ProcessEngineConfiguration) 
+        ((ProcessEngineConfigurationImpl) processEngineConfiguration).getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5AsyncExecutor = activiti5ProcessEngineConfig.getAsyncExecutor();
+    if (activiti5AsyncExecutor != null) {
+      activiti5AsyncExecutor.start();
     }
 
     try {
@@ -96,14 +87,10 @@ public class JobTestHelper {
 
     } finally {
     	if (shutdownExecutorWhenFinished) {
-	      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-	        jobExecutor.shutdown();
-	      } else {
-	        asyncExecutor.shutdown();
-	        if (activiti5AsyncExecutor != null) {
-	          activiti5AsyncExecutor.shutdown();
-	        }
-	      }
+	      asyncExecutor.shutdown();
+        if (activiti5AsyncExecutor != null) {
+          activiti5AsyncExecutor.shutdown();
+        }
     	}
     }
   }
@@ -164,16 +151,8 @@ public class JobTestHelper {
   public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, 
       long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
     
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-      
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-    }
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -198,11 +177,7 @@ public class JobTestHelper {
       }
 
     } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-      }
+      asyncExecutor.shutdown();
     }
   }
   
@@ -211,23 +186,15 @@ public class JobTestHelper {
   }
   
   public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     org.activiti5.engine.impl.asyncexecutor.AsyncExecutor activiti5AsyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
+    asyncExecutor.start();
       
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-      
-      org.activiti5.engine.ProcessEngineConfiguration activiti5ProcessEngineConfig = (org.activiti5.engine.ProcessEngineConfiguration) 
-          ((ProcessEngineConfigurationImpl) processEngineConfiguration).getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-      activiti5AsyncExecutor = activiti5ProcessEngineConfig.getAsyncExecutor();
-      if (activiti5AsyncExecutor != null) {
-        activiti5AsyncExecutor.start();
-      }
+    org.activiti5.engine.ProcessEngineConfiguration activiti5ProcessEngineConfig = (org.activiti5.engine.ProcessEngineConfiguration) 
+        ((ProcessEngineConfigurationImpl) processEngineConfiguration).getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    activiti5AsyncExecutor = activiti5ProcessEngineConfig.getAsyncExecutor();
+    if (activiti5AsyncExecutor != null) {
+      activiti5AsyncExecutor.start();
     }
 
     try {
@@ -245,13 +212,9 @@ public class JobTestHelper {
       }
 
     } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-        if (activiti5AsyncExecutor != null) {
-          activiti5AsyncExecutor.shutdown();
-        }
+      asyncExecutor.shutdown();
+      if (activiti5AsyncExecutor != null) {
+        activiti5AsyncExecutor.shutdown();
       }
     }
   }

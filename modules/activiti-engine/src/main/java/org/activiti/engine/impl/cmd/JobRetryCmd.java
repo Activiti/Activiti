@@ -26,15 +26,10 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.DurationHelper;
-import org.activiti.engine.impl.cfg.TransactionContext;
-import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +72,7 @@ public class JobRetryCmd implements Command<Object> {
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
       job.setLockExpirationTime(null);
-      if (job.getDuedate() == null || job instanceof MessageEntity) {
+      if (job.getDuedate() == null || JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
         // add wait time for failed async job
         job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
       } else {
@@ -117,13 +112,6 @@ public class JobRetryCmd implements Command<Object> {
     if (eventDispatcher.isEnabled()) {
       eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
       eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
-    }
-
-    if (processEngineConfig.isAsyncExecutorEnabled() == false) {
-      JobExecutor jobExecutor = processEngineConfig.getJobExecutor();
-      JobAddedNotification messageAddedNotification = new JobAddedNotification(jobExecutor);
-      TransactionContext transactionContext = commandContext.getTransactionContext();
-      transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
     }
 
     return null;

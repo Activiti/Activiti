@@ -77,7 +77,6 @@ public class MultiTenantProcessEngineTest {
     config.setDatabaseType(MultiSchemaMultiTenantProcessEngineConfiguration.DATABASE_TYPE_H2);
     config.setDatabaseSchemaUpdate(MultiSchemaMultiTenantProcessEngineConfiguration.DB_SCHEMA_UPDATE_DROP_CREATE);
     
-    config.setAsyncExecutorEnabled(true);
     config.setAsyncExecutorActivate(true);
     
     

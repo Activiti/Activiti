@@ -41,12 +41,10 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
@@ -935,14 +933,13 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   
   protected org.activiti5.engine.impl.persistence.entity.JobEntity convertToActiviti5JobEntity(JobEntity job) {
     org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = null;
-    if (job instanceof TimerEntity) {
-      TimerEntity timer = (TimerEntity) job;
+    if (JobEntity.JOB_TYPE_TIMER.equals(job.getJobType())) {
       org.activiti5.engine.impl.persistence.entity.TimerEntity tempTimer = new org.activiti5.engine.impl.persistence.entity.TimerEntity();
-      tempTimer.setEndDate(timer.getEndDate());
-      tempTimer.setRepeat(timer.getRepeat());
+      tempTimer.setEndDate(job.getEndDate());
+      tempTimer.setRepeat(job.getRepeat());
       activity5Job = tempTimer;
       
-    } else if (job instanceof MessageEntity) {
+    } else if (JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
       org.activiti5.engine.impl.persistence.entity.MessageEntity tempTimer = new org.activiti5.engine.impl.persistence.entity.MessageEntity();
       activity5Job = tempTimer;
     }

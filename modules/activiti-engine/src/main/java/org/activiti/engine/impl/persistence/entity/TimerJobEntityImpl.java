@@ -14,12 +14,9 @@ package org.activiti.engine.impl.persistence.entity;
 
 
 /**
- * @author Tom Baeyens
+ * @author Tijs Rademakers
  */
-public interface MessageEntity extends JobEntity {
+public class TimerJobEntityImpl extends JobEntityImpl implements TimerJobEntity {
 
-  String getRepeat();
-
-  void setRepeat(String repeat);
-    
+  private static final long serialVersionUID = 1L;
 }

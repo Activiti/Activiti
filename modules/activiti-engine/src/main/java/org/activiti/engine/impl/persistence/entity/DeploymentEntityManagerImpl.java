@@ -42,7 +42,6 @@ import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -136,15 +135,15 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
   }
   
   protected void removeTimerStartJobs(ProcessDefinition processDefinition) {
-    List<Job> timerStartJobs = getJobEntityManager()
+    List<TimerJobEntity> timerStartJobs = getTimerJobEntityManager()
         .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
     if (timerStartJobs != null && timerStartJobs.size() > 0) {
-      for (Job timerStartJob : timerStartJobs) {
+      for (TimerJobEntity timerStartJob : timerStartJobs) {
         if (getEventDispatcher().isEnabled()) {
           getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
         }
 
-        getJobEntityManager().delete((JobEntity) timerStartJob);
+        getTimerJobEntityManager().delete(timerStartJob);
       }
     }
   }
@@ -189,7 +188,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
   protected void restoreTimerStartEvent(ProcessDefinition previousProcessDefinition, StartEvent startEvent, EventDefinition eventDefinition) {
     TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
-    TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+    JobEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
         TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
     
     if (timer != null) {
@@ -199,7 +198,9 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
         timer.setTenantId(previousProcessDefinition.getTenantId());
       }
  
-      getJobEntityManager().schedule(timer);
+      TimerJobEntity timerJob = getJobManager().createTimerJob((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+          TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
+      getJobManager().scheduleTimerJob(timerJob);
     }
   }
 

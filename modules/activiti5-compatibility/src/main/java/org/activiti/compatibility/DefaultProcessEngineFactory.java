@@ -127,12 +127,11 @@ public class DefaultProcessEngineFactory {
   }
 
   protected void copyAsyncExecutorConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
-    if (activiti6Configuration.isAsyncExecutorEnabled()) {
-      activiti5Configuration.setAsyncExecutorEnabled(true);
-      if (activiti6Configuration.isAsyncExecutorActivate()) {
-        activiti5Configuration.setAsyncExecutorActivate(true);
-      }
+    activiti5Configuration.setAsyncExecutorEnabled(true);
+    if (activiti6Configuration.isAsyncExecutorActivate()) {
+      activiti5Configuration.setAsyncExecutorActivate(true);
     }
+    
     if (activiti6Configuration.getActiviti5AsyncExecutor() != null) {
       AsyncExecutor activiti5AsyncExecutor = (AsyncExecutor) activiti6Configuration.getActiviti5AsyncExecutor();
       activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);

@@ -22,7 +22,8 @@ import java.util.TreeSet;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.LockedJobEntityManager;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 
 /**
  * @author Tom Baeyens
@@ -33,15 +34,16 @@ public class JobExecutorTest extends JobExecutorTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        JobEntityManager jobManager = commandContext.getJobEntityManager();
-        jobManager.send(createTweetMessage("message-one"));
-        jobManager.send(createTweetMessage("message-two"));
-        jobManager.send(createTweetMessage("message-three"));
-        jobManager.send(createTweetMessage("message-four"));
+        LockedJobEntityManager jobManager = commandContext.getLockedJobEntityManager();
+        jobManager.execute(createTweetMessage("message-one"));
+        jobManager.execute(createTweetMessage("message-two"));
+        jobManager.execute(createTweetMessage("message-three"));
+        jobManager.execute(createTweetMessage("message-four"));
 
-        jobManager.schedule(createTweetTimer("timer-one", new Date()));
-        jobManager.schedule(createTweetTimer("timer-one", new Date()));
-        jobManager.schedule(createTweetTimer("timer-two", new Date()));
+        TimerJobEntityManager timerJobManager = commandContext.getTimerJobEntityManager();
+        timerJobManager.insert(createTweetTimer("timer-one", new Date()));
+        timerJobManager.insert(createTweetTimer("timer-one", new Date()));
+        timerJobManager.insert(createTweetTimer("timer-two", new Date()));
         return null;
       }
     });

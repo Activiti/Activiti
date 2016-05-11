@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serializable {
+public class JobEntityImpl implements JobEntity, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,11 @@ public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serial
 
   protected boolean isExclusive = DEFAULT_EXCLUSIVE;
 
-  protected int retries = DEFAULT_RETRIES;
+  protected int retries;
+  
+  protected int maxIterations;
+  protected String repeat;
+  protected Date endDate;
 
   protected String jobHandlerType;
   protected String jobHandlerConfiguration;
@@ -203,6 +207,30 @@ public abstract class JobEntityImpl implements JobEntity, BulkDeleteable, Serial
     this.processDefinitionId = processDefinitionId;
   }
 
+  public String getRepeat() {
+    return repeat;
+  }
+
+  public void setRepeat(String repeat) {
+    this.repeat = repeat;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
+
+  public int getMaxIterations() {
+    return maxIterations;
+  }
+
+  public void setMaxIterations(int maxIterations) {
+    this.maxIterations = maxIterations;
+  }
+  
   public String getJobHandlerType() {
     return jobHandlerType;
   }

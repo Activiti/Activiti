@@ -18,7 +18,7 @@ import java.util.List;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -108,7 +108,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database, and it is a message
     assertEquals(1, managementService.createJobQuery().count());
     Job job = managementService.createJobQuery().singleResult();
-    if (!(job instanceof MessageEntity)) {
+    if (JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
       fail("the job must be a message");
     }      
     

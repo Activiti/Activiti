@@ -28,8 +28,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
@@ -45,7 +43,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   private String deploymentId;
   private String messageId;
   private CommandExecutor commandExecutor;
-  private TimerEntity timerEntity;
+  private JobEntity timerEntity;
 
   private Date testStartTime;
   private Date timerOneFireTime;
@@ -98,8 +96,8 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     // Create one message
     messageId = commandExecutor.execute(new Command<String>() {
       public String execute(CommandContext commandContext) {
-        MessageEntity message = commandContext.getJobEntityManager().createMessage();
-        commandContext.getJobEntityManager().send(message);
+        JobEntity message = commandContext.getJobEntityManager().create();
+        commandContext.getJobManager().execute(message);
         return message.getId();
       }
     });
@@ -418,7 +416,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
 
-        timerEntity = commandContext.getJobEntityManager().createTimer();
+        timerEntity = commandContext.getJobEntityManager().create();
         timerEntity.setLockOwner(UUID.randomUUID().toString());
         timerEntity.setDuedate(new Date());
         timerEntity.setRetries(0);
@@ -445,7 +443,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
 
-        timerEntity = commandContext.getJobEntityManager().createTimer();
+        timerEntity = commandContext.getJobEntityManager().create();
         timerEntity.setLockOwner(UUID.randomUUID().toString());
         timerEntity.setDuedate(new Date());
         timerEntity.setRetries(0);

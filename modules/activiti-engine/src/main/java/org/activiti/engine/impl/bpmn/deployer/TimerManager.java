@@ -21,14 +21,14 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -55,14 +55,16 @@ public class TimerManager {
   }
   
   protected void scheduleTimers(ProcessDefinitionEntity processDefinition, Process process) {
-    List<TimerEntity> timers = getTimerDeclarations(processDefinition, process);
-    for (TimerEntity timer : timers) {
-      Context.getCommandContext().getJobEntityManager().schedule(timer);
+    JobManager jobManager = Context.getCommandContext().getJobManager();
+    List<TimerJobEntity> timers = getTimerDeclarations(processDefinition, process);
+    for (TimerJobEntity timer : timers) {
+      jobManager.scheduleTimerJob(timer);
     }
   }
   
-  protected List<TimerEntity> getTimerDeclarations(ProcessDefinitionEntity processDefinition, Process process) {
-    List<TimerEntity> timers = new ArrayList<TimerEntity>();
+  protected List<TimerJobEntity> getTimerDeclarations(ProcessDefinitionEntity processDefinition, Process process) {
+    JobManager jobManager = Context.getCommandContext().getJobManager();
+    List<TimerJobEntity> timers = new ArrayList<TimerJobEntity>();
     if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
@@ -71,16 +73,16 @@ public class TimerManager {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof TimerEventDefinition) {
               TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
-              TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+              TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, false, null, TimerStartEventJobHandler.TYPE,
                   TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
 
-              if (timer != null) {
-                timer.setProcessDefinitionId(processDefinition.getId());
+              if (timerJob != null) {
+                timerJob.setProcessDefinitionId(processDefinition.getId());
 
                 if (processDefinition.getTenantId() != null) {
-                  timer.setTenantId(processDefinition.getTenantId());
+                  timerJob.setTenantId(processDefinition.getTenantId());
                 }
-                timers.add(timer);
+                timers.add(timerJob);
               }
 
             }

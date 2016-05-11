@@ -511,6 +511,15 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     }
 
     // Delete jobs
+    TimerJobEntityManager timerJobEntityManager = getTimerJobEntityManager();
+    Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(executionEntity.getId());
+    for (TimerJobEntity job : timerJobsForExecution) {
+      getTimerJobEntityManager().delete(job);
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+      }
+    }
+    
     JobEntityManager jobEntityManager = getJobEntityManager();
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (JobEntity job : jobsForExecution) {
@@ -518,7 +527,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       if (getEventDispatcher().isEnabled()) {
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
       }
-//      jobEntityManager.delete(job, false); // false -> jobs fire the events themselves TODO: is this right?
     }
 
     // Delete event subscriptions

@@ -29,7 +29,7 @@ import javax.management.ObjectName;
 import javax.management.modelmbean.ModelMBean;
 
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.management.jmx.DefaultManagementMBeanAssembler;
 import org.activiti.management.jmx.ManagementMBeanAssembler;
 import org.junit.Before;
@@ -49,12 +49,12 @@ public class JobExecutorMBeanTest {
   protected ProcessEngineConfiguration processEngineConfiguration;
 
   @Mock
-  protected JobExecutor jobExecutor;
+  protected AsyncExecutor jobExecutor;
 
   @Before
   public void initMocks() throws MalformedObjectNameException {
     MockitoAnnotations.initMocks(this);
-    when(processEngineConfiguration.getJobExecutor()).thenReturn(jobExecutor);
+    when(processEngineConfiguration.getAsyncExecutor()).thenReturn(jobExecutor);
     jobExecutorMbean = new JobExecutorMBean(processEngineConfiguration);
   }
 

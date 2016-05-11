@@ -33,14 +33,11 @@ import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.impl.cmd.GetTableNameCmd;
 import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
-import org.activiti.engine.impl.jobexecutor.SingleJobExecutorContext;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.engine.runtime.JobQuery;
@@ -71,8 +68,6 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
       throw new ActivitiIllegalArgumentException("JobId is null");
     }
     
-    JobExecutorContext jobExecutorContext = new SingleJobExecutorContext();
-    Context.setJobExecutorContext(jobExecutorContext);
     try {
       commandExecutor.execute(new ExecuteJobsCmd(jobId));
     }
@@ -82,8 +77,6 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
       } else {
         throw new ActivitiException("Job " + jobId + " failed", e);
       }
-    } finally {
-      Context.removeJobExecutorContext();
     }
   }
 

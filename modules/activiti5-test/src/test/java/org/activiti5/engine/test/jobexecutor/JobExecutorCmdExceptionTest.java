@@ -6,7 +6,7 @@ package org.activiti5.engine.test.jobexecutor;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -32,8 +32,8 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageEntity message = createTweetExceptionMessage();
-        commandContext.getJobEntityManager().send(message);
+        JobEntity message = createTweetExceptionMessage();
+        commandContext.getJobManager().scheduleAsyncJob(message);
         return message.getId();
       }
     });
@@ -70,8 +70,8 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageEntity message = createTweetExceptionMessage();
-        commandContext.getJobEntityManager().send(message);
+        JobEntity message = createTweetExceptionMessage();
+        commandContext.getJobManager().scheduleAsyncJob(message);
         return message.getId();
       }
     });
@@ -112,8 +112,9 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     managementService.deleteJob(job.getId());
   }
 
-  protected MessageEntity createTweetExceptionMessage() {
-    MessageEntity message = processEngineConfiguration.getJobEntityManager().createMessage();
+  protected JobEntity createTweetExceptionMessage() {
+    JobEntity message = processEngineConfiguration.getJobEntityManager().create();
+    message.setJobType(JobEntity.JOB_TYPE_MESSAGE);
     message.setJobHandlerType("tweet-exception");
     return message;
   }

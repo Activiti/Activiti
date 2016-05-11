@@ -16,8 +16,8 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -98,7 +98,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.createProcessDefinitionQuery().processDefinitionKey("startTimerEventExample").singleResult();
     ActivitiEntityEvent processDefinitionCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition);
 
-    TimerEntity timer = (TimerEntity) managementService.createJobQuery().singleResult();
+    JobEntity timer = (JobEntity) managementService.createJobQuery().singleResult();
     ActivitiEntityEvent timerCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, timer);
     assertSequence(processDefinitionCreated, timerCreated);
     listener.clearEventsReceived();
@@ -137,7 +137,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
     listener = new TestMultipleActivitiEventListener();
     listener.setEventClasses(ActivitiEntityEvent.class);
-    listener.setEntityClasses(ProcessDefinition.class, TimerEntity.class);
+    listener.setEntityClasses(ProcessDefinition.class, JobEntity.class);
 
     processEngineConfiguration.getEventDispatcher().addEventListener(listener);
   }

@@ -64,7 +64,6 @@ public abstract class AbstractProcessEngineConfiguration {
     engine.setTransactionManager(transactionManager);
 
     if (null != springAsyncExecutor) {
-      engine.setAsyncExecutorEnabled(true);
       engine.setAsyncExecutor(springAsyncExecutor);
     }
 

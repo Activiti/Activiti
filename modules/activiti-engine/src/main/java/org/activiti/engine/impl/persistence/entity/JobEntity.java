@@ -21,16 +21,15 @@ import org.activiti.engine.runtime.Job;
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
  *
- * @author Tom Baeyens
- * @author Nick Burch
- * @author Dave Syer
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  * @author Joram Barrez
  */
 public interface JobEntity extends Job, Entity, HasRevision {
   
+  String JOB_TYPE_TIMER = "timer";
+  String JOB_TYPE_MESSAGE = "message";
+  
   boolean DEFAULT_EXCLUSIVE = true;
-  int DEFAULT_RETRIES = 3;
   int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
   void setExecution(ExecutionEntity execution);
@@ -74,6 +73,18 @@ public interface JobEntity extends Job, Entity, HasRevision {
   String getJobType();
 
   void setJobType(String jobType);
+  
+  String getRepeat();
+
+  void setRepeat(String repeat);
+
+  Date getEndDate();
+
+  void setEndDate(Date endDate);
+
+  int getMaxIterations();
+
+  void setMaxIterations(int maxIterations);
 
   void setTenantId(String tenantId);
 

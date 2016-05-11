@@ -12,14 +12,11 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
-import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -27,25 +24,11 @@ import org.activiti.engine.runtime.Job;
  */
 public interface JobDataManager extends DataManager<JobEntity> {
   
-  TimerEntity createTimer();
-  
-  MessageEntity createMessage();
-  
   List<JobEntity> findNextJobsToExecute(Page page);
-
-  List<JobEntity> findNextTimerJobsToExecute(Page page);
-
-  List<JobEntity> findAsyncJobsDueToExecute(Page page);
-
-  List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs);
 
   List<JobEntity> findJobsByExecutionId(final String executionId);
 
   List<JobEntity> findExclusiveJobsToExecute(String processInstanceId);
-
-  List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page);
-
-  List<TimerEntity> findTimersByExecutionId(String executionId);
 
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
   
@@ -60,7 +43,4 @@ public interface JobDataManager extends DataManager<JobEntity> {
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
-  
-  void unacquireJob(String jobId);
-
 }

@@ -66,5 +66,10 @@ public interface Job {
    * Get the tenant identifier for this job.
    */
   String getTenantId();
+  
+  /**
+   * Get the job type for this job.
+   */
+  String getJobType();
 
 }

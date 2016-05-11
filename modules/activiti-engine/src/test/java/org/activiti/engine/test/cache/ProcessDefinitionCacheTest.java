@@ -56,7 +56,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
 
     // Create process engine and deploy test process
     ProcessEngine processEngine = new StandaloneProcessEngineConfiguration().setProcessEngineName("reboot-test").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
-        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000").setJobExecutorActivate(false).buildProcessEngine();
+        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000").setAsyncExecutorActivate(false).buildProcessEngine();
 
     processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/engine/test/cache/originalProcess.bpmn20.xml").deploy();
 
@@ -76,7 +76,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
 
     // Reboot the process engine
     processEngine = new StandaloneProcessEngineConfiguration().setProcessEngineName("reboot-test").setDatabaseSchemaUpdate(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
-        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000").setJobExecutorActivate(false).buildProcessEngine();
+        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000").setAsyncExecutorActivate(false).buildProcessEngine();
 
     // Check if the existing process instance is still alive
     processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -111,12 +111,12 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
     // Setup both process engines
     ProcessEngine processEngine1 = new StandaloneProcessEngineConfiguration().setProcessEngineName("reboot-test-schema")
         .setDatabaseSchemaUpdate(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE).setJdbcUrl("jdbc:h2:mem:activiti-process-cache-test;DB_CLOSE_DELAY=1000")
-        .setJobExecutorActivate(false).buildProcessEngine();
+        .setAsyncExecutorActivate(false).buildProcessEngine();
     RepositoryService repositoryService1 = processEngine1.getRepositoryService();
 
     ProcessEngine processEngine2 = new StandaloneProcessEngineConfiguration().setProcessEngineName("reboot-test")
         .setDatabaseSchemaUpdate(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE).setJdbcUrl("jdbc:h2:mem:activiti-process-cache-test;DB_CLOSE_DELAY=1000")
-        .setJobExecutorActivate(false).buildProcessEngine();
+        .setAsyncExecutorActivate(false).buildProcessEngine();
     RepositoryService repositoryService2 = processEngine2.getRepositoryService();
     RuntimeService runtimeService2 = processEngine2.getRuntimeService();
     TaskService taskService2 = processEngine2.getTaskService();

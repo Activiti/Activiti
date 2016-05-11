@@ -19,13 +19,13 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerEntity>> {
+public class GetUnlockedTimersByDuedateCmd implements Command<List<? extends JobEntity>> {
 
   protected Date duedate;
   protected Page page;
@@ -35,7 +35,7 @@ public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerEntity>>
     this.page = page;
   }
 
-  public List<TimerEntity> execute(CommandContext commandContext) {
-    return Context.getCommandContext().getJobEntityManager().findUnlockedTimersByDuedate(duedate, page);
+  public List<? extends JobEntity> execute(CommandContext commandContext) {
+    return Context.getCommandContext().getTimerJobEntityManager().selectTimerJobsToDueDate();
   }
 }

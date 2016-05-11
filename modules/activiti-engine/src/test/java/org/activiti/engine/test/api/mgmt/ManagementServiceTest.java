@@ -20,10 +20,8 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
@@ -131,7 +129,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull("No job found for process instance", timerJob);
-    assertEquals(JobEntity.DEFAULT_RETRIES, timerJob.getRetries());
+    assertEquals(processEngineConfiguration.getAsyncExecutorNumberOfRetries(), timerJob.getRetries());
 
     managementService.setJobRetries(timerJob.getId(), 5);
 

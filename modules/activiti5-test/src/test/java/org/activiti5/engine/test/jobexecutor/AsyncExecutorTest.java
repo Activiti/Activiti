@@ -315,11 +315,9 @@ public class AsyncExecutorTest {
 		ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration();
 		processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:activiti-AsyncExecutorTest;DB_CLOSE_DELAY=1000");
 		processEngineConfiguration.setDatabaseSchemaUpdate("true");
-		processEngineConfiguration.setJobExecutorActivate(false); // No need for that old job executor
 		processEngineConfiguration.setActiviti5CompatibilityEnabled(true);
 		
 		if (enableAsyncExecutor) {
-			processEngineConfiguration.setAsyncExecutorEnabled(true);
 			processEngineConfiguration.setAsyncExecutorActivate(true);
 			
 			CountingAsyncExecutor countingAsyncExecutor = new CountingAsyncExecutor();

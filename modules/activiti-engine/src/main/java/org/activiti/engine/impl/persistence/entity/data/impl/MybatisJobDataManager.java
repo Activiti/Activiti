@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,16 +23,13 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.runtime.Job;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implements JobDataManager {
   
@@ -41,37 +37,14 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     super(processEngineConfiguration);
   }
 
-  protected static List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = new ArrayList<Class<? extends JobEntity>>();
-  
-  static {
-    ENTITY_SUBCLASSES.add(TimerEntityImpl.class);
-    ENTITY_SUBCLASSES.add(MessageEntityImpl.class);
-  }
-  
   @Override
   public Class<? extends JobEntity> getManagedEntityClass() {
     return JobEntityImpl.class;
   }
   
   @Override
-  public List<Class<? extends JobEntity>> getManagedEntitySubClasses() {
-    return ENTITY_SUBCLASSES;
-  }
-  
-  @Override
-  public MessageEntity createMessage() {
-    return new MessageEntityImpl();
-  }
-  
-  @Override
-  public TimerEntity createTimer() {
-    return new TimerEntityImpl();
-  }
-  
-  @Override
   public JobEntity create() {
-    // Superclass cannot be created
-    throw new UnsupportedOperationException();
+    return new JobEntityImpl();
   }
   
   @Override
@@ -79,26 +52,6 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   public List<JobEntity> findNextJobsToExecute(Page page) {
     Date now = getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findNextTimerJobsToExecute(Page page) {
-    Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
-    Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
-    return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
 
   @Override
@@ -118,19 +71,6 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     params.put("pid", processInstanceId);
     params.put("now", getClock().getCurrentTime());
     return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
-    final String query = "selectUnlockedTimersByDuedate";
-    return getDbSqlSession().selectList(query, duedate, page);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<TimerEntity> findTimersByExecutionId(String executionId) {
-    return getDbSqlSession().selectList("selectTimersByExecutionId", executionId);
   }
 
   @Override
@@ -191,14 +131,6 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     params.put("deploymentId", deploymentId);
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateJobTenantIdForDeployment", params);
-  }
-  
-  @Override
-  public void unacquireJob(String jobId) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("id", jobId);
-    params.put("dueDate", new Date(getProcessEngineConfiguration().getClock().getCurrentTime().getTime()));
-    getDbSqlSession().update("unacquireJob", params);
   }
   
 }

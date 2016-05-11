@@ -48,7 +48,7 @@ public class ExecuteAsyncRunnable implements Runnable {
 
   public void run() {
     
-    if(isHandledByActiviti5Engine()) {
+    if (isHandledByActiviti5Engine()) {
       return;
     }
     
@@ -148,11 +148,13 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected void unacquireJob() {
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {
-      commandContext.getJobEntityManager().unacquireJob(job.getId());
+      commandContext.getLockedJobEntityManager().delete(job.getId());
+      commandContext.getJobEntityManager().insert(job);
     } else {
       commandExecutor.execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
-          commandContext.getJobEntityManager().unacquireJob(job.getId());
+          commandContext.getLockedJobEntityManager().delete(job.getId());
+          commandContext.getJobEntityManager().insert(job);
           return null;
         }
       });

@@ -16,8 +16,6 @@ import java.util.concurrent.RejectedExecutionException;
 
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnable;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.RejectedJobsHandler;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.springframework.core.task.TaskExecutor;
 

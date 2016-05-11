@@ -14,7 +14,7 @@ public class ConfigurationFactory {
     StandaloneProcessEngineConfiguration conf = new StandaloneProcessEngineConfiguration();
     conf.setDataSource(dataSource);
     conf.setDatabaseSchemaUpdate(databaseSchemaUpdate);
-    conf.setJobExecutorActivate(jobExecutorActivate);
+    conf.setAsyncExecutorActivate(jobExecutorActivate);
     return conf;
   }
 

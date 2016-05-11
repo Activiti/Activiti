@@ -73,8 +73,6 @@ public class ActivitiEngineConfiguration {
     processEngineConfiguration.setDataSource(dataSource());
     processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
     processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
-    processEngineConfiguration.setJobExecutorActivate(false);
-    processEngineConfiguration.setAsyncExecutorEnabled(true);
     processEngineConfiguration.setAsyncExecutorActivate(false);
     processEngineConfiguration.setHistoryLevel(HistoryLevel.FULL);
     return processEngineConfiguration;

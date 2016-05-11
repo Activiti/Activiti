@@ -26,8 +26,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ActivitiProperties {
 
   private boolean checkProcessDefinitions = true;
-  private boolean jobExecutorActivate = false;
-  private boolean asyncExecutorEnabled = true;
   private boolean asyncExecutorActivate = true;
   private boolean restApiEnabled;
   private String deploymentName;
@@ -50,22 +48,6 @@ public class ActivitiProperties {
   private boolean jpaEnabled = true; // true by default
   private List<String> customMybatisMappers;
   private List<String> customMybatisXMLMappers;
-
-  public boolean isJobExecutorActivate() {
-    return jobExecutorActivate;
-  }
-
-  public void setJobExecutorActivate(boolean jobExecutorActivate) {
-    this.jobExecutorActivate = jobExecutorActivate;
-  }
-
-  public boolean isAsyncExecutorEnabled() {
-    return asyncExecutorEnabled;
-  }
-
-  public void setAsyncExecutorEnabled(boolean asyncExecutorEnabled) {
-    this.asyncExecutorEnabled = asyncExecutorEnabled;
-  }
 
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;

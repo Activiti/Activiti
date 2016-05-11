@@ -27,12 +27,12 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -329,7 +329,7 @@ public class BaseJPARestTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    AsyncExecutor jobExecutor = processEngineConfiguration.getAsyncExecutor();
     jobExecutor.start();
 
     try {
@@ -356,7 +356,7 @@ public class BaseJPARestTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    AsyncExecutor jobExecutor = processEngineConfiguration.getAsyncExecutor();
     jobExecutor.start();
 
     try {

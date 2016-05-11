@@ -93,8 +93,6 @@ public class ActivitiEngineConfiguration {
     processEngineConfiguration.setDataSource(dataSource());
     processEngineConfiguration.setDatabaseSchemaUpdate(environment.getProperty("engine.schema.update", "true"));
     processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
-    processEngineConfiguration.setJobExecutorActivate(Boolean.valueOf(environment.getProperty("engine.activate.jobexecutor", "false")));
-    processEngineConfiguration.setAsyncExecutorEnabled(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.enabled", "true")));
     processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.activate", "true")));
     processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
 
