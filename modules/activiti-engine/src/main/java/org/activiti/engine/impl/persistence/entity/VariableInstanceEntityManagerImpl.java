@@ -17,7 +17,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -92,10 +94,33 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     }
     entity.setDeleted(true);
 
-    if (fireDeleteEvent && getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+    ActivitiEventDispatcher eventDispatcher =  getEventDispatcher();
+    if (fireDeleteEvent && eventDispatcher.isEnabled()) {
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+      
+      eventDispatcher.dispatchEvent(createVariableDeleteEvent(entity));
     }
-
+    
+  }
+  
+  protected ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
+    
+    String processDefinitionId = null;
+    if (variableInstance.getProcessInstanceId() != null) {
+      ExecutionEntity executionEntity = getExecutionEntityManager().findById(variableInstance.getProcessInstanceId());
+      if (executionEntity != null) {
+        processDefinitionId = executionEntity.getProcessDefinitionId();
+      }
+    }
+    
+    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, 
+        variableInstance.getName(), 
+        null, 
+        variableInstance.getType(), 
+        variableInstance.getTaskId(),
+        variableInstance.getExecutionId(),
+        variableInstance.getProcessInstanceId(),
+        processDefinitionId);
   }
 
   @Override
