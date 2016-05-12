@@ -12,15 +12,17 @@
  */
 package org.activiti.engine.delegate;
 
+import org.activiti.bpmn.model.FlowElement;
+
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Callback interface to be notified of execution events like starting a process instance, ending an activity instance or taking a transition.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+ * @author Yvo Swillens
  */
-public interface ExecutionListener extends Serializable {
+public interface TransactionDependentExecutionListener extends ExecutionListener, Serializable {
 
   String EVENTNAME_START = "start";
   String EVENTNAME_END = "end";
@@ -29,5 +31,5 @@ public interface ExecutionListener extends Serializable {
   String ON_TRANSACTION_RESULT_COMITTED = "committed";
   String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
 
-  void notify(DelegateExecution execution);
+  void notify(FlowElement flowElement, Map<String, Object> variables);
 }

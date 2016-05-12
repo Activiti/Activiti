@@ -41,6 +41,7 @@ public abstract class ActivitiListenerParser extends BaseChildElementParser {
       listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
     }
     listener.setEvent(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENT));
+    listener.setOnTransactionResult(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_ON_TRANSACTION_RESULT));
     addListenerToParent(listener, parentElement);
     parseChildElements(xtr, listener, model, new FieldExtensionParser());
   }

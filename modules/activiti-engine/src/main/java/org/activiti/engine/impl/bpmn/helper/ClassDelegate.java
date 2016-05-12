@@ -17,7 +17,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -29,6 +31,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
@@ -38,6 +41,7 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
+import org.activiti.engine.impl.delegate.invocation.TransactionDependentExecutionListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -52,8 +56,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Joram Barrez
  * @author Falko Menge
  * @author Saeid Mirzaei
+ * @author Yvo Swillens
  */
-public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
+public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, TransactionDependentExecutionListener, SubProcessActivityBehavior {
 
   private static final long serialVersionUID = 1L;
   
@@ -70,7 +75,6 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     this.className = className;
     this.fieldDeclarations = fieldDeclarations;
     this.skipExpression = skipExpression;
-    
   }
 
   public ClassDelegate(String id, String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
@@ -92,11 +96,21 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Execution listener
+  @Override
   public void notify(DelegateExecution execution) {
     if (executionListenerInstance == null) {
       executionListenerInstance = getExecutionListenerInstance();
     }
     Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation(executionListenerInstance, execution));
+  }
+
+  // Transaction Dependent execution listener
+  @Override
+  public void notify(FlowElement flowElement, Map<String, Object> variables) {
+    if (executionListenerInstance == null) {
+      executionListenerInstance = getExecutionListenerInstance();
+    }
+    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TransactionDependentExecutionListenerInvocation((TransactionDependentExecutionListener) executionListenerInstance, flowElement, variables));
   }
 
   protected ExecutionListener getExecutionListenerInstance() {
@@ -309,5 +323,4 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   public String getClassName() {
     return className;
   }
-
 }

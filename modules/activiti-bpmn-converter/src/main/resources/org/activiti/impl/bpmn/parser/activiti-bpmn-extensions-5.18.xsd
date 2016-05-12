@@ -435,6 +435,19 @@
           </restriction>
         </simpleType>
       </attribute>
+      <attribute name="onTransactionResult" use="optional">
+        <annotation>
+          <documentation>
+            Execute taskListener after a successful commit or after a rollback.
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="committed" />
+            <enumeration value="rolled-back" />
+          </restriction>
+        </simpleType>
+      </attribute>
     </complexType>
   </element>
   
