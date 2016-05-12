@@ -155,11 +155,23 @@
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
+          and RES.PROC_INST_ID_ in
+          <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
+            #{item}
+          </foreach>
+      </if>
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
       </if>
       <if test="taskId != null">
         and RES.TASK_ID_ = #{taskId}
+      </if>
+      <if test="taskIds != null and !taskIds.isEmpty()">
+          and RES.TASK_ID_ in
+          <foreach item="item" index="index" collection="taskIds" open="(" separator="," close=")">
+            #{item}
+          </foreach>
       </if>
       <if test="excludeTaskRelated">
         and RES.TASK_ID_ is NULL

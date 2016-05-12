@@ -14,6 +14,7 @@
 package org.activiti.engine.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -36,8 +37,10 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   private static final long serialVersionUID = 1L;
   protected String id;
   protected String taskId;
+  protected Set<String> taskIds;
   protected String executionId;
   protected String processInstanceId;
+  protected Set<String> processInstanceIds;
   protected String activityInstanceId;
   protected String variableName;
   protected String variableNameLike;
@@ -69,6 +72,17 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     return this;
   }
 
+  public HistoricVariableInstanceQueryImpl processInstanceIds(Set<String> processInstanceIds) {
+    if (processInstanceIds == null) {
+      throw new ActivitiIllegalArgumentException("processInstanceIds is null");
+    }
+    if(processInstanceIds.isEmpty()){
+        throw new ActivitiIllegalArgumentException("Set of processInstanceIds is empty");
+    }
+    this.processInstanceIds = processInstanceIds;
+    return this;
+  }
+  
   public HistoricVariableInstanceQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");
@@ -90,6 +104,20 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
     this.taskId = taskId;
+    return this;
+  }
+  
+  public HistoricVariableInstanceQueryImpl taskIds(Set<String> taskIds) {
+    if (taskIds == null) {
+      throw new ActivitiIllegalArgumentException("taskIds is null");
+    }
+    if(taskIds.isEmpty()){
+        throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
+    }
+    if(excludeTaskRelated) {
+        throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
+    }
+    this.taskIds = taskIds;
     return this;
   }
   

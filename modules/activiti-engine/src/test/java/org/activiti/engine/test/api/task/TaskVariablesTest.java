@@ -15,9 +15,14 @@ package org.activiti.engine.test.api.task;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -106,6 +111,77 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
   	
   	// Cleanup
   	taskService.deleteTask(task.getId(), true);
+  }
+  
+  @Deployment
+  public void testGetVariablesLocalByTaskIds(){
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("twoTaskProcess");
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("twoTaskProcess");
+    List<Task> taskList1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list();
+    List<Task> taskList2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).list();
+
+    // Task local variables
+    for(Task task : taskList1){
+        if("usertask1".equals(task.getTaskDefinitionKey())){
+            taskService.setVariableLocal(task.getId(), "taskVar1", "sayHello1");
+        }else{
+            taskService.setVariableLocal(task.getId(), "taskVar2", "sayHello2");
+        }
+        // Execution variables
+        taskService.setVariable(task.getId(), "executionVar1", "helloWorld1");
+    }
+    // Task local variables
+    for(Task task : taskList2){
+        if("usertask1".equals(task.getTaskDefinitionKey())){
+        	taskService.setVariableLocal(task.getId(), "taskVar3", "sayHello3");
+        }else{
+        	taskService.setVariableLocal(task.getId(), "taskVar4", "sayHello4");
+        }
+        // Execution variables
+        taskService.setVariable(task.getId(), "executionVar2", "helloWorld2");
+    }
+
+    // only 1 process
+    Set<String> taskIds = new HashSet<String>();
+    taskIds.add(taskList1.get(0).getId());
+    taskIds.add(taskList1.get(1).getId());
+    List<VariableInstance> variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
+    assertEquals(2, variables.size());
+    checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
+    checkVariable(taskList1.get(1).getId(), "taskVar2" , "sayHello2", variables);
+    
+    // 2 process
+    taskIds = new HashSet<String>();
+    taskIds.add(taskList1.get(0).getId());
+    taskIds.add(taskList1.get(1).getId());
+    taskIds.add(taskList2.get(0).getId());
+    taskIds.add(taskList2.get(1).getId());
+    variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
+    assertEquals(4, variables.size());
+    checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
+    checkVariable(taskList1.get(1).getId(), "taskVar2" , "sayHello2", variables);
+    checkVariable(taskList2.get(0).getId(), "taskVar3" , "sayHello3", variables);
+    checkVariable(taskList2.get(1).getId(), "taskVar4" , "sayHello4", variables);
+    
+    // mixture 2 process
+    taskIds = new HashSet<String>();
+    taskIds.add(taskList1.get(0).getId());
+    taskIds.add(taskList2.get(1).getId());
+    variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
+    assertEquals(2, variables.size());
+    checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
+    checkVariable(taskList2.get(1).getId(), "taskVar4" , "sayHello4", variables);
+  }
+  
+  private void checkVariable(String taskId, String name, String value, List<VariableInstance> variables){
+    for(VariableInstance variable : variables){
+        if(taskId.equals(variable.getTaskId())){
+            assertEquals(name, variable.getName());
+            assertEquals(value, variable.getValue());
+            return;
+        }
+    }
+    fail();
   }
   
   public static class MyVariable implements Serializable {
