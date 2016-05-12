@@ -86,6 +86,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME = "signalName";
   public static final String ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME = "messageName";
   public static final String ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE = "errorCode";
+  public static final String ATTRIBUTE_LISTENER_ON_TRANSACTION_RESULT = "onTransactionResult";
 
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL = "signal";
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL = "globalSignal";

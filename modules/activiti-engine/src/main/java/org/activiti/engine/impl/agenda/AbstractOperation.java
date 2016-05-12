@@ -18,10 +18,14 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TransactionDependentExecutionListener;
+import org.activiti.engine.impl.bpmn.listener.TransactionDependentExecutionListeners;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
@@ -90,13 +94,36 @@ public abstract class AbstractOperation implements Runnable {
           ExecutionEntity executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
 
           if (executionListener != null) {
-            ((ExecutionEntity) executionToUse).setEventName(eventType);
-            executionListener.notify(executionToUse);
-            
-            // TODO: is this still needed? Is this property still needed?
-            ((ExecutionEntity) executionToUse).setEventName(null);
-          }
 
+            if (activitiListener.getOnTransactionResult() != null) {
+              TransactionDependentExecutionListener transactionDependentExecutionListener = (TransactionDependentExecutionListener) executionListener;
+
+              CommandContextCloseListener executionListenerContextCloseListener = null;
+              for (CommandContextCloseListener commandContextCloseListener : getCommandContext().getCloseListeners()) {
+                if (commandContextCloseListener instanceof TransactionDependentExecutionListeners) {
+                  executionListenerContextCloseListener = commandContextCloseListener;
+                  break;
+                }
+              }
+
+              if (executionListenerContextCloseListener == null) {
+                executionListenerContextCloseListener = new TransactionDependentExecutionListeners();
+                getCommandContext().addCloseListener(executionListenerContextCloseListener);
+              }
+
+              if (ExecutionListener.ON_TRANSACTION_RESULT_COMITTED.equals(activitiListener.getOnTransactionResult())) {
+                ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addClosedListener(transactionDependentExecutionListener, getExecution().getCurrentFlowElement(), null);
+              } else if (ExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
+                ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addCloseFailedListener(transactionDependentExecutionListener, getExecution().getCurrentFlowElement(), null);
+              }
+            } else {
+              ((ExecutionEntity) executionToUse).setEventName(eventType);
+              executionListener.notify(executionToUse);
+
+              // TODO: is this still needed? Is this property still needed?
+              ((ExecutionEntity) executionToUse).setEventName(null);
+            }
+          }
         }
       }
     }
