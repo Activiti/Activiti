@@ -328,40 +328,46 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
     }
   }
   
-  /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#findActivityInstance(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
- */
   @Override
-public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+    return findActivityInstance(execution, execution.getActivityId());
+  }
+  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.activiti.engine.impl.history.HistoryManagerInterface#findActivityInstance
+   * (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+   */
+  protected HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId) {
+    
     String executionId = execution.getId();
-    String activityId = execution.getActivityId();
 
     // search for the historic activity instance in the dbsqlsession cache
-    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
-    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
+    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession()
+        .findInCache(HistoricActivityInstanceEntity.class);
+    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
       if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())
-           && activityId != null
-           && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
-           && (cachedHistoricActivityInstance.getEndTime()==null)
-         ) {
+          && activityId != null
+          && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
+          && (cachedHistoricActivityInstance.getEndTime() == null)) {
         return cachedHistoricActivityInstance;
       }
     }
-    
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
-      .executionId(executionId)
-      .activityId(activityId)
-      .unfinished()
-      .listPage(0, 1);
-    
+
+    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(
+        Context.getCommandContext()).executionId(executionId)
+        .activityId(activityId).unfinished().listPage(0, 1);
+
     if (!historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
     }
-    
-    if (execution.getParentId()!=null) {
-      return findActivityInstance((ExecutionEntity) execution.getParent());
+
+    if (execution.getParentId() != null) {
+      return findActivityInstance((ExecutionEntity) execution.getParent(), activityId);
     }
-    
+
     return null;
   }
   
