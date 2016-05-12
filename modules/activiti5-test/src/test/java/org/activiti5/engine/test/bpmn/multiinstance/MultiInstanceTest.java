@@ -1294,6 +1294,11 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testEndTimeOnMiSubprocess() {
+    
+    if (!processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      return;
+    }
+    
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multiInstanceSubProcessParallelTasks");
     
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
