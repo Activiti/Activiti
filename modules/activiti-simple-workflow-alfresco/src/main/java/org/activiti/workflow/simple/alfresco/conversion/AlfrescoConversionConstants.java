@@ -174,7 +174,7 @@ public interface AlfrescoConversionConstants {
 	String CLASSNAME_SCRIPT_DELEGATE = "org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate";
 	String SCRIPT_TASK_LISTENER_SCRIPT_FIELD_NAME = "script";
 	String SCRIPT_DELEGATE_SCRIPT_FIELD_NAME = "script";
-	String SCRIPT_DELEGATE_RUN_AS_FIELD_NAME = "runAS";
+	String SCRIPT_DELEGATE_RUN_AS_FIELD_NAME = "runAs";
 	String TASK_LISTENER_EVENT_CREATE = "create";
 	String TASK_LISTENER_EVENT_COMPLETE = "complete";
 
