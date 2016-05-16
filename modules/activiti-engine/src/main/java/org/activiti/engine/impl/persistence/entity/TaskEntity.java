@@ -550,7 +550,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       commandContext
         .getHistoryManager()
         .recordTaskAssigneeChange(id, assignee);
-      
+       
+      commandContext.getHistoryManager().recordTaskClaim(id);
+ 
       if (assignee != null && processInstanceId != null) {
         getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
       }
