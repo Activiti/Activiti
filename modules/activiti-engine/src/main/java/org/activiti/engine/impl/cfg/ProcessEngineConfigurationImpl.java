@@ -577,6 +577,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected boolean enableDatabaseEventLogging = false;
   
   /**
+   * Using field injection together with a delegate expression for a service
+   * task / execution listener / task listener is not thread-sade , see user
+   * guide section 'Field Injection' for more information.
+   * 
+   * Set this flag to false to throw an exception at runtime when a field is
+   * injected and a delegateExpression is used. Default is true for backwards compatibility.
+   * 
+   * @since 5.21
+   */
+  protected DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode = DelegateExpressionFieldInjectionMode.COMPATIBILITY;
+  
+  /**
    *  Define a max length for storing String variable types in the database.
    *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
    */
@@ -2498,6 +2510,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 		return this;
 	}
+	
+  public DelegateExpressionFieldInjectionMode getDelegateExpressionFieldInjectionMode() {
+    return delegateExpressionFieldInjectionMode;
+  }
+
+  public void setDelegateExpressionFieldInjectionMode(DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode) {
+    this.delegateExpressionFieldInjectionMode = delegateExpressionFieldInjectionMode;
+  }
 
   public ObjectMapper getObjectMapper() {
     return objectMapper;

@@ -41,9 +41,8 @@ public class DelegateExpressionActivitiEventListener extends BaseDelegateEventLi
 	@Override
 	public void onEvent(ActivitiEvent event) {
 		if(isValidEvent(event)) {
-			NoExecutionVariableScope scope = new NoExecutionVariableScope();
-			
-			Object delegate = expression.getValue(scope);
+		  
+		  Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, new NoExecutionVariableScope());
 			if (delegate instanceof ActivitiEventListener) {
 				// Cache result of isFailOnException() from delegate-instance until next
 				// event is received. This prevents us from having to resolve the expression twice when
