@@ -39,8 +39,8 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   protected String taskId;
   protected Set<String> taskIds;
   protected String executionId;
+  protected Set<String> executionIds;
   protected String processInstanceId;
-  protected Set<String> processInstanceIds;
   protected String activityInstanceId;
   protected String variableName;
   protected String variableNameLike;
@@ -71,23 +71,23 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     this.processInstanceId = processInstanceId;
     return this;
   }
-
-  public HistoricVariableInstanceQueryImpl processInstanceIds(Set<String> processInstanceIds) {
-    if (processInstanceIds == null) {
-      throw new ActivitiIllegalArgumentException("processInstanceIds is null");
-    }
-    if(processInstanceIds.isEmpty()){
-        throw new ActivitiIllegalArgumentException("Set of processInstanceIds is empty");
-    }
-    this.processInstanceIds = processInstanceIds;
-    return this;
-  }
   
   public HistoricVariableInstanceQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");
     }
     this.executionId = executionId;
+    return this;
+  }
+
+  public HistoricVariableInstanceQueryImpl executionIds(Set<String> executionIds) {
+    if (executionIds == null) {
+      throw new ActivitiIllegalArgumentException("executionIds is null");
+    }
+    if(executionIds.isEmpty()){
+        throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
+    }
+    this.executionIds = executionIds;
     return this;
   }
 
