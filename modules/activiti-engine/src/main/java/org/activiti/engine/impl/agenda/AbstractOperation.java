@@ -13,21 +13,29 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.BaseExecutionListener;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.ExecutionListenerCustomPropertiesResolver;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
+import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.listener.TransactionDependentExecutionListeners;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.runtime.Execution;
 
 /**
  * @author Joram Barrez
@@ -79,7 +87,7 @@ public abstract class AbstractOperation implements Runnable {
 
         if (ignoreType || eventType.equals(activitiListener.getEvent())) {
 
-          ExecutionListener executionListener = null;
+          BaseExecutionListener executionListener = null;
 
           if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
@@ -94,38 +102,59 @@ public abstract class AbstractOperation implements Runnable {
           ExecutionEntity executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
 
           if (executionListener != null) {
-
             if (activitiListener.getOnTransactionResult() != null) {
-              TransactionDependentExecutionListener transactionDependentExecutionListener = (TransactionDependentExecutionListener) executionListener;
-
-              CommandContextCloseListener executionListenerContextCloseListener = null;
-              for (CommandContextCloseListener commandContextCloseListener : getCommandContext().getCloseListeners()) {
-                if (commandContextCloseListener instanceof TransactionDependentExecutionListeners) {
-                  executionListenerContextCloseListener = commandContextCloseListener;
-                  break;
-                }
-              }
-
-              if (executionListenerContextCloseListener == null) {
-                executionListenerContextCloseListener = new TransactionDependentExecutionListeners();
-                getCommandContext().addCloseListener(executionListenerContextCloseListener);
-              }
-
-              if (ExecutionListener.ON_TRANSACTION_RESULT_COMITTED.equals(activitiListener.getOnTransactionResult())) {
-                ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addClosedListener(transactionDependentExecutionListener, getExecution().getCurrentFlowElement(), null);
-              } else if (ExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
-                ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addCloseFailedListener(transactionDependentExecutionListener, getExecution().getCurrentFlowElement(), null);
-              }
+              planTransactionDependentExecutionListener(executionListener, activitiListener);
             } else {
-              ((ExecutionEntity) executionToUse).setEventName(eventType);
-              executionListener.notify(executionToUse);
-
-              // TODO: is this still needed? Is this property still needed?
-              ((ExecutionEntity) executionToUse).setEventName(null);
+              executeExecutionListener(executionToUse, executionListener, eventType);
             }
           }
         }
       }
+    }
+  }
+
+  protected void executeExecutionListener(ExecutionEntity executionToUse, BaseExecutionListener executionListener, String eventType) {
+    executionToUse.setEventName(eventType);
+    ((ExecutionListener) executionListener).notify(executionToUse);
+
+    // TODO: is this still needed? Is this property still needed?
+    executionToUse.setEventName(null);
+  }
+
+  protected void planTransactionDependentExecutionListener(BaseExecutionListener executionListener, ActivitiListener activitiListener) {
+    CommandContextCloseListener executionListenerContextCloseListener = null;
+
+    for (CommandContextCloseListener commandContextCloseListener : getCommandContext().getCloseListeners()) {
+      if (commandContextCloseListener instanceof TransactionDependentExecutionListeners) {
+        executionListenerContextCloseListener = commandContextCloseListener;
+        break;
+      }
+    }
+
+    if (executionListenerContextCloseListener == null) {
+      executionListenerContextCloseListener = new TransactionDependentExecutionListeners();
+      getCommandContext().addCloseListener(executionListenerContextCloseListener);
+    }
+
+    // current state of the execution variables will be stored
+    Map<String, Object> executionVariablesToUse = execution.getVariables();
+
+    // invoke custom properties resolver
+    Map<String, Object> customPropertiesMapToUse = null;
+    if  (activitiListener.getCustomPropertiesResolverClass() != null) {
+      Object customPropertiesResolver = ClassDelegate.defaultInstantiateDelegate(activitiListener.getCustomPropertiesResolverClass(), null);
+      if (customPropertiesResolver instanceof ExecutionListenerCustomPropertiesResolver == false) {
+        throw new ActivitiIllegalArgumentException(customPropertiesResolver.getClass().getName() + " doesn't implement " + ExecutionListenerCustomPropertiesResolver.class.getName());
+      }
+      customPropertiesMapToUse = ((ExecutionListenerCustomPropertiesResolver) customPropertiesResolver).getCustomPropertiesMap();
+    }
+
+    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMITTED.equals(activitiListener.getOnTransactionResult())) {
+      ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addClosedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
+              getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
+    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
+      ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addCloseFailedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
+              getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
     }
   }
   

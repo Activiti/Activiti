@@ -5,11 +5,7 @@
 
   <process id="transactionDependentExecutionListenerProcess">
 
-    <startEvent id="theStart" name="Start Event">
-      <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener" event="end" />
-      </extensionElements>
-    </startEvent>
+    <startEvent id="theStart" name="Start Event" />
 
     <sequenceFlow sourceRef="theStart" targetRef="serviceTask1" />
 
@@ -53,12 +49,7 @@
 
     <sequenceFlow sourceRef="serviceTask3" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" name="End Event">
-      <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
-                                    event="end"/>
-      </extensionElements>
-    </endEvent>
+    <endEvent id="theEnd" name="End Event" />
 
   </process>
 </definitions>
