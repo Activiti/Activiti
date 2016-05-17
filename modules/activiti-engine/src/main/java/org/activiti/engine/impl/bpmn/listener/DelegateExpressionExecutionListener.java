@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.helper.DelegateExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
@@ -39,12 +39,7 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
   }
 
   public void notify(DelegateExecution execution) {
-    // Note: we can't cache the result of the expression, because the
-    // execution can change: eg.
-    // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
-    Object delegate = expression.getValue(execution);
-    ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-
+    Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations); 
     if (delegate instanceof ExecutionListener) {
       Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
     } else if (delegate instanceof JavaDelegate) {

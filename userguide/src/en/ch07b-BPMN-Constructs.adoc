@@ -2776,9 +2776,13 @@ It's possible to inject values into the fields of the delegated classes. The fol
 * Fixed string values
 * Expressions
 
-If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field +firstName+ has setter ++setFirstName(...)++). If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields, so it's safer to expose a public setter-method for the fields you want to have injected. *Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be +org.activiti.engine.delegate.Expression+.*
+If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field +firstName+ has setter ++setFirstName(...)++). If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields, so it's safer to expose a public setter-method for the fields you want to have injected.
 
-The following code snippet shows how to inject a constant value into a field. Field injection is supported when using the _'class'_ attribute. Note that we need to *declare a 'extensionElements' XML element before the actual field injection declarations*, which is a requirement of the BPMN 2.0 XML Schema.
+*Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be +org.activiti.engine.delegate.Expression+. When the expression is resolved it can be cast to the appropriate type.*
+
+Field injection is supported when using the _'actviiti:class'_ attribute. Field injection is also possible when using the _activiti:delegateExpression_ attribute, however special rules with regards to thread-safety apply (see next section).
+
+The following code snippet shows how to inject a constant value into a field declared on the class. Note that we need to *declare a 'extensionElements' XML element before the actual field injection declarations*, which is a requirement of the BPMN 2.0 XML Schema.
 
 [source,xml,linenums]
 ----
@@ -2791,7 +2795,20 @@ The following code snippet shows how to inject a constant value into a field. Fi
 </serviceTask>
 ----
 
-The class +ToUpperCaseFieldInjected+ has a field +text+ which is of type +org.activiti.engine.delegate.Expression+. When calling +text.getValue(execution)+, the configured string value +Hello World+ will be returned.
+The class +ToUpperCaseFieldInjected+ has a field +text+ which is of type +org.activiti.engine.delegate.Expression+. When calling +text.getValue(execution)+, the configured string value +Hello World+ will be returned:
+
+[source,java,linenums]
+----
+public class ToUpperCaseFieldInjected implements JavaDelegate {
+
+  private Expression text;
+
+  public void execute(DelegateExecution execution) {
+    execution.setVariable("var", ((String)text.getValue(execution)).toUpperCase());
+  }
+
+}
+----
 
 Alternatively, for longs texts (e.g. an inline e-mail) the _'activiti:string'_ sub element can be used:
 
@@ -2803,14 +2820,16 @@ Alternatively, for longs texts (e.g. an inline e-mail) the _'activiti:string'_ s
   <extensionElements>
     <activiti:field name="text">
         <activiti:string>
-          Hello World
+          This is a long string with a lot of words and potentially way longer even!
       </activiti:string>
     </activiti:field>
   </extensionElements>
 </serviceTask>
 ----
 
-To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used). As noted in <<bpmnJavaServiceTaskImplementation,Service Task Implementation>>, an instance of the Java class is shared among all process-instances in a service task. To have dynamic injection of values in fields, you can inject value and method expressions in a +org.activiti.engine.delegate.Expression+ which can be evaluated/invoked using the +DelegateExecution+ passed in the +execute+ method.
+To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used). As noted in <<bpmnJavaServiceTaskImplementation,Service Task Implementation>>, an instance of the Java class is shared among all process-instances in a service task when using the _activiti:class_ attribute. To have dynamic injection of values in fields, you can inject value and method expressions in a +org.activiti.engine.delegate.Expression+ which can be evaluated/invoked using the +DelegateExecution+ passed in the +execute+ method.
+
+The example class below uses the injected expressions and resolves them using the current +DelegateExecution+. A _generBean_ method call is used while passing the _gender_ variable. Full code and test can be found in +org.activiti.examples.bpmn.servicetask.JavaServiceTaskTest.testExpressionFieldInjection+
 
 [source,xml,linenums]
 ----
@@ -2827,9 +2846,6 @@ To inject values that are dynamically resolved at runtime, expressions can be us
   </ extensionElements>
 </ serviceTask>
 ----
-
-
-The example class below uses the injected expressions and resolves them using the current +DelegateExecution+. Full code and test can be found in +org.activiti.examples.bpmn.servicetask.JavaServiceTaskTest.testExpressionFieldInjection+
 
 [source,java,linenums]
 ----
@@ -2857,7 +2873,212 @@ Alternatively, you can also set the expressions as an attribute instead of a chi
 <activiti:field name="text1" expression="Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}" />
 ----
 
-*Since the Java class instance is reused, the injection only happens once, when the serviceTask is called the first time. When the fields are altered by your code, the values won't be re-injected so you should treat them as immutable and don't make any changes to them.*
+[[serviceTaskFieldInjectionThreadSafety]]
+
+===== Field injection and thread safety
+
+In general, using service tasks with Java delegates and field injections are thread-safe. However, there are a few situations where thread-safety is not guaranteed, depending on the setup or environment Activiti is running in.
+
+When using the _activiti:class_ attribute, using field injection is always thread safe. For each service task that references a certain class, a new instance will be instantiated and fields will be injected once when the instance is created. Reusing the same class in multiple times in different tasks or process definitions is no problem.
+
+When using the _activiti:expression_ attribute, using field injection is not possible. Parameters are passed via method calls and these are always thread-safe.
+
+When using the _activiti:delegateExpression_ attribute, the thread-safety of the delegate instance will depend on how the expression is resolved. If the delegate expression is reused in various tasks and/or process definitions and the expression always returns the same instance, using field injection *is not thread-safe*. Let's look at a few examples to clarify.
+
+Suppose the expression is _${factory.createDelegate(someVariable)}_, where factory is a Java bean known to the engine (for example a Spring bean when using the Spring integration) that creates a new instance each time the expression is resolved. When using field injection in this case, there is no problem with regards to thread-safety: each time the expression is resolved, the fields are injected on this new instance.
+
+However, suppose the expression is _${someJavaDelegateBean}_ that resolves to an implementation of the JavaDelegate class and we're running in an environment that creates singleton instances of each bean (like Spring, but many others too). When using this expression in different tasks and/or process definitions, the expression will always be resolved to the same instance. In this case, using field injection is not thread-safe. For example:
+
+[source,xml,linenums]
+----
+<serviceTask id="serviceTask1" activiti:delegateExpression="${someJavaDelegateBean}">
+    <extensionElements>
+        <activiti:field name="someField" expression="${input * 2}"/>
+    </extensionElements>
+</serviceTask>
+
+<!-- other process definition elements -->
+
+<serviceTask id="serviceTask2" activiti:delegateExpression="${someJavaDelegateBean}">
+    <extensionElements>
+        <activiti:field name="someField" expression="${input * 2000}"/>
+    </extensionElements>
+</serviceTask>
+----
+
+This example snippet has two service tasks that use the same delegate expression, but injects different values for the _Expression_ field. *If the expression resolves to the same instance, there can be race conditions in concurrent scenarios* when it comes to injecting the field _someField_ when the processes are executed.
+
+The easiest solution to solve this, is to either
+
+* rewrite the Java delegate to use an expression and passing the needed data to the delegate via a method arguments.
+* return a new instance of the delegate class each time the delegate expression is resolved. For example when using Spring, this means that the scope of the bean must be set to *prototype* (for example by adding the @Scope(SCOPE_PROTOTYPE) annotation to the delegate class)
+
+As of Activiti version 5.21, the process engine configuration can be configured in a way to disable the use of field injection on delegate epxressions, by setting the value of the _delegateExpressionFieldInjectionMode_ property (which takes one of the values in the _org.activiti.engine.imp.cfg.DelegateExpressionFieldInjectionMode_ enum).
+
+Following settings are possible:
+
+* *DISABLED* : fully disables field injection when using delegate expressions. No field injection will be attempted. This is the safest mode, when it comes to thread-safety.
+* *COMPATIBILITY*: in this mode, the behavior will be exactly as it was before version 5.21: field injection is possible when using delegate expressions and an exception will be thrown when the fields are not defined on the delegate class. This is of course the least safe mode with regards to thread-safety, but it can be needed for backwards compatibility or can be used safely when the delegate expression is used only on one task in a set of process definitions (and thus no concurrent race conditions can happen).
+* *MIXED*: Allows injection when using delegateExpressions but will not throw an exception when the fields are not defined on the delegate. This allows for mixed behaviors where some delegates have injection (for example because they are not singletons) and some don't.
+
+* *The default mode for Activiti version 5.x is COMPATIBILITY.*
+* *The default mode for Activiti version 6.x is MIXED.*
+
+For example, suppose that we're using _MIXED_ mode and we're using the Spring integration. Suppose that we have following beans in the Spring configuration:
+
+[source,xml,linenums]
+----
+<bean id="singletonDelegateExpressionBean"
+  class="org.activiti.spring.test.fieldinjection.SingletonDelegateExpressionBean" />
+
+<bean id="prototypeDelegateExpressionBean"
+  class="org.activiti.spring.test.fieldinjection.PrototypeDelegateExpressionBean"
+  scope="prototype" />
+----
+
+The first bean is a regular Spring bean and thus a singleton. The second one has _prototype_ as scope, and the Spring container will return a new instance every time the bean is requested.
+
+Given following process definition:
+
+[source,xml,linenums]
+----
+<serviceTask id="serviceTask1" activiti:delegateExpression="${prototypeDelegateExpressionBean}">
+  <extensionElements>
+    <activiti:field name="fieldA" expression="${input * 2}"/>
+    <activiti:field name="fieldB" expression="${1 + 1}"/>
+    <activiti:field name="resultVariableName" stringValue="resultServiceTask1"/>
+  </extensionElements>
+</serviceTask>
+
+<serviceTask id="serviceTask2" activiti:delegateExpression="${prototypeDelegateExpressionBean}">
+  <extensionElements>
+    <activiti:field name="fieldA" expression="${123}"/>
+    <activiti:field name="fieldB" expression="${456}"/>
+    <activiti:field name="resultVariableName" stringValue="resultServiceTask2"/>
+  </extensionElements>
+</serviceTask>
+
+<serviceTask id="serviceTask3" activiti:delegateExpression="${singletonDelegateExpressionBean}">
+  <extensionElements>
+    <activiti:field name="fieldA" expression="${input * 2}"/>
+    <activiti:field name="fieldB" expression="${1 + 1}"/>
+    <activiti:field name="resultVariableName" stringValue="resultServiceTask1"/>
+  </extensionElements>
+</serviceTask>
+
+<serviceTask id="serviceTask4" activiti:delegateExpression="${singletonDelegateExpressionBean}">
+  <extensionElements>
+    <activiti:field name="fieldA" expression="${123}"/>
+    <activiti:field name="fieldB" expression="${456}"/>
+    <activiti:field name="resultVariableName" stringValue="resultServiceTask2"/>
+  </extensionElements>
+</serviceTask>
+----
+
+We've got four service tasks, where the first and the second use the _${prototypeDelegateExpressionBean}_ delegate expression and the third and fourth use the _${singletonDelegateExpressionBean}_ delegate expression.
+
+Let's look at the prototype bean first:
+
+[source,java,linenums]
+----
+public class PrototypeDelegateExpressionBean implements JavaDelegate {
+
+  public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+
+  private Expression fieldA;
+  private Expression fieldB;
+  private Expression resultVariableName;
+
+  public PrototypeDelegateExpressionBean() {
+    INSTANCE_COUNT.incrementAndGet();
+  }
+
+  @Override
+  public void execute(DelegateExecution execution) throws Exception {
+
+    Number fieldAValue = (Number) fieldA.getValue(execution);
+    Number fieldValueB = (Number) fieldB.getValue(execution);
+
+    int result = fieldAValue.intValue() + fieldValueB.intValue();
+    execution.setVariable(resultVariableName.getValue(execution).toString(), result);
+  }
+
+}
+----
+
+When we check the _INSTANCE_COUNT_ after running a process instance of the process definition above, we'll get _two_ back, as a new instance is created every time _${prototypeDelegateExpressionBean}_ is resolved. Fields can be injected without any problem here and we can see the three _Expression_ member fields here.
+
+The singleton bean, however, looks slightly different:
+
+[source,java,linenums]
+----
+public class SingletonDelegateExpressionBean implements JavaDelegate {
+
+  public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+
+  public SingletonDelegateExpressionBean() {
+    INSTANCE_COUNT.incrementAndGet();
+  }
+
+  @Override
+  public void execute(DelegateExecution execution) throws Exception {
+
+    Expression fieldAExpression = DelegateHelper.getFieldExpression(execution, "fieldA");
+    Number fieldA = (Number) fieldAExpression.getValue(execution);
+
+    Expression fieldBExpression = DelegateHelper.getFieldExpression(execution, "fieldB");
+    Number fieldB = (Number) fieldBExpression.getValue(execution);
+
+    int result = fieldA.intValue() + fieldB.intValue();
+
+    String resultVariableName = DelegateHelper.getFieldExpression(execution, "resultVariableName").getValue(execution).toString();
+    execution.setVariable(resultVariableName, result);
+  }
+
+}
+----
+
+The _INSTANCE_COUNT_ will always be _one_ here, as it is a singleton. In this delegate, there are no _Expression_ member fields. This is possible since we're running in _MIXED_ mode. In _COMPATIBILITY_ mode, this would throw an exception as it expects the member fields to be there. _DISABLED_ mode would also work for this bean, but it would disallow the use the prototype bean above that does use field injection.
+
+In this delegate code, the *org.activiti.engine.delegate.DelegateHelper* class is used, that has some useful utility methods to execute the same logic, but in a thread-safe way when the delegate is a singleton. Instead of injecting the _Expression_, it is fetched via the _getFieldExpression_ method. This means that when it comes to the service task xml, the fields are defined exactly the same as for the singleton bean. If you look at the xml snippet above, you can see they are equal in definition and only the implementation logic differs.
+
+(Technical note: the _getFieldExpression_ will introspect the BpmnModel and create the Expression on the fly when the method is executed, making it thread-safe)
+
+
+* For Activiti versions 5.x, the DelegateHelper cannot be used for an _ExecutionListener_ or _TaskListener_ (due to an architectural flaw). To make thread-safe instances of those listeners, use either an expression or make sure a new instance is created every time the delegate expression is resolved.
+* For Activiti version 6.x the DelegateHelper does work in _ExecutionListener_ and _TaskListener_ implementations. For example in version 6.x, the following code can be written, using the *DelegateHelper*:
+
+[source,xml,linenums]
+----
+<extensionElements>
+  <activiti:executionListener
+      delegateExpression="${testExecutionListener}" event="start">
+    <activiti:field name="input" expression="${startValue}" />
+    <activiti:field name="resultVar" stringValue="processStartValue" />
+  </activiti:executionListener>
+</extensionElements>
+----
+
+Where _testExecutionListener_ resolves to an instance implementing the ExecutionListener interface:
+
+[source,java,linenums]
+----
+@Component("testExecutionListener")
+public class TestExecutionListener implements ExecutionListener {
+
+  @Override
+  public void notify(DelegateExecution execution) {
+    Expression inputExpression = DelegateHelper.getFieldExpression(execution, "input");
+    Number input = (Number) inputExpression.getValue(execution);
+
+    int result = input.intValue() * 100;
+
+    Expression resultVarExpression = DelegateHelper.getFieldExpression(execution, "resultVar");
+    execution.setVariable(resultVarExpression.getValue(execution).toString(), result);
+  }
+
+}
+----
 
 
 [[serviceTaskResultValue]]
@@ -4053,6 +4274,8 @@ public void testExecutionListenerFieldInjection() {
   assertEquals("Yes, I am listening!", varSetByListener);
 }
 ----
+
+Note that the same rules with regards to thread-safety apply as for service task. Please read the <<serviceTaskFieldInjectionThreadSafety, relevant section>> for more information.
 
 [[taskListeners]]
 

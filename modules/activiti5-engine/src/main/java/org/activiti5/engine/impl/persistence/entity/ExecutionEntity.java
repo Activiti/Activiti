@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti5.engine.ActivitiException;
@@ -1271,6 +1272,16 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     } else {
       this.activityId = null;
     }
+  }
+  
+  @Override
+  public ActivitiListener getCurrentActivitiListener() {
+    throw new UnsupportedOperationException();
+  }
+  
+  @Override
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    throw new UnsupportedOperationException();
   }
   
   public void insert() {

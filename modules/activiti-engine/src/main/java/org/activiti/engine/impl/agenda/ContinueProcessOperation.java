@@ -79,7 +79,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
   protected void executeProcessStartExecutionListeners() {
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
-    executeExecutionListeners(process, execution.getParent(), ExecutionListener.EVENTNAME_START, false);
+    executeExecutionListeners(process, execution.getParent(), ExecutionListener.EVENTNAME_START);
   }
 
   protected void continueThroughFlowNode(FlowNode flowNode) {
@@ -163,7 +163,9 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     // Execution listener
     if (CollectionUtil.isNotEmpty(sequenceFlow.getExecutionListeners())) {
-      executeExecutionListeners(sequenceFlow, null, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
+      executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_START);
+      executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_TAKE);
+      executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_END);
     }
     
     // Firing event that transition is being taken       
