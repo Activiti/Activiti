@@ -6,7 +6,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:component-scan base-package="org.activiti.spring.test.fieldInjection" />
+	<context:component-scan base-package="org.activiti.spring.test.fieldinjection" />
 
 	<bean id="singletonDelegateExpressionBean"
 		class="org.activiti.spring.test.fieldinjection.SingletonDelegateExpressionBean" />
