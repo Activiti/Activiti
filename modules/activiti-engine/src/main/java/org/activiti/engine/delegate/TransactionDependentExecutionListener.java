@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public interface TransactionDependentExecutionListener extends BaseExecutionListener {
 
-  String ON_TRANSACTION_RESULT_COMITTED = "committed";
+  String ON_TRANSACTION_RESULT_COMMITTED = "committed";
   String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
 
   void notify(String processInstanceId, String executionId, FlowElement flowElement,

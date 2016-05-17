@@ -23,12 +23,14 @@ import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
 import org.activiti.engine.impl.bpmn.listener.TransactionDependentExecutionListeners;
+
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 import java.util.Map;
+
 
 /**
  * @author Joram Barrez
@@ -113,7 +115,7 @@ public abstract class AbstractOperation implements Runnable {
       customPropertiesMapToUse = ((ExecutionListenerCustomPropertiesResolver) customPropertiesResolver).getCustomPropertiesMap();
     }
 
-    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMITTED.equals(activitiListener.getOnTransactionResult())) {
+    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
       ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addClosedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
               getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
     } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
