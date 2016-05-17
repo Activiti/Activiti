@@ -255,7 +255,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
     childExecution.setScope(false);
     childExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    childExecution.setStartUserId(Authentication.getAuthenticatedUserId());
 
     // Insert the child execution
     insert(childExecution, false);

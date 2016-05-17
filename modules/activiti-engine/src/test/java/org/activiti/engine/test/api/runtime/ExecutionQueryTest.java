@@ -1617,6 +1617,6 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     List<Execution> executions = runtimeService.createExecutionQuery().startedBy(authenticatedUser).list();
 
-    assertEquals(2, executions.size());
+    assertEquals(1, executions.size());
   }
 }
