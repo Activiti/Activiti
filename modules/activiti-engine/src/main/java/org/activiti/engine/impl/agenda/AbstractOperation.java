@@ -19,23 +19,19 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BaseExecutionListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.ExecutionListenerCustomPropertiesResolver;
-import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.listener.TransactionDependentExecutionListeners;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-import org.activiti.engine.runtime.Execution;
 
 /**
  * @author Joram Barrez
@@ -149,7 +145,7 @@ public abstract class AbstractOperation implements Runnable {
       customPropertiesMapToUse = ((ExecutionListenerCustomPropertiesResolver) customPropertiesResolver).getCustomPropertiesMap();
     }
 
-    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMITTED.equals(activitiListener.getOnTransactionResult())) {
+    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
       ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addClosedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
               getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
     } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
