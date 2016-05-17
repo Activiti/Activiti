@@ -2797,7 +2797,7 @@ The following code snippet shows how to inject a constant value into a field dec
 
 The class +ToUpperCaseFieldInjected+ has a field +text+ which is of type +org.activiti.engine.delegate.Expression+. When calling +text.getValue(execution)+, the configured string value +Hello World+ will be returned:
 
-[source,java, linenums]
+[source,java,linenums]
 ----
 public class ToUpperCaseFieldInjected implements JavaDelegate {
 
@@ -2820,7 +2820,7 @@ Alternatively, for longs texts (e.g. an inline e-mail) the _'activiti:string'_ s
   <extensionElements>
     <activiti:field name="text">
         <activiti:string>
-          This is a very long string with a lot of words and potentially way longer even!
+          This is a long string with a lot of words and potentially way longer even!
       </activiti:string>
     </activiti:field>
   </extensionElements>
@@ -2921,6 +2921,9 @@ Following settings are possible:
 * *COMPATIBILITY*: in this mode, the behavior will be exactly as it was before version 5.21: field injection is possible when using delegate expressions and an exception will be thrown when the fields are not defined on the delegate class. This is of course the least safe mode with regards to thread-safety, but it can be needed for backwards compatibility or can be used safely when the delegate expression is used only on one task in a set of process definitions (and thus no concurrent race conditions can happen).
 * *MIXED*: Allows injection when using delegateExpressions but will not throw an exception when the fields are not defined on the delegate. This allows for mixed behaviors where some delegates have injection (for example because they are not singletons) and some don't.
 
+* *The default mode for Activiti version 5.x is COMPATIBILITY.*
+* *The default mode for Activiti version 6.x is MIXED.*
+
 For example, suppose that we're using _MIXED_ mode and we're using the Spring integration. Suppose that we have following beans in the Spring configuration:
 
 [source,xml,linenums]
@@ -3020,15 +3023,15 @@ public class SingletonDelegateExpressionBean implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) throws Exception {
 
-    Expression fieldAExpression = JavaDelegateHelper.getFieldExpression(execution, "fieldA");
+    Expression fieldAExpression = DelegateHelper.getFieldExpression(execution, "fieldA");
     Number fieldA = (Number) fieldAExpression.getValue(execution);
 
-    Expression fieldBExpression = JavaDelegateHelper.getFieldExpression(execution, "fieldB");
+    Expression fieldBExpression = DelegateHelper.getFieldExpression(execution, "fieldB");
     Number fieldB = (Number) fieldBExpression.getValue(execution);
 
     int result = fieldA.intValue() + fieldB.intValue();
 
-    String resultVariableName = JavaDelegateHelper.getFieldExpression(execution, "resultVariableName").getValue(execution).toString();
+    String resultVariableName = DelegateHelper.getFieldExpression(execution, "resultVariableName").getValue(execution).toString();
     execution.setVariable(resultVariableName, result);
   }
 
@@ -3037,11 +3040,46 @@ public class SingletonDelegateExpressionBean implements JavaDelegate {
 
 The _INSTANCE_COUNT_ will always be _one_ here, as it is a singleton. In this delegate, there are no _Expression_ member fields. This is possible since we're running in _MIXED_ mode. In _COMPATIBILITY_ mode, this would throw an exception as it expects the member fields to be there. _DISABLED_ mode would also work for this bean, but it would disallow the use the prototype bean above that does use field injection.
 
-In this delegate code, the *org.activiti.engine.delegate.JavaDelegateHelper* class is used, that has some useful utility methods to execute the same logic, but in a thread-safe way when the delegate is a singleton. Instead of injecting the _Expression_, it is fetched via the _getFieldExpression_ method. This means that when it comes to the service task xml, the fields are defined exactly the same as for the singleton bean. If you look at the xml snippet above, you can see they are equal in definition and only the implementation logic differs.
+In this delegate code, the *org.activiti.engine.delegate.DelegateHelper* class is used, that has some useful utility methods to execute the same logic, but in a thread-safe way when the delegate is a singleton. Instead of injecting the _Expression_, it is fetched via the _getFieldExpression_ method. This means that when it comes to the service task xml, the fields are defined exactly the same as for the singleton bean. If you look at the xml snippet above, you can see they are equal in definition and only the implementation logic differs.
 
 (Technical note: the _getFieldExpression_ will introspect the BpmnModel and create the Expression on the fly when the method is executed, making it thread-safe)
 
-*Important: the JavaDelegateHelper cannot be used for an _ExecutionListener_ or _TaskListener_. To make thread-safe instances of those listeners, use either an expression or make sure a new instance is created every time the delegate expression is resolved.*
+
+* For Activiti versions 5.x, the DelegateHelper cannot be used for an _ExecutionListener_ or _TaskListener_ (due to an architectural flaw). To make thread-safe instances of those listeners, use either an expression or make sure a new instance is created every time the delegate expression is resolved.
+* For Activiti version 6.x the DelegateHelper does work in _ExecutionListener_ and _TaskListener_ implementations. For example in version 6.x, the following code can be written, using the *DelegateHelper*:
+
+[source,xml,linenums]
+----
+<extensionElements>
+  <activiti:executionListener
+      delegateExpression="${testExecutionListener}" event="start">
+    <activiti:field name="input" expression="${startValue}" />
+    <activiti:field name="resultVar" stringValue="processStartValue" />
+  </activiti:executionListener>
+</extensionElements>
+----
+
+Where _testExecutionListener_ resolves to an instance implementing the ExecutionListener interface:
+
+[source,java,linenums]
+----
+@Component("testExecutionListener")
+public class TestExecutionListener implements ExecutionListener {
+
+  @Override
+  public void notify(DelegateExecution execution) {
+    Expression inputExpression = DelegateHelper.getFieldExpression(execution, "input");
+    Number input = (Number) inputExpression.getValue(execution);
+
+    int result = input.intValue() * 100;
+
+    Expression resultVarExpression = DelegateHelper.getFieldExpression(execution, "resultVar");
+    execution.setVariable(resultVarExpression.getValue(execution).toString(), result);
+  }
+
+}
+----
+
 
 
 [[serviceTaskResultValue]]
@@ -4237,6 +4275,8 @@ public void testExecutionListenerFieldInjection() {
   assertEquals("Yes, I am listening!", varSetByListener);
 }
 ----
+
+Note that the same rules with regards to thread-safety apply as for service task. Please read the <<serviceTaskFieldInjectionThreadSafety, relevant section>> for more information.
 
 [[taskListeners]]
 
