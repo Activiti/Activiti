@@ -58,7 +58,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Saeid Mirzaei
  * @author Yvo Swillens
  */
-public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, TransactionDependentExecutionListener, SubProcessActivityBehavior {
+public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, TransactionDependentExecutionListener, SubProcessActivityBehavior {
 
   private static final long serialVersionUID = 1L;
   
@@ -66,6 +66,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
   protected ExecutionListener executionListenerInstance;
+  protected TransactionDependentExecutionListener transactionDependentExecutionListenerInstance;
   protected TaskListener taskListenerInstance;
   protected ActivityBehavior activityBehaviorInstance;
   protected Expression skipExpression;
@@ -106,11 +107,13 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
 
   // Transaction Dependent execution listener
   @Override
-  public void notify(FlowElement flowElement, Map<String, Object> variables) {
-    if (executionListenerInstance == null) {
-      executionListenerInstance = getExecutionListenerInstance();
+  public void notify(String processInstanceId, String executionId, FlowElement flowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    if (transactionDependentExecutionListenerInstance == null) {
+      transactionDependentExecutionListenerInstance = getTransactionDependentExecutionListenerInstance();
     }
-    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TransactionDependentExecutionListenerInvocation((TransactionDependentExecutionListener) executionListenerInstance, flowElement, variables));
+    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
+            new TransactionDependentExecutionListenerInvocation(Context.getCommandContext(), transactionDependentExecutionListenerInstance,
+                    processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap));
   }
 
   protected ExecutionListener getExecutionListenerInstance() {
@@ -121,6 +124,15 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       return new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance);
     } else {
       throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + ExecutionListener.class + " nor " + JavaDelegate.class);
+    }
+  }
+
+  protected TransactionDependentExecutionListener getTransactionDependentExecutionListenerInstance() {
+    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+    if (delegateInstance instanceof TransactionDependentExecutionListener) {
+      return (TransactionDependentExecutionListener) delegateInstance;
+    } else {
+      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + TransactionDependentExecutionListener.class);
     }
   }
 

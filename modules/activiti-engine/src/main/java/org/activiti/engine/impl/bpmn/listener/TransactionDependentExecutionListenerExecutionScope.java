@@ -18,33 +18,44 @@ import java.util.Map;
  */
 public class TransactionDependentExecutionListenerExecutionScope {
 
-  protected TransactionDependentExecutionListener executionListener;
-  protected FlowElement flowElement;
-  protected Map<String, Object> variables;
+  protected final TransactionDependentExecutionListener executionListener;
+  protected final String processInstanceId;
+  protected final String executionId;
+  protected final FlowElement flowElement;
+  protected final Map<String, Object> executionVariables;
+  protected final Map<String, Object> customPropertiesMap;
 
-  private TransactionDependentExecutionListenerExecutionScope() {
-  }
-
-  public TransactionDependentExecutionListenerExecutionScope(TransactionDependentExecutionListener executionListener, FlowElement flowElement) {
+  public TransactionDependentExecutionListenerExecutionScope(TransactionDependentExecutionListener executionListener, String processInstanceId, String executionId,
+                                                             FlowElement flowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    this.processInstanceId = processInstanceId;
+    this.executionId = executionId;
     this.executionListener = executionListener;
     this.flowElement = flowElement;
-  }
-
-  public TransactionDependentExecutionListenerExecutionScope(TransactionDependentExecutionListener executionListener, FlowElement flowElement, Map<String, Object> variables) {
-    this.executionListener = executionListener;
-    this.flowElement = flowElement;
-    this.variables = variables;
+    this.executionVariables = executionVariables;
+    this.customPropertiesMap = customPropertiesMap;
   }
 
   public TransactionDependentExecutionListener getExecutionListener() {
     return executionListener;
   }
 
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  public String getExecutionId() {
+    return executionId;
+  }
+
   public FlowElement getFlowElement() {
     return flowElement;
   }
 
-  public Map<String, Object> getVariables() {
-    return variables;
+  public Map<String, Object> getExecutionVariables() {
+    return executionVariables;
+  }
+
+  public Map<String, Object> getCustomPropertiesMap() {
+    return customPropertiesMap;
   }
 }

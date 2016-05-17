@@ -10,14 +10,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.executionlistener;
 
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,28 +26,36 @@ import java.util.Map;
  */
 public class CurrentActivityTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
 
-  private static List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
+  protected static List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
 
   @Override
-  public void notify(FlowElement currentFlowElement, Map<String, Object> variables) {
-    currentActivities.add(new CurrentActivity(currentFlowElement.getId(), currentFlowElement.getName()));
-  }
-
-  @Override
-  public void notify(DelegateExecution execution) {
-    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
-    String activityId = execution.getCurrentActivityId();
-    FlowElement currentFlowElement = process.getFlowElement(activityId, true);
-    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), currentFlowElement.getName()));
+  public void notify(String processInstanceId, String executionId, FlowElement currentFlowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    currentActivities.add(new CurrentActivity(processInstanceId, executionId, currentFlowElement.getId(), currentFlowElement.getName(), executionVariables, customPropertiesMap));
   }
 
   public static class CurrentActivity {
+    private final String processInstanceId;
+    private final String executionId;
     private final String activityId;
     private final String activityName;
+    private final Map<String, Object> executionVariables;
+    private final Map<String, Object> customPropertiesMap;
 
-    public CurrentActivity(String activityId, String activityName) {
+    public CurrentActivity(String processInstanceId, String executionId, String activityId, String activityName, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+      this.processInstanceId = processInstanceId;
+      this.executionId = executionId;
       this.activityId = activityId;
       this.activityName = activityName;
+      this.executionVariables = executionVariables;
+      this.customPropertiesMap = customPropertiesMap;
+    }
+
+    public String getProcessInstanceId() {
+      return processInstanceId;
+    }
+
+    public String getExecutionId() {
+      return executionId;
     }
 
     public String getActivityId() {
@@ -60,6 +64,14 @@ public class CurrentActivityTransactionDependentExecutionListener implements Tra
 
     public String getActivityName() {
       return activityName;
+    }
+
+    public Map<String, Object> getExecutionVariables() {
+      return executionVariables;
+    }
+
+    public Map<String, Object> getCustomPropertiesMap() {
+      return customPropertiesMap;
     }
   }
 

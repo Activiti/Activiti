@@ -40,7 +40,8 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
   public void closed(CommandContext commandContext) {
     if (closedListeners != null) {
       for (TransactionDependentExecutionListenerExecutionScope executionListenerExecutionScope : closedListeners) {
-        executionListenerExecutionScope.getExecutionListener().notify(executionListenerExecutionScope.getFlowElement(), executionListenerExecutionScope.getVariables());
+        executionListenerExecutionScope.getExecutionListener().notify(executionListenerExecutionScope.getProcessInstanceId(), executionListenerExecutionScope.getExecutionId(),
+                executionListenerExecutionScope.getFlowElement(), executionListenerExecutionScope.getExecutionVariables(), executionListenerExecutionScope.getCustomPropertiesMap());
       }
     }
   }
@@ -49,12 +50,14 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
   public void closeFailure(CommandContext commandContext) {
     if (closeFailedListeners != null) {
       for (TransactionDependentExecutionListenerExecutionScope executionListenerExecutionScope : closeFailedListeners) {
-        executionListenerExecutionScope.getExecutionListener().notify(executionListenerExecutionScope.getFlowElement(), executionListenerExecutionScope.getVariables());
+        executionListenerExecutionScope.getExecutionListener().notify(executionListenerExecutionScope.getProcessInstanceId(), executionListenerExecutionScope.getExecutionId(),
+                executionListenerExecutionScope.getFlowElement(), executionListenerExecutionScope.getExecutionVariables(), executionListenerExecutionScope.getCustomPropertiesMap());
       }
     }
   }
 
-  public void addClosedListener(TransactionDependentExecutionListener executionListener, FlowElement flowElementToUse, Map<String, Object> variablesToUse) {
+  public void addClosedListener(TransactionDependentExecutionListener executionListener, String processInstanceId, String executionId,
+                                FlowElement flowElementToUse, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
     }
@@ -66,10 +69,12 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     if (closedListeners == null) {
       closedListeners = new ArrayList<>();
     }
-    closedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, flowElementToUse, variablesToUse));
+    closedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, processInstanceId, executionId,
+            flowElementToUse, executionVariablesToUse, customPropertiesMapToUse));
   }
 
-  public void addCloseFailedListener(TransactionDependentExecutionListener executionListener, FlowElement flowElementToUse, Map<String, Object> variablesToUse) {
+  public void addCloseFailedListener(TransactionDependentExecutionListener executionListener, String processInstanceId, String executionId,
+                                     FlowElement flowElementToUse, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
     }
@@ -81,6 +86,7 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     if (closeFailedListeners == null) {
       closeFailedListeners = new ArrayList<>();
     }
-    closeFailedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, flowElementToUse, variablesToUse));
+    closeFailedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, processInstanceId, executionId,
+            flowElementToUse, executionVariablesToUse, customPropertiesMapToUse));
   }
 }

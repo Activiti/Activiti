@@ -16,6 +16,12 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
+import org.activiti.engine.impl.cfg.TransactionPropagation;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.Map;
 
@@ -26,18 +32,34 @@ import java.util.Map;
  */
 public class TransactionDependentExecutionListenerInvocation extends DelegateInvocation {
 
+  protected final CommandContext commandContext;
   protected final TransactionDependentExecutionListener executionListenerInstance;
+  protected final String processInstanceId;
+  protected final String executionId;
   protected final FlowElement flowElement;
-  protected final Map<String, Object> variables;
+  protected final Map<String, Object> executionVariables;
+  protected final Map<String, Object> customPropertiesMap;
 
-  public TransactionDependentExecutionListenerInvocation(TransactionDependentExecutionListener executionListenerInstance, FlowElement flowElement, Map<String, Object> variables) {
+  public TransactionDependentExecutionListenerInvocation(CommandContext commandContext, TransactionDependentExecutionListener executionListenerInstance, String processInstanceId, String executionId,
+                                                         FlowElement flowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    this.commandContext = commandContext;
     this.executionListenerInstance = executionListenerInstance;
+    this.processInstanceId = processInstanceId;
+    this.executionId = executionId;
     this.flowElement = flowElement;
-    this.variables = variables;
+    this.executionVariables = executionVariables;
+    this.customPropertiesMap = customPropertiesMap;
   }
 
   protected void invoke() {
-    executionListenerInstance.notify(flowElement, variables);
+    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
+    CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
+    commandExecutor.execute(commandConfig, new Command<Void>() {
+      public Void execute(CommandContext commandContext) {
+        executionListenerInstance.notify(processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap);
+        return null;
+      }
+    });
   }
 
   public Object getTarget() {

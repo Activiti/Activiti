@@ -10,9 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.executionlistener;
 
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -41,16 +41,21 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess", variables);
 
-    executeJobExecutorForTime(14000, 500);
+    // execute the only job that should be there 1 time
+    try {
+      managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+
+    } catch (Exception ex) {
+      // expected; serviceTask3 throws exception
+    }
 
     List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
-    assertEquals(2, currentActivities.size());
+    assertEquals(1, currentActivities.size());
 
-    assertEquals("theStart", currentActivities.get(0).getActivityId());
-    assertEquals("Start Event", currentActivities.get(0).getActivityName());
-
-    assertEquals("serviceTask1", currentActivities.get(1).getActivityId());
-    assertEquals("Service Task 1", currentActivities.get(1).getActivityName());
+    assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
+    assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
+    assertEquals(processInstance.getId(), currentActivities.get(0).getProcessInstanceId());
+    assertNotNull(currentActivities.get(0).getProcessInstanceId());
   }
 
   @Deployment
@@ -65,36 +70,95 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
 
     processEngineConfiguration.setJobExecutorActivate(false);
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess", variables);
+    runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess", variables);
 
-    executeJobExecutorForTime(14000, 500);
+    // execute the only job that should be there 1 time
+    try {
+      managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+    } catch (Exception ex) {
+      // expected; serviceTask3 throws exception
+    }
 
     List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
-    assertEquals(8, currentActivities.size());
+    assertEquals(3, currentActivities.size());
 
-    assertEquals("theStart", currentActivities.get(0).getActivityId());
-    assertEquals("Start Event", currentActivities.get(0).getActivityName());
+    assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
+    assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
 
-    assertEquals("serviceTask1", currentActivities.get(1).getActivityId());
-    assertEquals("Service Task 1", currentActivities.get(1).getActivityName());
+    assertEquals("serviceTask2", currentActivities.get(1).getActivityId());
+    assertEquals("Service Task 2", currentActivities.get(1).getActivityName());
 
-    assertEquals("serviceTask2", currentActivities.get(2).getActivityId());
-    assertEquals("Service Task 2", currentActivities.get(2).getActivityName());
+    assertEquals("serviceTask3", currentActivities.get(2).getActivityId());
+    assertEquals("Service Task 3", currentActivities.get(2).getActivityName());
+  }
 
-    assertEquals("serviceTask3", currentActivities.get(3).getActivityId());
-    assertEquals("Service Task 3", currentActivities.get(3).getActivityName());
+  @Deployment
+  public void testOnClosedExecutionListenersWithExecutionVariables() {
 
-    assertEquals("serviceTask2", currentActivities.get(4).getActivityId());
-    assertEquals("Service Task 2", currentActivities.get(4).getActivityName());
+    CurrentActivityTransactionDependentExecutionListener.clear();
 
-    assertEquals("serviceTask3", currentActivities.get(5).getActivityId());
-    assertEquals("Service Task 3", currentActivities.get(5).getActivityName());
+    runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
 
-    assertEquals("serviceTask2", currentActivities.get(6).getActivityId());
-    assertEquals("Service Task 2", currentActivities.get(6).getActivityName());
+    List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
+    assertEquals(3, currentActivities.size());
 
-    assertEquals("serviceTask3", currentActivities.get(7).getActivityId());
-    assertEquals("Service Task 3", currentActivities.get(7).getActivityName());
+    assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
+    assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
+    assertEquals(0, currentActivities.get(0).getExecutionVariables().size());
+
+    assertEquals("serviceTask2", currentActivities.get(1).getActivityId());
+    assertEquals("Service Task 2", currentActivities.get(1).getActivityName());
+    assertEquals(1, currentActivities.get(1).getExecutionVariables().size());
+    assertEquals("test1", currentActivities.get(1).getExecutionVariables().get("injectedExecutionVariable"));
+
+    assertEquals("serviceTask3", currentActivities.get(2).getActivityId());
+    assertEquals("Service Task 3", currentActivities.get(2).getActivityName());
+    assertEquals(1, currentActivities.get(2).getExecutionVariables().size());
+    assertEquals("test2", currentActivities.get(2).getExecutionVariables().get("injectedExecutionVariable"));
+  }
+
+  @Deployment
+  public void testOnCloseFailureExecutionListenersWithTransactionalOperation() {
+
+    TransactionalOperationTransactionDependentExecutionListener.clear();
+
+    ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
+    assertProcessEnded(firstProcessInstance.getId());
+
+    List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+    assertEquals(1, historicProcessInstances.size());
+    assertEquals("transactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+
+    ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("secondTransactionDependentExecutionListenerProcess");
+    assertProcessEnded(secondProcessInstance.getId());
+
+    // first historic process instance was deleted by execution listener
+    historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+    assertEquals(1, historicProcessInstances.size());
+    assertEquals("secondTransactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+
+    List<TransactionalOperationTransactionDependentExecutionListener.CurrentActivity> currentActivities = TransactionalOperationTransactionDependentExecutionListener.getCurrentActivities();
+    assertEquals(1, currentActivities.size());
+
+    assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
+    assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
+  }
+
+  @Deployment
+  public void testOnClosedExecutionListenersWithCustomPropertiesResolver() {
+
+    TransactionalOperationTransactionDependentExecutionListener.clear();
+
+    runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
+
+    List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
+    assertEquals(1, currentActivities.size());
+
+    assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
+    assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
+    assertEquals(2, currentActivities.get(0).getCustomPropertiesMap().size());
+    assertEquals("test one", currentActivities.get(0).getCustomPropertiesMap().get("customProp1"));
+    assertEquals("test two", currentActivities.get(0).getCustomPropertiesMap().get("customProp2"));
   }
 
 }
