@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.delegate.JavaDelegateHelper;
+import org.activiti.engine.delegate.DelegateHelper;
 
 public enum DelegateExpressionFieldInjectionMode {
 
@@ -21,10 +21,10 @@ public enum DelegateExpressionFieldInjectionMode {
    * only way to inject values.
    * 
    * Using the
-   * {@link JavaDelegateHelper#getField(org.activiti.engine.delegate.DelegateExecution, String)}
+   * {@link DelegateHelper#getField(org.activiti.engine.delegate.DelegateExecution, String)}
    * method is not possible when using this mode, unless the Expressions are still defined
    * as members of the delegate (otherwise an exception will be thrown). In that case, they
-   * should not be used, but rather the JavaDelegateHelper methods should be used.
+   * should not be used, but rather the DelegateHelper methods should be used.
    */
   COMPATIBILITY,
 

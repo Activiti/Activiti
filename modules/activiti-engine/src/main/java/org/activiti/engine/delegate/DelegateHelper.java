@@ -30,12 +30,13 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Class that provides helper operations for use in implementations of the
- * {@link JavaDelegate} (or {@link ActivityBehavior}) delegate interface.
+ * Class that provides helper operations for use in the {@link JavaDelegate},
+ * {@link ActivityBehavior}, {@link ExecutionListener} and {@link TaskListener}
+ * interfaces.
  * 
  * @author Joram Barrez
  */
-public class JavaDelegateHelper {
+public class DelegateHelper {
   
   /**
    * Returns the {@link BpmnModel} matching the process definition bpmn model
