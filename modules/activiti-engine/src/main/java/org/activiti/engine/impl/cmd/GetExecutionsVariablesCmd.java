@@ -36,6 +36,7 @@ public class GetExecutionsVariablesCmd implements Command<List<VariableInstance>
     List<VariableInstance> instances = new ArrayList<VariableInstance>();
     List<VariableInstanceEntity> entities = commandContext.getVariableInstanceEntityManager().findVariableInstancesByExecutionIds(executionIds);
     for(VariableInstanceEntity entity : entities){
+        entity.getValue();
         instances.add(entity);
     }
     return instances;

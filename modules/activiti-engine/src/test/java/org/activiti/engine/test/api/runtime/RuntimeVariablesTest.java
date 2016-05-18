@@ -52,6 +52,29 @@ public class RuntimeVariablesTest  extends PluggableActivitiTestCase {
     checkVariable(task2.getExecutionId(), "executionVar2", "helloWorld2", variables);
   }
   
+  @Deployment(resources={
+    "org/activiti/engine/test/api/runtime/RuntimeVariablesTest.testGetVariablesByExecutionIds.bpmn20.xml"
+  })
+  public void testGetVariablesByExecutionIdsForSerializableType(){
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
+    
+    StringBuilder sb = new StringBuilder("a");
+    for(int i = 0; i < 4001; i++) {
+         sb.append("a");
+    }
+    String serializableTypeVar = sb.toString();
+    
+    // Execution variables
+    taskService.setVariable(task1.getId(), "executionVar1", serializableTypeVar);
+    
+    // only 1 process
+    Set<String> executionIds = new HashSet<String>();
+    executionIds.add(task1.getExecutionId());
+    List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
+    assertEquals(serializableTypeVar, variables.get(0).getValue());
+  }
+  
   private void checkVariable(String executionId, String name, String value, List<VariableInstance> variables){
     for(VariableInstance variable : variables){
         if(executionId.equals(variable.getExecutionId())){

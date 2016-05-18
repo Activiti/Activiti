@@ -49,7 +49,8 @@ public class GetTasksLocalVariablesCmd implements Command<List<VariableInstance>
     List<VariableInstance> instances = new ArrayList<VariableInstance>();
     List<VariableInstanceEntity> entities = commandContext.getVariableInstanceEntityManager().findVariableInstancesByTaskIds(taskIds);
     for(VariableInstanceEntity entity : entities){
-    	instances.add(entity);
+        entity.getValue();
+        instances.add(entity);
     }
     
     return instances;
