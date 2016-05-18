@@ -126,6 +126,9 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     if(taskId != null) {
       throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
+    if(taskIds != null) {
+      throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
+    }
     excludeTaskRelated = true;
     return this;
   }
