@@ -25,6 +25,7 @@ public interface Problems {
   String ASSOCIATION_INVALID_TARGET_REFERENCE = "activiti-asscociation-invalid-target-reference";
 
   String EXECUTION_LISTENER_IMPLEMENTATION_MISSING = "activiti-execution-listener-implementation-missing";
+  String EXECUTION_LISTENER_INVALID_IMPLEMENTATION_TYPE = "activiti-execution-listener-invalid-implementation-type";
 
   String EVENT_LISTENER_IMPLEMENTATION_MISSING = "activiti-event-listener-implementation-missing";
   String EVENT_LISTENER_INVALID_IMPLEMENTATION = "activiti-event-listener-invalid-implementation";

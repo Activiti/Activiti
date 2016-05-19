@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author Yvo Swillens
  */
-public class TransactionalOperationTransactionDependentExecutionListener extends CurrentActivityTransactionDependentExecutionListener {
+public class MyTransactionalOperationTransactionDependentExecutionListener extends CurrentActivityTransactionDependentExecutionListener {
 
   @Override
   public void notify(String processInstanceId, String executionId, FlowElement currentFlowElement,

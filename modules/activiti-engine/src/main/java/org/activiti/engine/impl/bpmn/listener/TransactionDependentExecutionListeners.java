@@ -61,7 +61,6 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
     }
-
     if (flowElementToUse == null) {
       throw new ActivitiIllegalArgumentException("flowElementToUse is null");
     }
@@ -69,6 +68,7 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     if (closedListeners == null) {
       closedListeners = new ArrayList<>();
     }
+
     closedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, processInstanceId, executionId,
             flowElementToUse, executionVariablesToUse, customPropertiesMapToUse));
   }
@@ -78,7 +78,6 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
     }
-
     if (flowElementToUse == null) {
       throw new ActivitiIllegalArgumentException("flowElementToUse is null");
     }
@@ -86,6 +85,7 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     if (closeFailedListeners == null) {
       closeFailedListeners = new ArrayList<>();
     }
+
     closeFailedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, processInstanceId, executionId,
             flowElementToUse, executionVariablesToUse, customPropertiesMapToUse));
   }

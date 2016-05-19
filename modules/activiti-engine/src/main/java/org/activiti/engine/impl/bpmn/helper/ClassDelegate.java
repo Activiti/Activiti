@@ -25,6 +25,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -58,7 +59,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Saeid Mirzaei
  * @author Yvo Swillens
  */
-public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, TransactionDependentExecutionListener, SubProcessActivityBehavior {
+public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, TransactionDependentExecutionListener, SubProcessActivityBehavior, CustomPropertiesResolver {
 
   private static final long serialVersionUID = 1L;
   
@@ -71,6 +72,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected ActivityBehavior activityBehaviorInstance;
   protected Expression skipExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected CustomPropertiesResolver customPropertiesResolverInstance;
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
@@ -116,6 +118,15 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
                     processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap));
   }
 
+  @Override
+  public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
+    if (customPropertiesResolverInstance == null) {
+      customPropertiesResolverInstance = getCustomPropertiesResolverInstance();
+    }
+    return customPropertiesResolverInstance.getCustomPropertiesMap(execution);
+  }
+
+
   protected ExecutionListener getExecutionListenerInstance() {
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
     if (delegateInstance instanceof ExecutionListener) {
@@ -133,6 +144,15 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       return (TransactionDependentExecutionListener) delegateInstance;
     } else {
       throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + TransactionDependentExecutionListener.class);
+    }
+  }
+
+  protected CustomPropertiesResolver getCustomPropertiesResolverInstance() {
+    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+    if (delegateInstance instanceof CustomPropertiesResolver) {
+      return (CustomPropertiesResolver) delegateInstance;
+    } else {
+      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + CustomPropertiesResolver.class);
     }
   }
 

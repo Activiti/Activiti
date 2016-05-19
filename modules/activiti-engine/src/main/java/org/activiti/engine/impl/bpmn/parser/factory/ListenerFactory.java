@@ -15,7 +15,9 @@ package org.activiti.engine.impl.bpmn.parser.factory;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -31,6 +33,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  * An instance of this interface can be injected in the {@link ProcessEngineConfigurationImpl} and its subclasses.
  * 
  * @author Joram Barrez
+ * @author Yvo Swillens
  */
 public interface ListenerFactory {
 
@@ -46,10 +49,17 @@ public interface ListenerFactory {
 
   public abstract ExecutionListener createDelegateExpressionExecutionListener(ActivitiListener activitiListener);
 
+  public abstract TransactionDependentExecutionListener createTransactionDependentDelegateExpressionExecutionListener(ActivitiListener activitiListener);
+
   public abstract ActivitiEventListener createClassDelegateEventListener(EventListener eventListener);
 
   public abstract ActivitiEventListener createDelegateExpressionEventListener(EventListener eventListener);
 
   public abstract ActivitiEventListener createEventThrowingEventListener(EventListener eventListener);
 
+  public abstract CustomPropertiesResolver createClassDelegateCustomPropertiesResolver(ActivitiListener activitiListener);
+
+  public abstract CustomPropertiesResolver createExpressionCustomPropertiesResolver(ActivitiListener activitiListener);
+
+  public abstract CustomPropertiesResolver createDelegateExpressionCustomPropertiesResolver(ActivitiListener activitiListener);
 }
