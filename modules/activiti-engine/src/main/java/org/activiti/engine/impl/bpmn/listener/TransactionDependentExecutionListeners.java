@@ -8,11 +8,13 @@ package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.runtime.Execution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,37 +58,35 @@ public class TransactionDependentExecutionListeners implements CommandContextClo
     }
   }
 
-  public void addClosedListener(TransactionDependentExecutionListener executionListener, String processInstanceId, String executionId,
-                                FlowElement flowElementToUse, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
+  public void addClosedListener(TransactionDependentExecutionListener executionListener, DelegateExecution execution, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
     }
-    if (flowElementToUse == null) {
-      throw new ActivitiIllegalArgumentException("flowElementToUse is null");
+    if (execution == null) {
+      throw new ActivitiIllegalArgumentException("execution is null");
     }
 
     if (closedListeners == null) {
       closedListeners = new ArrayList<>();
     }
 
-    closedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, processInstanceId, executionId,
-            flowElementToUse, executionVariablesToUse, customPropertiesMapToUse));
+    closedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, execution.getProcessInstanceId(), execution.getId(),
+            execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse));
   }
 
-  public void addCloseFailedListener(TransactionDependentExecutionListener executionListener, String processInstanceId, String executionId,
-                                     FlowElement flowElementToUse, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
+  public void addCloseFailedListener(TransactionDependentExecutionListener executionListener, DelegateExecution execution, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
     }
-    if (flowElementToUse == null) {
-      throw new ActivitiIllegalArgumentException("flowElementToUse is null");
+    if (execution == null) {
+      throw new ActivitiIllegalArgumentException("execution is null");
     }
 
     if (closeFailedListeners == null) {
       closeFailedListeners = new ArrayList<>();
     }
 
-    closeFailedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, processInstanceId, executionId,
-            flowElementToUse, executionVariablesToUse, customPropertiesMapToUse));
+    closeFailedListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, execution.getProcessInstanceId(), execution.getId(),
+            execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse));
   }
 }

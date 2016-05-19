@@ -65,7 +65,8 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
       String jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
       Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
       JobHandler jobHandler = jobHandlers.get(TimerStartEventJobHandler.TYPE);
-      jobHandlerConfiguration = ((TimerEventHandler)jobHandler).setActivityIdToConfiguration(jobHandlerConfiguration, processDefinition.getKey());
+      jobHandlerConfiguration = ((TimerEventHandler) jobHandler).setProcessDefinitionKeyToConfiguration(jobHandlerConfiguration, processDefinition.getKey());
+      jobHandlerConfiguration = ((TimerEventHandler) jobHandler).setActivityIdToConfiguration(jobHandlerConfiguration, timerActivity.getId());
       timerDeclaration.setJobHandlerConfiguration(jobHandlerConfiguration);
 
 

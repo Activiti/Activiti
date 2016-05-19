@@ -234,7 +234,7 @@ public class EndExecutionOperation extends AbstractOperation {
     
     // Execute execution listeners for process end.
     if (CollectionUtil.isNotEmpty(process.getExecutionListeners())) { 
-      executeExecutionListeners(process, executionEntity, ExecutionListener.EVENTNAME_END, false);
+      executeExecutionListeners(process, executionEntity, ExecutionListener.EVENTNAME_END);
     }
     
     // and trigger execution afterwards

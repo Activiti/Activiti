@@ -18,13 +18,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
@@ -32,7 +30,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
-import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
+import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -225,7 +223,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     // If loopcounter == 0, then historic activity instance already created,
     // no need to pass through executeActivity again since it will create a new historic activity
     if (loopCounter == 0) {
-      callCustomActivityStartListeners(execution);
+      ListenerUtil.executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_START);
       innerActivityBehavior.execute(execution);
     } else {
       execution.setCurrentFlowElement(activity);
@@ -291,90 +289,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   
   /**
-   * Since the first loop of the multi instance is not executed as a regular activity,
-   * it is needed to call the start listeners yourself.
-   */
-  protected void callCustomActivityStartListeners(DelegateExecution execution) {
-    
-    // TODO: needs to be made generic with callActivityEndListeners and calling activiti listeners in general!
-    
-    List<ActivitiListener> listeners = activity.getExecutionListeners();
-    if (CollectionUtil.isNotEmpty(listeners)) {
-      
-      ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-      
-      for (ActivitiListener activitiListener : listeners) {
-        if ("start".equalsIgnoreCase(activitiListener.getEvent())) {
-          
-          // TODO: this needs to be put in a util class or something
-          ExecutionListener executionListener = null;
-
-          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-            
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            Object executionListenerInstance = activitiListener.getInstance();
-            if (executionListenerInstance instanceof ExecutionListener) {
-              executionListener = (ExecutionListener) executionListenerInstance;
-            } else {
-              LOGGER.warn("Execution listener instance " + executionListenerInstance + " is not of type " + ExecutionListener.class);
-            }
-          }
-
-          if (executionListener != null) {
-            ((ExecutionEntity) execution).setEventName(ExecutionListener.EVENTNAME_START);
-            executionListener.notify(execution);
-          }
-          
-        }
-      }
-    }
-    
-  }
-
-  /**
    * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(DelegateExecution execution) {
-    List<ActivitiListener> listeners = activity.getExecutionListeners();
-    if (CollectionUtil.isNotEmpty(listeners)) {
-      
-      ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-      
-      for (ActivitiListener activitiListener : listeners) {
-        if ("end".equalsIgnoreCase(activitiListener.getEvent())) {
-          
-          // TODO: this needs to be put in a util class or something
-          ExecutionListener executionListener = null;
-
-          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            Object executionListenerInstance = activitiListener.getInstance();
-            if (executionListenerInstance instanceof ExecutionListener) {
-              executionListener = (ExecutionListener) executionListenerInstance;
-            } else {
-              LOGGER.warn("Execution listener instance " + executionListenerInstance + " is not of type " + ExecutionListener.class);
-            }
-          }
-
-          if (executionListener != null) {
-            ((ExecutionEntity) execution).setEventName(ExecutionListener.EVENTNAME_END);
-            executionListener.notify(execution);
-          }
-          
-        }
-      }
-    }
-    
+    ListenerUtil.executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_END);
   }
 
   protected void logLoopDetails(DelegateExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {

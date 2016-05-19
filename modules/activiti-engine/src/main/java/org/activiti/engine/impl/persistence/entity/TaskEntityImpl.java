@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -84,6 +85,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected boolean isDeleted;
 
   protected String eventName;
+  protected ActivitiListener currentActivitiListener;
 
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
@@ -467,6 +469,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setEventName(String eventName) {
     this.eventName = eventName;
+  }
+  
+  public ActivitiListener getCurrentActivitiListener() {
+    return currentActivitiListener;
+  }
+
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    this.currentActivitiListener = currentActivitiListener;
   }
 
   public void setExecutionId(String executionId) {

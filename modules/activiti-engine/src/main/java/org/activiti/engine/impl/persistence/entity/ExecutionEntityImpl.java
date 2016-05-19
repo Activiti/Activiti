@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -42,7 +43,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   // current position /////////////////////////////////////////////////////////
 
-  protected FlowElement currentFlowElement;
+  protected FlowElement currentFlowElement; 
+  protected ActivitiListener currentActivitiListener; // Only set when executing an execution listener
 
   /**
    * the process instance. this is the root of the execution tree. the processInstance of a process instance is a self reference.
@@ -228,6 +230,14 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     } else {
       this.activityId = null;
     }
+  }
+  
+  public ActivitiListener getCurrentActivitiListener() {
+    return currentActivitiListener;
+  }
+
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    this.currentActivitiListener = currentActivitiListener;
   }
 
   // executions ///////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
@@ -893,6 +894,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public void setEventName(String eventName) {
     this.eventName = eventName;
+  }
+  @Override
+  public ActivitiListener getCurrentActivitiListener() {
+    throw new UnsupportedOperationException();
   }
   public void setExecutionId(String executionId) {
     this.executionId = executionId;

@@ -27,11 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -40,6 +40,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.cfg.DelegateExpressionFieldInjectionMode;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
@@ -596,6 +597,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Event logging to database
   protected boolean enableDatabaseEventLogging = false;
+  
+  /**
+   * Using field injection together with a delegate expression for a service
+   * task / execution listener / task listener is not thread-sade , see user
+   * guide section 'Field Injection' for more information.
+   * 
+   * Set this flag to false to throw an exception at runtime when a field is
+   * injected and a delegateExpression is used. Default is true for backwards compatibility.
+   * 
+   * @since 5.21
+   */
+  protected DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode = DelegateExpressionFieldInjectionMode.COMPATIBILITY;
   
   /**
    *  Define a max length for storing String variable types in the database.
@@ -2360,6 +2373,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
+	
+	public DelegateExpressionFieldInjectionMode getDelegateExpressionFieldInjectionMode() {
+    return delegateExpressionFieldInjectionMode;
+  }
+
+  public void setDelegateExpressionFieldInjectionMode(DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode) {
+    this.delegateExpressionFieldInjectionMode = delegateExpressionFieldInjectionMode;
+  }
 	
 	public ObjectMapper getObjectMapper() {
     return objectMapper;

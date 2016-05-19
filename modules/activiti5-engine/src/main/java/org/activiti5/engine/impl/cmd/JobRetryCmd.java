@@ -75,7 +75,7 @@ public class JobRetryCmd implements Command<Object> {
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
       job.setLockExpirationTime(null);
-      if (job.getDuedate() == null || job instanceof MessageEntity) {
+      if (job.getDuedate() == null) {
         // add wait time for failed async job
         job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
       } else {
@@ -83,14 +83,14 @@ public class JobRetryCmd implements Command<Object> {
         job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getDefaultFailedJobWaitTime(), job.getDuedate()));
       }
       
-    } else {    	
+    } else {      
       String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
       try {
         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, processEngineConfig.getClock());
         job.setLockOwner(null);
         job.setLockExpirationTime(null);
         job.setDuedate(durationHelper.getDateAfter());
-	       
+         
         if (job.getExceptionMessage() == null) {  // is it the first exception 
           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+ durationHelper.getTimes()+" retries");
           // then change default retries to the ones configured
@@ -100,7 +100,7 @@ public class JobRetryCmd implements Command<Object> {
           log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
         }
         job.setRetries(job.getRetries() - 1);
-	       
+         
       } catch (Exception e) {
         throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
       }  
@@ -114,10 +114,10 @@ public class JobRetryCmd implements Command<Object> {
     // Dispatch both an update and a retry-decrement event
     ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
     if (eventDispatcher.isEnabled()) {
-    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-    			ActivitiEventType.ENTITY_UPDATED, job));
-    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-    			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+          ActivitiEventType.ENTITY_UPDATED, job));
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+          ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
     }
     
     if (processEngineConfig.isAsyncExecutorEnabled() == false) {
@@ -154,22 +154,30 @@ public class JobRetryCmd implements Command<Object> {
         activity = execution.getProcessDefinition().findActivity(job.getJobHandlerConfiguration());
       }
     } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
-    	DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-      String processId = job.getJobHandlerConfiguration();
-      if (job instanceof TimerEntity) {
-         processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
-      }
       
-      
-      ProcessDefinitionEntity processDefinition = null;
-      if (job.getTenantId() != null && job.getTenantId().length() > 0) {
-        processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
+      DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+      if (TimerEventHandler.hasRealActivityId(job.getJobHandlerConfiguration())) {
+        
+        ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(job.getProcessDefinitionId());
+        String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
+        activity = processDefinition.findActivity(activityId);
+        
       } else {
-        processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processId);
-      }
-      
-      if (processDefinition != null) {
-        activity = processDefinition.getInitial();
+        String processId = job.getJobHandlerConfiguration();
+        if (job instanceof TimerEntity) {
+           processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
+        }
+        
+        ProcessDefinitionEntity processDefinition = null;
+        if (job.getTenantId() != null && job.getTenantId().length() > 0) {
+          processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
+        } else {
+          processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processId);
+        }
+        
+        if (processDefinition != null) {
+          activity = processDefinition.getInitial();
+        }
       }
       
     } else if (AsyncContinuationJobHandler.TYPE.equals(type)) {

@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.db.Entity;
@@ -48,7 +49,9 @@ public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, H
   void setProcessDefinitionId(String processDefinitionId);
 
   void setEventName(String eventName);
-
+  
+  void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
+  
   ExecutionEntity getProcessInstance();
 
   void setProcessInstanceId(String processInstanceId);

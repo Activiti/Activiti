@@ -12,17 +12,17 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,22 +37,36 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
   }
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
-
-    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinitionFromDatabase(job.getProcessDefinitionId()); 
-    if (processDefinition == null) {
+    
+    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil
+        .getProcessDefinitionFromDatabase(job.getProcessDefinitionId()); // From DB -> need to get latest suspended state
+    if (processDefinitionEntity == null) {
       throw new ActivitiException("Could not find process definition needed for timer start event");
     }
 
     try {
-      if (!processDefinition.isSuspended()) {
+      if (!processDefinitionEntity.isSuspended()) {
+        
         if (commandContext.getEventDispatcher().isEnabled()) {
           commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
         }
-
-        new StartProcessInstanceCmd(processDefinition.getKey(), null, null, null, job.getTenantId()).execute(commandContext);
+        
+        // Find initial flow element matching the signal start event
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(job.getProcessDefinitionId());
+        String activityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
+        if (activityId != null) {
+          FlowElement flowElement = process.getFlowElement(activityId, true);
+          if (flowElement == null) {
+            throw new ActivitiException("Could not find matching FlowElement for activityId " + activityId);
+          }
+          ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
+          processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, null, true);
+        } else {
+          new StartProcessInstanceCmd(processDefinitionEntity.getKey(), null, null, null, job.getTenantId()).execute(commandContext);
+        }
+        
       } else {
-        log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
+        log.debug("ignoring timer of suspended process definition {}", processDefinitionEntity.getName());
       }
     } catch (RuntimeException e) {
       log.error("exception during timer execution", e);

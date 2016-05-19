@@ -329,13 +329,21 @@ public void recordStartEventEnded(String executionId, String activityId) {
     }
   }
   
-  /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#findActivityInstance(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
- */
   @Override
-public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+    return findActivityInstance(execution, execution.getActivityId());
+  }
+  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.activiti.engine.impl.history.HistoryManagerInterface#findActivityInstance
+   * (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
+   */
+  protected HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId) {
+    
     String executionId = execution.getId();
-    String activityId = execution.getActivityId();
 
     // search for the historic activity instance in the dbsqlsession cache
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
@@ -360,7 +368,7 @@ public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execu
     }
     
     if (execution.getParentId()!=null) {
-      return findActivityInstance((ExecutionEntity) execution.getParent());
+      return findActivityInstance((ExecutionEntity) execution.getParent(), activityId);
     }
     
     return null;

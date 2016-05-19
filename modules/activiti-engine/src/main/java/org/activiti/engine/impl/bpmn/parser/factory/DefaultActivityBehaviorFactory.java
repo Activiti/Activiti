@@ -40,6 +40,7 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -191,8 +192,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
 
   // We do not want a hard dependency on Mule, hence we return
-  // ActivityBehavior and instantiate
-  // the delegate instance using a string instead of the Class itself.
+  // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
   public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask) {
     return createMuleActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
   }
@@ -201,7 +201,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return createMuleActivityBehavior(sendTask, sendTask.getFieldExtensions());
   }
 
-  protected ActivityBehavior createMuleActivityBehavior(Task task, List<FieldExtension> fieldExtensions) {
+  protected ActivityBehavior createMuleActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions) {
     try {
 
       Class<?> theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
@@ -224,7 +224,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return createCamelActivityBehavior(sendTask, sendTask.getFieldExtensions());
   }
 
-  protected ActivityBehavior createCamelActivityBehavior(Task task, List<FieldExtension> fieldExtensions) {
+  protected ActivityBehavior createCamelActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions) {
     try {
       Class<?> theClass = null;
       FieldExtension behaviorExtension = null;

@@ -74,7 +74,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
     // process definition Id can't be recognized in DB flush
-    assertEquals(null, event.getProcessDefinitionId());
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
     assertEquals(processInstance.getId(), event.getExecutionId());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertNull(event.getTaskId());
@@ -244,10 +244,9 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 
     event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
-    assertEquals(null, event.getProcessDefinitionId()); // process
-                                                        // definition Id is
-                                                        // set to null
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
     assertEquals(task.getId(), event.getTaskId());
     assertEquals("testVariable", event.getVariableName());
     // deleted values are always null
@@ -290,7 +289,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
     // process definition Id can't be recognized in DB flush
-    assertEquals(null, event.getProcessDefinitionId());
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertEquals(task.getId(), event.getTaskId());
     assertEquals("variable", event.getVariableName());
