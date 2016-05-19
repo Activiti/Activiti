@@ -10,10 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.examples.bpmn.executionlistener;
+package org.activiti.spring.test.executionListener;
 
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +26,14 @@ public class MyCustomPropertiesResolver implements CustomPropertiesResolver {
 
   @Override
   public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
-    Map<String, Object> myMap = new HashMap<>();
+    Map<String, Object> myMap = new HashMap<String, Object>();
     myMap.put("customProp1", execution.getCurrentActivityId());
+    return myMap;
+  }
+
+  public Map<String, Object> calledInExpression(String currentActivityId) {
+    Map<String, Object> myMap = new HashMap<String, Object>();
+    myMap.put("customProp1", currentActivityId);
     return myMap;
   }
 }

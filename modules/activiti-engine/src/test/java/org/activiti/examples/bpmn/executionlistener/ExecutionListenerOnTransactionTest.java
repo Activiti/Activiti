@@ -120,7 +120,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
   @Deployment
   public void testOnCloseFailureExecutionListenersWithTransactionalOperation() {
 
-    TransactionalOperationTransactionDependentExecutionListener.clear();
+    MyTransactionalOperationTransactionDependentExecutionListener.clear();
 
     ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
     assertProcessEnded(firstProcessInstance.getId());
@@ -137,7 +137,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     assertEquals(1, historicProcessInstances.size());
     assertEquals("secondTransactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
 
-    List<TransactionalOperationTransactionDependentExecutionListener.CurrentActivity> currentActivities = TransactionalOperationTransactionDependentExecutionListener.getCurrentActivities();
+    List<MyTransactionalOperationTransactionDependentExecutionListener.CurrentActivity> currentActivities = MyTransactionalOperationTransactionDependentExecutionListener.getCurrentActivities();
     assertEquals(1, currentActivities.size());
 
     assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
@@ -147,7 +147,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
   @Deployment
   public void testOnClosedExecutionListenersWithCustomPropertiesResolver() {
 
-    TransactionalOperationTransactionDependentExecutionListener.clear();
+    MyTransactionalOperationTransactionDependentExecutionListener.clear();
 
     runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
 
@@ -156,9 +156,8 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
 
     assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
     assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
-    assertEquals(2, currentActivities.get(0).getCustomPropertiesMap().size());
-    assertEquals("test one", currentActivities.get(0).getCustomPropertiesMap().get("customProp1"));
-    assertEquals("test two", currentActivities.get(0).getCustomPropertiesMap().get("customProp2"));
+    assertEquals(1, currentActivities.get(0).getCustomPropertiesMap().size());
+    assertEquals("serviceTask1", currentActivities.get(0).getCustomPropertiesMap().get("customProp1"));
   }
 
 }

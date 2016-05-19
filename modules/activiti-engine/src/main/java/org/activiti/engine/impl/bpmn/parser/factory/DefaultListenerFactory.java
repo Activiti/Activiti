@@ -20,6 +20,7 @@ import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.helper.BaseDelegateEventListener;
@@ -30,10 +31,13 @@ import org.activiti.engine.impl.bpmn.helper.DelegateExpressionActivitiEventListe
 import org.activiti.engine.impl.bpmn.helper.ErrorThrowingEventListener;
 import org.activiti.engine.impl.bpmn.helper.MessageThrowingEventListener;
 import org.activiti.engine.impl.bpmn.helper.SignalThrowingEventListener;
+import org.activiti.engine.impl.bpmn.listener.DelegateExpressionCustomPropertiesResolver;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.listener.ExpressionCustomPropertiesResolver;
 import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTransactionDependentExecutionListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -72,30 +76,42 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
     ENTITY_MAPPING.put("task", Task.class);
   }
 
+  @Override
   public TaskListener createClassDelegateTaskListener(ActivitiListener activitiListener) {
     return classDelegateFactory.create(activitiListener.getImplementation(),
         createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
 
+  @Override
   public TaskListener createExpressionTaskListener(ActivitiListener activitiListener) {
     return new ExpressionTaskListener(expressionManager.createExpression(activitiListener.getImplementation()));
   }
 
+  @Override
   public TaskListener createDelegateExpressionTaskListener(ActivitiListener activitiListener) {
     return new DelegateExpressionTaskListener(expressionManager.createExpression(activitiListener.getImplementation()), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
 
+  @Override
   public ExecutionListener createClassDelegateExecutionListener(ActivitiListener activitiListener) {
     return classDelegateFactory.create(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
 
+  @Override
   public ExecutionListener createExpressionExecutionListener(ActivitiListener activitiListener) {
     return new ExpressionExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()));
   }
 
+  @Override
   public ExecutionListener createDelegateExpressionExecutionListener(ActivitiListener activitiListener) {
     return new DelegateExpressionExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
+
+  @Override
+  public DelegateExpressionTransactionDependentExecutionListener createTransactionDependentDelegateExpressionExecutionListener(ActivitiListener activitiListener) {
+    return new DelegateExpressionTransactionDependentExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()));
+  }
+
 
   @Override
   public ActivitiEventListener createClassDelegateEventListener(EventListener eventListener) {
@@ -132,6 +148,21 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
 
     result.setEntityClass(getEntityType(eventListener.getEntityType()));
     return result;
+  }
+
+  @Override
+  public CustomPropertiesResolver createClassDelegateCustomPropertiesResolver(ActivitiListener activitiListener) {
+    return classDelegateFactory.create(activitiListener.getCustomPropertiesResolverImplementation(), null);
+  }
+
+  @Override
+  public CustomPropertiesResolver createExpressionCustomPropertiesResolver(ActivitiListener activitiListener) {
+    return new ExpressionCustomPropertiesResolver(expressionManager.createExpression(activitiListener.getCustomPropertiesResolverImplementation()));
+  }
+
+  @Override
+  public CustomPropertiesResolver createDelegateExpressionCustomPropertiesResolver(ActivitiListener activitiListener) {
+    return new DelegateExpressionCustomPropertiesResolver(expressionManager.createExpression(activitiListener.getCustomPropertiesResolverImplementation()));
   }
 
   /**

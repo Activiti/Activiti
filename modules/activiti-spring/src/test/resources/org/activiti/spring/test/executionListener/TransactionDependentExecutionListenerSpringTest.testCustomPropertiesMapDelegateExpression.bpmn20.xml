@@ -1,0 +1,54 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="transactionDependentExecutionListenerProcess">
+
+    <startEvent id="start"/>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task3"/>
+
+    <!--<userTask id="task1" name="task1">-->
+      <!--<extensionElements>-->
+        <!--<activiti:executionListener expression="${myTransactionDependentExecutionListener.calledInExpression(execution)}"-->
+                                    <!--event="start"-->
+                                    <!--onTransactionResult="committed"-->
+                                    <!--customPropertiesResolverExpression="${myCustomPropertiesResolver.calledInExpression(execution.currentActivityId)}"/>-->
+      <!--</extensionElements>-->
+    <!--</userTask>-->
+    <!--<sequenceFlow id="flow2" sourceRef="task1" targetRef="task2"/>-->
+
+    <!--<userTask id="task2" name="task2">-->
+      <!--<extensionElements>-->
+        <!--<activiti:executionListener expression="${myTransactionDependentExecutionListener.calledInExpression(execution)}"-->
+                                    <!--event="start"-->
+                                    <!--onTransactionResult="committed"-->
+                                    <!--customPropertiesResolverDelegateExpression="${myCustomPropertiesResolver}"/>-->
+      <!--</extensionElements>-->
+    <!--</userTask>-->
+    <!--<sequenceFlow id="flow2" sourceRef="task2" targetRef="task3"/>-->
+
+    <userTask id="task3" name="task3">
+      <extensionElements>
+        <activiti:executionListener delegateExpression="${myTransactionDependentExecutionListener}"
+                                    event="end"
+                                    onTransactionResult="committed"
+                                    customPropertiesResolverExpression="${myCustomPropertiesResolver.calledInExpression(execution.currentActivityId)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="task3" targetRef="task4"/>
+
+    <userTask id="task4" name="task4">
+      <extensionElements>
+        <activiti:executionListener delegateExpression="${myTransactionDependentExecutionListener}"
+                                    event="end"
+                                    onTransactionResult="committed"
+                                    customPropertiesResolverDelegateExpression="${myCustomPropertiesResolver}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow4" sourceRef="task4" targetRef="end"/>
+
+    <endEvent id="end"/>
+
+  </process>
+</definitions>

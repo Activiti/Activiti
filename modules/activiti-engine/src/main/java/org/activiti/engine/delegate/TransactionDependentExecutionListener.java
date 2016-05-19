@@ -27,5 +27,5 @@ public interface TransactionDependentExecutionListener extends BaseExecutionList
   String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
 
   void notify(String processInstanceId, String executionId, FlowElement flowElement,
-              Map<String, Object> executionVariables, Map<String, Object> customPropertyMap);
+              Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
 }

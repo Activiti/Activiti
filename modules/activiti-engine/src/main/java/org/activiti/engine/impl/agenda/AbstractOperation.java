@@ -15,15 +15,14 @@ package org.activiti.engine.impl.agenda;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.delegate.BaseExecutionListener;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.delegate.ExecutionListenerCustomPropertiesResolver;
+import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
 import org.activiti.engine.impl.bpmn.listener.TransactionDependentExecutionListeners;
-
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -87,12 +86,12 @@ public abstract class AbstractOperation implements Runnable {
     executionToUse.setEventName(null);
   }
 
-  protected void planTransactionDependentExecutionListener(BaseExecutionListener executionListener, ActivitiListener activitiListener) {
-    CommandContextCloseListener executionListenerContextCloseListener = null;
+  protected void planTransactionDependentExecutionListener(ListenerFactory listenerFactory, ExecutionEntity executionToUse, BaseExecutionListener executionListener, ActivitiListener activitiListener) {
+    TransactionDependentExecutionListeners executionListenerContextCloseListener = null;
 
     for (CommandContextCloseListener commandContextCloseListener : getCommandContext().getCloseListeners()) {
       if (commandContextCloseListener instanceof TransactionDependentExecutionListeners) {
-        executionListenerContextCloseListener = commandContextCloseListener;
+        executionListenerContextCloseListener = (TransactionDependentExecutionListeners) commandContextCloseListener;
         break;
       }
     }
@@ -105,21 +104,27 @@ public abstract class AbstractOperation implements Runnable {
     // current state of the execution variables will be stored
     Map<String, Object> executionVariablesToUse = execution.getVariables();
 
+    // create custom properties resolver
+    CustomPropertiesResolver customPropertiesResolver = null;
+    if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
+      customPropertiesResolver = listenerFactory.createClassDelegateCustomPropertiesResolver(activitiListener);
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
+      customPropertiesResolver = listenerFactory.createExpressionCustomPropertiesResolver(activitiListener);
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
+      customPropertiesResolver = listenerFactory.createDelegateExpressionCustomPropertiesResolver(activitiListener);
+    }
+
     // invoke custom properties resolver
     Map<String, Object> customPropertiesMapToUse = null;
-    if  (activitiListener.getCustomPropertiesResolverClass() != null) {
-      Object customPropertiesResolver = ClassDelegate.defaultInstantiateDelegate(activitiListener.getCustomPropertiesResolverClass(), null);
-      if (customPropertiesResolver instanceof ExecutionListenerCustomPropertiesResolver == false) {
-        throw new ActivitiIllegalArgumentException(customPropertiesResolver.getClass().getName() + " doesn't implement " + ExecutionListenerCustomPropertiesResolver.class.getName());
-      }
-      customPropertiesMapToUse = ((ExecutionListenerCustomPropertiesResolver) customPropertiesResolver).getCustomPropertiesMap();
+    if (customPropertiesResolver != null) {
+      customPropertiesMapToUse = customPropertiesResolver.getCustomPropertiesMap(executionToUse);
     }
 
     if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
-      ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addClosedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
+      executionListenerContextCloseListener.addClosedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
               getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
     } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
-      ((TransactionDependentExecutionListeners) executionListenerContextCloseListener).addCloseFailedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
+      executionListenerContextCloseListener.addCloseFailedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
               getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
     }
   }

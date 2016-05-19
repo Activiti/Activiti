@@ -24,7 +24,7 @@
             name="Service Task 1"
             activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.TransactionalOperationTransactionDependentExecutionListener"
+        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.MyTransactionalOperationTransactionDependentExecutionListener"
                                     event="start"
                                     onTransactionResult="committed"/>
       </extensionElements>
