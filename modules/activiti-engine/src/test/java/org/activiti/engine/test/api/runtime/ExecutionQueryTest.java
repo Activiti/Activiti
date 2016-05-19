@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -256,8 +255,6 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(3, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-2", true).list().size());
     assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("NON-EXISTING", true).list().size());
   }
-
-
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStringVariable() {
@@ -1559,64 +1556,5 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     execution = runtimeService.createExecutionQuery().executionId(subProcessId).locale("en-US").singleResult();
     assertEquals("SubProcess Name 'en-US'", execution.getName());
     assertEquals("SubProcess Description 'en-US'", execution.getDescription());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testQueryStartedBefore() throws Exception {
-    Calendar calendar = new GregorianCalendar();
-    calendar.set(Calendar.YEAR, 2010);
-    calendar.set(Calendar.MONTH, 8);
-    calendar.set(Calendar.DAY_OF_MONTH, 30);
-    calendar.set(Calendar.HOUR_OF_DAY, 12);
-    calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, 0);
-    calendar.set(Calendar.MILLISECOND, 0);
-    Date noon = calendar.getTime();
-
-    processEngineConfiguration.getClock().setCurrentTime(noon);
-
-    calendar.add(Calendar.HOUR_OF_DAY, 1);
-    Date hourLater = calendar.getTime();
-
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    List<Execution> executions = runtimeService.createExecutionQuery().startedBefore(hourLater).list();
-
-    assertEquals(2, executions.size());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testQueryStartedAfter() throws Exception {
-    Calendar calendar = new GregorianCalendar();
-    calendar.set(Calendar.YEAR, 2200);
-    calendar.set(Calendar.MONTH, 8);
-    calendar.set(Calendar.DAY_OF_MONTH, 30);
-    calendar.set(Calendar.HOUR_OF_DAY, 12);
-    calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, 0);
-    calendar.set(Calendar.MILLISECOND, 0);
-    Date noon = calendar.getTime();
-
-    processEngineConfiguration.getClock().setCurrentTime(noon);
-
-    calendar.add(Calendar.HOUR_OF_DAY, -1);
-    Date hourEarlier = calendar.getTime();
-
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    List<Execution> executions = runtimeService.createExecutionQuery().startedAfter(hourEarlier).list();
-
-    assertEquals(2, executions.size());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testQueryStartedBy() throws Exception {
-    final String authenticatedUser = "user1";
-    identityService.setAuthenticatedUserId(authenticatedUser);
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    List<Execution> executions = runtimeService.createExecutionQuery().startedBy(authenticatedUser).list();
-
-    assertEquals(2, executions.size());
   }
 }

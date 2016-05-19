@@ -117,13 +117,5 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   void setDeleted(boolean isDeleted);
   
   void forceUpdate();
-
-  String getStartUserId();
-
-  void setStartUserId(String startUserId);
-
-  Date getStartTime();
-
-  void setStartTime(Date startTime);
   
 }

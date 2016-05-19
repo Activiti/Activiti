@@ -17,10 +17,7 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -996,37 +993,4 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testStartTimeProcessInstance() {
-    Calendar calendar = new GregorianCalendar();
-    calendar.set(Calendar.YEAR, 2010);
-    calendar.set(Calendar.MONTH, 8);
-    calendar.set(Calendar.DAY_OF_MONTH, 30);
-    calendar.set(Calendar.HOUR_OF_DAY, 12);
-    calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, 0);
-    calendar.set(Calendar.MILLISECOND, 0);
-    Date noon = calendar.getTime();
-
-    processEngineConfiguration.getClock().setCurrentTime(noon);
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    assertEquals(noon, processInstance.getStartTime());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testAuthenticatedStartUserProcessInstance() {
-    final String authenticatedUser = "user1";
-    identityService.setAuthenticatedUserId(authenticatedUser);
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    assertEquals(authenticatedUser, processInstance.getStartUserId());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testNoAuthenticatedStartUserProcessInstance() {
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    assertNull(processInstance.getStartUserId());
-  }
 }

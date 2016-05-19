@@ -13,10 +13,8 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
 
@@ -305,33 +303,8 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
   /**
    * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
    */
-  ExecutionQuery withLocalizationFallback();
-
-
-  /**
-   * Only select executions that were started before the given start time.
-   *
-   * @param beforeTime
-   *          executions started before this time will be returned (cannot be null)
-   */
-  ExecutionQuery startedBefore(Date beforeTime);
-
-  /**
-   * Only select executions that were started after the given start time.
-   *
-   * @param afterTime
-   *          executions started after this time will be returned (cannot be null)
-   */
-  ExecutionQuery startedAfter(Date afterTime);
-
-  /**
-   * Only select executions that were started after by the given user id.
-   *
-   * @param userId
-   *          the user id of the authenticated user that started the execution (cannot be null)
-   */
-  ExecutionQuery startedBy(String userId);
-
+  public ExecutionQuery withLocalizationFallback();
+  
   // ordering //////////////////////////////////////////////////////////////
 
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
@@ -351,4 +324,5 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
    * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
    */
   ExecutionQuery orderByTenantId();
+
 }

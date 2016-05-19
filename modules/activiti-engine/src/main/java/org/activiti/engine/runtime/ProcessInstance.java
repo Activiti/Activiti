@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.runtime;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.activiti.engine.repository.ProcessDefinition;
@@ -91,14 +90,4 @@ public interface ProcessInstance extends Execution {
    * Returns the localized description of this process instance.
    */
   String getLocalizedDescription();
-
-  /**
-   * Returns the start time of this process instance.
-   */
-  Date getStartTime();
-
-  /**
-   * Returns the user id of this process instance.
-   */
-  String getStartUserId();
 }

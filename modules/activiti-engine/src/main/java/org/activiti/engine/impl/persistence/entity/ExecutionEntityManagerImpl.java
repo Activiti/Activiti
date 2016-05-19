@@ -29,7 +29,6 @@ import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
@@ -207,25 +206,20 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       processInstanceExecution.setTenantId(tenantId);
     }
 
-    String authenticatedUserId = Authentication.getAuthenticatedUserId();
-
-    processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    processInstanceExecution.setStartUserId(authenticatedUserId);
-
     // Store in database
     insert(processInstanceExecution, false);
 
+    // Need to be after insert, cause we need the id
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
     if (initiatorVariableName != null) {
       processInstanceExecution.setVariable(initiatorVariableName, authenticatedUserId);
     }
-
-    // Need to be after insert, cause we need the id
+    
     processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
     processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
     if (authenticatedUserId != null) {
       getIdentityLinkEntityManager().addIdentityLink(processInstanceExecution, authenticatedUserId, null, IdentityLinkType.STARTER);
     }
-
 
     // Fire events
     if (getEventDispatcher().isEnabled()) {
@@ -254,8 +248,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
         ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
     childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
     childExecution.setScope(false);
-    childExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    childExecution.setStartUserId(Authentication.getAuthenticatedUserId());
 
     // Insert the child execution
     insert(childExecution, false);

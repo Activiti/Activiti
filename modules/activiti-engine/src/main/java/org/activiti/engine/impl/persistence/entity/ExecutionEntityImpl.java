@@ -101,9 +101,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected int revision = 1;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
 
-  protected String startUserId;
-  protected Date startTime;
-
   /**
    * persisted reference to the processDefinition.
    * 
@@ -208,8 +205,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
    }
    persistentState.put("suspensionState", this.suspensionState);
    persistentState.put("cachedEntityState", this.cachedEntityState);
-   persistentState.put("startTime", this.startTime);
-   persistentState.put("startUserId", this.startUserId);
    return persistentState;
  }
   
@@ -778,24 +773,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public String getActivityName() {
     return activityName;
   }
-
-  public String getStartUserId() {
-    return startUserId;
-  }
-
-  public void setStartUserId(String startUserId) {
-    this.startUserId = startUserId;
-  }
-
-  public Date getStartTime() {
-    return startTime;
-  }
-
-  public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-
-  //toString /////////////////////////////////////////////////////////////////
+  
+//toString /////////////////////////////////////////////////////////////////
 
   public String toString() {
     if (isProcessInstanceType()) {
