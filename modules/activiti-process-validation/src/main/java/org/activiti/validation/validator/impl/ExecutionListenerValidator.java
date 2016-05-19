@@ -18,6 +18,7 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
@@ -44,8 +45,10 @@ public class ExecutionListenerValidator extends ProcessLevelValidator {
         if (listener.getImplementation() == null || listener.getImplementationType() == null) {
           addError(errors, Problems.EXECUTION_LISTENER_IMPLEMENTATION_MISSING, process, baseElement, "Element 'class' or 'expression' is mandatory on executionListener");
         }
+        if (listener.getOnTransactionResult() != null && ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
+          addError(errors, Problems.EXECUTION_LISTENER_INVALID_IMPLEMENTATION_TYPE, process, baseElement, "Expression cannot be used when using 'onTransactionResult'");
+        }
       }
     }
   }
-
 }

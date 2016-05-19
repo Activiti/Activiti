@@ -26,6 +26,9 @@ public class ActivitiListener extends BaseElement {
   protected String implementationType;
   protected String implementation;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+  protected String onTransactionResult;
+  protected String customPropertiesResolverImplementationType;
+  protected String customPropertiesResolverImplementation;
   
   @JsonIgnore
   protected Object instance; // Can be used to set an instance of the listener directly. That instance will then always be reused.
@@ -61,7 +64,31 @@ public class ActivitiListener extends BaseElement {
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
   }
-  
+
+  public String getOnTransactionResult() {
+    return onTransactionResult;
+  }
+
+  public void setOnTransactionResult(String onTransactionResult) {
+    this.onTransactionResult = onTransactionResult;
+  }
+
+  public String getCustomPropertiesResolverImplementationType() {
+    return customPropertiesResolverImplementationType;
+  }
+
+  public void setCustomPropertiesResolverImplementationType(String customPropertiesResolverImplementationType) {
+    this.customPropertiesResolverImplementationType = customPropertiesResolverImplementationType;
+  }
+
+  public String getCustomPropertiesResolverImplementation() {
+    return customPropertiesResolverImplementation;
+  }
+
+  public void setCustomPropertiesResolverImplementation(String customPropertiesResolverImplementation) {
+    this.customPropertiesResolverImplementation = customPropertiesResolverImplementation;
+  }
+
   public Object getInstance() {
     return instance;
   }

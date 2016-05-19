@@ -65,7 +65,7 @@ public abstract class AbstractOperation implements Runnable {
     ExecutionEntity executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
     ListenerUtil.executeExecutionListeners(elementWithExecutionListeners, executionToUse, eventType);
   }
-  
+
   public CommandContext getCommandContext() {
     return commandContext;
   }

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
+ * @author Yvo Swillens
  */
 public abstract class ActivitiListenerParser extends BaseChildElementParser {
 
@@ -41,6 +42,18 @@ public abstract class ActivitiListenerParser extends BaseChildElementParser {
       listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
     }
     listener.setEvent(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENT));
+    listener.setOnTransactionResult(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_ON_TRANSACTION_RESULT));
+
+    if (StringUtils.isNotEmpty((xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS)))) {
+      listener.setCustomPropertiesResolverImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS));
+      listener.setCustomPropertiesResolverImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+    } else if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION))) {
+      listener.setCustomPropertiesResolverImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION));
+      listener.setCustomPropertiesResolverImplementationType(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
+    } else if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION))) {
+      listener.setCustomPropertiesResolverImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION));
+      listener.setCustomPropertiesResolverImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
+    }
     addListenerToParent(listener, parentElement);
     parseChildElements(xtr, listener, model, new FieldExtensionParser());
   }
