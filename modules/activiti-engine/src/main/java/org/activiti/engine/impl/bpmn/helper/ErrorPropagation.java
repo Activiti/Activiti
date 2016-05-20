@@ -185,6 +185,13 @@ public class ErrorPropagation {
   				ActivitiEventBuilder.createErrorEvent(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, borderEventActivity.getId(), errorCode, leavingExecution.getId(), leavingExecution.getProcessInstanceId(), leavingExecution.getProcessDefinitionId()));
   	}
   	
+  	// The current activity of the execution will be changed in the next lines.
+  	// So we must make sure the activity is ended correctly here
+  	// The other executions (for example when doing something parallel in a subprocess, will
+  	// be destroyed by the destroy scope operation (but this execution will be used to do it and 
+  	// will have list the original activity by then)
+  	Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) leavingExecution);
+  	
     if(borderEventActivity.getActivityBehavior() instanceof EventSubProcessStartEventActivityBehavior) {
       InterpretableExecution execution = (InterpretableExecution) leavingExecution;
       execution.setActivity(borderEventActivity.getParentActivity());
