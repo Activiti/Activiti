@@ -73,6 +73,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected Date completedBeforeDate;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
+  protected int taskVariablesLimit = 20000;
 
   public HistoricTaskInstanceQueryImpl() {
   }
@@ -411,6 +412,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
+  public HistoricTaskInstanceQuery limitTaskVariables(int taskVariablesLimit) {
+    this.taskVariablesLimit = taskVariablesLimit;
+    return this;
+  }
+  
   // ordering /////////////////////////////////////////////////////////////////
 
   public HistoricTaskInstanceQueryImpl orderByTaskId() {

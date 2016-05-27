@@ -77,7 +77,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean excludeSubtasks = false;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
-
+  protected int taskVariablesLimit = 20000;
+  
   public TaskQueryImpl() {
   }
   
@@ -458,6 +459,17 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
+  public TaskQuery limitTaskVariables(int taskVariablesLimit)
+  {
+    this.taskVariablesLimit = taskVariablesLimit;
+    return this;
+  }
+  
+  public int getTaskVariablesLimit()
+  {
+    return taskVariablesLimit;
+  }
+  
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
       List<String> candidateGroupList = new java.util.ArrayList<String>(1);
