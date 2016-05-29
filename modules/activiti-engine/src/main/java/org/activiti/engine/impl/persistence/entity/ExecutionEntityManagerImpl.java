@@ -249,11 +249,11 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
     childExecution.setScope(false);
 
-    // Insert the child execution
-    insert(childExecution, false);
-
     // manage the bidirectional parent-child relation
     parentExecutionEntity.addChildExecution(childExecution);
+    
+    // Insert the child execution
+    insert(childExecution, false);
 
     if (logger.isDebugEnabled()) {
       logger.debug("Child execution {} created with parent {}", childExecution, parentExecutionEntity.getId());
@@ -354,6 +354,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   @Override
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+    getHistoryManager().recordActivityEnd(executionEntity);
     deleteDataRelatedToExecution(executionEntity, deleteReason, cancel);
     delete(executionEntity);
   }

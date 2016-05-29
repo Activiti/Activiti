@@ -95,8 +95,8 @@ public class EndExecutionOperation extends AbstractOperation {
 
       // If there are no more active child executions, the process can be continued
       // If not (eg an embedded subprocess still has active elements, we cannot continue)
-      if (getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId()) == 0
-          || isAllEventScopeExecutions(executionEntityManager, parentExecution)) {
+      boolean isAllEventScopeExecutions = isAllEventScopeExecutions(executionEntityManager, parentExecution);
+      if (getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId()) == 0 || isAllEventScopeExecutions) {
         
         ExecutionEntity outgoingFlowsExecution = null;
         
@@ -130,7 +130,6 @@ public class EndExecutionOperation extends AbstractOperation {
             ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
           }
           
-          commandContext.getHistoryManager().recordActivityEnd(parentExecution);
           executionEntityManager.deleteChildExecutions(parentExecution, null, false);
           executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
           

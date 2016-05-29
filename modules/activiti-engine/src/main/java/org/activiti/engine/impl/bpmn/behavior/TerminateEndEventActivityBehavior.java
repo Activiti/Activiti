@@ -19,11 +19,15 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 /**
  * @author Joram Barrez
@@ -57,6 +61,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   protected void terminateAllBehaviour(DelegateExecution execution, CommandContext commandContext, ExecutionEntityManager executionEntityManager) {
     ExecutionEntity rootExecutionEntity = executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId());
     deleteExecutionEntities(executionEntityManager, rootExecutionEntity);
+    endAllHistoricActivities(rootExecutionEntity.getId());
     commandContext.getHistoryManager().recordProcessInstanceEnd(rootExecutionEntity.getId(), "", execution.getCurrentActivityId());
   }
 
@@ -73,6 +78,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
 
+      endAllHistoricActivities(scopeExecutionEntity.getId());
       deleteExecutionEntities(executionEntityManager, scopeExecutionEntity);
       commandContext.getHistoryManager().recordProcessInstanceEnd(scopeExecutionEntity.getId(), "", execution.getCurrentActivityId());
 
@@ -115,6 +121,28 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       }
       
     }
+  }
+  
+  protected void endAllHistoricActivities(String processInstanceId) {
+    
+    if (!Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      return;
+    }
+    
+    List<HistoricActivityInstanceEntity> historicActivityInstances = Context.getCommandContext().getHistoricActivityInstanceEntityManager()
+      .findUnfinishedHistoricActivityInstancesByProcessInstanceId(processInstanceId);
+    
+    for (HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstances) {
+      historicActivityInstance.markEnded(null);
+      
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+      }
+    }
+    
   }
   
   protected void terminateMultiInstanceRoot(DelegateExecution execution, CommandContext commandContext,

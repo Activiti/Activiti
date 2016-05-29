@@ -35,9 +35,13 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -97,6 +101,8 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
 
       super.runBare();
+      
+      validateHistoryData();
 
     } catch (AssertionFailedError e) {
       log.error(EMPTY_LINE);
@@ -111,6 +117,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       throw e;
 
     } finally {
+      
       if (deploymentIdFromDeploymentAnnotation != null) {
         TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
         deploymentIdFromDeploymentAnnotation = null;
@@ -127,6 +134,64 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       // Can't do this in the teardown, as the teardown will be called as
       // part of the super.runBare
       closeDownProcessEngine();
+    }
+  }
+  
+  protected void validateHistoryData() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      
+      List<HistoricProcessInstance> historicProcessInstances = 
+          historyService.createHistoricProcessInstanceQuery().finished().list();
+      
+      for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+        
+        assertNotNull("Historic process instance has no process definition id", historicProcessInstance.getProcessDefinitionId());
+        assertNotNull("Historic process instance has no process definition key", historicProcessInstance.getProcessDefinitionKey());
+        assertNotNull("Historic process instance has no process definition version", historicProcessInstance.getProcessDefinitionVersion());
+        assertNotNull("Historic process instance has no process definition key", historicProcessInstance.getDeploymentId());
+        assertNotNull("Historic process instance has no start activiti id", historicProcessInstance.getStartActivityId());
+        assertNotNull("Historic process instance has no start time", historicProcessInstance.getStartTime());
+        assertNotNull("Historic process instance has no end time", historicProcessInstance.getEndTime());
+        
+        String processInstanceId = historicProcessInstance.getId();
+        
+        // tasks
+        List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
+            .processInstanceId(processInstanceId).list();
+        if (historicTaskInstances != null && historicTaskInstances.size() > 0) {
+          for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
+            assertEquals(processInstanceId, historicTaskInstance.getProcessInstanceId());
+            if (historicTaskInstance.getClaimTime() != null) {
+              assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no work time", historicTaskInstance.getWorkTimeInMillis());
+            }
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no id", historicTaskInstance.getId());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no process instance id", historicTaskInstance.getProcessInstanceId());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no execution id", historicTaskInstance.getExecutionId());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no process definition id", historicTaskInstance.getProcessDefinitionId());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no task definition key", historicTaskInstance.getTaskDefinitionKey());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no create time", historicTaskInstance.getCreateTime());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no start time", historicTaskInstance.getStartTime());
+            assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no end time", historicTaskInstance.getEndTime());
+          }
+        }
+        
+        // activities
+        List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
+            .processInstanceId(processInstanceId).list();
+        if (historicActivityInstances != null && historicActivityInstances.size() > 0) {
+          for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+            assertEquals(processInstanceId, historicActivityInstance.getProcessInstanceId());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no activity id", historicActivityInstance.getActivityId());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no activity type", historicActivityInstance.getActivityType());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no process definition id", historicActivityInstance.getProcessDefinitionId());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no process instance id", historicActivityInstance.getProcessInstanceId());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no execution id", historicActivityInstance.getExecutionId());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no start time", historicActivityInstance.getStartTime());
+            assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no end time", historicActivityInstance.getEndTime());
+          }
+        }
+      }
+      
     }
   }
 
@@ -192,6 +257,39 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
     if (processInstance != null) {
       throw new AssertionFailedError("Expected finished process instance '" + processInstanceId + "' but it was still in the db");
+    }
+    
+    // Verify historical data if end times are correctly set
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      
+      // process instance
+      HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstanceId).singleResult();
+      assertEquals(processInstanceId, historicProcessInstance.getId());
+      assertNotNull("Historic process instance has no start time", historicProcessInstance.getStartTime());
+      assertNotNull("Historic process instance has no end time", historicProcessInstance.getEndTime());
+      
+      // tasks
+      List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
+          .processInstanceId(processInstanceId).list();
+      if (historicTaskInstances != null && historicTaskInstances.size() > 0) {
+        for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
+          assertEquals(processInstanceId, historicTaskInstance.getProcessInstanceId());
+          assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no start time", historicTaskInstance.getStartTime());
+          assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no end time", historicTaskInstance.getEndTime());
+        }
+      }
+      
+      // activities
+      List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
+          .processInstanceId(processInstanceId).list();
+      if (historicActivityInstances != null && historicActivityInstances.size() > 0) {
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+          assertEquals(processInstanceId, historicActivityInstance.getProcessInstanceId());
+          assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no start time", historicActivityInstance.getStartTime());
+          assertNotNull("Historic activity instance " + historicActivityInstance.getActivityId() + " has no end time", historicActivityInstance.getEndTime());
+        }
+      }
     }
   }
 

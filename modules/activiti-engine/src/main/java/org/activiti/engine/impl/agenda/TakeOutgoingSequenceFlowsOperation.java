@@ -2,12 +2,16 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.AdhocSubProcess;
+import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
@@ -26,6 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +45,11 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
   protected boolean evaluateConditions;
 
-  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ExecutionEntity activityExecution, boolean evaluateConditions) {
-    super(commandContext, activityExecution);
+  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ExecutionEntity executionEntity, boolean evaluateConditions) {
+    super(commandContext, executionEntity);
     this.evaluateConditions = evaluateConditions;
   }
-
+  
   @Override
   public void run() {
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
@@ -52,11 +57,75 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     if (currentFlowElement == null) {
       currentFlowElement = findCurrentFlowElement(execution);
     }
+    
+    // Compensating logic: TODO move 
+    
+    boolean isCompensating = false;
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    List<Association> associations = process.findAssociationsWithTargetRefRecursive(currentFlowElement.getId());
+    if (associations != null && associations.size() > 0) {
+      Iterator<Association> associationIterator = associations.iterator();
+      while (!isCompensating && associationIterator.hasNext()) {
+        Association association = associationIterator.next();
+        String associationSourceRef = association.getSourceRef();
+        FlowElement associationSourceFlowElement = process.getFlowElement(associationSourceRef, true);
+        if (associationSourceFlowElement != null && associationSourceFlowElement instanceof BoundaryEvent) {
+          BoundaryEvent boundaryEvent = (BoundaryEvent) associationSourceFlowElement;
+          if (boundaryEvent.getEventDefinitions() != null) {
+            for (EventDefinition boundaryEventDefinition : boundaryEvent.getEventDefinitions()) {
+              if (boundaryEventDefinition instanceof CompensateEventDefinition) {
+                isCompensating = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    if (isCompensating) {
+      
+      commandContext.getHistoryManager().recordActivityEnd(execution);
+      
+      // TODO: Delete child execution needed here too for more complex scenarios?
+      
+      commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
+      
+      ExecutionEntity parentExecutionEntity = execution.getParent();
+      if (parentExecutionEntity.isScope() && !parentExecutionEntity.isProcessInstanceType()) {
+        
+        boolean allEnded = true;
+        for (ExecutionEntity childExecutionEntity : parentExecutionEntity.getExecutions()) {
+          if (!childExecutionEntity.isEnded()) {
+            allEnded = false;
+            break;
+          }
+        }
+        
+        if (allEnded) {
+          agenda.planDestroyScopeOperation(parentExecutionEntity);
+        }
+      }
+      
+      return;
+      
+//      ExecutionEntity scopeExecutionEntity = execution;
+//      while (!scopeExecutionEntity.isScope()) {
+//        scopeExecutionEntity = scopeExecutionEntity.getParent();
+//      }
+//      
+//      agenda.planDestroyScopeOperation(scopeExecutionEntity);
+//      return;
+      
+    }
+    
+    // end of compensating logic
+    
 
     // If execution is a scope (and not the process instance), the scope must first be destroyed before we can continue
     if (execution.getParentId() != null && execution.isScope()) {
       agenda.planDestroyScopeOperation(execution);
-    
+      
     } else if (currentFlowElement instanceof Activity) {
       Activity activity = (Activity) currentFlowElement;
       if (CollectionUtil.isNotEmpty(activity.getBoundaryEvents())) {
@@ -86,20 +155,20 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }
     
-    // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
-    if (!execution.isProcessInstanceType() && currentFlowElement instanceof SequenceFlow == false) {
-      commandContext.getHistoryManager().recordActivityEnd(execution);
-    }
-    
-    // No scope, can continue
     if (currentFlowElement instanceof FlowNode) {
       
       FlowNode flowNode = (FlowNode) currentFlowElement;
       
-      if (execution.getId().equals(execution.getProcessInstanceId()) == false && execution.getCurrentFlowElement() instanceof SubProcess == false) {
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, flowNode.getId(), flowNode.getName(),
-                execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
+      // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
+      // hence the check for NOT being a process instance
+      if (!execution.isProcessInstanceType()) {
+        commandContext.getHistoryManager().recordActivityEnd(execution);
+        
+        if (!(execution.getCurrentFlowElement() instanceof SubProcess)) {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, flowNode.getId(), flowNode.getName(),
+                  execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
+        }
       }
       
       if (flowNode.getParentContainer() != null && flowNode.getParentContainer() instanceof AdhocSubProcess) {
@@ -142,7 +211,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       }
       
     } else if (currentFlowElement instanceof SequenceFlow) {
-      // Nothing to do here. The operation wasn't really needed, so simply pass it through
+      commandContext.getHistoryManager().recordActivityEnd(execution);
       agenda.planContinueProcessOperation(execution);
     }
   }

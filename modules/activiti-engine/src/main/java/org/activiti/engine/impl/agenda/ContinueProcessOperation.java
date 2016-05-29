@@ -161,6 +161,9 @@ public class ContinueProcessOperation extends AbstractOperation {
 
   protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
 
+    // History
+    commandContext.getHistoryManager().recordActivityEnd(execution);
+    
     // Execution listener
     if (CollectionUtil.isNotEmpty(sequenceFlow.getExecutionListeners())) {
       executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_START);

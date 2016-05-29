@@ -20,11 +20,13 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 
 /**
  * @author Tijs Rademakers
  */
+@EnableVerboseExecutionTreeLogging
 public class CompensateEventTest extends PluggableActivitiTestCase {
 
   @Deployment

@@ -26,8 +26,6 @@ public class DestroyScopeOperation extends AbstractOperation {
   @Override
   public void run() {
 
-    FlowElement currentFlowElement = execution.getCurrentFlowElement();
-
     // Find the actual scope that needs to be destroyed.
     // This could be the incoming execution, or the first parent execution where isScope = true
 
@@ -81,6 +79,7 @@ public class DestroyScopeOperation extends AbstractOperation {
     }
 
     // Not a scope anymore
+    commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution);
     executionEntityManager.delete(parentScopeExecution);
   }
 

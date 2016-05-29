@@ -13,13 +13,13 @@
 
 package org.activiti.engine.impl.history;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -261,7 +261,19 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   @Override
   public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull) {
-    return findActivityInstance(execution, execution.getActivityId(), createOnNotFound, validateEndTimeNull);
+    String activityId = null;
+    if (execution.getCurrentFlowElement() instanceof FlowNode) {
+      activityId = execution.getCurrentFlowElement().getId();
+    } else if (execution.getCurrentFlowElement() instanceof SequenceFlow
+        && execution.getCurrentActivitiListener() == null) { // while executing sequence flow listeners, we don't want historic activities
+      activityId = ( (SequenceFlow) (execution.getCurrentFlowElement())).getSourceFlowElement().getId();
+    } 
+    
+    if (activityId != null) {
+      return findActivityInstance(execution, activityId, createOnNotFound, validateEndTimeNull);
+    }
+    
+    return null;
   }
     
     
@@ -278,20 +290,14 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getEntityCache().findInCache(HistoricActivityInstanceEntity.class);
 
     // First do a check using the execution id
-    List<HistoricActivityInstanceEntity> potentialCandidates = new ArrayList<HistoricActivityInstanceEntity>(1);
     for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
-      if (activityId != null && activityId.equals(cachedHistoricActivityInstance.getActivityId()) && (!validateEndTimeNull || cachedHistoricActivityInstance.getEndTime() == null)) {
+      if (activityId != null 
+          && activityId.equals(cachedHistoricActivityInstance.getActivityId()) 
+          && (!validateEndTimeNull || cachedHistoricActivityInstance.getEndTime() == null)) {
         if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())) {
           return cachedHistoricActivityInstance;
-        } else {
-          potentialCandidates.add(cachedHistoricActivityInstance);
         }
       }
-    }
-
-    // Best we can do to associate
-    if (potentialCandidates.size() > 0) {
-      return potentialCandidates.get(0);
     }
 
     // Check the database

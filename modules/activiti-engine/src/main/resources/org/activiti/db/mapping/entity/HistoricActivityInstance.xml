@@ -239,4 +239,9 @@
     where EXECUTION_ID_ = #{parameter.executionId} and ACT_ID_ = #{parameter.activityId} and END_TIME_ is null
   </select>
   
+   <select id="selectUnfinishedHistoricActivityInstanceByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
+    select * from ${prefix}ACT_HI_ACTINST RES
+    where PROC_INST_ID_ = #{parameter.processInstanceId} and END_TIME_ is null
+  </select>
+  
 </mapper>

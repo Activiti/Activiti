@@ -148,6 +148,7 @@ import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
+import org.activiti.engine.impl.interceptor.DebugCommandInvoker;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
@@ -810,6 +811,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * The {@link ProcessEngineConfiguration#getDatabaseSchemaUpdate()} value will not be used.
    */
   protected boolean usingRelationalDatabase = true;
+  
+  /**
+   * Enabled a very verbose debug output of the execution tree whilst executing operations.
+   * Most useful for core engine developers or people fiddling aorund with the execution tree.
+   */
+  protected boolean enableVerboseExecutionTreeLogging;
 
   // Backwards compatibility //////////////////////////////////////////////////////////////
   
@@ -941,7 +948,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void initCommandInvoker() {
     if (commandInvoker == null) {
-      commandInvoker = new CommandInvoker();
+      if (enableVerboseExecutionTreeLogging) {
+        commandInvoker = new DebugCommandInvoker();
+      } else {
+        commandInvoker = new CommandInvoker();
+      }
     }
   }
 
@@ -2960,6 +2971,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setUsingRelationalDatabase(boolean usingRelationalDatabase) {
     this.usingRelationalDatabase = usingRelationalDatabase;
+    return this;
+  }
+  
+  public boolean isEnableVerboseExecutionTreeLogging() {
+    return enableVerboseExecutionTreeLogging;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableVerboseExecutionTreeLogging(boolean enableVerboseExecutionTreeLogging) {
+    this.enableVerboseExecutionTreeLogging = enableVerboseExecutionTreeLogging;
     return this;
   }
 
