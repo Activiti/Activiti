@@ -12,15 +12,9 @@
  */
 package org.activiti.engine.impl.agenda;
 
-import java.util.List;
-
-import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
-import org.activiti.bpmn.model.ImplementationType;
-import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -64,46 +58,14 @@ public abstract class AbstractOperation implements Runnable {
    * Executes the execution listeners defined on the given element, with the given event type.
    */
   protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType) {
-    executeExecutionListeners(elementWithExecutionListeners, null, eventType, false);
+    executeExecutionListeners(elementWithExecutionListeners, null, eventType);
   }
 
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, ExecutionEntity executionToUseForListener, String eventType, boolean ignoreType) {
-    List<ActivitiListener> listeners = elementWithExecutionListeners.getExecutionListeners();
-    ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-    if (listeners != null) {
-      for (ActivitiListener activitiListener : listeners) {
-
-        if (ignoreType || eventType.equals(activitiListener.getEvent())) {
-
-          ExecutionListener executionListener = null;
-
-          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = (ExecutionListener) activitiListener.getInstance();
-          }
-          
-          ExecutionEntity executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
-
-          if (executionListener != null) {
-            ((ExecutionEntity) executionToUse).setEventName(eventType);
-            executionListener.notify(executionToUse);
-            
-            // TODO: is this still needed? Is this property still needed?
-            ((ExecutionEntity) executionToUse).setEventName(null);
-          }
-
-        }
-      }
-    }
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, ExecutionEntity executionToUseForListener, String eventType) {
+    ExecutionEntity executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
+    ListenerUtil.executeExecutionListeners(elementWithExecutionListeners, executionToUse, eventType);
   }
   
-  /* TODO: Should following methods be moved to the entityManager */
-
   public CommandContext getCommandContext() {
     return commandContext;
   }

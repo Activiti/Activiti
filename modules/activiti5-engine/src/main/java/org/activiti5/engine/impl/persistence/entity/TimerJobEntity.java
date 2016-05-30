@@ -15,15 +15,19 @@ package org.activiti5.engine.impl.persistence.entity;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti5.engine.ActivitiException;
+import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.calendar.BusinessCalendar;
 import org.activiti5.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.NoExecutionVariableScope;
 import org.activiti5.engine.impl.interceptor.CommandContext;
+import org.activiti5.engine.impl.jobexecutor.JobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti5.engine.impl.jobexecutor.TimerEventHandler;
@@ -36,49 +40,42 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
+ * @author Tijs Rademakers
  */
-public class TimerEntity extends JobEntity {
+public class TimerJobEntity extends AbstractJobEntity {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(TimerEntity.class);
+  private static Logger log = LoggerFactory.getLogger(TimerJobEntity.class);
+  
+  public TimerJobEntity() {}
 
-  protected int maxIterations;
-  protected String repeat;
-  protected Date endDate;
-
-  public TimerEntity() {
-    super();
+  public TimerJobEntity(TimerDeclarationImpl timerDeclaration) {
+    this.jobHandlerType = timerDeclaration.getJobHandlerType();
+    this.jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
+    this.isExclusive = timerDeclaration.isExclusive();
+    this.repeat = timerDeclaration.getRepeat();
+    this.retries = timerDeclaration.getRetries();
     this.jobType = "timer";
   }
 
-  public TimerEntity(TimerDeclarationImpl timerDeclaration) {
-    jobHandlerType = timerDeclaration.getJobHandlerType();
-    jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
-    isExclusive = timerDeclaration.isExclusive();
-    repeat = timerDeclaration.getRepeat();
-    retries = timerDeclaration.getRetries();
-    this.jobType = "timer";
-  }
-
-  private TimerEntity(TimerEntity te) {
-    jobHandlerConfiguration = te.jobHandlerConfiguration;
-    jobHandlerType = te.jobHandlerType;
-    isExclusive = te.isExclusive;
-    repeat = te.repeat;
-    retries = te.retries;
-    endDate = te.endDate;
-    executionId = te.executionId;
-    processInstanceId = te.processInstanceId;
-    processDefinitionId = te.processDefinitionId;
+  private TimerJobEntity(TimerJobEntity te) {
+    this.jobHandlerConfiguration = te.jobHandlerConfiguration;
+    this.jobHandlerType = te.jobHandlerType;
+    this.isExclusive = te.isExclusive;
+    this.repeat = te.repeat;
+    this.retries = te.retries;
+    this.endDate = te.endDate;
+    this.executionId = te.executionId;
+    this.processInstanceId = te.processInstanceId;
+    this.processDefinitionId = te.processDefinitionId;
 
     // Inherit tenant
-    tenantId = te.tenantId;
+    this.tenantId = te.tenantId;
     this.jobType = "timer";
   }
 
-  @Override
   public void execute(CommandContext commandContext) {
 
     //set endDate if it was set to the definition
@@ -92,7 +89,14 @@ public class TimerEntity extends JobEntity {
       return;
     }
 
-    super.execute(commandContext);
+    ExecutionEntity execution = null;
+    if (executionId != null) {
+      execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+    }
+    
+    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
+    JobHandler jobHandler = jobHandlers.get(jobHandlerType);
+    jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
 
     if (log.isDebugEnabled()) {
       log.debug("Timer {} fired. Deleting timer.", getId());
@@ -107,15 +111,63 @@ public class TimerEntity extends JobEntity {
         }
         Date newTimer = calculateNextTimer();
         if (newTimer != null && isValidTime(newTimer)) {
-          TimerEntity te = new TimerEntity(this);
+          TimerJobEntity te = new TimerJobEntity(this);
           te.setDuedate(newTimer);
           Context.getCommandContext().getJobEntityManager().schedule(te);
         }
       }
     }
   }
+  
+  public void insert() {
+    Context.getCommandContext()
+      .getDbSqlSession()
+      .insert(this);
+    
+    // add link to execution
+    if (executionId != null) {
+      ExecutionEntity execution = Context.getCommandContext()
+        .getExecutionEntityManager()
+        .findExecutionById(executionId);
+      execution.addTimerJob(this);
+      
+      // Inherit tenant if (if applicable)
+      if (execution.getTenantId() != null) {
+        setTenantId(execution.getTenantId());
+      }
+    }
+    
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
+    }
+  }
+  
+  public void delete() {
+    Context.getCommandContext()
+      .getDbSqlSession()
+      .delete(this);
 
-  private void restoreExtraData(CommandContext commandContext, String jobHandlerConfiguration) {
+    // Also delete the job's exception byte array
+    exceptionByteArrayRef.delete();
+
+    // remove link to execution
+    if (executionId != null) {
+      ExecutionEntity execution = Context.getCommandContext()
+        .getExecutionEntityManager()
+        .findExecutionById(executionId);
+      execution.removeTimerJob(this);
+    }
+
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+    }
+  }
+
+  protected void restoreExtraData(CommandContext commandContext, String jobHandlerConfiguration) {
     String embededActivityId = jobHandlerConfiguration;
 
     if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE) ||
@@ -172,21 +224,28 @@ public class TimerEntity extends JobEntity {
     }
   }
 
-  private int checkStartEventDefinitions(ProcessDefinition def, String embededActivityId) {
+  protected int checkStartEventDefinitions(ProcessDefinition def, String embededActivityId) {
     List<TimerDeclarationImpl> startTimerDeclarations = (List<TimerDeclarationImpl>) ((ProcessDefinitionEntity) def).getProperty("timerStart");
 
     if (startTimerDeclarations != null && startTimerDeclarations.size() > 0) {
-      TimerDeclarationImpl timerDeclaration = startTimerDeclarations.get(0);
-      String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerDeclaration.getJobHandlerConfiguration());
-
-      if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
+      TimerDeclarationImpl timerDeclaration = null;
+      
+      for (TimerDeclarationImpl startTimerDeclaration : startTimerDeclarations) {
+        String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(startTimerDeclaration.getJobHandlerConfiguration());
+        if (startTimerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) 
+            && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
+          timerDeclaration = startTimerDeclaration;
+        }
+      }
+      
+      if (timerDeclaration != null) {
         return calculateMaxIterationsValue(timerDeclaration.getDescription().getExpressionText());
       }
     }
     return 1;
   }
 
-  private int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
+  protected int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
     List<ActivityImpl> activities = ((ProcessDefinitionEntity) def).getActivities();
     for (ActivityImpl activity : activities) {
       List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
@@ -202,7 +261,7 @@ public class TimerEntity extends JobEntity {
     return 1;
   }
 
-  private int calculateMaxIterationsValue(String originalExpression) {
+  protected int calculateMaxIterationsValue(String originalExpression) {
     int times = Integer.MAX_VALUE;
     List<String> expression = Arrays.asList(originalExpression.split("/"));
     if (expression.size() > 1 && expression.get(0).startsWith("R")) {
@@ -214,7 +273,7 @@ public class TimerEntity extends JobEntity {
     return times;
   }
 
-  private boolean isValidTime(Date newTimer) {
+  protected boolean isValidTime(Date newTimer) {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
@@ -222,7 +281,7 @@ public class TimerEntity extends JobEntity {
     return businessCalendar.validateDuedate(repeat , maxIterations, endDate, newTimer);
   }
 
-  private int calculateRepeatValue() {
+  protected int calculateRepeatValue() {
     int times = -1;
     List<String> expression = Arrays.asList(repeat.split("/"));
     if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
@@ -234,7 +293,7 @@ public class TimerEntity extends JobEntity {
     return times;
   }
   
-  private void setNewRepeat(int newRepeatValue) {
+  protected void setNewRepeat(int newRepeatValue) {
     List<String> expression = Arrays.asList(repeat.split("/"));
     expression = expression.subList(1, expression.size());
     StringBuilder repeatBuilder = new StringBuilder("R");
@@ -246,7 +305,7 @@ public class TimerEntity extends JobEntity {
     repeat = repeatBuilder.toString();
   }
 
-  private Date calculateNextTimer() {
+  protected Date calculateNextTimer() {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()

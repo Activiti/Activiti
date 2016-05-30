@@ -22,8 +22,8 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.JobTestHelper;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
 import org.junit.Test;
@@ -332,7 +332,7 @@ public class AsyncExecutorTest {
     private AtomicInteger counter = new AtomicInteger(0);
 
     @Override
-    public boolean executeAsyncJob(JobEntity job) {
+    public boolean executeAsyncJob(Job job) {
       logger.info("About to execute job " + job.getId());
       counter.incrementAndGet();
       boolean success = super.executeAsyncJob(job);

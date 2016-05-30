@@ -12,12 +12,12 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.logging.LogMDC;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class TimerCatchIntermediateEventJobHandler extends TimerEventHandler imp
     return TYPE;
   }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(Job job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
 
     String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
 

@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.activiti.engine.cfg.MailServerInfo;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti5.engine.impl.cfg.BeansConfigurationHelper;
@@ -141,6 +142,7 @@ public abstract class ProcessEngineConfiguration {
   protected boolean jpaCloseEntityManager;
 
   protected Clock clock;
+  protected AsyncExecutor asyncExecutor;
   
   /** 
    * Define the default lock time for an async job in seconds.
@@ -741,6 +743,15 @@ public abstract class ProcessEngineConfiguration {
 
   public ProcessEngineConfiguration setProcessDiagramGenerator(ProcessDiagramGenerator processDiagramGenerator) {
     this.processDiagramGenerator = processDiagramGenerator;
+    return this;
+  }
+  
+  public AsyncExecutor getAsyncExecutor() {
+    return asyncExecutor;
+  }
+
+  public ProcessEngineConfiguration setAsyncExecutor(AsyncExecutor asyncExecutor) {
+    this.asyncExecutor = asyncExecutor;
     return this;
   }
 

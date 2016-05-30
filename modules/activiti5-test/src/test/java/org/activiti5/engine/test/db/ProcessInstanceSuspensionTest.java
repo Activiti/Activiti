@@ -14,7 +14,7 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -81,7 +81,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     
     // Check if timer is eligable to be executed, when process in not yet suspended
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
-    List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
+    List<TimerJobEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(1, jobs.size());
     
     // Suspend process instancd

@@ -129,6 +129,7 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.isAsyncExecutorActivate()) {
       activiti5Configuration.setAsyncExecutorActivate(true);
     }
+    activiti5Configuration.setAsyncExecutor(activiti6Configuration.getAsyncExecutor());
   }
 
   protected void copyJpaConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {

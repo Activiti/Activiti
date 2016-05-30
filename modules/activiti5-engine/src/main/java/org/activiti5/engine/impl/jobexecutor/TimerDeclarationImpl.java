@@ -24,7 +24,7 @@ import org.activiti5.engine.impl.calendar.BusinessCalendar;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.NoExecutionVariableScope;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.joda.time.DateTime;
 
 /**
@@ -41,8 +41,8 @@ public class TimerDeclarationImpl implements Serializable {
   protected String jobHandlerType;
   protected String jobHandlerConfiguration = null;
   protected String repeat;
-  protected boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
-  protected int retries = TimerEntity.DEFAULT_RETRIES;
+  protected boolean exclusive = TimerJobEntity.DEFAULT_EXCLUSIVE;
+  protected int retries = TimerJobEntity.DEFAULT_RETRIES;
   protected boolean isInterruptingTimer; // For boundary timers
 
   public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType, Expression endDateExpression) {
@@ -107,7 +107,7 @@ public class TimerDeclarationImpl implements Serializable {
     this.isInterruptingTimer = isInterruptingTimer;
   }
 
-  public TimerEntity prepareTimerEntity(ExecutionEntity executionEntity) {
+  public TimerJobEntity prepareTimerEntity(ExecutionEntity executionEntity) {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
@@ -165,10 +165,10 @@ public class TimerDeclarationImpl implements Serializable {
       duedate = businessCalendar.resolveDuedate(dueDateString);
     }
 
-    TimerEntity timer = null;
+    TimerJobEntity timer = null;
     // if dueDateValue is null -> this is OK - timer will be null and job not scheduled
    	if (duedate!=null) {
-   		timer = new TimerEntity(this);
+   		timer = new TimerJobEntity(this);
    		timer.setDuedate(duedate);
    		timer.setEndDate(endDate);
    		

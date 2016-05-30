@@ -32,6 +32,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.DynamicBpmnService;
 import org.activiti5.engine.ProcessEngineConfiguration;
@@ -65,9 +66,8 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.util.IoUtil;
-import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.task.IdentityLinkType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -184,7 +184,7 @@ public class BpmnDeployer implements Deployer {
     ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
     DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-      List<TimerEntity> timers = new ArrayList<TimerEntity>();
+      List<TimerJobEntity> timers = new ArrayList<TimerJobEntity>();
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
@@ -311,8 +311,8 @@ public class BpmnDeployer implements Deployer {
     deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
   }
 
-  private void scheduleTimers(List<TimerEntity> timers) {
-    for (TimerEntity timer : timers) {
+  private void scheduleTimers(List<TimerJobEntity> timers) {
+    for (TimerJobEntity timer : timers) {
       Context
         .getCommandContext()
         .getJobEntityManager()
@@ -321,11 +321,11 @@ public class BpmnDeployer implements Deployer {
   }
 
   @SuppressWarnings("unchecked")
-  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, List<TimerEntity> timers) {
+  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, List<TimerJobEntity> timers) {
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-        TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+        TimerJobEntity timer = timerDeclaration.prepareTimerEntity(null);
         if (timer!=null) {
           timer.setProcessDefinitionId(processDefinition.getId());
 	        

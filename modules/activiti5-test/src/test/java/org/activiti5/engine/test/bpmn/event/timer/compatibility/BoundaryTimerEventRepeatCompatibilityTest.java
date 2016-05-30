@@ -58,7 +58,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-    //Test Boundary Events
+    // Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
 

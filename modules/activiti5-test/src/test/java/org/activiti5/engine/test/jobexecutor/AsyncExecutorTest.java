@@ -403,7 +403,7 @@ public class AsyncExecutorTest {
 		private AtomicInteger counter = new AtomicInteger(0);
 		
 		@Override
-		public boolean executeAsyncJob(JobEntity job) {
+		public boolean executeAsyncJob(Job job) {
 			logger.info("About to execute job " + job.getId());
 			counter.incrementAndGet();
 		  boolean success = super.executeAsyncJob(job);

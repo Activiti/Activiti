@@ -120,7 +120,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -208,7 +209,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -491,7 +493,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals(2, tasks.size());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -548,7 +551,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -599,7 +603,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(1).getId());
     
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -667,7 +672,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
     
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -743,7 +749,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(1).getId());
     
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -817,7 +824,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -863,7 +871,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -899,7 +908,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -1290,6 +1300,68 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 		
 		assertEquals(1, TestStartExecutionListener.countWithoutLoopCounter.get());
 		assertEquals(1, TestEndExecutionListener.countWithoutLoopCounter.get());
+  }
+  
+  @Deployment
+  public void testEndTimeOnMiSubprocess() {
+    
+    if (!processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      return;
+    }
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multiInstanceSubProcessParallelTasks");
+    
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(2, tasks.size());
+    assertEquals("User Task 1", tasks.get(0).getName());
+    assertEquals("User Task 1", tasks.get(1).getName());
+    
+    // End time should not be set for the subprocess
+    List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
+    assertEquals(2, historicActivityInstances.size());
+    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+      assertNotNull(historicActivityInstance.getStartTime());
+      assertNull(historicActivityInstance.getEndTime());
+    }
+    
+    // Complete one of the user tasks. This should not trigger setting of end time of the subprocess, but due to a bug it did exactly that
+    taskService.complete(tasks.get(0).getId());
+    historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
+    assertEquals(2, historicActivityInstances.size());
+    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+      assertNull(historicActivityInstance.getEndTime());
+    }
+    
+    taskService.complete(tasks.get(1).getId());
+    historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
+    assertEquals(2, historicActivityInstances.size());
+    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+      assertNull(historicActivityInstance.getEndTime());
+    }
+    
+    tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("User Task 3").list();
+    assertEquals(2, tasks.size());
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+      historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
+      assertEquals(2, historicActivityInstances.size());
+      for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+        assertNull(historicActivityInstance.getEndTime());
+      }
+    }
+    
+    // Finishing the tasks should also set the end time
+    tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(2, tasks.size());
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+    }
+    
+    historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
+    assertEquals(2, historicActivityInstances.size());
+    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+      assertNotNull(historicActivityInstance.getEndTime());
+    }
   }
   
   protected void resetTestCounts() {

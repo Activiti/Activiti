@@ -13,7 +13,7 @@
     <property name="jdbcPassword" value="" />
 
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
     
     <property name="databaseSchemaUpdate" value="true" />
     

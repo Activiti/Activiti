@@ -38,6 +38,7 @@
     <mapper resource="org/activiti5/db/mapping/entity/Resource.xml" />
     <mapper resource="org/activiti5/db/mapping/entity/TableData.xml" />
     <mapper resource="org/activiti5/db/mapping/entity/Task.xml" />
+    <mapper resource="org/activiti5/db/mapping/entity/TimerJob.xml" />
     <mapper resource="org/activiti5/db/mapping/entity/User.xml" />
     <mapper resource="org/activiti5/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti5/db/mapping/entity/EventSubscription.xml" />

@@ -13,7 +13,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,12 +78,12 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   
   // Job queue used when async executor is not yet started and jobs are already added.
   // This is mainly used for testing purpose.
-  protected LinkedList<JobEntity> temporaryJobQueue = new LinkedList<JobEntity>();
+  protected LinkedList<Job> temporaryJobQueue = new LinkedList<Job>();
 
   protected CommandExecutor commandExecutor;
   protected JobManager jobManager;
 
-  public boolean executeAsyncJob(final JobEntity job) {
+  public boolean executeAsyncJob(final Job job) {
     Runnable runnable = null;
     if (isActive) {
       runnable = createRunnableForJob(job);
@@ -126,7 +126,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     return true;
   }
 
-  protected Runnable createRunnableForJob(final JobEntity job) {
+  protected Runnable createRunnableForJob(final Job job) {
     if (executeAsyncRunnableFactory == null) {
       return new ExecuteAsyncRunnable(job, commandExecutor);
     } else {
@@ -134,7 +134,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     }
   }
   
-  protected void unacquireJob(final JobEntity job, CommandContext commandContext) {
+  protected void unacquireJob(final Job job, CommandContext commandContext) {
     commandContext.getJobEntityManager().unacquireJob(job.getId());
   }
   
@@ -156,7 +156,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     isActive = true;
 
     while (temporaryJobQueue.isEmpty() == false) {
-      JobEntity job = temporaryJobQueue.pop();
+      Job job = temporaryJobQueue.pop();
       executeAsyncJob(job);
     }
     isActive = true;

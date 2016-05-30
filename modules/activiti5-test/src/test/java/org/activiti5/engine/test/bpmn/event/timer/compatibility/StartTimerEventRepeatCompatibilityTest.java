@@ -36,7 +36,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     
-    listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
+    listener = new TestActivitiEntityEventListener(Job.class);
     activiti5ProcessEngineConfig.getEventDispatcher().addEventListener(listener);
   }
 

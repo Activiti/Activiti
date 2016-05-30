@@ -74,8 +74,23 @@ public interface Job {
   String getTenantId();
   
   /**
+   * Is the job exclusive?
+   */
+  boolean isExclusive();
+  
+  /**
    * Get the job type for this job.
    */
   String getJobType();
+  
+  /**
+   * Get the job handler type.
+   */
+  String getJobHandlerType();
+  
+  /**
+   * Get the job configuration.
+   */
+  String getJobHandlerConfiguration();
 
 }

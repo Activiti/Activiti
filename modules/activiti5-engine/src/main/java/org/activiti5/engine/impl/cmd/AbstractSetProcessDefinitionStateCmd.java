@@ -31,7 +31,7 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.runtime.ProcessInstance;
 
@@ -127,7 +127,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   
   protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-      TimerEntity timer = new TimerEntity();
+      TimerJobEntity timer = new TimerJobEntity();
       timer.setProcessDefinitionId(processDefinition.getId());
       
       // Inherit tenant identifier (if applicable)

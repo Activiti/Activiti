@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
-import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
@@ -27,11 +27,10 @@ import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.JobQueryImpl;
 import org.activiti5.engine.impl.Page;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti5.engine.impl.cfg.TransactionListener;
-import org.activiti5.engine.impl.cfg.TransactionState;
 import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.interceptor.CommandContextCloseListener;
+import org.activiti5.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti5.engine.impl.persistence.AbstractManager;
-import org.activiti5.engine.runtime.Job;
 
 
 /**
@@ -41,23 +40,15 @@ import org.activiti5.engine.runtime.Job;
  */
 public class JobEntityManager extends AbstractManager {
 
-  public void send(MessageEntity message) {
+  public void send(JobEntity message) {
   	
   	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-  	
-  	// If the async executor is enabled, we need to set the duedate of the job to the current date + the default lock time. 
-		// This is cope with the case where the async job executor or the process engine goes down
-		// before executing the job. This way, other async job executors can pick the job up after the max lock time.
-		Date dueDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() 
-				+ processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
-		message.setDuedate(dueDate);
-		message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
   	
     message.insert();
     hintAsyncExecutor(message);
   }
  
-  public void schedule(TimerEntity timer) {
+  public void schedule(TimerJobEntity timer) {
     Date duedate = timer.getDuedate();
     if (duedate==null) {
       throw new ActivitiIllegalArgumentException("duedate is null");
@@ -66,23 +57,21 @@ public class JobEntityManager extends AbstractManager {
     timer.insert();
   }
   
-  protected void hintAsyncExecutor(JobEntity job) {  
+  protected void hintAsyncExecutor(Job job) {  
     AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
 
     // notify job executor:      
-    TransactionListener transactionListener = new AsyncJobAddedNotification(job, asyncExecutor);
-    Context.getCommandContext()
-      .getTransactionContext()
-      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    CommandContextCloseListener commandContextCloseListener = new AsyncJobAddedNotification(job, asyncExecutor);
+    Context.getCommandContext().addCloseListener(commandContextCloseListener);
   }
   
   public void cancelTimers(ExecutionEntity execution) {
-    List<TimerEntity> timers = Context
+    List<TimerJobEntity> timers = Context
       .getCommandContext()
       .getJobEntityManager()
       .findTimersByExecutionId(execution.getId());
     
-    for (TimerEntity timer: timers) {
+    for (TimerJobEntity timer: timers) {
       if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timer));
@@ -136,13 +125,13 @@ public class JobEntityManager extends AbstractManager {
 
 
   @SuppressWarnings("unchecked")
-  public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
+  public List<TimerJobEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
     final String query = "selectUnlockedTimersByDuedate";
     return getDbSqlSession().selectList(query, duedate, page);
   }
 
   @SuppressWarnings("unchecked")
-  public List<TimerEntity> findTimersByExecutionId(String executionId) {
+  public List<TimerJobEntity> findTimersByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectTimersByExecutionId", executionId);
   }
 

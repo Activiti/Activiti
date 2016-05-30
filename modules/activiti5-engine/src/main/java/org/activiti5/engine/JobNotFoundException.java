@@ -1,6 +1,6 @@
 package org.activiti5.engine;
 
-import org.activiti5.engine.runtime.Job;
+import org.activiti.engine.runtime.Job;
 
 /**
  * This exception is thrown when you try to execute a job that is not found (may

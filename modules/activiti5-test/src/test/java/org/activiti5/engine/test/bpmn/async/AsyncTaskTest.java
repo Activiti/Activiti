@@ -108,7 +108,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database, and it is a message
     assertEquals(1, managementService.createJobQuery().count());
     Job job = managementService.createJobQuery().singleResult();
-    if (JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
+    if (!JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
       fail("the job must be a message");
     }      
     
@@ -167,17 +167,18 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // start process 
     runtimeService.startProcessInstanceByKey("asyncService");
     // now there should be two jobs in the database:
-    assertEquals(2, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
     // the service was not invoked:
     assertFalse(INVOCATION);
     
-    waitForJobExecutorToProcessAllJobs(10000L, 300L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000L, 300L);
     
     // the service was invoked
     assertTrue(INVOCATION);    
     // both the timer and the message are cancelled
-    assertEquals(0, managementService.createJobQuery().count());   
-        
+    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
   }
   
   @Deployment

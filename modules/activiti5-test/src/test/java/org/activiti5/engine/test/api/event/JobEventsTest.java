@@ -64,7 +64,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(1, listener.getEventsReceived().size());
 		event = listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-		org.activiti5.engine.runtime.Job updatedJob = (org.activiti5.engine.runtime.Job) ((ActivitiEntityEvent) event).getEntity();
+		Job updatedJob = (Job) ((ActivitiEntityEvent) event).getEntity();
 		assertEquals(5, updatedJob.getRetries());
 		checkEventContext(event, theJob, true);
 		
@@ -337,7 +337,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		
 		event = listener.getEventsReceived().get(4);
 		assertEquals(ActivitiEventType.JOB_RETRIES_DECREMENTED, event.getType());
-		assertEquals(0, ((org.activiti5.engine.runtime.Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
+		assertEquals(0, ((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
 		checkEventContext(event, theJob, true);
 	
 		processEngineConfiguration.resetClock();
@@ -354,8 +354,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		
 		assertTrue(event instanceof ActivitiEntityEvent);
 		ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
-		assertTrue(entityEvent.getEntity() instanceof org.activiti5.engine.runtime.Job);
-		assertEquals(entity.getId(), ((org.activiti5.engine.runtime.Job) entityEvent.getEntity()).getId());
+		assertTrue(entityEvent.getEntity() instanceof Job);
+		assertEquals(entity.getId(), ((Job) entityEvent.getEntity()).getId());
 	}
 	
 	@Override
@@ -363,7 +363,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 	  super.setUp();
 	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	  listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
+	  listener = new TestActivitiEntityEventListener(Job.class);
 	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
 	}
 	

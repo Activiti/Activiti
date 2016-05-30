@@ -12,9 +12,9 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.JobEntity;
 
 
 /**
@@ -23,5 +23,5 @@ import org.activiti5.engine.impl.persistence.entity.JobEntity;
 public interface JobHandler {
 
   String getType();
-  void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext);
+  void execute(Job job, String configuration, ExecutionEntity execution, CommandContext commandContext);
 }

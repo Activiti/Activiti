@@ -18,7 +18,6 @@ import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -34,7 +33,8 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 
@@ -47,7 +47,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   private String deploymentId;
   private String messageId;
   private CommandExecutor commandExecutor;
-  private TimerEntity timerEntity;
+  private TimerJobEntity timerEntity;
   
   private Date testStartTime;
   private Date timerOneFireTime;
@@ -417,8 +417,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
         
-        timerEntity = new TimerEntity();
-        timerEntity.setLockOwner(UUID.randomUUID().toString());
+        timerEntity = new TimerJobEntity();
         timerEntity.setDuedate(new Date());
         timerEntity.setRetries(0);
 
@@ -442,10 +441,10 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        JobEntityManager jobManager = commandContext.getJobEntityManager();
+        TimerJobEntityManager jobManager = commandContext.getTimerJobEntityManager();
         
-        timerEntity = new TimerEntity();
-        timerEntity.setLockOwner(UUID.randomUUID().toString());
+        timerEntity = new TimerJobEntity();
+        timerEntity.setJobType(Job.JOB_TYPE_TIMER);
         timerEntity.setDuedate(new Date());
         timerEntity.setRetries(0);
         timerEntity.setExceptionMessage("I'm supposed to fail");

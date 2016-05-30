@@ -41,6 +41,7 @@ import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.cfg.DelegateExpressionFieldInjectionMode;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
@@ -191,6 +192,7 @@ import org.activiti5.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti5.engine.impl.persistence.entity.TableDataManager;
 import org.activiti5.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti5.engine.impl.scripting.BeansResolverFactory;
 import org.activiti5.engine.impl.scripting.ResolverFactory;
@@ -577,6 +579,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Event logging to database
   protected boolean enableDatabaseEventLogging = false;
+  
+  /**
+   * Using field injection together with a delegate expression for a service
+   * task / execution listener / task listener is not thread-sade , see user
+   * guide section 'Field Injection' for more information.
+   * 
+   * Set this flag to false to throw an exception at runtime when a field is
+   * injected and a delegateExpression is used. Default is true for backwards compatibility.
+   * 
+   * @since 5.21
+   */
+  protected DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode = DelegateExpressionFieldInjectionMode.COMPATIBILITY;
   
   /**
    *  Define a max length for storing String variable types in the database.
@@ -1009,6 +1023,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class));
       addSessionFactory(new GenericManagerFactory(TableDataManager.class));
       addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(TimerJobEntityManager.class));
       addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class));
@@ -2261,6 +2276,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
+	
+	public DelegateExpressionFieldInjectionMode getDelegateExpressionFieldInjectionMode() {
+    return delegateExpressionFieldInjectionMode;
+  }
+
+  public void setDelegateExpressionFieldInjectionMode(DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode) {
+    this.delegateExpressionFieldInjectionMode = delegateExpressionFieldInjectionMode;
+  }
 	
 	public ObjectMapper getObjectMapper() {
     return objectMapper;

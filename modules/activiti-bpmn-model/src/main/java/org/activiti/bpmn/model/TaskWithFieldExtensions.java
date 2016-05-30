@@ -10,16 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.bpmn.model;
 
-package org.activiti5.engine.delegate;
-
-import org.activiti.engine.delegate.JavaDelegate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Class that provides helper operations for use in the {@link JavaDelegate} class.
- * 
  * @author Joram Barrez
  */
-public class JavaDelegateHelper {
+public abstract class TaskWithFieldExtensions extends Activity {
 
+  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+  
+  public List<FieldExtension> getFieldExtensions() {
+    return fieldExtensions;
+  }
+  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
+    this.fieldExtensions = fieldExtensions;
+  }
+  
 }

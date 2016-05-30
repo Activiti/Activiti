@@ -15,6 +15,7 @@ package org.activiti5.engine.delegate.event.impl;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti5.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti5.engine.delegate.event.ActivitiCancelledEvent;
@@ -35,7 +36,6 @@ import org.activiti5.engine.impl.context.ExecutionContext;
 import org.activiti5.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti5.engine.impl.variable.VariableType;
 import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.task.Task;
 
 /**

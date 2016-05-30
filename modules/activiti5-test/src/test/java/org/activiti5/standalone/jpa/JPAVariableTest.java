@@ -10,10 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti5.standalone.jpa;
-
-
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,7 +31,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.AbstractActivitiTestCase;

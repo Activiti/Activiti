@@ -54,6 +54,7 @@ import org.activiti5.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti5.engine.impl.persistence.entity.TableDataManager;
 import org.activiti5.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti5.engine.impl.pvm.runtime.AtomicOperation;
@@ -338,6 +339,10 @@ public class CommandContext {
   
   public JobEntityManager getJobEntityManager() {
     return getSession(JobEntityManager.class);
+  }
+  
+  public TimerJobEntityManager getTimerJobEntityManager() {
+    return getSession(TimerJobEntityManager.class);
   }
 
   public UserIdentityManager getUserIdentityManager() {

@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
@@ -38,7 +37,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
+    listener = new TestActivitiEntityEventListener(Job.class);
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     activiti5ProcessEngineConfig.getEventDispatcher().addEventListener(listener);

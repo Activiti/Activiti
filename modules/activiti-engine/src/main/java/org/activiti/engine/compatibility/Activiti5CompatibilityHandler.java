@@ -22,7 +22,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -153,9 +152,9 @@ public interface Activiti5CompatibilityHandler {
 
   void executeJob(Job job);
   
-  void executeJobWithLockAndRetry(JobEntity job);
+  void executeJobWithLockAndRetry(Job job);
   
-  void handleFailedJob(JobEntity job, Throwable exception);
+  void handleFailedJob(Job job, Throwable exception);
   
   void deleteJob(String jobId);
   

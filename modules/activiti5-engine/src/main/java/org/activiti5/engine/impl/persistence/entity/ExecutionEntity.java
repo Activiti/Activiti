@@ -22,8 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
@@ -59,7 +61,6 @@ import org.activiti5.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti5.engine.impl.pvm.runtime.StartingExecution;
 import org.activiti5.engine.impl.util.BitMaskUtil;
 import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,6 +154,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   // (we cache associated entities here to minimize db queries) 
   protected List<EventSubscriptionEntity> eventSubscriptions;  
   protected List<JobEntity> jobs;
+  protected List<TimerJobEntity> timerJobs;
   protected List<TaskEntity> tasks;
   protected List<IdentityLinkEntity> identityLinks;
   protected int cachedEntityState;
@@ -352,7 +354,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-        TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
+        TimerJobEntity timer = timerDeclaration.prepareTimerEntity(this);
         if (timer!=null) {
           Context
             .getCommandContext()
@@ -640,7 +642,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   protected void scheduleAtomicOperationAsync(AtomicOperation executionOperation) {
-    MessageEntity message = new MessageEntity();
+    JobEntity message = new JobEntity();
+    message.setJobType(Job.JOB_TYPE_MESSAGE);
     message.setExecution(this);
     message.setExclusive(getActivity().isExclusive());
     message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
@@ -1043,6 +1046,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     for (Job job: getJobs()) {
       ((JobEntity) job).delete();
     }
+    
+    for (Job job: getTimerJobs()) {
+      ((TimerJobEntity) job).delete();
+    }
   }
 
   private void removeTasks(String reason) {
@@ -1273,6 +1280,16 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
   }
   
+  @Override
+  public ActivitiListener getCurrentActivitiListener() {
+    throw new UnsupportedOperationException();
+  }
+  
+  @Override
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    throw new UnsupportedOperationException();
+  }
+  
   public void insert() {
     Context
       .getCommandContext()
@@ -1368,8 +1385,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void ensureJobsInitialized() {
-    if(jobs == null) {    
-      jobs = (List)Context.getCommandContext()
+    if (jobs == null) {    
+      jobs = (List) Context.getCommandContext()
         .getJobEntityManager()
         .findJobsByExecutionId(id);
     }    
@@ -1390,6 +1407,32 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   public void removeJob(JobEntity job) {
     getJobsInternal().remove(job);
+  }
+  
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  protected void ensureTimerJobsInitialized() {
+    if (timerJobs == null) {    
+      timerJobs = (List) Context.getCommandContext()
+        .getTimerJobEntityManager()
+        .findTimerJobsByExecutionId(id);
+    }    
+  }
+  
+  protected List<TimerJobEntity> getTimerJobsInternal() {
+    ensureTimerJobsInitialized();
+    return timerJobs;
+  }
+  
+  public List<TimerJobEntity> getTimerJobs() {
+    return new ArrayList<TimerJobEntity>(getTimerJobsInternal());
+  }
+  
+  public void addTimerJob(TimerJobEntity jobEntity) {
+    getTimerJobsInternal().add(jobEntity);
+  }
+  
+  public void removeTimerJob(TimerJobEntity job) {
+    getTimerJobsInternal().remove(job);
   }
   
   // referenced task entities ///////////////////////////////////////////////////

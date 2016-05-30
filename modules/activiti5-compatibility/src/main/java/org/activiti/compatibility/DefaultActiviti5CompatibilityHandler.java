@@ -758,14 +758,19 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     processEngineConfig.getCommandExecutor().execute(new ExecuteJobsCmd(activiti5Job));
   }
   
-  public void executeJobWithLockAndRetry(JobEntity job) {
+  public void executeJobWithLockAndRetry(Job job) {
     if (job == null) return;
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
-    final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
+    org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = null;
+    if (job instanceof org.activiti5.engine.impl.persistence.entity.JobEntity) {
+      activity5Job = (org.activiti5.engine.impl.persistence.entity.JobEntity) job;
+    } else {
+      activity5Job = convertToActiviti5JobEntity((JobEntity) job);
+    }
     AsyncJobUtil.executeJob(activity5Job, processEngineConfig.getCommandExecutor());
   }
   
-  public void handleFailedJob(JobEntity job, Throwable exception) {
+  public void handleFailedJob(Job job, Throwable exception) {
     if (job == null) return;
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
@@ -931,27 +936,17 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   protected org.activiti5.engine.impl.persistence.entity.JobEntity convertToActiviti5JobEntity(JobEntity job) {
-    org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = null;
-    if (JobEntity.JOB_TYPE_TIMER.equals(job.getJobType())) {
-      org.activiti5.engine.impl.persistence.entity.TimerEntity tempTimer = new org.activiti5.engine.impl.persistence.entity.TimerEntity();
-      tempTimer.setEndDate(job.getEndDate());
-      tempTimer.setRepeat(job.getRepeat());
-      activity5Job = tempTimer;
-      
-    } else if (JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
-      org.activiti5.engine.impl.persistence.entity.MessageEntity tempTimer = new org.activiti5.engine.impl.persistence.entity.MessageEntity();
-      activity5Job = tempTimer;
-    }
+    org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = new org.activiti5.engine.impl.persistence.entity.JobEntity();
     
+    activity5Job.setJobType(job.getJobType());
     activity5Job.setDuedate(job.getDuedate());
     activity5Job.setExclusive(job.isExclusive());
     activity5Job.setExecutionId(job.getExecutionId());
     activity5Job.setId(job.getId());
     activity5Job.setJobHandlerConfiguration(job.getJobHandlerConfiguration());
     activity5Job.setJobHandlerType(job.getJobHandlerType());
-    activity5Job.setJobType(job.getJobType());
-    activity5Job.setLockExpirationTime(job.getLockExpirationTime());
-    activity5Job.setLockOwner(job.getLockOwner());
+    activity5Job.setEndDate(job.getEndDate());
+    activity5Job.setRepeat(job.getRepeat());
     activity5Job.setProcessDefinitionId(job.getProcessDefinitionId());
     activity5Job.setProcessInstanceId(job.getProcessInstanceId());
     activity5Job.setRetries(job.getRetries());

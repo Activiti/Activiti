@@ -16,6 +16,7 @@ package org.activiti5.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -31,7 +32,6 @@ import org.activiti5.engine.impl.persistence.AbstractManager;
 import org.activiti5.engine.repository.Deployment;
 import org.activiti5.engine.repository.Model;
 import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.Job;
 
 
 /**
@@ -134,7 +134,7 @@ public class DeploymentEntityManager extends AbstractManager {
               (List<TimerDeclarationImpl>) resolvedProcessDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
           if (timerDeclarations != null) {
             for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-              TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+              TimerJobEntity timer = timerDeclaration.prepareTimerEntity(null);
               timer.setProcessDefinitionId(previousProcessDefinition.getId());
               
               if (previousProcessDefinition.getTenantId() != null) {

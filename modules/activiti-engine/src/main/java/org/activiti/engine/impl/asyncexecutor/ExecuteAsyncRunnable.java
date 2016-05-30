@@ -25,8 +25,8 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +38,10 @@ public class ExecuteAsyncRunnable implements Runnable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteAsyncRunnable.class);
 
-  protected JobEntity job;
+  protected Job job;
   protected CommandExecutor commandExecutor;
 
-  public ExecuteAsyncRunnable(JobEntity job, CommandExecutor commandExecutor) {
+  public ExecuteAsyncRunnable(Job job, CommandExecutor commandExecutor) {
     this.job = job;
     this.commandExecutor = commandExecutor;
   }

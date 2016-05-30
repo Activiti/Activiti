@@ -13,13 +13,13 @@
 package org.activiti5.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class TimerExecuteNestedActivityJobHandler extends TimerEventHandler impl
     return TYPE;
   }
   
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(Job job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
 
     String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
 
@@ -71,7 +71,7 @@ public class TimerExecuteNestedActivityJobHandler extends TimerEventHandler impl
     }
   }
 
-  protected void dispatchActivityTimeoutIfNeeded(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
+  protected void dispatchActivityTimeoutIfNeeded(Job timerEntity, ExecutionEntity execution, CommandContext commandContext) {
 
     String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerEntity.getJobHandlerConfiguration());
 
@@ -85,26 +85,26 @@ public class TimerExecuteNestedActivityJobHandler extends TimerEventHandler impl
     }
   }
 
-  protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
+  protected void dispatchExecutionTimeOut(Job job, ExecutionEntity execution, CommandContext commandContext) {
     // subprocesses
     for (ExecutionEntity subExecution : execution.getExecutions()) {
-      dispatchExecutionTimeOut(timerEntity, subExecution, commandContext);
+      dispatchExecutionTimeOut(job, subExecution, commandContext);
     }
 
     // call activities
     ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
     if (subProcessInstance != null) {
-      dispatchExecutionTimeOut(timerEntity, subProcessInstance, commandContext);
+      dispatchExecutionTimeOut(job, subProcessInstance, commandContext);
     }
 
     // activity with timer boundary event
     ActivityImpl activity = execution.getActivity();
     if (activity != null && activity.getActivityBehavior() != null) {
-      dispatchActivityTimeOut(timerEntity, activity, execution, commandContext);
+      dispatchActivityTimeOut(job, activity, execution, commandContext);
     }
   }
 
-  protected void dispatchActivityTimeOut(JobEntity timerEntity, ActivityImpl activity, ExecutionEntity execution, CommandContext commandContext) {
+  protected void dispatchActivityTimeOut(Job job, ActivityImpl activity, ExecutionEntity execution, CommandContext commandContext) {
     commandContext.getEventDispatcher().dispatchEvent(
       ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(),
         (String) activity.getProperties().get("name"),
@@ -112,7 +112,7 @@ public class TimerExecuteNestedActivityJobHandler extends TimerEventHandler impl
         execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
         (String) activity.getProperties().get("type"),
         activity.getActivityBehavior().getClass().getCanonicalName(),
-        timerEntity
+        job
         )
     );
   }

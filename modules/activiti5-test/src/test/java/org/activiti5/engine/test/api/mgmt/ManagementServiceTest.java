@@ -19,14 +19,14 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
-import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -228,8 +228,8 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     processEngineConfiguration.setClock(clock);
 
     // Acquire job by running the acquire command manually
-    AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd("testLockOwner", 60000, 5);
-    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
+    AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd(processEngineConfiguration.getAsyncExecutor());
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(acquireJobsCmd);
     
     // Try to delete the job. This should fail.

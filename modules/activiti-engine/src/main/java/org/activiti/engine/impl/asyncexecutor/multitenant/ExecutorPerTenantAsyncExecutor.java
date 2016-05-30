@@ -22,7 +22,7 @@ import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +95,7 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     return tenantExecutors.get(tenantInfoHolder.getCurrentTenantId());
   }
 
-  public boolean executeAsyncJob(JobEntity job) {
+  public boolean executeAsyncJob(Job job) {
     return determineAsyncExecutor().executeAsyncJob(job);
   }
 

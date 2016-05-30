@@ -178,14 +178,15 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
           String event = activitiListener.getEvent();
           if (event.equals(taskEventName) || event.equals(TaskListener.EVENTNAME_ALL_EVENTS)) {
             TaskListener taskListener = createTaskListener(activitiListener, taskEventName);
-            ExecutionEntity execution = taskEntity.getExecution();
-            if (execution != null) {
-              taskEntity.setEventName(taskEventName);
-            }
+            taskEntity.setEventName(taskEventName);
+            taskEntity.setCurrentActivitiListener(activitiListener);
             try {
               getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask) taskEntity));
             } catch (Exception e) {
               throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
+            } finally {
+              taskEntity.setEventName(null);
+              taskEntity.setCurrentActivitiListener(null);
             }
           }
         }
