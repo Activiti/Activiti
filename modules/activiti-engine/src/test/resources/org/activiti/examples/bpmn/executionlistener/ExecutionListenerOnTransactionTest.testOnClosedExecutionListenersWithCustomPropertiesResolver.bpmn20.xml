@@ -16,7 +16,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"
+                                    onTransaction="committed"
                                     customPropertiesResolverClass="org.activiti.examples.bpmn.executionlistener.MyCustomPropertiesResolver"/>
       </extensionElements>
     </serviceTask>

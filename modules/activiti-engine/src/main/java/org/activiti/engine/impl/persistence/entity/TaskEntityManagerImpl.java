@@ -25,7 +25,6 @@ import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.BaseTaskListener;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
@@ -187,7 +186,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
           if (event.equals(taskEventName) || event.equals(TaskListener.EVENTNAME_ALL_EVENTS)) {
             BaseTaskListener taskListener = createTaskListener(activitiListener);
 
-            if (activitiListener.getOnTransactionResult() != null) {
+            if (activitiListener.getOnTransaction() != null) {
               planTransactionDependentTaskListener(taskEntity.getExecution(), (TransactionDependentTaskListener) taskListener, activitiListener);
             } else {
               taskEntity.setEventName(taskEventName);
@@ -215,7 +214,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
       taskListener = getProcessEngineConfiguration().getListenerFactory().createExpressionTaskListener(activitiListener);
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-      if (activitiListener.getOnTransactionResult() != null) {
+      if (activitiListener.getOnTransaction() != null) {
         taskListener = getProcessEngineConfiguration().getListenerFactory().createTransactionDependentDelegateExpressionTaskListener(activitiListener);
       } else {
         taskListener = getProcessEngineConfiguration().getListenerFactory().createDelegateExpressionTaskListener(activitiListener);
@@ -261,13 +260,14 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     }
 
     // add to context close listener stack
-    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
+    if (TransactionDependentTaskListener.ON_TRANSACTION_COMMITTING.equals(activitiListener.getOnTransaction())) {
+      taskListenerContextCloseListener.addClosingTaskListener(taskListener, execution, executionVariablesToUse, customPropertiesMapToUse);
+    } else if (TransactionDependentTaskListener.ON_TRANSACTION_COMMITTED.equals(activitiListener.getOnTransaction())) {
       taskListenerContextCloseListener.addClosedTaskListener(taskListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
+    } else if (TransactionDependentTaskListener.ON_TRANSACTION_ROLLED_BACK.equals(activitiListener.getOnTransaction())) {
       taskListenerContextCloseListener.addCloseFailedTaskListener(taskListener, execution, executionVariablesToUse, customPropertiesMapToUse);
     }
   }
-
 
   @Override
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {

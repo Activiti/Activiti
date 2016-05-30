@@ -486,7 +486,7 @@
           </restriction>
         </simpleType>
       </attribute>
-      <attribute name="onTransactionResult" use="optional">
+      <attribute name="onTransaction" use="optional">
         <annotation>
           <documentation>
             Execute executionListener after a successful commit or after a rollback.
@@ -494,6 +494,7 @@
         </annotation>
         <simpleType>
           <restriction base="string">
+            <enumeration value="before-commit" />
             <enumeration value="committed" />
             <enumeration value="rolled-back" />
           </restriction>

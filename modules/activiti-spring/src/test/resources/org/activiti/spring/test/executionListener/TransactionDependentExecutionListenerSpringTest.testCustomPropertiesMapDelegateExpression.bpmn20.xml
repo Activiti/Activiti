@@ -12,7 +12,7 @@
       <extensionElements>
         <activiti:executionListener delegateExpression="${myTransactionDependentExecutionListener}"
                                     event="end"
-                                    onTransactionResult="committed"
+                                    onTransaction="committed"
                                     customPropertiesResolverExpression="${myCustomPropertiesResolver.calledInExpression(execution.currentActivityId)}"/>
       </extensionElements>
     </userTask>
@@ -22,7 +22,7 @@
       <extensionElements>
         <activiti:executionListener delegateExpression="${myTransactionDependentExecutionListener}"
                                     event="end"
-                                    onTransactionResult="committed"
+                                    onTransaction="committed"
                                     customPropertiesResolverDelegateExpression="${myCustomPropertiesResolver}"/>
       </extensionElements>
     </userTask>

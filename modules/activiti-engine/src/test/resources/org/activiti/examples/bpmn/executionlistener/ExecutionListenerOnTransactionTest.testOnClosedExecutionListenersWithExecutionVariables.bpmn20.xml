@@ -16,7 +16,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
         <activiti:field name="injectedVar" stringValue="test1" />
       </extensionElements>
     </serviceTask>
@@ -30,7 +30,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
         <activiti:field name="injectedVar" stringValue="test2" />
       </extensionElements>
     </serviceTask>
@@ -44,7 +44,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
         <activiti:field name="injectedVar" stringValue="test3" />
       </extensionElements>
     </serviceTask>

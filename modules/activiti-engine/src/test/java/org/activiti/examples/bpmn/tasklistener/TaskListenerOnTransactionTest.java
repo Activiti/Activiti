@@ -60,15 +60,20 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 
     Map<String, Object> variables = new HashMap<>();
     variables.put("serviceTask1", false);
-    variables.put("serviceTask2", true);
+    variables.put("serviceTask2", false);
+    variables.put("serviceTask3", true);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenersOnCompleteCommitted", variables);
 
-    // task 1 has rolled-back listener
+    // task 1 has before-commit listener
     Task task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
 
     // task 2 has rolled-back listener
+    task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId());
+
+    // task 3 has rolled-back listener
     task = taskService.createTaskQuery().singleResult();
 
     try {
@@ -78,12 +83,17 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     }
 
     List<CurrentTaskTransactionDependentTaskListener.CurrentTask> currentTasks = CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
-    assertEquals(1, currentTasks.size());
+    assertEquals(2, currentTasks.size());
 
-    assertEquals("usertask2", currentTasks.get(0).getTaskId());
-    assertEquals("User Task 2", currentTasks.get(0).getTaskName());
+    assertEquals("usertask1", currentTasks.get(0).getTaskId());
+    assertEquals("User Task 1", currentTasks.get(0).getTaskName());
     assertEquals(processInstance.getId(), currentTasks.get(0).getProcessInstanceId());
     assertNotNull(currentTasks.get(0).getProcessInstanceId());
+
+    assertEquals("usertask3", currentTasks.get(1).getTaskId());
+    assertEquals("User Task 3", currentTasks.get(1).getTaskName());
+    assertEquals(processInstance.getId(), currentTasks.get(1).getProcessInstanceId());
+    assertNotNull(currentTasks.get(1).getProcessInstanceId());
   }
 
   @Deployment

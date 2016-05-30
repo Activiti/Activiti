@@ -24,8 +24,9 @@ import java.util.Map;
  */
 public interface TransactionDependentTaskListener extends BaseTaskListener {
 
-  String ON_TRANSACTION_RESULT_COMMITTED = "committed";
-  String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
+  String ON_TRANSACTION_COMMITTING = "before-commit";
+  String ON_TRANSACTION_COMMITTED = "committed";
+  String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
 
   void notify(String processInstanceId, String executionId, Task task,
           Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);

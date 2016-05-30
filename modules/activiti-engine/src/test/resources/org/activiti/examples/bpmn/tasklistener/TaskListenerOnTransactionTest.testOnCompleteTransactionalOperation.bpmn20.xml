@@ -25,7 +25,7 @@
         <activiti:taskListener
                 event="complete"
                 class="org.activiti.examples.bpmn.tasklistener.MyTransactionalOperationTransactionDependentTaskListener"
-                onTransactionResult="committed"/>
+                onTransaction="committed"/>
       </extensionElements>
     </userTask>
 

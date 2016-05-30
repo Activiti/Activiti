@@ -80,16 +80,15 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     }
 
     List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
-    assertEquals(3, currentActivities.size());
+    assertEquals(2, currentActivities.size());
 
+    // the before commit listener
     assertEquals("serviceTask1", currentActivities.get(0).getActivityId());
     assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
 
-    assertEquals("serviceTask2", currentActivities.get(1).getActivityId());
-    assertEquals("Service Task 2", currentActivities.get(1).getActivityName());
-
-    assertEquals("serviceTask3", currentActivities.get(2).getActivityId());
-    assertEquals("Service Task 3", currentActivities.get(2).getActivityName());
+    // the before rolled-back listener
+    assertEquals("serviceTask3", currentActivities.get(1).getActivityId());
+    assertEquals("Service Task 3", currentActivities.get(1).getActivityName());
   }
 
   @Deployment

@@ -10,7 +10,7 @@
         <activiti:taskListener
                 event="complete"
                 class="org.activiti.examples.bpmn.tasklistener.CurrentTaskTransactionDependentTaskListener"
-                onTransactionResult="committed"/>
+                onTransaction="committed"/>
       </extensionElements>
     </userTask>
 
@@ -28,7 +28,7 @@
         <activiti:taskListener
                 event="complete"
                 class="org.activiti.examples.bpmn.tasklistener.CurrentTaskTransactionDependentTaskListener"
-                onTransactionResult="rolled-back"/>
+                onTransaction="rolled-back"/>
       </extensionElements>
     </userTask>
 

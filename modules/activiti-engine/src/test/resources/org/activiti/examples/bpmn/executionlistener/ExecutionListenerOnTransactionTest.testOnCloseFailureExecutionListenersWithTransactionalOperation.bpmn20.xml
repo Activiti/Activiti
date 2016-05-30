@@ -26,7 +26,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.MyTransactionalOperationTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
       </extensionElements>
     </serviceTask>
 

@@ -18,14 +18,15 @@ import org.activiti.bpmn.model.FlowElement;
 import java.util.Map;
 
 /**
- * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closed and closeFailure
+ * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closing, closed and closeFailure
  * 
  * @author Yvo Swillens
  */
 public interface TransactionDependentExecutionListener extends BaseExecutionListener {
 
-  String ON_TRANSACTION_RESULT_COMMITTED = "committed";
-  String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
+  String ON_TRANSACTION_BEFORE_COMMIT = "before-commit";
+  String ON_TRANSACTION_COMMITTED = "committed";
+  String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
 
   void notify(String processInstanceId, String executionId, FlowElement flowElement,
               Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
