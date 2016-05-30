@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '6.0.0.1', 1);
+values ('schema.version', '6.0.0.2', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(6.0.0.1)', 1);
+values ('schema.history', 'create(6.0.0.2)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -76,7 +76,28 @@ create table ACT_RU_EXECUTION (
 
 create table ACT_RU_JOB (
     ID_ nvarchar(64) NOT NULL,
-  REV_ int,
+  	REV_ int,
+    TYPE_ nvarchar(255) NOT NULL,
+    LOCK_EXP_TIME_ datetime,
+    LOCK_OWNER_ nvarchar(255),
+    EXCLUSIVE_ bit,
+    EXECUTION_ID_ nvarchar(64),
+    PROCESS_INSTANCE_ID_ nvarchar(64),
+    PROC_DEF_ID_ nvarchar(64),
+    RETRIES_ int,
+    EXCEPTION_STACK_ID_ nvarchar(64),
+    EXCEPTION_MSG_ nvarchar(4000),
+    DUEDATE_ datetime NULL,
+    REPEAT_ nvarchar(255),
+    HANDLER_TYPE_ nvarchar(255),
+    HANDLER_CFG_ nvarchar(4000),
+    TENANT_ID_ nvarchar(255) default '',
+    primary key (ID_)
+);
+
+create table ACT_RU_TIMER_JOB (
+    ID_ nvarchar(64) NOT NULL,
+  	REV_ int,
     TYPE_ nvarchar(255) NOT NULL,
     LOCK_EXP_TIME_ datetime,
     LOCK_OWNER_ nvarchar(255),

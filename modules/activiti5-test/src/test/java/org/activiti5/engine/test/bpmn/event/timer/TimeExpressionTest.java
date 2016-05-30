@@ -30,7 +30,7 @@ public class TimeExpressionTest extends PluggableActivitiTestCase {
 		    assertEquals(1, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
 
 
-		    List<Job> jobs = managementService.createJobQuery().executable().list();
+		    List<Job> jobs = managementService.createJobQuery().list();
 		    assertEquals(1, jobs.size());
 		    return jobs.get(0).getDuedate();
 	  }

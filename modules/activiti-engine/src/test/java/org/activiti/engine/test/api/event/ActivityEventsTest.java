@@ -453,7 +453,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment(resources = "org/activiti/engine/test/api/event/JobEventsTest.testJobEntityEvents.bpmn20.xml")
   public void testActivityTimeOutEvent() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
-    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
 
     // Force timer to fire
@@ -473,7 +473,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment(resources = "org/activiti/engine/test/bpmn/event/timer/BoundaryTimerEventTest.testTimerOnNestingOfSubprocesses.bpmn20.xml")
   public void testActivityTimeOutEventInSubProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
-    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
 
     // Force timer to fire
@@ -500,7 +500,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityTimeOutEventInCallActivity() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnCallActivity");
-    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
 
     // Force timer to fire

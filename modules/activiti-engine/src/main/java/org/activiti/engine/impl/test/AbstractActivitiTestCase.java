@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import junit.framework.AssertionFailedError;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -46,6 +44,8 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
+
+import junit.framework.AssertionFailedError;
 
 /**
  * @author Tom Baeyens
@@ -124,8 +124,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       assertAndEnsureCleanDb();
       processEngineConfiguration.getClock().reset();
 
-      // Can't do this in the teardown, as the teardown will be called as
-      // part of the super.runBare
+      // Can't do this in the teardown, as the teardown will be called as part of the super.runBare
       closeDownProcessEngine();
     }
   }
@@ -205,6 +204,10 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
   public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
     JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis);
+  }
+  
+  public void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(long maxMillisToWait, long intervalMillis) {
+    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
   }
 
   /**

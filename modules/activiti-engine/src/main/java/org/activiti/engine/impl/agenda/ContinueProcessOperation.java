@@ -19,6 +19,7 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.logging.LogMDC;
@@ -109,7 +110,7 @@ public class ContinueProcessOperation extends AbstractOperation {
       boolean isExclusive = flowNode.isExclusive();
       
       if (isAsynchronous) {
-        scheduleJob(isExclusive);
+        scheduleAsyncJob(isExclusive);
         return;
       }
     }
@@ -189,8 +190,9 @@ public class ContinueProcessOperation extends AbstractOperation {
     agenda.planContinueProcessOperation(execution);
   }
 
-  protected void scheduleJob(boolean exclusive) {
-    commandContext.getJobManager().scheduleAsyncJob(execution, exclusive);
+  protected void scheduleAsyncJob(boolean exclusive) {
+    JobEntity job = commandContext.getJobManager().createAsyncJob(execution, exclusive);
+    commandContext.getJobManager().scheduleAsyncJob(job);
   }
 
   protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ExecutionEntity execution) {

@@ -72,16 +72,6 @@ public class JobCollectionResource {
     if (allRequestParams.containsKey("processDefinitionId")) {
       query.processDefinitionId(allRequestParams.get("processDefinitionId"));
     }
-    if (allRequestParams.containsKey("withRetriesLeft")) {
-      if (Boolean.valueOf(allRequestParams.get("withRetriesLeft"))) {
-        query.withRetriesLeft();
-      }
-    }
-    if (allRequestParams.containsKey("executable")) {
-      if (Boolean.valueOf(allRequestParams.get("executable"))) {
-        query.executable();
-      }
-    }
     if (allRequestParams.containsKey("timersOnly")) {
       if (allRequestParams.containsKey("messagesOnly")) {
         throw new ActivitiIllegalArgumentException("Only one of 'timersOnly' or 'messagesOnly' can be provided.");

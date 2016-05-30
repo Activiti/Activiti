@@ -86,8 +86,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       }
     }
 
-    if (executionDate != null) { // Process definition state change is
-                                 // delayed
+    if (executionDate != null) { // Process definition state change is delayed
       createTimerForDelayedExecution(commandContext, processDefinitions);
     } else { // Process definition state is changed now
       changeProcessDefinitionState(commandContext, processDefinitions);

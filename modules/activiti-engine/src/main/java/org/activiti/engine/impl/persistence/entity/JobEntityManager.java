@@ -26,8 +26,14 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
   List<JobEntity> findNextJobsToExecute(Page page);
 
   List<JobEntity> findJobsByExecutionId(String executionId);
+  
+  List<JobEntity> findJobsByProcessInstanceId(String processInstanceId);
 
   List<JobEntity> findExclusiveJobsToExecute(String processInstanceId);
+  
+  List<JobEntity> findExpiredJobs(Page page);
+  
+  void unacquireJob(String jobId);
 
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
 

@@ -15,8 +15,7 @@ package org.activiti.engine.test.jobexecutor;
 import java.util.Date;
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.LockedJobEntity;
-import org.activiti.engine.impl.persistence.entity.LockedJobEntityImpl;
+import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -36,8 +35,8 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
     processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
   }
 
-  protected LockedJobEntity createTweetMessage(String msg) {
-    LockedJobEntity message = new LockedJobEntityImpl();
+  protected JobEntity createTweetMessage(String msg) {
+    JobEntity message = new JobEntityImpl();
     message.setJobType(JobEntity.JOB_TYPE_MESSAGE);
     message.setJobHandlerType("tweet");
     message.setJobHandlerConfiguration(msg);

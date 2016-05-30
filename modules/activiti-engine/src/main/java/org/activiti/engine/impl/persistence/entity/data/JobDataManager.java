@@ -27,8 +27,12 @@ public interface JobDataManager extends DataManager<JobEntity> {
   List<JobEntity> findNextJobsToExecute(Page page);
 
   List<JobEntity> findJobsByExecutionId(final String executionId);
+  
+  List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId);
 
   List<JobEntity> findExclusiveJobsToExecute(String processInstanceId);
+  
+  List<JobEntity> findExpiredJobs(Page page);
 
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
   
@@ -43,4 +47,6 @@ public interface JobDataManager extends DataManager<JobEntity> {
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+  
+  void unacquireJob(String jobId);
 }

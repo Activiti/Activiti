@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
  * Send job cancelled event and delete job
@@ -54,6 +55,18 @@ public class CancelJobsCmd implements Command<Void>, Serializable {
         }
 
         commandContext.getJobEntityManager().delete(jobToDelete);
+      
+      } else {
+        TimerJobEntity timerJobToDelete = commandContext.getTimerJobEntityManager().findById(jobId);
+
+        if (timerJobToDelete != null) {
+          // When given job doesn't exist, ignore
+          if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerJobToDelete));
+          }
+
+          commandContext.getTimerJobEntityManager().delete(timerJobToDelete);
+        }
       }
     }
     return null;

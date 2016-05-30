@@ -79,22 +79,21 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     // not reached but it will be executed according to the expression)
     taskService.complete(task.getId());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-      fail("Expected that job isn't executed because the timer is in t0");
-    } catch (Exception e) {
-      // expected
-    }
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(timerJob);
+    
+    waitForJobExecutorToProcessAllJobs(2000, 500);
+    // Expected that job isn't executed because the timer is in t0");
+    Job timerJobAfter = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals(timerJob.getId(), timerJobAfter.getId());
 
-    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be
-                                       // triggered and the flow will go to
-                                       // the next step
+    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be triggered and the flow will go to the next step
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 200);
     // expect to execute because the time is reached.
 
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     tasks = taskService.createTaskQuery().list();
@@ -121,7 +120,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     assertEquals(0, processInstances.size());
 
     // no jobs
-    jobs = managementService.createJobQuery().list();
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     // no tasks

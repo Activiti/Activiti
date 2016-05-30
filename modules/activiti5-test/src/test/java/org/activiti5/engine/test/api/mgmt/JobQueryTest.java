@@ -157,7 +157,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByRetriesLeft() {
-    JobQuery query = managementService.createJobQuery().withRetriesLeft();
+    JobQuery query = managementService.createJobQuery();
     verifyQueryResults(query, 3);
     
     setRetries(processInstanceIdOne, 0);
@@ -167,7 +167,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByExecutable() {
     processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
-    JobQuery query = managementService.createJobQuery().executable();
+    JobQuery query = managementService.createJobQuery();
     verifyQueryResults(query, 3);
     
     // Setting retries of one job to 0, makes it non-executable
@@ -312,7 +312,6 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     JobQuery query = managementService.createJobQuery()
       .timers()
-      .executable()
       .orderByJobRetries()
       .asc()
       .orderByJobDuedate()

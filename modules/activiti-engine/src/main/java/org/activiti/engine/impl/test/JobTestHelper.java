@@ -46,6 +46,7 @@ public class JobTestHelper {
 
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
+    processEngineConfiguration.setAsyncExecutorActivate(true);
     
     try {
       Timer timer = new Timer();
@@ -73,6 +74,50 @@ public class JobTestHelper {
 
     } finally {
       if (shutdownExecutorWhenFinished) {
+        processEngineConfiguration.setAsyncExecutorActivate(false);
+        asyncExecutor.shutdown();
+      }
+    }
+  }
+  
+  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
+  }
+  
+  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
+      boolean shutdownExecutorWhenFinished) {
+
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
+    processEngineConfiguration.setAsyncExecutorActivate(true);
+    
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean areJobsAvailable = true;
+      try {
+        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+          try {
+            areJobsAvailable = areJobsOrExecutableTimersAvailable(managementService);
+          } catch (Throwable t) {
+            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
+            // isolation level doesn't allow READ of the table
+          }
+        }
+      } catch (InterruptedException e) {
+        // ignore
+      } finally {
+        timer.cancel();
+      }
+      if (areJobsAvailable) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      if (shutdownExecutorWhenFinished) {
+        processEngineConfiguration.setAsyncExecutorActivate(false);
         asyncExecutor.shutdown();
       }
     }
@@ -147,6 +192,15 @@ public class JobTestHelper {
 
   public static boolean areJobsAvailable(ManagementService managementService) {
     return !managementService.createJobQuery().list().isEmpty();
+  }
+  
+  public static boolean areJobsOrExecutableTimersAvailable(ManagementService managementService) {
+    boolean emptyJobs = managementService.createJobQuery().list().isEmpty();
+    if (emptyJobs) {
+      return !managementService.createTimerJobQuery().executable().list().isEmpty();
+    } else {
+      return true;
+    }
   }
 
   private static class InteruptTask extends TimerTask {

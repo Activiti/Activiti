@@ -12,20 +12,20 @@
  */
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tijs Rademakers
@@ -49,14 +49,14 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<TimerJobEntity> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
-    String query = "selectWaitingTimerJobByQueryCriteria";
+  public List<Job> findJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page) {
+    String query = "selectTimerJobByQueryCriteria";
     return getDbSqlSession().selectList(query, jobQuery, page);
   }
 
   @Override
-  public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
-    return (Long) getDbSqlSession().selectOne("selectWaitingTimerJobCountByQueryCriteria", jobQuery);
+  public long findJobCountByQueryCriteria(TimerJobQueryImpl jobQuery) {
+    return (Long) getDbSqlSession().selectOne("selectTimerJobCountByQueryCriteria", jobQuery);
   }
 
   @Override
@@ -72,19 +72,25 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
     Map<String, String> params = new HashMap<String, String>(2);
     params.put("handlerType", jobHandlerType);
     params.put("processDefinitionId", processDefinitionId);
-    return getDbSqlSession().selectList("selectWaitingTimerJobByTypeAndProcessDefinitionId", params);
+    return getDbSqlSession().selectList("selectTimerJobByTypeAndProcessDefinitionId", params);
 
   }
 
   @Override
-  public Collection<TimerJobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectWaitingTimerJobsByExecutionId", executionId, new CachedEntityMatcher<TimerJobEntity>() {
+  public List<TimerJobEntity> findJobsByExecutionId(final String executionId) {
+    return getList("selectTimerJobsByExecutionId", executionId, new CachedEntityMatcher<TimerJobEntity>() {
 
       @Override
       public boolean isRetained(TimerJobEntity jobEntity) {
         return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
       }
     }, true);
+  }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<TimerJobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
+    return getDbSqlSession().selectList("selectTimerJobsByProcessInstanceId", processInstanceId);
   }
 
   @Override
@@ -93,7 +99,7 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
     Map<String, String> params = new HashMap<String, String>(2);
     params.put("handlerType", jobHandlerType);
     params.put("processDefinitionKey", processDefinitionKey);
-    return getDbSqlSession().selectList("selectWaitingTimerJobByTypeAndProcessDefinitionKeyNoTenantId", params);
+    return getDbSqlSession().selectList("selectTimerJobByTypeAndProcessDefinitionKeyNoTenantId", params);
   }
 
   @Override
@@ -103,7 +109,7 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
     params.put("handlerType", jobHandlerType);
     params.put("processDefinitionKey", processDefinitionKey);
     params.put("tenantId", tenantId);
-    return getDbSqlSession().selectList("selectWaitingTimerJobByTypeAndProcessDefinitionKeyAndTenantId", params);
+    return getDbSqlSession().selectList("selectTimerJobByTypeAndProcessDefinitionKeyAndTenantId", params);
   }
 
   @Override
@@ -111,7 +117,7 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("deploymentId", deploymentId);
     params.put("tenantId", newTenantId);
-    getDbSqlSession().update("updateWaitingTimerJobTenantIdForDeployment", params);
+    getDbSqlSession().update("updateTimerJobTenantIdForDeployment", params);
   }
 
 }

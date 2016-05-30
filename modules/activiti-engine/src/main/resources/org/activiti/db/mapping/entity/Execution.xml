@@ -325,13 +325,6 @@
     where PROC_DEF_ID_ = #{parameter} and PARENT_ID_ is null
   </select>
   
-  <select id="selectInactiveExecutionsInActivity" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-  	select *
-  	from ${prefix}ACT_RU_EXECUTION
-  	where ACT_ID_ = #{parameter.activityId} 
-  	and IS_ACTIVE_ = #{parameter.isActive}
-  </select>
-  
   <select id="selectInactiveExecutionsForProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
   	select *
   	from ${prefix}ACT_RU_EXECUTION
@@ -480,7 +473,7 @@
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <if test="onlyProcessInstances &amp;&amp; withJobException">
-      left outer join ${prefix}ACT_RU_JOB JOB ON RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
+      left outer join ${prefix}ACT_RU_TIMER_JOB JOB ON RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
     </if>
     <where>
       <if test="onlyProcessInstances">
@@ -824,7 +817,7 @@
         </trim>
       </foreach>
       <if test="onlyProcessInstances &amp;&amp; withJobException">
-        and (JOB.EXCEPTION_MSG_ is not null or  JOB.EXCEPTION_STACK_ID_ is not null)
+        and (JOB.EXCEPTION_MSG_ is not null or JOB.EXCEPTION_STACK_ID_ is not null)
       </if>
     </where>
   </sql>

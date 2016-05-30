@@ -49,19 +49,21 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
 
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(2, job.getRetries());
 
     try {
+      managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
 
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(1, job.getRetries());
 
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
   }
 
@@ -87,35 +89,38 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
 
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(2, job.getRetries());
 
     try {
+      managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
 
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(1, job.getRetries());
 
     try {
+      managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
 
-    job = managementService.createJobQuery().singleResult();
-    assertEquals(0, job.getRetries());
+    job = managementService.createDeadLetterJobQuery().singleResult();
+    assertNotNull(job);
 
-    managementService.deleteJob(job.getId());
+    managementService.deleteDeadLetterJob(job.getId());
   }
 
   protected JobEntity createTweetExceptionMessage() {
     JobEntity message = new JobEntityImpl();
     message.setJobType(JobEntity.JOB_TYPE_MESSAGE);
+    message.setRetries(3);
     message.setJobHandlerType("tweet-exception");
     return message;
   }

@@ -40,7 +40,7 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase{
 	
 	private void stillOneJobWithExceptionAndRetriesLeft() {
 	    assertEquals(1, managementService.createJobQuery().withException().count());
-	    assertEquals(1, managementService.createJobQuery().withRetriesLeft().count());
+	    assertEquals(1, managementService.createJobQuery().count());
 	}
 	
 	private Job fetchJob(String processInstanceId) {
@@ -106,9 +106,8 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase{
 
     	    job = refreshJob(job.getId());
     	    assertEquals(0, job.getRetries());
-    	    assertEquals(1, managementService.createJobQuery().withException().count());
-    	    assertEquals(0, managementService.createJobQuery().withRetriesLeft().count());
-    	    assertEquals(1, managementService.createJobQuery().noRetriesLeft().count());
+    	    assertEquals(0, managementService.createJobQuery().count());
+    	    assertEquals(1, managementService.createDeadLetterJobQuery().count());
 
     	    execution = refreshExecutionEntity(execution.getId());
     	    assertEquals("failingServiceTask", execution.getActivityId());    	 

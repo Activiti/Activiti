@@ -133,6 +133,7 @@ public class DbSqlSession implements Session {
     
     // Version 6
     ACTIVITI_VERSIONS.add(new ActivitiVersion("6.0.0.0"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("6.0.0.1"));
     
     /* Current */
     ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
@@ -770,7 +771,10 @@ public class DbSqlSession implements Session {
      
      // See https://activiti.atlassian.net/browse/ACT-1290
      if (entity instanceof HasRevision) {
-       ((HasRevision) entity).setRevision(((HasRevision) entity).getRevisionNext());
+       HasRevision revisionEntity = (HasRevision) entity;
+       if (revisionEntity.getRevision() == 0) {
+         revisionEntity.setRevision(revisionEntity.getRevisionNext());
+       }
      }
   }
 
@@ -796,7 +800,10 @@ public class DbSqlSession implements Session {
     
     if (entityList.get(0) instanceof HasRevision) {
       for (Entity insertedObject: entityList) {
-        ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
+        HasRevision revisionEntity = (HasRevision) insertedObject;
+        if (revisionEntity.getRevision() == 0) {
+          revisionEntity.setRevision(revisionEntity.getRevisionNext());
+        }
       }
     }
    

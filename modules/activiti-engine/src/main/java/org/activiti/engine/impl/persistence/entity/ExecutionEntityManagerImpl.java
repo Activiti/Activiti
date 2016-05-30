@@ -167,11 +167,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId) {
-    return executionDataManager.findInactiveExecutionsByActivityId(activityId);
-  }
-
-  @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
     return executionDataManager.findInactiveExecutionsByProcessInstanceId(processInstanceId);
   }
@@ -514,7 +509,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     TimerJobEntityManager timerJobEntityManager = getTimerJobEntityManager();
     Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (TimerJobEntity job : timerJobsForExecution) {
-      getTimerJobEntityManager().delete(job);
+      timerJobEntityManager.delete(job);
       if (getEventDispatcher().isEnabled()) {
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
       }
@@ -523,7 +518,25 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     JobEntityManager jobEntityManager = getJobEntityManager();
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (JobEntity job : jobsForExecution) {
-      getJobEntityManager().delete(job);
+      jobEntityManager.delete(job);
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+      }
+    }
+    
+    SuspendedJobEntityManager suspendedJobEntityManager = getSuspendedJobEntityManager();
+    Collection<SuspendedJobEntity> suspendedJobsForExecution = suspendedJobEntityManager.findJobsByExecutionId(executionEntity.getId());
+    for (SuspendedJobEntity job : suspendedJobsForExecution) {
+      suspendedJobEntityManager.delete(job);
+      if (getEventDispatcher().isEnabled()) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+      }
+    }
+    
+    DeadLetterJobEntityManager deadLetterJobEntityManager = getDeadLetterJobEntityManager();
+    Collection<DeadLetterJobEntity> deadLetterJobsForExecution = deadLetterJobEntityManager.findJobsByExecutionId(executionEntity.getId());
+    for (DeadLetterJobEntity job : deadLetterJobsForExecution) {
+      deadLetterJobEntityManager.delete(job);
       if (getEventDispatcher().isEnabled()) {
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
       }

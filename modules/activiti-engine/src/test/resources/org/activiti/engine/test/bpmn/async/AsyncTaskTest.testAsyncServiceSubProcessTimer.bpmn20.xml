@@ -19,7 +19,7 @@
     
     <boundaryEvent attachedToRef="subProcess" id="timer">
     	<timerEventDefinition>
-    		<timeDuration>PT10S</timeDuration>
+    		<timeDuration>PT1H</timeDuration>
     	</timerEventDefinition>
     </boundaryEvent>
     

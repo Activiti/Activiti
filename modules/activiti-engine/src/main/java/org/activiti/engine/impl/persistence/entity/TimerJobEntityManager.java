@@ -12,29 +12,35 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.TimerJobQueryImpl;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tijs Rademakers
  * @author Vasile Dirla
  */
 public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
-
-  List<TimerJobEntity> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
-
-  long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
-
-  TimerJobEntity createTimer(JobEntity timerEntity);
   
   void createAndCalculateNextTimer(JobEntity timerEntity);
 
   List<TimerJobEntity> selectTimerJobsToDueDate(Page page);
 
   List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String type, String id);
+  
+  List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String type, String processDefinitionKey, String tenantId);
+  
+  List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String type, String processDefinitionKey);
 
-  Collection<TimerJobEntity> findJobsByExecutionId(String id);
+  List<TimerJobEntity> findJobsByExecutionId(String id);
+  
+  List<TimerJobEntity> findJobsByProcessInstanceId(String id);
+
+  List<Job> findJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page);
+
+  long findJobCountByQueryCriteria(TimerJobQueryImpl jobQuery);
+  
+  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

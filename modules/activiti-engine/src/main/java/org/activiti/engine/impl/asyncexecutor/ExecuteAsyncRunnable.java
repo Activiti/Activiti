@@ -95,8 +95,7 @@ public class ExecuteAsyncRunnable implements Runnable {
     } catch (Throwable exception) {
       handleFailedJob(exception);
 
-      // Finally, Throw the exception to indicate the ExecuteAsyncJobCmd
-      // failed
+      // Finally, Throw the exception to indicate the ExecuteAsyncJobCmd failed
       String message = "Job " + job.getId() + " failed";
       log.error(message, exception);
     }
@@ -148,13 +147,11 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected void unacquireJob() {
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {
-      commandContext.getLockedJobEntityManager().delete(job.getId());
-      commandContext.getJobEntityManager().insert(job);
+      commandContext.getJobEntityManager().unacquireJob(job.getId());
     } else {
       commandExecutor.execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
-          commandContext.getLockedJobEntityManager().delete(job.getId());
-          commandContext.getJobEntityManager().insert(job);
+          commandContext.getJobEntityManager().unacquireJob(job.getId());
           return null;
         }
       });

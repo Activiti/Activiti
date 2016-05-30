@@ -284,16 +284,14 @@ public class AsyncExecutorTest {
         // expected
       }
       
-      job = processEngine.getManagementService().createJobQuery().processInstanceId(processInstance.getId()).noRetriesLeft().singleResult();
+      job = processEngine.getManagementService().createDeadLetterJobQuery().processInstanceId(processInstance.getId()).singleResult();
       assertNotNull(job);
       
 			// Verify if all is as expected
 			Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
-			Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().withRetriesLeft().count());
-			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().noRetriesLeft().count());
-			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().withException().count());
-	
+			Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
+			Assert.assertEquals(1, processEngine.getManagementService().createDeadLetterJobQuery().count());
+			
 			// all job retries are handled by Activiti 5 job retry so expected value is 0
 			Assert.assertEquals(0, getAsyncExecutorJobCount(processEngine));
 			
@@ -344,7 +342,7 @@ public class AsyncExecutorTest {
       @Override
       public Job execute(CommandContext commandContext) {
         Job result = null;
-        List<JobEntity> jobs = commandContext.getJobEntityManager().findAsyncJobsDueToExecute(null);
+        List<JobEntity> jobs = commandContext.getJobEntityManager().findNextJobsToExecute(null);
         if (jobs != null && jobs.size() > 0) {
           result = jobs.get(0);
         }

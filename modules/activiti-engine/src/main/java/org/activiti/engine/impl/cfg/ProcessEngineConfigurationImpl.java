@@ -153,6 +153,7 @@ import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.interceptor.TransactionContextInterceptor;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.DefaultFailedJobCommandFactory;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
@@ -177,6 +178,8 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
@@ -205,8 +208,6 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManagerImpl;
-import org.activiti.engine.impl.persistence.entity.LockedJobEntityManager;
-import org.activiti.engine.impl.persistence.entity.LockedJobEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
@@ -219,6 +220,8 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManagerImpl;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManager;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManagerImpl;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManagerImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
@@ -232,6 +235,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
 import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.DeadLetterJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
@@ -246,13 +250,13 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstance
 import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
-import org.activiti.engine.impl.persistence.entity.data.LockedJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.SuspendedJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.UserDataManager;
@@ -260,6 +264,7 @@ import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataMana
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisAttachmentDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisByteArrayDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisCommentDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.MybatisDeadLetterJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisDeploymentDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisEventLogEntryDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisEventSubscriptionDataManager;
@@ -274,13 +279,13 @@ import org.activiti.engine.impl.persistence.entity.data.impl.MybatisHistoricVari
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisIdentityInfoDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisIdentityLinkDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisJobDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.MybatisLockedJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisMembershipDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisModelDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisProcessDefinitionDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisProcessDefinitionInfoDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisPropertyDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisResourceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.MybatisSuspendedJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisTaskDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisTimerJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.MybatisUserDataManager;
@@ -403,8 +408,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected IdentityInfoDataManager identityInfoDataManager;
   protected IdentityLinkDataManager identityLinkDataManager;
   protected JobDataManager jobDataManager;
-  protected LockedJobDataManager lockedJobDataManager;
   protected TimerJobDataManager timerJobDataManager;
+  protected SuspendedJobDataManager suspendedJobDataManager;
+  protected DeadLetterJobDataManager deadLetterJobDataManager;
   protected MembershipDataManager membershipDataManager;
   protected ModelDataManager modelDataManager;
   protected ProcessDefinitionDataManager processDefinitionDataManager;
@@ -435,8 +441,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected IdentityInfoEntityManager identityInfoEntityManager;
   protected IdentityLinkEntityManager identityLinkEntityManager;
   protected JobEntityManager jobEntityManager;
-  protected LockedJobEntityManager lockedJobEntityManager;
   protected TimerJobEntityManager timerJobEntityManager;
+  protected SuspendedJobEntityManager suspendedJobEntityManager;
+  protected DeadLetterJobEntityManager deadLetterJobEntityManager;
   protected MembershipEntityManager membershipEntityManager;
   protected ModelEntityManager modelEntityManager;
   protected ProcessDefinitionEntityManager processDefinitionEntityManager;
@@ -886,6 +893,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initProcessDefinitionInfoCache();
     initKnowledgeBaseCache();
     initJobHandlers();
+    initJobManager();
     initAsyncExecutor();
     
     initTransactionFactory();
@@ -898,7 +906,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initDataManagers();
     initEntityManagers();
     initHistoryManager();
-    initJobManager();
     initJpa();
     initDeployers();
     initDelegateInterceptor();
@@ -972,7 +979,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       interceptors.add(transactionInterceptor);
     }
 
-    interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    if (commandContextFactory != null) {
+      interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    }
+    
+    if (transactionContextFactory != null) {
+      interceptors.add(new TransactionContextInterceptor(transactionContextFactory));
+    }
+    
     return interceptors;
   }
 
@@ -1312,11 +1326,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (jobDataManager == null) {
       jobDataManager = new MybatisJobDataManager(this);
     }
-    if (lockedJobDataManager == null) {
-      lockedJobDataManager = new MybatisLockedJobDataManager(this);
-    }
     if (timerJobDataManager == null) {
       timerJobDataManager = new MybatisTimerJobDataManager(this);
+    }
+    if (suspendedJobDataManager == null) {
+      suspendedJobDataManager = new MybatisSuspendedJobDataManager(this);
+    }
+    if (deadLetterJobDataManager == null) {
+      deadLetterJobDataManager = new MybatisDeadLetterJobDataManager(this);
     }
     if (membershipDataManager == null) {
       membershipDataManager = new MybatisMembershipDataManager(this);
@@ -1401,11 +1418,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (jobEntityManager == null) {
       jobEntityManager = new JobEntityManagerImpl(this, jobDataManager);
     }
-    if (lockedJobEntityManager == null) {
-      lockedJobEntityManager = new LockedJobEntityManagerImpl(this, lockedJobDataManager);
-    }
     if (timerJobEntityManager == null) {
       timerJobEntityManager = new TimerJobEntityManagerImpl(this, timerJobDataManager);
+    }
+    if (suspendedJobEntityManager == null) {
+      suspendedJobEntityManager = new SuspendedJobEntityManagerImpl(this, suspendedJobDataManager);
+    }
+    if (deadLetterJobEntityManager == null) {
+      deadLetterJobEntityManager = new DeadLetterJobEntityManagerImpl(this, deadLetterJobDataManager);
     }
     if (membershipEntityManager == null) {
       membershipEntityManager = new MembershipEntityManagerImpl(this, membershipDataManager);
@@ -1818,23 +1838,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void initJobHandlers() {
     jobHandlers = new HashMap<String, JobHandler>();
     
+    AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
+    jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
+    
     TriggerTimerEventJobHandler triggerTimerEventJobHandler = new TriggerTimerEventJobHandler();
     jobHandlers.put(triggerTimerEventJobHandler.getType(), triggerTimerEventJobHandler);
     
     TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
     jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
 
-    AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
-    jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
-
-    ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
-    jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
-
     TimerSuspendProcessDefinitionHandler suspendProcessDefinitionHandler = new TimerSuspendProcessDefinitionHandler();
     jobHandlers.put(suspendProcessDefinitionHandler.getType(), suspendProcessDefinitionHandler);
 
     TimerActivateProcessDefinitionHandler activateProcessDefinitionHandler = new TimerActivateProcessDefinitionHandler();
     jobHandlers.put(activateProcessDefinitionHandler.getType(), activateProcessDefinitionHandler);
+
+    ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
+    jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
 
     // if we have custom job handlers, register them
     if (getCustomJobHandlers() != null) {
@@ -1883,10 +1903,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       defaultAsyncExecutor.setSecondsToWaitOnShutdown(asyncExecutorSecondsToWaitOnShutdown);
       
       asyncExecutor = defaultAsyncExecutor;
-  
-      asyncExecutor.setCommandExecutor(commandExecutor);
-      asyncExecutor.setAutoActivate(asyncExecutorActivate);
     }
+    
+    asyncExecutor.setCommandExecutor(commandExecutor);
+    asyncExecutor.setJobManager(jobManager);
+    asyncExecutor.setAutoActivate(asyncExecutorActivate);
   }
 
   // history
@@ -3098,21 +3119,30 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public LockedJobDataManager getLockedJobDataManager() {
-    return lockedJobDataManager;
-  }
-
-  public ProcessEngineConfigurationImpl setLockedJobDataManager(LockedJobDataManager lockedJobDataManager) {
-    this.lockedJobDataManager = lockedJobDataManager;
-    return this;
-  }
-  
   public TimerJobDataManager getTimerJobDataManager() {
     return timerJobDataManager;
   }
 
   public ProcessEngineConfigurationImpl setTimerJobDataManager(TimerJobDataManager timerJobDataManager) {
     this.timerJobDataManager = timerJobDataManager;
+    return this;
+  }
+  
+  public SuspendedJobDataManager getSuspendedJobDataManager() {
+    return suspendedJobDataManager;
+  }
+
+  public ProcessEngineConfigurationImpl setSuspendedJobDataManager(SuspendedJobDataManager suspendedJobDataManager) {
+    this.suspendedJobDataManager = suspendedJobDataManager;
+    return this;
+  }
+  
+  public DeadLetterJobDataManager getDeadLetterJobDataManager() {
+    return deadLetterJobDataManager;
+  }
+  
+  public ProcessEngineConfigurationImpl setDeadLetterJobDataManager(DeadLetterJobDataManager deadLetterJobDataManager) {
+    this.deadLetterJobDataManager = deadLetterJobDataManager;
     return this;
   }
 
@@ -3354,21 +3384,30 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public LockedJobEntityManager getLockedJobEntityManager() {
-    return lockedJobEntityManager;
-  }
-
-  public ProcessEngineConfigurationImpl setLockedJobEntityManager(LockedJobEntityManager lockedJobEntityManager) {
-    this.lockedJobEntityManager = lockedJobEntityManager;
-    return this;
-  }
-  
   public TimerJobEntityManager getTimerJobEntityManager() {
     return timerJobEntityManager;
   }
   
   public ProcessEngineConfigurationImpl setTimerJobEntityManager(TimerJobEntityManager timerJobEntityManager) {
     this.timerJobEntityManager = timerJobEntityManager;
+    return this;
+  }
+  
+  public SuspendedJobEntityManager getSuspendedJobEntityManager() {
+    return suspendedJobEntityManager;
+  }
+  
+  public ProcessEngineConfigurationImpl setSuspendedJobEntityManager(SuspendedJobEntityManager suspendedJobEntityManager) {
+    this.suspendedJobEntityManager = suspendedJobEntityManager;
+    return this;
+  }
+  
+  public DeadLetterJobEntityManager getDeadLetterJobEntityManager() {
+    return deadLetterJobEntityManager;
+  }
+  
+  public ProcessEngineConfigurationImpl setDeadLetterJobEntityManager(DeadLetterJobEntityManager deadLetterJobEntityManager) {
+    this.deadLetterJobEntityManager = deadLetterJobEntityManager;
     return this;
   }
 

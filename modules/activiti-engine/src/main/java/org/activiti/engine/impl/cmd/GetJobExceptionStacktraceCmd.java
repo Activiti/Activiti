@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -39,7 +39,10 @@ public class GetJobExceptionStacktraceCmd implements Command<String>, Serializab
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
 
-    JobEntity job = commandContext.getJobEntityManager().findById(jobId);
+    AbstractJobEntity job = commandContext.getJobEntityManager().findById(jobId);
+    if (job == null) {
+      job = commandContext.getTimerJobEntityManager().findById(jobId);
+    }
 
     if (job == null) {
       throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);

@@ -2,13 +2,14 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.TimerJobEntity">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl">
 
 	<!-- TIMER JOB RESULTMAP -->
 
 	<resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl">
 		<id property="id" column="ID_" jdbcType="VARCHAR" />
 		<result property="revision" column="REV_" jdbcType="INTEGER" />
+		<result property="jobType" column="TYPE_" jdbcType="VARCHAR" />
 		<result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
 		<result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
 		<result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
@@ -46,6 +47,9 @@
 
 	<sql id="selectTimerJobByQueryCriteriaSql">
 		from ${prefix}ACT_RU_TIMER_JOB RES
+		<if test="executable">
+        	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    	</if>
 		<where>
 			<if test="id != null">
 				RES.ID_ = #{id}
@@ -59,22 +63,9 @@
 			<if test="processDefinitionId != null">
 				and RES.PROC_DEF_ID_ = #{processDefinitionId}
 			</if>
-			<if test="retriesLeft">
-				and RES.RETRIES_ &gt; 0
-			</if>
-			<if test="noRetriesLeft">
-				and RES.RETRIES_ &lt;= 0
-			</if>
 			<if test="executable">
-				and (RES.RETRIES_ &gt; 0)
 				and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
-				and (
-					(RES.EXECUTION_ID_ is null)
-					or
-					(PI.SUSPENSION_STATE_ = 1)
-				)
 			</if>
-
 			<if test="duedateHigherThan != null">
 				and RES.DUEDATE_ &gt; #{duedateHigherThan}
 			</if>
@@ -88,8 +79,7 @@
 				and RES.DUEDATE_ &lt;= #{duedateLowerThanOrEqual}
 			</if>
 			<if test="withException">
-				and (RES.EXCEPTION_MSG_ is not null or RES.EXCEPTION_STACK_ID_ is not
-				null)
+				and (RES.EXCEPTION_MSG_ is not null or RES.EXCEPTION_STACK_ID_ is not null)
 			</if>
 			<if test="exceptionMessage">
 				and RES.EXCEPTION_MSG_ = #{exceptionMessage}
@@ -107,22 +97,7 @@
 	</sql>
 
 	<select id="selectTimerJobsToDueDate" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-		select
-		ID_,
-		REV_ ,
-		TYPE_ ,
-		EXCLUSIVE_ ,
-		EXECUTION_ID_ ,
-		PROCESS_INSTANCE_ID_ ,
-		PROC_DEF_ID_ ,
-		RETRIES_ ,
-		EXCEPTION_STACK_ID_ ,
-		EXCEPTION_MSG_ ,
-		DUEDATE_ ,
-		REPEAT_ ,
-		HANDLER_TYPE_,
-		HANDLER_CFG_ ,
-		TENANT_ID_
+		select *
 		from ${prefix}ACT_RU_TIMER_JOB
 		where DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP};
 	</select>
@@ -147,8 +122,8 @@
 		HANDLER_CFG_,
 		TENANT_ID_)
 		values (#{id, jdbcType=VARCHAR},
-		1,
-		'timer',
+		#{revision, jdbcType=INTEGER},
+		#{jobType, jdbcType=VARCHAR},
 		#{exclusive, jdbcType=BOOLEAN},
 		#{executionId, jdbcType=VARCHAR},
 		#{processInstanceId, jdbcType=VARCHAR},
@@ -169,9 +144,9 @@
 		<set>
 			REV_ = #{revisionNext, jdbcType=INTEGER},
 			RETRIES_ = #{retries, jdbcType=INTEGER},
+			DUEDATE_ = #{duedate, jdbcType=TIMESTAMP},
 			EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
-			DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
+			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
 		</set>
 		where ID_= #{id, jdbcType=VARCHAR}
 		and REV_ = #{revision, jdbcType=INTEGER}
@@ -182,6 +157,12 @@
 		from ${prefix}ACT_RU_TIMER_JOB J
 		where J.HANDLER_TYPE_ = #{parameter.handlerType}
 		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
+	</select>
+	
+	<select id="selectTimerJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+		select *
+		from ${prefix}ACT_RU_TIMER_JOB J
+		where J.PROCESS_INSTANCE_ID_ = #{parameter}
 	</select>
 
 	<select id="selectTimerJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -215,17 +196,6 @@
 	</delete>
 
 	<delete id="bulkDeleteTimerJob" parameterType="java.util.Collection">
-		delete from ${prefix}ACT_RU_TIMER_JOB where
-		<foreach item="job" collection="list" index="index" separator=" or ">
-			ID_ = #{job.id, jdbcType=VARCHAR}
-		</foreach>
-	</delete>
-
-	<delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl">
-		delete from ${prefix}ACT_RU_TIMER_JOB where ID_ = #{id} and REV_ = #{revision}
-	</delete>
-
-	<delete id="bulkDeleteTimer" parameterType="java.util.Collection">
 		delete from ${prefix}ACT_RU_TIMER_JOB where
 		<foreach item="job" collection="list" index="index" separator=" or ">
 			ID_ = #{job.id, jdbcType=VARCHAR}

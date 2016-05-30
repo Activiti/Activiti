@@ -126,7 +126,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
     // there is still a single job because the timer was created in the same
     // transaction as the service was executed (which rolled back)
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
 
     runtimeService.deleteProcessInstance(execution.getId(), "dead");
   }
@@ -169,17 +169,18 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // start process
     runtimeService.startProcessInstanceByKey("asyncService");
     // now there should be two jobs in the database:
-    assertEquals(2, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createJobQuery().count());
+    
     // the service was not invoked:
     assertFalse(INVOCATION);
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
-
+    waitForJobExecutorToProcessAllJobs(5000L, 200L);
+    
     // the service was invoked
     assertTrue(INVOCATION);
+    
     // both the timer and the message are cancelled
     assertEquals(0, managementService.createJobQuery().count());
-
   }
 
   @Deployment
@@ -203,7 +204,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database:
     assertEquals(1, managementService.createJobQuery().count());
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
     // the job is done
     assertEquals(0, managementService.createJobQuery().count());
@@ -275,7 +276,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database:
     assertEquals(1, managementService.createJobQuery().count());
 
-    waitForJobExecutorToProcessAllJobs(5000L, 250L);
+    waitForJobExecutorToProcessAllJobs(20000L, 250L);
 
     assertEquals(0, managementService.createJobQuery().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());

@@ -90,7 +90,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       
       // If previous process definition version has a timer/signal/message start event, it must be added
       // Only if the currently deleted process definition is the latest version, 
-      // we fall back to the previous timer/signal/messagee start event
+      // we fall back to the previous timer/signal/message start event
       
       restorePreviousStartEventsIfNeeded(processDefinition);
     }
@@ -188,18 +188,19 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
   protected void restoreTimerStartEvent(ProcessDefinition previousProcessDefinition, StartEvent startEvent, EventDefinition eventDefinition) {
     TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
-    JobEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+    TimerJobEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
         TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
     
     if (timer != null) {
-      timer.setProcessDefinitionId(previousProcessDefinition.getId());
- 
-      if (previousProcessDefinition.getTenantId() != null) {
-        timer.setTenantId(previousProcessDefinition.getTenantId());
-      }
- 
       TimerJobEntity timerJob = getJobManager().createTimerJob((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
           TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
+      
+      timerJob.setProcessDefinitionId(previousProcessDefinition.getId());
+      
+      if (previousProcessDefinition.getTenantId() != null) {
+        timerJob.setTenantId(previousProcessDefinition.getTenantId());
+      }
+      
       getJobManager().scheduleTimerJob(timerJob);
     }
   }

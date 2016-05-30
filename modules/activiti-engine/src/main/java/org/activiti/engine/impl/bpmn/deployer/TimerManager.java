@@ -29,7 +29,6 @@ import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.runtime.Job;
 
 /**
  * Manages timers for newly-deployed process definitions and their previous versions.
@@ -37,18 +36,18 @@ import org.activiti.engine.runtime.Job;
 public class TimerManager {
   
   protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
-    List<Job> jobsToDelete = null;
+    List<TimerJobEntity> jobsToDelete = null;
 
     if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-      jobsToDelete = Context.getCommandContext().getJobEntityManager().findJobsByTypeAndProcessDefinitionKeyAndTenantId(
+      jobsToDelete = Context.getCommandContext().getTimerJobEntityManager().findJobsByTypeAndProcessDefinitionKeyAndTenantId(
           TimerStartEventJobHandler.TYPE, processDefinition.getKey(), processDefinition.getTenantId());
     } else {
-      jobsToDelete = Context.getCommandContext().getJobEntityManager()
+      jobsToDelete = Context.getCommandContext().getTimerJobEntityManager()
           .findJobsByTypeAndProcessDefinitionKeyNoTenantId(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     }
 
     if (jobsToDelete != null) {
-      for (Job job :jobsToDelete) {
+      for (TimerJobEntity job :jobsToDelete) {
         new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
       }
     }

@@ -19,8 +19,8 @@ import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -509,7 +509,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
     // ///////////////////////////////////
     // Advance the clock to trigger the timer.
-    final JobQuery jobQuery = managementService.createJobQuery().processInstanceId(userTask.getProcessInstanceId());
+    final TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(userTask.getProcessInstanceId());
     assertEquals(1, jobQuery.count());
 
     // After setting the clock to time '1 hour and 5 seconds', the timer should fire.

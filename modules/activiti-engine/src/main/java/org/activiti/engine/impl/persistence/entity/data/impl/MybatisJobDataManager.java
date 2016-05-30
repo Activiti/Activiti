@@ -63,6 +63,12 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
       }
     }, true);
   }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
+    return getDbSqlSession().selectList("selectJobsByProcessInstanceId", processInstanceId);
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -71,6 +77,13 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     params.put("pid", processInstanceId);
     params.put("now", getClock().getCurrentTime());
     return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
+  }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findExpiredJobs(Page page) {
+    Date now = getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectExpiredJobs", now, page);
   }
 
   @Override
@@ -131,6 +144,14 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     params.put("deploymentId", deploymentId);
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateJobTenantIdForDeployment", params);
+  }
+  
+  @Override
+  public void unacquireJob(String jobId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("id", jobId);
+    params.put("dueDate", new Date(getProcessEngineConfiguration().getClock().getCurrentTime().getTime()));
+    getDbSqlSession().update("unacquireJob", params);
   }
   
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -41,6 +42,7 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   protected Map<String, AsyncExecutor> tenantExecutors = new HashMap<String, AsyncExecutor>();
   
   protected CommandExecutor commandExecutor;
+  protected JobManager jobManager;
   protected boolean active;
   protected boolean autoActivate;
   
@@ -101,6 +103,18 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     this.commandExecutor = commandExecutor;
     for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
       asyncExecutor.setCommandExecutor(commandExecutor);
+    }
+  }
+
+  public JobManager getJobManager() {
+    // Should never be accessed on this class, should be accessed on the actual AsyncExecutor
+    throw new UnsupportedOperationException(); 
+  }
+  
+  public void setJobManager(JobManager jobManager) {
+    this.jobManager = jobManager;
+    for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
+      asyncExecutor.setJobManager(jobManager);
     }
   }
 

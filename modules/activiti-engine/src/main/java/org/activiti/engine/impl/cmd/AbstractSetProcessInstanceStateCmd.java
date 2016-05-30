@@ -21,9 +21,12 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 
@@ -33,50 +36,72 @@ import org.activiti.engine.runtime.Execution;
  */
 public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void> {
 
-  protected final String executionId;
+  protected final String processInstanceId;
 
-  public AbstractSetProcessInstanceStateCmd(String executionId) {
-    this.executionId = executionId;
+  public AbstractSetProcessInstanceStateCmd(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
   }
 
   public Void execute(CommandContext commandContext) {
 
-    if (executionId == null) {
+    if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("ProcessInstanceId cannot be null.");
     }
 
-    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(executionId);
+    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (executionEntity == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '" + executionId + "'.", Execution.class);
+      throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '" + processInstanceId + "'.", Execution.class);
     }
     if (!executionEntity.isProcessInstanceType()) {
-      throw new ActivitiException("Cannot set suspension state for execution '" + executionId + "': not a process instance.");
+      throw new ActivitiException("Cannot set suspension state for execution '" + processInstanceId + "': not a process instance.");
     }
     
     if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, executionEntity.getProcessDefinitionId())) {
       if (getNewState() == SuspensionState.ACTIVE) {
-        commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().activateProcessInstance(executionId);
+        commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().activateProcessInstance(processInstanceId);
       } else {
-        commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().suspendProcessInstance(executionId);
+        commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().suspendProcessInstance(processInstanceId);
       }
       return null;
     }
 
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
+    commandContext.getExecutionEntityManager().update(executionEntity, false);
 
     // All child executions are suspended
-    Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
+    Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(processInstanceId);
     for (ExecutionEntity childExecution : childExecutions) {
-      if (!childExecution.getId().equals(executionId)) {
+      if (!childExecution.getId().equals(processInstanceId)) {
         SuspensionStateUtil.setSuspensionState(childExecution, getNewState());
+        commandContext.getExecutionEntityManager().update(childExecution, false);
       }
     }
 
     // All tasks are suspended
-    List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(executionId);
+    List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(processInstanceId);
     for (TaskEntity taskEntity : tasks) {
       SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
+      commandContext.getTaskEntityManager().update(taskEntity, false);
+    }
+    
+    // All jobs are suspended
+    if (getNewState() == SuspensionState.ACTIVE) {
+      List<SuspendedJobEntity> suspendedJobs = commandContext.getSuspendedJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
+      for (SuspendedJobEntity suspendedJob : suspendedJobs) {
+        commandContext.getJobManager().activateSuspendedJob(suspendedJob);
+      }
+      
+    } else {
+      List<TimerJobEntity> timerJobs = commandContext.getTimerJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
+      for (TimerJobEntity timerJob : timerJobs) {
+        commandContext.getJobManager().moveJobToSuspendedJob(timerJob);
+      }
+      
+      List<JobEntity> jobs = commandContext.getJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
+      for (JobEntity job : jobs) {
+        commandContext.getJobManager().moveJobToSuspendedJob(job);
+      }
     }
 
     return null;

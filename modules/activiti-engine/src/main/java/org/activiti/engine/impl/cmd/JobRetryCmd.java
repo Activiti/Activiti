@@ -28,6 +28,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
@@ -66,52 +67,68 @@ public class JobRetryCmd implements Command<Object> {
       failedJobRetryTimeCycleValue = ((ServiceTask) currentFlowElement).getFailedJobRetryTimeCycleValue();
     }
 
+    AbstractJobEntity newJobEntity = null;
     if (currentFlowElement == null || failedJobRetryTimeCycleValue == null) {
 
-      log.debug("activity or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
-      job.setRetries(job.getRetries() - 1);
-      job.setLockOwner(null);
-      job.setLockExpirationTime(null);
+      log.debug("activity or FailedJobRetryTimerCycleValue is null in job " + jobId + ". only decrementing retries.");
+      
+      if (job.getRetries() <= 1) {
+        newJobEntity = commandContext.getJobManager().moveJobToDeadLetterJob(job);
+      } else {
+        newJobEntity = commandContext.getJobManager().moveJobToTimerJob(job);
+      }
+      
+      newJobEntity.setRetries(job.getRetries() - 1);
       if (job.getDuedate() == null || JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
         // add wait time for failed async job
-        job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
+        newJobEntity.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
       } else {
         // add default wait time for failed job
-        job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getDefaultFailedJobWaitTime(), job.getDuedate()));
+        newJobEntity.setDuedate(calculateDueDate(commandContext, processEngineConfig.getDefaultFailedJobWaitTime(), job.getDuedate()));
       }
 
     } else {
       try {
         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycleValue, processEngineConfig.getClock());
-        job.setLockOwner(null);
-        job.setLockExpirationTime(null);
-        job.setDuedate(durationHelper.getDateAfter());
+        int jobRetries = job.getRetries();
+        if (job.getExceptionMessage() == null) {
+          // change default retries to the ones configured
+          jobRetries = durationHelper.getTimes();
+        }
+        
+        if (jobRetries <= 1) {
+          newJobEntity = commandContext.getJobManager().moveJobToDeadLetterJob(job);
+        } else {
+          newJobEntity = commandContext.getJobManager().moveJobToTimerJob(job);
+        }
+        
+        newJobEntity.setDuedate(durationHelper.getDateAfter());
 
         if (job.getExceptionMessage() == null) { // is it the first exception
-          log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycleValue + "' the first time for job " + job.getId() + " with " + durationHelper.getTimes() + " retries");
-          // then change default retries to the ones configured
-          job.setRetries(durationHelper.getTimes());
+          log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycleValue + "' the first time for job " + 
+              job.getId() + " with " + durationHelper.getTimes() + " retries");
 
         } else {
           log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycleValue + "' for job " + job.getId());
         }
-        job.setRetries(job.getRetries() - 1);
+        
+        newJobEntity.setRetries(jobRetries - 1);
 
       } catch (Exception e) {
         throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycleValue, exception);
       }
     }
-
+    
     if (exception != null) {
-      job.setExceptionMessage(exception.getMessage());
-      job.setExceptionStacktrace(getExceptionStacktrace());
+      newJobEntity.setExceptionMessage(exception.getMessage());
+      newJobEntity.setExceptionStacktrace(getExceptionStacktrace());
     }
 
     // Dispatch both an update and a retry-decrement event
     ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
     if (eventDispatcher.isEnabled()) {
-      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
-      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, newJobEntity));
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_RETRIES_DECREMENTED, newJobEntity));
     }
 
     return null;

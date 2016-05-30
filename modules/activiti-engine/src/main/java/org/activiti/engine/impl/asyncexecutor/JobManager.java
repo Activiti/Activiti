@@ -1,9 +1,13 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
+import org.activiti.engine.runtime.Job;
 
 public interface JobManager {
 
@@ -16,5 +20,15 @@ public interface JobManager {
   
   void scheduleTimerJob(TimerJobEntity timerJob);
   
-  void execute(JobEntity jobEntity);
+  JobEntity moveTimerJobToExecutableJob(TimerJobEntity timerJob);
+  
+  TimerJobEntity moveJobToTimerJob(AbstractJobEntity job);
+  
+  SuspendedJobEntity moveJobToSuspendedJob(AbstractJobEntity job);
+  
+  AbstractJobEntity activateSuspendedJob(SuspendedJobEntity job);
+  
+  DeadLetterJobEntity moveJobToDeadLetterJob(AbstractJobEntity job);
+  
+  void execute(Job job);
 }

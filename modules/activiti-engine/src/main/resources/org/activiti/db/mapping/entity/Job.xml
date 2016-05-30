@@ -9,6 +9,9 @@
 	<resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
 		<id property="id" column="ID_" jdbcType="VARCHAR" />
 		<result property="revision" column="REV_" jdbcType="INTEGER" />
+		<result property="jobType" column="TYPE_" jdbcType="VARCHAR" />
+		<result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
+	    <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
 		<result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
 		<result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
 		<result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
@@ -34,6 +37,7 @@
 		select
 		RES.* ${limitBetween}
 		from ${prefix}ACT_RU_JOB RES
+		where LOCK_EXP_TIME_ is null
 		${limitAfter}
 	</select>
 
@@ -45,6 +49,11 @@
 		and (PROCESS_INSTANCE_ID_ = #{parameter.pid})
 		${limitAfter}
 	</select>
+	
+	<select id="selectExpiredJobs" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    	select * from ${prefix}ACT_RU_JOB
+     	where LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP}
+  	</select>
 
 	<select id="selectJobsByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select * from ${prefix}ACT_RU_JOB
@@ -75,6 +84,12 @@
 		select *
 		from ${prefix}ACT_RU_JOB J
 		where J.EXECUTION_ID_ = #{parameter}
+	</select>
+	
+	<select id="selectJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+		select *
+		from ${prefix}ACT_RU_JOB J
+		where J.PROCESS_INSTANCE_ID_ = #{parameter}
 	</select>
 
 	<select id="selectJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -117,6 +132,9 @@
 
 	<sql id="selectJobByQueryCriteriaSql">
 		from ${prefix}ACT_RU_JOB RES
+		<if test="executable">
+        	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    	</if>
 		<where>
 			<if test="id != null">
 				RES.ID_ = #{id}
@@ -222,6 +240,8 @@
 		ID_,
 		REV_,
 		TYPE_,
+		LOCK_OWNER_,
+        LOCK_EXP_TIME_,
 		EXCLUSIVE_,
 		EXECUTION_ID_,
 		PROCESS_INSTANCE_ID_,
@@ -237,6 +257,8 @@
 		values (#{id, jdbcType=VARCHAR},
 		#{revision, jdbcType=INTEGER},
 		#{jobType, jdbcType=VARCHAR},
+		#{lockOwner, jdbcType=VARCHAR},
+        #{lockExpirationTime, jdbcType=TIMESTAMP},
 		#{exclusive, jdbcType=BOOLEAN},
 		#{executionId, jdbcType=VARCHAR},
 		#{processInstanceId, jdbcType=VARCHAR},
@@ -275,6 +297,8 @@
 			(#{job.id, jdbcType=VARCHAR},
 			#{job.revision, jdbcType=INTEGER},
 			#{job.jobType, jdbcType=VARCHAR},
+			#{job.lockOwner, jdbcType=VARCHAR},
+            #{job.lockExpirationTime, jdbcType=TIMESTAMP},
 			#{job.exclusive, jdbcType=BOOLEAN},
 			#{job.executionId, jdbcType=VARCHAR},
 			#{job.processInstanceId, jdbcType=VARCHAR},
@@ -314,6 +338,8 @@
 			(#{job.id, jdbcType=VARCHAR},
 			#{job.revision, jdbcType=INTEGER},
 			#{job.jobType, jdbcType=VARCHAR},
+			#{job.lockOwner, jdbcType=VARCHAR},
+            #{job.lockExpirationTime, jdbcType=TIMESTAMP},
 			#{job.exclusive, jdbcType=BOOLEAN},
 			#{job.executionId, jdbcType=VARCHAR},
 			#{job.processInstanceId, jdbcType=VARCHAR},
@@ -335,14 +361,21 @@
 		update ${prefix}ACT_RU_JOB
 		<set>
 			REV_ = #{revisionNext, jdbcType=INTEGER},
+			LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
+       		LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
 			RETRIES_ = #{retries, jdbcType=INTEGER},
 			EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
-			DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
+			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
 		</set>
 		where ID_= #{id, jdbcType=VARCHAR}
 		and REV_ = #{revision, jdbcType=INTEGER}
 	</update>
+	
+	<update id="unacquireJob" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    	update ${prefix}ACT_RU_JOB
+    	set LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null
+    	where ID_ = #{id,jdbcType=VARCHAR}
+  	</update>
 	
 	<select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *

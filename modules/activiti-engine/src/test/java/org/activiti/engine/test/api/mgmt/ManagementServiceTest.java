@@ -20,6 +20,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -73,14 +74,14 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testGetJobExceptionStacktrace() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-    // The execution is waiting in the first usertask. This contains a
-    // boundary
+    // The execution is waiting in the first usertask. This contains a boundary
     // timer event which we will execute manual for testing purposes.
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull("No job found for process instance", timerJob);
 
     try {
+      managementService.moveTimerToExecutableJob(timerJob.getId());
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch (RuntimeException re) {
@@ -88,7 +89,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     }
 
     // Fetch the task to see that the exception that occurred is persisted
-    timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull(timerJob);
     assertNotNull(timerJob.getExceptionMessage());
@@ -123,17 +124,15 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testSetJobRetries() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-    // The execution is waiting in the first usertask. This contains a
-    // boundary
-    // timer event.
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    // The execution is waiting in the first usertask. This contains a boundary timer event.
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull("No job found for process instance", timerJob);
     assertEquals(processEngineConfiguration.getAsyncExecutorNumberOfRetries(), timerJob.getRetries());
 
-    managementService.setJobRetries(timerJob.getId(), 5);
+    managementService.setTimerJobRetries(timerJob.getId(), 5);
 
-    timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals(5, timerJob.getRetries());
   }
 
@@ -196,12 +195,12 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobDeletion() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull("Task timer should be there", timerJob);
-    managementService.deleteJob(timerJob.getId());
+    managementService.deleteTimerJob(timerJob.getId());
 
-    timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNull("There should be no job now. It was deleted", timerJob);
   }
 
@@ -210,14 +209,14 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(new Date());
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     // We need to move time at least one hour to make the timer executable
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
 
     // Acquire job by running the acquire command manually
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
-    AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd("testLockOwner", 60000, 5);
+    AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd(processEngine.getProcessEngineConfiguration().getAsyncExecutor());
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(acquireJobsCmd);
 
@@ -230,12 +229,12 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     }
 
     // Clean up
+    managementService.moveTimerToExecutableJob(timerJob.getId());
     managementService.executeJob(timerJob.getId());
   }
 
   // https://jira.codehaus.org/browse/ACT-1816:
-  // ManagementService doesn't seem to give actual table Name for
-  // EventSubscriptionEntity.class
+  // ManagementService doesn't seem to give actual table Name for EventSubscriptionEntity.class
   public void testGetTableName() {
     String table = managementService.getTableName(EventSubscriptionEntity.class);
     assertEquals("ACT_RU_EVENT_SUBSCR", table);

@@ -45,4 +45,12 @@ public class VerifyDeserializedObjectCommandContextCloseListener implements Comm
     
   }
 
+  public void afterSessionsFlush(CommandContext commandContext) {
+    
+  }
+
+  public void closeFailure(CommandContext commandContext) {
+    
+  }
+
 }

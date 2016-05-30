@@ -75,16 +75,11 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     // not reached but it will be executed according to the expression)
     taskService.complete(task.getId());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-      fail("Expected that job isn't executed because the timer is in t0");
-    } catch (Exception e) {
-      // expected
-    }
+    waitForJobExecutorToProcessAllJobs(2000, 500);
+    // Expected that job isn't executed because the timer is in t0
+    assertNotNull(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult());
 
-    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be
-                                       // triggered and the flow will go to
-                                       // the next step
+    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be triggered and the flow will go to the next step
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
@@ -100,9 +95,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     // Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
-    nextTimeCal.add(Calendar.HOUR, 1); // after 1H 40 minutes from process
-                                       // start, the timer will trigger
-                                       // because of the endDate
+    nextTimeCal.add(Calendar.HOUR, 1); // after 1H 40 minutes from process start, the timer will trigger because of the endDate
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
@@ -110,7 +103,6 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-
       assertNotNull(historicInstance.getEndTime());
     }
 
@@ -120,6 +112,9 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     // no jobs
     jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     // no tasks

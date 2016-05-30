@@ -20,9 +20,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionListener;
-import org.activiti.engine.impl.cfg.TransactionState;
-import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.runtime.Job;
@@ -67,13 +64,6 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     super.insert(jobEntity, fireCreateEvent);
   }
 
-  protected void hintAsyncExecutor(JobEntity job) {
-
-    // notify job executor:
-    TransactionListener transactionListener = new AsyncJobAddedNotification(job, getAsyncExecutor());
-    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
-  }
-
   @Override
   public List<JobEntity> findNextJobsToExecute(Page page) {
     return jobDataManager.findNextJobsToExecute(page); 
@@ -83,10 +73,25 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   public List<JobEntity> findJobsByExecutionId(String executionId) {
     return jobDataManager.findJobsByExecutionId(executionId);
   }
+  
+  @Override
+  public List<JobEntity> findJobsByProcessInstanceId(String processInstanceId) {
+    return jobDataManager.findJobsByProcessInstanceId(processInstanceId);
+  }
 
   @Override
   public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
     return jobDataManager.findExclusiveJobsToExecute(processInstanceId);
+  }
+  
+  @Override
+  public List<JobEntity> findExpiredJobs(Page page) {
+    return jobDataManager.findExpiredJobs(page);
+  }
+  
+  @Override
+  public void unacquireJob(String jobId) {
+    jobDataManager.unacquireJob(jobId);
   }
 
   @Override
@@ -139,7 +144,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
 
   /**
-   * Removes the job's execution's reference to this job, iff the job has an associated execution.
+   * Removes the job's execution's reference to this job, if the job has an associated execution.
    * Subclasses may override to provide custom implementations.
    */
   protected void removeExecutionLink(JobEntity jobEntity) {

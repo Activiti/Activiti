@@ -50,6 +50,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobEntities> {
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
     gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
+    job.setLockOwner(asyncExecutor.getLockOwner());
     job.setLockExpirationTime(gregorianCalendar.getTime());
   }
 }

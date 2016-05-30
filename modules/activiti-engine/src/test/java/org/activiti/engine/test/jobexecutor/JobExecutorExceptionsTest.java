@@ -17,10 +17,9 @@ import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.api.v6.AbstractActviti6Test;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
   @Test
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
   public void testQueryByExceptionWithRealJobExecutor() {
-    JobQuery query = managementService.createJobQuery().withException();
+    TimerJobQuery query = managementService.createTimerJobQuery().withException();
     Assert.assertEquals(0, query.count());
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
@@ -44,11 +43,11 @@ public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
     // boundary timer event which we will execute manual for testing purposes.
     JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, 5000L, 100L, new Callable<Boolean>() {
       public Boolean call() throws Exception {
-        return managementService.createJobQuery().withException().count() == 1;
+        return managementService.createTimerJobQuery().withException().count() == 1;
       }
     });
 
-    query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
+    query = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).withException();
     Assert.assertEquals(1, query.count());
   }
 

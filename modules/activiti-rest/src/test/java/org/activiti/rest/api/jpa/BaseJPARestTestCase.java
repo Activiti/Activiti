@@ -13,8 +13,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
-import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -73,6 +71,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+
+import junit.framework.AssertionFailedError;
 
 public class BaseJPARestTestCase extends AbstractTestCase {
 
@@ -385,7 +385,7 @@ public class BaseJPARestTestCase extends AbstractTestCase {
   }
 
   public boolean areJobsAvailable() {
-    return !managementService.createJobQuery().executable().list().isEmpty();
+    return !managementService.createJobQuery().list().isEmpty();
   }
 
   private static class InteruptTask extends TimerTask {

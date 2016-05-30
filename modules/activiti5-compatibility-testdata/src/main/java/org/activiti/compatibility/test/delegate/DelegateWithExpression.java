@@ -10,22 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.compatibility.test.delegate;
 
-package org.activiti5.engine.impl.el;
-
-import org.activiti.engine.delegate.VariableScope;
-
-
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public interface Expression extends org.activiti.engine.delegate.Expression {
+public class DelegateWithExpression implements JavaDelegate {
+  
+  private Expression param;
+  
+  @Override
+  public void execute(DelegateExecution execution) throws Exception {
+    execution.setVariable("testVar", param.getValue(execution));
+  }
 
-   Object getValue(VariableScope variableScope);
-   
-   void setValue(Object value, VariableScope variableScope);
-   
-   String getExpressionText();
-   
 }

@@ -81,11 +81,11 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   protected LinkedList<JobEntity> temporaryJobQueue = new LinkedList<JobEntity>();
 
   protected CommandExecutor commandExecutor;
+  protected JobManager jobManager;
 
   public boolean executeAsyncJob(final JobEntity job) {
     Runnable runnable = null;
     if (isActive) {
-      
       runnable = createRunnableForJob(job);
       
       try {
@@ -100,18 +100,16 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         
         // This can happen while already in a command context (for example in a transaction listener
         // after the async executor has been hinted that a new async job is created)
-        // or not (when executed in the aquire thread runnable)
+        // or not (when executed in the acquire thread runnable)
         
         CommandContext commandContext = Context.getCommandContext();
         if (commandContext != null) {
-          commandContext.getLockedJobEntityManager().delete(job.getId());
-          commandContext.getJobEntityManager().insert(job);
+          unacquireJob(job, commandContext);
           
         } else {
           commandExecutor.execute(new Command<Void>() {
             public Void execute(CommandContext commandContext) {
-              commandContext.getLockedJobEntityManager().delete(job.getId());
-              commandContext.getJobEntityManager().insert(job);
+              unacquireJob(job, commandContext);
               return null;
             }
           });
@@ -136,6 +134,10 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     }
   }
   
+  protected void unacquireJob(final JobEntity job, CommandContext commandContext) {
+    commandContext.getJobEntityManager().unacquireJob(job.getId());
+  }
+  
   /** Starts the async executor */
   public void start() {
     if (isActive) {
@@ -144,7 +146,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
     log.info("Starting up the default async job executor [{}].", getClass().getName());
     if (timerJobRunnable == null) {
-      timerJobRunnable = new AcquireTimerJobsRunnable(this);
+      timerJobRunnable = new AcquireTimerJobsRunnable(this, jobManager);
     }
     if (asyncJobsDueRunnable == null) {
       asyncJobsDueRunnable = new AcquireAsyncJobsDueRunnable(this);
@@ -247,6 +249,14 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
   public void setCommandExecutor(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
+  }
+
+  public JobManager getJobManager() {
+    return jobManager;
+  }
+
+  public void setJobManager(JobManager jobManager) {
+    this.jobManager = jobManager;
   }
 
   public boolean isAutoActivate() {

@@ -593,7 +593,6 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
     // create first instance
     ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("signalBoundaryProcess");
-    System.out.println("First proc inst " + firstProcessInstance.getId());
     assertNotNull(firstProcessInstance);
 
     // task should be "add a file"
@@ -606,7 +605,6 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
     // create second instance
     ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("signalBoundaryProcess");
-    System.out.println("Proc inst is " + secondProcessInstance.getId());
     assertNotNull(secondProcessInstance);
 
     // there should be two open tasks

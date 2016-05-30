@@ -45,6 +45,10 @@ public interface AsyncExecutor {
   
   CommandExecutor getCommandExecutor();
   
+  void setJobManager(JobManager jobManager);
+  
+  JobManager getJobManager();
+  
   boolean isAutoActivate();
 
   void setAutoActivate(boolean isAutoActivate);

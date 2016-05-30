@@ -139,16 +139,16 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
         // Ignore, expected exception
       }
 
-      Job failedJob = managementService.createJobQuery().withException().processInstanceId(processInstance.getId()).singleResult();
+      Job failedJob = managementService.createTimerJobQuery().withException().processInstanceId(processInstance.getId()).singleResult();
 
       assertNotNull(failedJob);
       assertEquals(2, failedJob.getRetries());
 
-      // One retry should have triggered dispatching of a retry-decrement
-      // event
+      // One retry should have triggered dispatching of a retry-decrement event
       assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 
       try {
+        managementService.moveTimerToExecutableJob(failedJob.getId());
         managementService.executeJob(failedJob.getId());
         fail("Exception expected");
       } catch (ActivitiException ae) {
@@ -185,16 +185,16 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
         // Ignore, expected exception
       }
 
-      Job failedJob = managementService.createJobQuery().withException().processInstanceId(processInstance.getId()).singleResult();
+      Job failedJob = managementService.createTimerJobQuery().withException().processInstanceId(processInstance.getId()).singleResult();
 
-      assertNotNull(failedJob);
+      assertNotNull("Expected job with exception, found no such job", failedJob);
       assertEquals(2, failedJob.getRetries());
 
-      // Three retries should each have triggered dispatching of a
-      // retry-decrement event
+      // Three retries should each have triggered dispatching of a retry-decrement event
       assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 
       try {
+        managementService.moveTimerToExecutableJob(failedJob.getId());
         managementService.executeJob(failedJob.getId());
         fail("Exception expected");
       } catch (ActivitiException ae) {

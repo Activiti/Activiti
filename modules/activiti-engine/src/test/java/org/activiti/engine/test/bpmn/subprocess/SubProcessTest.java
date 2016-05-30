@@ -68,7 +68,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
-    assertEquals(1, managementService.createJobQuery().executable().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
     waitForJobExecutorToProcessAllJobs(5000L, 500L);
 
     // The subprocess should be left, and the escalated task should be active
@@ -199,8 +199,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   @Deployment
   public void testSimpleParallelSubProcessWithTimer() {
 
-    // After staring the process, the tasks in the subprocess should be
-    // active
+    // After staring the process, the tasks in the subprocess should be active
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
     List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
 
@@ -210,8 +209,9 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task A", taskA.getName());
     assertEquals("Task B", taskB.getName());
 
-    Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job job = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     // The inner subprocess should be destroyed, and the task after the timer  should be active
@@ -295,12 +295,12 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess A", taskA.getName());
     assertEquals("Task in subprocess B", taskB.getName());
 
-    // Firing the timer should destroy all three subprocesses and activate
-    // the task after the timer
+    // Firing the timer should destroy all three subprocesses and activate the task after the timer
     // processEngineConfiguration.getClock().setCurrentTime(new
     // Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     // waitForJobExecutorToProcessAllJobs(5000L, 50L);
-    Job job = managementService.createJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     Task taskAfterTimer = taskQuery.singleResult();

@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.LockedJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 
 /**
@@ -34,7 +34,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
-        LockedJobEntityManager jobManager = commandContext.getLockedJobEntityManager();
+        JobManager jobManager = commandContext.getJobManager();
         jobManager.execute(createTweetMessage("message-one"));
         jobManager.execute(createTweetMessage("message-two"));
         jobManager.execute(createTweetMessage("message-three"));

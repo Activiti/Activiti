@@ -23,6 +23,12 @@ import org.activiti.engine.ManagementService;
  * @author Joram Barrez
  */
 public interface Job {
+  
+  String JOB_TYPE_TIMER = "timer";
+  String JOB_TYPE_MESSAGE = "message";
+  
+  boolean DEFAULT_EXCLUSIVE = true;
+  int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
   /**
    * Returns the unique identifier for this job.

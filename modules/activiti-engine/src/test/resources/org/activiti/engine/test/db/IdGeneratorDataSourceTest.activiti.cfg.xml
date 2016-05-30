@@ -14,7 +14,7 @@
     <property name="idGeneratorDataSource" ref="idGeneratorDataSource" />
     
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
     
   </bean>
   

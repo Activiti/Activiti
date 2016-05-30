@@ -47,7 +47,7 @@ public class JobCollectionResourceTest extends BaseSpringRestTestCase {
     assertEquals(0, timerJob.getRetries());
 
     // Fetch the async-job (which has retries left)
-    Job asyncJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).withRetriesLeft().singleResult();
+    Job asyncJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     // Test fetching all jobs
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION);

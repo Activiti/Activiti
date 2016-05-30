@@ -14,22 +14,23 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.impl.JobQueryImpl;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
- * @author Vasile Dirla
  */
 public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEntity> implements TimerJobEntityManager {
 
@@ -40,35 +41,6 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
   public TimerJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, TimerJobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
-  }
-
-  @Override
-  public List<TimerJobEntity> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
-    return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
-  }
-  
-  @Override
-  public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
-    return jobDataManager.findJobCountByQueryCriteria(jobQuery);
-  }
-
-  @Override
-  public TimerJobEntity createTimer(JobEntity te) {
-    TimerJobEntity newTimerEntity = create();
-    newTimerEntity.setJobHandlerConfiguration(te.getJobHandlerConfiguration());
-    newTimerEntity.setJobHandlerType(te.getJobHandlerType());
-    newTimerEntity.setExclusive(te.isExclusive());
-    newTimerEntity.setRepeat(te.getRepeat());
-    newTimerEntity.setRetries(te.getRetries());
-    newTimerEntity.setEndDate(te.getEndDate());
-    newTimerEntity.setExecutionId(te.getExecutionId());
-    newTimerEntity.setProcessInstanceId(te.getProcessInstanceId());
-    newTimerEntity.setProcessDefinitionId(te.getProcessDefinitionId());
-
-    // Inherit tenant
-    newTimerEntity.setTenantId(te.getTenantId());
-    newTimerEntity.setJobType(JobEntity.JOB_TYPE_TIMER);
-    return newTimerEntity;
   }
   
   @Override
@@ -86,7 +58,128 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
       }
     }
   }
+
+  @Override
+  public List<TimerJobEntity> selectTimerJobsToDueDate(Page page) {
+    return jobDataManager.selectTimerJobsToDueDate(page);
+  }
+
+  @Override
+  public List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
+    return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
+  }
   
+  @Override
+  public List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
+    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(jobHandlerType, processDefinitionKey);
+  }
+  
+  @Override
+  public List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
+    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyAndTenantId(jobHandlerType, processDefinitionKey, tenantId);
+  }
+  
+  @Override
+  public List<TimerJobEntity> findJobsByExecutionId(String id) {
+    return jobDataManager.findJobsByExecutionId(id);
+  }
+  
+  @Override
+  public List<TimerJobEntity> findJobsByProcessInstanceId(String id) {
+    return jobDataManager.findJobsByProcessInstanceId(id);
+  }
+  
+  @Override
+  public List<Job> findJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page) {
+    return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
+  }
+  
+  @Override
+  public long findJobCountByQueryCriteria(TimerJobQueryImpl jobQuery) {
+    return jobDataManager.findJobCountByQueryCriteria(jobQuery);
+  }
+  
+  @Override
+  public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+    jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
+  }
+  
+  @Override
+  public void insert(TimerJobEntity jobEntity, boolean fireCreateEvent) {
+
+    // add link to execution
+    if (jobEntity.getExecutionId() != null) {
+      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
+      execution.getTimerJobs().add(jobEntity);
+
+      // Inherit tenant if (if applicable)
+      if (execution.getTenantId() != null) {
+        jobEntity.setTenantId(execution.getTenantId());
+      }
+    }
+
+    super.insert(jobEntity, fireCreateEvent);
+  }
+
+  @Override
+  public void insert(TimerJobEntity jobEntity) {
+    insert(jobEntity, true);
+  }
+  
+  @Override
+  public void delete(TimerJobEntity jobEntity) {
+    super.delete(jobEntity);
+
+    deleteExceptionByteArrayRef(jobEntity);
+
+    removeExecutionLink(jobEntity);
+    
+    // Send event
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+    }
+  }
+  
+  /**
+   * Removes the job's execution's reference to this job, if the job has an associated execution.
+   * Subclasses may override to provide custom implementations.
+   */
+  protected void removeExecutionLink(TimerJobEntity jobEntity) {
+    if (jobEntity.getExecutionId() != null) {
+      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
+      execution.getTimerJobs().remove(jobEntity);
+    }
+  }
+
+  /**
+   * Deletes a the byte array used to store the exception information.  Subclasses may override
+   * to provide custom implementations. 
+   */
+  protected void deleteExceptionByteArrayRef(TimerJobEntity jobEntity) {
+    ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();
+    if (exceptionByteArrayRef != null) {
+      exceptionByteArrayRef.delete();
+    }
+  }
+  
+  protected TimerJobEntity createTimer(JobEntity te) {
+    TimerJobEntity newTimerEntity = create();
+    newTimerEntity.setJobHandlerConfiguration(te.getJobHandlerConfiguration());
+    newTimerEntity.setJobHandlerType(te.getJobHandlerType());
+    newTimerEntity.setExclusive(te.isExclusive());
+    newTimerEntity.setRepeat(te.getRepeat());
+    newTimerEntity.setRetries(te.getRetries());
+    newTimerEntity.setEndDate(te.getEndDate());
+    newTimerEntity.setExecutionId(te.getExecutionId());
+    newTimerEntity.setProcessInstanceId(te.getProcessInstanceId());
+    newTimerEntity.setProcessDefinitionId(te.getProcessDefinitionId());
+
+    // Inherit tenant
+    newTimerEntity.setTenantId(te.getTenantId());
+    newTimerEntity.setJobType(JobEntity.JOB_TYPE_TIMER);
+    return newTimerEntity;
+  }
+
   protected void setNewRepeat(JobEntity timerEntity, int newRepeatValue) {
     List<String> expression = Arrays.asList(timerEntity.getRepeat().split("/"));
     expression = expression.subList(1, expression.size());
@@ -108,44 +201,7 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
     BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
     return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
   }
-
-  @Override
-  public List<TimerJobEntity> selectTimerJobsToDueDate(Page page) {
-    return jobDataManager.selectTimerJobsToDueDate(page);
-  }
-
-  @Override
-  public List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
-  }
   
-  @Override
-  public Collection<TimerJobEntity> findJobsByExecutionId(String id) {
-    return jobDataManager.findJobsByExecutionId(id);
-  }
-
-  @Override
-  public void insert(TimerJobEntity jobEntity, boolean fireCreateEvent) {
-
-    // add link to execution
-    if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getJobs().add(jobEntity);
-
-      // Inherit tenant if (if applicable)
-      if (execution.getTenantId() != null) {
-        jobEntity.setTenantId(execution.getTenantId());
-      }
-    }
-
-    super.insert(jobEntity, fireCreateEvent);
-  }
-
-  @Override
-  public void insert(TimerJobEntity jobEntity) {
-    insert(jobEntity, true);
-  }
-
   protected int calculateRepeatValue(JobEntity timerEntity) {
     int times = -1;
     List<String> expression = Arrays.asList(timerEntity.getRepeat().split("/"));
