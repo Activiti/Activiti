@@ -44,18 +44,26 @@ public class ScopeUtil {
     // first spawn the compensating executions
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       ExecutionEntity compensatingExecution = null;
+      
       // check whether compensating execution is already created (which is the case when compensating an embedded subprocess,
       // where the compensating execution is created when leaving the subprocess and holds snapshot data).
       if (eventSubscription.getConfiguration() != null) {
         compensatingExecution = executionEntityManager.findById(eventSubscription.getConfiguration());
-        // move the compensating execution under this execution:
-        compensatingExecution.setParent((ExecutionEntity) execution);
+        
+        ExecutionEntity scopeExecutionEntity = compensatingExecution;
+        while (!scopeExecutionEntity.isScope()
+            || !scopeExecutionEntity.isProcessInstanceType()) {
+          scopeExecutionEntity = scopeExecutionEntity.getParent();
+        }
+        
+        compensatingExecution.setParent(scopeExecutionEntity);
         compensatingExecution.setEventScope(false);
       } else {
         compensatingExecution = executionEntityManager.createChildExecution((ExecutionEntity) execution); 
         eventSubscription.setConfiguration(compensatingExecution.getId());
       }
       compensatingExecution.setConcurrent(true);
+      
     }
 
     // signal compensation events in reverse order of their 'created' timestamp

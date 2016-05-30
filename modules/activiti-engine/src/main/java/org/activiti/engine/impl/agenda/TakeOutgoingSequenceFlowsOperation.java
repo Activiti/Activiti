@@ -94,28 +94,29 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       ExecutionEntity parentExecutionEntity = execution.getParent();
       if (parentExecutionEntity.isScope() && !parentExecutionEntity.isProcessInstanceType()) {
         
-        boolean allEnded = true;
-        for (ExecutionEntity childExecutionEntity : parentExecutionEntity.getExecutions()) {
-          if (!childExecutionEntity.isEnded()) {
-            allEnded = false;
-            break;
+        if (allChildExecutionsEnded(parentExecutionEntity, null)) {
+          
+          // Go up the hierarchy to check if the next scope is ended too.
+          // This could happen if only the compensation activity is still active, but the 
+          // main process is already finished.
+
+          ExecutionEntity executionEntityToEnd = parentExecutionEntity;
+          ExecutionEntity scopeExecutionEntity = findNextParentScopeExecutionWithAllEndedChildExecutions(parentExecutionEntity, parentExecutionEntity);
+          while (scopeExecutionEntity != null) {
+            executionEntityToEnd = scopeExecutionEntity;
+            scopeExecutionEntity = findNextParentScopeExecutionWithAllEndedChildExecutions(scopeExecutionEntity, parentExecutionEntity);
           }
-        }
-        
-        if (allEnded) {
-          agenda.planDestroyScopeOperation(parentExecutionEntity);
+          
+          if (executionEntityToEnd.isProcessInstanceType()) {
+            agenda.planEndExecutionOperation(executionEntityToEnd);
+          } else {
+            agenda.planDestroyScopeOperation(executionEntityToEnd);
+          }
+          
         }
       }
       
       return;
-      
-//      ExecutionEntity scopeExecutionEntity = execution;
-//      while (!scopeExecutionEntity.isScope()) {
-//        scopeExecutionEntity = scopeExecutionEntity.getParent();
-//      }
-//      
-//      agenda.planDestroyScopeOperation(scopeExecutionEntity);
-//      return;
       
     }
     
@@ -214,6 +215,44 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       commandContext.getHistoryManager().recordActivityEnd(execution);
       agenda.planContinueProcessOperation(execution);
     }
+  }
+
+  /**
+   * @param executionEntityToIgnore The execution entity which we can ignore to be ended, 
+   * as it's the execution currently being handled in this operation.
+   */
+  protected ExecutionEntity findNextParentScopeExecutionWithAllEndedChildExecutions(ExecutionEntity executionEntity, ExecutionEntity executionEntityToIgnore) {
+    if (executionEntity.getParentId() != null) {
+      ExecutionEntity scopeExecutionEntity = executionEntity.getParent();
+      
+      // Find next scope
+      while (!scopeExecutionEntity.isScope() || !scopeExecutionEntity.isProcessInstanceType()) {
+        scopeExecutionEntity = scopeExecutionEntity.getParent();
+      }
+
+      // Return when all child executions for it are ended
+      if (allChildExecutionsEnded(scopeExecutionEntity, executionEntityToIgnore)) {
+        return scopeExecutionEntity;
+      }
+      
+    }
+    return null;
+  }
+  
+  protected boolean allChildExecutionsEnded(ExecutionEntity parentExecutionEntity, ExecutionEntity executionEntityToIgnore) {
+    for (ExecutionEntity childExecutionEntity : parentExecutionEntity.getExecutions()) {
+      if (executionEntityToIgnore == null || !executionEntityToIgnore.getId().equals(childExecutionEntity.getId())) {
+        if (!childExecutionEntity.isEnded()) {
+          return false;
+        }
+        if (childExecutionEntity.getExecutions() != null && childExecutionEntity.getExecutions().size() > 0) {
+          if (!allChildExecutionsEnded(childExecutionEntity, executionEntityToIgnore)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 
   protected void leaveFlowNode(FlowNode flowNode) {

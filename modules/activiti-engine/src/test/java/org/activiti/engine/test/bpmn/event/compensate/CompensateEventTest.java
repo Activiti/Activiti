@@ -19,6 +19,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
@@ -38,6 +39,37 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
     Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
     runtimeService.trigger(execution.getId());
+    assertProcessEnded(processInstance.getId());
+  }
+  
+  @Deployment
+  public void testCompensateSubprocessWithUserTask() {
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
+    
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("Manually undo book hotel", task.getName());
+    taskService.complete(task.getId());
+
+    Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
+    runtimeService.trigger(execution.getId());
+    assertProcessEnded(processInstance.getId());
+  }
+  
+  @Deployment
+  public void testCompensateSubprocessWithUserTask2() {
+    
+    // Same process as testCompensateSubprocessWithUserTask, but now the end event is reached first
+    // (giving an exception before)
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
+    Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
+    runtimeService.trigger(execution.getId());
+    
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("Manually undo book hotel", task.getName());
+    taskService.complete(task.getId());
+    
     assertProcessEnded(processInstance.getId());
   }
 

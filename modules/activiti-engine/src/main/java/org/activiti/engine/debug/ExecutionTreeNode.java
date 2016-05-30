@@ -69,7 +69,17 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
   @Override
   public String toString() {
     StringBuilder strb = new StringBuilder();
-    strb.append(getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n");
+    strb.append(getExecutionEntity().getId());
+    if (getExecutionEntity().getActivityId() != null) {
+      strb.append(" : " + getExecutionEntity().getActivityId());
+    }
+    if (getExecutionEntity().getParentId() != null) {
+      strb.append(", parent id " + getExecutionEntity().getParentId());
+    }
+    if (getExecutionEntity().isProcessInstanceType()) {
+      strb.append(" (process instance)");
+    }
+    strb.append(System.lineSeparator());
     if (children != null) {
       for (ExecutionTreeNode childNode : children) {
         childNode.internalToString(strb, "", true);
