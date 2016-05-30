@@ -175,7 +175,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
         
         if (hasCompensation) {
-          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionToUse, executionToUse.getParent());
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionToUse);
         }
         
         if (activity instanceof CallActivity) {

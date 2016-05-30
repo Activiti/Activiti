@@ -71,7 +71,8 @@ public class EndExecutionOperation extends AbstractOperation {
         EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
         subProcess = endEvent.getSubProcess();
 
-        if (!parentExecution.getId().equals(parentExecution.getProcessInstanceId()) && subProcess != null && subProcess.getLoopCharacteristics() != null
+        if (!parentExecution.isProcessInstanceType() 
+            && subProcess != null && subProcess.getLoopCharacteristics() != null
             && subProcess.getBehavior() instanceof MultiInstanceActivityBehavior) {
 
           List<ExecutionEntity> activeChildExecutions = getActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId());
@@ -83,7 +84,7 @@ public class EndExecutionOperation extends AbstractOperation {
           }
           
           if (containsOtherChildExecutions == false) {
-            ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent().getParent());
+            ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution);
             agenda.planDestroyScopeOperation(parentExecution);
             MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
             parentExecution.setCurrentFlowElement(subProcess);
@@ -100,7 +101,7 @@ public class EndExecutionOperation extends AbstractOperation {
         
         ExecutionEntity outgoingFlowsExecution = null;
         
-        if (subProcess != null) {
+        if (subProcess != null && !subProcess.isForCompensation()) {
           // create a new execution to take the outgoing sequence flows
           outgoingFlowsExecution = executionEntityManager.createChildExecution(parentExecution.getParent());
           outgoingFlowsExecution.setCurrentFlowElement(subProcess);
@@ -127,7 +128,7 @@ public class EndExecutionOperation extends AbstractOperation {
           }
           
           if (hasCompensation) {
-            ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
+            ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution);
           }
           
           executionEntityManager.deleteChildExecutions(parentExecution, null, false);
@@ -137,17 +138,12 @@ public class EndExecutionOperation extends AbstractOperation {
               ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, subProcess.getId(), subProcess.getName(),
                   parentExecution.getId(), parentExecution.getProcessInstanceId(), parentExecution.getProcessDefinitionId(), subProcess));
           
+        } else if (subProcess != null && subProcess.isForCompensation()) { 
+          agenda.planEndExecutionOperation(parentExecution);
+          return;
         } else {
-          if (executionEntity.getCurrentFlowElement() instanceof Activity) {
-            Activity activity = (Activity) executionEntity.getCurrentFlowElement();
-            if (activity.getParentContainer() instanceof Process && activity.isForCompensation()) {
-              return;
-            }
-          }
           
-          if (parentExecution.getId().equals(parentExecution.getProcessInstanceId()) == false && 
-              parentExecution.getCurrentFlowElement() instanceof SubProcess == false) {
-            
+          if (!parentExecution.isProcessInstanceType() && !(parentExecution.getCurrentFlowElement() instanceof SubProcess)) {
             parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
           }
           
@@ -178,7 +174,7 @@ public class EndExecutionOperation extends AbstractOperation {
         }
         
         // only continue with outgoing sequence flows if the execution is not the process instance root execution
-        if (outgoingFlowsExecution.getId().equals(outgoingFlowsExecution.getProcessInstanceId()) == false) {
+        if (!outgoingFlowsExecution.isProcessInstanceType()) {
           agenda.planTakeOutgoingSequenceFlowsOperation(outgoingFlowsExecution, true);
           
         } else {
@@ -308,5 +304,43 @@ public class EndExecutionOperation extends AbstractOperation {
   protected Process getProcess(String processDefinitionId) {
     BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
     return bpmnModel.getMainProcess();
+  }
+  
+  /**
+   * @param executionEntityToIgnore The execution entity which we can ignore to be ended, 
+   * as it's the execution currently being handled in this operation.
+   */
+  protected ExecutionEntity findNextParentScopeExecutionWithAllEndedChildExecutions(ExecutionEntity executionEntity, ExecutionEntity executionEntityToIgnore) {
+    if (executionEntity.getParentId() != null) {
+      ExecutionEntity scopeExecutionEntity = executionEntity.getParent();
+      
+      // Find next scope
+      while (!scopeExecutionEntity.isScope() || !scopeExecutionEntity.isProcessInstanceType()) {
+        scopeExecutionEntity = scopeExecutionEntity.getParent();
+      }
+
+      // Return when all child executions for it are ended
+      if (allChildExecutionsEnded(scopeExecutionEntity, executionEntityToIgnore)) {
+        return scopeExecutionEntity;
+      }
+      
+    }
+    return null;
+  }
+  
+  protected boolean allChildExecutionsEnded(ExecutionEntity parentExecutionEntity, ExecutionEntity executionEntityToIgnore) {
+    for (ExecutionEntity childExecutionEntity : parentExecutionEntity.getExecutions()) {
+      if (executionEntityToIgnore == null || !executionEntityToIgnore.getId().equals(childExecutionEntity.getId())) {
+        if (!childExecutionEntity.isEnded()) {
+          return false;
+        }
+        if (childExecutionEntity.getExecutions() != null && childExecutionEntity.getExecutions().size() > 0) {
+          if (!allChildExecutionsEnded(childExecutionEntity, executionEntityToIgnore)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 }

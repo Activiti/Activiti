@@ -31,6 +31,7 @@ import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class ScopeUtil {
 
@@ -49,14 +50,7 @@ public class ScopeUtil {
       // where the compensating execution is created when leaving the subprocess and holds snapshot data).
       if (eventSubscription.getConfiguration() != null) {
         compensatingExecution = executionEntityManager.findById(eventSubscription.getConfiguration());
-        
-        ExecutionEntity scopeExecutionEntity = compensatingExecution;
-        while (!scopeExecutionEntity.isScope()
-            || !scopeExecutionEntity.isProcessInstanceType()) {
-          scopeExecutionEntity = scopeExecutionEntity.getParent();
-        }
-        
-        compensatingExecution.setParent(scopeExecutionEntity);
+        compensatingExecution.setParent(compensatingExecution.getProcessInstance());
         compensatingExecution.setEventScope(false);
       } else {
         compensatingExecution = executionEntityManager.createChildExecution((ExecutionEntity) execution); 
@@ -81,7 +75,7 @@ public class ScopeUtil {
   /**
    * Creates a new event scope execution and moves existing event subscriptions to this new execution
    */
-  public static void createCopyOfSubProcessExecutionForCompensation(ExecutionEntity subProcessExecution, ExecutionEntity parentScopeExecution) {
+  public static void createCopyOfSubProcessExecutionForCompensation(ExecutionEntity subProcessExecution) {
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findEventSubscriptionsByExecutionAndType(subProcessExecution.getId(), "compensate");
     
@@ -93,7 +87,10 @@ public class ScopeUtil {
     }
 
     if (CollectionUtil.isNotEmpty(compensateEventSubscriptions)) {
-      ExecutionEntity eventScopeExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(parentScopeExecution); 
+      
+      ExecutionEntity processInstanceExecutionEntity = subProcessExecution.getProcessInstance();
+      
+      ExecutionEntity eventScopeExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(processInstanceExecutionEntity); 
       eventScopeExecution.setActive(false);
       eventScopeExecution.setConcurrent(false);
       eventScopeExecution.setEventScope(true);
@@ -117,7 +114,7 @@ public class ScopeUtil {
       }
 
       CompensateEventSubscriptionEntity eventSubscription = eventSubscriptionEntityManager.insertCompensationEvent(
-          parentScopeExecution, eventScopeExecution.getCurrentFlowElement().getId());
+          processInstanceExecutionEntity, eventScopeExecution.getCurrentFlowElement().getId());
       eventSubscription.setConfiguration(eventScopeExecution.getId());
     }
   }

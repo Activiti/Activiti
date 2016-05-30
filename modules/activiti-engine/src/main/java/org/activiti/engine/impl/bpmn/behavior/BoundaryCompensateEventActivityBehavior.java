@@ -68,7 +68,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
     }
     
     if (compensationActivity == null) {
-      throw new ActivitiException("Compensation activity could not be found");
+      throw new ActivitiException("Compensation activity could not be found (or it is missing 'isForCompensation=\"true\"'");
     }
     
     // find SubProcess or Process instance execution
@@ -78,7 +78,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
       if (parentExecution.getCurrentFlowElement() instanceof SubProcess) {
         scopeExecution = parentExecution;
         
-      } else if (parentExecution.getId().equals(parentExecution.getProcessInstanceId())) {
+      } else if (parentExecution.isProcessInstanceType()) {
         scopeExecution = parentExecution;
       } else {
         parentExecution = parentExecution.getParent();

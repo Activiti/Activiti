@@ -98,13 +98,13 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
       throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event " + cancelBoundaryEvent.getId());
     }
     
-    ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentScopeExecution, newParentScopeExecution);
+    ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentScopeExecution);
     
     if (subProcess.getLoopCharacteristics() != null) {
       List<? extends ExecutionEntity> multiInstanceExecutions = parentScopeExecution.getExecutions();
       for (ExecutionEntity multiInstanceExecution : multiInstanceExecutions) {
         if (multiInstanceExecution.getId().equals(parentScopeExecution.getId()) == false) {
-          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution, newParentScopeExecution);
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution);
           
           // end all executions in the scope of the transaction
           deleteChildExecutions(multiInstanceExecution, executionEntity, commandContext);
