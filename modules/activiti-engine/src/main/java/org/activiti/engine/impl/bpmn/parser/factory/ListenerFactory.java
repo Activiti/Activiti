@@ -18,6 +18,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
+import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -62,4 +63,6 @@ public interface ListenerFactory {
   public abstract CustomPropertiesResolver createExpressionCustomPropertiesResolver(ActivitiListener activitiListener);
 
   public abstract CustomPropertiesResolver createDelegateExpressionCustomPropertiesResolver(ActivitiListener activitiListener);
+
+  public abstract TransactionDependentTaskListener createTransactionDependentDelegateExpressionTaskListener(ActivitiListener activitiListener);
 }

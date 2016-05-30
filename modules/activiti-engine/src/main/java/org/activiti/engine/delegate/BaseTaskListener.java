@@ -13,20 +13,21 @@
 
 package org.activiti.engine.delegate;
 
-import org.activiti.bpmn.model.FlowElement;
-
-import java.util.Map;
+import java.io.Serializable;
 
 /**
- * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closed and closeFailure
- * 
  * @author Yvo Swillens
  */
-public interface TransactionDependentExecutionListener extends BaseExecutionListener {
+public interface BaseTaskListener extends Serializable {
 
-  String ON_TRANSACTION_RESULT_COMMITTED = "committed";
-  String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
+  String EVENTNAME_CREATE = "create";
+  String EVENTNAME_ASSIGNMENT = "assignment";
+  String EVENTNAME_COMPLETE = "complete";
+  String EVENTNAME_DELETE = "delete";
 
-  void notify(String processInstanceId, String executionId, FlowElement flowElement,
-              Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
+  /**
+   * Not an actual event, used as a marker-value for {@link BaseTaskListener}s that should be called for all events, including {@link #EVENTNAME_CREATE} , {@link #EVENTNAME_ASSIGNMENT} and
+   * {@link #EVENTNAME_COMPLETE} and {@link #EVENTNAME_DELETE}.
+   */
+  String EVENTNAME_ALL_EVENTS = "all";
 }

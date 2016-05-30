@@ -13,20 +13,20 @@
 
 package org.activiti.engine.delegate;
 
-import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Task;
 
 import java.util.Map;
 
 /**
  * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closed and closeFailure
- * 
+ *
  * @author Yvo Swillens
  */
-public interface TransactionDependentExecutionListener extends BaseExecutionListener {
+public interface TransactionDependentTaskListener extends BaseTaskListener {
 
   String ON_TRANSACTION_RESULT_COMMITTED = "committed";
   String ON_TRANSACTION_RESULT_ROLLED_BACK = "rolled-back";
 
-  void notify(String processInstanceId, String executionId, FlowElement flowElement,
-              Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
+  void notify(String processInstanceId, String executionId, Task task,
+          Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
 }

@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.helper.BaseDelegateEventListener;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegateFactory;
@@ -34,6 +35,7 @@ import org.activiti.engine.impl.bpmn.helper.SignalThrowingEventListener;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionCustomPropertiesResolver;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTransactionDependentTaskListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionCustomPropertiesResolver;
 import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionTaskListener;
@@ -93,6 +95,11 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
   }
 
   @Override
+  public TransactionDependentTaskListener createTransactionDependentDelegateExpressionTaskListener(ActivitiListener activitiListener) {
+    return new DelegateExpressionTransactionDependentTaskListener(expressionManager.createExpression(activitiListener.getImplementation()));
+  }
+
+  @Override
   public ExecutionListener createClassDelegateExecutionListener(ActivitiListener activitiListener) {
     return classDelegateFactory.create(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
@@ -111,7 +118,6 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
   public DelegateExpressionTransactionDependentExecutionListener createTransactionDependentDelegateExpressionExecutionListener(ActivitiListener activitiListener) {
     return new DelegateExpressionTransactionDependentExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()));
   }
-
 
   @Override
   public ActivitiEventListener createClassDelegateEventListener(EventListener eventListener) {
