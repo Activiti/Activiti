@@ -26,7 +26,6 @@ import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Joram Barrez
@@ -59,7 +58,7 @@ public class ListenerUtil {
           
           if (executionListener != null) {
             if (activitiListener.getOnTransactionResult() != null) {
-              planTransactionDependentExecutionListener(listenerFactory, execution, executionListener, activitiListener);
+              planTransactionDependentExecutionListener(listenerFactory, execution, (TransactionDependentExecutionListener) executionListener, activitiListener);
             } else {
               execution.setEventName(eventType); // eventName is used to differentiate the event when reusing an execution listener for various events
               execution.setCurrentActivitiListener(activitiListener);
@@ -73,18 +72,18 @@ public class ListenerUtil {
     }
   }
 
-  protected static void planTransactionDependentExecutionListener(ListenerFactory listenerFactory, DelegateExecution execution, BaseExecutionListener executionListener, ActivitiListener activitiListener) {
-    TransactionDependentExecutionListeners executionListenerContextCloseListener = null;
+  protected static void planTransactionDependentExecutionListener(ListenerFactory listenerFactory, DelegateExecution execution, TransactionDependentExecutionListener executionListener, ActivitiListener activitiListener) {
+    TransactionDependentListeners executionListenerContextCloseListener = null;
 
     for (CommandContextCloseListener commandContextCloseListener : Context.getCommandContext().getCloseListeners()) {
-      if (commandContextCloseListener instanceof TransactionDependentExecutionListeners) {
-        executionListenerContextCloseListener = (TransactionDependentExecutionListeners) commandContextCloseListener;
+      if (commandContextCloseListener instanceof TransactionDependentListeners) {
+        executionListenerContextCloseListener = (TransactionDependentListeners) commandContextCloseListener;
         break;
       }
     }
 
     if (executionListenerContextCloseListener == null) {
-      executionListenerContextCloseListener = new TransactionDependentExecutionListeners();
+      executionListenerContextCloseListener = new TransactionDependentListeners();
       Context.getCommandContext().addCloseListener(executionListenerContextCloseListener);
     }
 
@@ -109,9 +108,9 @@ public class ListenerUtil {
 
     // add to context close listener stack
     if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
-      executionListenerContextCloseListener.addClosedListener((TransactionDependentExecutionListener) executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
+      executionListenerContextCloseListener.addClosedExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
     } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
-      executionListenerContextCloseListener.addCloseFailedListener((TransactionDependentExecutionListener) executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
+      executionListenerContextCloseListener.addClosedExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
     }
   }
 
