@@ -3,14 +3,14 @@
   <process id="taskListenersOnCompleteCommitted" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
 
-    <sequenceFlow sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow sourceRef="startevent1" targetRef="usertask1" />
 
     <userTask id="usertask1" name="User Task 1">
       <extensionElements>
         <activiti:taskListener
                 event="complete"
                 class="org.activiti.examples.bpmn.tasklistener.CurrentTaskTransactionDependentTaskListener"
-                onTransactionResult="rolled-back"/>
+                onTransaction="before-commit"/>
       </extensionElements>
     </userTask>
 
@@ -21,14 +21,14 @@
             name="Service Task 1"
             activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate"/>
 
-    <sequenceFlow sourceRef="serviceTask1" targetRef="usertask2"></sequenceFlow>
+    <sequenceFlow sourceRef="serviceTask1" targetRef="usertask2" />
 
     <userTask id="usertask2" name="User Task 2">
       <extensionElements>
         <activiti:taskListener
                 event="complete"
                 class="org.activiti.examples.bpmn.tasklistener.CurrentTaskTransactionDependentTaskListener"
-                onTransactionResult="rolled-back"/>
+                onTransaction="rolled-back"/>
       </extensionElements>
     </userTask>
 
@@ -39,7 +39,25 @@
             name="Service Task 2"
             activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate"/>
 
-    <sequenceFlow sourceRef="serviceTask2" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow sourceRef="serviceTask2" targetRef="usertask3" />
+
+    <userTask id="usertask3" name="User Task 3">
+      <extensionElements>
+        <activiti:taskListener
+                event="complete"
+                class="org.activiti.examples.bpmn.tasklistener.CurrentTaskTransactionDependentTaskListener"
+                onTransaction="rolled-back"/>
+      </extensionElements>
+    </userTask>
+
+    <sequenceFlow sourceRef="usertask3" targetRef="serviceTask3" />
+
+    <serviceTask
+            id="serviceTask3"
+            name="Service Task 3"
+            activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate"/>
+
+    <sequenceFlow sourceRef="serviceTask3" targetRef="endevent1" />
 
     <endEvent id="endevent1" name="End"></endEvent>
   </process>

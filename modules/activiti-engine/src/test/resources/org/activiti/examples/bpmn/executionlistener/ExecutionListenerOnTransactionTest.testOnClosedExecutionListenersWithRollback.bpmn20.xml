@@ -16,7 +16,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
       </extensionElements>
     </serviceTask>
 
@@ -30,7 +30,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
       </extensionElements>
     </serviceTask>
 
@@ -43,7 +43,7 @@
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
                                     event="start"
-                                    onTransactionResult="committed"/>
+                                    onTransaction="committed"/>
       </extensionElements>
     </serviceTask>
 

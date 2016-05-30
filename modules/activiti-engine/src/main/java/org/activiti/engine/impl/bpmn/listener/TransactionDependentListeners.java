@@ -23,19 +23,27 @@ import java.util.Map;
  */
 public class TransactionDependentListeners implements CommandContextCloseListener {
 
+  protected List<TransactionDependentExecutionListenerExecutionScope> closingExecutionListeners;
   protected List<TransactionDependentExecutionListenerExecutionScope> closedExecutionListeners;
   protected List<TransactionDependentExecutionListenerExecutionScope> closeFailedExecutionListeners;
+  protected List<TransactionDependentTaskListenerExecutionScope> closingTaskListeners;
   protected List<TransactionDependentTaskListenerExecutionScope> closedTaskListeners;
   protected List<TransactionDependentTaskListenerExecutionScope> closeFailedTaskListeners;
 
   @Override
   public void closing(CommandContext commandContext) {
-
-  }
-
-  @Override
-  public void afterSessionsFlush(CommandContext commandContext) {
-
+    if (closingExecutionListeners != null) {
+      for (TransactionDependentExecutionListenerExecutionScope executionListenerExecutionScope : closingExecutionListeners) {
+        executionListenerExecutionScope.getExecutionListener().notify(executionListenerExecutionScope.getProcessInstanceId(), executionListenerExecutionScope.getExecutionId(),
+                executionListenerExecutionScope.getFlowElement(), executionListenerExecutionScope.getExecutionVariables(), executionListenerExecutionScope.getCustomPropertiesMap());
+      }
+    }
+    if (closingTaskListeners != null) {
+      for (TransactionDependentTaskListenerExecutionScope taskListenerExecutionScope : closingTaskListeners) {
+        taskListenerExecutionScope.getTaskListener().notify(taskListenerExecutionScope.getProcessInstanceId(), taskListenerExecutionScope.getExecutionId(),
+                taskListenerExecutionScope.getTask(), taskListenerExecutionScope.getExecutionVariables(), taskListenerExecutionScope.getCustomPropertiesMap());
+      }
+    }
   }
 
   @Override
@@ -70,6 +78,27 @@ public class TransactionDependentListeners implements CommandContextCloseListene
     }
   }
 
+  @Override
+  public void afterSessionsFlush(CommandContext commandContext) {
+
+  }
+
+  public void addClosingExecutionListener(TransactionDependentExecutionListener executionListener, DelegateExecution execution, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
+    if (executionListener == null) {
+      throw new ActivitiIllegalArgumentException("executionListener is null");
+    }
+    if (execution == null) {
+      throw new ActivitiIllegalArgumentException("execution is null");
+    }
+
+    if (closingExecutionListeners == null) {
+      closingExecutionListeners = new ArrayList<>();
+    }
+
+    closingExecutionListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, execution.getProcessInstanceId(), execution.getId(),
+            execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse));
+  }
+
   public void addClosedExecutionListener(TransactionDependentExecutionListener executionListener, DelegateExecution execution, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
     if (executionListener == null) {
       throw new ActivitiIllegalArgumentException("executionListener is null");
@@ -100,6 +129,22 @@ public class TransactionDependentListeners implements CommandContextCloseListene
 
     closeFailedExecutionListeners.add(new TransactionDependentExecutionListenerExecutionScope(executionListener, execution.getProcessInstanceId(), execution.getId(),
             execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse));
+  }
+
+  public void addClosingTaskListener(TransactionDependentTaskListener taskListener, DelegateExecution execution, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {
+    if (taskListener == null) {
+      throw new ActivitiIllegalArgumentException("taskListener is null");
+    }
+    if (execution == null) {
+      throw new ActivitiIllegalArgumentException("execution is null");
+    }
+
+    if (closingTaskListeners == null) {
+      closingTaskListeners = new ArrayList<>();
+    }
+
+    closingTaskListeners.add(new TransactionDependentTaskListenerExecutionScope(taskListener, execution.getProcessInstanceId(), execution.getId(),
+            (Task) execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse));
   }
 
   public void addClosedTaskListener(TransactionDependentTaskListener taskListener, DelegateExecution execution, Map<String, Object> executionVariablesToUse, Map<String, Object> customPropertiesMapToUse) {

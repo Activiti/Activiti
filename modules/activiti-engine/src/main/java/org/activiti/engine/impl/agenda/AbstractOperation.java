@@ -78,57 +78,6 @@ public abstract class AbstractOperation implements Runnable {
     ListenerUtil.executeExecutionListeners(elementWithExecutionListeners, executionToUse, eventType);
   }
 
-  protected void executeExecutionListener(ExecutionEntity executionToUse, BaseExecutionListener executionListener, String eventType) {
-    executionToUse.setEventName(eventType);
-    ((ExecutionListener) executionListener).notify(executionToUse);
-
-    // TODO: is this still needed? Is this property still needed?
-    executionToUse.setEventName(null);
-  }
-
-  protected void planTransactionDependentExecutionListener(ListenerFactory listenerFactory, ExecutionEntity executionToUse, BaseExecutionListener executionListener, ActivitiListener activitiListener) {
-    TransactionDependentExecutionListeners executionListenerContextCloseListener = null;
-
-    for (CommandContextCloseListener commandContextCloseListener : getCommandContext().getCloseListeners()) {
-      if (commandContextCloseListener instanceof TransactionDependentExecutionListeners) {
-        executionListenerContextCloseListener = (TransactionDependentExecutionListeners) commandContextCloseListener;
-        break;
-      }
-    }
-
-    if (executionListenerContextCloseListener == null) {
-      executionListenerContextCloseListener = new TransactionDependentExecutionListeners();
-      getCommandContext().addCloseListener(executionListenerContextCloseListener);
-    }
-
-    // current state of the execution variables will be stored
-    Map<String, Object> executionVariablesToUse = execution.getVariables();
-
-    // create custom properties resolver
-    CustomPropertiesResolver customPropertiesResolver = null;
-    if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
-      customPropertiesResolver = listenerFactory.createClassDelegateCustomPropertiesResolver(activitiListener);
-    } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
-      customPropertiesResolver = listenerFactory.createExpressionCustomPropertiesResolver(activitiListener);
-    } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
-      customPropertiesResolver = listenerFactory.createDelegateExpressionCustomPropertiesResolver(activitiListener);
-    }
-
-    // invoke custom properties resolver
-    Map<String, Object> customPropertiesMapToUse = null;
-    if (customPropertiesResolver != null) {
-      customPropertiesMapToUse = customPropertiesResolver.getCustomPropertiesMap(executionToUse);
-    }
-
-    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
-      executionListenerContextCloseListener.addClosedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
-              getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
-      executionListenerContextCloseListener.addCloseFailedListener((TransactionDependentExecutionListener) executionListener, getExecution().getProcessInstanceId(), getExecution().getId(),
-              getExecution().getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
-    }
-  }
-  
   public CommandContext getCommandContext() {
     return commandContext;
   }

@@ -10,7 +10,7 @@
         <activiti:taskListener
                 event="complete"
                 class="org.activiti.examples.bpmn.tasklistener.CurrentTaskTransactionDependentTaskListener"
-                onTransactionResult="committed"
+                onTransaction="committed"
                 customPropertiesResolverClass="org.activiti.examples.bpmn.executionlistener.MyCustomPropertiesResolver"/>
       </extensionElements>
     </userTask>

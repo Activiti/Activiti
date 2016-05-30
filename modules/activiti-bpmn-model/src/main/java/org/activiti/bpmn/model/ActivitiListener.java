@@ -26,7 +26,7 @@ public class ActivitiListener extends BaseElement {
   protected String implementationType;
   protected String implementation;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
-  protected String onTransactionResult;
+  protected String onTransaction;
   protected String customPropertiesResolverImplementationType;
   protected String customPropertiesResolverImplementation;
   
@@ -65,12 +65,12 @@ public class ActivitiListener extends BaseElement {
     this.fieldExtensions = fieldExtensions;
   }
 
-  public String getOnTransactionResult() {
-    return onTransactionResult;
+  public String getOnTransaction() {
+    return onTransaction;
   }
 
-  public void setOnTransactionResult(String onTransactionResult) {
-    this.onTransactionResult = onTransactionResult;
+  public void setOnTransaction(String onTransaction) {
+    this.onTransaction = onTransaction;
   }
 
   public String getCustomPropertiesResolverImplementationType() {

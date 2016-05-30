@@ -47,13 +47,17 @@ public class ListenerUtil {
           } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
           } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+            if (activitiListener.getOnTransaction() != null) {
+              executionListener = listenerFactory.createTransactionDependentDelegateExpressionExecutionListener(activitiListener);
+            } else {
+              executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+            }
           } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = (ExecutionListener) activitiListener.getInstance();
           }
 
           if (executionListener != null) {
-            if (activitiListener.getOnTransactionResult() != null) {
+            if (activitiListener.getOnTransaction() != null) {
               planTransactionDependentExecutionListener(listenerFactory, execution, (TransactionDependentExecutionListener) executionListener, activitiListener);
             } else {
               execution.setEventName(eventType); // eventName is used to differentiate the event when reusing an execution listener for various events
@@ -103,9 +107,11 @@ public class ListenerUtil {
     }
 
     // add to context close listener stack
-    if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_COMMITTED.equals(activitiListener.getOnTransactionResult())) {
+    if (TransactionDependentExecutionListener.ON_TRANSACTION_BEFORE_COMMIT.equals(activitiListener.getOnTransaction())) {
+      executionListenerContextCloseListener.addClosingExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
+    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_COMMITTED.equals(activitiListener.getOnTransaction())) {
       executionListenerContextCloseListener.addClosedExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_RESULT_ROLLED_BACK.equals(activitiListener.getOnTransactionResult())) {
+    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_ROLLED_BACK.equals(activitiListener.getOnTransaction())) {
       executionListenerContextCloseListener.addCloseFailedExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
     }
   }
