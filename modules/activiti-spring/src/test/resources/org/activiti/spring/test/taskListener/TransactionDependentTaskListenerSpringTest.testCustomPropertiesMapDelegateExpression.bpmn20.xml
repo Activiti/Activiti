@@ -3,15 +3,15 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id="transactionDependentExecutionListenerProcess">
+  <process id="transactionDependentTaskListenerProcess">
 
     <startEvent id="start"/>
     <sequenceFlow id="flow1" sourceRef="start" targetRef="task3"/>
 
     <userTask id="task3" name="task3">
       <extensionElements>
-        <activiti:executionListener delegateExpression="${myTransactionDependentExecutionListener}"
-                                    event="end"
+        <activiti:taskListener delegateExpression="${myTransactionDependentTaskListener}"
+                                    event="complete"
                                     onTransactionResult="committed"
                                     customPropertiesResolverExpression="${myCustomPropertiesResolver.calledInExpression(execution.currentActivityId)}"/>
       </extensionElements>
@@ -20,8 +20,8 @@
 
     <userTask id="task4" name="task4">
       <extensionElements>
-        <activiti:executionListener delegateExpression="${myTransactionDependentExecutionListener}"
-                                    event="end"
+        <activiti:taskListener delegateExpression="${myTransactionDependentTaskListener}"
+                                    event="complete"
                                     onTransactionResult="committed"
                                     customPropertiesResolverDelegateExpression="${myCustomPropertiesResolver}"/>
       </extensionElements>
