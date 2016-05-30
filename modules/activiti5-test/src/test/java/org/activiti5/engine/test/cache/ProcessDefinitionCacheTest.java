@@ -60,7 +60,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
        .setProcessEngineName("reboot-test")
        .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000")
-       .setJobExecutorActivate(false)
+       .setAsyncExecutorActivate(false)
        .buildProcessEngine();
      
      processEngine.getRepositoryService()
@@ -90,7 +90,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
        .setProcessEngineName("reboot-test")
        .setDatabaseSchemaUpdate(org.activiti5.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000")
-       .setJobExecutorActivate(false)
+       .setAsyncExecutorActivate(false)
        .buildProcessEngine();
      
      // Check if the existing process instance is still alive
@@ -139,7 +139,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
       .setProcessEngineName("reboot-test-schema")
       .setDatabaseSchemaUpdate(org.activiti5.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
       .setJdbcUrl("jdbc:h2:mem:activiti-process-cache-test;DB_CLOSE_DELAY=1000")
-      .setJobExecutorActivate(false)
+      .setAsyncExecutorActivate(false)
       .buildProcessEngine();
     RepositoryService repositoryService1 = processEngine1.getRepositoryService();
     
@@ -147,7 +147,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
       .setProcessEngineName("reboot-test")
       .setDatabaseSchemaUpdate(org.activiti5.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
       .setJdbcUrl("jdbc:h2:mem:activiti-process-cache-test;DB_CLOSE_DELAY=1000")
-      .setJobExecutorActivate(false)
+      .setAsyncExecutorActivate(false)
       .buildProcessEngine();
     RepositoryService repositoryService2 = processEngine2.getRepositoryService();
     RuntimeService runtimeService2 = processEngine2.getRuntimeService();

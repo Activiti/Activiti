@@ -25,7 +25,6 @@ import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti5.engine.impl.history.HistoryLevel;
@@ -127,14 +126,8 @@ public class DefaultProcessEngineFactory {
   }
 
   protected void copyAsyncExecutorConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
-    activiti5Configuration.setAsyncExecutorEnabled(true);
     if (activiti6Configuration.isAsyncExecutorActivate()) {
       activiti5Configuration.setAsyncExecutorActivate(true);
-    }
-    
-    if (activiti6Configuration.getActiviti5AsyncExecutor() != null) {
-      AsyncExecutor activiti5AsyncExecutor = (AsyncExecutor) activiti6Configuration.getActiviti5AsyncExecutor();
-      activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
     }
   }
 

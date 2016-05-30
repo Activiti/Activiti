@@ -762,7 +762,6 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     if (job == null) return;
     final ProcessEngineConfigurationImpl processEngineConfig = (ProcessEngineConfigurationImpl) getProcessEngine().getProcessEngineConfiguration();
     final org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = convertToActiviti5JobEntity((JobEntity) job);
-    org.activiti.engine.ProcessEngineConfiguration engineConfig = Context.getProcessEngineConfiguration();
     AsyncJobUtil.executeJob(activity5Job, processEngineConfig.getCommandExecutor());
   }
   

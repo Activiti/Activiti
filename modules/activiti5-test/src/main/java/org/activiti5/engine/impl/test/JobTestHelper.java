@@ -22,7 +22,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.test.ActivitiRule;
 
 
@@ -51,15 +50,7 @@ public class JobTestHelper {
       ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
     
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    org.activiti5.engine.impl.asyncexecutor.AsyncExecutor activiti5AsyncExecutor = null;
     asyncExecutor.start();
-      
-    org.activiti5.engine.ProcessEngineConfiguration activiti5ProcessEngineConfig = (org.activiti5.engine.ProcessEngineConfiguration) 
-        ((ProcessEngineConfigurationImpl) processEngineConfiguration).getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    activiti5AsyncExecutor = activiti5ProcessEngineConfig.getAsyncExecutor();
-    if (activiti5AsyncExecutor != null) {
-      activiti5AsyncExecutor.start();
-    }
 
     try {
       Timer timer = new Timer();
@@ -88,59 +79,7 @@ public class JobTestHelper {
     } finally {
     	if (shutdownExecutorWhenFinished) {
 	      asyncExecutor.shutdown();
-        if (activiti5AsyncExecutor != null) {
-          activiti5AsyncExecutor.shutdown();
-        }
     	}
-    }
-  }
-  
-  public static void waitForJobExecutorActiviti5ToProcessAllJobs(org.activiti5.engine.ProcessEngineConfiguration processEngineConfiguration, 
-      org.activiti5.engine.ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
-    
-    org.activiti5.engine.impl.jobexecutor.JobExecutor jobExecutor = null;
-    org.activiti5.engine.impl.asyncexecutor.AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-      
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-    }
-
-    try {
-      Timer timer = new Timer();
-      InteruptTask task = new InteruptTask(Thread.currentThread());
-      timer.schedule(task, maxMillisToWait);
-      boolean areJobsAvailable = true;
-      try {
-        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
-          Thread.sleep(intervalMillis);
-          try {
-            areJobsAvailable = areJobsAvailable(managementService);
-          } catch(Throwable t) {
-            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
-            // isolation level doesn't allow READ of the table
-          }
-        }
-      } catch (InterruptedException e) {
-        // ignore
-      } finally {
-        timer.cancel();
-      }
-      if (areJobsAvailable) {
-        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
-      }
-
-    } finally {
-      if (shutdownExecutorWhenFinished) {
-        if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-          jobExecutor.shutdown();
-        } else {
-          asyncExecutor.shutdown();
-        }
-      }
     }
   }
 
@@ -187,15 +126,7 @@ public class JobTestHelper {
   
   public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    org.activiti5.engine.impl.asyncexecutor.AsyncExecutor activiti5AsyncExecutor = null;
     asyncExecutor.start();
-      
-    org.activiti5.engine.ProcessEngineConfiguration activiti5ProcessEngineConfig = (org.activiti5.engine.ProcessEngineConfiguration) 
-        ((ProcessEngineConfigurationImpl) processEngineConfiguration).getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    activiti5AsyncExecutor = activiti5ProcessEngineConfig.getAsyncExecutor();
-    if (activiti5AsyncExecutor != null) {
-      activiti5AsyncExecutor.start();
-    }
 
     try {
       Timer timer = new Timer();
@@ -213,9 +144,6 @@ public class JobTestHelper {
 
     } finally {
       asyncExecutor.shutdown();
-      if (activiti5AsyncExecutor != null) {
-        activiti5AsyncExecutor.shutdown();
-      }
     }
   }
 

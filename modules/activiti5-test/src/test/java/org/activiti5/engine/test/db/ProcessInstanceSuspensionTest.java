@@ -10,8 +10,6 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.Page;
-import org.activiti5.engine.impl.asyncexecutor.AcquiredJobEntities;
-import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
@@ -32,45 +30,38 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey(pd.getKey());
     
     // now there is one job:
-    // now there is one job:
     Job job = managementService.createJobQuery().singleResult();
     assertNotNull(job);
     
     makeSureJobDue(job);
     
-    // the acquirejobs command sees the job:
-    AcquiredJobEntities acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(1, acquiredJobs.size());
-    
     // suspend the process instance:
     runtimeService.suspendProcessInstanceById(pi.getId());
     
-    // now, the acquirejobs command does not see the job:
-    acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(0, acquiredJobs.size());    
+    job = managementService.createJobQuery().singleResult();
+    assertNull(job);
+    
+    assertEquals(1, managementService.createSuspendedJobQuery().processInstanceId(pi.getId()).count());
   }
   
   @Deployment(resources={"org/activiti5/engine/test/db/oneJobProcess.bpmn20.xml"})
   public void testJobsNotVisisbleToAcquisitionIfDefinitionSuspended() {
     
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();    
-    runtimeService.startProcessInstanceByKey(pd.getKey());    
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey(pd.getKey());    
     // now there is one job:
     Job job = managementService.createJobQuery().singleResult();
     assertNotNull(job);
     
     makeSureJobDue(job);
         
-    // the acquirejobs command sees the job:
-    AcquiredJobEntities acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(1, acquiredJobs.size());
-    
     // suspend the process instance:
-    repositoryService.suspendProcessDefinitionById(pd.getId());
+    repositoryService.suspendProcessDefinitionById(pd.getId(), true, null);
     
-    // now, the acquirejobs command does not see the job:
-    acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(0, acquiredJobs.size());
+    job = managementService.createJobQuery().singleResult();
+    assertNull(job);
+    
+    assertEquals(1, managementService.createSuspendedJobQuery().processInstanceId(pi.getId()).count());
   }
   
   @Deployment
@@ -115,11 +106,6 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       }
       
     });
-  }
-
-  private AcquiredJobEntities executeAcquireJobsCommand() {
-    CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
-    return commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 60000, 5));
   }
     
 }

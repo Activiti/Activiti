@@ -27,17 +27,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.util.DefaultClockImpl;
@@ -71,7 +72,6 @@ import org.activiti5.engine.impl.RepositoryServiceImpl;
 import org.activiti5.engine.impl.RuntimeServiceImpl;
 import org.activiti5.engine.impl.ServiceImpl;
 import org.activiti5.engine.impl.TaskServiceImpl;
-import org.activiti5.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti5.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParser;
@@ -148,13 +148,10 @@ import org.activiti5.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti5.engine.impl.interceptor.LogInterceptor;
 import org.activiti5.engine.impl.interceptor.SessionFactory;
 import org.activiti5.engine.impl.jobexecutor.AsyncContinuationJobHandler;
-import org.activiti5.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
 import org.activiti5.engine.impl.jobexecutor.DefaultFailedJobCommandFactory;
-import org.activiti5.engine.impl.jobexecutor.DefaultJobExecutor;
 import org.activiti5.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti5.engine.impl.jobexecutor.JobHandler;
 import org.activiti5.engine.impl.jobexecutor.ProcessEventJobHandler;
-import org.activiti5.engine.impl.jobexecutor.RejectedJobsHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
@@ -322,20 +319,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Map<String, JobHandler> jobHandlers;
   
   // ASYNC EXECUTOR ///////////////////////////////////////////////////////////
-  
-  /**
-   * The minimal number of threads that are kept alive in the threadpool for job
-   * execution. Default value = 2. (This property is only applicable when using
-   * the {@link DefaultAsyncJobExecutor}).
-   */
-  protected int asyncExecutorCorePoolSize = 2;
-
-  /**
-   * The maximum number of threads that are kept alive in the threadpool for job
-   * execution. Default value = 10. (This property is only applicable when using
-   * the {@link DefaultAsyncJobExecutor}).
-   */
-  protected int asyncExecutorMaxPoolSize = 10;
 
   /**
    * The time (in milliseconds) a thread used for job execution must be kept
@@ -544,8 +527,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Map<Object, Object> beans;
   
   protected DelegateInterceptor delegateInterceptor;
-
-  protected RejectedJobsHandler customRejectedJobsHandler;
   
   protected Map<String, EventHandler> eventHandlers;
   protected List<EventHandler> customEventHandlers;
@@ -637,8 +618,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initIdGenerator();
     initDeployers();
     initJobHandlers();
-    initJobExecutor();
-    initAsyncExecutor();
     initDataSource();
     initTransactionFactory();
     initSqlSessionFactory();
@@ -1366,75 +1345,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       for (JobHandler customJobHandler : getCustomJobHandlers()) {
         jobHandlers.put(customJobHandler.getType(), customJobHandler);      
       }
-    }
-  }
-
-  // job executor /////////////////////////////////////////////////////////////
-  
-  protected void initJobExecutor() {
-    if (isAsyncExecutorEnabled() == false) {
-      if (jobExecutor == null) {
-        jobExecutor = new DefaultJobExecutor();
-      }
-  
-      jobExecutor.setClockReader(this.clock);
-  
-      jobExecutor.setCommandExecutor(commandExecutor);
-      jobExecutor.setAutoActivate(jobExecutorActivate);
-      
-      if (jobExecutor.getRejectedJobsHandler() == null) {
-        if(customRejectedJobsHandler != null) {
-          jobExecutor.setRejectedJobsHandler(customRejectedJobsHandler);
-        } else {
-          jobExecutor.setRejectedJobsHandler(new CallerRunsRejectedJobsHandler());
-        }
-      }
-    }
-  }
-  
-  // async executor /////////////////////////////////////////////////////////////
-  
-  protected void initAsyncExecutor() {
-    if (isAsyncExecutorEnabled()) {
-      if (asyncExecutor == null) {
-        DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
-        
-        // Thread pool config
-        defaultAsyncExecutor.setCorePoolSize(asyncExecutorCorePoolSize);
-        defaultAsyncExecutor.setMaxPoolSize(asyncExecutorMaxPoolSize);
-        defaultAsyncExecutor.setKeepAliveTime(asyncExecutorThreadKeepAliveTime);
-        
-        // Threadpool queue
-        if (asyncExecutorThreadPoolQueue != null) {
-          defaultAsyncExecutor.setThreadPoolQueue(asyncExecutorThreadPoolQueue);
-        }
-        defaultAsyncExecutor.setQueueSize(asyncExecutorThreadPoolQueueSize);
-        
-        // Acquisition wait time
-        defaultAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(asyncExecutorDefaultTimerJobAcquireWaitTime);
-        defaultAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(asyncExecutorDefaultAsyncJobAcquireWaitTime);
-        
-        // Queue full wait time
-        defaultAsyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(asyncExecutorDefaultQueueSizeFullWaitTime);
-        
-        // Job locking
-        defaultAsyncExecutor.setTimerLockTimeInMillis(asyncExecutorTimerLockTimeInMillis);
-        defaultAsyncExecutor.setAsyncJobLockTimeInMillis(asyncExecutorAsyncJobLockTimeInMillis);
-        if (asyncExecutorLockOwner != null) {
-          defaultAsyncExecutor.setLockOwner(asyncExecutorLockOwner);
-        }
-        
-        // Retry
-        defaultAsyncExecutor.setRetryWaitTimeInMillis(asyncExecutorLockRetryWaitTimeInMillis);
-        
-        // Shutdown
-        defaultAsyncExecutor.setSecondsToWaitOnShutdown(asyncExecutorSecondsToWaitOnShutdown);
-        
-        asyncExecutor = defaultAsyncExecutor;
-      }
-  
-      asyncExecutor.setCommandExecutor(commandExecutor);
-      asyncExecutor.setAutoActivate(asyncExecutorActivate);
     }
   }
   
@@ -2173,15 +2083,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return delegateInterceptor;
   }
     
-  public RejectedJobsHandler getCustomRejectedJobsHandler() {
-    return customRejectedJobsHandler;
-  }
-    
-  public ProcessEngineConfigurationImpl setCustomRejectedJobsHandler(RejectedJobsHandler customRejectedJobsHandler) {
-    this.customRejectedJobsHandler = customRejectedJobsHandler;
-    return this;
-  }
-
   public EventHandler getEventHandler(String eventType) {
     return eventHandlers.get(eventType);
   }
@@ -2371,24 +2272,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
     this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
-    return this;
-  }
-
-  public int getAsyncExecutorCorePoolSize() {
-    return asyncExecutorCorePoolSize;
-  }
-
-  public ProcessEngineConfigurationImpl setAsyncExecutorCorePoolSize(int asyncExecutorCorePoolSize) {
-    this.asyncExecutorCorePoolSize = asyncExecutorCorePoolSize;
-    return this;
-  }
-
-  public int getAsyncExecutorMaxPoolSize() {
-    return asyncExecutorMaxPoolSize;
-  }
-
-  public ProcessEngineConfigurationImpl setAsyncExecutorMaxPoolSize(int asyncExecutorMaxPoolSize) {
-    this.asyncExecutorMaxPoolSize = asyncExecutorMaxPoolSize;
     return this;
   }
 
