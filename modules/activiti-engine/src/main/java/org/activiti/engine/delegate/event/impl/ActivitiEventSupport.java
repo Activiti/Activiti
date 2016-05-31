@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -39,7 +39,7 @@ public class ActivitiEventSupport {
 	protected Map<ActivitiEventType, List<ActivitiEventListener>> typedListeners;
 
 	public ActivitiEventSupport() {
-		eventListeners = new ArrayList<ActivitiEventListener>();
+		eventListeners = new CopyOnWriteArrayList<ActivitiEventListener>();
 		typedListeners = new HashMap<ActivitiEventType, List<ActivitiEventListener>>();
 	}
 
@@ -119,7 +119,7 @@ public class ActivitiEventSupport {
 		List<ActivitiEventListener> listeners = typedListeners.get(type);
 		if (listeners == null) {
 			// Add an empty list of listeners for this type
-			listeners = new ArrayList<ActivitiEventListener>();
+			listeners = new CopyOnWriteArrayList<ActivitiEventListener>();
 			typedListeners.put(type, listeners);
 		}
 
