@@ -399,16 +399,16 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskClaim (java.lang.String)
+   *
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskClaim (org.activiti.engine.impl.persistence.entity.TaskEntity)
    */
 
   @Override
-  public void recordTaskClaim(String taskId) {
+  public void recordTaskClaim(TaskEntity task) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
+      HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(task.getId());
       if (historicTaskInstance != null) {
-        historicTaskInstance.setClaimTime(getClock().getCurrentTime());
+        historicTaskInstance.setClaimTime(task.getClaimTime());
       }
     }
   }

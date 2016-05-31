@@ -22,6 +22,7 @@ import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.UelExpressionCondition;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -226,8 +227,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
   
           outgoingExecutionEntity.setScope(false);
           outgoingExecutionEntity.setActive(true);
-  
-          ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution; 
+
+          outgoingExecutionEntity.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+
+          ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution;
           outgoingExecutionEntity.setParent(parent);
           parent.addChildExecution(outgoingExecutionEntity);
           

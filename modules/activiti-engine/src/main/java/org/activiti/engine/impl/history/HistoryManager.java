@@ -81,10 +81,10 @@ public interface HistoryManager {
   /**
    * record task instance claim time, if audit history is enabled
    *
-   * @param taskId
+   * @param task
    */
 
-  void recordTaskClaim(String taskId);
+  void recordTaskClaim(TaskEntity task);
 
   /**
    * Record the id of a the task associated with a historic activity, if activity history is enabled.
