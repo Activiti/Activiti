@@ -48,6 +48,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String executionId;
   protected String parentId;
   protected boolean onlyChildExecutions;
+  protected boolean onlySubProcessExecutions;
   protected boolean onlyProcessInstanceExecutions;
   protected String processInstanceId;
   protected String rootProcessInstanceId;
@@ -215,6 +216,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public ExecutionQuery onlyChildExecutions() {
     this.onlyChildExecutions = true;
+    return this;
+  }
+
+  public ExecutionQuery onlySubProcessExecutions() {
+    this.onlySubProcessExecutions = true;
     return this;
   }
 
@@ -524,6 +530,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public boolean isOnlyChildExecutions() {
     return onlyChildExecutions;
+  }
+
+  public boolean isOnlySubProcessExecutions() {
+    return onlySubProcessExecutions;
   }
 
   public boolean isOnlyProcessInstanceExecutions() {
