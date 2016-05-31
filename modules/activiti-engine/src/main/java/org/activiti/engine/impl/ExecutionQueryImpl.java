@@ -50,6 +50,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean onlyChildExecutions;
   protected boolean onlyProcessInstanceExecutions;
   protected String processInstanceId;
+  protected String rootProcessInstanceId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
 
   protected String tenantId;
@@ -147,6 +148,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       throw new ActivitiIllegalArgumentException("Process instance id is null");
     }
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+
+  public ExecutionQueryImpl rootProcessInstanceId(String rootProcessInstanceId) {
+    if (rootProcessInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("Root process instance id is null");
+    }
+    this.rootProcessInstanceId = rootProcessInstanceId;
     return this;
   }
 
@@ -439,6 +448,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public String getProcessInstanceId() {
     return processInstanceId;
+  }
+
+  public String getRootProcessInstanceId() {
+    return rootProcessInstanceId;
   }
 
   public String getProcessInstanceIds() {
