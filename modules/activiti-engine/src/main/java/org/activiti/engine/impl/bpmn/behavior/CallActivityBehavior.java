@@ -13,13 +13,17 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IOParameter;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -91,6 +95,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     ExecutionEntity subProcessInstance = createSubProcessInstance(processDefinition, executionEntity, initialFlowElement);
 
+    // process template-defined data objects
+    Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
+
     // copy process variables
     ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
     for (IOParameter ioParameter : callActivity.getInParameters()) {
@@ -102,7 +109,11 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       } else {
         value = execution.getVariable(ioParameter.getSource());
       }
-      subProcessInstance.setVariable(ioParameter.getTarget(), value);
+      variables.put(ioParameter.getTarget(), value);
+    }
+
+    if (!variables.isEmpty()) {
+      initializeVariables(subProcessInstance, variables);
     }
 
     // Create the first execution that will visit all the process definition elements
@@ -184,5 +195,22 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     } else {
       return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
     }
+  }
+  
+  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+  	Map<String, Object> variablesMap = new HashMap<String,Object>();
+  	// convert data objects to process variables
+  	if (dataObjects != null) {
+        variablesMap = new HashMap<String, Object>(dataObjects.size());
+  	  for (ValuedDataObject dataObject : dataObjects) {
+  	    variablesMap.put(dataObject.getName(), dataObject.getValue());
+  	  }
+  	}
+  	return variablesMap;
+  }
+
+  // Allow a subclass to override how variables are initialized.
+  protected void initializeVariables(ExecutionEntity subProcessInstance, Map<String,Object> variables) {
+    subProcessInstance.setVariables(variables);
   }
 }
