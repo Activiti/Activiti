@@ -16,9 +16,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
+import org.activiti.engine.runtime.DataObject;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -34,15 +36,16 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   protected int revision;
 
   protected String name;
-  protected String localizedName;
-  protected String localizedDescription;
+//  protected String localizedName;
+//  protected String localizedDescription;
   protected VariableType type;
   protected String typeName;
 
   protected String processInstanceId;
   protected String executionId;
   protected String taskId;
-
+  protected ExecutionEntity execution;
+  
   protected Long longValue;
   protected Double doubleValue;
   protected String textValue;
@@ -82,10 +85,18 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   
   public void setExecution(ExecutionEntity execution) {
     this.executionId = execution.getId();
+    this.execution = execution;
     this.processInstanceId = execution.getProcessInstanceId();
     forceUpdate();
   }
-
+  
+  public ExecutionEntity getExecution() {
+    if ((execution == null) && (executionId != null)) {
+      this.execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
+    }
+    return execution;
+  }
+  
   public void forceUpdate() {
     forcedUpdate = true;
   }
@@ -175,21 +186,21 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
     return name;
   }
 
-  public String getLocalizedName() {
-    return localizedName;
-  }
-
-  public void setLocalizedName(String localizedName) {
-    this.localizedName = localizedName;
-  }
-
-  public String getLocalizedDescription() {
-    return localizedDescription;
-  }
-  
-  public void setLocalizedDescription(String localizedDescription) {
-    this.localizedDescription = localizedDescription;
-  }
+//  public String getLocalizedName() {
+//    return localizedName;
+//  }
+//
+//  public void setLocalizedName(String localizedName) {
+//    this.localizedName = localizedName;
+//  }
+//
+//  public String getLocalizedDescription() {
+//    return localizedDescription;
+//  }
+//  
+//  public void setLocalizedDescription(String localizedDescription) {
+//    this.localizedDescription = localizedDescription;
+//  }
 
   public String getTypeName() {
     return typeName;
@@ -221,7 +232,7 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   public String getExecutionId() {
     return executionId;
   }
-
+  
   public Long getLongValue() {
     return longValue;
   }

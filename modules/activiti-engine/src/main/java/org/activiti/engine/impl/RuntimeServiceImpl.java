@@ -36,8 +36,8 @@ import org.activiti.engine.impl.cmd.ExecuteActivityForAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetEnabledActivitiesForAdhocSubProcessCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableInstanceCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableInstancesCmd;
+import org.activiti.engine.impl.cmd.GetDataObjectCmd;
+import org.activiti.engine.impl.cmd.GetDataObjectsCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
@@ -54,8 +54,8 @@ import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.TriggerCmd;
-import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
@@ -145,60 +145,60 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, false));
   }
 
-  public Map<String, VariableInstance> getVariableInstances(String executionId) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, false));
+  public Map<String, DataObject> getDataObjects(String executionId) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, null, false));
   }
   
-  public Map<String, VariableInstance> getVariableInstances(String executionId, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, false, locale, withLocalizationFallback));
+  public Map<String, DataObject> getDataObjects(String executionId, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, null, false, locale, withLocalizationFallback));
   }
 
   public Map<String, Object> getVariablesLocal(String executionId) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, true));
   }
   
-  public Map<String, VariableInstance> getVariableInstancesLocal(String executionId) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, true));
+  public Map<String, DataObject> getDataObjectsLocal(String executionId) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, null, true));
   }
 
-  public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, true, locale, withLocalizationFallback));
+  public Map<String, DataObject> getDataObjectsLocal(String executionId, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, null, true, locale, withLocalizationFallback));
   }
 
   public Map<String, Object> getVariables(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, false));
   }
   
-  public Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false));
+  public Map<String, DataObject> getDataObjects(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, variableNames, false));
   }
 
-  public Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false, locale, withLocalizationFallback));
+  public Map<String, DataObject> getDataObjects(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, variableNames, false, locale, withLocalizationFallback));
   }
 
   public Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, true));
   }
   
-  public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, true));
+  public Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, variableNames, true));
   }
 
-  public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, true, locale, withLocalizationFallback));
+  public Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetDataObjectsCmd(executionId, variableNames, true, locale, withLocalizationFallback));
   }
 
   public Object getVariable(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, false));
   }
   
-  public VariableInstance getVariableInstance(String executionId, String variableName) {
-    return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, false));
+  public DataObject getDataObject(String executionId, String variableName) {
+    return commandExecutor.execute(new GetDataObjectCmd(executionId, variableName, false));
   }
 
-  public VariableInstance getVariableInstance(String executionId, String variableName, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, false, locale, withLocalizationFallback));
+  public DataObject getDataObject(String executionId, String variableName, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetDataObjectCmd(executionId, variableName, false, locale, withLocalizationFallback));
   }
 
   public <T> T getVariable(String executionId, String variableName, Class<T> variableClass) {
@@ -213,12 +213,12 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, true));
   }
   
-  public VariableInstance getVariableInstanceLocal(String executionId, String variableName) {
-    return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, true));
+  public DataObject getDataObjectLocal(String executionId, String variableName) {
+    return commandExecutor.execute(new GetDataObjectCmd(executionId, variableName, true));
   }
 
-  public VariableInstance getVariableInstanceLocal(String executionId, String variableName, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, true, locale, withLocalizationFallback));
+  public DataObject getDataObjectLocal(String executionId, String variableName, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetDataObjectCmd(executionId, variableName, true, locale, withLocalizationFallback));
   }
 
   public <T> T getVariableLocal(String executionId, String variableName, Class<T> variableClass) {
