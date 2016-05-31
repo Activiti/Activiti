@@ -139,6 +139,17 @@
     and TASK_ID_ is null
   </select>
   
+  <select id="selectVariablesByExecutionIds"
+    parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+    resultMap="variableInstanceResultMap">
+    select * from ${prefix}ACT_RU_VARIABLE
+    where TASK_ID_ is null
+    and EXECUTION_ID_ in
+    <foreach item="item" index="index" collection="parameter" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+  
   <select id="selectVariableInstanceByExecutionAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
 	select * from ${prefix}ACT_RU_VARIABLE 
     where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR} and TASK_ID_ is null
@@ -161,6 +172,16 @@
     resultMap="variableInstanceResultMap">
     select * from ${prefix}ACT_RU_VARIABLE where
     TASK_ID_ = #{parameter, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectVariablesByTaskIds"
+    parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+    resultMap="variableInstanceResultMap">
+    select * from ${prefix}ACT_RU_VARIABLE
+    where TASK_ID_ in
+    <foreach item="item" index="index" collection="parameter" open="(" separator="," close=")">
+      #{item}
+    </foreach>
   </select>
   
   <select id="selectVariableInstanceByTaskAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">

@@ -13,6 +13,8 @@
 
 package org.activiti.engine.history;
 
+import java.util.Set;
+
 import org.activiti.engine.query.Query;
 
 /** 
@@ -30,9 +32,15 @@ public interface HistoricVariableInstanceQuery extends Query<HistoricVariableIns
   
   /** Only select historic process variables with the given id. **/
   HistoricVariableInstanceQuery executionId(String executionId);
-
+  
+  /** Only select historic process variables whose id is in the given set of ids. */
+  HistoricVariableInstanceQuery executionIds(Set<String> executionIds);
+  
   /** Only select historic process variables with the given task. */
   HistoricVariableInstanceQuery taskId(String taskId);
+
+  /** Only select historic process variables whose id is in the given set of ids. */
+  HistoricVariableInstanceQuery taskIds(Set<String> taskIds);
 
   /** Only select historic process variables with the given variable name. */
   HistoricVariableInstanceQuery variableName(String variableName);
