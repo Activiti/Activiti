@@ -2,16 +2,12 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.AdhocSubProcess;
-import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
-import org.activiti.bpmn.model.CompensateEventDefinition;
-import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
@@ -30,7 +26,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,30 +55,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     
     // Compensating logic: TODO move 
     
-    boolean isCompensating = false;
-    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
-    List<Association> associations = process.findAssociationsWithTargetRefRecursive(currentFlowElement.getId());
-    if (associations != null && associations.size() > 0) {
-      Iterator<Association> associationIterator = associations.iterator();
-      while (!isCompensating && associationIterator.hasNext()) {
-        Association association = associationIterator.next();
-        String associationSourceRef = association.getSourceRef();
-        FlowElement associationSourceFlowElement = process.getFlowElement(associationSourceRef, true);
-        if (associationSourceFlowElement != null && associationSourceFlowElement instanceof BoundaryEvent) {
-          BoundaryEvent boundaryEvent = (BoundaryEvent) associationSourceFlowElement;
-          if (boundaryEvent.getEventDefinitions() != null) {
-            for (EventDefinition boundaryEventDefinition : boundaryEvent.getEventDefinitions()) {
-              if (boundaryEventDefinition instanceof CompensateEventDefinition) {
-                isCompensating = true;
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
-    
-    if (isCompensating) {
+    if ((currentFlowElement instanceof Activity) && ( ((Activity) currentFlowElement)).isForCompensation()) {
       
       commandContext.getHistoryManager().recordActivityEnd(execution);
       

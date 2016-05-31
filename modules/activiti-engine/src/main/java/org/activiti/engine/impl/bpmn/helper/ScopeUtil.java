@@ -56,7 +56,6 @@ public class ScopeUtil {
         compensatingExecution = executionEntityManager.createChildExecution((ExecutionEntity) execution); 
         eventSubscription.setConfiguration(compensatingExecution.getId());
       }
-      compensatingExecution.setConcurrent(true);
       
     }
 
@@ -92,7 +91,6 @@ public class ScopeUtil {
       
       ExecutionEntity eventScopeExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(processInstanceExecutionEntity); 
       eventScopeExecution.setActive(false);
-      eventScopeExecution.setConcurrent(false);
       eventScopeExecution.setEventScope(true);
       eventScopeExecution.setCurrentFlowElement(subProcessExecution.getCurrentFlowElement());
 

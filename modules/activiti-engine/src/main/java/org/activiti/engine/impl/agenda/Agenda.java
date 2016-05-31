@@ -79,14 +79,10 @@ public class Agenda {
     planOperation(new ContinueMultiInstanceOperation(commandContext, execution), execution);
   }
 
-  public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution) {
-    planTakeOutgoingSequenceFlowsOperation(execution, true);
-  }
-
   public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
     planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions), execution);
   }
-
+  
   public void planEndExecutionOperation(ExecutionEntity execution) {
     planOperation(new EndExecutionOperation(commandContext, execution), execution);
   }

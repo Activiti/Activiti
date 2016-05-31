@@ -161,9 +161,6 @@ public class ContinueProcessOperation extends AbstractOperation {
 
   protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
 
-    // History
-    commandContext.getHistoryManager().recordActivityEnd(execution);
-    
     // Execution listener
     if (CollectionUtil.isNotEmpty(sequenceFlow.getExecutionListeners())) {
       executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_START);
@@ -251,7 +248,6 @@ public class ContinueProcessOperation extends AbstractOperation {
   }
 
   protected Process getProcessDefinition(String processDefinitionId) {
-    // TODO: must be extracted / cache should be accessed in another way
     return ProcessDefinitionUtil.getProcess(processDefinitionId);
   }
 }

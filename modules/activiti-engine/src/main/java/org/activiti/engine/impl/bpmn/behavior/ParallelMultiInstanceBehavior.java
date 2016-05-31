@@ -67,7 +67,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
           .createChildExecution((ExecutionEntity) execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
-      concurrentExecution.setConcurrent(true);
       concurrentExecution.setScope(false);
 
       concurrentExecutions.add(concurrentExecution);

@@ -127,6 +127,9 @@ public class EndExecutionOperation extends AbstractOperation {
             }
           }
           
+          // All executions will be cleaned up afterwards. However, for compensation we need
+          // a copy of these executions so we can use them later on when the compensation is thrown.
+          // The following method does exactly that, and moves the executions beneath the process instance.
           if (hasCompensation) {
             ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution);
           }
