@@ -84,7 +84,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     if (executionIds == null) {
       throw new ActivitiIllegalArgumentException("executionIds is null");
     }
-    if(executionIds.isEmpty()){
+    if (executionIds.isEmpty()){
         throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
     }
     this.executionIds = executionIds;
@@ -111,10 +111,10 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     if (taskIds == null) {
       throw new ActivitiIllegalArgumentException("taskIds is null");
     }
-    if(taskIds.isEmpty()){
+    if (taskIds.isEmpty()){
         throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
     }
-    if(excludeTaskRelated) {
+    if (excludeTaskRelated) {
         throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
     }
     this.taskIds = taskIds;
@@ -123,10 +123,10 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   
   @Override
   public HistoricVariableInstanceQuery excludeTaskVariables() {
-    if(taskId != null) {
+    if (taskId != null) {
       throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
-    if(taskIds != null) {
+    if (taskIds != null) {
       throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
     }
     excludeTaskRelated = true;

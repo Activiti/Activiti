@@ -123,23 +123,23 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
 
     // Task local variables
     for(Task task : taskList1){
-        if("usertask1".equals(task.getTaskDefinitionKey())){
-            taskService.setVariableLocal(task.getId(), "taskVar1", "sayHello1");
-        }else{
-            taskService.setVariableLocal(task.getId(), "taskVar2", "sayHello2");
-        }
-        // Execution variables
-        taskService.setVariable(task.getId(), "executionVar1", "helloWorld1");
+      if ("usertask1".equals(task.getTaskDefinitionKey())){
+        taskService.setVariableLocal(task.getId(), "taskVar1", "sayHello1");
+      } else {
+        taskService.setVariableLocal(task.getId(), "taskVar2", "sayHello2");
+      }
+      // Execution variables
+      taskService.setVariable(task.getId(), "executionVar1", "helloWorld1");
     }
     // Task local variables
-    for(Task task : taskList2){
-        if("usertask1".equals(task.getTaskDefinitionKey())){
-        	taskService.setVariableLocal(task.getId(), "taskVar3", "sayHello3");
-        }else{
-        	taskService.setVariableLocal(task.getId(), "taskVar4", "sayHello4");
-        }
-        // Execution variables
-        taskService.setVariable(task.getId(), "executionVar2", "helloWorld2");
+    for (Task task : taskList2){
+      if ("usertask1".equals(task.getTaskDefinitionKey())){
+      	taskService.setVariableLocal(task.getId(), "taskVar3", "sayHello3");
+      } else {
+      	taskService.setVariableLocal(task.getId(), "taskVar4", "sayHello4");
+      }
+      // Execution variables
+      taskService.setVariable(task.getId(), "executionVar2", "helloWorld2");
     }
 
     // only 1 process
@@ -175,12 +175,12 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
   }
   
   private void checkVariable(String taskId, String name, String value, List<VariableInstance> variables){
-    for(VariableInstance variable : variables){
-        if(taskId.equals(variable.getTaskId())){
-            assertEquals(name, variable.getName());
-            assertEquals(value, variable.getValue());
-            return;
-        }
+    for (VariableInstance variable : variables){
+      if (taskId.equals(variable.getTaskId())){
+        assertEquals(name, variable.getName());
+        assertEquals(value, variable.getValue());
+        return;
+      }
     }
     fail();
   }
@@ -193,8 +193,8 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     String taskId = taskService.createTaskQuery().singleResult().getId();
     
     StringBuilder sb = new StringBuilder("a");
-    for(int i = 0; i < 4001; i++) {
-         sb.append("a");
+    for (int i = 0; i < 4001; i++) {
+      sb.append("a");
     }
     String serializableTypeVar = sb.toString();
 
@@ -217,16 +217,16 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     
     Set<String> executionIds = new HashSet<String>();
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    for(Execution execution : executions){
-        if(!processInstance.getId().equals(execution.getId())){
-            executionIds.add(execution.getId());
-            runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
-        }
+    for (Execution execution : executions){
+      if (!processInstance.getId().equals(execution.getId())){
+        executionIds.add(execution.getId());
+        runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
+      }
     }
     
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     Set<String> taskIds = new HashSet<String>();
-    for(Task task : tasks){
+    for (Task task : tasks){
         taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
         taskIds.add(task.getId());
     }
@@ -241,7 +241,8 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
   
   public static class MyVariable implements Serializable {
   	
-  	private String value;
+    private static final long serialVersionUID = 1L;
+    private String value;
   	
   	public MyVariable(String value) {
   		this.value = value;
@@ -254,9 +255,6 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
 		public void setValue(String value) {
 			this.value = value;
 		}
-  	
-  	
-  	
   }
   
 }

@@ -46,7 +46,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
   })
   public void testOrderProcessWithCallActivity() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    // After the process has started, the 'verify credit history' task should be active
 	    ProcessInstance pi = runtimeService.startProcessInstanceByKey("orderProcess");
 	    TaskQuery taskQuery = taskService.createTaskQuery();
@@ -67,7 +67,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSimple() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
 	    TaskQuery taskQuery = taskService.createTaskQuery();
 	    Task userTask = taskQuery.singleResult();
@@ -90,7 +90,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSimpleNoWaitState() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
 	    assertProcessEnded(processInstance.getId());
 	    
@@ -107,7 +107,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParallel() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
 	    TaskQuery taskQuery = taskService.createTaskQuery();
 	    Task userTask = taskQuery.singleResult();
@@ -135,7 +135,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParallelNoWaitState() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
 	    assertProcessEnded(processInstance.getId());
 	    
@@ -152,7 +152,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testTwoSubProcessInParallelWithinSubProcess() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoSubProcessInParallelWithinSubProcess");
 	    assertProcessEnded(processInstance.getId());
 	    
@@ -177,7 +177,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
           "org/activiti/engine/test/history/simpleSubProcess.bpmn20.xml"
   })
   public void testHistoricVariableInstanceQuery() {
-  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
 	    assertProcessEnded(processInstance.getId());
 	    
@@ -213,7 +213,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   }
   
   public void testHistoricVariableQuery2() {
- 	 	String processDefinitionId = deployTwoTasksTestProcess();
+ 	 	deployTwoTasksTestProcess();
  	 	
  	 	// Generate data
  	 	Map<String, Object> startVars = new HashMap<String, Object>();
@@ -282,21 +282,23 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   }
   
   public void testHistoricVariableQueryByExecutionIds() {
-    String processDefinitionId = deployTwoTasksTestProcess();
-
+    deployTwoTasksTestProcess();
+    
     Set<String> processInstanceIds = new HashSet<String>();
     Set<String> testProcessInstanceIds = new HashSet<String>();
-    for(int i=0; i<3; i++){
-        // Generate data
-        Map<String, Object> startVars = new HashMap<String, Object>();
-        if(i == 1) {
-            startVars.put("startVar2", "hello2");
-        }else{
-            startVars.put("startVar", "hello");
-        }
-        String processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", startVars).getId();
-        processInstanceIds.add(processInstanceId);
-        if(i != 1) testProcessInstanceIds.add(processInstanceId);
+    for (int i = 0; i < 3; i++){
+      // Generate data
+      Map<String, Object> startVars = new HashMap<String, Object>();
+      if (i == 1) {
+        startVars.put("startVar2", "hello2");
+      } else {
+        startVars.put("startVar", "hello");
+      }
+      String processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", startVars).getId();
+      processInstanceIds.add(processInstanceId);
+      if (i != 1) {
+        testProcessInstanceIds.add(processInstanceId);
+      }
     }
 
     assertEquals(2, historyService.createHistoricVariableInstanceQuery().executionIds(testProcessInstanceIds).count());
@@ -325,16 +327,16 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     
     Set<String> executionIds = new HashSet<String>();
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    for(Execution execution : executions){
-        if(!processInstance.getId().equals(execution.getId())){
-            executionIds.add(execution.getId());
-            runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
-        }
+    for (Execution execution : executions){
+      if (!processInstance.getId().equals(execution.getId())){
+        executionIds.add(execution.getId());
+        runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
+      }
     }
     
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    for(Task task : tasks){
-        taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
+    for (Task task : tasks){
+      taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
     }
     
     Set<String> processInstanceIds = new HashSet<String>();
@@ -353,8 +355,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   }
 
   public void testHistoricVariableQueryByTaskIds() {
-    String processDefinitionId = deployTwoTasksTestProcess();
-
+    deployTwoTasksTestProcess();
     // Generate data
     String processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess").getId();
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
@@ -391,26 +392,26 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     
     Set<String> executionIds = new HashSet<String>();
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    for(Execution execution : executions){
-        if(!processInstance.getId().equals(execution.getId())){
-            executionIds.add(execution.getId());
-            runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
-        }
+    for (Execution execution : executions){
+      if (!processInstance.getId().equals(execution.getId())){
+        executionIds.add(execution.getId());
+        runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
+      }
     }
     
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     Set<String> taskIds = new HashSet<String>();
-    for(Task task : tasks){
-        taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
-        taskIds.add(task.getId());
+    for (Task task : tasks){
+      taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
+      taskIds.add(task.getId());
     }
     
     List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).list();
     assertEquals(historicVariableInstances.size(), 2);
     assertEquals(historicVariableInstances.get(0).getVariableName(), "taskVar");
     assertEquals(historicVariableInstances.get(0).getValue() , "taskVar");
-    assertEquals(historicVariableInstances.get(0).getVariableName(), "taskVar");
-    assertEquals(historicVariableInstances.get(0).getValue() , "taskVar");
+    assertEquals(historicVariableInstances.get(1).getVariableName(), "taskVar");
+    assertEquals(historicVariableInstances.get(1).getValue() , "taskVar");
   }
 
   @Deployment(resources={

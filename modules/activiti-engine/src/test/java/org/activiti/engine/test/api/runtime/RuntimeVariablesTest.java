@@ -76,12 +76,12 @@ public class RuntimeVariablesTest  extends PluggableActivitiTestCase {
   }
   
   private void checkVariable(String executionId, String name, String value, List<VariableInstance> variables){
-    for(VariableInstance variable : variables){
-        if(executionId.equals(variable.getExecutionId())){
-            assertEquals(name, variable.getName());
-            assertEquals(value, variable.getValue());
-            return;
-        }
+    for (VariableInstance variable : variables){
+      if (executionId.equals(variable.getExecutionId())){
+        assertEquals(name, variable.getName());
+        assertEquals(value, variable.getValue());
+        return;
+      }
     }
     fail();
   }
@@ -96,18 +96,18 @@ public class RuntimeVariablesTest  extends PluggableActivitiTestCase {
     
     Set<String> executionIds = new HashSet<String>();
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    for(Execution execution : executions){
-        if(!processInstance.getId().equals(execution.getId())){
-            executionIds.add(execution.getId());
-            runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
-        }
+    for (Execution execution : executions){
+      if (!processInstance.getId().equals(execution.getId())){
+        executionIds.add(execution.getId());
+        runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
+      }
     }
     
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     Set<String> taskIds = new HashSet<String>();
-    for(Task task : tasks){
-        taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
-        taskIds.add(task.getId());
+    for (Task task : tasks){
+      taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
+      taskIds.add(task.getId());
     }
     
     List<VariableInstance> executionVariableInstances = runtimeService.getVariableInstancesByExecutionIds(executionIds);

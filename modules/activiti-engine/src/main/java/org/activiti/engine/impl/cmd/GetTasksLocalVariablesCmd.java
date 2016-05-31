@@ -39,18 +39,18 @@ public class GetTasksLocalVariablesCmd implements Command<List<VariableInstance>
 	
 	@Override
   public List<VariableInstance> execute(CommandContext commandContext) {
-    if(taskIds == null) {
-      throw new ActivitiIllegalArgumentException("taskIds is null");
+	  if (taskIds == null) {
+	    throw new ActivitiIllegalArgumentException("taskIds is null");
     }
-    if(taskIds.isEmpty()){
-        throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
+    if (taskIds.isEmpty()){
+      throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
     }
     
     List<VariableInstance> instances = new ArrayList<VariableInstance>();
     List<VariableInstanceEntity> entities = commandContext.getVariableInstanceEntityManager().findVariableInstancesByTaskIds(taskIds);
-    for(VariableInstanceEntity entity : entities){
-        entity.getValue();
-        instances.add(entity);
+    for (VariableInstanceEntity entity : entities){
+      entity.getValue();
+      instances.add(entity);
     }
     
     return instances;
