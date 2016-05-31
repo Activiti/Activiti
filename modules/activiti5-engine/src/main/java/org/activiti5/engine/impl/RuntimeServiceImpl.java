@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -37,6 +38,7 @@ import org.activiti5.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti5.engine.impl.cmd.GetExecutionVariableInstanceCmd;
 import org.activiti5.engine.impl.cmd.GetExecutionVariableInstancesCmd;
 import org.activiti5.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti5.engine.impl.cmd.GetExecutionsVariablesCmd;
 import org.activiti5.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti5.engine.impl.cmd.GetProcessInstanceEventsCmd;
 import org.activiti5.engine.impl.cmd.GetStartFormCmd;
@@ -142,6 +144,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public Map<String, VariableInstance> getVariableInstances(String executionId) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, false));
+  }
+  
+  public List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds) {
+    return commandExecutor.execute(new GetExecutionsVariablesCmd(executionIds));
   }
   
   public Map<String, VariableInstance> getVariableInstances(String executionId, String locale, boolean withLocalizationFallback) {

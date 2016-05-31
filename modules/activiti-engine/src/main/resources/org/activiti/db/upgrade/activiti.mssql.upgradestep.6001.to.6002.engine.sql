@@ -1,4 +1,4 @@
-alter table ACT_RU_EXECUTION add START_TIME_ datetime not null;
+alter table ACT_RU_EXECUTION add START_TIME_ datetime;
 alter table ACT_RU_EXECUTION add START_USER_ID_ nvarchar(255);
 alter table ACT_RU_TASK add CLAIM_TIME_ datetime;
 

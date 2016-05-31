@@ -70,7 +70,7 @@ create table ACT_RU_EXECUTION (
     CACHED_ENT_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
     NAME_ varchar(255),
-    START_TIME_ datetime(3) not null,
+    START_TIME_ datetime(3),
     START_USER_ID_ varchar(255),
     LOCK_TIME_ timestamp(3) NULL,
     primary key (ID_)

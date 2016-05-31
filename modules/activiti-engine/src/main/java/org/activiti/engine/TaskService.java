@@ -17,10 +17,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -472,6 +475,9 @@ public interface TaskService {
 
   /** get a variable on a task */
   Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
+  
+  /** get all variables and search only in the task scope. */
+  List<VariableInstance> getVariableInstancesLocalByTaskIds(Set<String> taskIds);
 
   /**
    * Removes the variable from the task. When the variable does not exist, nothing happens.

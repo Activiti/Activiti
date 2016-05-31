@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
@@ -50,12 +51,24 @@ public class MybatisVariableInstanceDataManager extends AbstractDataManager<Vari
   }
   
   @Override
-  public Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
+  @SuppressWarnings("unchecked")
+  public List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds) {
+    return getDbSqlSession().selectList("selectVariablesByTaskIds", taskIds);
+  }
+  
+  @Override
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
     return getList("selectVariablesByExecutionId", executionId, new CachedEntityMatcher<VariableInstanceEntity>() {
       public boolean isRetained(VariableInstanceEntity variableInstanceEntity) {
         return variableInstanceEntity.getExecutionId() != null && variableInstanceEntity.getExecutionId().equals(executionId);
       }
     }, true);
+  }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds) {
+    return getDbSqlSession().selectList("selectVariablesByExecutionIds", executionIds);
   }
 
   @Override

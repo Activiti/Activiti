@@ -15,6 +15,7 @@ package org.activiti.engine;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.VariableScope;
@@ -470,6 +471,16 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, VariableInstance> getVariableInstances(String executionId);
+  
+  /**
+   * All variables visible from the given execution scope (including parent
+   * scopes).
+   * 
+   * @param executionIds
+   *          ids of execution, cannot be null.
+   * @return the variables.
+   */
+  List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds);
 
   /**
    * All variables visible from the given execution scope (including parent scopes).
