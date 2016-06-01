@@ -13,6 +13,8 @@
 package org.activiti5.engine.test.api.event;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -39,8 +41,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 		assertNotNull(processInstance);
 		
-		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-				.singleResult();
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(task);
 		
 		// Check create event
@@ -87,8 +88,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 		listener.clearEventsReceived();
 		
 		// Updating detached task and calling saveTask should trigger a single update-event
-		task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-				.singleResult();
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		
 		task.setDueDate(new Date());
 		task.setOwner("john");
@@ -119,8 +119,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 		assertNotNull(processInstance);
 		listener.clearEventsReceived();
 		
-		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-				.singleResult();
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(task);
 		
 		// Set assignee through API
@@ -187,8 +186,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 		assertNotNull(processInstance);
 		listener.clearEventsReceived();
 		
-		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-				.singleResult();
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(task);
 		
 		// Delete process, should delete task as well, but not complete
@@ -202,6 +200,56 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 		assertEquals(task.getId(), taskFromEvent.getId());
 		assertExecutionDetails(event, processInstance);
 	}
+	
+	/**
+   * This method checks to ensure that the task.fireEvent(TaskListener.EVENTNAME_CREATE), fires before
+   * the dispatchEvent ActivitiEventType.TASK_CREATED.  A ScriptTaskListener updates the priority and
+   * assignee before the dispatchEvent() takes place.
+     */
+  @Deployment(resources= {"org/activiti5/engine/test/api/event/TaskEventsTest.testEventFiring.bpmn20.xml"})
+  public void testEventFiringOrdering() {
+    
+    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
+        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
+    //We need to add a special listener that copies the Task values - to record its state when the event fires,
+    //otherwise the in-memory task instances is changed after the event fires.
+    TestActivitiEntityEventTaskListener tlistener = new TestActivitiEntityEventTaskListener(org.activiti5.engine.task.Task.class);
+    activiti5ProcessConfig.getEventDispatcher().addEventListener(tlistener);
+
+    try {
+
+      runtimeService.startProcessInstanceByKey("testTaskLocalVars");
+
+      // Fetch first task
+      Task task = taskService.createTaskQuery().singleResult();
+
+      // Complete first task
+      Map<String, Object> taskParams = new HashMap<String, Object>();
+      taskService.complete(task.getId(), taskParams, true);
+
+      ActivitiEntityEvent event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(0);
+      assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+      assertTrue(event.getEntity() instanceof org.activiti5.engine.task.Task);
+
+      event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(1);
+      assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+      assertTrue(event.getEntity() instanceof org.activiti5.engine.task.Task);
+
+      event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(2);
+      assertEquals(ActivitiEventType.TASK_CREATED, event.getType());
+      assertTrue(event.getEntity() instanceof org.activiti5.engine.task.Task);
+      org.activiti5.engine.task.Task taskFromEvent = tlistener.getTasks().get(2);
+      assertEquals(task.getId(), taskFromEvent.getId());
+
+      // verify script listener has done its job, on create before ActivitiEntityEvent was fired
+      assertEquals("The ScriptTaskListener must set this value before the dispatchEvent fires.","scriptedAssignee", taskFromEvent.getAssignee());
+      assertEquals("The ScriptTaskListener must set this value before the dispatchEvent fires.", 877, taskFromEvent.getPriority());
+
+    } finally {
+      activiti5ProcessConfig.getEventDispatcher().removeEventListener(tlistener);
+    }
+  }
 	
 	protected void assertExecutionDetails(ActivitiEvent event, ProcessInstance processInstance) {
 		assertEquals(processInstance.getId(), event.getProcessInstanceId());

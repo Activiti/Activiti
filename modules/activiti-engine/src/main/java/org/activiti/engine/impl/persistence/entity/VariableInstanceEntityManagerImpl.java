@@ -16,6 +16,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -61,8 +62,18 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
   }
   
   @Override
-  public Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
+  public List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds) {
+    return variableInstanceDataManager.findVariableInstancesByTaskIds(taskIds);
+  }
+  
+  @Override
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
     return variableInstanceDataManager.findVariableInstancesByExecutionId(executionId);
+  }
+  
+  @Override
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds) {
+    return variableInstanceDataManager.findVariableInstancesByExecutionIds(executionIds);
   }
 
   @Override

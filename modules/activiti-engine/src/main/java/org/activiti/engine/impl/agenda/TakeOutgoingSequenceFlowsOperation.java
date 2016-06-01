@@ -187,8 +187,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
   
           outgoingExecutionEntity.setScope(false);
           outgoingExecutionEntity.setActive(true);
-  
-          ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution; 
+
+          outgoingExecutionEntity.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+
+          ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution;
           outgoingExecutionEntity.setParent(parent);
           parent.addChildExecution(outgoingExecutionEntity);
           

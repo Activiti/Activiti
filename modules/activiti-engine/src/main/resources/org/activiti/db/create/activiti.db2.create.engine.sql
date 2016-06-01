@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '6.0.0.1', 1);
+values ('schema.version', '6.0.0.2', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(6.0.0.1)', 1);
+values ('schema.history', 'create(6.0.0.2)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -66,11 +66,13 @@ create table ACT_RU_EXECUTION (
     IS_SCOPE_ smallint check(IS_SCOPE_ in (1,0)),
     IS_EVENT_SCOPE_ smallint check(IS_EVENT_SCOPE_ in (1,0)),
     IS_MI_ROOT_ smallint check(IS_MI_ROOT_ in (1,0)),
-	  SUSPENSION_STATE_ integer,
-	  CACHED_ENT_STATE_ integer,
-	  TENANT_ID_ varchar(255) default '',
-	  NAME_ varchar(255),
-	  LOCK_TIME_ timestamp,
+	SUSPENSION_STATE_ integer,
+	CACHED_ENT_STATE_ integer,
+	TENANT_ID_ varchar(255) default '',
+	NAME_ varchar(255),
+    START_TIME_ timestamp,
+    START_USER_ID_ varchar(255),
+    LOCK_TIME_ timestamp,
     primary key (ID_)
 );
 
@@ -134,6 +136,7 @@ create table ACT_RU_TASK (
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
     FORM_KEY_ varchar(255),
+    CLAIM_TIME_ timestamp,
     primary key (ID_)
 );
 

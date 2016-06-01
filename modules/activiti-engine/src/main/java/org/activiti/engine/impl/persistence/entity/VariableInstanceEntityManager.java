@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.impl.variable.VariableType;
 
@@ -25,8 +26,12 @@ public interface VariableInstanceEntityManager extends EntityManager<VariableIns
   VariableInstanceEntity create(String name, VariableType type, Object value);
 
   List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
+  
+  List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds);
 
-  Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
+  List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
+  
+  List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
 
   VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName);
 

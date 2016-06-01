@@ -205,14 +205,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     
     handleAssignments(activeAssigneeExpression, activeOwnerExpression, activeCandidateUserExpressions, 
         activeCandidateGroupExpressions, task, activityExecution);
+    
+    task.fireEvent(TaskListener.EVENTNAME_CREATE);
    
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
         ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
-
-    task.fireEvent(TaskListener.EVENTNAME_CREATE);
 
     Expression skipExpression = taskDefinition.getSkipExpression();
     if (SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression) &&
