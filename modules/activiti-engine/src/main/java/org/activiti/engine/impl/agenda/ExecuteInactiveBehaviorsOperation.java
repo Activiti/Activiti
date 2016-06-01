@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -13,6 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Operation that usually gets scheduled as last operation of handling a {@link Command}.
+ * 
+ * Executes 'background' behaviours of executions that currently are in an activity that implements
+ * the {@link InactiveActivityBehavior} interface.
+ * 
  * @author Joram Barrez
  */
 public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
@@ -29,9 +35,14 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
   @Override
   public void run() {
 
-    /**
-     * Algorithm: for each execution that is involved in this command context, 1) Verify if its process definitions has any InactiveActivityBehavior instances. 2) If so, verify if there are any
-     * executions inactive in those 3) Execute the inactivated behavior
+    /*
+     * Algorithm: for each execution that is involved in this command context, 
+     * 
+     * 1) Get its process definition
+     * 2) Verify if its process definitions has any InactiveActivityBehavior behaviours. 
+     * 3) If so, verify if there are any executions inactive in those activities 
+     * 4) Execute the inactivated behavior
+     * 
      */
 
     for (ExecutionEntity executionEntity : involvedExecutions) {
@@ -44,13 +55,11 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
         }
       }
 
-      // Only check if the process actually has inactivated functionality
-      // TODO: this information could be cached
-
       if (flowNodeIdsWithInactivatedBehavior.size() > 0) {
         Collection<ExecutionEntity> inactiveExecutions = commandContext.getExecutionEntityManager().findInactiveExecutionsByProcessInstanceId(executionEntity.getProcessInstanceId());
         for (ExecutionEntity inactiveExecution : inactiveExecutions) {
-          if (!inactiveExecution.isActive() && flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId())
+          if (!inactiveExecution.isActive() 
+              && flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId())
               && !inactiveExecution.isDeleted()) {
 
             FlowNode flowNode = (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);

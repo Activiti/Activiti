@@ -10,6 +10,11 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
+ * Operation that triggers a wait state and continues the process, leaving that activity.
+ * 
+ * The {@link ExecutionEntity} for this operations should be in a wait state (receive task for example)
+ * and have a {@link FlowElement} that has a behaviour that implements the {@link TriggerableActivityBehavior}.
+ * 
  * @author Joram Barrez
  */
 public class TriggerExecutionOperation extends AbstractOperation {
@@ -20,29 +25,24 @@ public class TriggerExecutionOperation extends AbstractOperation {
 
   @Override
   public void run() {
-    FlowElement currentFlowElement = execution.getCurrentFlowElement();
-
-    if (currentFlowElement == null) {
-      currentFlowElement = findCurrentFlowElement(execution);
-    }
-
+    FlowElement currentFlowElement = getCurrentFlowElement(execution);
     if (currentFlowElement instanceof FlowNode) {
-
-      FlowNode flowNode = (FlowNode) currentFlowElement;
-      ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+      
+      ActivityBehavior activityBehavior = (ActivityBehavior) ((FlowNode) currentFlowElement).getBehavior();
       if (activityBehavior instanceof TriggerableActivityBehavior) {
-        if (flowNode instanceof BoundaryEvent) {
+        
+        if (currentFlowElement instanceof BoundaryEvent) {
           commandContext.getHistoryManager().recordActivityStart(execution);
         }
         
         ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
         
-        if (flowNode instanceof BoundaryEvent) {
+        if (currentFlowElement instanceof BoundaryEvent) {
           commandContext.getHistoryManager().recordActivityEnd(execution);
         }
         
       } else {
-        throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getCanonicalName());
+        throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getName());
       }
 
     } else {

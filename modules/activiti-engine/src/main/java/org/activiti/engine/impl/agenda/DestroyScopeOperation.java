@@ -2,7 +2,6 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
 
-import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -15,6 +14,13 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 
 /**
+ * Destroys a scope (for example a subprocess): this means that all child executions,
+ * tasks, jobs, variables, etc within that scope are deleted.
+ * 
+ * The typical example is an interrupting boundary event that is on the boundary
+ * of a subprocess and is triggered. At that point, everything within the subprocess would
+ * need to be destroyed.
+ * 
  * @author Joram Barrez
  */
 public class DestroyScopeOperation extends AbstractOperation {
@@ -30,57 +36,43 @@ public class DestroyScopeOperation extends AbstractOperation {
     // This could be the incoming execution, or the first parent execution where isScope = true
 
     // Find parent scope execution
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    ExecutionEntity parentScopeExecution = null;
+    ExecutionEntity scopeExecution = execution.isScope() ? execution : findFirstParentScopeExecution(execution);
 
-    if (execution.isScope()) {
-      parentScopeExecution = executionEntity;
-    } else {
-      ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(execution.getParentId());
-      while (currentlyExaminedExecution != null && parentScopeExecution == null) {
-        if (currentlyExaminedExecution.isScope()) {
-          parentScopeExecution = currentlyExaminedExecution;
-        } else {
-          currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
-        }
-      }
-    }
-
-    if (parentScopeExecution == null) {
+    if (scopeExecution == null) {
       throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
     }
+    
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
     // Delete all child executions
-    Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentScopeExecution.getId());
+    Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(scopeExecution.getId());
     for (ExecutionEntity childExecution : childExecutions) {
       executionEntityManager.deleteExecutionAndRelatedData(childExecution, null, false);
     }
 
     // Delete all scope tasks
     TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
-    Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(parentScopeExecution.getId());
+    Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(scopeExecution.getId());
     for (TaskEntity taskEntity : tasksForExecution) {
       taskEntityManager.delete(taskEntity);
     }
 
     // Delete all scope jobs
     JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-    Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(parentScopeExecution.getId());
+    Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(scopeExecution.getId());
     for (JobEntity job : jobsForExecution) {
       jobEntityManager.delete(job);
     }
     
     // Remove variables associated with this scope
     VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
-    Collection<VariableInstanceEntity> variablesForExecution = variableInstanceEntityManager.findVariableInstancesByExecutionId(parentScopeExecution.getId());
+    Collection<VariableInstanceEntity> variablesForExecution = variableInstanceEntityManager.findVariableInstancesByExecutionId(scopeExecution.getId());
     for (VariableInstanceEntity variable : variablesForExecution) {
       variableInstanceEntityManager.delete(variable);
     }
 
-    // Not a scope anymore
-    commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution);
-    executionEntityManager.delete(parentScopeExecution);
+    commandContext.getHistoryManager().recordActivityEnd(scopeExecution);
+    executionEntityManager.delete(scopeExecution);
   }
 
 }

@@ -242,7 +242,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   }
 
   @Override
-  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull) {
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean endTimeMustBeNull) {
     String activityId = null;
     if (execution.getCurrentFlowElement() instanceof FlowNode) {
       activityId = execution.getCurrentFlowElement().getId();
@@ -252,14 +252,14 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     } 
     
     if (activityId != null) {
-      return findActivityInstance(execution, activityId, createOnNotFound, validateEndTimeNull);
+      return findActivityInstance(execution, activityId, createOnNotFound, endTimeMustBeNull);
     }
     
     return null;
   }
     
     
-  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean createOnNotFound, boolean validateEndTimeNull) {
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean createOnNotFound, boolean endTimeMustBeNull) {
     
     // No use looking for the HistoricActivityInstance when no activityId is provided.
     if (activityId == null) {
@@ -268,8 +268,9 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     
     String executionId = execution.getId();
 
+    // Check the cache
     HistoricActivityInstanceEntity historicActivityInstanceEntityFromCache = 
-        getHistoricActivityInstanceFromCache(executionId, activityId, validateEndTimeNull);
+        getHistoricActivityInstanceFromCache(executionId, activityId, endTimeMustBeNull);
     if (historicActivityInstanceEntityFromCache != null) {
       return historicActivityInstanceEntityFromCache;
     }
@@ -283,7 +284,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     }
     
     if (execution.getParentId() != null) {
-      HistoricActivityInstanceEntity historicActivityInstanceFromParent = findActivityInstance((ExecutionEntity) execution.getParent(), activityId, false, validateEndTimeNull); // always false for create, we only check if it can be found
+      HistoricActivityInstanceEntity historicActivityInstanceFromParent 
+        = findActivityInstance((ExecutionEntity) execution.getParent(), activityId, false, endTimeMustBeNull); // always false for create, we only check if it can be found
       if (historicActivityInstanceFromParent != null) {
         return historicActivityInstanceFromParent;
       }
@@ -298,13 +300,12 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     return null;
   }
 
-  protected HistoricActivityInstanceEntity getHistoricActivityInstanceFromCache(String executionId, String activityId, boolean validateEndTimeNull) {
+  protected HistoricActivityInstanceEntity getHistoricActivityInstanceFromCache(String executionId, String activityId, boolean endTimeMustBeNull) {
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getEntityCache().findInCache(HistoricActivityInstanceEntity.class);
-
     for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
       if (activityId != null 
           && activityId.equals(cachedHistoricActivityInstance.getActivityId()) 
-          && (!validateEndTimeNull || cachedHistoricActivityInstance.getEndTime() == null)) {
+          && (!endTimeMustBeNull || cachedHistoricActivityInstance.getEndTime() == null)) {
         if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())) {
           return cachedHistoricActivityInstance;
         }
