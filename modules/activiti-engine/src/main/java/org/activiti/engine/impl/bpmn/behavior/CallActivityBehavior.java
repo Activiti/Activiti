@@ -121,6 +121,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
     Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
+    
+    Context.getProcessEngineConfiguration().getEventDispatcher()
+      .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));
   }
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
