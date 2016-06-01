@@ -17,18 +17,24 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.Task;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.TransactionDependentExecutionListener;
+import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskJavaDelegateActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
@@ -38,6 +44,8 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
+import org.activiti.engine.impl.delegate.invocation.TransactionDependentExecutionListenerInvocation;
+import org.activiti.engine.impl.delegate.invocation.TransactionDependentTaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -52,8 +60,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Joram Barrez
  * @author Falko Menge
  * @author Saeid Mirzaei
+ * @author Yvo Swillens
  */
-public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
+public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, TransactionDependentExecutionListener, TransactionDependentTaskListener, SubProcessActivityBehavior, CustomPropertiesResolver {
 
   private static final long serialVersionUID = 1L;
   
@@ -61,16 +70,18 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
   protected ExecutionListener executionListenerInstance;
+  protected TransactionDependentExecutionListener transactionDependentExecutionListenerInstance;
   protected TaskListener taskListenerInstance;
+  protected TransactionDependentTaskListener transactionDependentTaskListenerInstance;
   protected ActivityBehavior activityBehaviorInstance;
   protected Expression skipExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected CustomPropertiesResolver customPropertiesResolverInstance;
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
     this.fieldDeclarations = fieldDeclarations;
     this.skipExpression = skipExpression;
-    
   }
 
   public ClassDelegate(String id, String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
@@ -92,12 +103,56 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Execution listener
+  @Override
   public void notify(DelegateExecution execution) {
     if (executionListenerInstance == null) {
       executionListenerInstance = getExecutionListenerInstance();
     }
     Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation(executionListenerInstance, execution));
   }
+
+  // Transaction dependent execution listener
+  @Override
+  public void notify(String processInstanceId, String executionId, FlowElement flowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    if (transactionDependentExecutionListenerInstance == null) {
+      transactionDependentExecutionListenerInstance = getTransactionDependentExecutionListenerInstance();
+    }
+    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
+            new TransactionDependentExecutionListenerInvocation(Context.getCommandContext(), transactionDependentExecutionListenerInstance,
+                    processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap));
+  }
+
+  @Override
+  public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
+    if (customPropertiesResolverInstance == null) {
+      customPropertiesResolverInstance = getCustomPropertiesResolverInstance();
+    }
+    return customPropertiesResolverInstance.getCustomPropertiesMap(execution);
+  }
+
+  // Task listener
+  @Override
+  public void notify(DelegateTask delegateTask) {
+    if (taskListenerInstance == null) {
+      taskListenerInstance = getTaskListenerInstance();
+    }
+    try {
+      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListenerInstance, delegateTask));
+    } catch (Exception e) {
+      throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public void notify(String processInstanceId, String executionId, Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    if (transactionDependentTaskListenerInstance == null) {
+      transactionDependentTaskListenerInstance = getTransactionDependentTaskListenerInstance();
+    }
+    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
+            new TransactionDependentTaskListenerInvocation(Context.getCommandContext(), transactionDependentTaskListenerInstance,
+                    processInstanceId, executionId, task, executionVariables, customPropertiesMap));
+  }
+
 
   protected ExecutionListener getExecutionListenerInstance() {
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
@@ -110,15 +165,21 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     }
   }
 
-  // Task listener
-  public void notify(DelegateTask delegateTask) {
-    if (taskListenerInstance == null) {
-      taskListenerInstance = getTaskListenerInstance();
+  protected TransactionDependentExecutionListener getTransactionDependentExecutionListenerInstance() {
+    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+    if (delegateInstance instanceof TransactionDependentExecutionListener) {
+      return (TransactionDependentExecutionListener) delegateInstance;
+    } else {
+      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + TransactionDependentExecutionListener.class);
     }
-    try {
-      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListenerInstance, delegateTask));
-    } catch (Exception e) {
-      throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
+  }
+
+  protected CustomPropertiesResolver getCustomPropertiesResolverInstance() {
+    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+    if (delegateInstance instanceof CustomPropertiesResolver) {
+      return (CustomPropertiesResolver) delegateInstance;
+    } else {
+      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + CustomPropertiesResolver.class);
     }
   }
 
@@ -128,6 +189,15 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       return (TaskListener) delegateInstance;
     } else {
       throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + TaskListener.class);
+    }
+  }
+
+  protected TransactionDependentTaskListener getTransactionDependentTaskListenerInstance() {
+    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+    if (delegateInstance instanceof TransactionDependentTaskListener) {
+      return (TransactionDependentTaskListener) delegateInstance;
+    } else {
+      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + TransactionDependentTaskListener.class);
     }
   }
 

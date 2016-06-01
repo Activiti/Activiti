@@ -10,16 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.delegate;
 
+import org.activiti.bpmn.model.Task;
+
+import java.util.Map;
+
 /**
- * Callback interface to be notified of execution events like starting a process instance, ending an activity instance or taking a transition.
- * 
- * @author Tom Baeyens
- * @author Joram Barrez
+ * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closed and closeFailure
+ *
  * @author Yvo Swillens
  */
-public interface ExecutionListener extends BaseExecutionListener {
+public interface TransactionDependentTaskListener extends BaseTaskListener {
 
-  void notify(DelegateExecution execution);
+  String ON_TRANSACTION_COMMITTING = "before-commit";
+  String ON_TRANSACTION_COMMITTED = "committed";
+  String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
+
+  void notify(String processInstanceId, String executionId, Task task,
+          Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
 }
