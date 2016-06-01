@@ -150,10 +150,6 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionsVariablesCmd(executionIds));
   }
   
-  public Map<String, VariableInstance> getVariableInstances(String executionId, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, false, locale, withLocalizationFallback));
-  }
-
   public Map<String, Object> getVariablesLocal(String executionId) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, true));
   }
@@ -162,20 +158,12 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, true));
   }
 
-  public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, true, locale, withLocalizationFallback));
-  }
-  
   public Map<String, Object> getVariables(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, false));
   }
   
   public Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false));
-  }
-
-  public Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false, locale, withLocalizationFallback));
   }
 
   public Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames) {
@@ -186,20 +174,12 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false));
   }
 
-  public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false, locale, withLocalizationFallback));
-  }
-
   public Object getVariable(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, false));
   }
 
   public VariableInstance getVariableInstance(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, false));
-  }
-
-  public VariableInstance getVariableInstance(String executionId, String variableName, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, false, locale, withLocalizationFallback));
   }
   
   @Override
@@ -218,10 +198,6 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public VariableInstance getVariableInstanceLocal(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, true));
-  }
-
-  public VariableInstance getVariableInstanceLocal(String executionId, String variableName, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, true, locale, withLocalizationFallback));
   }
 
   @Override

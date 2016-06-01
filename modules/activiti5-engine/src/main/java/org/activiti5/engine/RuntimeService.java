@@ -503,21 +503,6 @@ public interface RuntimeService {
   List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds);
 
   /**
-   * All variables visible from the given execution scope (including parent scopes).
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
-   * @return the variable instances or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstances(String executionId, String locale, boolean withLocalizationFallback);
-
-  /**
    * All variable values that are defined in the execution scope, without taking
    * outer scopes into account. If you have many task local variables and you
    * only need a few, consider using
@@ -542,22 +527,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, VariableInstance> getVariableInstancesLocal(String executionId);
-
-  /**
-   * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
-   * {@link #getVariableInstancesLocal(String, Collection)} for better performance.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstancesLocal(String executionId, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable values for all given variableNames, takes all variables into
@@ -588,23 +557,6 @@ public interface RuntimeService {
   Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);
 
   /**
-   * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
-   * 
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableNames
-   *          the collection of variable names that should be retrieved.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback);
-
-  /**
    * The variable values for the given variableNames only taking the given
    * execution scope into account, not looking in outer scopes.
    * 
@@ -630,23 +582,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames);
-
-  /**
-   * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableNames
-   *          the collection of variable names that should be retrieved.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable value. Searching for the variable is done in all scopes that
@@ -678,24 +613,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   VariableInstance getVariableInstance(String executionId, String variableName);
-
-  /**
-   * The variable. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
-   * name or when the value is set to null.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableName
-   *          name of variable, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variable or null if the variable is undefined.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  VariableInstance getVariableInstance(String executionId, String variableName, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable value. Searching for the variable is done in all scopes that
@@ -745,24 +662,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   VariableInstance getVariableInstanceLocal(String executionId, String variableName);
-
-  /**
-   * The variable for an execution. Returns the variable when it is set for the execution (and not searching parent scopes). Returns null when no variable is found with the given
-   * name or when the value is set to null.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableName
-   *          name of variable, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
-   * @return the variable or null if the variable is undefined.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  VariableInstance getVariableInstanceLocal(String executionId, String variableName, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable value for an execution. Returns the value casted to given class

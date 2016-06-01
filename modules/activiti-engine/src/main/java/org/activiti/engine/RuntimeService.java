@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
@@ -483,21 +484,6 @@ public interface RuntimeService {
   List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds);
 
   /**
-   * All variables visible from the given execution scope (including parent scopes).
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
-   * @return the variable instances or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstances(String executionId, String locale, boolean withLocalizationFallback);
-
-  /**
    * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
    * {@link #getVariablesLocal(String, Collection)} for better performance.
    * 
@@ -520,22 +506,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, VariableInstance> getVariableInstancesLocal(String executionId);
-
-  /**
-   * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
-   * {@link #getVariableInstancesLocal(String, Collection)} for better performance.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstancesLocal(String executionId, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
@@ -561,24 +531,7 @@ public interface RuntimeService {
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
    */
-  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);
-
-  /**
-   * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
-   * 
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableNames
-   *          the collection of variable names that should be retrieved.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback);  
+  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);  
 
   /**
    * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
@@ -607,23 +560,6 @@ public interface RuntimeService {
   Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames);
 
   /**
-   * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableNames
-   *          the collection of variable names that should be retrieved.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variables or an empty map if no such variables are found.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames, String locale, boolean withLocalizationFallback);  
-
-  /**
    * The variable value. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
    * name or when the value is set to null.
    * 
@@ -650,24 +586,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   VariableInstance getVariableInstance(String executionId, String variableName);
-
-  /**
-   * The variable. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
-   * name or when the value is set to null.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableName
-   *          name of variable, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
-   * @return the variable or null if the variable is undefined.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  VariableInstance getVariableInstance(String executionId, String variableName, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable value. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
@@ -709,24 +627,6 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   VariableInstance getVariableInstanceLocal(String executionId, String variableName);
-
-  /**
-   * The variable for an execution. Returns the variable when it is set for the execution (and not searching parent scopes). Returns null when no variable is found with the given
-   * name or when the value is set to null.
-   *
-   * @param executionId
-   *          id of execution, cannot be null.
-   * @param variableName
-   *          name of variable, cannot be null.
-   * @param locale
-   *          locale the variable name and description should be returned in (if available).
-   * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
-   * @return the variable or null if the variable is undefined.
-   * @throws ActivitiObjectNotFoundException
-   *           when no execution is found for the given executionId.
-   */
-  VariableInstance getVariableInstanceLocal(String executionId, String variableName, String locale, boolean withLocalizationFallback);
 
   /**
    * The variable value for an execution. Returns the value casted to given class when the variable is set for the execution (and not searching parent scopes). Returns null when no variable value is
@@ -840,6 +740,186 @@ public interface RuntimeService {
    */
   void removeVariablesLocal(String executionId, Collection<String> variableNames);
 
+  /**
+   * All DataObjects visible from the given execution scope (including parent scopes).
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @return the DataObjects or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjects(String executionId);
+
+  /**
+   * All DataObjects visible from the given execution scope (including parent scopes).
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found.
+   * @return the DataObjects or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjects(String executionId, String locale, boolean withLocalizationFallback);
+
+  
+  /**
+   * All DataObject values that are defined in the execution scope, without taking outer scopes into account. If you have many local DataObjects and you only need a few, consider using
+   * {@link #getDataObjectsLocal(String, Collection)} for better performance.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @return the DataObjects or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjectsLocal(String executionId);
+
+  /**
+   * All DataObject values that are defined in the execution scope, without taking outer scopes into account. If you have many local DataObjects and you only need a few, consider using
+   * {@link #getDataObjectsLocal(String, Collection)} for better performance.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   * @return the DataObjects or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjectsLocal(String executionId, String locale, boolean withLocalizationFallback);
+  
+  /**
+   * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given execution scope (including parent scopes).
+   * 
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectNames
+   *          the collection of DataObject names that should be retrieved. 
+   * @return the DataObject or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjects(String executionId, Collection<String> dataObjectNames);
+
+  /**
+   * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given execution scope (including parent scopes).
+   * 
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectNames
+   *          the collection of DataObject names that should be retrieved.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   * @return the DataObjects or an empty map if no such dataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjects(String executionId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);  
+  
+  /**
+   * The DataObjects for the given dataObjectNames only taking the given execution scope into account, not looking in outer scopes.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectNames
+   *          the collection of DataObject names that should be retrieved.
+   * @return the DataObjects or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> dataObjects);
+
+  /**
+   * The DataObjects for the given dataObjectNames only taking the given execution scope into account, not looking in outer scopes.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectNames
+   *          the collection of DataObject names that should be retrieved.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   * @return the DataObjects or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);  
+  
+  /**
+   * The DataObject. Searching for the DataObject is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no DataObject value is found with the given
+   * name or when the value is set to null.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectName
+   *          name of DataObject, cannot be null.
+   * @return the DataObject or null if the variable is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  DataObject getDataObject(String executionId, String dataObject);
+
+  /**
+   * The DataObject. Searching for the DataObject is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no DataObject value is found with the given
+   * name or when the value is set to null.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectName
+   *          name of DataObject, cannot be null.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   * @return the DataObject or null if the DataObject is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  DataObject getDataObject(String executionId, String dataObjectName, String locale, boolean withLocalizationFallback);
+  
+  /**
+   * The DataObject for an execution. Returns the DataObject when it is set for the execution (and not searching parent scopes). Returns null when no DataObject is found with the given
+   * name.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectName
+   *          name of DataObject, cannot be null.
+   * @return the DataObject or null if the DataObject is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  DataObject getDataObjectLocal(String executionId, String dataObjectName);
+
+  /**
+   * The DataObject for an execution. Returns the DataObject when it is set for the execution (and not searching parent scopes). Returns null when no DataObject is found with the given
+   * name.
+   *
+   * @param executionId
+   *          id of execution, cannot be null.
+   * @param dataObjectName
+   *          name of DataObject, cannot be null.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found.
+   * @return the DataObject or null if the DataObject is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given executionId.
+   */
+  DataObject getDataObjectLocal(String executionId, String dataObjectName, String locale, boolean withLocalizationFallback);
+  
+  
   // Queries ////////////////////////////////////////////////////////
 
   /**

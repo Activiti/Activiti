@@ -13,18 +13,33 @@
 
 package org.activiti.engine.runtime;
 
-import java.util.Calendar;
-import java.util.Date;
-
-/**
- * This interface provides full access to the clock
+/*
+ * Represents a modeled DataObject.
  */
-public interface Clock extends ClockReader {
+public interface DataObject {
+  
+  /**
+   * Name of the DataObject.
+   */
+  String getName();
+  
+  /**
+   * Localized Name of the DataObject.
+   */
+  String getLocalizedName();
+  
+  /**
+   * Description of the DataObject.
+   */
+  String getDescription();
 
-  void setCurrentTime(Date currentTime);
+  /**
+   * Value of the DataObject.
+   */
+  Object getValue();
 
-  void setCurrentCalendar(Calendar currentTime);
-
-  void reset();
-
+  /**
+   * Type of the DataObject.
+   */
+  String getType();  
 }
