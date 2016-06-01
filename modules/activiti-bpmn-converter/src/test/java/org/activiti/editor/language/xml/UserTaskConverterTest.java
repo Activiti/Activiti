@@ -90,19 +90,27 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("create", listener.getEvent());
+    assertEquals("before-commit", listener.getOnTransaction());
+    assertEquals("org.test.TestResolverClass", listener.getCustomPropertiesResolverImplementation());
     listener = listeners.get(1);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someExpression}", listener.getImplementation());
     assertEquals("assignment", listener.getEvent());
+    assertEquals("committed", listener.getOnTransaction());
+    assertEquals("${testResolverExpression}", listener.getCustomPropertiesResolverImplementation());
     listener = listeners.get(2);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someDelegateExpression}", listener.getImplementation());
     assertEquals("complete", listener.getEvent());
+    assertEquals("rolled-back", listener.getOnTransaction());
+    assertEquals("${delegateResolverExpression}", listener.getCustomPropertiesResolverImplementation());
 
     List<ActivitiListener> executionListeners = userTask.getExecutionListeners();
     assertEquals(1, executionListeners.size());
     ActivitiListener executionListener = executionListeners.get(0);
     assertEquals("end", executionListener.getEvent());
+    assertEquals("before-commit", executionListener.getOnTransaction());
+    assertEquals("org.test.TestResolverClass", executionListener.getCustomPropertiesResolverImplementation());
 
   }
 }

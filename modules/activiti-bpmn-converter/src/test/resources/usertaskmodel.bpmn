@@ -23,10 +23,10 @@
         	<activiti:value id="test" name="Test" />
         	<activiti:value id="test2" name="Test2" />
         </activiti:formProperty>
-        <activiti:taskListener event="create" class="org.test.TestClass"></activiti:taskListener>
-        <activiti:taskListener event="assignment" expression="${someExpression}"></activiti:taskListener>
-        <activiti:taskListener event="complete" delegateExpression="${someDelegateExpression}"></activiti:taskListener>
-      	<activiti:executionListener expression="${someExpression}" event="end" />
+        <activiti:taskListener event="create" class="org.test.TestClass" onTransaction="before-commit" customPropertiesResolverClass="org.test.TestResolverClass"></activiti:taskListener>
+        <activiti:taskListener event="assignment" expression="${someExpression}" onTransaction="committed" customPropertiesResolverExpression="${testResolverExpression}"></activiti:taskListener>
+        <activiti:taskListener event="complete" delegateExpression="${someDelegateExpression}" onTransaction="rolled-back" customPropertiesResolverDelegateExpression="${delegateResolverExpression}"></activiti:taskListener>
+      	<activiti:executionListener expression="${someExpression}" event="end" onTransaction="before-commit" customPropertiesResolverClass="org.test.TestResolverClass"/>
       </extensionElements>
     </userTask>
     <boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="usertask">
