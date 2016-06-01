@@ -435,6 +435,45 @@
         </restriction>
       </simpleType>
     </attribute>
+    <attribute name="onTransaction" use="optional">
+      <annotation>
+        <documentation>
+          Execute executionListener after a successful commit or after a rollback.
+        </documentation>
+      </annotation>
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="before-commit" />
+          <enumeration value="committed" />
+          <enumeration value="rolled-back" />
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="customPropertiesResolverClass" type="string">
+      <annotation>
+        <documentation>
+          An implementation of the org.activiti.engine.delegate.CustomPropertiesResolver interface
+          that will be called when the event occurs.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="customPropertiesResolverExpression" type="tns:tExpression">
+      <annotation>
+        <documentation>
+          Expression that must resolve to an object implementing a compatible interface
+          for an customPropertiesResolver. Evaluation and delegation to the resulting object is done
+          when the task event occurs.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="customPropertiesResolverDelegateExpression" type="tns:tExpression">
+      <annotation>
+        <documentation>
+          Expression that must resolve to an object implementing the customPropertiesResolver interface. Evaluation and delegation to the resulting object is done
+          when the task event occurs.
+        </documentation>
+      </annotation>
+    </attribute>
   </element>
 
   <element name="executionListener">
@@ -475,7 +514,9 @@
       <attribute name="event" use="optional">
         <annotation>
           <documentation>
-            The event on which the delegation class or expression will be executed.
+            Expression that must resolve to an object implementing a compatible interface
+            for a taskListener. Evaluation and delegation to the resulting object is done
+            when the task event occurs.
           </documentation>
         </annotation>
         <simpleType>
@@ -503,7 +544,7 @@
       <attribute name="customPropertiesResolverClass" type="string">
         <annotation>
           <documentation>
-            An implementation of the org.activiti.engine.delegate.ExecutionListenerCustomPropertiesResolver interface
+            An implementation of the org.activiti.engine.delegate.CustomPropertiesResolver interface
             that will be called when the event occurs.
           </documentation>
         </annotation>
@@ -511,9 +552,17 @@
       <attribute name="customPropertiesResolverExpression" type="tns:tExpression">
         <annotation>
           <documentation>
-            Expression that must resolve to an object implementing the
-            org.activiti.engine.delegate.ExecutionListenerCustomPropertiesResolver interface.
-            Evaluation and delegation to the resulting object is done when the  event occurs.
+            Expression that must resolve to an object implementing a compatible interface
+            for an customPropertiesResolver. Evaluation and delegation to the resulting object is done
+            when the event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="customPropertiesResolverDelegateExpression" type="tns:tExpression">
+        <annotation>
+          <documentation>
+            Expression that must resolve to an object implementing the customPropertiesResolver interface. Evaluation and delegation to the resulting object is done
+            when the event occurs.
           </documentation>
         </annotation>
       </attribute>
