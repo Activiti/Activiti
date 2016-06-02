@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.gossinteractive.com/processdef">
+  <process id="repeattimertest" name="Repeat Timer Test" isExecutable="true">
+    <documentation>Attempt to reproduce timer "bug" seen on demo8</documentation>
+    <startEvent id="outerStartEvent"/>
+    <sequenceFlow id="flow1" sourceRef="outerStartEvent" targetRef="outterSubprocess"/>
+    <endEvent id="outerEndEvent"/>
+    <sequenceFlow id="flow2" sourceRef="outterSubprocess" targetRef="outerEndEvent"/>
+    <subProcess id="outterSubprocess" name="subProcess">
+      <startEvent id="outterSubprocessStart" activiti:initiator="initiator"/>
+      <endEvent id="outterSubprocessEnd"/>
+      <endEvent id="end1"/>
+      <subProcess id="innerSubprocess" name="subProcess">
+        <userTask id="innerUserTask" />
+        <startEvent id="innerSubprocessStart" activiti:initiator="initiator"/>
+        <endEvent id="innerSubprocessEnd"/>
+        <sequenceFlow id="flow3" sourceRef="innerSubprocessStart" targetRef="innerUserTask"/>
+        <sequenceFlow id="flow4" sourceRef="innerUserTask" targetRef="innerSubprocessEnd"/>
+      </subProcess>
+      <boundaryEvent id="boundaryEvent1" attachedToRef="innerSubprocess" cancelActivity="false">
+        <timerEventDefinition>
+          <timeCycle>R3/PT24H</timeCycle>
+        </timerEventDefinition>
+      </boundaryEvent>
+      <userTask id="atask" name="A task">
+      </userTask>
+      <sequenceFlow id="flow5" sourceRef="atask" targetRef="end1"/>
+      <sequenceFlow id="flow6" sourceRef="outterSubprocessStart" targetRef="innerSubprocess"/>
+      <sequenceFlow id="flow7" sourceRef="innerSubprocess" targetRef="outterSubprocessEnd"/>
+      <sequenceFlow id="flow8" sourceRef="boundaryEvent1" targetRef="atask"/>
+    </subProcess>
+  </process>
+</definitions>
