@@ -18,7 +18,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.2.5.RELEASE</spring.framework.version>
-    <spring.security.version>3.2.3.RELEASE</spring.security.version>
+    <spring.security.version>4.0.4.RELEASE</spring.security.version>
     <mule.version>3.5.0</mule.version>
     <cxf.version>3.1.6</cxf.version>
     <batik.version>1.7</batik.version>

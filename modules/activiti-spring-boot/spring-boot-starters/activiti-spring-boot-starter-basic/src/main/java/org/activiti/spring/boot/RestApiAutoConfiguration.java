@@ -28,7 +28,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 
 /**
  * Auto-configuration and starter for the Activiti REST APIs.
@@ -67,7 +66,6 @@ public class RestApiAutoConfiguration {
   @Configuration
   @ConditionalOnClass(name = {"org.activiti.rest.service.api.RestUrls", "org.springframework.web.servlet.DispatcherServlet"})
   @EnableWebSecurity
-  @EnableWebMvcSecurity
   public static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     @Bean
