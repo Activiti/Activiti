@@ -193,21 +193,30 @@ public class TimerEntity extends JobEntity {
     }
     return 1;
   }
-
+  
   protected int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
-    List<ActivityImpl> activities = ((ProcessDefinitionEntity) def).getActivities();
+    return checkBoundaryEventsDefinitions(((ProcessDefinitionEntity) def).getActivities(), embededActivityId);
+  }
+
+  protected int checkBoundaryEventsDefinitions(List<ActivityImpl> activities, String embededActivityId) {
+    // should check level by level, first check provided activities list 
     for (ActivityImpl activity : activities) {
       List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
       if (activityTimerDeclarations != null) {
         for (TimerDeclarationImpl timerDeclaration : activityTimerDeclarations) {
           String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerDeclaration.getJobHandlerConfiguration());
-          if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) 
-              && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
+          if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
             return calculateMaxIterationsValue(timerDeclaration.getDescription().getExpressionText());
           }
         }
       }
     }
+    
+    // now check sub activities 
+    for (ActivityImpl activity : activities) {
+      return checkBoundaryEventsDefinitions(activity.getActivities(), embededActivityId);
+    }
+    
     return 1;
   }
 
