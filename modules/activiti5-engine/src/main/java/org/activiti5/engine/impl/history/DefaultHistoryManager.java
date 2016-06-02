@@ -274,32 +274,39 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
     }
   }
   
-  /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordActivityEnd(org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
- */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.activiti5.engine.impl.history.HistoryManagerInterface#recordActivityEnd
+   * (org.activiti5.engine.impl.persistence.entity.ExecutionEntity)
+   */
   @Override
-public void recordActivityEnd(ExecutionEntity executionEntity) {
-    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+  public void recordActivityEnd(ExecutionEntity executionEntity) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
-      if (historicActivityInstance!=null) {
-        historicActivityInstance.markEnded(null);
-        
-        // Fire event
-        ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
-        if (config != null && config.getEventDispatcher().isEnabled()) {
-          config.getEventDispatcher().dispatchEvent(
-              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
-        }
-        
+      if (historicActivityInstance != null) {
+        endHistoricActivityInstance(historicActivityInstance);
       }
+    }
+  }
+
+  protected void endHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
+    historicActivityInstance.markEnded(null);
+    
+    // Fire event
+    ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+    if (config != null && config.getEventDispatcher().isEnabled()) {
+      config.getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
     }
   }
   
   /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordStartEventEnded(java.lang.String, java.lang.String)
- */
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordStartEventEnded(java.lang.String, java.lang.String)
+   */
   @Override
-public void recordStartEventEnded(String executionId, String activityId) {
+  public void recordStartEventEnded(ExecutionEntity execution, String activityId) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       
       // Interrupted executions might not have an activityId set, skip recording history.
@@ -307,31 +314,16 @@ public void recordStartEventEnded(String executionId, String activityId) {
         return;
       }
       
-      // Search for the historic activity instance in the dbsqlsession cache, since process hasn't been persisted to db yet
-      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
-      for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
-        if ( executionId.equals(cachedHistoricActivityInstance.getExecutionId())
-                && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
-                && (cachedHistoricActivityInstance.getEndTime()==null)
-                ) {
-          cachedHistoricActivityInstance.markEnded(null);
-          
-          // Fire event
-          ProcessEngineConfigurationImpl config = getProcessEngineConfiguration();
-          if (config != null && config.getEventDispatcher().isEnabled()) {
-            config.getEventDispatcher().dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, cachedHistoricActivityInstance));
-          }
-          
-          return;
-        }
+      HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution, activityId, false); // false -> no need to check the persistent store, as process just started
+      if (historicActivityInstance != null) {
+        endHistoricActivityInstance(historicActivityInstance);
       }
     }
   }
   
   @Override
   public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
-    return findActivityInstance(execution, execution.getActivityId());
+    return findActivityInstance(execution, execution.getActivityId(), true);
   }
   
   /*
@@ -341,36 +333,39 @@ public void recordStartEventEnded(String executionId, String activityId) {
    * org.activiti.engine.impl.history.HistoryManagerInterface#findActivityInstance
    * (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
-  protected HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId) {
+  protected HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean checkPersistentStore) {
     
     String executionId = execution.getId();
 
     // search for the historic activity instance in the dbsqlsession cache
-    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
-    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
+    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession()
+        .findInCache(HistoricActivityInstanceEntity.class);
+    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
       if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())
-           && activityId != null
-           && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
-           && (cachedHistoricActivityInstance.getEndTime()==null)
-         ) {
+          && activityId != null
+          && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
+          && (cachedHistoricActivityInstance.getEndTime() == null)) {
         return cachedHistoricActivityInstance;
       }
     }
-    
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
-      .executionId(executionId)
-      .activityId(activityId)
-      .unfinished()
-      .listPage(0, 1);
-    
-    if (!historicActivityInstances.isEmpty()) {
+
+    List<HistoricActivityInstance> historicActivityInstances = null;
+    if (checkPersistentStore) {
+      historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+          .executionId(executionId)
+          .activityId(activityId)
+          .unfinished()
+          .listPage(0, 1);
+    }
+
+    if (historicActivityInstances != null && !historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
     }
-    
-    if (execution.getParentId()!=null) {
-      return findActivityInstance((ExecutionEntity) execution.getParent(), activityId);
+
+    if (execution.getParentId() != null) {
+      return findActivityInstance((ExecutionEntity) execution.getParent(), activityId, checkPersistentStore);
     }
-    
+
     return null;
   }
   
