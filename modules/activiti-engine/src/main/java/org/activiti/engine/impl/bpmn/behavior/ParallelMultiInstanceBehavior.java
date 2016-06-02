@@ -67,7 +67,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
           .createChildExecution((ExecutionEntity) execution); 
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
-      concurrentExecution.setConcurrent(true);
       concurrentExecution.setScope(false);
 
       concurrentExecutions.add(concurrentExecution);
@@ -175,7 +174,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
         
         if (hasCompensation) {
-          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionToUse, executionToUse.getParent());
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionToUse);
         }
         
         if (activity instanceof CallActivity) {
@@ -251,8 +250,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     }
 
     if (deleteExecution) {
-      executionEntityManager.deleteDataRelatedToExecution(parentExecution, null, false);
-      commandContext.getExecutionEntityManager().delete(parentExecution);
+      executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
     }
   }
 

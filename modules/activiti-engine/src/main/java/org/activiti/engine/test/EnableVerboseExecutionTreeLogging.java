@@ -10,21 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.bpmn.behavior;
+package org.activiti.engine.test;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author Joram Barrez
  */
-public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
-
-  private static final long serialVersionUID = 1L;
-
-  public void execute(DelegateExecution execution) {
-    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
-  }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EnableVerboseExecutionTreeLogging {
 
 }

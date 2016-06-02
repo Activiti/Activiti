@@ -20,12 +20,14 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,6 +39,31 @@ import org.apache.commons.lang3.StringUtils;
  * @author Joram Barrez
  */
 public class DelegateHelper {
+  
+  /**
+   * To be used in an {@link ActivityBehavior} or {@link JavaDelegate}: leaves
+   * according to the default BPMN 2.0 rules: all sequenceflow with a condition
+   * that evaluates to true are followed.
+   */
+  public static void leaveDelegate(DelegateExecution delegateExecution) {
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, true);
+  }
+  
+  /**
+   * To be used in an {@link ActivityBehavior} or {@link JavaDelegate}: leaves
+   * the current activity via one specific sequenceflow. 
+   */
+  public static void leaveDelegate(DelegateExecution delegateExecution, String sequenceFlowId) {
+    String processDefinitionId = delegateExecution.getProcessDefinitionId();
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+    FlowElement flowElement = process.getFlowElement(sequenceFlowId);
+    if (flowElement instanceof SequenceFlow) {
+      delegateExecution.setCurrentFlowElement(flowElement);
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, false);
+    } else {
+      throw new ActivitiException(sequenceFlowId + " does not match a sequence flow");
+    }
+  }
   
   /**
    * Returns the {@link BpmnModel} matching the process definition bpmn model

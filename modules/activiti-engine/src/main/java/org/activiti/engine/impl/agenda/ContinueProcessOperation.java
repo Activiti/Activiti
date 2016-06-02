@@ -1,14 +1,13 @@
 package org.activiti.engine.impl.agenda;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -19,15 +18,20 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.logging.LogMDC;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Operation that takes the current {@link FlowElement} set on the {@link ExecutionEntity}
+ * and executes the associated {@link ActivityBehavior}. In the case of async, schedules a {@link Job}. 
+ * 
+ * Also makes sure the {@link ExecutionListener} instances are called.
+ * 
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
@@ -52,29 +56,14 @@ public class ContinueProcessOperation extends AbstractOperation {
 
   @Override
   public void run() {
-
-    FlowElement currentFlowElement = execution.getCurrentFlowElement();
-
-    if (currentFlowElement == null) {
-      currentFlowElement = findCurrentFlowElement(execution);
-    }
-    
+    FlowElement currentFlowElement = getCurrentFlowElement(execution);
     if (currentFlowElement instanceof FlowNode) {
-    	
-      // Check if it's the initial flow element. If so, we must fire the execution listeners for the process too
-      FlowNode currentFlowNode = (FlowNode) currentFlowElement;
-      if (currentFlowNode.getIncomingFlows() != null && currentFlowNode.getIncomingFlows().size() == 0 && currentFlowNode.getSubProcess() == null) {
-    	  executeProcessStartExecutionListeners();
-      }
-    	
-      continueThroughFlowNode(currentFlowNode);
-      
+      continueThroughFlowNode((FlowNode) currentFlowElement);
     } else if (currentFlowElement instanceof SequenceFlow) {
       continueThroughSequenceFlow((SequenceFlow) currentFlowElement);
     } else {
       throw new RuntimeException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
     }
-
   }
 
   protected void executeProcessStartExecutionListeners() {
@@ -83,56 +72,59 @@ public class ContinueProcessOperation extends AbstractOperation {
   }
 
   protected void continueThroughFlowNode(FlowNode flowNode) {
+    
+    // Check if it's the initial flow element. If so, we must fire the execution listeners for the process too
+    if (flowNode.getIncomingFlows() != null 
+        && flowNode.getIncomingFlows().size() == 0 
+        && flowNode.getSubProcess() == null) {
+      executeProcessStartExecutionListeners();
+    }
+    
+     // For a subprocess, a new child execution is created that will visit the steps of the subprocess
+     // The original execution that arrived here will wait until the subprocess is finished
+     // and will then be used to continue the process instance.
     if (flowNode instanceof SubProcess) {
-      ExecutionEntity parentScopeExecution = null;
-      ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-      ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(execution.getParentId());
-      while (currentlyExaminedExecution != null && parentScopeExecution == null) {
-        if (currentlyExaminedExecution.isScope()) {
-          parentScopeExecution = currentlyExaminedExecution;
-        } else {
-          currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
-        }
-      }
-      
-      // Create the sub process execution that can be used to set variables
-      ExecutionEntity subProcessExecution = commandContext.getExecutionEntityManager().createChildExecution(parentScopeExecution); 
-      subProcessExecution.setCurrentFlowElement(flowNode);
-      subProcessExecution.setScope(true);
-
-      executionEntityManager.deleteExecutionAndRelatedData(execution, null, false);
-      
-      execution = subProcessExecution;
+      createChildExecutionForSubProcess((SubProcess) flowNode);
     }
     
-    // See if flowNode is an async activity and schedule as a job if that evaluates to true
-    if (!forceSynchronousOperation) {
-      boolean isAsynchronous = flowNode.isAsynchronous();
-      boolean isExclusive = flowNode.isExclusive();
-      
-      if (isAsynchronous) {
-        scheduleJob(isExclusive);
-        return;
-      }
+    if (forceSynchronousOperation || !flowNode.isAsynchronous()) {
+      executeSynchronous(flowNode);
+    } else {
+      executeAsynchronous(flowNode);
     }
+  }
 
-    // Synchronous execution
+  protected void createChildExecutionForSubProcess(SubProcess subProcess) {
+    ExecutionEntity parentScopeExecution = findFirstParentScopeExecution(execution);
     
+    // Create the sub process execution that can be used to set variables
+    // We create a new execution and delete the incoming one to have a proper scope that 
+    // does not conflict anything with any existing scopes
+    
+    ExecutionEntity subProcessExecution = commandContext.getExecutionEntityManager().createChildExecution(parentScopeExecution); 
+    subProcessExecution.setCurrentFlowElement(subProcess);
+    subProcessExecution.setScope(true);
+
+    commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
+    execution = subProcessExecution;
+  }
+  
+  protected void executeSynchronous(FlowNode flowNode) {
     commandContext.getHistoryManager().recordActivityStart(execution);
-
-    // Execution listener
+ 
+    // Execution listener: event 'start'
     if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
-
+ 
     // Execute any boundary events, sub process boundary events will be executed from the activity behavior
-    if (inCompensation == false) {
-      Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
+    if (!inCompensation && flowNode instanceof Activity) { // Only activities can have boundary events
+      List<BoundaryEvent> boundaryEvents = ((Activity) flowNode).getBoundaryEvents();
       if (CollectionUtil.isNotEmpty(boundaryEvents)) {
         executeBoundaryEvents(boundaryEvents, execution);
       }
     }
-
+ 
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     
@@ -158,10 +150,26 @@ public class ContinueProcessOperation extends AbstractOperation {
       Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
   }
+  
+  protected void executeAsynchronous(FlowNode flowNode) {
+    MessageEntity message = commandContext.getJobEntityManager().createMessage();
+    message.setExecutionId(execution.getId());
+    message.setProcessInstanceId(execution.getProcessInstanceId());
+    message.setProcessDefinitionId(execution.getProcessDefinitionId());
+    message.setExclusive(flowNode.isExclusive());
+    message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
+
+    // Inherit tenant id (if applicable)
+    if (execution.getTenantId() != null) {
+      message.setTenantId(execution.getTenantId());
+    }
+
+    commandContext.getJobEntityManager().send(message);
+  }
 
   protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
 
-    // Execution listener
+    // Execution listener. Sequenceflow only 'take' makes sense ... but we've supported all three since the beginning
     if (CollectionUtil.isNotEmpty(sequenceFlow.getExecutionListeners())) {
       executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_START);
       executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_TAKE);
@@ -189,24 +197,9 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
     execution.setCurrentFlowElement(targetFlowElement);
+    
     logger.debug("Sequence flow '{}' encountered. Continuing process by following it using execution {}", sequenceFlow.getId(), execution.getId());
     agenda.planContinueProcessOperation(execution);
-  }
-
-  protected void scheduleJob(boolean exclusive) {
-    MessageEntity message = commandContext.getJobEntityManager().createMessage();
-    message.setExecutionId(execution.getId());
-    message.setProcessInstanceId(execution.getProcessInstanceId());
-    message.setProcessDefinitionId(execution.getProcessDefinitionId());
-    message.setExclusive(exclusive);
-    message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
-
-    // Inherit tenant id (if applicable)
-    if (execution.getTenantId() != null) {
-      message.setTenantId(execution.getTenantId());
-    }
-
-    commandContext.getJobEntityManager().send(message);
   }
 
   protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ExecutionEntity execution) {
@@ -214,14 +207,12 @@ public class ContinueProcessOperation extends AbstractOperation {
     // The parent execution becomes a scope, and a child execution is created for each of the boundary events
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
-      if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
-        continue;
-      }
-      
-      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+      if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())
+          || (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition))  {
         continue;
       }
 
+      // A Child execution of the current execution is created to represent the boundary event being active 
       ExecutionEntity childExecutionEntity = commandContext.getExecutionEntityManager().createChildExecution((ExecutionEntity) execution); 
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
@@ -233,22 +224,4 @@ public class ContinueProcessOperation extends AbstractOperation {
     }
   }
 
-  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowNode flowNode) {
-    Process process = getProcessDefinition(processDefinitionId);
-
-    // This could be cached or could be done at parsing time
-    List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
-    for (BoundaryEvent boundaryEvent : boundaryEvents) {
-      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowNode.getId())) {
-        results.add(boundaryEvent);
-      }
-    }
-    return results;
-  }
-
-  protected Process getProcessDefinition(String processDefinitionId) {
-    // TODO: must be extracted / cache should be accessed in another way
-    return ProcessDefinitionUtil.getProcess(processDefinitionId);
-  }
 }

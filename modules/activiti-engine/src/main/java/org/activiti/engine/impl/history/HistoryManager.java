@@ -54,11 +54,6 @@ public interface HistoryManager {
   void recordActivityEnd(ExecutionEntity executionEntity);
 
   /**
-   * Record the end of a start-task, if activity history is enabled.
-   */
-  void recordStartEventEnded(String executionId, String activityId);
-
-  /**
    * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution.
    */
   HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull);
