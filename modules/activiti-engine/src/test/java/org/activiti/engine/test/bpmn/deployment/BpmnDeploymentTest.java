@@ -116,6 +116,20 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     // Verify that nothing is deployed
     assertEquals(0, repositoryService.createDeploymentQuery().count());
   }
+    
+  public void testViolateDefinitionTargetNamespaceMaximumLength() {
+    try {
+      repositoryService.createDeployment()
+          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.definitionWithLongTargetNamespace.bpmn20.xml")
+          .deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, e.getMessage());
+    }
+
+    // Verify that nothing is deployed
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+  }
 
   public void testDeploySameFileTwice() {
     String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
