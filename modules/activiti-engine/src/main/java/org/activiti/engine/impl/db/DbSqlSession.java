@@ -55,7 +55,6 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
-import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
@@ -905,8 +904,6 @@ public class DbSqlSession implements Session {
   }
 
   public void dbSchemaCreate() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-
     if (isEngineTablePresent()) {
       String dbVersion = getDbVersion();
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
@@ -916,11 +913,11 @@ public class DbSqlSession implements Session {
       dbSchemaCreateEngine();
     }
 
-    if (processEngineConfiguration.getHistoryLevel() != HistoryLevel.NONE) {
+    if (dbSqlSessionFactory.isDbHistoryUsed()) {
       dbSchemaCreateHistory();
     }
 
-    if (processEngineConfiguration.isDbIdentityUsed()) {
+    if (dbSqlSessionFactory.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
     }
   }
