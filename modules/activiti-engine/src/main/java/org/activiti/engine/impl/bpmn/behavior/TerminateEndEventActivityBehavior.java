@@ -14,15 +14,23 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.TerminateEventDefinition;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -61,7 +69,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
     
     if (terminateAll) {
-    	ActivityExecution processInstanceExecution = findProcessInstanceExecution(execution);
+    	ActivityExecution processInstanceExecution = findRootProcessInstanceExecution((ExecutionEntity) execution);
     	terminateProcessInstanceExecution(execution, terminateEndEventActivity, processInstanceExecution);
     } else {
     	ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
@@ -84,11 +92,25 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   	}
   	return currentExecution;
   }
+  
+  
+  protected ActivityExecution findRootProcessInstanceExecution(ExecutionEntity execution) {
+    ExecutionEntity currentExecution = execution;
+    while (currentExecution.getParentId() != null || currentExecution.getSuperExecutionId() != null) {
+      ExecutionEntity parentExecution = currentExecution.getParent();
+      if (parentExecution != null) {
+        currentExecution = parentExecution;
+      } else if (currentExecution.getSuperExecutionId() != null) {
+        currentExecution = currentExecution.getSuperExecution();
+      }
+    }
+    return currentExecution;
+  }
 
   protected void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
     // send cancelled event
     sendCancelledEvent( execution, terminateEndEventActivity, scopeExecution);
-
+    
     // destroy the scope
     scopeExecution.destroyScope("terminate end event fired");
 
@@ -98,19 +120,29 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ((InterpretableExecution)scopeExecution).setActivity(terminateEndEventActivity);
     // end the scope execution
     scopeExecution.end();
+    
+    // Scope execution can already have been ended (for example when multiple seq flow arrive in the same terminate end event)
+    // in that case, we need to make sure the activity instance is ended
+    if (scopeExecution.isEnded()) {
+      Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    } 
+    
   }
   
   protected void terminateProcessInstanceExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution processInstanceExecution) {
     sendCancelledEvent( execution, terminateEndEventActivity, processInstanceExecution);
-    deleteProcessInstance((ExecutionEntity) processInstanceExecution, "terminate end event (" + terminateEndEventActivity.getId() + ")");
+    deleteProcessInstance((ExecutionEntity) processInstanceExecution, execution, "terminate end event (" + terminateEndEventActivity.getId() + ")");
   }
   
-  protected void deleteProcessInstance(ExecutionEntity processInstanceExecution, String deleteReason) {
+  protected void deleteProcessInstance(ExecutionEntity processInstanceExecution, ActivityExecution execution, String deleteReason) {
   	
     List<ExecutionEntity> orderedExecutions = orderExecutionsRootToLeaf(processInstanceExecution);
     Collections.reverse(orderedExecutions);
     
+    endAllHistoricActivities(processInstanceExecution.getId());
+    
     for (ExecutionEntity executionToDelete : orderedExecutions) {
+      
     	executionToDelete.setDeleteReason(deleteReason);
     	executionToDelete.setEnded(true);
     	executionToDelete.setActive(false);
@@ -119,6 +151,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     	executionToDelete.remove();
     }
     
+    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceExecution.getId(), deleteReason, execution.getActivity().getId());
   }
   
   protected List<ExecutionEntity> orderExecutionsRootToLeaf(ExecutionEntity execution) {
@@ -149,6 +182,45 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     }
     
     return orderedExecutions;
+  }
+  
+  protected void endAllHistoricActivities(String processInstanceId) {
+    
+    if (!Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      return;
+    }
+    
+    Map<String, HistoricActivityInstanceEntity> historicActivityInstancMap = new HashMap<String, HistoricActivityInstanceEntity>();
+    
+    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+      .processInstanceId(processInstanceId)
+      .unfinished()
+      .list();
+    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+      historicActivityInstancMap.put(historicActivityInstance.getId(), (HistoricActivityInstanceEntity) historicActivityInstance);
+    }
+    
+    // Cached version overwites entity
+    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = Context.getCommandContext().getDbSqlSession()
+        .findInCache(HistoricActivityInstanceEntity.class);
+    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
+      if (processInstanceId.equals(cachedHistoricActivityInstance.getProcessInstanceId())
+          && (cachedHistoricActivityInstance.getEndTime() == null)) {
+        historicActivityInstancMap.put(cachedHistoricActivityInstance.getId(), cachedHistoricActivityInstance);
+      }
+    }
+
+    for (HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstancMap.values()) {
+      historicActivityInstance.markEnded(null);
+      
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+      }
+    }
+    
   }
   
   protected void sendCancelledEvent(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {

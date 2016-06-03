@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Tijs Rademakers
  */
-public class ServiceTask extends Task {
+public class ServiceTask extends TaskWithFieldExtensions {
 
   public static final String MAIL_TASK = "mail";
 
@@ -28,7 +28,6 @@ public class ServiceTask extends Task {
   protected String type;
   protected String operationRef;
   protected String extensionId;
-  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
   protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
   protected String skipExpression;
 
@@ -55,12 +54,6 @@ public class ServiceTask extends Task {
   }
   public void setType(String type) {
     this.type = type;
-  }
-  public List<FieldExtension> getFieldExtensions() {
-    return fieldExtensions;
-  }
-  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
-    this.fieldExtensions = fieldExtensions;
   }
   public List<CustomProperty> getCustomProperties() {
     return customProperties;

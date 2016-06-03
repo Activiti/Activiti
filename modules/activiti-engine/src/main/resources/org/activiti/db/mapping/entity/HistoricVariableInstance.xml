@@ -158,8 +158,20 @@
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
       </if>
+      <if test="executionIds != null and !executionIds.isEmpty()">
+          and RES.EXECUTION_ID_ in
+          <foreach item="item" index="index" collection="executionIds" open="(" separator="," close=")">
+            #{item}
+          </foreach>
+      </if>
       <if test="taskId != null">
         and RES.TASK_ID_ = #{taskId}
+      </if>
+      <if test="taskIds != null and !taskIds.isEmpty()">
+          and RES.TASK_ID_ in
+          <foreach item="item" index="index" collection="taskIds" open="(" separator="," close=")">
+            #{item}
+          </foreach>
       </if>
       <if test="excludeTaskRelated">
         and RES.TASK_ID_ is NULL

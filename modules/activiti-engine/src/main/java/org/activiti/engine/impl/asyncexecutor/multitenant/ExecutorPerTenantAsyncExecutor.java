@@ -15,6 +15,7 @@ package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
@@ -51,6 +52,11 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     this.tenantInfoHolder = tenantInfoHolder;
     this.tenantAwareAyncExecutorFactory = tenantAwareAyncExecutorFactory;
   }
+  
+  @Override
+  public Set<String> getTenantIds() {
+    return tenantExecutors.keySet();
+  }
 
   public void addTenantAsyncExecutor(String tenantId, boolean startExecutor) {
     AsyncExecutor tenantExecutor = null;
@@ -75,6 +81,12 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     if (startExecutor) {
       tenantExecutor.start();
     }
+  }
+  
+  @Override
+  public void removeTenantAsyncExecutor(String tenantId) {
+    shutdownTenantExecutor(tenantId);
+    tenantExecutors.remove(tenantId);
   }
   
   protected AsyncExecutor determineAsyncExecutor() {
@@ -118,10 +130,14 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
 
   public synchronized void shutdown() {
     for (String tenantId : tenantExecutors.keySet()) {
-      logger.info("Shutting down async executor for tenant " + tenantId);
-      tenantExecutors.get(tenantId).shutdown();
+      shutdownTenantExecutor(tenantId);
     }
     active = false;
+  }
+
+  protected void shutdownTenantExecutor(String tenantId) {
+    logger.info("Shutting down async executor for tenant " + tenantId);
+    tenantExecutors.get(tenantId).shutdown();
   }
 
   public String getLockOwner() {

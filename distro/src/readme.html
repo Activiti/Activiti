@@ -34,6 +34,58 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
+<h3>Release Notes - Activiti - Version 5.20.0</h3>
+<h4>Highlights</h4>
+<p>
+This is a bugfix release (mainly fixing the bug around losing message and signal start event subscriptions on process definition redeployment, see <a href="https://activiti.atlassian.net/browse/ACT-4117">ACT-4117</a>). 
+</p>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2163'>ACT-2163</a>] -         Fix some bugs and optimize display on text in workflow drawing
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4051'>ACT-4051</a>] -         Spring Boot support does not discover processes in external JARs
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4097'>ACT-4097</a>] -         Subprocess start events not present in historic activity instance list
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4101'>ACT-4101</a>] -         NPE when there are multiple routes to terminateEndEvent, and both are reached
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4109'>ACT-4109</a>] -         Database exception when using both processInstanceId and executionId on HistoricVariableInstanceQuery
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4112'>ACT-4112</a>] -         Subscribed Event Deleted after the related process is redeployed (MySQL database)
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4117'>ACT-4117</a>] -         Signal and Boundary event subscription are lost when deploying a new process definition version
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4118'>ACT-4118</a>] -         Signal and Message start event are not restored when deleting the latest version of a deployment
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4119'>ACT-4119</a>] -         Stale ProcessDefinition cache when modifying the suspensionState
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4130'>ACT-4130</a>] -         Unused assignment and possible integer overflow
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4131'>ACT-4131</a>] -         Message events are not restored after deployment for processes with tenant id
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4137'>ACT-4137</a>] -         Historic process instance endTime not set when using terminate end event
+</li>
+</ul>
+                
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4091'>ACT-4091</a>] -         Tasks list empty in executionEntity
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4104'>ACT-4104</a>] -         Boundary message event isn&#39;t exported
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4064'>ACT-4064</a>] -         Missing some search filters in &quot;Get historic task instances&quot; REST service
+</li>
+</ul>
+        
+
 <h3>Release Notes - Activiti - Version 5.19.0</h3>
 <h4>Highlights</h4>
 <ul>

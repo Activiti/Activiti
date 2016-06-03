@@ -23,6 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -396,6 +397,111 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   	
   	assertEquals(0, managementService.createJobQuery().count());
   	
+  }
+  
+  // Can't use @Deployment, we need to control the clock very strict to have a good test
+  public void testMultipleStartEvents() {
+
+    // Human time (GMT): Tue, 10 May 2016 18:50:01 GMT
+    Date startTime = new Date(1462906201000L);
+    processEngineConfiguration.getClock().setCurrentTime(startTime);
+    
+    String deploymentId = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testMultipleStartEvents.bpmn20.xml")
+        .deploy().getId();
+    
+    // After deployment, should have 4 jobs for the 4 timer events
+    assertEquals(4, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().executable().count());
+    
+    // Path A : triggered at start + 10 seconds (18:50:11) (R2)
+    // Path B: triggered at start + 5 seconds (18:50:06) (R3)
+    // Path C: triggered at start + 15 seconds (18:50:16) (R1)
+    // path D: triggerd at 18:50:20 (Cron)
+    
+    // Moving 7 seconds (18:50:08) should trigger one timer (the second start timer in the process diagram)
+    Date newDate = new Date(startTime.getTime() + (7 * 1000));
+    processEngineConfiguration.getClock().setCurrentTime(newDate);
+    List<Job> executableTimers = managementService.createJobQuery().executable().list();
+    assertEquals(1,executableTimers.size());
+    
+    executeJobs(executableTimers);
+    validateTaskCounts(0, 1, 0, 0);
+    assertEquals(4, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().executable().count());
+    
+    // New situation:
+    // Path A : triggered at start + 10 seconds (18:50:11) (R2)
+    // Path B: triggered at start + 2*5 seconds (18:50:11) (R2 - was R3) [CHANGED]
+    // Path C: triggered at start + 15 seconds (18:50:16) (R1)
+    // path D: triggerd at 18:50:20 (Cron)
+    
+    // Moving 4 seconds (18:50:12) should trigger both path A and B
+    newDate = new Date(newDate.getTime() + (4 * 1000));
+    processEngineConfiguration.getClock().setCurrentTime(newDate);
+    
+    executableTimers = managementService.createJobQuery().executable().list();
+    assertEquals(2,executableTimers.size());
+    executeJobs(executableTimers);
+    validateTaskCounts(1, 2, 0, 0);
+    assertEquals(4, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().executable().count());
+    
+    // New situation:
+    // Path A : triggered at start + 2*10 seconds (18:50:21) (R1 - was R2) [CHANGED]
+    // Path B: triggered at start + 3*5 seconds (18:50:16) (R1 - was R2) [CHANGED]
+    // Path C: triggered at start + 15 seconds (18:50:16) (R1)
+    // path D: triggerd at 18:50:20 (Cron)
+    
+    // Moving 6 seconds (18:50:18) should trigger B and C
+    newDate = new Date(newDate.getTime() + (6 * 1000));
+    processEngineConfiguration.getClock().setCurrentTime(newDate);
+    
+    executableTimers = managementService.createJobQuery().executable().list();
+    assertEquals(2,executableTimers.size());
+    executeJobs(executableTimers);
+    validateTaskCounts(1, 3, 1, 0);
+    assertEquals(2, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().executable().count());
+    
+    // New situation:
+    // Path A : triggered at start + 2*10 seconds (18:50:21) (R1 - was R2) [CHANGED]
+    // Path B: all repeats used up
+    // Path C: all repeats used up
+    // path D: triggerd at 18:50:20 (Cron)
+    
+    // Moving 10 seconds (18:50:28) should trigger A and D
+    newDate = new Date(newDate.getTime() + (6 * 1000));
+    processEngineConfiguration.getClock().setCurrentTime(newDate);
+    
+    executableTimers = managementService.createJobQuery().executable().list();
+    assertEquals(2,executableTimers.size());
+    executeJobs(executableTimers);
+    validateTaskCounts(2, 3, 1, 1);
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().executable().count());
+    
+    // New situation:
+    // Path A : all repeats used up
+    // Path B: all repeats used up
+    // Path C: all repeats used up
+    // path D: triggerd at 18:50:40 (Cron)
+    
+    // Clean up
+    repositoryService.deleteDeployment(deploymentId, true);
+  }
+  
+  private void validateTaskCounts(long taskACount, long taskBCount, long taskCCount, long taskDCount) {
+    assertEquals("task A counts are incorrect", taskACount, taskService.createTaskQuery().taskName("Task A").count());
+    assertEquals("task B counts are incorrect", taskBCount, taskService.createTaskQuery().taskName("Task B").count());
+    assertEquals("task C counts are incorrect", taskCCount, taskService.createTaskQuery().taskName("Task C").count());
+    assertEquals("task D counts are incorrect", taskDCount, taskService.createTaskQuery().taskName("Task D").count());
+  }
+  
+  private void executeJobs(List<Job> jobs) {
+    for (Job job : jobs) {
+      managementService.executeJob(job.getId());
+    }
   }
   
   private void cleanDB() {

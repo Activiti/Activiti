@@ -25,7 +25,13 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.jobexecutor.*;
+import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -59,7 +65,8 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
       String jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
       Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
       JobHandler jobHandler = jobHandlers.get(TimerStartEventJobHandler.TYPE);
-      jobHandlerConfiguration = ((TimerEventHandler)jobHandler).setActivityIdToConfiguration(jobHandlerConfiguration, processDefinition.getKey());
+      jobHandlerConfiguration = ((TimerEventHandler) jobHandler).setProcessDefinitionKeyToConfiguration(jobHandlerConfiguration, processDefinition.getKey());
+      jobHandlerConfiguration = ((TimerEventHandler) jobHandler).setActivityIdToConfiguration(jobHandlerConfiguration, timerActivity.getId());
       timerDeclaration.setJobHandlerConfiguration(jobHandlerConfiguration);
 
 

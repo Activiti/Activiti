@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -45,21 +46,25 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     ActivityImpl boundaryActivity = executionEntity.getProcessDefinition().findActivity(activityId);
     ActivityImpl interruptedActivity = executionEntity.getActivity();
     
-    executionEntity.setActivity(boundaryActivity);
-    
     List<PvmTransition> outgoingTransitions = boundaryActivity.getOutgoingTransitions();
     List<ExecutionEntity> interruptedExecutions = null;
     
     if (interrupting) {
-      if (executionEntity.getSubProcessInstance()!=null) {
+      
+      // Call activity
+      if (executionEntity.getSubProcessInstance() != null) {
         executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
+      } else {
+        Context.getCommandContext().getHistoryManager().recordActivityEnd(executionEntity);
       }
+      
+      executionEntity.setActivity(boundaryActivity);
       
       interruptedExecutions = new ArrayList<ExecutionEntity>(executionEntity.getExecutions());
       for (ExecutionEntity interruptedExecution: interruptedExecutions) {
         interruptedExecution.deleteCascade("interrupting boundary event '"+execution.getActivity().getId()+"' fired");
       }
-      
+
       execution.takeAll(outgoingTransitions, (List) interruptedExecutions);
     }
     else {

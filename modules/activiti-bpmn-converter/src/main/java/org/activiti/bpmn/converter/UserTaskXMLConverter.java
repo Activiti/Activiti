@@ -162,7 +162,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
           didWriteExtensionStartElement = true;
         }
         xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, customProperty.getName(), ACTIVITI_EXTENSIONS_NAMESPACE);
-        xtw.writeCharacters(customProperty.getSimpleValue());
+        xtw.writeCData(customProperty.getSimpleValue());
         xtw.writeEndElement();
       }
     }

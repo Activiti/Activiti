@@ -15,14 +15,14 @@ package org.activiti.validation.validator.impl;
 import java.util.List;
 
 import org.activiti.bpmn.model.FieldExtension;
-import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 
 public abstract class ExternalInvocationTaskValidator extends ProcessLevelValidator {
 	
-	protected void validateFieldDeclarationsForEmail(org.activiti.bpmn.model.Process process, Task task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+	protected void validateFieldDeclarationsForEmail(org.activiti.bpmn.model.Process process, TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
     boolean toDefined = false;
     boolean textOrHtmlDefined = false;
     
@@ -52,7 +52,9 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
     }
   }
 
-  protected void validateFieldDeclarationsForShell(org.activiti.bpmn.model.Process process, Task task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+  protected void validateFieldDeclarationsForShell(org.activiti.bpmn.model.Process process, TaskWithFieldExtensions task, 
+      List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+    
     boolean shellCommandDefined = false;
 
     for (FieldExtension fieldExtension : fieldExtensions) {

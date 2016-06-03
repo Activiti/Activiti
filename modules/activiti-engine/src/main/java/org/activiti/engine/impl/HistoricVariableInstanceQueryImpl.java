@@ -14,6 +14,7 @@
 package org.activiti.engine.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -36,7 +37,9 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   private static final long serialVersionUID = 1L;
   protected String id;
   protected String taskId;
+  protected Set<String> taskIds;
   protected String executionId;
+  protected Set<String> executionIds;
   protected String processInstanceId;
   protected String activityInstanceId;
   protected String variableName;
@@ -68,12 +71,23 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     this.processInstanceId = processInstanceId;
     return this;
   }
-
+  
   public HistoricVariableInstanceQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");
     }
     this.executionId = executionId;
+    return this;
+  }
+
+  public HistoricVariableInstanceQueryImpl executionIds(Set<String> executionIds) {
+    if (executionIds == null) {
+      throw new ActivitiIllegalArgumentException("executionIds is null");
+    }
+    if (executionIds.isEmpty()){
+        throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
+    }
+    this.executionIds = executionIds;
     return this;
   }
 
@@ -93,10 +107,27 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     return this;
   }
   
+  public HistoricVariableInstanceQueryImpl taskIds(Set<String> taskIds) {
+    if (taskIds == null) {
+      throw new ActivitiIllegalArgumentException("taskIds is null");
+    }
+    if (taskIds.isEmpty()){
+        throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
+    }
+    if (excludeTaskRelated) {
+        throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
+    }
+    this.taskIds = taskIds;
+    return this;
+  }
+  
   @Override
   public HistoricVariableInstanceQuery excludeTaskVariables() {
-    if(taskId != null) {
+    if (taskId != null) {
       throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
+    }
+    if (taskIds != null) {
+      throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
     }
     excludeTaskRelated = true;
     return this;

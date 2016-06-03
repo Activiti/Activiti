@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.test.api.event;
 
-import java.util.Date;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -22,6 +20,10 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to tasks.
@@ -237,8 +239,58 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 			}
 		}
 	}
-	
-	
+
+	/**
+	 * This method checks to ensure that the task.fireEvent(TaskListener.EVENTNAME_CREATE), fires before
+	 * the dispatchEvent ActivitiEventType.TASK_CREATED.  A ScriptTaskListener updates the priority and
+	 * assignee before the dispatchEvent() takes place.
+     */
+	@Deployment(resources= {"org/activiti/engine/test/api/event/TaskEventsTest.testEventFiring.bpmn20.xml"})
+	public void testEventFiringOrdering()
+	{
+		//We need to add a special listener that copies the Task values - to record its state when the event fires,
+		//otherwise the in-memory task instances is changed after the event fires.
+		TestActivitiEntityEventTaskListener tlistener = new TestActivitiEntityEventTaskListener(Task.class);
+		processEngineConfiguration.getEventDispatcher().addEventListener(tlistener);
+
+		try {
+
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTaskLocalVars");
+
+			// Fetch first task
+			Task task = taskService.createTaskQuery().singleResult();
+
+			// Complete first task
+			Map<String, Object> taskParams = new HashMap<String, Object>();
+			taskService.complete(task.getId(), taskParams, true);
+
+			ActivitiEntityEvent event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(0);
+			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+			assertTrue(event.getEntity() instanceof Task);
+
+			event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(1);
+			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+			assertTrue(event.getEntity() instanceof Task);
+
+			event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(2);
+			assertEquals(ActivitiEventType.TASK_CREATED, event.getType());
+			assertTrue(event.getEntity() instanceof Task);
+			Task taskFromEvent = tlistener.getTasks().get(2);
+			assertEquals(task.getId(), taskFromEvent.getId());
+
+			// verify script listener has done its job, on create before ActivitiEntityEvent was fired
+			assertEquals("The ScriptTaskListener must set this value before the dispatchEvent fires.","scriptedAssignee", taskFromEvent.getAssignee());
+			assertEquals("The ScriptTaskListener must set this value before the dispatchEvent fires.",877, taskFromEvent.getPriority());
+
+			// Fetch second task
+			taskService.createTaskQuery().singleResult();
+
+
+		} finally {
+			processEngineConfiguration.getEventDispatcher().removeEventListener(tlistener);
+		}
+	}
+
 	/**
 	 * Check all events for tasks not related to a process-instance 
 	 */

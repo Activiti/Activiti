@@ -244,15 +244,25 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     return object;
   }
   
+  
+  
   public static void applyFieldDeclaration(List<FieldDeclaration> fieldDeclarations, Object target) {
+    applyFieldDeclaration(fieldDeclarations, target, true);
+  }
+  
+  public static void applyFieldDeclaration(List<FieldDeclaration> fieldDeclarations, Object target, boolean throwExceptionOnMissingField) {
     if(fieldDeclarations != null) {
       for(FieldDeclaration declaration : fieldDeclarations) {
-        applyFieldDeclaration(declaration, target);
+        applyFieldDeclaration(declaration, target, throwExceptionOnMissingField);
       }
     }
   }
   
   public static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
+    applyFieldDeclaration(declaration, target, true);
+  }
+  
+  public static void applyFieldDeclaration(FieldDeclaration declaration, Object target, boolean throwExceptionOnMissingField) {
     Method setterMethod = ReflectUtil.getSetter(declaration.getName(), 
       target.getClass(), declaration.getValue().getClass());
     
@@ -269,8 +279,13 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     } else {
       Field field = ReflectUtil.getField(declaration.getName(), target);
       if(field == null) {
-        throw new ActivitiIllegalArgumentException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
+        if (throwExceptionOnMissingField) {
+          throw new ActivitiIllegalArgumentException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
+        } else {
+          return;
+        }
       }
+      
       // Check if the delegate field's type is correct
      if(!fieldTypeCompatible(declaration, field)) {
        throw new ActivitiIllegalArgumentException("Incompatible type set on field declaration '" + declaration.getName() 
@@ -279,6 +294,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
           + ", while expecting " + field.getType().getName());
      }
      ReflectUtil.setField(field, target, declaration.getValue());
+     
     }
   }
   
@@ -299,4 +315,8 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     return className;
   }
 
+  public List<FieldDeclaration> getFieldDeclarations() {
+    return fieldDeclarations;
+  }
+  
 }

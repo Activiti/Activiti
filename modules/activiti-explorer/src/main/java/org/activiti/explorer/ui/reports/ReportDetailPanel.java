@@ -152,7 +152,7 @@ public class ReportDetailPanel extends DetailPanel {
       
       processDefinitionStartForm.setFormProperties(startFormData.getFormProperties());
 
-      processDefinitionStartForm.setSubmitButtonCaption("Generate report");
+      processDefinitionStartForm.setSubmitButtonCaption(i18nManager.getMessage(Messages.REPORTING_GENERATE_REPORT));
       processDefinitionStartForm.hideCancelButton();
       processDefinitionStartForm.addListener(new FormPropertiesEventListener() {
 

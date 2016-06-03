@@ -62,10 +62,9 @@ public interface HistoryManager extends Session {
 	public abstract void recordActivityEnd(ExecutionEntity executionEntity);
 
 	/**
-	 * Record the end of a start-task, if activity history is enabled.
+	 * Record the end of a start event, if activity history is enabled.
 	 */
-	public abstract void recordStartEventEnded(String executionId,
-			String activityId);
+	public abstract void recordStartEventEnded(ExecutionEntity execution, String activityId);
 
 	/**
 	 * Finds the {@link HistoricActivityInstanceEntity} that is active in the given
