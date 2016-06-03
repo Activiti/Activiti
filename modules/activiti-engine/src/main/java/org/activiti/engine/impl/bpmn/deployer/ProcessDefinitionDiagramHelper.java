@@ -51,6 +51,7 @@ public class ProcessDefinitionDiagramHelper {
           processEngineConfiguration.getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png",
               processEngineConfiguration.getActivityFontName(),
               processEngineConfiguration.getLabelFontName(),
+              processEngineConfiguration.getAnnotationFontName(),
               processEngineConfiguration.getClassLoader()), null);
         String diagramResourceName = ResourceNameUtil.getProcessDiagramResourceName(
             processDefinition.getResourceName(), processDefinition.getKey(), "png");

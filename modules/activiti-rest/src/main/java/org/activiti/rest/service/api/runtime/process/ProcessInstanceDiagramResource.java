@@ -57,7 +57,8 @@ public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource 
       BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
       ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
       InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
-          processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader(), 1.0);
+          processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
+          processEngineConfiguration.getAnnotationFontName(), processEngineConfiguration.getClassLoader(), 1.0);
 
       HttpHeaders responseHeaders = new HttpHeaders();
       responseHeaders.set("Content-Type", "image/png");
