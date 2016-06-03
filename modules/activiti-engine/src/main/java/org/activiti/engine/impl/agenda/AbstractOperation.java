@@ -95,7 +95,7 @@ public abstract class AbstractOperation implements Runnable {
     }
     return parentScopeExecution;
   }
-  
+
   public CommandContext getCommandContext() {
     return commandContext;
   }

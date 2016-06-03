@@ -112,6 +112,16 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
             BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, listener.getImplementation(), xtw);
           }
 
+          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_ON_TRANSACTION, listener.getOnTransaction(), xtw);
+
+          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getCustomPropertiesResolverImplementationType())) {
+            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS, listener.getCustomPropertiesResolverImplementation(), xtw);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getCustomPropertiesResolverImplementationType())) {
+            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION, listener.getCustomPropertiesResolverImplementation(), xtw);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getCustomPropertiesResolverImplementationType())) {
+            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION, listener.getCustomPropertiesResolverImplementation(), xtw);
+          }
+
           FieldExtensionExport.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);
 
           xtw.writeEndElement();

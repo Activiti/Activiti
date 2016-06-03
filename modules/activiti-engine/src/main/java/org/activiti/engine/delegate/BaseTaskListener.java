@@ -10,16 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.delegate;
 
+import java.io.Serializable;
+
 /**
- * Callback interface to be notified of execution events like starting a process instance, ending an activity instance or taking a transition.
- * 
- * @author Tom Baeyens
- * @author Joram Barrez
  * @author Yvo Swillens
  */
-public interface ExecutionListener extends BaseExecutionListener {
+public interface BaseTaskListener extends Serializable {
 
-  void notify(DelegateExecution execution);
+  String EVENTNAME_CREATE = "create";
+  String EVENTNAME_ASSIGNMENT = "assignment";
+  String EVENTNAME_COMPLETE = "complete";
+  String EVENTNAME_DELETE = "delete";
+
+  /**
+   * Not an actual event, used as a marker-value for {@link BaseTaskListener}s that should be called for all events, including {@link #EVENTNAME_CREATE} , {@link #EVENTNAME_ASSIGNMENT} and
+   * {@link #EVENTNAME_COMPLETE} and {@link #EVENTNAME_DELETE}.
+   */
+  String EVENTNAME_ALL_EVENTS = "all";
 }
