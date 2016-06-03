@@ -37,17 +37,6 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
-    
-    // fill default reason if none provided
-    if (deleteReason == null) {
-      deleteReason = "ACTIVITI_DELETED";
-    }
-
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createCancelledEvent(this.processInstanceId
-        , this.processInstanceId, null, deleteReason));
-    }
 
     commandContext
       .getExecutionEntityManager()
