@@ -12,24 +12,12 @@
  */
 package org.activiti.engine.impl.agenda;
 
-import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
-import org.activiti.bpmn.model.ImplementationType;
-import org.activiti.engine.delegate.BaseExecutionListener;
-import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.delegate.CustomPropertiesResolver;
-import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
-import org.activiti.engine.impl.bpmn.listener.TransactionDependentExecutionListeners;
-import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-
-import java.util.Map;
-
 
 /**
  * @author Joram Barrez
