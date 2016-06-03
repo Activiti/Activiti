@@ -7,7 +7,6 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.bpmn.model.Task;
-import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
 import java.util.Map;

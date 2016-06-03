@@ -7,9 +7,7 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 import java.util.Map;
 

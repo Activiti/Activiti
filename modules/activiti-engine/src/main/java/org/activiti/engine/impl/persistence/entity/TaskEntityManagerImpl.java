@@ -26,7 +26,6 @@ import org.activiti.engine.delegate.BaseTaskListener;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;

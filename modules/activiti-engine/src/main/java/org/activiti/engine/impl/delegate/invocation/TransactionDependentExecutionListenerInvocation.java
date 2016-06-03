@@ -13,15 +13,12 @@
 package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.cfg.TransactionPropagation;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.Map;
 

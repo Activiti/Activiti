@@ -12,9 +12,7 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
-import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Task;
-import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
 import java.util.ArrayList;
