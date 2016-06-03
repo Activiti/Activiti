@@ -12,14 +12,14 @@
  */
 package org.activiti.examples.bpmn.executionlistener;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yvo Swillens
@@ -55,6 +55,11 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     assertEquals("Service Task 1", currentActivities.get(0).getActivityName());
     assertEquals(processInstance.getId(), currentActivities.get(0).getProcessInstanceId());
     assertNotNull(currentActivities.get(0).getProcessInstanceId());
+    
+    assertEquals(1, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstance.getId());
+    assertEquals(1, activeActivityIds.size());
+    assertEquals("serviceTask2", activeActivityIds.get(0));
   }
 
   @Deployment
