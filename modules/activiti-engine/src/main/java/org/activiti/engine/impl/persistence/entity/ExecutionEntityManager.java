@@ -90,8 +90,8 @@ public class ExecutionEntityManager extends AbstractManager {
 
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled() && execution.isProcessInstanceType()) {
       commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createCancelledEvent(execution.processInstanceId, 
-              execution.processInstanceId, execution.processDefinitionId, deleteReason));
+          ActivitiEventBuilder.createCancelledEvent(execution.getProcessInstanceId(), 
+              execution.getProcessInstanceId(), execution.getProcessDefinitionId(), deleteReason));
     }
 
     // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricVariableInstance instances
