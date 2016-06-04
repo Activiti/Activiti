@@ -13,7 +13,13 @@
 package org.activiti.engine.test.jobexecutor;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
+
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Saeid Mirzaei
@@ -41,5 +47,5 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
   	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
   	long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0) ; 
   	assertTrue(timeDiff > 6000 && timeDiff < 12000);  // check time difference between calls. Just roughly
-  }
+	}
 }
