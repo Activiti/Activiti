@@ -891,7 +891,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initJobExecutor();
     initAsyncExecutor();
     
-    
     initTransactionFactory();
     
     if (usingRelationalDatabase) {
