@@ -1098,7 +1098,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
-    } 
+      
+    } else if (userIdForCandidateAndAssignee != null) {
+      return getGroupsForCandidateUser(userIdForCandidateAndAssignee);
+    }
     return null;
   }
 
