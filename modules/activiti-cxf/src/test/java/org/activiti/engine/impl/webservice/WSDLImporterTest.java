@@ -38,7 +38,13 @@ public class WSDLImporterTest {
   public void setUp() {
     importer = new CxfWSDLImporter();
   }
-  
+
+  @Test
+  public void testComplexTypeMixed() throws Exception {
+    URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/complexType-mixed.wsdl");
+    importer.importFrom(url.toString());
+  }
+
   @Test
   public void testImportCounter() throws Exception {
     URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/counter.wsdl");

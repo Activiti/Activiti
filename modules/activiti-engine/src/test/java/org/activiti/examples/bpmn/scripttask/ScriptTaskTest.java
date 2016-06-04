@@ -83,7 +83,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
   @Deployment
   public void testDynamicScript() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("a", 20, "b", 22));
-    assertEquals(42.0, runtimeService.getVariable(processInstance.getId(), "test"));
+    assertEquals(42, runtimeService.getVariable(processInstance.getId(), "test"));
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     assertProcessEnded(processInstance.getId());
     
@@ -92,7 +92,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
     
     processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("c", 10, "d", 12));
-    assertEquals(22.0, runtimeService.getVariable(processInstance.getId(), "test2"));
+    assertEquals(22, runtimeService.getVariable(processInstance.getId(), "test2"));
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     assertProcessEnded(processInstance.getId());
   }
