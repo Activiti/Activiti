@@ -252,7 +252,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
       HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
       assertNotNull(historicInstance);
-      assertEquals("ACTIVITI_DELETED", historicInstance.getDeleteReason());
+      assertEquals("ACTIVITY_DELETED", historicInstance.getDeleteReason());
     }
   }
 

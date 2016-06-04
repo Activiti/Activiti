@@ -210,13 +210,13 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, processInstanceQuery.count());
     HistoricProcessInstance processInstance = processInstanceQuery.singleResult();
     assertEquals(processInstanceId, processInstance.getId());
-    assertEquals("ACTIVITI_DELETED", processInstance.getDeleteReason());
+    assertEquals("ACTIVITY_DELETED", processInstance.getDeleteReason());
 
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).deleted();
     assertEquals(1, processInstanceQuery.count());
     processInstance = processInstanceQuery.singleResult();
     assertEquals(processInstanceId, processInstance.getId());
-    assertEquals("ACTIVITI_DELETED", processInstance.getDeleteReason());
+    assertEquals("ACTIVITY_DELETED", processInstance.getDeleteReason());
 
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).notDeleted();
     assertEquals(0, processInstanceQuery.count());

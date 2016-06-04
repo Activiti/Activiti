@@ -17,7 +17,6 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -42,16 +41,6 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
-    
-    // fill default reason if none provided
-    if (deleteReason == null) {
-      deleteReason = "ACTIVITI_DELETED";
-    }
-
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-        .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
-    }
 
     ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(processInstanceId);
     
@@ -63,8 +52,7 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       activiti5CompatibilityHandler.deleteProcessInstance(processInstanceId, deleteReason);
     } else {
-      commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(), 
-          null, deleteReason, false, true, true);
+      commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
     }
 
     // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance

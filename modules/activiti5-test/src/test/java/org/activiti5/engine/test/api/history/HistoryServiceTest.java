@@ -34,6 +34,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.test.api.runtime.ProcessInstanceQueryTest;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -243,13 +244,13 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, processInstanceQuery.count());
     HistoricProcessInstance processInstance = processInstanceQuery.singleResult();
     assertEquals(processInstanceId, processInstance.getId());
-    assertEquals("ACTIVITI_DELETED", processInstance.getDeleteReason());
+    assertEquals("ACTIVITY_DELETED", processInstance.getDeleteReason());
 
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).deleted();
     assertEquals(1, processInstanceQuery.count());
     processInstance = processInstanceQuery.singleResult();
     assertEquals(processInstanceId, processInstance.getId());
-    assertEquals("ACTIVITI_DELETED", processInstance.getDeleteReason());
+    assertEquals("ACTIVITY_DELETED", processInstance.getDeleteReason());
     
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).notDeleted();
     assertEquals(0, processInstanceQuery.count());
