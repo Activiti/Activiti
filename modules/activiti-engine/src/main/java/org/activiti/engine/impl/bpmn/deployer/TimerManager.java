@@ -72,7 +72,7 @@ public class TimerManager {
             if (eventDefinition instanceof TimerEventDefinition) {
               TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
               TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, false, null, TimerStartEventJobHandler.TYPE,
-                  TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
+                  TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
 
               if (timer != null) {
                 timer.setProcessDefinitionId(processDefinition.getId());

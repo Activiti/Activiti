@@ -16,9 +16,9 @@ package org.activiti5.standalone.calendar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
-import org.activiti5.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti5.engine.impl.test.PvmTestCase;
 
 public class CycleBusinessCalendarTest extends PvmTestCase {

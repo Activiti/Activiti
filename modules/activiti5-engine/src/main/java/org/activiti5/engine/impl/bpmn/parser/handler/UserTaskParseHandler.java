@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.form.DefaultTaskFormHandler;
@@ -95,6 +96,13 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     // Due date
     if (StringUtils.isNotEmpty(userTask.getDueDate())) {
       taskDefinition.setDueDateExpression(expressionManager.createExpression(userTask.getDueDate()));
+    }
+    
+    // Business calendar name
+    if (StringUtils.isNotEmpty(userTask.getBusinessCalendarName())) {
+      taskDefinition.setBusinessCalendarNameExpression(expressionManager.createExpression(userTask.getBusinessCalendarName()));
+    } else {
+      taskDefinition.setBusinessCalendarNameExpression(expressionManager.createExpression(DueDateBusinessCalendar.NAME));
     }
     
     // Category

@@ -137,8 +137,17 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         if (dueDate instanceof Date) {
           task.setDueDate((Date) dueDate);
         } else if (dueDate instanceof String) {
-          BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(DueDateBusinessCalendar.NAME);
+          String businessCalendarName = null;
+          if (StringUtils.isNotEmpty(userTask.getBusinessCalendarName())) {
+            businessCalendarName = expressionManager.createExpression(userTask.getBusinessCalendarName()).getValue(execution).toString();
+          } else {
+            businessCalendarName = DueDateBusinessCalendar.NAME;
+          }
+          
+          BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager()
+              .getBusinessCalendar(businessCalendarName);
           task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
+          
         } else {
           throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + activeTaskDueDate);
         }

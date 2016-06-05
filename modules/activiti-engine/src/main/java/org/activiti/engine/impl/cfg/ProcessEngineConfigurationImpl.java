@@ -3479,7 +3479,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       this.clock.setCurrentCalendar(clock.getCurrentCalendar());
     }
     
-    if (isActiviti5CompatibilityEnabled) {
+    if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
       getActiviti5CompatibilityHandler().setClock(clock);
     }
     return this;
@@ -3488,7 +3488,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void resetClock() {
     if (this.clock != null) {
       clock.reset();
-      if (isActiviti5CompatibilityEnabled) {
+      if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
         getActiviti5CompatibilityHandler().resetClock();
       }
     }

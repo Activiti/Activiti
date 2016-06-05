@@ -68,6 +68,7 @@ public class DefaultProcessEngineFactory {
     copyCustomMybatisMappers(activiti6Configuration, activiti5Configuration);
     convertEventListeners(activiti6Configuration, activiti5Configuration);
     copyPostDeployers(activiti6Configuration, activiti5Configuration);
+    activiti5Configuration.setBusinessCalendarManager(activiti6Configuration.getBusinessCalendarManager());
   }
 
   protected void copyJdbcConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {

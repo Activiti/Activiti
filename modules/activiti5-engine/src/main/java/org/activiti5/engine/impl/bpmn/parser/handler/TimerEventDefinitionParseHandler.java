@@ -22,13 +22,13 @@ import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.jobexecutor.JobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti5.engine.impl.jobexecutor.TimerDeclarationType;
 import org.activiti5.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -116,6 +116,7 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
     TimerDeclarationType type = null;
     Expression expression = null;
     Expression endDate = null;
+    Expression calendarName = null;
     ExpressionManager expressionManager = bpmnParse.getExpressionManager();
     if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDate())) {
       // TimeDate
@@ -134,6 +135,10 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
       type = TimerDeclarationType.DURATION;
       expression = expressionManager.createExpression(timerEventDefinition.getTimeDuration());
     }
+    
+    if (StringUtils.isNotEmpty(timerEventDefinition.getCalendarName())) {
+      calendarName = expressionManager.createExpression(timerEventDefinition.getCalendarName());
+    }
 
     // neither date, cycle or duration configured!
     if (expression == null) {
@@ -146,13 +151,13 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
     if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE) ||
             jobHandlerType.equalsIgnoreCase(TimerCatchIntermediateEventJobHandler.TYPE) ||
             jobHandlerType.equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
-      jobHandlerConfiguration = TimerStartEventJobHandler.createConfiguration(timerActivity.getId(), endDate);
+      jobHandlerConfiguration = TimerStartEventJobHandler.createConfiguration(timerActivity.getId(), endDate, calendarName);
     }
 
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the
     // TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType , endDate);
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType , endDate, calendarName);
     timerDeclaration.setJobHandlerConfiguration(jobHandlerConfiguration);
 
     timerDeclaration.setExclusive(true);

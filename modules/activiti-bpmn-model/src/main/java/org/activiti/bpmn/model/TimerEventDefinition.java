@@ -21,6 +21,7 @@ public class TimerEventDefinition extends EventDefinition {
   protected String timeDuration;
   protected String timeCycle;
   protected String endDate;
+  protected String calendarName;
 
   public String getTimeDate() {
     return timeDate;
@@ -54,6 +55,14 @@ public class TimerEventDefinition extends EventDefinition {
     return endDate;
   }
 
+  public String getCalendarName() {
+    return calendarName;
+  }
+
+  public void setCalendarName(String calendarName) {
+    this.calendarName = calendarName;
+  }
+
   public TimerEventDefinition clone() {
     TimerEventDefinition clone = new TimerEventDefinition();
     clone.setValues(this);
@@ -66,5 +75,6 @@ public class TimerEventDefinition extends EventDefinition {
     setTimeDuration(otherDefinition.getTimeDuration());
     setTimeCycle(otherDefinition.getTimeCycle());
     setEndDate(otherDefinition.getEndDate());
+    setCalendarName(otherDefinition.getCalendarName());
   }
 }
