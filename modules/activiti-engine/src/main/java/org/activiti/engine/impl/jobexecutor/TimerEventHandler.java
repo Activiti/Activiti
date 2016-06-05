@@ -30,7 +30,7 @@ public class TimerEventHandler {
       cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate.getExpressionText());
     }
     if (calendarName != null) {
-      cfgJson.put(PROPERTYNAME_CALENDAR_NAME_EXPRESSION, calendarName);
+      cfgJson.put(PROPERTYNAME_CALENDAR_NAME_EXPRESSION, calendarName.getExpressionText());
     }
     return cfgJson.toString();
   }

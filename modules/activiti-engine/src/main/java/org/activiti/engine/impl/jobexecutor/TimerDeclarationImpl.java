@@ -25,7 +25,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 /**
@@ -38,7 +37,7 @@ public class TimerDeclarationImpl implements Serializable {
   protected Expression description;
   protected TimerDeclarationType type;
   protected Expression endDateExpression;
-  protected Expression calendarName;
+  protected Expression calendarNameExpression;
 
   protected String jobHandlerType;
   protected String jobHandlerConfiguration = null;
@@ -47,10 +46,10 @@ public class TimerDeclarationImpl implements Serializable {
   protected int retries = TimerEntity.DEFAULT_RETRIES;
   protected boolean isInterruptingTimer; // For boundary timers
 
-  public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType, Expression endDateExpression, Expression calendarName) {
+  public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType, Expression endDateExpression, Expression calendarNameExpression) {
     this(expression,type,jobHandlerType);
     this.endDateExpression = endDateExpression;
-    this.calendarName = calendarName;
+    this.calendarNameExpression = calendarNameExpression;
   }  
   
   public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType) {
@@ -118,14 +117,15 @@ public class TimerDeclarationImpl implements Serializable {
       scopeForExpression = NoExecutionVariableScope.getSharedInstance();
     }
 
-    String calendarName = type.calendarName;
-    if (this.calendarName != null) {
-      calendarName = (String) this.calendarName.getValue(scopeForExpression);
+    String calendarNameValue = type.calendarName;
+    if (this.calendarNameExpression != null) {
+      calendarNameValue = (String) this.calendarNameExpression.getValue(scopeForExpression);
     }
+    
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(calendarName);
+        .getBusinessCalendar(calendarNameValue);
     
     if (description==null) {
       // Prevent NPE from happening in the next line

@@ -107,8 +107,7 @@ public class TimerEntity extends JobEntity {
           setNewRepeat(repeatValue);
         }
 
-        String calendarName = TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration);
-        Date newTimer = calculateNextTimer(calendarName);
+        Date newTimer = calculateNextTimer();
         if (newTimer != null && isValidTime(newTimer)) {
           TimerEntity te = new TimerEntity(this);
           te.setDuedate(newTimer);
@@ -267,7 +266,7 @@ public class TimerEntity extends JobEntity {
     repeat = repeatBuilder.toString();
   }
 
-  protected Date calculateNextTimer(String calendarName) {
+  protected Date calculateNextTimer() {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
@@ -275,7 +274,7 @@ public class TimerEntity extends JobEntity {
     return businessCalendar.resolveDuedate(repeat,maxIterations);
   }
 
-  private String getBusinessCalendarName(String calendarName) {
+  protected String getBusinessCalendarName(String calendarName) {
     String businessCalendarName = CycleBusinessCalendar.NAME;
     if (StringUtils.isNotEmpty(calendarName)) {
       VariableScope execution = NoExecutionVariableScope.getSharedInstance();
