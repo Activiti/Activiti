@@ -5,6 +5,7 @@ import java.util.List;
 import org.activiti5.engine.history.HistoricActivityInstance;
 import org.activiti5.engine.history.HistoricData;
 import org.activiti5.engine.history.HistoricVariableInstance;
+import org.activiti5.engine.history.HistoricVariableUpdate;
 import org.activiti5.engine.history.ProcessInstanceHistoryLog;
 import org.activiti5.engine.history.ProcessInstanceHistoryLogQuery;
 import org.activiti5.engine.impl.interceptor.Command;
@@ -139,6 +140,13 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 		if (includeVariableUpdates) {
 			List<? extends HistoricData> variableUpdates = commandContext.getHistoricDetailEntityManager()
 					.findHistoricDetailsByQueryCriteria(new HistoricDetailQueryImpl(commandExecutor).variableUpdates(), null);
+			
+			// Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
+      for (HistoricData historicData : variableUpdates) {
+        HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) historicData;
+        variableUpdate.getValue();
+      }
+			
 			processInstanceHistoryLog.addHistoricData(variableUpdates);
 		}
 		
