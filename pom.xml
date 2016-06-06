@@ -834,7 +834,6 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-cdi</module>
         <module>modules/activiti-secure-javascript</module>
       </modules>
     </profile>
@@ -857,7 +856,6 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-cdi</module>
         <module>modules/activiti-secure-javascript</module>
       </modules>
     </profile>

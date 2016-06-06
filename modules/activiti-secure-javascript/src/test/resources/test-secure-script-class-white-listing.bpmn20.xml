@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20151118143257469" modeler:modelId="1002" modeler:modelVersion="1" modeler:modelLastUpdated="1447853569005">
-  <process id="ScriptingTest01" name="ScriptingTest" isExecutable="true">
+  <process id="secureScripting" name="ScriptingTest" isExecutable="true">
     <startEvent id="startEvent1"/>
     <sequenceFlow id="sid-A2BDDF58-FEE1-4ADD-8A7A-632048DEFDD1" sourceRef="startEvent1" targetRef="sid-3DAA0911-6255-4CA1-9640-C9E6B3DE0CCC"/>
     <scriptTask id="sid-3DAA0911-6255-4CA1-9640-C9E6B3DE0CCC" name="A" scriptFormat="javascript" activiti:autoStoreVariables="false">

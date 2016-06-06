@@ -1,4 +1,4 @@
-package org.activiti.impl.scripting.secure;
+package org.activiti.scripting.secure;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +7,7 @@ import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.impl.scripting.secure.behavior.SecureJavascriptCapableActivityBehaviorFactory;
+import org.activiti.scripting.secure.behavior.SecureJavascriptCapableActivityBehaviorFactory;
 
 /**
  * @author Joram Barrez
@@ -21,7 +21,7 @@ public class SecureJavascriptTaskActivityBehaviorConfigurator extends AbstractPr
     protected boolean enableClassWhiteListing;
 
     /**
-     * Whitelisted classes for script execution.
+     * Whitelisted classes for script variableScope.
      *
      * By default empty (i.e. everything is blacklisted)
      *
@@ -35,7 +35,7 @@ public class SecureJavascriptTaskActivityBehaviorConfigurator extends AbstractPr
      * the expression "Packages.a.b.c" will result in a [JavaPackage a.b.c] and not an error.
      *
      * With ClassShutter supplied, Rhino will first call visibleToScripts before attempting to look up the class name.
-     * If visibleToScripts returns false, the class name lookup is not performed and subsequent Rhino execution assumes
+     * If visibleToScripts returns false, the class name lookup is not performed and subsequent Rhino variableScope assumes
      * the class is not present. So for "java.lang.System.out.println" the lookup of "java.lang.System" is skipped
      * and thus Rhino assumes that "java.lang.System" doesn't exist. So then for "java.lang.System.out",
      * Rhino attempts to load the class "java.lang.System.out" because it assumes that "java.lang.System" is a package name.
@@ -63,7 +63,7 @@ public class SecureJavascriptTaskActivityBehaviorConfigurator extends AbstractPr
     protected long maxMemoryUsed = -1L;
 
     /**
-     * The maximum script execution time and memory usage is implemented using a callback
+     * The maximum script variableScope time and memory usage is implemented using a callback
      * that is called every x instructions of the script. Note that these are not script
      * instructions, but java byte code instructions (which means one script line can
      * be thousands of byte code instructions!).

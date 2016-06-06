@@ -1,10 +1,8 @@
-package org.activiti.impl.scripting.secure.behavior;
+package org.activiti.scripting.secure.behavior;
 
 import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.impl.scripting.secure.rhino.SecureScriptScope;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
+import org.activiti.scripting.secure.impl.SecureJavascriptUtil;
 
 /**
  * @author Joram Barrez
@@ -18,16 +16,7 @@ public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBeha
 
     @Override
     public void execute(ActivityExecution execution) throws Exception {
-        Context context = Context.enter();
-        try {
-            Scriptable scope = context.initStandardObjects();
-            SecureScriptScope secureScriptScope = new SecureScriptScope(execution);
-            scope.setPrototype(secureScriptScope);
-
-            context.evaluateString(scope, script, "<script>", 0, null);
-        } finally {
-            Context.exit();
-        }
+      SecureJavascriptUtil.evaluateScript(execution, script);
     }
 
 }

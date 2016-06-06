@@ -9,9 +9,9 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.impl.scripting.secure.SecureJavascriptTaskActivityBehaviorConfigurator;
-import org.activiti.impl.scripting.secure.behavior.SecureJavascriptCapableActivityBehaviorFactory;
-import org.activiti.impl.scripting.secure.rhino.SecureScriptClassShutter;
+import org.activiti.scripting.secure.SecureJavascriptTaskActivityBehaviorConfigurator;
+import org.activiti.scripting.secure.behavior.SecureJavascriptCapableActivityBehaviorFactory;
+import org.activiti.scripting.secure.impl.SecureScriptClassShutter;
 import org.junit.After;
 import org.junit.Before;
 

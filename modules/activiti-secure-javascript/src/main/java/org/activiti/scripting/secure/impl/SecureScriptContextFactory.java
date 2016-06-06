@@ -1,4 +1,4 @@
-package org.activiti.impl.scripting.secure.rhino;
+package org.activiti.scripting.secure.impl;
 
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
@@ -62,7 +62,7 @@ public class SecureScriptContextFactory extends ContextFactory {
         if (maxScriptExecutionTime > 0) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - context.getStartTime() > maxScriptExecutionTime) {
-                throw new Error("Maximum execution time of " + maxScriptExecutionTime + " ms exceeded");
+                throw new Error("Maximum variableScope time of " + maxScriptExecutionTime + " ms exceeded");
             }
         }
 

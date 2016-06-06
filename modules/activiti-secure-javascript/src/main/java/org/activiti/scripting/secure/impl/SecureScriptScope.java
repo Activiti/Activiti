@@ -1,6 +1,8 @@
-package org.activiti.impl.scripting.secure.rhino;
+package org.activiti.scripting.secure.impl;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.VariableScope;
 import org.mozilla.javascript.Scriptable;
 
 /**
@@ -9,25 +11,28 @@ import org.mozilla.javascript.Scriptable;
 public class SecureScriptScope implements Scriptable {
 
     private static final String KEYWORD_EXECUTION = "execution";
+    private static final String KEYWORD_TASK = "task";
 
-    protected ActivityExecution execution;
+    protected VariableScope variableScope;
 
-    public SecureScriptScope(ActivityExecution execution) {
+    public SecureScriptScope(VariableScope variableScope) {
         super();
-        this.execution = execution;
+        this.variableScope = variableScope;
     }
 
     @Override
     public String getClassName() {
-        return execution.getClass().getName();
+        return variableScope.getClass().getName();
     }
 
     @Override
     public Object get(String s, Scriptable scriptable) {
-        if (KEYWORD_EXECUTION.equals(s)) {
-            return execution;
-        } else if (execution.hasVariable(s)) {
-            return execution.getVariable(s);
+        if (KEYWORD_EXECUTION.equals(s) && variableScope instanceof DelegateExecution) {
+            return variableScope;
+        } else if (KEYWORD_TASK.equals(s) && variableScope instanceof DelegateTask) {
+          return variableScope;
+        } else if (variableScope.hasVariable(s)) {
+            return variableScope.getVariable(s);
         }
         return null;
     }
@@ -39,7 +44,7 @@ public class SecureScriptScope implements Scriptable {
 
     @Override
     public boolean has(String s, Scriptable scriptable) {
-        return execution.hasVariable(s);
+        return variableScope.hasVariable(s);
     }
 
     @Override

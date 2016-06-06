@@ -1,4 +1,4 @@
-package org.activiti.impl.scripting.secure.behavior;
+package org.activiti.scripting.secure.behavior;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
@@ -64,9 +64,9 @@ import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.impl.scripting.secure.SecureJavascriptTaskActivityBehaviorConfigurator;
-import org.activiti.impl.scripting.secure.rhino.SecureScriptClassShutter;
-import org.activiti.impl.scripting.secure.rhino.SecureScriptContextFactory;
+import org.activiti.scripting.secure.SecureJavascriptTaskActivityBehaviorConfigurator;
+import org.activiti.scripting.secure.impl.SecureScriptClassShutter;
+import org.activiti.scripting.secure.impl.SecureScriptContextFactory;
 import org.mozilla.javascript.ContextFactory;
 
 /**
@@ -78,7 +78,7 @@ import org.mozilla.javascript.ContextFactory;
  */
 public class SecureJavascriptCapableActivityBehaviorFactory implements ActivityBehaviorFactory {
 
-    private static final String LANGUAGE_JAVASCRIPT = "javascript";
+    public static final String LANGUAGE_JAVASCRIPT = "javascript";
 
     private static SecureScriptContextFactory SECURE_SCRIPT_CONTEXT_FACTORY;
 
@@ -107,7 +107,7 @@ public class SecureJavascriptCapableActivityBehaviorFactory implements ActivityB
         SecureJavascriptTaskActivityBehavior secureScriptTaskActivityBehavior = new SecureJavascriptTaskActivityBehavior(
                 scriptTask.getId(), scriptTask.getScript(), language, scriptTask.getResultVariable(), scriptTask.isAutoStoreVariables());
 
-        // Maximum execution time/memory settings
+        // Maximum variableScope time/memory settings
         if (SECURE_SCRIPT_CONTEXT_FACTORY == null) {
             initSecureScriptContextFactory();
         }

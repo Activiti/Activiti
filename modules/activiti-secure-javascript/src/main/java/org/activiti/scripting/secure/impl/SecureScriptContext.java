@@ -1,4 +1,4 @@
-package org.activiti.impl.scripting.secure.rhino;
+package org.activiti.scripting.secure.impl;
 
 import org.mozilla.javascript.Context;
 
