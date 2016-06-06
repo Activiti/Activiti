@@ -85,9 +85,12 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
     int firstResult = historicTaskInstanceQuery.getFirstResult();
     int maxResults = historicTaskInstanceQuery.getMaxResults();
 
-    // setting max results, limit to 20000 results for performance
-    // reasons
-    historicTaskInstanceQuery.setMaxResults(20000);
+    // setting max results, limit to 20000 results for performance reasons
+    if (historicTaskInstanceQuery.getTaskVariablesLimit() != null) {
+      historicTaskInstanceQuery.setMaxResults(historicTaskInstanceQuery.getTaskVariablesLimit());
+    } else {
+      historicTaskInstanceQuery.setMaxResults(getProcessEngineConfiguration().getHistoricTaskQueryLimit());
+    }
     historicTaskInstanceQuery.setFirstResult(0);
 
     List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", historicTaskInstanceQuery,

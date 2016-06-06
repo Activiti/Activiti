@@ -279,6 +279,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Include process variables in the process query result
    */
   ProcessInstanceQuery includeProcessVariables();
+  
+  /**
+   * Limit process instance variables
+   */
+  ProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
 
   /**
    * Only select process instances that failed due to an exception happening during a job execution.
