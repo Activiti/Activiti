@@ -21,15 +21,17 @@ public class DataObjectImpl implements DataObject {
   private String description;
   private String localizedName;
   private String localizedDescription;
+  private String dataObjectDefinitionKey;
 
   private String type;
   
-  public DataObjectImpl(VariableInstance variable, String description, String localizedName, String localizedDescription) {
+  public DataObjectImpl(VariableInstance variable, String description, String localizedName, String localizedDescription, String dataObjectDefinitionKey) {
     this.name = variable.getName();
     this.value = variable.getValue();
     this.description = description;
     this.localizedName = localizedName;
     this.localizedDescription = localizedDescription;
+    this.dataObjectDefinitionKey = dataObjectDefinitionKey;
   }
   
   public String getName() {
@@ -78,5 +80,15 @@ public class DataObjectImpl implements DataObject {
   
   public void setType(String type) {
     this.type = type;
+  }
+
+  
+  public String getDataObjectDefinitionKey() {
+    return dataObjectDefinitionKey;
+  }
+
+  
+  public void setDataObjectDefinitionKey(String dataObjectDefinitionKey) {
+    this.dataObjectDefinitionKey = dataObjectDefinitionKey;
   }
 }

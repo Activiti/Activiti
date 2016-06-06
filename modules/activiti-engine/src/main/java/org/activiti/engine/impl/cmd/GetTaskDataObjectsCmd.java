@@ -89,8 +89,32 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, 
         String localizedName = null;
         String localizedDescription = null;
 
-        if(locale != null) {
-          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, variableName, task.getProcessDefinitionId(), withLocalizationFallback);
+        ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
+        while (!executionEntity.isScope()) {
+          executionEntity = executionEntity.getParent();
+        }
+        
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
+        ValuedDataObject foundDataObject = null;
+        if (executionEntity.getParentId() == null) {
+          for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
+            if (dataObject.getName().equals(variableEntity.getName())) {
+              foundDataObject = dataObject;
+              break;
+            }
+          }
+        } else {
+          SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(executionEntity.getActivityId());
+          for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
+            if (dataObject.getName().equals(variableEntity.getName())) {
+              foundDataObject = dataObject;
+              break;
+            }
+          }
+        }
+        
+        if(locale != null && foundDataObject != null) {
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), task.getProcessDefinitionId(), withLocalizationFallback);
           if (languageNode != null) {
             JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
             if (nameNode != null) {
@@ -102,36 +126,9 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, 
             }
           }
         }
-
-        ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
-        while (!executionEntity.isScope()) {
-          executionEntity = executionEntity.getParent();
-        }
         
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
-        String description = null;
-        boolean found = false;
-        if (executionEntity.getParentId() == null) {
-          for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
-            if (dataObject.getName().equals(variableEntity.getName())) {
-              description = dataObject.getDocumentation();
-              found = true;
-              break;
-            }
-          }
-        } else {
-          SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(executionEntity.getActivityId());
-          for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
-            if (dataObject.getName().equals(variableEntity.getName())) {
-              description = dataObject.getDocumentation();
-              found = true;
-              break;
-            }
-          }
-        }
-        
-        if (found) {
-          dataObjects.put(variableEntity.getName(), new DataObjectImpl(variableEntity, description, localizedName, localizedDescription));
+        if (foundDataObject != null) {
+          dataObjects.put(variableEntity.getName(), new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }

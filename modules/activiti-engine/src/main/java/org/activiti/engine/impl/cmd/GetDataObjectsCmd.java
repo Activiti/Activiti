@@ -109,11 +109,35 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
         String name = entry.getKey();
         VariableInstance variableEntity = (VariableInstance) entry.getValue();
 
+        ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
+        while (!executionEntity.isScope()) {
+          executionEntity = executionEntity.getParent();
+        }
+        
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
+        ValuedDataObject foundDataObject = null;
+        if (executionEntity.getParentId() == null) {
+          for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
+            if (dataObject.getName().equals(variableEntity.getName())) {
+              foundDataObject = dataObject;
+              break;
+            }
+          }
+        } else {
+          SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(execution.getActivityId());
+          for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
+            if (dataObject.getName().equals(variableEntity.getName())) {
+              foundDataObject = dataObject;
+              break;
+            }
+          }
+        }
+        
         String localizedName = null;
         String localizedDescription = null;
         
-        if (locale != null) {          
-          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, name, execution.getProcessDefinitionId(), withLocalizationFallback);
+        if (locale != null && foundDataObject != null) {          
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), execution.getProcessDefinitionId(), withLocalizationFallback);
           if (languageNode != null) {
             JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
             if (nameNode != null) {
@@ -126,35 +150,8 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
           }
         }
         
-        ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
-        while (!executionEntity.isScope()) {
-          executionEntity = executionEntity.getParent();
-        }
-        
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
-        String description = null;
-        boolean found = false;
-        if (executionEntity.getParentId() == null) {
-          for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
-            if (dataObject.getName().equals(variableEntity.getName())) {
-              description = dataObject.getDocumentation();
-              found = true;
-              break;
-            }
-          }
-        } else {
-          SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(execution.getActivityId());
-          for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
-            if (dataObject.getName().equals(variableEntity.getName())) {
-              description = dataObject.getDocumentation();
-              found = true;
-              break;
-            }
-          }
-        }
-        
-        if (found) {
-          dataObjects.put(name, new DataObjectImpl(variableEntity, description, localizedName, localizedDescription));
+        if (foundDataObject != null) {
+          dataObjects.put(name, new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }

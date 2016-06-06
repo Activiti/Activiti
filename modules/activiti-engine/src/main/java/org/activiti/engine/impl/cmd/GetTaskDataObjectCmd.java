@@ -75,18 +75,6 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
     if (locale != null) {
       String localizedName = null;
       String localizedDescription = null;
-
-      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, variableName, task.getProcessDefinitionId(), withLocalizationFallback);
-      if (languageNode != null) {
-        JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
-        if (nameNode != null) {
-          localizedName = nameNode.asText();
-        }
-        JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
-        if (descriptionNode != null) {
-          localizedDescription = descriptionNode.asText();
-        }
-      }
       
       if (variableEntity != null) {
         ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
@@ -95,13 +83,11 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
         }
         
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
-        String description = null;
-        boolean found = false;
+        ValuedDataObject foundDataObject = null;
         if (executionEntity.getParentId() == null) {
           for (ValuedDataObject dataObjectDefinition : bpmnModel.getMainProcess().getDataObjects()) {
             if (dataObjectDefinition.getName().equals(variableEntity.getName())) {
-              description = dataObjectDefinition.getDocumentation();
-              found = true;
+              foundDataObject = dataObjectDefinition;
               break;
             }
           }
@@ -110,15 +96,27 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
           SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(executionEntity.getActivityId());
           for (ValuedDataObject dataObjectDefinition : subProcess.getDataObjects()) {
             if (dataObjectDefinition.getName().equals(variableEntity.getName())) {
-              description = dataObjectDefinition.getDocumentation();
-              found = true;
+              foundDataObject = dataObjectDefinition;
               break;
             }
           }
         }
         
-        if (found) {
-          dataObject = new DataObjectImpl(variableEntity, description, localizedName, localizedDescription);
+        if (locale != null && foundDataObject != null) {
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), task.getProcessDefinitionId(), withLocalizationFallback);
+          if (languageNode != null) {
+            JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+            if (nameNode != null) {
+              localizedName = nameNode.asText();
+            }
+            JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+            if (descriptionNode != null) {
+              localizedDescription = descriptionNode.asText();
+            }
+          }
+        }
+        if (foundDataObject != null) {
+          dataObject = new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId());
         }
       }
     }
