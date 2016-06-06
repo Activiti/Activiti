@@ -42,4 +42,9 @@ public interface DataObject {
    * Type of the DataObject.
    */
   String getType();  
+  
+  /**
+   * The id of the flow element in the process defining this data object.
+   */
+  String getDataObjectDefinitionKey();
 }

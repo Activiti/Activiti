@@ -52,7 +52,7 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
     }
     
     VariableInstance variableEntity = null;
-    if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       variableEntity = activiti5CompatibilityHandler.getExecutionVariableInstance(executionId, variableName, isLocal);
       

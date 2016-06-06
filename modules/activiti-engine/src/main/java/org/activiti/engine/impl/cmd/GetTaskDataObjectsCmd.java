@@ -1,15 +1,16 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
@@ -24,97 +25,76 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnConstants;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.DataObjectImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
-import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.task.Task;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Serializable {
+public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, Serializable {
 
   private static final long serialVersionUID = 1L;
-  protected String executionId;
-  protected Collection<String> dataObjectNames;
-  protected boolean isLocal;
+  protected String taskId;
+  protected Collection<String> variableNames;
   protected String locale;
   protected boolean withLocalizationFallback;
-  
-  public GetDataObjectsCmd(String executionId, Collection<String> dataObjectNames, boolean isLocal) {
-    this.executionId = executionId;
-    this.dataObjectNames = dataObjectNames;
-    this.isLocal = isLocal;
+
+  public GetTaskDataObjectsCmd(String taskId, Collection<String> variableNames) {
+    this.taskId = taskId;
+    this.variableNames = variableNames;
   }
 
-  public GetDataObjectsCmd(String executionId, Collection<String> dataObjectNames, boolean isLocal, String locale, boolean withLocalizationFallback) {
-    this.executionId = executionId;
-    this.dataObjectNames = dataObjectNames;
-    this.isLocal = isLocal;
+  public GetTaskDataObjectsCmd(String taskId, Collection<String> variableNames, String locale, boolean withLocalizationFallback) {
+    this.taskId = taskId;
+    this.variableNames = variableNames;
     this.locale = locale;
     this.withLocalizationFallback = withLocalizationFallback;
   }
 
   public Map<String, DataObject> execute(CommandContext commandContext) {
-
-    // Verify existance of execution
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("executionId is null");
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
     }
-    
+
+    Map<String, DataObject> dataObjects = null;
     Map<String, VariableInstance> variables = null;
-    
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      variables = activiti5CompatibilityHandler.getExecutionVariableInstances(executionId, dataObjectNames, isLocal);
-    
-    } else {
-
-      if (dataObjectNames == null || dataObjectNames.isEmpty()) {
-        // Fetch all
-        if (isLocal) {
-          variables = execution.getVariableInstancesLocal();
-        } else {
-          variables = execution.getVariableInstances();
-        }
-  
-      } else {
-        // Fetch specific collection of variables
-        if (isLocal) {
-          variables = execution.getVariableInstancesLocal(dataObjectNames, false);
-        } else {
-          variables = execution.getVariableInstances(dataObjectNames, false);
-        }
-      }
+    if (variableNames == null) {
+        variables = task.getVariableInstances();
+    }
+    else {
+        variables = task.getVariableInstances(variableNames, false);
     }
 
-    Map<String,DataObject> dataObjects = null;
     if (variables != null) {
       dataObjects = new HashMap<>(variables.size());
       
       for (Entry<String, VariableInstance> entry : variables.entrySet()) {
-        String name = entry.getKey();
-        VariableInstance variableEntity = (VariableInstance) entry.getValue();
+        String variableName = entry.getKey();
+        VariableInstance variableEntity = entry.getValue();
+
+        String localizedName = null;
+        String localizedDescription = null;
 
         ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
         while (!executionEntity.isScope()) {
           executionEntity = executionEntity.getParent();
         }
         
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
         ValuedDataObject foundDataObject = null;
         if (executionEntity.getParentId() == null) {
           for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
@@ -124,7 +104,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
             }
           }
         } else {
-          SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(execution.getActivityId());
+          SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(executionEntity.getActivityId());
           for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
             if (dataObject.getName().equals(variableEntity.getName())) {
               foundDataObject = dataObject;
@@ -133,11 +113,8 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
           }
         }
         
-        String localizedName = null;
-        String localizedDescription = null;
-        
-        if (locale != null && foundDataObject != null) {          
-          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), execution.getProcessDefinitionId(), withLocalizationFallback);
+        if(locale != null && foundDataObject != null) {
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), task.getProcessDefinitionId(), withLocalizationFallback);
           if (languageNode != null) {
             JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
             if (nameNode != null) {
@@ -151,11 +128,11 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
         }
         
         if (foundDataObject != null) {
-          dataObjects.put(name, new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
+          dataObjects.put(variableEntity.getName(), new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }
-    
+
     return dataObjects;
   }
 }

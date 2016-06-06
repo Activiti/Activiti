@@ -154,7 +154,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     for (Artifact artifact : flowElementsContainer.getArtifacts()) {
       if (artifact instanceof Association) {
         Association association = (Association) artifact;
-        if (association.getTargetRef() != null && association.getTargetRef() != null && association.getTargetRef().equals(targetRef)) {
+        if (association.getTargetRef() != null && association.getTargetRef().equals(targetRef)) {
           associations.add(association);
         }
       }
@@ -205,7 +205,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
     element.setParentContainer(this);
-    if (element != null && StringUtils.isNotEmpty(element.getId())) {
+    if (StringUtils.isNotEmpty(element.getId())) {
       flowElementMap.put(element.getId(), element);
     }
   }
