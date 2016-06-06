@@ -1,5 +1,7 @@
 package org.activiti.engine.cfg;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+
 /**
  * @author jbarrez
  */
@@ -10,6 +12,14 @@ public abstract class AbstractProcessEngineConfigurator implements ProcessEngine
 	@Override
 	public int getPriority() {
 		return DEFAULT_CONFIGURATOR_PRIORITY;
+	}
+	
+	public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    
+  }
+	
+	public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
+	  
 	}
 
 }
