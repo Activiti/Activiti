@@ -43,6 +43,7 @@ public class TaskDefinition implements Serializable {
   protected Set<Expression> candidateUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateGroupIdExpressions = new HashSet<Expression>();
   protected Expression dueDateExpression;
+  protected Expression businessCalendarNameExpression;
   protected Expression priorityExpression;
   protected Expression categoryExpression;
   protected Map<String, Set<Expression>> customUserIdentityLinkExpressions = new HashMap<String, Set<Expression>>(); 
@@ -173,7 +174,15 @@ public class TaskDefinition implements Serializable {
   public void setDueDateExpression(Expression dueDateExpression) {
     this.dueDateExpression = dueDateExpression;
   }
-  
+
+  public Expression getBusinessCalendarNameExpression() {
+    return businessCalendarNameExpression;
+  }
+
+  public void setBusinessCalendarNameExpression(Expression businessCalendarNameExpression) {
+    this.businessCalendarNameExpression = businessCalendarNameExpression;
+  }
+
   public Expression getCategoryExpression() {
 		return categoryExpression;
 	}

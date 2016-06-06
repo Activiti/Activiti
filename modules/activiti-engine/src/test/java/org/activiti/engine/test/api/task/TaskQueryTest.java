@@ -1955,6 +1955,11 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         .or()
         .taskId("invalid")
         .processDefinitionKey("unexisting").count());
+    
+    assertEquals(1, taskService.createTaskQuery()
+        .or()
+        .taskId(taskIds.get(0))
+        .processDefinitionKey("unexisting").endOr().count());
   }
   
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})

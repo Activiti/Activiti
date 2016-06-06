@@ -251,7 +251,7 @@ public class SimpleTableEditor extends AbstractPage {
         final ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
 
         return diagramGenerator.generateDiagram(workflowDefinitionConversion.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
-            processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader());
+            processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getAnnotationFontName(), processEngineConfiguration.getClassLoader());
       }
     };
     
@@ -308,7 +308,7 @@ public class SimpleTableEditor extends AbstractPage {
       // TODO: we should really allow the service to take an inputstream as input. Now we load it into memory ...
       repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(
           diagramGenerator.generateDiagram(conversion.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
-              processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader())));
+              processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getAnnotationFontName(), processEngineConfiguration.getClassLoader())));
     } catch (IOException e) {
       logger.warn("Could not generate process image. Image is not stored and will not be shown.", e);
     }
