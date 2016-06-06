@@ -388,12 +388,12 @@ public class BpmnDeployer implements Deployer {
               }
             }
             
-            if (name != null && isEqualToCurrentLocalizationValue(locale, dataObject.getName(), DynamicBpmnConstants.LOCALIZATION_NAME, name, infoNode) == false) {
+            if (name != null && isEqualToCurrentLocalizationValue(locale, dataObject.getId(), DynamicBpmnConstants.LOCALIZATION_NAME, name, infoNode) == false) {
               dynamicBpmnService.changeLocalizationName(locale, dataObject.getId(), name, infoNode);
               localizationValuesChanged = true;
             }
             
-            if (documentation != null && isEqualToCurrentLocalizationValue(locale, dataObject.getName(), 
+            if (documentation != null && isEqualToCurrentLocalizationValue(locale, dataObject.getId(), 
                 DynamicBpmnConstants.LOCALIZATION_DESCRIPTION, documentation, infoNode) == false) {
               
               dynamicBpmnService.changeLocalizationDescription(locale, dataObject.getId(), documentation, infoNode);
