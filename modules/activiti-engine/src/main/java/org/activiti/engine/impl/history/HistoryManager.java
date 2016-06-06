@@ -54,11 +54,6 @@ public interface HistoryManager {
   void recordActivityEnd(ExecutionEntity executionEntity);
 
   /**
-   * Record the end of a start-task, if activity history is enabled.
-   */
-  void recordStartEventEnded(String executionId, String activityId);
-
-  /**
    * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution.
    */
   HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull);
@@ -81,10 +76,10 @@ public interface HistoryManager {
   /**
    * record task instance claim time, if audit history is enabled
    *
-   * @param taskId
+   * @param task
    */
 
-  void recordTaskClaim(String taskId);
+  void recordTaskClaim(TaskEntity task);
 
   /**
    * Record the id of a the task associated with a historic activity, if activity history is enabled.

@@ -14,12 +14,25 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.LinkedList;
 
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * For each API call (and thus {@link Command}) being executed, a new agenda instance is created.
+ * On this agenda, operations are put, which the {@link CommandExecutor} will keep executing until
+ * all are executed.
+ * 
+ * The agenda also gives easy access to methods to plan new operations when writing 
+ * {@link ActivityBehavior} implementations.
+ * 
+ * During a {@link Command} execution, the agenda can always be fetched using {@link Context#getAgenda()}.
+ * 
  * @author Joram Barrez
  */
 public class Agenda {
@@ -79,14 +92,10 @@ public class Agenda {
     planOperation(new ContinueMultiInstanceOperation(commandContext, execution), execution);
   }
 
-  public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution) {
-    planTakeOutgoingSequenceFlowsOperation(execution, true);
-  }
-
   public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
     planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions), execution);
   }
-
+  
   public void planEndExecutionOperation(ExecutionEntity execution) {
     planOperation(new EndExecutionOperation(commandContext, execution), execution);
   }

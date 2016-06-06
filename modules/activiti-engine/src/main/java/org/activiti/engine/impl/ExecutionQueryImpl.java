@@ -13,6 +13,7 @@
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -47,8 +48,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String executionId;
   protected String parentId;
   protected boolean onlyChildExecutions;
+  protected boolean onlySubProcessExecutions;
   protected boolean onlyProcessInstanceExecutions;
   protected String processInstanceId;
+  protected String rootProcessInstanceId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
 
   protected String tenantId;
@@ -56,6 +59,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean withoutTenantId;
   protected String locale;
   protected boolean withLocalizationFallback;
+
+  protected Date startedBefore;
+  protected Date startedAfter;
+  protected String startedBy;
 
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
@@ -145,6 +152,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return this;
   }
 
+  public ExecutionQueryImpl rootProcessInstanceId(String rootProcessInstanceId) {
+    if (rootProcessInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("Root process instance id is null");
+    }
+    this.rootProcessInstanceId = rootProcessInstanceId;
+    return this;
+  }
+
   public ExecutionQuery processInstanceBusinessKey(String businessKey) {
     if (businessKey == null) {
       throw new ActivitiIllegalArgumentException("Business key is null");
@@ -201,6 +216,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public ExecutionQuery onlyChildExecutions() {
     this.onlyChildExecutions = true;
+    return this;
+  }
+
+  public ExecutionQuery onlySubProcessExecutions() {
+    this.onlySubProcessExecutions = true;
     return this;
   }
 
@@ -292,6 +312,33 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public ExecutionQuery withLocalizationFallback() {
     withLocalizationFallback = true;
+    return this;
+  }
+
+  public ExecutionQuery startedBefore(Date beforeTime) {
+    if (beforeTime == null) {
+      throw new ActivitiIllegalArgumentException("before time is null");
+    }
+    this.startedBefore = beforeTime;
+
+    return this;
+  }
+
+  public ExecutionQuery startedAfter(Date afterTime) {
+    if (afterTime == null) {
+      throw new ActivitiIllegalArgumentException("after time is null");
+    }
+    this.startedAfter = afterTime;
+
+    return this;
+  }
+
+  public ExecutionQuery startedBy(String userId) {
+    if (userId == null) {
+      throw new ActivitiIllegalArgumentException("user id is null");
+    }
+    this.startedBy = userId;
+
     return this;
   }
   
@@ -409,6 +456,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return processInstanceId;
   }
 
+  public String getRootProcessInstanceId() {
+    return rootProcessInstanceId;
+  }
+
   public String getProcessInstanceIds() {
     return null;
   }
@@ -481,6 +532,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return onlyChildExecutions;
   }
 
+  public boolean isOnlySubProcessExecutions() {
+    return onlySubProcessExecutions;
+  }
+
   public boolean isOnlyProcessInstanceExecutions() {
     return onlyProcessInstanceExecutions;
   }
@@ -521,4 +576,27 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.nameLikeIgnoreCase = nameLikeIgnoreCase;
   }
 
+  public Date getStartedBefore() {
+    return startedBefore;
+  }
+
+  public void setStartedBefore(Date startedBefore) {
+    this.startedBefore = startedBefore;
+  }
+
+  public Date getStartedAfter() {
+    return startedAfter;
+  }
+
+  public void setStartedAfter(Date startedAfter) {
+    this.startedAfter = startedAfter;
+  }
+
+  public String getStartedBy() {
+    return startedBy;
+  }
+
+  public void setStartedBy(String startedBy) {
+    this.startedBy = startedBy;
+  }
 }

@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.runtime.Job;
@@ -24,7 +25,7 @@ import org.activiti.engine.runtime.Job;
  */
 public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
   
-  void createAndCalculateNextTimer(JobEntity timerEntity);
+  void createAndCalculateNextTimer(JobEntity timerEntity, VariableScope variableScope);
 
   List<TimerJobEntity> selectTimerJobsToDueDate(Page page);
 

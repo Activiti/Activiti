@@ -13,6 +13,7 @@
 
 package org.activiti.compatibility.wrapper;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.activiti.engine.runtime.ProcessInstance;
@@ -127,6 +128,16 @@ public class Activiti5ProcessInstanceWrapper implements ProcessInstance {
 
   public org.activiti5.engine.runtime.ProcessInstance getRawObject() {
     return activiti5ProcessInstance;
+  }
+
+  @Override
+  public Date getStartTime() {
+    return null;
+  }
+
+  @Override
+  public String getStartUserId() {
+    return null;
   }
 
 }

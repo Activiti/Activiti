@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
@@ -74,6 +76,13 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     // The subprocess should be left, and the escalated task should be active
     Task escalationTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Fix escalated problem", escalationTask.getName());
+    
+    // Verify history for task that was killed
+    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskName("Task in subprocess").singleResult();
+    assertNotNull(historicTaskInstance.getEndTime());
+    
+    HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("subProcessTask").singleResult();
+    assertNotNull(historicActivityInstance.getEndTime());
   }
 
   /**

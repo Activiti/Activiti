@@ -61,17 +61,22 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
 
         if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, eventListener.getImplementation(), xtw);
+          
         } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, eventListener.getImplementation(), xtw);
+          
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL, xtw);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
+          
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL, xtw);
+          
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME, eventListener.getImplementation(), xtw);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE, xtw);
+          
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE, eventListener.getImplementation(), xtw);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR, xtw);
@@ -105,6 +110,16 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
             BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EXPRESSION, listener.getImplementation(), xtw);
           } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
             BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, listener.getImplementation(), xtw);
+          }
+
+          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_ON_TRANSACTION, listener.getOnTransaction(), xtw);
+
+          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getCustomPropertiesResolverImplementationType())) {
+            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS, listener.getCustomPropertiesResolverImplementation(), xtw);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getCustomPropertiesResolverImplementationType())) {
+            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION, listener.getCustomPropertiesResolverImplementation(), xtw);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getCustomPropertiesResolverImplementationType())) {
+            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION, listener.getCustomPropertiesResolverImplementation(), xtw);
           }
 
           FieldExtensionExport.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);

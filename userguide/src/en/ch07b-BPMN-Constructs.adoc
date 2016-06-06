@@ -44,7 +44,15 @@ Event definitions define the semantics of an event. Without an event definition,
 
 ==== Timer Event Definitions
 
-Timer events are events which are triggered by defined timer. They can be used as <<bpmnTimerStartEvent,start event>>, <<bpmnIntermediateCatchingEvent,intermediate event>> or <<bpmnTimerBoundaryEvent,boundary event>>
+Timer events are events which are triggered by defined timer. They can be used as <<bpmnTimerStartEvent,start event>>, <<bpmnIntermediateCatchingEvent,intermediate event>> or <<bpmnTimerBoundaryEvent,boundary event>>. The behavior of the time event depends on the business calendar used. Every timer event has a default business calendar, but the business calendar can also be defined on the timer event definition.
+
+[source,xml,linenums]
+----
+<timerEventDefinition activiti:businessCalendarName="custom">
+    ...
+</timerEventDefinition>
+----
+Where businessCalendarName points to business calendar in process engine configuration. When business calendar is omitted default business calendars are used.
 
 Timer definition must have exactly one element from the following:
 

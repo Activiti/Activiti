@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.activiti.engine.impl.calendar.AdvancedCycleBusinessCalendar;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
-import org.activiti5.engine.impl.calendar.AdvancedCycleBusinessCalendar;
 import org.activiti5.engine.impl.test.PvmTestCase;
 
 

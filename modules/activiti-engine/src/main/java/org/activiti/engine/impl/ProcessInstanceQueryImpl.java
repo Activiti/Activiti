@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -63,6 +64,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
+  protected Integer processInstanceVariablesLimit;
   protected boolean withJobException;
   protected String name;
   protected String nameLike;
@@ -77,12 +79,18 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected List<ProcessInstanceQueryImpl> orQueryObjects = new ArrayList<ProcessInstanceQueryImpl>();
   protected ProcessInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
-  
+
+  protected Date startedBefore;
+  protected Date startedAfter;
+  protected String startedBy;
+
   // Unused, see dynamic query
   protected String activityId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
   protected boolean onlyChildExecutions;
   protected boolean onlyProcessInstanceExecutions;
+  protected boolean onlySubProcessExecutions;
+  protected String rootProcessInstanceId;
 
   public ProcessInstanceQueryImpl() {
   }
@@ -364,6 +372,15 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
   
+  public ProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit) {
+    this.processInstanceVariablesLimit = processInstanceVariablesLimit;
+    return this;
+  }
+
+  public Integer getProcessInstanceVariablesLimit() {
+    return processInstanceVariablesLimit;
+  }
+  
   public ProcessInstanceQuery withJobException() {
     this.withJobException = true;
     return this;
@@ -539,6 +556,33 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
 
+  public ProcessInstanceQuery startedBefore(Date beforeTime) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.startedBefore = beforeTime;
+    } else {
+      this.startedBefore = beforeTime;
+    }
+    return this;
+  }
+
+  public ProcessInstanceQuery startedAfter(Date afterTime) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.startedAfter = afterTime;
+    } else {
+      this.startedAfter = afterTime;
+    }
+    return this;
+  }
+
+  public ProcessInstanceQuery startedBy(String userId) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.startedBy = userId;
+    } else {
+      this.startedBy = userId;
+    }
+    return this;
+  }
+
   public ProcessInstanceQuery orderByProcessInstanceId() {
     this.orderProperty = ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID;
     return this;
@@ -635,6 +679,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public String getProcessInstanceId() {
     return executionId;
+  }
+
+  public String getRootProcessInstanceId() {
+    return rootProcessInstanceId;
   }
 
   public Set<String> getProcessInstanceIds() {
@@ -784,5 +832,32 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public boolean isOnlyProcessInstanceExecutions() {
     return onlyProcessInstanceExecutions;
   }
+  
+  public boolean isOnlySubProcessExecutions() {
+    return onlySubProcessExecutions;
+  }
 
+  public Date getStartedBefore() {
+    return startedBefore;
+  }
+
+  public void setStartedBefore(Date startedBefore) {
+    this.startedBefore = startedBefore;
+  }
+
+  public Date getStartedAfter() {
+    return startedAfter;
+  }
+
+  public void setStartedAfter(Date startedAfter) {
+    this.startedAfter = startedAfter;
+  }
+
+  public String getStartedBy() {
+    return startedBy;
+  }
+
+  public void setStartedBy(String startedBy) {
+    this.startedBy = startedBy;
+  }
 }

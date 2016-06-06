@@ -130,11 +130,12 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testSetJobRetries() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-    // The execution is waiting in the first usertask. This contains a boundary
-    // timer event.
+    // The execution is waiting in the first usertask. This contains a boundary timer event.
     Job timerJob = managementService.createJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
+    
+    Date duedate = timerJob.getDuedate();
     
     assertNotNull("No job found for process instance", timerJob);
     assertEquals(JobEntity.DEFAULT_RETRIES, timerJob.getRetries());
@@ -145,6 +146,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       .processInstanceId(processInstance.getId())
       .singleResult();
     assertEquals(5, timerJob.getRetries());
+    assertEquals(duedate, timerJob.getDuedate());
   }
   
   public void testSetJobRetriesUnexistingJobId() {

@@ -13,6 +13,7 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -278,6 +279,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Include process variables in the process query result
    */
   ProcessInstanceQuery includeProcessVariables();
+  
+  /**
+   * Limit process instance variables
+   */
+  ProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
 
   /**
    * Only select process instances that failed due to an exception happening during a job execution.
@@ -294,6 +300,21 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * End an OR statement. Only one OR statement is allowed, for the second call to this method an exception will be thrown.
    */
   ProcessInstanceQuery endOr();
+
+  /**
+   * Only select process instances started before the given time
+   */
+  ProcessInstanceQuery startedBefore(Date beforeTime);
+
+  /**
+   * Only select process instances started after the given time
+   */
+  ProcessInstanceQuery startedAfter(Date afterTime);
+
+  /**
+   * Only select process instances started by the given user id
+   */
+  ProcessInstanceQuery startedBy(String userId);
 
   // ordering
   // /////////////////////////////////////////////////////////////////

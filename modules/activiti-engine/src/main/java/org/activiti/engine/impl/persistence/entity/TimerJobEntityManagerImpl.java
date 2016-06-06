@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
@@ -24,8 +25,11 @@ import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
 import org.activiti.engine.runtime.Job;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +48,14 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
   }
   
   @Override
-  public void createAndCalculateNextTimer(JobEntity timerEntity) {
+  public void createAndCalculateNextTimer(JobEntity timerEntity, VariableScope variableScope) {
     int repeatValue = calculateRepeatValue(timerEntity);
     if (repeatValue != 0) {
       if (repeatValue > 0) {
         setNewRepeat(timerEntity, repeatValue);
       }
-      Date newTimer = calculateNextTimer(timerEntity);
-      if (newTimer != null && isValidTime(timerEntity, newTimer)) {
+      Date newTimer = calculateNextTimer(timerEntity, variableScope);
+      if (newTimer != null && isValidTime(timerEntity, newTimer, variableScope)) {
         TimerJobEntity te = createTimer(timerEntity);
         te.setDuedate(newTimer);
         insert(te);
@@ -192,13 +196,15 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
     timerEntity.setRepeat(repeatBuilder.toString());
   }
   
-  protected boolean isValidTime(JobEntity timerEntity, Date newTimerDate) {
-    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+  protected boolean isValidTime(JobEntity timerEntity, Date newTimerDate, VariableScope variableScope) {
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+        getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.validateDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations(), timerEntity.getEndDate(), newTimerDate);
   }
   
-  protected Date calculateNextTimer(JobEntity timerEntity) {
-    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+  protected Date calculateNextTimer(JobEntity timerEntity, VariableScope variableScope) {
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+        getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
   }
   
@@ -212,6 +218,15 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
       }
     }
     return times;
+  }
+  
+  protected String getBusinessCalendarName(String calendarName, VariableScope variableScope) {
+    String businessCalendarName = CycleBusinessCalendar.NAME;
+    if (StringUtils.isNotEmpty(calendarName)) {
+      businessCalendarName = (String) Context.getProcessEngineConfiguration().getExpressionManager()
+          .createExpression(calendarName).getValue(variableScope);
+    }
+    return businessCalendarName;
   }
   
   protected TimerJobDataManager getDataManager() {

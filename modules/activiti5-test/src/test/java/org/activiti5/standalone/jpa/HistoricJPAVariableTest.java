@@ -13,12 +13,13 @@ import org.activiti.engine.history.HistoricData;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.ProcessInstanceHistoryLog;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti5.engine.impl.variable.EntityManagerSession;
 import org.activiti5.engine.impl.variable.EntityManagerSessionFactory;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.test.Deployment;
 
 /**
  * @author Daisuke Yoshimoto
@@ -124,6 +125,38 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
       Object value = ((HistoricVariableInstanceEntity) event).getValue();
       assertTrue(value instanceof FieldAccessJPAEntity);
       assertEquals(((FieldAccessJPAEntity) value).getValue(), simpleEntityFieldAccess.getValue());
+    }
+  }
+  
+  @Deployment
+  (resources={"org/activiti5/standalone/jpa/HistoricJPAVariableTest.testGetJPAEntityAsHistoricLog.bpmn20.xml"})
+  public void testGetJPAUpdateEntityAsHistoricLog() {
+    setupJPAEntities();
+    // -----------------------------------------------------------------------------
+    // Simple test, Start process with JPA entities as variables
+    // -----------------------------------------------------------------------------
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("simpleEntityFieldAccess", simpleEntityFieldAccess);
+
+    // Start the process with the JPA-entities as variables. They will be stored in the DB.
+    this.processInstanceId = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables).getId();
+    
+    // Finish tasks
+    for (Task task : taskService.createTaskQuery().includeProcessVariables().list()) {
+      taskService.setVariable(task.getId(), "simpleEntityFieldAccess", simpleEntityFieldAccess);
+      taskService.complete(task.getId());
+    }
+
+    // Get JPAEntity Variable by ProcessInstanceHistoryLogQuery
+    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
+        .includeVariableUpdates()
+        .singleResult();
+    List<HistoricData> events = log.getHistoricData();
+
+    for (HistoricData event : events) {
+      Object value = ((HistoricDetailVariableInstanceUpdateEntity) event).getValue();
+      assertTrue(value instanceof FieldAccessJPAEntity);
+      assertEquals(((FieldAccessJPAEntity)value).getValue(), simpleEntityFieldAccess.getValue());
     }
   }
 }

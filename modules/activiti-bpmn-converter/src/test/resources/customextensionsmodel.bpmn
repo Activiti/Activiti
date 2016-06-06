@@ -6,10 +6,10 @@
 	targetNamespace="http://www.activiti.org/test">
   <process id="process" name="process1" isExecutable="true" custom:version="9">
     <extensionElements>
-      <activiti:executionListener event="start" class="org.test.TestClass"></activiti:executionListener>
-      <activiti:executionListener event="end" expression="${testExpression}"></activiti:executionListener>
-      <activiti:executionListener event="start" delegateExpression="${delegateExpression}"></activiti:executionListener>
-      <custom:test xmlns:custom="http://custom.org/bpmn" id="test" name="test">
+      <activiti:executionListener event="start" class="org.test.TestClass" onTransaction="before-commit" customPropertiesResolverClass="org.test.TestResolverClass"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${testExpression}" onTransaction="committed" customPropertiesResolverExpression="${testResolverExpression}"></activiti:executionListener>
+      <activiti:executionListener event="start" delegateExpression="${delegateExpression}" onTransaction="rolled-back" customPropertiesResolverDelegateExpression="${delegateResolverExpression}"></activiti:executionListener>
+        <custom:test xmlns:custom="http://custom.org/bpmn" id="test" name="test">
         <custom:name>
           <custom:test>test</custom:test>
         </custom:name>
@@ -25,9 +25,9 @@
       <extensionElements>
         <activiti:field name="testField" stringValue="test"></activiti:field>
         <activiti:field name="testField2" expression="${test}"></activiti:field>
-        <activiti:executionListener event="start" class="org.test.TestClass"></activiti:executionListener>
-        <activiti:executionListener event="end" expression="${testExpression}"></activiti:executionListener>
-        <activiti:executionListener event="start" delegateExpression="${delegateExpression}"></activiti:executionListener>
+        <activiti:executionListener event="start" class="org.test.TestClass" onTransaction="before-commit" customPropertiesResolverClass="org.test.TestResolverClass"></activiti:executionListener>
+        <activiti:executionListener event="end" expression="${testExpression}" onTransaction="committed" customPropertiesResolverExpression="${testResolverExpression}"></activiti:executionListener>
+        <activiti:executionListener event="start" delegateExpression="${delegateExpression}" onTransaction="rolled-back" customPropertiesResolverDelegateExpression="${delegateResolverExpression}"></activiti:executionListener>
         <custom:test id="test" name="test">
         	<custom:name>
         		<custom:test>test</custom:test>

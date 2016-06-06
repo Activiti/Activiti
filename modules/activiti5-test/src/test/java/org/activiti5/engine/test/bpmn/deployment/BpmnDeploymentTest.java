@@ -35,6 +35,7 @@ import org.activiti5.engine.impl.util.ReflectUtil;
 
 /**
  * @author Joram Barrez
+ * @author Erik Winlof
  */
 public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   
@@ -103,6 +104,20 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     assertEquals(0, repositoryService.createDeploymentQuery().count());
   }
 
+  public void testViolateDefinitionTargetNamespaceMaximumLength() {
+    try {
+      repositoryService.createDeployment()
+          .addClasspathResource("org/activiti5/engine/test/bpmn/deployment/BpmnDeploymentTest.definitionWithLongTargetNamespace.bpmn20.xml")
+          .deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, e.getMessage());
+    }
+    
+    // Verify that nothing is deployed
+    assertEquals(0, repositoryService.createDeploymentQuery().count());
+  }
+  
   public void testViolateProcessDefinitionNameAndDescriptionMaximumLength() {
     try {
       repositoryService.createDeployment()
@@ -117,7 +132,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     // Verify that nothing is deployed
     assertEquals(0, repositoryService.createDeploymentQuery().count());
   }
-  
+
   public void testDeploySameFileTwice() {
     String bpmnResourceName = "org/activiti5/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
     repositoryService.createDeployment().enableDuplicateFiltering()

@@ -37,7 +37,7 @@ import org.junit.Test;
 public class Activiti6Test extends PluggableActivitiTestCase {
 
   @Test
-  public void simplestProcessPossible() {
+  public void testSimplestProcessPossible() {
     repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/v6/Activiti6Test.simplestProcessPossible.bpmn20.xml").deploy();
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");

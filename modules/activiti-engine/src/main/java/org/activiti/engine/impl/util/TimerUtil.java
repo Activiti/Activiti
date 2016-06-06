@@ -41,6 +41,14 @@ public class TimerUtil {
     String businessCalendarRef = null;
     Expression expression = null;
     ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
+    
+    // ACT-1415: timer-declaration on start-event may contain expressions NOT
+    // evaluating variables but other context, evaluating should happen nevertheless
+    VariableScope scopeForExpression = executionEntity;
+    if (scopeForExpression == null) {
+      scopeForExpression = NoExecutionVariableScope.getSharedInstance();
+    }
+    
     if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDate())) {
 
       businessCalendarRef = DueDateBusinessCalendar.NAME;
@@ -55,7 +63,12 @@ public class TimerUtil {
 
       businessCalendarRef = DurationBusinessCalendar.NAME;
       expression = expressionManager.createExpression(timerEventDefinition.getTimeDuration());
-
+    }
+    
+    if (StringUtils.isNotEmpty(timerEventDefinition.getCalendarName())) {
+      businessCalendarRef = timerEventDefinition.getCalendarName();
+      Expression businessCalendarExpression = expressionManager.createExpression(businessCalendarRef);
+      businessCalendarRef = businessCalendarExpression.getValue(scopeForExpression).toString();
     }
 
     if (expression == null) {
@@ -66,14 +79,7 @@ public class TimerUtil {
 
     String dueDateString = null;
     Date duedate = null;
-
-    // ACT-1415: timer-declaration on start-event may contain expressions NOT
-    // evaluating variables but other context, evaluation should happen nevertheless
-    VariableScope scopeForExpression = executionEntity;
-    if (scopeForExpression == null) {
-      scopeForExpression = NoExecutionVariableScope.getSharedInstance();
-    }
-
+    
     Object dueDateValue = expression.getValue(scopeForExpression);
     if (dueDateValue instanceof String) {
       dueDateString = (String) dueDateValue;

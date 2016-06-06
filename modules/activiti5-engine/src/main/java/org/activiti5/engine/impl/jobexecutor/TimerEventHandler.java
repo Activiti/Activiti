@@ -21,12 +21,16 @@ public class TimerEventHandler {
   public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
   public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
   public static final String PROPERTYNAME_PROCESS_DEFINITION_KEY = "processDefinitionKey";
+  public static final String PROPERTYNAME_CALENDAR_NAME_EXPRESSION = "calendarName";
 
-  public static String createConfiguration(String id, Expression endDate) {
+  public static String createConfiguration(String id, Expression endDate, Expression calendarName) {
     JSONObject cfgJson = new JSONObject();
     cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
     if (endDate!=null) {
       cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate.getExpressionText());
+    }
+    if (calendarName != null) {
+      cfgJson.put(PROPERTYNAME_CALENDAR_NAME_EXPRESSION, calendarName.getExpressionText());
     }
     return cfgJson.toString();
   }
@@ -48,6 +52,16 @@ public class TimerEventHandler {
    }catch (JSONException ex){
     return jobHandlerConfiguration;
    }
+  }
+  
+  public static String geCalendarNameFromConfiguration(String jobHandlerConfiguration) {
+    try {
+      JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
+      return cfgJson.get(PROPERTYNAME_CALENDAR_NAME_EXPRESSION).toString();
+    } catch (JSONException ex) {
+      // calendar name is not specified
+      return "";
+    }
   }
 
   public String setEndDateToConfiguration(String jobHandlerConfiguration, String endDate) {

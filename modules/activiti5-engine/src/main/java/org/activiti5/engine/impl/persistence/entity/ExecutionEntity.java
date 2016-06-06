@@ -38,6 +38,7 @@ import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.db.DbSqlSession;
 import org.activiti5.engine.impl.db.HasRevision;
 import org.activiti5.engine.impl.db.PersistentObject;
+import org.activiti5.engine.impl.history.HistoryManager;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerDeclarationImpl;
@@ -540,12 +541,19 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       List<ExecutionEntity> recyclableExecutionImpls = (List) recyclableExecutions;
       recyclableExecutions.remove(concurrentRoot);
       for (ExecutionEntity prunedExecution: recyclableExecutionImpls) {
+        
         // End the pruned executions if necessary.
         // Some recyclable executions are inactivated (joined executions)
         // Others are already ended (end activities)
         
+        // Need to call the activity end here. If we would do it later,
+        // the executions are removed and the historic activity instances are
+        // never ended as the combination of {activityId,executionId} is not valid anymor
+        Context.getCommandContext().getHistoryManager().recordActivityEnd(prunedExecution);
+        
         log.debug("pruning execution {}", prunedExecution);
         prunedExecution.remove();
+        
       }
 
       log.debug("activating the concurrent root {} as the single path of execution going forward", concurrentRoot);
@@ -1012,17 +1020,22 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     
     // remove all child executions and sub process instances:
+    HistoryManager historyManager = Context.getCommandContext().getHistoryManager();
     List<InterpretableExecution> executions = new ArrayList<InterpretableExecution>(getExecutions());
     for (InterpretableExecution childExecution : executions) {
       if (childExecution.getSubProcessInstance()!=null) {
         childExecution.getSubProcessInstance().deleteCascade(reason);
       }      
+      historyManager.recordActivityEnd((ExecutionEntity) childExecution);
       childExecution.deleteCascade(reason);
     } 
     
+    if (activityId != null) {
+      historyManager.recordActivityEnd(this);
+    }
+    
     removeTasks(reason);
     removeJobs();
-    // Daniel thought this would be needed, but it seems not: removeEventSubscriptions();
   } 
     
   private void removeEventScopes() {

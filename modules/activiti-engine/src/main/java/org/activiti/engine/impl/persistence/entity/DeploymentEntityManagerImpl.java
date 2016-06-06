@@ -189,11 +189,11 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
   protected void restoreTimerStartEvent(ProcessDefinition previousProcessDefinition, StartEvent startEvent, EventDefinition eventDefinition) {
     TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
     TimerJobEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
-        TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
+        TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
     
     if (timer != null) {
       TimerJobEntity timerJob = getJobManager().createTimerJob((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
-          TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate()));
+          TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
       
       timerJob.setProcessDefinitionId(previousProcessDefinition.getId());
       

@@ -262,6 +262,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery includeProcessVariables();
   
   /**
+   * Limit process instance variables
+   */
+  HistoricProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
+  
+  /**
    * Only select process instances with the given name.
    */
   HistoricProcessInstanceQuery processInstanceName(String name);

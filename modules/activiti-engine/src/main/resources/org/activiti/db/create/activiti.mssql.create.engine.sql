@@ -70,6 +70,8 @@ create table ACT_RU_EXECUTION (
     CACHED_ENT_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',
     NAME_ nvarchar(255),
+    START_TIME_ datetime,
+    START_USER_ID_ nvarchar(255),
     LOCK_TIME_ datetime,
     primary key (ID_)
 );
@@ -155,6 +157,7 @@ create table ACT_RU_TASK (
     SUSPENSION_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',
     FORM_KEY_ nvarchar(255),
+    CLAIM_TIME_ datetime,
     primary key (ID_)
 );
 

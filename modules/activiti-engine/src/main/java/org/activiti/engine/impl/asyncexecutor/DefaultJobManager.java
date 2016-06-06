@@ -37,6 +37,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,11 +202,20 @@ public class DefaultJobManager implements JobManager {
   protected void executeTimerJob(JobEntity timerEntity) {
     CommandContext commandContext = Context.getCommandContext();
     TimerJobEntityManager timerJobEntityManager = commandContext.getTimerJobEntityManager();
+    
+    VariableScope variableScope = null;
+    if (timerEntity.getExecutionId() != null) {
+      variableScope = getExecutionEntityManager().findById(timerEntity.getExecutionId());
+    }
+     
+    if (variableScope == null) {
+      variableScope = NoExecutionVariableScope.getSharedInstance();
+    }
 
     // set endDate if it was set to the definition
-    restoreExtraData(timerEntity);
+    restoreExtraData(timerEntity, variableScope);
 
-    if (timerEntity.getDuedate() != null && !isValidTime(timerEntity, timerEntity.getDuedate())) {
+    if (timerEntity.getDuedate() != null && !isValidTime(timerEntity, timerEntity.getDuedate(), variableScope)) {
       if (logger.isDebugEnabled()) {
         logger.debug("Timer {} fired. but the dueDate is after the endDate.  Deleting timer.", timerEntity.getId());
       }
@@ -221,7 +231,7 @@ public class DefaultJobManager implements JobManager {
     }
     
     if (timerEntity.getRepeat() != null) {
-      timerJobEntityManager.createAndCalculateNextTimer(timerEntity);
+      timerJobEntityManager.createAndCalculateNextTimer(timerEntity, variableScope);
     }
   }
   
@@ -236,7 +246,7 @@ public class DefaultJobManager implements JobManager {
     jobHandler.execute(jobEntity, jobEntity.getJobHandlerConfiguration(), execution, getCommandContext());
   }
    
-  protected void restoreExtraData(JobEntity timerEntity) {
+  protected void restoreExtraData(JobEntity timerEntity, VariableScope variableScope) {
     String activityId = timerEntity.getJobHandlerConfiguration();
 
     if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
@@ -249,25 +259,17 @@ public class DefaultJobManager implements JobManager {
 
         String endDateString = null;
 
-        BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
-
-        VariableScope executionEntity = null;
-        if (timerEntity.getExecutionId() != null) {
-          executionEntity = getExecutionEntityManager().findById(timerEntity.getExecutionId());
-        }
-         
-        if (executionEntity == null) {
-          executionEntity = NoExecutionVariableScope.getSharedInstance();
-        }
+        BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+            getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
 
         if (endDateExpression != null) {
-          Object endDateValue = endDateExpression.getValue(executionEntity);
+          Object endDateValue = endDateExpression.getValue(variableScope);
           if (endDateValue instanceof String) {
             endDateString = (String) endDateValue;
           } else if (endDateValue instanceof Date) {
             timerEntity.setEndDate((Date) endDateValue);
           } else {
-            throw new ActivitiException("Timer '" + ((ExecutionEntity) executionEntity).getActivityId()
+            throw new ActivitiException("Timer '" + ((ExecutionEntity) variableScope).getActivityId()
                 + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
           }
 
@@ -327,9 +329,19 @@ public class DefaultJobManager implements JobManager {
     return times;
   }
    
-  protected boolean isValidTime(JobEntity timerEntity, Date newTimerDate) {
-    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+  protected boolean isValidTime(JobEntity timerEntity, Date newTimerDate, VariableScope variableScope) {
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+        getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.validateDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations(), timerEntity.getEndDate(), newTimerDate);
+  }
+  
+  protected String getBusinessCalendarName(String calendarName, VariableScope variableScope) {
+    String businessCalendarName = CycleBusinessCalendar.NAME;
+    if (StringUtils.isNotEmpty(calendarName)) {
+      businessCalendarName = (String) Context.getProcessEngineConfiguration().getExpressionManager()
+          .createExpression(calendarName).getValue(variableScope);
+    }
+    return businessCalendarName;
   }
   
   protected void hintAsyncExecutor(JobEntity job) {

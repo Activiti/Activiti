@@ -122,7 +122,11 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     }
   }
   
-  public List<Association> findAssociationsWithSourceRefRecursive(FlowElementsContainer flowElementsContainer, String sourceRef) {
+  public List<Association> findAssociationsWithSourceRefRecursive(String sourceRef) {
+    return findAssociationsWithSourceRefRecursive(this, sourceRef);
+  }
+  
+  protected List<Association> findAssociationsWithSourceRefRecursive(FlowElementsContainer flowElementsContainer, String sourceRef) {
     List<Association> associations = new ArrayList<Association>();
     for (Artifact artifact : flowElementsContainer.getArtifacts()) {
       if (artifact instanceof Association) {
@@ -136,6 +140,29 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
       if (flowElement instanceof FlowElementsContainer) {
         associations.addAll(findAssociationsWithSourceRefRecursive((FlowElementsContainer) flowElement, sourceRef));
+      }
+    }
+    return associations;
+  }
+  
+  public List<Association> findAssociationsWithTargetRefRecursive(String targetRef) {
+    return findAssociationsWithTargetRefRecursive(this, targetRef);
+  }
+  
+  protected List<Association> findAssociationsWithTargetRefRecursive(FlowElementsContainer flowElementsContainer, String targetRef) {
+    List<Association> associations = new ArrayList<Association>();
+    for (Artifact artifact : flowElementsContainer.getArtifacts()) {
+      if (artifact instanceof Association) {
+        Association association = (Association) artifact;
+        if (association.getTargetRef() != null && association.getTargetRef() != null && association.getTargetRef().equals(targetRef)) {
+          associations.add(association);
+        }
+      }
+    }
+    
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement instanceof FlowElementsContainer) {
+        associations.addAll(findAssociationsWithTargetRefRecursive((FlowElementsContainer) flowElement, targetRef));
       }
     }
     return associations;

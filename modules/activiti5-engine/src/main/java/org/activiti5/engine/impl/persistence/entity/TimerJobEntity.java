@@ -19,11 +19,11 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti5.engine.impl.calendar.BusinessCalendar;
-import org.activiti5.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.NoExecutionVariableScope;
 import org.activiti5.engine.impl.interceptor.CommandContext;
@@ -35,6 +35,7 @@ import org.activiti5.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandle
 import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.repository.ProcessDefinition;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +110,7 @@ public class TimerJobEntity extends AbstractJobEntity {
         if (repeatValue > 0) {
           setNewRepeat(repeatValue);
         }
+        
         Date newTimer = calculateNextTimer();
         if (newTimer != null && isValidTime(newTimer)) {
           TimerJobEntity te = new TimerJobEntity(this);
@@ -184,7 +186,7 @@ public class TimerJobEntity extends AbstractJobEntity {
         String endDateString = null;
 
         BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager()
-                .getBusinessCalendar(CycleBusinessCalendar.NAME);
+            .getBusinessCalendar(getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration)));
 
         VariableScope executionEntity = null;
         if (executionId != null) {
@@ -246,7 +248,11 @@ public class TimerJobEntity extends AbstractJobEntity {
   }
 
   protected int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
-    List<ActivityImpl> activities = ((ProcessDefinitionEntity) def).getActivities();
+    return checkBoundaryEventsDefinitions(((ProcessDefinitionEntity) def).getActivities(), embededActivityId);
+  }
+
+  protected int checkBoundaryEventsDefinitions(List<ActivityImpl> activities, String embededActivityId) {
+    // should check level by level, first check provided activities list 
     for (ActivityImpl activity : activities) {
       List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
       if (activityTimerDeclarations != null) {
@@ -258,6 +264,12 @@ public class TimerJobEntity extends AbstractJobEntity {
         }
       }
     }
+    
+    // now check sub activities 
+    for (ActivityImpl activity : activities) {
+      return checkBoundaryEventsDefinitions(activity.getActivities(), embededActivityId);
+    }
+    
     return 1;
   }
 
@@ -277,7 +289,7 @@ public class TimerJobEntity extends AbstractJobEntity {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(CycleBusinessCalendar.NAME);
+        .getBusinessCalendar(getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration)));
     return businessCalendar.validateDuedate(repeat , maxIterations, endDate, newTimer);
   }
 
@@ -309,8 +321,20 @@ public class TimerJobEntity extends AbstractJobEntity {
     BusinessCalendar businessCalendar = Context
         .getProcessEngineConfiguration()
         .getBusinessCalendarManager()
-        .getBusinessCalendar(CycleBusinessCalendar.NAME);
+        .getBusinessCalendar(getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(jobHandlerConfiguration)));
     return businessCalendar.resolveDuedate(repeat,maxIterations);
+  }
+  
+  protected String getBusinessCalendarName(String calendarName) {
+    String businessCalendarName = CycleBusinessCalendar.NAME;
+    if (StringUtils.isNotEmpty(calendarName)) {
+      VariableScope execution = NoExecutionVariableScope.getSharedInstance();
+      if (StringUtils.isNotEmpty(this.executionId)) {
+        execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(this.executionId);
+      }
+      businessCalendarName = (String) Context.getProcessEngineConfiguration().getExpressionManager().createExpression(calendarName).getValue(execution);
+    }
+    return businessCalendarName;
   }
 
   public String getRepeat() {

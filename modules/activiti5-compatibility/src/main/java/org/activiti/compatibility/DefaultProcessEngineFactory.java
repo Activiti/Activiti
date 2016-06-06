@@ -67,6 +67,7 @@ public class DefaultProcessEngineFactory {
     copyCustomMybatisMappers(activiti6Configuration, activiti5Configuration);
     convertEventListeners(activiti6Configuration, activiti5Configuration);
     copyPostDeployers(activiti6Configuration, activiti5Configuration);
+    activiti5Configuration.setBusinessCalendarManager(activiti6Configuration.getBusinessCalendarManager());
   }
 
   protected void copyJdbcConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
@@ -106,6 +107,9 @@ public class DefaultProcessEngineFactory {
 
   protected void copyDiagramConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
+    activiti5Configuration.setActivityFontName(activiti6Configuration.getActivityFontName());
+    activiti5Configuration.setLabelFontName(activiti6Configuration.getLabelFontName());
+    activiti5Configuration.setAnnotationFontName(activiti6Configuration.getAnnotationFontName());
   }
 
   protected void copyMailConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
