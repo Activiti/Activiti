@@ -37,6 +37,8 @@ import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentContentCmd;
 import org.activiti.engine.impl.cmd.GetCommentCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableInstanceCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableInstancesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
@@ -44,9 +46,13 @@ import org.activiti.engine.impl.cmd.GetSubTasksCmd;
 import org.activiti.engine.impl.cmd.GetTaskAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsByTypeCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
+import org.activiti.engine.impl.cmd.GetTaskDataObjectCmd;
+import org.activiti.engine.impl.cmd.GetTaskDataObjectsCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
+import org.activiti.engine.impl.cmd.GetTaskVariableInstanceCmd;
+import org.activiti.engine.impl.cmd.GetTaskVariableInstancesCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.GetTasksLocalVariablesCmd;
 import org.activiti.engine.impl.cmd.GetTypeCommentsCmd;
@@ -60,6 +66,7 @@ import org.activiti.engine.impl.cmd.SetTaskDueDateCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -392,6 +399,66 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public List<Task> getSubTasks(String parentTaskId) {
     return commandExecutor.execute(new GetSubTasksCmd(parentTaskId));
+  }
+
+  @Override
+  public VariableInstance getVariableInstance(String taskId, String variableName) {
+    return commandExecutor.execute(new GetTaskVariableInstanceCmd(taskId, variableName, false));
+  }
+
+  @Override
+  public VariableInstance getVariableInstanceLocal(String taskId, String variableName) {
+    return commandExecutor.execute(new GetTaskVariableInstanceCmd(taskId, variableName, true));
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstances(String taskId) {
+    return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, null, false));
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstances(String taskId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, variableNames, false));
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal(String taskId) {
+    return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, null, true));
+  }
+
+  @Override
+  public Map<String, VariableInstance> getVariableInstancesLocal(String taskId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, variableNames, true));
+  }
+
+  @Override
+  public Map<String, DataObject> getDataObjects(String taskId) {
+    return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, null));
+  }
+
+  @Override
+  public Map<String, DataObject> getDataObjects(String taskId, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, null, locale, withLocalizationFallback));
+  }
+
+  @Override
+  public Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames) {
+    return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, dataObjectNames));
+  }
+
+  @Override
+  public Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, dataObjectNames, locale, withLocalizationFallback));
+  }
+
+  @Override
+  public DataObject getDataObject(String taskId, String dataObject) {
+    return commandExecutor.execute(new GetTaskDataObjectCmd(taskId, dataObject));
+  }
+
+  @Override
+  public DataObject getDataObject(String taskId, String dataObjectName, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(new GetTaskDataObjectCmd(taskId, dataObjectName, locale, withLocalizationFallback));
   }
 
 }

@@ -6,7 +6,7 @@
   targetNamespace="Examples">
   
   <process id="localizeVariables" name="Localize Variables">
-    <dataObject id="dObj1" name="stringVar" itemSubjectRef="xsd:string">
+    <dataObject id="stringVarId" name="stringVar" itemSubjectRef="xsd:string">
         <documentation>stringVar 'default' description</documentation>
     
         <extensionElements>
@@ -21,7 +21,7 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess1" />
 
     <subProcess id="subprocess1" name="subprocess">
-      <dataObject id="dObj2" name="intVar" itemSubjectRef="xsd:int">
+      <dataObject id="intVarId" name="intVar" itemSubjectRef="xsd:int">
           <documentation>intVar 'default' description</documentation>
       
           <extensionElements>
