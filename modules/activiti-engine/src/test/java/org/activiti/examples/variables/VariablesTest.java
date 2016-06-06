@@ -221,6 +221,45 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertNotNull(variableInstance);
     assertEquals("stringVar", variableInstance.getName());
     assertEquals("coca-cola", variableInstance.getValue());
+    
+    // Verify TaskService behavior
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    variableInstances = taskService.getVariableInstances(task.getId());
+    assertEquals(2, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+    assertEquals("intVar", variableInstances.get("intVar").getName());
+    assertEquals(null, variableInstances.get("intVar").getValue());
+    
+    variableNames = new ArrayList<String>();
+    variableNames.add("stringVar");
+
+    // getVariablesInstances via names
+    variableInstances = taskService.getVariableInstances(task.getId(), variableNames);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("coca-cola", variableInstances.get("stringVar").getValue());
+
+    taskService.setVariableLocal(task.getId(), "stringVar", "pepsi-cola");
+    
+    // getVariableInstancesLocal via names
+    variableInstances = taskService.getVariableInstancesLocal(task.getId(), variableNames);
+    assertEquals(1, variableInstances.size());
+    assertEquals("stringVar", variableInstances.get("stringVar").getName());
+    assertEquals("pepsi-cola", variableInstances.get("stringVar").getValue());
+
+    // getVariableInstance
+    variableInstance = taskService.getVariableInstance(task.getId(), "stringVar");
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("pepsi-cola", variableInstance.getValue());
+
+    // getVariableInstanceLocal
+    variableInstance = taskService.getVariableInstanceLocal(task.getId(), "stringVar");
+    assertNotNull(variableInstance);
+    assertEquals("stringVar", variableInstance.getName());
+    assertEquals("pepsi-cola", variableInstance.getValue());
   }
   
   @Deployment
@@ -229,7 +268,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("stringVar", "coca-cola");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("localizeVariables", variables);
-
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
     ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processInstance.getProcessDefinitionId());
     dynamicBpmnService.changeLocalizationName("en-US", "stringVar", "stringVar 'en-US' Name", infoNode);
     dynamicBpmnService.changeLocalizationDescription("en-US", "stringVar", "stringVar 'en-US' Description", infoNode);
@@ -282,7 +322,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
     assertEquals("stringVar", dataObjects.get("stringVar").getLocalizedName());
     assertEquals("stringVar 'default' description", dataObjects.get("stringVar").getDescription());
-
+    
     List<String> variableNames = new ArrayList<String>();
     variableNames.add("stringVar");
 
@@ -676,6 +716,131 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(null, dataObject.getValue());
     assertEquals("intVar", dataObject.getLocalizedName());
     assertEquals("intVar 'default' description", dataObject.getDescription());
+    
+    // Verify TaskService behavior   
+    dataObjects = taskService.getDataObjects(task.getId());
+    assertEquals(2, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObjects.get("stringVar").getDescription());
+    assertEquals("intVar", dataObject.getName());
+    assertEquals(null, dataObject.getValue());
+    assertEquals("intVar", dataObject.getLocalizedName());
+    assertEquals("intVar 'default' description", dataObject.getDescription());
+    
+    // getDataObjects
+    dataObjects = taskService.getDataObjects(task.getId(), "en-US", false);
+    assertEquals(2, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar 'en-US' Name", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", dataObjects.get("stringVar").getDescription());
+    assertEquals("intVar", dataObject.getName());
+    assertEquals(null, dataObject.getValue());
+    assertEquals("intVar", dataObject.getLocalizedName());
+    assertEquals("intVar 'default' description", dataObject.getDescription());
+    
+    dataObjects = taskService.getDataObjects(task.getId(), "en-AU", false);
+    assertEquals(2, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar 'en-AU' Name", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", dataObjects.get("stringVar").getDescription());
+    assertEquals("intVar", dataObject.getName());
+    assertEquals(null, dataObject.getValue());
+    assertEquals("intVar", dataObject.getLocalizedName());
+    assertEquals("intVar 'default' description", dataObject.getDescription());
+
+    dataObjects = taskService.getDataObjects(task.getId(), "en-GB", true);
+    assertEquals(2, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar 'en' Name", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en' Description", dataObjects.get("stringVar").getDescription());
+    assertEquals("intVar", dataObject.getName());
+    assertEquals(null, dataObject.getValue());
+    assertEquals("intVar", dataObject.getLocalizedName());
+    assertEquals("intVar 'default' description", dataObject.getDescription());
+
+    dataObjects = taskService.getDataObjects(task.getId(), "en-GB", false);
+    assertEquals(2, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObjects.get("stringVar").getDescription());
+    assertEquals("intVar", dataObject.getName());
+    assertEquals(null, dataObject.getValue());
+    assertEquals("intVar", dataObject.getLocalizedName());
+    assertEquals("intVar 'default' description", dataObject.getDescription());
+    
+    variableNames = new ArrayList<String>();
+    variableNames.add("stringVar");
+    
+    // getDataObjects via names
+    dataObjects = taskService.getDataObjects(task.getId(), variableNames, "en-US", false);
+    assertEquals(1, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar 'en-US' Name", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", dataObjects.get("stringVar").getDescription());
+
+    dataObjects = taskService.getDataObjects(task.getId(), variableNames, "en-AU", false);
+    assertEquals(1, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar 'en-AU' Name", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", dataObjects.get("stringVar").getDescription());
+
+    dataObjects = taskService.getDataObjects(task.getId(), variableNames, "en-GB", true);
+    assertEquals(1, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar 'en' Name", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'en' Description", dataObjects.get("stringVar").getDescription());
+
+    dataObjects = taskService.getDataObjects(task.getId(), variableNames, "en-GB", false);
+    assertEquals(1, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObjects.get("stringVar").getDescription());
+    
+    // getDataObject
+    dataObject = taskService.getDataObject(task.getId(), "stringVar", "en-GB", false);
+    assertNotNull(dataObject);
+    assertEquals("stringVar", dataObject.getName());
+    assertEquals("coca-cola", dataObject.getValue());
+    assertEquals("stringVar", dataObject.getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObject.getDescription());
+
+    dataObject = taskService.getDataObject(task.getId(), "stringVar","en-US", false);
+    assertNotNull(dataObject);
+    assertEquals("stringVar", dataObject.getName());
+    assertEquals("coca-cola", dataObject.getValue());
+    assertEquals("stringVar 'en-US' Name", dataObject.getLocalizedName());
+    assertEquals("stringVar 'en-US' Description", dataObject.getDescription());
+
+    dataObject = taskService.getDataObject(task.getId(), "stringVar", "en-AU", false);
+    assertNotNull(dataObject);
+    assertEquals("stringVar", dataObject.getName());
+    assertEquals("coca-cola", dataObject.getValue());
+    assertEquals("stringVar 'en-AU' Name", dataObject.getLocalizedName());
+    assertEquals("stringVar 'en-AU' Description", dataObject.getDescription());
+
+    dataObject = taskService.getDataObject(task.getId(), "stringVar", "en-GB", true);
+    assertNotNull(dataObject);
+    assertEquals("stringVar", dataObject.getName());
+    assertEquals("coca-cola", dataObject.getValue());
+    assertEquals("stringVar 'en' Name", dataObject.getLocalizedName());
+    assertEquals("stringVar 'en' Description", dataObject.getDescription());
+
+    dataObject = taskService.getDataObject(task.getId(), "stringVar", "en-GB", false);
+    assertNotNull(dataObject);
+    assertEquals("stringVar", dataObject.getName());
+    assertEquals("coca-cola", dataObject.getValue());
+    assertEquals("stringVar", dataObject.getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObject.getDescription());
   }
 
   // Test case for ACT-1839
