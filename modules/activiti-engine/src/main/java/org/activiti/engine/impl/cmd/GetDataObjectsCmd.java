@@ -77,7 +77,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
     
     Map<String, VariableInstance> variables = null;
     
-    if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       variables = activiti5CompatibilityHandler.getExecutionVariableInstances(executionId, dataObjectNames, isLocal);
     

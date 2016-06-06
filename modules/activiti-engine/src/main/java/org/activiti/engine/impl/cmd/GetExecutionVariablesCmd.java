@@ -55,7 +55,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
     
-    if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       return activiti5CompatibilityHandler.getExecutionVariables(executionId, variableNames, isLocal);
     }
