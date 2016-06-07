@@ -288,22 +288,19 @@ public class BpmnParse implements BpmnXMLConstants {
 
     // Parsing the elements is done in a strict order of types,
     // as otherwise certain information might not be available when parsing
-    // a
-    // certain type.
+    // a certain type.
 
     // Using lists as we want to keep the order in which they are defined
     List<SequenceFlow> sequenceFlowToParse = new ArrayList<SequenceFlow>();
     List<BoundaryEvent> boundaryEventsToParse = new ArrayList<BoundaryEvent>();
 
-    // Flow elements that depend on other elements are parse after the first
-    // run-through
+    // Flow elements that depend on other elements are parse after the first run-through
     List<FlowElement> defferedFlowElementsToParse = new ArrayList<FlowElement>();
 
     // Activities are parsed first
     for (FlowElement flowElement : flowElements) {
 
-      // Sequence flow are also flow elements, but are only parsed once
-      // every activity is found
+      // Sequence flow are also flow elements, but are only parsed once every activity is found
       if (flowElement instanceof SequenceFlow) {
         sequenceFlowToParse.add((SequenceFlow) flowElement);
       } else if (flowElement instanceof BoundaryEvent) {
@@ -321,8 +318,7 @@ public class BpmnParse implements BpmnXMLConstants {
       bpmnParserHandlers.parseElement(this, flowElement);
     }
 
-    // Boundary events are parsed after all the regular activities are
-    // parsed
+    // Boundary events are parsed after all the regular activities are parsed
     for (BoundaryEvent boundaryEvent : boundaryEventsToParse) {
       bpmnParserHandlers.parseElement(this, boundaryEvent);
     }
@@ -348,8 +344,7 @@ public class BpmnParse implements BpmnXMLConstants {
       // Verify if all referenced elements exist
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          // ACT-1625: don't warn when artifacts are referenced from
-          // DI
+          // ACT-1625: don't warn when artifacts are referenced from DI
           if (bpmnModel.getArtifact(bpmnReference) == null) {
             // Check if it's a Pool or Lane, then DI is ok
             if (bpmnModel.getPool(bpmnReference) == null && bpmnModel.getLane(bpmnReference) == null) {
@@ -360,10 +355,10 @@ public class BpmnParse implements BpmnXMLConstants {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
         }
       }
+      
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          // ACT-1625: don't warn when artifacts are referenced from
-          // DI
+          // ACT-1625: don't warn when artifacts are referenced from DI
           if (bpmnModel.getArtifact(bpmnReference) == null) {
             LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
           }
@@ -394,8 +389,8 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void createBPMNEdge(String key, List<GraphicInfo> graphicList) {
     FlowElement flowElement = bpmnModel.getFlowElement(key);
-    if (flowElement != null && sequenceFlows.containsKey(key)) {
-      SequenceFlow sequenceFlow = sequenceFlows.get(key);
+    if (flowElement != null && flowElement instanceof SequenceFlow) {
+      SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
       List<Integer> waypoints = new ArrayList<Integer>();
       for (GraphicInfo waypointInfo : graphicList) {
         waypoints.add((int) waypointInfo.getX());

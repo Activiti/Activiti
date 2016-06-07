@@ -19,11 +19,15 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 /**
  * @author Joram Barrez
@@ -46,12 +50,19 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
     if (terminateAll) {
-      deleteExecutionEntities(executionEntityManager, executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId()));
+      terminateAllBehaviour(execution, commandContext, executionEntityManager);
     } else if (terminateMultiInstance) {
       terminateMultiInstanceRoot(execution, commandContext, executionEntityManager);
     } else {
       defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }
+  }
+
+  protected void terminateAllBehaviour(DelegateExecution execution, CommandContext commandContext, ExecutionEntityManager executionEntityManager) {
+    ExecutionEntity rootExecutionEntity = executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId());
+    deleteExecutionEntities(executionEntityManager, rootExecutionEntity);
+    endAllHistoricActivities(rootExecutionEntity.getId());
+    commandContext.getHistoryManager().recordProcessInstanceEnd(rootExecutionEntity.getId(), "", execution.getCurrentActivityId());
   }
 
   protected void defaultTerminateEndEventBehaviour(DelegateExecution execution, CommandContext commandContext,
@@ -67,7 +78,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     if (scopeExecutionEntity.isProcessInstanceType() && scopeExecutionEntity.getSuperExecutionId() == null) {
 
-      deleteExecutionEntities(executionEntityManager, executionEntityManager.findByRootProcessInstanceId(execution.getRootProcessInstanceId()));
+      endAllHistoricActivities(scopeExecutionEntity.getId());
+      deleteExecutionEntities(executionEntityManager, scopeExecutionEntity);
+      commandContext.getHistoryManager().recordProcessInstanceEnd(scopeExecutionEntity.getId(), "", execution.getCurrentActivityId());
 
     } else if (scopeExecutionEntity.getCurrentFlowElement() != null 
         && scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) { // SubProcess
@@ -84,7 +97,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
         commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
         ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(scopeExecutionEntity.getParent());
         outgoingFlowExecution.setCurrentFlowElement(scopeExecutionEntity.getCurrentFlowElement());
-        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution);
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
       }
 
     } else if (scopeExecutionEntity.getParentId() == null 
@@ -103,11 +116,33 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
         executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
         ExecutionEntity superExecutionEntity = executionEntityManager.findById(scopeExecutionEntity.getSuperExecutionId());
-        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity, true);
 
       }
       
     }
+  }
+  
+  protected void endAllHistoricActivities(String processInstanceId) {
+    
+    if (!Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      return;
+    }
+    
+    List<HistoricActivityInstanceEntity> historicActivityInstances = Context.getCommandContext().getHistoricActivityInstanceEntityManager()
+      .findUnfinishedHistoricActivityInstancesByProcessInstanceId(processInstanceId);
+    
+    for (HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstances) {
+      historicActivityInstance.markEnded(null);
+      
+      // Fire event
+      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+      if (config != null && config.getEventDispatcher().isEnabled()) {
+        config.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+      }
+    }
+    
   }
   
   protected void terminateMultiInstanceRoot(DelegateExecution execution, CommandContext commandContext,
@@ -123,7 +158,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       
       deleteExecutionEntities(executionEntityManager, miRootExecutionEntity);
       
-      commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(siblingExecution);
+      commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(siblingExecution, true);
     } else {
       defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }

@@ -13,8 +13,10 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
 
@@ -34,12 +36,24 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
   
   /** Only select executions which have the given process definition id. **/
   ExecutionQuery processDefinitionId(String processDefinitionId);
+  
+  /** Only select executions which have the given process definition category. */
+  ExecutionQuery processDefinitionCategory(String processDefinitionCategory);
 
   /** Only select executions which have the given process definition name. */
   ExecutionQuery processDefinitionName(String processDefinitionName);
+  
+  /**
+  * Only select executions which have the given process definition version.
+  * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
+  */
+  ExecutionQuery processDefinitionVersion(Integer processDefinitionVersion);
 
   /** Only select executions which have the given process instance id. **/
   ExecutionQuery processInstanceId(String processInstanceId);
+
+  /** Only select executions which have the given root process instance id. **/
+  ExecutionQuery rootProcessInstanceId(String rootProcessInstanceId);
 
   /**
    * Only executions with the given business key.
@@ -69,6 +83,11 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
    * Only selects executions that have a parent id set, ie non-processinstance executions.
    */
   ExecutionQuery onlyChildExecutions();
+
+  /**
+   * Only selects executions that are a subprocess.
+   */
+  ExecutionQuery onlySubProcessExecutions();
 
   /**
    * Only selects executions that have no parent id set, ie process instance executions
@@ -294,8 +313,33 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
   /**
    * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
    */
-  public ExecutionQuery withLocalizationFallback();
-  
+  ExecutionQuery withLocalizationFallback();
+
+
+  /**
+   * Only select executions that were started before the given start time.
+   *
+   * @param beforeTime
+   *          executions started before this time will be returned (cannot be null)
+   */
+  ExecutionQuery startedBefore(Date beforeTime);
+
+  /**
+   * Only select executions that were started after the given start time.
+   *
+   * @param afterTime
+   *          executions started after this time will be returned (cannot be null)
+   */
+  ExecutionQuery startedAfter(Date afterTime);
+
+  /**
+   * Only select executions that were started after by the given user id.
+   *
+   * @param userId
+   *          the user id of the authenticated user that started the execution (cannot be null)
+   */
+  ExecutionQuery startedBy(String userId);
+
   // ordering //////////////////////////////////////////////////////////////
 
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
@@ -315,5 +359,4 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
    * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
    */
   ExecutionQuery orderByTenantId();
-
 }

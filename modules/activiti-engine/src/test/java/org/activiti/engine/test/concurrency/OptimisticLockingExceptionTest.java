@@ -162,6 +162,16 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
     public void closed(CommandContext commandContext) {
       
     }
+
+    @Override
+    public void afterSessionsFlush(CommandContext commandContext) {
+      
+    }
+
+    @Override
+    public void closeFailure(CommandContext commandContext) {
+      
+    }
     
   }
   

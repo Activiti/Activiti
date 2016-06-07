@@ -154,7 +154,11 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     int maxResults = executionQuery.getMaxResults();
 
     // setting max results, limit to 20000 results for performance reasons
-    executionQuery.setMaxResults(20000);
+    if (executionQuery.getProcessInstanceVariablesLimit() != null) {
+      executionQuery.setMaxResults(executionQuery.getProcessInstanceVariablesLimit());
+    } else {
+      executionQuery.setMaxResults(getProcessEngineConfiguration().getExecutionQueryLimit());
+    }
     executionQuery.setFirstResult(0);
 
     List<ProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectProcessInstanceWithVariablesByQueryCriteria", executionQuery,
@@ -184,18 +188,6 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     parameters.put("parentExecutionId", parentExecutionId);
 
     return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
-  }
-
-  @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(2);
-    params.put("activityId", activityId);
-    params.put("isActive", false);
-    return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
-      public boolean isRetained(ExecutionEntity entity) {
-        return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
-      }
-    }, true);
   }
 
   @Override

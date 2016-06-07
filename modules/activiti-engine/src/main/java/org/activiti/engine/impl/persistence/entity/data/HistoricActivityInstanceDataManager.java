@@ -26,6 +26,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 public interface HistoricActivityInstanceDataManager extends DataManager<HistoricActivityInstanceEntity> {
   
   List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(String executionId, String activityId);
+  
+  List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(String processInstanceId);
 
   void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId);
 

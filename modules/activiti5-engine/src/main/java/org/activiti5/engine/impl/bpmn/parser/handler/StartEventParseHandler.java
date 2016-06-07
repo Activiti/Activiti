@@ -66,7 +66,9 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
       processDefinition.setInitial(startEventActivity);
     } else {
       // validate that there is a single none start event / timer start event:
-      if (!startEventActivity.getProperty("type").equals("messageStartEvent")) {
+      if (!startEventActivity.getProperty("type").equals("messageStartEvent")
+          && !startEventActivity.getProperty("type").equals("signalStartEvent")
+          && !startEventActivity.getProperty("type").equals("startTimerEvent")) {
         String currentInitialType = (String) processDefinition.getInitial().getProperty("type");
         if (currentInitialType.equals("messageStartEvent")) {
           processDefinition.setInitial(startEventActivity);

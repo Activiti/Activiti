@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -42,7 +43,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   // current position /////////////////////////////////////////////////////////
 
-  protected FlowElement currentFlowElement;
+  protected FlowElement currentFlowElement; 
+  protected ActivitiListener currentActivitiListener; // Only set when executing an execution listener
 
   /**
    * the process instance. this is the root of the execution tree. the processInstance of a process instance is a self reference.
@@ -100,6 +102,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   
   protected int revision = 1;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
+
+  protected String startUserId;
+  protected Date startTime;
 
   /**
    * persisted reference to the processDefinition.
@@ -205,6 +210,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
    }
    persistentState.put("suspensionState", this.suspensionState);
    persistentState.put("cachedEntityState", this.cachedEntityState);
+   persistentState.put("startTime", this.startTime);
+   persistentState.put("startUserId", this.startUserId);
    return persistentState;
  }
   
@@ -228,6 +235,14 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     } else {
       this.activityId = null;
     }
+  }
+  
+  public ActivitiListener getCurrentActivitiListener() {
+    return currentActivitiListener;
+  }
+
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    this.currentActivitiListener = currentActivitiListener;
   }
 
   // executions ///////////////////////////////////////////////////////////////
@@ -773,8 +788,24 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public String getActivityName() {
     return activityName;
   }
-  
-//toString /////////////////////////////////////////////////////////////////
+
+  public String getStartUserId() {
+    return startUserId;
+  }
+
+  public void setStartUserId(String startUserId) {
+    this.startUserId = startUserId;
+  }
+
+  public Date getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(Date startTime) {
+    this.startTime = startTime;
+  }
+
+  //toString /////////////////////////////////////////////////////////////////
 
   public String toString() {
     if (isProcessInstanceType()) {

@@ -24,14 +24,6 @@ import org.activiti.engine.impl.variable.ValueFields;
 public interface VariableInstance extends ValueFields, Entity, HasRevision {
   
   void setName(String name);
-  
-  String getLocalizedName();
-  
-  void setLocalizedName(String name);
-  
-  String getLocalizedDescription();
-
-  void setLocalizedDescription(String description);
 
   void setProcessInstanceId(String processInstanceId);
 

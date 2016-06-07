@@ -54,7 +54,7 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
     
-    if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
       Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
       return activiti5CompatibilityHandler.getExecutionVariable(executionId, variableName, isLocal);
     }

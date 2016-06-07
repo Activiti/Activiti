@@ -24,7 +24,7 @@ public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
   private static final long serialVersionUID = 1L;
 
   public void execute(DelegateExecution execution) {
-    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
   }
 
 }

@@ -26,6 +26,7 @@ public class JavaDelegateTest extends AbstractActiviti6CompatibilityTest {
     
     // Check data for existing process
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("javaDelegateTestProcess").singleResult();
+    assertNotNull(processInstance);
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertNotNull(variables.get("testVar"));

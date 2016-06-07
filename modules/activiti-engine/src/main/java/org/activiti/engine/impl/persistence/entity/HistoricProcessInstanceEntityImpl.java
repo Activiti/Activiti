@@ -42,6 +42,10 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   protected String localizedName;
   protected String description;
   protected String localizedDescription;
+  protected String processDefinitionKey;
+  protected String processDefinitionName;
+  protected Integer processDefinitionVersion;
+  protected String deploymentId;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntityImpl() {
@@ -53,8 +57,12 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
     processInstanceId = processInstance.getId();
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
-    startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    startUserId = Authentication.getAuthenticatedUserId();
+    processDefinitionKey = processInstance.getProcessDefinitionKey();
+    processDefinitionName = processInstance.getProcessDefinitionName();
+    processDefinitionVersion = processInstance.getProcessDefinitionVersion();
+    deploymentId = processInstance.getDeploymentId();
+    startTime = processInstance.getStartTime();
+    startUserId = processInstance.getStartUserId();
     startActivityId = processInstance.getActivityId();
     superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
 
@@ -74,6 +82,10 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
     persistentState.put("endStateName", endActivityId);
     persistentState.put("superProcessInstanceId", superProcessInstanceId);
     persistentState.put("processDefinitionId", processDefinitionId);
+    persistentState.put("processDefinitionKey", processDefinitionKey);
+    persistentState.put("processDefinitionName", processDefinitionName);
+    persistentState.put("processDefinitionVersion", processDefinitionVersion);
+    persistentState.put("deploymentId", deploymentId);
     return persistentState;
   }
 
@@ -165,6 +177,38 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   
   public void setLocalizedDescription(String localizedDescription) {
     this.localizedDescription = localizedDescription;
+  }
+  
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+  }
+
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
+  }
+
+  public void setProcessDefinitionName(String processDefinitionName) {
+    this.processDefinitionName = processDefinitionName;
+  }
+
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
+  }
+
+  public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+    this.processDefinitionVersion = processDefinitionVersion;
+  }
+
+  public String getDeploymentId() {
+    return deploymentId;
+  }
+
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
   }
 
   public Map<String, Object> getProcessVariables() {

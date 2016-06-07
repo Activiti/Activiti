@@ -57,8 +57,6 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
   List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId);
   
-  Collection<ExecutionEntity> findInactiveExecutionsByActivityId(String activityId);
-
   Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(String processInstanceId);
 
   Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(String activityId, String processInstanceId);

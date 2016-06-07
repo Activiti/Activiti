@@ -99,14 +99,21 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("start", listener.getEvent());
+    assertEquals("before-commit", listener.getOnTransaction());
+    assertEquals("org.test.TestResolverClass", listener.getCustomPropertiesResolverImplementation());
     listener = (ActivitiListener) listeners.get(1);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${testExpression}", listener.getImplementation());
     assertEquals("end", listener.getEvent());
+    assertEquals("committed", listener.getOnTransaction());
+    assertEquals("${testResolverExpression}", listener.getCustomPropertiesResolverImplementation());
     listener = (ActivitiListener) listeners.get(2);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${delegateExpression}", listener.getImplementation());
     assertEquals("start", listener.getEvent());
+    assertEquals("rolled-back", listener.getOnTransaction());
+    assertEquals("${delegateResolverExpression}", listener.getCustomPropertiesResolverImplementation());
+
   }
 
   protected void validateExtensionElements(Map<String, List<ExtensionElement>> extensionElementMap) {

@@ -148,9 +148,11 @@ import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
+import org.activiti.engine.impl.interceptor.DebugCommandInvoker;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.interceptor.TransactionContextInterceptor;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.DefaultFailedJobCommandFactory;
@@ -285,6 +287,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.BooleanType;
 import org.activiti.engine.impl.variable.ByteArrayType;
@@ -480,6 +483,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
+
+  // HELPERS //////////////////////////////////////////////////////////////////
+  protected ProcessInstanceHelper processInstanceHelper;
   
   // ASYNC EXECUTOR ///////////////////////////////////////////////////////////
   
@@ -716,6 +722,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<ResolverFactory> resolverFactories;
 
   protected BusinessCalendarManager businessCalendarManager;
+  
+  protected int executionQueryLimit = 20000;
+  protected int taskQueryLimit = 20000;
+  protected int historicTaskQueryLimit = 20000;
+  protected int historicProcessInstancesQueryLimit = 20000;
 
   protected String wsSyncFactoryClassName = DEFAULT_WS_SYNC_FACTORY;
 
@@ -759,6 +770,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected boolean enableDatabaseEventLogging;
   
   /**
+   * Using field injection together with a delegate expression for a service
+   * task / execution listener / task listener is not thread-sade , see user
+   * guide section 'Field Injection' for more information.
+   * 
+   * Set this flag to false to throw an exception at runtime when a field is
+   * injected and a delegateExpression is used.
+   * 
+   * @since 5.21
+   */
+  protected DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode = DelegateExpressionFieldInjectionMode.MIXED;
+  
+  /**
   *  Define a max length for storing String variable types in the database.
   *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
   */
@@ -793,6 +816,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * The {@link ProcessEngineConfiguration#getDatabaseSchemaUpdate()} value will not be used.
    */
   protected boolean usingRelationalDatabase = true;
+  
+  /**
+   * Enabled a very verbose debug output of the execution tree whilst executing operations.
+   * Most useful for core engine developers or people fiddling aorund with the execution tree.
+   */
+  protected boolean enableVerboseExecutionTreeLogging;
 
   // Backwards compatibility //////////////////////////////////////////////////////////////
   
@@ -843,7 +872,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (usingRelationalDatabase) {
       initDataSource();
     }
-    
+
+    initHelpers();
     initVariableTypes();
     initBeans();
     initFormEngines();
@@ -865,7 +895,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initJobHandlers();
     initJobExecutor();
     initAsyncExecutor();
-    
     
     initTransactionFactory();
     
@@ -923,7 +952,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void initCommandInvoker() {
     if (commandInvoker == null) {
-      commandInvoker = new CommandInvoker();
+      if (enableVerboseExecutionTreeLogging) {
+        commandInvoker = new DebugCommandInvoker();
+      } else {
+        commandInvoker = new CommandInvoker();
+      }
     }
   }
 
@@ -950,7 +983,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       interceptors.add(transactionInterceptor);
     }
 
-    interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    if (commandContextFactory != null) {
+      interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    }
+    
+    if (transactionContextFactory != null) {
+      interceptors.add(new TransactionContextInterceptor(transactionContextFactory));
+    }
+    
     return interceptors;
   }
 
@@ -1079,6 +1119,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2/LINUXX8664", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/LINUXZ64", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/LINUXPPC64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXPPC64LE",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/400 SQL", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/6000", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2 UDB iSeries", DATABASE_TYPE_DB2);
@@ -1927,6 +1968,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  public void initHelpers() {
+    if (processInstanceHelper == null) {
+      processInstanceHelper = new ProcessInstanceHelper();
+    }
+  }
+
   public void initVariableTypes() {
     if (variableTypes == null) {
       variableTypes = new DefaultVariableTypes();
@@ -2485,6 +2532,42 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.businessCalendarManager = businessCalendarManager;
     return this;
   }
+  
+  public int getExecutionQueryLimit() {
+    return executionQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setExecutionQueryLimit(int executionQueryLimit) {
+    this.executionQueryLimit = executionQueryLimit;
+    return this;
+  }
+
+  public int getTaskQueryLimit() {
+    return taskQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setTaskQueryLimit(int taskQueryLimit) {
+    this.taskQueryLimit = taskQueryLimit;
+    return this;
+  }
+
+  public int getHistoricTaskQueryLimit() {
+    return historicTaskQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricTaskQueryLimit(int historicTaskQueryLimit) {
+    this.historicTaskQueryLimit = historicTaskQueryLimit;
+    return this;
+  }
+
+  public int getHistoricProcessInstancesQueryLimit() {
+    return historicProcessInstancesQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricProcessInstancesQueryLimit(int historicProcessInstancesQueryLimit) {
+    this.historicProcessInstancesQueryLimit = historicProcessInstancesQueryLimit;
+    return this;
+  }
 
   public CommandContextFactory getCommandContextFactory() {
     return commandContextFactory;
@@ -2528,6 +2611,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setJobHandlers(Map<String, JobHandler> jobHandlers) {
     this.jobHandlers = jobHandlers;
+    return this;
+  }
+
+  public ProcessInstanceHelper getProcessInstanceHelper() {
+    return processInstanceHelper;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessInstanceHelper(ProcessInstanceHelper processInstanceHelper) {
+    this.processInstanceHelper = processInstanceHelper;
     return this;
   }
 
@@ -2919,6 +3011,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setUsingRelationalDatabase(boolean usingRelationalDatabase) {
     this.usingRelationalDatabase = usingRelationalDatabase;
+    return this;
+  }
+  
+  public boolean isEnableVerboseExecutionTreeLogging() {
+    return enableVerboseExecutionTreeLogging;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableVerboseExecutionTreeLogging(boolean enableVerboseExecutionTreeLogging) {
+    this.enableVerboseExecutionTreeLogging = enableVerboseExecutionTreeLogging;
     return this;
   }
 
@@ -3419,7 +3520,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       this.clock.setCurrentCalendar(clock.getCurrentCalendar());
     }
     
-    if (isActiviti5CompatibilityEnabled) {
+    if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
       getActiviti5CompatibilityHandler().setClock(clock);
     }
     return this;
@@ -3428,12 +3529,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void resetClock() {
     if (this.clock != null) {
       clock.reset();
-      if (isActiviti5CompatibilityEnabled) {
+      if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
         getActiviti5CompatibilityHandler().resetClock();
       }
     }
   }
   
+  public DelegateExpressionFieldInjectionMode getDelegateExpressionFieldInjectionMode() {
+    return delegateExpressionFieldInjectionMode;
+  }
+
+  public ProcessEngineConfigurationImpl setDelegateExpressionFieldInjectionMode(DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode) {
+    this.delegateExpressionFieldInjectionMode = delegateExpressionFieldInjectionMode;
+    return this;
+  }
+
   public ObjectMapper getObjectMapper() {
     return objectMapper;
   }

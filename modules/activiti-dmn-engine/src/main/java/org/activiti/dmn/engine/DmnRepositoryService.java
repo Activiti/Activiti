@@ -15,10 +15,12 @@ package org.activiti.dmn.engine;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.dmn.engine.domain.entity.DmnDecisionTable;
-import org.activiti.dmn.engine.domain.entity.DmnDeployment;
+import org.activiti.dmn.engine.repository.DecisionTable;
+import org.activiti.dmn.engine.repository.DecisionTableQuery;
 import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
-import org.activiti.dmn.model.DmnDefinition;
+import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
+import org.activiti.dmn.engine.repository.NativeDecisionTableQuery;
+import org.activiti.dmn.engine.repository.NativeDmnDeploymentQuery;
 
 /**
  * Service providing access to the repository of process definitions and deployments.
@@ -30,35 +32,27 @@ public interface DmnRepositoryService {
 
     DmnDeploymentBuilder createDeployment();
 
-    DmnDeployment getDeployment(Long deploymentId);
-
-    void deleteDeployment(Long deploymentId);
-
-    void setDeploymentCategory(Long deploymentId, String category);
-
-    List<String> getDeploymentResourceNames(Long deploymentId);
-
-    InputStream getResourceAsStream(Long deploymentId, String resourceName);
-
-    InputStream getDecisionModel(Long decisionDefinitionId);
-
-    DmnDecisionTable getDecisionDefinition(Long decisionDefinitionId);
-
-    DmnDefinition getDmnModel(Long decisionDefinitionId);
-
-    DmnDecisionTable findLatestDecisionTableByKeyAndTenantId(String decisionTableKey, String tenantIdForUser);
-
-    List<DmnDecisionTable> getDecisionTablesByDeploymentId(long deploymentId);
-
-    List<DmnDecisionTable> getDecisionTables();
-
-    List<DmnDecisionTable> getDecisionTablesByTenantId(String tenantId);
-
-    DmnDecisionTable getDecisionTable(Long decisionTableId);
+    void deleteDeployment(String deploymentId);
     
-    DmnDecisionTable findDecisionTableByDeploymentAndKeyAndTenantId(Long deploymentId, String decisionTableKey, String tenantId);
+    DecisionTableQuery createDecisionTableQuery();
     
-    List<DmnDecisionTable> findDecisionTables(String nameLike, String keyLike, String tenantIdLike, Long deploymentId, String sortBy, String order, Integer start, Integer size);
+    NativeDecisionTableQuery createNativeDecisionTableQuery();
+
+    void setDeploymentCategory(String deploymentId, String category);
     
-    Long countDecisionTables(String nameLike, String keyLike, String tenantIdLike, Long deploymentId);
+    void setDeploymentTenantId(String deploymentId, String newTenantId);
+
+    List<String> getDeploymentResourceNames(String deploymentId);
+
+    InputStream getResourceAsStream(String deploymentId, String resourceName);
+    
+    DmnDeploymentQuery createDeploymentQuery();
+    
+    NativeDmnDeploymentQuery createNativeDeploymentQuery();
+
+    DecisionTable getDecisionTable(String decisionTableId);
+    
+    InputStream getDmnResource(String decisionTableId);
+    
+    void setDecisionTableCategory(String decisionTableId, String category);
 }

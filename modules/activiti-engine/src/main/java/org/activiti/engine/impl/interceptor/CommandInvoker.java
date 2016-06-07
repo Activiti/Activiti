@@ -43,8 +43,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
     executeOperations(commandContext);
 
     // At the end, call the execution tree change listeners.
-    // TODO: optimization: only do this when the tree has actually changed
-    // (ie check dbSqlSession).
+    // TODO: optimization: only do this when the tree has actually changed (ie check dbSqlSession).
     if (commandContext.hasInvolvedExecutions()) {
       commandContext.getAgenda().planExecuteInactiveBehaviorsOperation();
       executeOperations(commandContext);
@@ -68,7 +67,10 @@ public class CommandInvoker extends AbstractCommandInterceptor {
       // or the operation has an execution and it is not ended
       if (operation.getExecution() == null || !operation.getExecution().isEnded()) {
         
-        logger.debug("Executing operation " + operation.getClass());
+        if (logger.isDebugEnabled()) {
+          logger.debug("Executing operation {} ", operation.getClass());
+        }
+        
         runnable.run();
         
       }

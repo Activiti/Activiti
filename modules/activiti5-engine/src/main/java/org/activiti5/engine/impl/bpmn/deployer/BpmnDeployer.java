@@ -154,7 +154,8 @@ public class BpmnDeployer implements Deployer {
               try {
                   byte[] diagramBytes = IoUtil.readInputStream(processEngineConfiguration.
                     getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
-                        processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
+                        processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getAnnotationFontName(), 
+                        processEngineConfiguration.getClassLoader()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
                   
@@ -175,7 +176,7 @@ public class BpmnDeployer implements Deployer {
     List<String> keyList = new ArrayList<String>();
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       if (keyList.contains(processDefinition.getKey())) {
-        throw new ActivitiException("The deployment contains process definitions with the same key (process id atrribute), this is not allowed");
+        throw new ActivitiException("The deployment contains process definitions with the same key '"+ processDefinition.getKey() +"' (process id atrribute), this is not allowed");
       }
       keyList.add(processDefinition.getKey());
     }

@@ -33,8 +33,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionListener;
-import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
@@ -46,6 +45,7 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Job;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,17 +177,16 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
 
   protected void hintAsyncExecutor(JobEntity job) {
-
     // notify job executor:
-    TransactionListener transactionListener = new AsyncJobAddedNotification(job, getAsyncExecutor());
-    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    AsyncJobAddedNotification asyncJobAddedNotification = new AsyncJobAddedNotification(job, getAsyncExecutor());
+    getCommandContext().addCloseListener(asyncJobAddedNotification);
   }
 
   protected void hintJobExecutor(JobEntity job) {
 
     // notify job executor:
-    TransactionListener transactionListener = new JobAddedNotification(getJobExecutor());
-    getCommandContext().getTransactionContext().addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    JobAddedNotification jobAddedNotification = new JobAddedNotification(getJobExecutor());
+    getCommandContext().addCloseListener(jobAddedNotification);
   }
 
   @Override
@@ -291,7 +290,9 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   protected void removeExecutionLink(JobEntity jobEntity) {
     if (jobEntity.getExecutionId() != null) {
       ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getJobs().remove(this);
+      if (execution != null) {
+        execution.getJobs().remove(jobEntity);
+      }
     }
   }
 
@@ -336,10 +337,19 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   protected void executeTimerJob(TimerEntity timerEntity) {
 
-    // set endDate if it was set to the definition
-    restoreExtraData(timerEntity);
+    VariableScope variableScope = null;
+    if (timerEntity.getExecutionId() != null) {
+      variableScope = getExecutionEntityManager().findById(timerEntity.getExecutionId());
+    }
 
-    if (timerEntity.getDuedate() != null && !isValidTime(timerEntity, timerEntity.getDuedate())) {
+    if (variableScope == null) {
+      variableScope = NoExecutionVariableScope.getSharedInstance();
+    }
+
+    // set endDate if it was set to the definition
+    restoreExtraData(timerEntity, variableScope);
+
+    if (timerEntity.getDuedate() != null && !isValidTime(timerEntity, timerEntity.getDuedate(), variableScope)) {
       if (logger.isDebugEnabled()) {
         logger.debug("Timer {} fired. but the dueDate is after the endDate.  Deleting timer.", timerEntity.getId());
       }
@@ -360,8 +370,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
         if (repeatValue > 0) {
           setNewRepeat(timerEntity, repeatValue);
         }
-        Date newTimer = calculateNextTimer(timerEntity);
-        if (newTimer != null && isValidTime(timerEntity, newTimer)) {
+        Date newTimer = calculateNextTimer(timerEntity, variableScope);
+        if (newTimer != null && isValidTime(timerEntity, newTimer, variableScope)) {
           TimerEntity te = createTimer(timerEntity);
           te.setDuedate(newTimer);
           getJobEntityManager().schedule(te);
@@ -370,7 +380,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     }
   }
   
-  protected void restoreExtraData(TimerEntity timerEntity) {
+  protected void restoreExtraData(TimerEntity timerEntity, VariableScope variableScope) {
     String activityId = timerEntity.getJobHandlerConfiguration();
 
     if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE) ||
@@ -384,25 +394,17 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
         String endDateString = null;
 
-        BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
-
-        VariableScope executionEntity = null;
-        if (timerEntity.getExecutionId() != null) {
-          executionEntity = getExecutionEntityManager().findById(timerEntity.getExecutionId());
-        }
-
-        if (executionEntity == null) {
-          executionEntity = NoExecutionVariableScope.getSharedInstance();
-        }
+        BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+            getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
 
         if (endDateExpression != null) {
-          Object endDateValue = endDateExpression.getValue(executionEntity);
+          Object endDateValue = endDateExpression.getValue(variableScope);
           if (endDateValue instanceof String) {
             endDateString = (String) endDateValue;
           } else if (endDateValue instanceof Date) {
             timerEntity.setEndDate((Date) endDateValue);
           } else {
-            throw new ActivitiException("Timer '" + ((ExecutionEntity) executionEntity).getActivityId()
+            throw new ActivitiException("Timer '" + ((ExecutionEntity) variableScope).getActivityId()
                 + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
           }
 
@@ -486,14 +488,25 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     timerEntity.setRepeat(repeatBuilder.toString());
   }
   
-  protected boolean isValidTime(TimerEntity timerEntity, Date newTimerDate) {
-    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+  protected boolean isValidTime(TimerEntity timerEntity, Date newTimerDate, VariableScope variableScope) {
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+        getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.validateDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations(), timerEntity.getEndDate(), newTimerDate);
   }
   
-  protected Date calculateNextTimer(TimerEntity timerEntity) {
-    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+  protected Date calculateNextTimer(TimerEntity timerEntity, VariableScope variableScope) {
+    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+        getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
+  }
+
+  protected String getBusinessCalendarName(String calendarName, VariableScope variableScope) {
+    String businessCalendarName = CycleBusinessCalendar.NAME;
+    if (StringUtils.isNotEmpty(calendarName)) {
+      businessCalendarName = (String) Context.getProcessEngineConfiguration().getExpressionManager()
+          .createExpression(calendarName).getValue(variableScope);
+    }
+    return businessCalendarName;
   }
 
   public JobDataManager getJobDataManager() {

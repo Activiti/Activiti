@@ -13,6 +13,9 @@
 
 package org.activiti.spring;
 
+import java.net.URL;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.slf4j.Logger;
@@ -21,13 +24,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.UrlResource;
 
-import java.net.URL;
-import java.util.Map;
-
 /**
  * @author Tom Baeyens
  */
-class SpringConfigurationHelper {
+public class SpringConfigurationHelper {
 
   private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
 

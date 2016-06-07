@@ -106,4 +106,8 @@ public interface TaskInfo {
    */
   Map<String, Object> getProcessVariables();
 
+  /**
+   * The claim time of this task
+   */
+  Date getClaimTime();
 }

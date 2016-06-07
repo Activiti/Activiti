@@ -21,9 +21,9 @@ import java.util.Map;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.DmnEngine;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.domain.entity.DmnDeployment;
-import org.activiti.dmn.engine.domain.repository.DmnRepositoryManager;
-import org.activiti.dmn.engine.impl.deployer.DmnDeployer;
+import org.activiti.dmn.engine.DmnRepositoryService;
+import org.activiti.dmn.engine.impl.deployer.ParsedDeploymentBuilder;
+import org.activiti.dmn.engine.repository.DmnDeployment;
 import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +42,8 @@ public abstract class DmnTestHelper {
 
     // Test annotation support /////////////////////////////////////////////
 
-    public static Long annotationDeploymentSetUp(DmnEngine dmnEngine, Class<?> testClass, String methodName) {
-        Long deploymentId = null;
+    public static String annotationDeploymentSetUp(DmnEngine dmnEngine, Class<?> testClass, String methodName) {
+        String deploymentId = null;
         Method method = null;
         try {
             method = testClass.getMethod(methodName, (Class<?>[]) null);
@@ -73,7 +73,7 @@ public abstract class DmnTestHelper {
         return deploymentId;
     }
 
-    public static void annotationDeploymentTearDown(DmnEngine dmnEngine, Long deploymentId, Class<?> testClass, String methodName) {
+    public static void annotationDeploymentTearDown(DmnEngine dmnEngine, String deploymentId, Class<?> testClass, String methodName) {
         log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
         if (deploymentId != null) {
             try {
@@ -92,7 +92,7 @@ public abstract class DmnTestHelper {
      * matching a suffix will be returned.
      */
     public static String getDmnDecisionResource(Class<?> type, String name) {
-        for (String suffix : DmnDeployer.DMN_RESOURCE_SUFFIXES) {
+        for (String suffix : ParsedDeploymentBuilder.DMN_RESOURCE_SUFFIXES) {
             String resource = type.getName().replace('.', '/') + "." + name + "." + suffix;
             InputStream inputStream = DmnTestHelper.class.getClassLoader().getResourceAsStream(resource);
             if (inputStream == null) {
@@ -101,7 +101,7 @@ public abstract class DmnTestHelper {
                 return resource;
             }
         }
-        return type.getName().replace('.', '/') + "." + name + "." + DmnDeployer.DMN_RESOURCE_SUFFIXES[0];
+        return type.getName().replace('.', '/') + "." + name + "." + ParsedDeploymentBuilder.DMN_RESOURCE_SUFFIXES[0];
     }
 
     // Engine startup and shutdown helpers
@@ -133,8 +133,8 @@ public abstract class DmnTestHelper {
      */
     public static void assertAndEnsureCleanDb(DmnEngine dmnEngine) {
         log.debug("verifying that db is clean after test");
-        DmnRepositoryManager repositoryManager = dmnEngine.getDmnEngineConfiguration().getDmnRepositoryManager();
-        List<DmnDeployment> deployments = repositoryManager.getDeploymentRepository().getQueryResult("SELECT * FROM DmnDeployment", new HashMap<String, Object>());
+        DmnRepositoryService repositoryService = dmnEngine.getDmnEngineConfiguration().getDmnRepositoryService();
+        List<DmnDeployment> deployments = repositoryService.createDeploymentQuery().list();
         if (deployments != null && deployments.isEmpty() == false) {
             throw new AssertionError("DmnDeployments is not empty");
         }

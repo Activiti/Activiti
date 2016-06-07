@@ -260,14 +260,14 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getId(), null);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     
-  if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-        HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
-        
-        assertNotNull(historicInstance);
-        assertEquals("ACTIVITI_DELETED", historicInstance.getDeleteReason());
-      }    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
+      
+      assertNotNull(historicInstance);
+      assertEquals("ACTIVITY_DELETED", historicInstance.getDeleteReason());
+    }    
   }
   
   public void testDeleteProcessInstanceUnexistingId() {

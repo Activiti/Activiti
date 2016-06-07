@@ -27,13 +27,13 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -52,6 +52,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   private static final String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
   private static final String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
   private static final String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
+  private static final String PROCESS_DEFINITION_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
+  private static final String PROCESS_DEFINITION_CATEGORY_2 = "org.activiti.enginge.test.api.runtime.2Category";
   
   private org.activiti.engine.repository.Deployment deployment;
   private List<String> processInstanceIds;
@@ -316,6 +318,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     } catch (ActivitiException e) {
       // Exception is expected
     }
+  }
+
+  public void testQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).count());
+  }
+  
+  public void testOrQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).processDefinitionId("undefined").endOr().count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).processDefinitionId("undefined").endOr().count());
   }
 
   public void testQueryByProcessDefinitionName() {
@@ -1630,7 +1642,6 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     }
   }
   
-  
   @Deployment(resources={
     "org/activiti5/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryInvalidTypes() throws Exception {
@@ -1828,7 +1839,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   
   public void testNativeQueryPaging() {
     assertEquals(5, runtimeService.createNativeProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(ProcessInstance.class)).listPage(0, 5).size());
-  }  
+  }
   
   public void testLocalizeProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");

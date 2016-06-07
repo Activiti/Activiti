@@ -1575,4 +1575,29 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertNotNull(e);
     assertTrue(e instanceof ClassCastException);
   }
+
+  public void testClaimTime() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    User user = identityService.newUser("user");
+    identityService.saveUser(user);
+
+    assertNull(task.getClaimTime());
+
+    // Claim task
+    taskService.claim(task.getId(), user.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+
+    assertNotNull(task.getClaimTime());
+
+    // Unclaim task
+    taskService.unclaim(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+
+    assertNull(task.getClaimTime());
+
+    taskService.deleteTask(task.getId(), true);
+    identityService.deleteUser(user.getId());
+  }
+
 }

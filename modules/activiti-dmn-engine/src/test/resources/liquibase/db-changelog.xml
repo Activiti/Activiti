@@ -6,47 +6,41 @@
 
     <changeSet id="1" author="activiti">
 
-        <!-- Hibernate sequence table -->
-        <createTable tableName="hibernate_sequences">
-            <column name="sequence_name" type="varchar(255)" />
-            <column name="sequence_next_hi_value" type="integer" />
-        </createTable>
-
         <createTable tableName="DMN_DEPLOYMENT">
-            <column name="id" type="bigint">
+            <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name" type="varchar(255)" />
-            <column name="category" type="varchar(255)" />
-            <column name="deploy_time" type="datetime">
+            <column name="name_" type="varchar(255)" />
+            <column name="category_" type="varchar(255)" />
+            <column name="deploy_time_" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="tenant_id" type="varchar(255)" />
+            <column name="tenant_id_" type="varchar(255)" />
         </createTable>
         
         <createTable tableName="DMN_DEPLOYMENT_RESOURCE">
-            <column name="id" type="bigint">
+            <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name" type="varchar(255)" />
-            <column name="deployment_id" type="bigint" />
-            <column name="resource_bytes" type="longblob">
+            <column name="name_" type="varchar(255)" />
+            <column name="deployment_id_" type="varchar(255)" />
+            <column name="resource_bytes_" type="longblob">
                 <constraints nullable="true" />
             </column>
         </createTable>
         
         <createTable tableName="DMN_DECISION_TABLE">
-            <column name="id" type="bigint">
+            <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name" type="varchar(255)" />
-            <column name="decision_version" type="int" />
-            <column name="decision_key" type="varchar(255)" />
-            <column name="category" type="varchar(255)" />
-            <column name="deployment_id" type="bigint" />
-            <column name="tenant_id" type="varchar(255)" />
-            <column name="resource_name" type="varchar(255)" />
-            <column name="description" type="varchar(255)" />
+            <column name="name_" type="varchar(255)" />
+            <column name="version_" type="int" />
+            <column name="key_" type="varchar(255)" />
+            <column name="category_" type="varchar(255)" />
+            <column name="deployment_id_" type="varchar(255)" />
+            <column name="tenant_id_" type="varchar(255)" />
+            <column name="resource_name_" type="varchar(255)" />
+            <column name="description_" type="varchar(255)" />
         </createTable>
 
     </changeSet>

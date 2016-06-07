@@ -17,10 +17,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.query.NativeQuery;
+import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -434,6 +438,20 @@ public interface TaskService {
   <T> T getVariable(String taskId, String variableName, Class<T> variableClass);
 
   /**
+   * The variable. Searching for the variable is done in all scopes that are visible to the given task (including parent scopes). Returns null when no variable value is found with the given
+   * name.
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param variableName
+   *          name of variable, cannot be null.
+   * @return the variable or null if the variable is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no execution is found for the given taskId.
+   */
+  VariableInstance getVariableInstance(String taskId, String variableName);
+
+  /**
    * checks whether or not the task has a variable defined with the given name, in the task scope and if available also the execution scopes.
    */
   boolean hasVariable(String taskId, String variableName);
@@ -449,6 +467,20 @@ public interface TaskService {
   <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass);
 
   /**
+   * The variable for a task. Returns the variable when it is set for the task (and not searching parent scopes). Returns null when no variable is found with the given
+   * name.
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param variableName
+   *          name of variable, cannot be null.
+   * @return the variable or null if the variable is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  VariableInstance getVariableInstanceLocal(String taskId, String variableName);
+
+  /**
    * checks whether or not the task has a variable defined with the given name, local task scope only.
    */
   boolean hasVariableLocal(String taskId, String variableName);
@@ -458,6 +490,30 @@ public interface TaskService {
    * {@link #getVariables(String, Collection)} for better performance.
    */
   Map<String, Object> getVariables(String taskId);
+
+  /**
+   * All variables visible from the given task scope (including parent scopes).
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @return the variable instances or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  Map<String, VariableInstance> getVariableInstances(String taskId);
+
+  /**
+   * The variable values for all given variableNames, takes all variables into account which are visible from the given task scope (including parent scopes).
+   *
+   * @param taskId
+   *          id of taskId, cannot be null.
+   * @param variableNames
+   *          the collection of variable names that should be retrieved.
+   * @return the variables or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no taskId is found for the given taskId.
+   */
+  Map<String, VariableInstance> getVariableInstances(String taskId, Collection<String> variableNames);
 
   /**
    * get all variables and search only in the task scope. If you have many task local variables and you only need a few, consider using {@link #getVariablesLocal(String, Collection)} for better
@@ -472,7 +528,35 @@ public interface TaskService {
 
   /** get a variable on a task */
   Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
+  
+  /** get all variables and search only in the task scope. */
+  List<VariableInstance> getVariableInstancesLocalByTaskIds(Set<String> taskIds);
 
+  /**
+   * All variable values that are defined in the task scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
+   * {@link #getVariableInstancesLocal(String, Collection)} for better performance.
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @return the variables or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  Map<String, VariableInstance> getVariableInstancesLocal(String taskId);
+
+  /**
+   * The variable values for all given variableNames that are defined in the given task's scope. (Does not searching parent scopes).
+   *
+   * @param taskId
+   *          id of taskId, cannot be null.
+   * @param variableNames
+   *          the collection of variable names that should be retrieved.
+   * @return the variables or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no taskId is found for the given taskId.
+   */
+  Map<String, VariableInstance> getVariableInstancesLocal(String taskId, Collection<String> variableNames);
+  
   /**
    * Removes the variable from the task. When the variable does not exist, nothing happens.
    */
@@ -493,6 +577,95 @@ public interface TaskService {
    */
   void removeVariablesLocal(String taskId, Collection<String> variableNames);
 
+  /**
+   * All DataObjects visible from the given execution scope (including parent scopes).
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @return the DataObjects or an empty map if no such variables are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  Map<String, DataObject> getDataObjects(String taskId);
+
+  /**
+   * All DataObjects visible from the given task scope (including parent scopes).
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found.
+   * @return the DataObjects or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given task.
+   */
+  Map<String, DataObject> getDataObjects(String taskId, String locale, boolean withLocalizationFallback);
+  
+  /**
+   * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given task scope (including parent scopes).
+   * 
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param dataObjectNames
+   *          the collection of DataObject names that should be retrieved. 
+   * @return the DataObject or an empty map if no DataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames);
+
+  /**
+   * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given task scope (including parent scopes).
+   * 
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param dataObjectNames
+   *          the collection of DataObject names that should be retrieved.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   * @return the DataObjects or an empty map if no such dataObjects are found.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given task.
+   */
+  Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);   
+  
+  /**
+   * The DataObject. Searching for the DataObject is done in all scopes that are visible to the given task (including parent scopes). Returns null when no DataObject value is found with the given
+   * name.
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param dataObjectName
+   *          name of DataObject, cannot be null.
+   * @return the DataObject or null if the variable is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  DataObject getDataObject(String taskId, String dataObject);
+
+  /**
+   * The DataObject. Searching for the DataObject is done in all scopes that are visible to the given task (including parent scopes). Returns null when no DataObject value is found with the given
+   * name.
+   *
+   * @param taskId
+   *          id of task, cannot be null.
+   * @param dataObjectName
+   *          name of DataObject, cannot be null.
+   * @param locale
+   *          locale the DataObject name and description should be returned in (if available).
+   * @param withLocalizationFallback
+   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   * @return the DataObject or null if the DataObject is undefined.
+   * @throws ActivitiObjectNotFoundException
+   *           when no task is found for the given taskId.
+   */
+  DataObject getDataObject(String taskId, String dataObjectName, String locale, boolean withLocalizationFallback);
+
+  
   /** Add a comment to a task and/or process instance. */
   Comment addComment(String taskId, String processInstanceId, String message);
 

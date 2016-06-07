@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,6 +42,26 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     // all of the records are written before the test cleanup begins
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
+
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerInSubProcessTest.bpmn20.xml"})
+  public void testTaskCreateListenerInSubProcess() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerInSubProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Schedule meeting", task.getName());
+    assertEquals("TaskCreateListener is listening!", task.getDescription());
+
+    // Manually cleanup the process instance. If we don't do this, the
+    // following actions will occur:
+    // 1. The cleanup rule will delete the process
+    // 2. The process deletion will fire a DELETE event to the TaskAllEventsListener
+    // 3. The TaskAllEventsListener will set a variable on the Task
+    // 4. Setting that variable will result in an entry in the ACT_HI_DETAIL table
+    // 5. The AbstractActivitiTestCase will fail the test because the DB is not clean
+    // By triggering the DELETE event from within the test, we ensure that
+    // all of the records are written before the test cleanup begins
+    runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
+  }
+
 
   @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
   public void testTaskAssignmentListener() {

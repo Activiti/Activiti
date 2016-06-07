@@ -29,6 +29,7 @@ import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
@@ -167,11 +168,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByActivityId(final String activityId) {
-    return executionDataManager.findInactiveExecutionsByActivityId(activityId);
-  }
-
-  @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
     return executionDataManager.findInactiveExecutionsByProcessInstanceId(processInstanceId);
   }
@@ -211,20 +207,25 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       processInstanceExecution.setTenantId(tenantId);
     }
 
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+
+    processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    processInstanceExecution.setStartUserId(authenticatedUserId);
+
     // Store in database
     insert(processInstanceExecution, false);
 
-    // Need to be after insert, cause we need the id
-    String authenticatedUserId = Authentication.getAuthenticatedUserId();
     if (initiatorVariableName != null) {
       processInstanceExecution.setVariable(initiatorVariableName, authenticatedUserId);
     }
-    
+
+    // Need to be after insert, cause we need the id
     processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
     processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
     if (authenticatedUserId != null) {
       getIdentityLinkEntityManager().addIdentityLink(processInstanceExecution, authenticatedUserId, null, IdentityLinkType.STARTER);
     }
+
 
     // Fire events
     if (getEventDispatcher().isEnabled()) {
@@ -243,24 +244,23 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // create the new child execution
     ExecutionEntity childExecution = executionDataManager.create();
 
-    // Inherit tenant id (if any)
+    // Inherit parent attributes.
     if (parentExecutionEntity.getTenantId() != null) {
       childExecution.setTenantId(parentExecutionEntity.getTenantId());
     }
-
-    // Insert the child execution
-    insert(childExecution, false);
-
-    // manage the bidirectional parent-child relation
-    parentExecutionEntity.addChildExecution(childExecution);
     childExecution.setParent(parentExecutionEntity);
-
-    // initialize the new execution
     childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
     childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
         ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
     childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
     childExecution.setScope(false);
+    childExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+
+    // manage the bidirectional parent-child relation
+    parentExecutionEntity.addChildExecution(childExecution);
+    
+    // Insert the child execution
+    insert(childExecution, false);
 
     if (logger.isDebugEnabled()) {
       logger.debug("Child execution {} created with parent {}", childExecution, parentExecutionEntity.getId());
@@ -307,20 +307,31 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     deleteProcessInstanceCascade(execution, deleteReason, cascade);
   }
 
-  private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
+  protected void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
     for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
-      if (subExecutionEntity.getSubProcessInstance() != null) {
+      if (subExecutionEntity.isMultiInstanceRoot()) {
+        for (ExecutionEntity miExecutionEntity : subExecutionEntity.getExecutions()) {
+          if (miExecutionEntity.getSubProcessInstance() != null) {
+            deleteProcessInstanceCascade(miExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
+          }
+        }
+        
+      } else if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
       }
     }
     
-    IdentityLinkEntityManager identityLinkEntityManager = getIdentityLinkEntityManager();
-    List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(execution.getId());
-    for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
-      identityLinkEntityManager.delete(identityLinkEntity);
+    getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
+    
+    // fill default reason if none provided
+    if (deleteReason == null) {
+      deleteReason = "ACTIVITY_DELETED";
     }
 
-    getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
+    if (getEventDispatcher().isEnabled()) {
+      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getProcessInstanceId(), 
+          execution.getProcessInstanceId(), null, deleteReason));
+    }
 
     // delete the execution BEFORE we delete the history, otherwise we will
     // produce orphan HistoricVariableInstance instances
@@ -336,31 +347,19 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
     }
     
-//    ExecutionTree executionTree = findExecutionTreeInCurrentProcessInstance(execution.getProcessInstanceId());
-//    ExecutionTreeNode executionTreeNode = null;
-//    if (executionTree.getRoot() != null) {
-//      executionTreeNode = executionTree.getTreeNode(execution.getId());
-//    }
-//    
-//    if (executionTreeNode == null) {
-//      return;
-//    }
-//    
-//    Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
-//    while (iterator.hasNext()) {
-//      ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
-//      deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
-//    }
-    
     deleteExecutionAndRelatedData(execution, deleteReason, false);
 
     if (deleteHistory) {
       getHistoricProcessInstanceEntityManager().delete(execution.getId());
     }
+    
+    getHistoryManager().recordProcessInstanceEnd(processInstanceExecutionEntity.getId(), deleteReason, null);
+    processInstanceExecutionEntity.setDeleted(true);
   }
   
   @Override
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+    getHistoryManager().recordActivityEnd(executionEntity);
     deleteDataRelatedToExecution(executionEntity, deleteReason, cancel);
     delete(executionEntity);
   }
@@ -379,6 +378,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       return;
     }
     
+    // Call activities
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
@@ -401,7 +401,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     // TODO: what about delete reason?
     getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
-    
     processInstanceEntity.setDeleted(true);
   }
   
@@ -415,7 +414,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     List<? extends ExecutionEntity> childExecutions = collectChildren(executionEntity);
     for (int i = childExecutions.size() - 1; i>= 0; i--) {
       ExecutionEntity childExecutionEntity = childExecutions.get(i);
-      if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
+      if (!childExecutionEntity.isEnded()) {
         deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, cancel);
       }
     }
@@ -529,6 +528,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       eventSubscriptionEntityManager.delete(eventSubscription);
     }
+    
   }
 
   // OTHER METHODS

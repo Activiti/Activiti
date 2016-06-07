@@ -28,6 +28,7 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
   private List<String> taskIds;
+  private List<String> multipleTaskIds;
 
   public void setUp() throws Exception {
 
@@ -183,6 +184,62 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, tasks.size());
   }
   
+  // Unit test for https://activiti.atlassian.net/browse/ACT-4152
+  public void testQueryWithIncludeTaskVariableAndTaskCategory() {
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee("gonzo").list();
+    for (Task task : tasks) {
+      assertNotNull(task.getCategory());
+      assertEquals("testCategory", task.getCategory());
+    }
+    
+    tasks = taskService.createTaskQuery().taskAssignee("gonzo").includeTaskLocalVariables().list();
+    for (Task task : tasks) {
+      assertNotNull(task.getCategory());
+      assertEquals("testCategory", task.getCategory());
+    }
+    
+
+    tasks = taskService.createTaskQuery().taskAssignee("gonzo").includeProcessVariables().list();
+    for (Task task : tasks) {
+      assertNotNull(task.getCategory());
+      assertEquals("testCategory", task.getCategory());
+    }
+  }
+  
+public void testQueryWithLimitAndVariables() throws Exception {
+    
+    int taskVariablesLimit = 2000;
+    int expectedNumberOfTasks = 103;
+    
+    try {
+      //setup - create 100 tasks
+      multipleTaskIds = generateMultipleTestTasks();
+      
+      // limit results to 2000 and set maxResults for paging to 200
+      // please see MNT-16040
+      List<Task> tasks = taskService.createTaskQuery()
+          .includeProcessVariables()
+          .includeTaskLocalVariables()
+          .limitTaskVariables(taskVariablesLimit)
+          .orderByTaskPriority()
+          .asc()
+          .listPage(0, 200);
+      // 100 tasks created by generateMultipleTestTasks and 3 created previously at setUp
+      assertEquals(expectedNumberOfTasks, tasks.size());
+      
+      tasks = taskService.createTaskQuery()
+          .includeProcessVariables()
+          .includeTaskLocalVariables()
+          .orderByTaskPriority()
+          .limitTaskVariables(taskVariablesLimit)
+          .asc()
+          .listPage(50, 100);
+      assertEquals(53, tasks.size());
+    } finally {
+      taskService.deleteTasks(multipleTaskIds, true);
+    }
+  }
+  
   /**
    * Generates some test tasks. - 2 tasks where kermit is a candidate and 1 task
    * where gonzo is assignee
@@ -210,7 +267,8 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     Task task = taskService.newTask();
     task.setName("gonzoTask");
     task.setDescription("gonzo description");
-    task.setPriority(4);    
+    task.setPriority(4);   
+    task.setCategory("testCategory");
     taskService.saveTask(task);
     taskService.setAssignee(task.getId(), "gonzo");
     taskService.setVariableLocal(task.getId(), "testVar", "someVariable");
@@ -218,6 +276,28 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     taskService.setVariableLocal(task.getId(), "testVar2", 123);
     ids.add(task.getId());
 
+    return ids;
+  }
+  
+  /**
+   * Generates 100 test tasks.
+   */
+  private List<String> generateMultipleTestTasks() throws Exception {
+    List<String> ids = new ArrayList<String>();
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+    for (int i = 0; i < 100; i++) {
+      Task task = taskService.newTask();
+      task.setName("testTask");
+      task.setDescription("testTask description");
+      task.setPriority(3);
+      taskService.saveTask(task);
+      ids.add(task.getId());
+      taskService.setVariableLocal(task.getId(), "test", "test");
+      taskService.setVariableLocal(task.getId(), "testBinary", "This is a binary variable".getBytes());
+      taskService.addCandidateUser(task.getId(), "kermit");
+    }
     return ids;
   }
 

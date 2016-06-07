@@ -17,6 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Special operation when executing an instance of a multi-instance.
+ * It's similar to the {@link ContinueProcessOperation}, but simpler, as it doesn't need to 
+ * cater for as many use cases.
+ * 
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
@@ -30,23 +34,16 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
   @Override
   public void run() {
-
-    FlowElement currentFlowElement = execution.getCurrentFlowElement();
-
-    if (currentFlowElement == null) {
-      currentFlowElement = findCurrentFlowElement(execution);
-    }
-    
+    FlowElement currentFlowElement = getCurrentFlowElement(execution);
     if (currentFlowElement instanceof FlowNode) {
       continueThroughFlowNode((FlowNode) currentFlowElement);
-     
     } else {
       throw new RuntimeException("Programmatic error: no valid multi instance flow node, type: " + currentFlowElement + ". Halting.");
     }
-
   }
 
   protected void continueThroughFlowNode(FlowNode flowNode) {
+    
     // Execution listener
     if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);

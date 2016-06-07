@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -84,12 +85,15 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected boolean isDeleted;
 
   protected String eventName;
+  protected ActivitiListener currentActivitiListener;
 
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
   protected List<VariableInstanceEntity> queryVariables;
 
   protected boolean forcedUpdate;
+
+  protected Date claimTime;
 
   public TaskEntityImpl() {
     
@@ -127,6 +131,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);
+    }
+
+    if (claimTime != null) {
+      persistentState.put("claimTime", this.claimTime);
     }
 
     return persistentState;
@@ -468,6 +476,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
+  
+  public ActivitiListener getCurrentActivitiListener() {
+    return currentActivitiListener;
+  }
+
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    this.currentActivitiListener = currentActivitiListener;
+  }
 
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
@@ -587,7 +603,15 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
-  
+
+  public Date getClaimTime() {
+    return claimTime;
+  }
+
+  public void setClaimTime(Date claimTime) {
+    this.claimTime = claimTime;
+  }
+
   public String toString() {
     return "Task[id=" + id + ", name=" + name + "]";
   }

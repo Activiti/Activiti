@@ -38,6 +38,7 @@ import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
@@ -193,7 +194,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return createMuleActivityBehavior(sendTask, sendTask.getFieldExtensions(), bpmnModel);
   }
   
-  protected ActivityBehavior createMuleActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
+  protected ActivityBehavior createMuleActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
     try {
       
       Class< ? > theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
@@ -215,7 +216,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return createCamelActivityBehavior(sendTask, sendTask.getFieldExtensions(), bpmnModel);
   }
  
-  protected ActivityBehavior createCamelActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
+  protected ActivityBehavior createCamelActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
     try {
       Class< ? > theClass = null;
       FieldExtension behaviorExtension = null;

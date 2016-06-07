@@ -25,13 +25,12 @@ import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.helper.SkipExpressionUtil;
-import org.activiti5.engine.impl.calendar.BusinessCalendar;
-import org.activiti5.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -152,7 +151,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           BusinessCalendar businessCalendar = Context
             .getProcessEngineConfiguration()
             .getBusinessCalendarManager()
-            .getBusinessCalendar(DueDateBusinessCalendar.NAME);
+            .getBusinessCalendar(taskDefinition.getBusinessCalendarNameExpression().getValue(execution).toString());
           task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
         } else {
           throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + 
@@ -205,14 +204,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     
     handleAssignments(activeAssigneeExpression, activeOwnerExpression, activeCandidateUserExpressions, 
         activeCandidateGroupExpressions, task, activityExecution);
+    
+    task.fireEvent(TaskListener.EVENTNAME_CREATE);
    
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
         ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
-
-    task.fireEvent(TaskListener.EVENTNAME_CREATE);
 
     Expression skipExpression = taskDefinition.getSkipExpression();
     if (SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression) &&

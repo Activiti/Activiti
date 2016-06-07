@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration;
 import org.activiti.spring.boot.RestApiAutoConfiguration;
+import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -34,6 +35,7 @@ public class RestApiAutoConfigurationTest {
           ServerPropertiesAutoConfiguration.class,
           DataSourceAutoConfiguration.class,
           DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class,
+          SecurityAutoConfiguration.class,
           RestApiAutoConfiguration.class,
           JacksonAutoConfiguration.class
   })

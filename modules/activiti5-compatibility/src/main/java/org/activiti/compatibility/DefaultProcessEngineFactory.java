@@ -50,10 +50,28 @@ public class DefaultProcessEngineFactory {
     }
   }
    
-  @SuppressWarnings("unchecked")
   protected void copyConfigItems(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     activiti5Configuration.setActiviti5CompatibilityHandler(activiti6Configuration.getActiviti5CompatibilityHandler());
     
+    copyJdbcConfig(activiti6Configuration, activiti5Configuration);
+    copyHistoryConfig(activiti6Configuration, activiti5Configuration);
+    copyMailConfig(activiti6Configuration, activiti5Configuration);
+    copyDiagramConfig(activiti6Configuration, activiti5Configuration);
+    copyAsyncExecutorConfig(activiti6Configuration, activiti5Configuration);
+    copyJpaConfig(activiti6Configuration, activiti5Configuration);
+    copyBeans(activiti6Configuration, activiti5Configuration);
+    copyCaches(activiti6Configuration, activiti5Configuration);
+    activiti5Configuration.setKnowledgeBaseCacheLimit(activiti6Configuration.getKnowledgeBaseCacheLimit());
+    copyActivityBehaviorFactory(activiti6Configuration, activiti5Configuration);
+    copyListenerFactory(activiti6Configuration, activiti5Configuration);
+    convertParseHandlers(activiti6Configuration, activiti5Configuration);
+    copyCustomMybatisMappers(activiti6Configuration, activiti5Configuration);
+    convertEventListeners(activiti6Configuration, activiti5Configuration);
+    copyPostDeployers(activiti6Configuration, activiti5Configuration);
+    activiti5Configuration.setBusinessCalendarManager(activiti6Configuration.getBusinessCalendarManager());
+  }
+
+  protected void copyJdbcConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getIdGeneratorDataSource() != null) {
       activiti5Configuration.setIdGeneratorDataSource(activiti6Configuration.getIdGeneratorDataSource());
     } else if (activiti6Configuration.getIdGeneratorDataSourceJndiName() != null) {
@@ -82,9 +100,20 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.getJdbcMaxActiveConnections() > 0) {
       activiti5Configuration.setJdbcMaxActiveConnections(activiti6Configuration.getJdbcMaxActiveConnections());
     }
-    
+  }
+
+  protected void copyHistoryConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     activiti5Configuration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(activiti6Configuration.getHistoryLevel().getKey()));
-    
+  }
+
+  protected void copyDiagramConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
+    activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
+    activiti5Configuration.setActivityFontName(activiti6Configuration.getActivityFontName());
+    activiti5Configuration.setLabelFontName(activiti6Configuration.getLabelFontName());
+    activiti5Configuration.setAnnotationFontName(activiti6Configuration.getAnnotationFontName());
+  }
+
+  protected void copyMailConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     activiti5Configuration.setMailServerDefaultFrom(activiti6Configuration.getMailServerDefaultFrom());
     activiti5Configuration.setMailServerHost(activiti6Configuration.getMailServerHost());
     activiti5Configuration.setMailServerPassword(activiti6Configuration.getMailServerPassword());
@@ -99,11 +128,9 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.getMailSessionJndi() != null) {
       activiti5Configuration.setMailSessionJndi(activiti6Configuration.getMailSessionJndi());
     }
-    
-    activiti5Configuration.setCreateDiagramOnDeploy(activiti6Configuration.isCreateDiagramOnDeploy());
-    activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
-    activiti5Configuration.setEnableProcessDefinitionInfoCache(activiti6Configuration.isEnableProcessDefinitionInfoCache());
-    
+  }
+
+  protected void copyAsyncExecutorConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.isAsyncExecutorEnabled()) {
       activiti5Configuration.setAsyncExecutorEnabled(true);
       if (activiti6Configuration.isAsyncExecutorActivate()) {
@@ -114,14 +141,29 @@ public class DefaultProcessEngineFactory {
       AsyncExecutor activiti5AsyncExecutor = (AsyncExecutor) activiti6Configuration.getActiviti5AsyncExecutor();
       activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
     }
-    
+  }
+
+  protected void copyJpaConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     activiti5Configuration.setJpaCloseEntityManager(activiti6Configuration.isJpaCloseEntityManager());
     activiti5Configuration.setJpaHandleTransaction(activiti6Configuration.isJpaHandleTransaction());
-    activiti5Configuration.setJpaPersistenceUnitName(activiti6Configuration.getJpaPersistenceUnitName());
     
+    // We want to reuse the entity manager factory between the two engines
+    if (activiti6Configuration.getJpaEntityManagerFactory() != null) {
+      activiti5Configuration.setJpaEntityManagerFactory(activiti6Configuration.getJpaEntityManagerFactory());
+    } else {
+      activiti5Configuration.setJpaPersistenceUnitName(activiti6Configuration.getJpaPersistenceUnitName());
+    }
+  }
+
+  protected void copyBeans(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getBeans() != null) {
       activiti5Configuration.setBeans(activiti6Configuration.getBeans());
     }
+  }
+
+  protected void copyCaches(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
+    activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
+    activiti5Configuration.setEnableProcessDefinitionInfoCache(activiti6Configuration.isEnableProcessDefinitionInfoCache());
     
     if (activiti6Configuration.getActiviti5ProcessDefinitionCache() != null) {
       activiti5Configuration.setProcessDefinitionCache((DeploymentCache<ProcessDefinitionEntity>) activiti6Configuration.getActiviti5ProcessDefinitionCache());
@@ -131,17 +173,21 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.getActiviti5KnowledgeBaseCache() != null) {
       activiti5Configuration.setKnowledgeBaseCache((DeploymentCache<Object>) activiti6Configuration.getActiviti5KnowledgeBaseCache());
     }
-    activiti5Configuration.setKnowledgeBaseCacheLimit(activiti6Configuration.getKnowledgeBaseCacheLimit());
-    
+  }
+
+  protected void copyActivityBehaviorFactory(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getActiviti5ActivityBehaviorFactory() != null) {
       activiti5Configuration.setActivityBehaviorFactory((ActivityBehaviorFactory) activiti6Configuration.getActiviti5ActivityBehaviorFactory());
     }
+  }
+
+  protected void copyListenerFactory(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getActiviti5ListenerFactory() != null) {
       activiti5Configuration.setListenerFactory((ListenerFactory) activiti6Configuration.getActiviti5ListenerFactory());
     }
-    
-    convertParseHandlers(activiti6Configuration, activiti5Configuration);
-    
+  }
+
+  protected void copyCustomMybatisMappers(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getActiviti5CustomMybatisMappers() != null) {
       activiti5Configuration.setCustomMybatisMappers(activiti6Configuration.getActiviti5CustomMybatisMappers());
     }
@@ -149,10 +195,9 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.getActiviti5CustomMybatisXMLMappers() != null) {
       activiti5Configuration.setCustomMybatisXMLMappers(activiti6Configuration.getActiviti5CustomMybatisXMLMappers());
     }
-    
-    convertEventListeners(activiti6Configuration, activiti5Configuration);
-    
-    // check if we need to enable rules deployment for Activiti 5
+  }
+
+  protected void copyPostDeployers(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     if (activiti6Configuration.getCustomPostDeployers() != null) {
       List<org.activiti5.engine.impl.persistence.deploy.Deployer> activiti5Deployers = new ArrayList<org.activiti5.engine.impl.persistence.deploy.Deployer>();
       for (Deployer deployer : activiti6Configuration.getCustomPostDeployers()) {

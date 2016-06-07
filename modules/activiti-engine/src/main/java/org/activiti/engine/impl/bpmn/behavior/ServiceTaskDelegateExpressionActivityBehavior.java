@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.helper.DelegateExpressionUtil;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
@@ -60,9 +60,8 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
 
   @Override
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    Object delegate = expression.getValue(execution);
+    Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
     if (delegate instanceof TriggerableActivityBehavior) {
-      ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
       ((TriggerableActivityBehavior) delegate).trigger(execution, signalName, signalData);
     }
   }
@@ -83,11 +82,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
           }
         }
         
-        // Note: we can't cache the result of the expression, because the
-        // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
-        Object delegate = expression.getValue(execution);
-        ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-
+        Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
         if (delegate instanceof ActivityBehavior) {
 
           if (delegate instanceof AbstractBpmnActivityBehavior) {

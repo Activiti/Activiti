@@ -64,12 +64,14 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     }
 
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
+    commandContext.getExecutionEntityManager().update(executionEntity, false);
 
     // All child executions are suspended
     Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
     for (ExecutionEntity childExecution : childExecutions) {
       if (!childExecution.getId().equals(executionId)) {
         SuspensionStateUtil.setSuspensionState(childExecution, getNewState());
+        commandContext.getExecutionEntityManager().update(childExecution, false);
       }
     }
 
@@ -77,6 +79,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(executionId);
     for (TaskEntity taskEntity : tasks) {
       SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
+      commandContext.getTaskEntityManager().update(taskEntity, false);
     }
 
     return null;

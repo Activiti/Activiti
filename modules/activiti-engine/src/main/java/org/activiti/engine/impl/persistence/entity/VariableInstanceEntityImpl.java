@@ -34,8 +34,6 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   protected int revision;
 
   protected String name;
-  protected String localizedName;
-  protected String localizedDescription;
   protected VariableType type;
   protected String typeName;
 
@@ -173,22 +171,6 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
 
   public String getName() {
     return name;
-  }
-
-  public String getLocalizedName() {
-    return localizedName;
-  }
-
-  public void setLocalizedName(String localizedName) {
-    this.localizedName = localizedName;
-  }
-
-  public String getLocalizedDescription() {
-    return localizedDescription;
-  }
-  
-  public void setLocalizedDescription(String localizedDescription) {
-    this.localizedDescription = localizedDescription;
   }
 
   public String getTypeName() {

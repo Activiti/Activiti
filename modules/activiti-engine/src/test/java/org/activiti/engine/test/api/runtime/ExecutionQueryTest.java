@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +59,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   private static String SEQUENTIAL_PROCESS_KEY = "oneTaskProcess";
   private static String CONCURRENT_PROCESS_NAME = "concurrentName";
   private static String SEQUENTIAL_PROCESS_NAME = "oneTaskProcessName";
+  private static String CONCURRENT_PROCESS_CATEGORY = "org.activiti.enginge.test.api.runtime.concurrent.Category";
+  private static String SEQUENTIAL_PROCESS_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
+  
 
   private List<String> concurrentProcessInstanceIds;
   private List<String> sequentialProcessInstanceIds;
@@ -110,6 +114,19 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
   }
+  
+  public void testQueryByProcessDefinitionCategory() {
+    // Concurrent process with 3 executions for each process instance
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionCategory(CONCURRENT_PROCESS_CATEGORY).list().size());
+    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionCategory(SEQUENTIAL_PROCESS_CATEGORY).list().size());
+  }
+
+  public void testQueryByInvalidProcessDefinitionCategory() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionCategory("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
 
   public void testQueryByProcessDefinitionName() {
     // Concurrent process with 3 executions for each process instance
@@ -131,6 +148,15 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
       assertEquals(3, query.count());
     }
     assertEquals(2, runtimeService.createExecutionQuery().processInstanceId(sequentialProcessInstanceIds.get(0)).list().size());
+  }
+
+  public void testQueryByRootProcessInstanceId() {
+    for (String processInstanceId : concurrentProcessInstanceIds) {
+      ExecutionQuery query = runtimeService.createExecutionQuery().rootProcessInstanceId(processInstanceId);
+      assertEquals(3, query.list().size());
+      assertEquals(3, query.count());
+    }
+    assertEquals(2, runtimeService.createExecutionQuery().rootProcessInstanceId(sequentialProcessInstanceIds.get(0)).list().size());
   }
 
   public void testQueryByParentId() {
@@ -239,6 +265,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(3, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-2", true).list().size());
     assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("NON-EXISTING", true).list().size());
   }
+
+
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStringVariable() {
@@ -1540,5 +1568,82 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     execution = runtimeService.createExecutionQuery().executionId(subProcessId).locale("en-US").singleResult();
     assertEquals("SubProcess Name 'en-US'", execution.getName());
     assertEquals("SubProcess Description 'en-US'", execution.getDescription());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testQueryStartedBefore() throws Exception {
+    Calendar calendar = new GregorianCalendar();
+    calendar.set(Calendar.YEAR, 2010);
+    calendar.set(Calendar.MONTH, 8);
+    calendar.set(Calendar.DAY_OF_MONTH, 30);
+    calendar.set(Calendar.HOUR_OF_DAY, 12);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    Date noon = calendar.getTime();
+
+    processEngineConfiguration.getClock().setCurrentTime(noon);
+
+    calendar.add(Calendar.HOUR_OF_DAY, 1);
+    Date hourLater = calendar.getTime();
+
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    List<Execution> executions = runtimeService.createExecutionQuery().startedBefore(hourLater).list();
+
+    assertEquals(2, executions.size());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testQueryStartedAfter() throws Exception {
+    Calendar calendar = new GregorianCalendar();
+    calendar.set(Calendar.YEAR, 2200);
+    calendar.set(Calendar.MONTH, 8);
+    calendar.set(Calendar.DAY_OF_MONTH, 30);
+    calendar.set(Calendar.HOUR_OF_DAY, 12);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    Date noon = calendar.getTime();
+
+    processEngineConfiguration.getClock().setCurrentTime(noon);
+
+    calendar.add(Calendar.HOUR_OF_DAY, -1);
+    Date hourEarlier = calendar.getTime();
+
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    List<Execution> executions = runtimeService.createExecutionQuery().startedAfter(hourEarlier).list();
+
+    assertEquals(2, executions.size());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testQueryStartedBy() throws Exception {
+    final String authenticatedUser = "user1";
+    identityService.setAuthenticatedUserId(authenticatedUser);
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    List<Execution> executions = runtimeService.createExecutionQuery().startedBy(authenticatedUser).list();
+
+    assertEquals(1, executions.size());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/runtime/multipleSubProcess.bpmn20.xml",
+		                 "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"})
+  public void testOnlySubProcessExecutions() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multipleSubProcessTest");
+
+    List<Execution> executions = runtimeService.createExecutionQuery().onlySubProcessExecutions().list();
+    assertEquals(2, executions.size());
+    for (Execution execution : executions) {
+      if (execution.getParentId() == null) {
+        assertTrue(processInstance.getId() != execution.getProcessInstanceId());
+      } else if (execution.getParentId().equals(execution.getProcessInstanceId())) {
+        assertEquals("embeddedSubprocess" , execution.getActivityId());
+      } else {
+        fail();
+      }
+    }
   }
 }

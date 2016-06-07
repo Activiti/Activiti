@@ -56,7 +56,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueEquals(String name, Object value, boolean localScope) {
+  protected T variableValueEquals(String name, Object value, boolean localScope) {
     addVariable(name, value, QueryOperator.EQUALS, localScope);
     return (T) this;
   }
@@ -66,7 +66,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueEquals(Object value, boolean localScope) {
+  protected T variableValueEquals(Object value, boolean localScope) {
     queryVariableValues.add(new QueryVariableValue(null, value, QueryOperator.EQUALS, localScope));
     return (T) this;
   }
@@ -76,8 +76,8 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueEqualsIgnoreCase(String name, String value, boolean localScope) {
-    if (value == null) {
+  protected T variableValueEqualsIgnoreCase(String name, String value, boolean localScope) {
+    if(value == null) {
       throw new ActivitiIllegalArgumentException("value is null");
     }
     addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, localScope);
@@ -89,8 +89,8 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueNotEqualsIgnoreCase(String name, String value, boolean localScope) {
-    if (value == null) {
+  protected T variableValueNotEqualsIgnoreCase(String name, String value, boolean localScope) {
+    if(value == null) {
       throw new ActivitiIllegalArgumentException("value is null");
     }
     addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, localScope);
@@ -102,7 +102,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueNotEquals(String name, Object value, boolean localScope) {
+  protected T variableValueNotEquals(String name, Object value, boolean localScope) {
     addVariable(name, value, QueryOperator.NOT_EQUALS, localScope);
     return (T) this;
   }
@@ -112,7 +112,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueGreaterThan(String name, Object value, boolean localScope) {
+  protected T variableValueGreaterThan(String name, Object value, boolean localScope) {
     addVariable(name, value, QueryOperator.GREATER_THAN, localScope);
     return (T) this;
   }
@@ -122,7 +122,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueGreaterThanOrEqual(String name, Object value, boolean localScope) {
+  protected T variableValueGreaterThanOrEqual(String name, Object value, boolean localScope) {
     addVariable(name, value, QueryOperator.GREATER_THAN_OR_EQUAL, localScope);
     return (T) this;
   }
@@ -132,7 +132,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueLessThan(String name, Object value, boolean localScope) {
+  protected T variableValueLessThan(String name, Object value, boolean localScope) {
     addVariable(name, value, QueryOperator.LESS_THAN, localScope);
     return (T) this;
   }
@@ -142,7 +142,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
 
   @SuppressWarnings("unchecked")
-  public T variableValueLessThanOrEqual(String name, Object value, boolean localScope) {
+  protected T variableValueLessThanOrEqual(String name, Object value, boolean localScope) {
     addVariable(name, value, QueryOperator.LESS_THAN_OR_EQUAL, localScope);
     return (T) this;
   }
@@ -156,19 +156,19 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   }
   
   @SuppressWarnings("unchecked")
-  public T variableValueLike(String name, String value, boolean localScope) {
+  protected T variableValueLike(String name, String value, boolean localScope) {
     addVariable(name, value, QueryOperator.LIKE, localScope);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
-  public T variableValueLikeIgnoreCase(String name, String value, boolean localScope) {
+  protected T variableValueLikeIgnoreCase(String name, String value, boolean localScope) {
     addVariable(name, value.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, localScope);
     return (T) this;
   }
   
-  private void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
-    if (name == null) {
+  protected void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
+    if(name == null) {
       throw new ActivitiIllegalArgumentException("name is null");
     }
     if (value == null || isBoolean(value)) {
@@ -200,8 +200,8 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
     }
     queryVariableValues.add(new QueryVariableValue(name, value, operator, localScope));
   }
-
-  private boolean isBoolean(Object value) {
+  
+  protected boolean isBoolean(Object value) {
     if (value == null) {
       return false;
     }

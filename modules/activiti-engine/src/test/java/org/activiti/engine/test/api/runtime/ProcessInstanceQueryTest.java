@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +52,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   private static final String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
   private static final String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
   private static final String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
+  private static final String PROCESS_DEFINITION_CATEGORY = "org.activiti.enginge.test.api.runtime.Category";
+  private static final String PROCESS_DEFINITION_CATEGORY_2 = "org.activiti.enginge.test.api.runtime.2Category";
+  
 
   private org.activiti.engine.repository.Deployment deployment;
   private List<String> processInstanceIds;
@@ -155,6 +159,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
       assertNotNull(runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult());
       assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).list().size());
     }
+  }
+  
+  public void testQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).count());
+  }
+  
+  public void testOrQueryByProcessDefinitionCategory() {
+    assertEquals(PROCESS_DEFINITION_KEY_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY).processDefinitionId("undefined").endOr().count());
+    assertEquals(PROCESS_DEFINITION_KEY_2_DEPLOY_COUNT, runtimeService.createProcessInstanceQuery().or().processDefinitionCategory(PROCESS_DEFINITION_CATEGORY_2).processDefinitionId("undefined").endOr().count());
   }
 
   public void testQueryByProcessInstanceName() {
@@ -1860,4 +1874,62 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals("The One Task Process 'en' localized description", processInstance.getDescription());
   }
 
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testQueryStartedBefore() throws Exception {
+    Calendar calendar = new GregorianCalendar();
+    calendar.set(Calendar.YEAR, 2010);
+    calendar.set(Calendar.MONTH, 8);
+    calendar.set(Calendar.DAY_OF_MONTH, 30);
+    calendar.set(Calendar.HOUR_OF_DAY, 12);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    Date noon = calendar.getTime();
+
+    processEngineConfiguration.getClock().setCurrentTime(noon);
+
+    calendar.add(Calendar.HOUR_OF_DAY, 1);
+    Date hourLater = calendar.getTime();
+
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().startedBefore(hourLater).list();
+
+    assertEquals(1, processInstances.size());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testQueryStartedAfter() throws Exception {
+    Calendar calendar = new GregorianCalendar();
+    calendar.set(Calendar.YEAR, 2200);
+    calendar.set(Calendar.MONTH, 8);
+    calendar.set(Calendar.DAY_OF_MONTH, 30);
+    calendar.set(Calendar.HOUR_OF_DAY, 12);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    Date noon = calendar.getTime();
+
+    processEngineConfiguration.getClock().setCurrentTime(noon);
+
+    calendar.add(Calendar.HOUR_OF_DAY, -1);
+    Date hourEarlier = calendar.getTime();
+
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().startedAfter(hourEarlier).list();
+
+    assertEquals(1, processInstances.size());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testQueryStartedBy() throws Exception {
+    final String authenticatedUser = "user1";
+    identityService.setAuthenticatedUserId(authenticatedUser);
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().startedBy(authenticatedUser).list();
+
+    assertEquals(1, processInstances.size());
+  }
 }

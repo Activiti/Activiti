@@ -14,8 +14,8 @@
 package org.activiti5.engine.test.bpmn.usertask;
 
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti5.engine.impl.el.Expression;
 
 
 
