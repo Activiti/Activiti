@@ -13,6 +13,8 @@ package org.activiti.engine.test.bpmn.event.timer;
  * limitations under the License.
  */
 
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -108,6 +110,24 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
       fail("No jobs should be active here.");
 
     }
+
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+
+      assertNotNull(historicInstance.getEndTime());
+    }
+
+    // now all the process instances should be completed
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    // no jobs
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+
+    // no tasks
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
 
   }
 
