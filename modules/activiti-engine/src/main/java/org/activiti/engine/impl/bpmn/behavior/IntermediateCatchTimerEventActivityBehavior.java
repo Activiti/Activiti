@@ -36,9 +36,10 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
   }
 
   public void execute(DelegateExecution execution) {
+    // end date should be ignored for intermediate timer events.
     TimerEntity timer = TimerUtil
         .createTimerEntityForTimerEventDefinition(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, 
-            TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), 
+            TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), null,
                 timerEventDefinition.getCalendarName()));
     if (timer != null) {
       Context.getCommandContext().getJobEntityManager().schedule(timer);

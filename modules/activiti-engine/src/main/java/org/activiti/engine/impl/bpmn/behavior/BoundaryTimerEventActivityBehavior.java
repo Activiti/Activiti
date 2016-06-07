@@ -45,7 +45,7 @@ public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBeh
       throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
     }
 
-    String jobConfiguration = TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate());
+    String jobConfiguration = TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName());
 
     TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, jobConfiguration);
     if (timer != null) {
