@@ -5,7 +5,7 @@
 
 	<name>Activiti - Secure Scripting</name>
 	<artifactId>activiti-secure-javascript</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.activiti</groupId>
