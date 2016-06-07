@@ -61,6 +61,19 @@ public class MybatisHistoricActivityInstanceDataManager extends AbstractDataMana
   }
   
   @Override
+  public List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(final String processInstanceId) {
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("processInstanceId", processInstanceId);
+    return getList("selectUnfinishedHistoricActivityInstanceByProcessInstanceId", params, new CachedEntityMatcher<HistoricActivityInstanceEntity>() {
+      @Override
+      public boolean isRetained(HistoricActivityInstanceEntity entity) {
+        return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals(processInstanceId)
+            && entity.getEndTime() == null;
+      }
+    }, true);
+  }
+  
+  @Override
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
   }

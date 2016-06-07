@@ -27,11 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -40,6 +40,12 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
+import org.activiti.engine.impl.calendar.BusinessCalendarManager;
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
+import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
+import org.activiti.engine.impl.cfg.DelegateExpressionFieldInjectionMode;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
@@ -109,11 +115,6 @@ import org.activiti5.engine.impl.bpmn.parser.handler.TaskParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.TimerEventDefinitionParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.TransactionParseHandler;
 import org.activiti5.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
-import org.activiti5.engine.impl.calendar.BusinessCalendarManager;
-import org.activiti5.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti5.engine.impl.calendar.DueDateBusinessCalendar;
-import org.activiti5.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti5.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti5.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti5.engine.impl.db.DbIdGenerator;
 import org.activiti5.engine.impl.db.DbSqlSessionFactory;
@@ -535,6 +536,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<ResolverFactory> resolverFactories;
   
   protected BusinessCalendarManager businessCalendarManager;
+  
+  protected int executionQueryLimit = 20000;
+  protected int taskQueryLimit = 20000;
+  protected int historicTaskQueryLimit = 20000;
+  protected int historicProcessInstancesQueryLimit = 20000;
 
   protected String wsSyncFactoryClassName = DEFAULT_WS_SYNC_FACTORY;
 
@@ -596,6 +602,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Event logging to database
   protected boolean enableDatabaseEventLogging = false;
+  
+  /**
+   * Using field injection together with a delegate expression for a service
+   * task / execution listener / task listener is not thread-sade , see user
+   * guide section 'Field Injection' for more information.
+   * 
+   * Set this flag to false to throw an exception at runtime when a field is
+   * injected and a delegateExpression is used. Default is true for backwards compatibility.
+   * 
+   * @since 5.21
+   */
+  protected DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode = DelegateExpressionFieldInjectionMode.COMPATIBILITY;
   
   /**
    *  Define a max length for storing String variable types in the database.
@@ -839,6 +857,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2/LINUXX8664",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/LINUXZ64",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/LINUXPPC64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXPPC64LE",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/400 SQL",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/6000",DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2 UDB iSeries",DATABASE_TYPE_DB2);
@@ -1947,6 +1966,42 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public int getExecutionQueryLimit() {
+    return executionQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setExecutionQueryLimit(int executionQueryLimit) {
+    this.executionQueryLimit = executionQueryLimit;
+    return this;
+  }
+
+  public int getTaskQueryLimit() {
+    return taskQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setTaskQueryLimit(int taskQueryLimit) {
+    this.taskQueryLimit = taskQueryLimit;
+    return this;
+  }
+
+  public int getHistoricTaskQueryLimit() {
+    return historicTaskQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricTaskQueryLimit(int historicTaskQueryLimit) {
+    this.historicTaskQueryLimit = historicTaskQueryLimit;
+    return this;
+  }
+
+  public int getHistoricProcessInstancesQueryLimit() {
+    return historicProcessInstancesQueryLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoricProcessInstancesQueryLimit(int historicProcessInstancesQueryLimit) {
+    this.historicProcessInstancesQueryLimit = historicProcessInstancesQueryLimit;
+    return this;
+  }
+  
   public CommandContextFactory getCommandContextFactory() {
     return commandContextFactory;
   }
@@ -2359,6 +2414,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
 		this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
 	}
+	
+	public DelegateExpressionFieldInjectionMode getDelegateExpressionFieldInjectionMode() {
+    return delegateExpressionFieldInjectionMode;
+  }
+
+  public void setDelegateExpressionFieldInjectionMode(DelegateExpressionFieldInjectionMode delegateExpressionFieldInjectionMode) {
+    this.delegateExpressionFieldInjectionMode = delegateExpressionFieldInjectionMode;
+  }
 	
 	public ObjectMapper getObjectMapper() {
     return objectMapper;

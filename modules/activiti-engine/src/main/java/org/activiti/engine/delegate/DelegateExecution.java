@@ -15,6 +15,7 @@ package org.activiti.engine.delegate;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 
 /**
@@ -43,6 +44,11 @@ public interface DelegateExecution extends VariableScope {
    * Will contain the event name in case this execution is passed in for an {@link ExecutionListener}.
    */
   String getEventName();
+  
+  /**
+   * Sets the current event (typically when execution an {@link ExecutionListener}). 
+   */
+  void setEventName(String eventName);
 
   /**
    * The business key for the process instance this execution is associated with.
@@ -83,6 +89,18 @@ public interface DelegateExecution extends VariableScope {
    * Change the current BPMN element the execution is at. 
    */
   void setCurrentFlowElement(FlowElement flowElement);
+  
+  /**
+   * Returns the {@link ActivitiListener} instance matching an {@link ExecutionListener}
+   * if currently an execution listener is being execution. 
+   * Returns null otherwise.
+   */
+  ActivitiListener getCurrentActivitiListener();
+
+  /**
+   * Called when an {@link ExecutionListener} is being executed. 
+   */
+  void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
 
   /* Execution management */
 

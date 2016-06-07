@@ -26,7 +26,6 @@ import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
@@ -73,7 +72,6 @@ public class CommandContext {
   private static Logger log = LoggerFactory.getLogger(CommandContext.class);
 
   protected Command<?> command;
-  protected TransactionContext transactionContext;
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected Map<Class<?>, Session> sessions = new HashMap<Class<?>, Session>();
   protected Throwable exception;
@@ -81,6 +79,7 @@ public class CommandContext {
   protected FailedJobCommandFactory failedJobCommandFactory;
   protected List<CommandContextCloseListener> closeListeners;
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
+  protected boolean reused;
 
   protected Agenda agenda = new Agenda(this);
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
@@ -90,90 +89,77 @@ public class CommandContext {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
     this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
-    sessionFactories = processEngineConfiguration.getSessionFactories();
-    this.transactionContext = processEngineConfiguration.getTransactionContextFactory().openTransactionContext(this);
+    this.sessionFactories = processEngineConfiguration.getSessionFactories();
   }
 
   public void close() {
-    // the intention of this method is that all resources are closed properly, even if exceptions occur
+    
+    // The intention of this method is that all resources are closed properly, even if exceptions occur
     // in close or flush methods of the sessions or the transaction context.
 
     try {
       try {
         try {
-
-          if (closeListeners != null) {
-            try {
-              for (CommandContextCloseListener listener : closeListeners) {
-                listener.closing(this);
-              }
-            } catch (Throwable exception) {
-              exception(exception);
-            }
-          }
-
+          executeCloseListenersClosing();
           if (exception == null) {
             flushSessions();
           }
-
         } catch (Throwable exception) {
           exception(exception);
         } finally {
-
+          
           try {
             if (exception == null) {
-              transactionContext.commit();
+              executeCloseListenersAfterSessionFlushed();
             }
           } catch (Throwable exception) {
             exception(exception);
           }
-
-          if (closeListeners != null) {
-            try {
-              for (CommandContextCloseListener listener : closeListeners) {
-                listener.closed(this);
-              }
-            } catch (Throwable exception) {
-              exception(exception);
-            }
-          }
-
+          
           if (exception != null) {
-            if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
-              // reduce log level, because this may have been
-              // caused because of job deletion due to
-              // cancelActiviti="true"
-              log.info("Error while closing command context", exception);
-            } else if (exception instanceof ActivitiOptimisticLockingException) {
-              // reduce log level, as normally we're not
-              // interested in logging this exception
-              log.debug("Optimistic locking exception : " + exception);
-            } else {
-              log.debug("Error while closing command context", exception);
-            }
-
-            transactionContext.rollback();
+            logException();
+            executeCloseListenersCloseFailure();
+          } else {
+            executeCloseListenersClosed();
           }
+          
         }
       } catch (Throwable exception) {
+        // Catch exceptions during rollback
         exception(exception);
       } finally {
+        // Sessions need to be closed, regardless of exceptions/commit/rollback
         closeSessions();
-
       }
     } catch (Throwable exception) {
+      // Catch exceptions during session closing
       exception(exception);
     }
-
-    // rethrow the original exception if there was one
+    
     if (exception != null) {
-      if (exception instanceof Error) {
-        throw (Error) exception;
-      } else if (exception instanceof RuntimeException) {
-        throw (RuntimeException) exception;
-      } else {
-        throw new ActivitiException("exception while executing command " + command, exception);
-      }
+      rethrowExceptionIfNeeded();
+    }
+  }
+
+  protected void logException() {
+    if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
+      // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
+      log.info("Error while closing command context", exception);
+    } else if (exception instanceof ActivitiOptimisticLockingException) {
+      // reduce log level, as normally we're not interested in logging this exception
+      log.debug("Optimistic locking exception : " + exception);
+    } else {
+      log.debug("Error while closing command context", exception);
+    }
+  }
+
+  protected void rethrowExceptionIfNeeded() throws Error {
+    if (exception instanceof Error) {
+      throw (Error) exception;
+    } else if (exception instanceof RuntimeException) {
+      throw (RuntimeException) exception;
+    } else {
+      throw new ActivitiException("exception while executing command " + command, exception);
     }
   }
 
@@ -186,6 +172,54 @@ public class CommandContext {
 
   public List<CommandContextCloseListener> getCloseListeners() {
     return closeListeners;
+  }
+  
+  protected void executeCloseListenersClosing() {
+    if (closeListeners != null) {
+      try {
+        for (CommandContextCloseListener listener : closeListeners) {
+          listener.closing(this);
+        }
+      } catch (Throwable exception) {
+        exception(exception);
+      }
+    }
+  }
+  
+  protected void executeCloseListenersAfterSessionFlushed() {
+    if (closeListeners != null) {
+      try {
+        for (CommandContextCloseListener listener : closeListeners) {
+          listener.afterSessionsFlush(this);
+        }
+      } catch (Throwable exception) {
+        exception(exception);
+      }
+    }
+  }
+  
+  protected void executeCloseListenersClosed() {
+    if (closeListeners != null) {
+      try {
+        for (CommandContextCloseListener listener : closeListeners) {
+          listener.closed(this);
+        }
+      } catch (Throwable exception) {
+        exception(exception);
+      }
+    }
+  }
+  
+  protected void executeCloseListenersCloseFailure() {
+    if (closeListeners != null) {
+      try {
+        for (CommandContextCloseListener listener : closeListeners) {
+          listener.closeFailure(this);
+        }
+      } catch (Throwable exception) {
+        exception(exception);
+      }
+    }
   }
 
   protected void flushSessions() {
@@ -204,6 +238,12 @@ public class CommandContext {
     }
   }
 
+  /**
+   * Stores the provided exception on this {@link CommandContext} instance.
+   * That exception will be rethrown at the end of closing the {@link CommandContext} instance. 
+   * 
+   * If there is already an exception being stored, a 'masked exception' message will be logged.
+   */
   public void exception(Throwable exception) {
     if (this.exception == null) {
       this.exception = exception;
@@ -386,10 +426,6 @@ public class CommandContext {
   // getters and setters
   // //////////////////////////////////////////////////////
 
-  public TransactionContext getTransactionContext() {
-    return transactionContext;
-  }
-
   public Command<?> getCommand() {
     return command;
   }
@@ -426,4 +462,12 @@ public class CommandContext {
     resultStack.add(result);
   }
 
+  public boolean isReused() {
+    return reused;
+  }
+
+  public void setReused(boolean reused) {
+    this.reused = reused;
+  }
+  
 }

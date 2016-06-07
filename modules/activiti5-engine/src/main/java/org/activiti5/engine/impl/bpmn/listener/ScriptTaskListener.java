@@ -14,9 +14,9 @@
 package org.activiti5.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.el.Expression;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
 
 /**

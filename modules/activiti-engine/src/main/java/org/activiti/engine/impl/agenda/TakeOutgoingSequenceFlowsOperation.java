@@ -31,6 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Operation that leaves the {@link FlowElement} where the {@link ExecutionEntity} is currently at
+ * and leaves it following the sequence flow.
+ * 
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
@@ -40,116 +43,75 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
   protected boolean evaluateConditions;
 
-  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ExecutionEntity activityExecution, boolean evaluateConditions) {
-    super(commandContext, activityExecution);
+  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ExecutionEntity executionEntity, boolean evaluateConditions) {
+    super(commandContext, executionEntity);
     this.evaluateConditions = evaluateConditions;
   }
-
+  
   @Override
   public void run() {
-    FlowElement currentFlowElement = execution.getCurrentFlowElement();
-
-    if (currentFlowElement == null) {
-      currentFlowElement = findCurrentFlowElement(execution);
-    }
-
-    // If execution is a scope (and not the process instance), the scope must first be destroyed before we can continue
-    if (execution.getParentId() != null && execution.isScope()) {
-      agenda.planDestroyScopeOperation(execution);
+    FlowElement currentFlowElement = getCurrentFlowElement(execution);
     
-    } else if (currentFlowElement instanceof Activity) {
-      Activity activity = (Activity) currentFlowElement;
-      if (CollectionUtil.isNotEmpty(activity.getBoundaryEvents())) {
-        
-        List<String> notToDeleteEvents = new ArrayList<String>();
-        for (BoundaryEvent event : activity.getBoundaryEvents()) {
-          if (CollectionUtil.isNotEmpty(event.getEventDefinitions()) && 
-              event.getEventDefinitions().get(0) instanceof CancelEventDefinition) {
-            
-            notToDeleteEvents.add(event.getId());
-          }
-        }
-        
-        // Delete all child executions
-        Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getId());
-        for (ExecutionEntity childExecution : childExecutions) {
-          if (childExecution.getCurrentFlowElement() == null || notToDeleteEvents.contains(childExecution.getCurrentFlowElement().getId()) == false) {
-            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution, null, false);
-          }
-        }
-      }
+    // Compensation check
+    if ((currentFlowElement instanceof Activity) 
+        && ( ((Activity) currentFlowElement)).isForCompensation()) {
+      
+      /*
+       * If the current flow element is part of a compensation, we don't always 
+       * want to follow the regular rules of leaving an activity.
+       * More specifically, if there are no outgoing sequenceflow, we simply must stop 
+       * the execution there and don't go up in the scopes as we usually do
+       * to find the outgoing sequenceflow
+       */
+      
+      cleanupCompensation();
+      return;
     }
     
-    // Execution listener for end: the flow node is now ended
-    if (CollectionUtil.isNotEmpty(currentFlowElement.getExecutionListeners())
-        && !execution.isProcessInstanceType()) { // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
-      executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
-    }
+    // When leaving the current activity, we need to delete any related execution (eg active boundary events)
+    cleanupExecutions(currentFlowElement);
     
-    // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
-    if (!execution.isProcessInstanceType() && currentFlowElement instanceof SequenceFlow == false) {
-      commandContext.getHistoryManager().recordActivityEnd(execution);
-    }
-    
-    // No scope, can continue
     if (currentFlowElement instanceof FlowNode) {
+      handleFlowNode((FlowNode) currentFlowElement);
+    } else if (currentFlowElement instanceof SequenceFlow) {
+      handleSequenceFlow();
+    }
+  }
+
+  protected void handleFlowNode(FlowNode flowNode) {
+    handleActivityEnd(flowNode);
+    if (flowNode.getParentContainer() != null 
+        && flowNode.getParentContainer() instanceof AdhocSubProcess) {
+      handleAdhocSubProcess(flowNode);
+    } else {
+      leaveFlowNode(flowNode);
+    }
+  }
+
+  protected void handleActivityEnd(FlowNode flowNode) {
+    // a process instance execution can never leave a flow node, but it can pass here whilst cleaning up
+    // hence the check for NOT being a process instance
+    if (!execution.isProcessInstanceType()) {
       
-      FlowNode flowNode = (FlowNode) currentFlowElement;
+      if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) { 
+        executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_END);
+      }
       
-      if (execution.getId().equals(execution.getProcessInstanceId()) == false && execution.getCurrentFlowElement() instanceof SubProcess == false) {
+      commandContext.getHistoryManager().recordActivityEnd(execution);
+      
+      if (!(execution.getCurrentFlowElement() instanceof SubProcess)) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, flowNode.getId(), flowNode.getName(),
                 execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
       }
       
-      if (flowNode.getParentContainer() != null && flowNode.getParentContainer() instanceof AdhocSubProcess) {
-        
-        boolean completeAdhocSubProcess = false;
-        AdhocSubProcess adhocSubProcess = (AdhocSubProcess) flowNode.getParentContainer();
-        if (adhocSubProcess.getCompletionCondition() != null) {
-          Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(adhocSubProcess.getCompletionCondition());
-          Condition condition = new UelExpressionCondition(expression);
-          if (condition.evaluate(adhocSubProcess.getId(), execution)) {
-            completeAdhocSubProcess = true;
-          }
-        }
-        
-        if (flowNode.getOutgoingFlows().size() > 0) {
-          leaveFlowNode(flowNode);
-        } else {
-          commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
-        }
-        
-        if (completeAdhocSubProcess) {
-          boolean endAdhocSubProcess = true;
-          if (adhocSubProcess.isCancelRemainingInstances() == false) {
-            List<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getParentId());
-            for (ExecutionEntity executionEntity : childExecutions) {
-              if (executionEntity.getId().equals(execution.getId()) == false) {
-                endAdhocSubProcess = false;
-                break;
-              }
-            }
-          }
-          
-          if (endAdhocSubProcess) {
-            agenda.planEndExecutionOperation(execution.getParent());
-          }
-        }
-      
-      } else {
-        leaveFlowNode(flowNode);
-      }
-      
-    } else if (currentFlowElement instanceof SequenceFlow) {
-      // Nothing to do here. The operation wasn't really needed, so simply pass it through
-      agenda.planContinueProcessOperation(execution);
     }
   }
-
+  
   protected void leaveFlowNode(FlowNode flowNode) {
 
-    logger.debug("Leaving flow node {} with id '{}' by following it's {} outgoing sequenceflow", flowNode.getClass(), flowNode.getId(), flowNode.getOutgoingFlows().size());
+    logger.debug("Leaving flow node {} with id '{}' by following it's {} outgoing sequenceflow", 
+        flowNode.getClass(), flowNode.getId(), flowNode.getOutgoingFlows().size());
 
     // Get default sequence flow (if set)
     String defaultSequenceFlowId = null;
@@ -193,7 +155,6 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     if (outgoingSequenceFlows.size() == 0) {
       if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
         logger.debug("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-        
         agenda.planEndExecutionOperation(execution);
         
       } else {
@@ -226,8 +187,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
   
           outgoingExecutionEntity.setScope(false);
           outgoingExecutionEntity.setActive(true);
-  
-          ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution; 
+
+          outgoingExecutionEntity.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+
+          ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution;
           outgoingExecutionEntity.setParent(parent);
           parent.addChildExecution(outgoingExecutionEntity);
           
@@ -244,6 +207,154 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         agenda.planContinueProcessOperation(outgoingExecution);
       }
     }
+  }
+
+  protected void handleAdhocSubProcess(FlowNode flowNode) {
+    boolean completeAdhocSubProcess = false;
+    AdhocSubProcess adhocSubProcess = (AdhocSubProcess) flowNode.getParentContainer();
+    if (adhocSubProcess.getCompletionCondition() != null) {
+      Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(adhocSubProcess.getCompletionCondition());
+      Condition condition = new UelExpressionCondition(expression);
+      if (condition.evaluate(adhocSubProcess.getId(), execution)) {
+        completeAdhocSubProcess = true;
+      }
+    }
+    
+    if (flowNode.getOutgoingFlows().size() > 0) {
+      leaveFlowNode(flowNode);
+    } else {
+      commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
+    }
+    
+    if (completeAdhocSubProcess) {
+      boolean endAdhocSubProcess = true;
+      if (adhocSubProcess.isCancelRemainingInstances() == false) {
+        List<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getParentId());
+        for (ExecutionEntity executionEntity : childExecutions) {
+          if (executionEntity.getId().equals(execution.getId()) == false) {
+            endAdhocSubProcess = false;
+            break;
+          }
+        }
+      }
+      
+      if (endAdhocSubProcess) {
+        agenda.planEndExecutionOperation(execution.getParent());
+      }
+    }
+  }
+  
+  protected void handleSequenceFlow() {
+    commandContext.getHistoryManager().recordActivityEnd(execution);
+    agenda.planContinueProcessOperation(execution);
+  }
+
+  protected void cleanupCompensation() {
+    
+    // The compensation is at the end here. Simply stop the execution.
+    
+    commandContext.getHistoryManager().recordActivityEnd(execution);
+    commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
+    
+    ExecutionEntity parentExecutionEntity = execution.getParent();
+    if (parentExecutionEntity.isScope() && !parentExecutionEntity.isProcessInstanceType()) {
+      
+      if (allChildExecutionsEnded(parentExecutionEntity, null)) {
+        
+        // Go up the hierarchy to check if the next scope is ended too.
+        // This could happen if only the compensation activity is still active, but the 
+        // main process is already finished.
+
+        ExecutionEntity executionEntityToEnd = parentExecutionEntity;
+        ExecutionEntity scopeExecutionEntity = findNextParentScopeExecutionWithAllEndedChildExecutions(parentExecutionEntity, parentExecutionEntity);
+        while (scopeExecutionEntity != null) {
+          executionEntityToEnd = scopeExecutionEntity;
+          scopeExecutionEntity = findNextParentScopeExecutionWithAllEndedChildExecutions(scopeExecutionEntity, parentExecutionEntity);
+        }
+        
+        if (executionEntityToEnd.isProcessInstanceType()) {
+          agenda.planEndExecutionOperation(executionEntityToEnd);
+        } else {
+          agenda.planDestroyScopeOperation(executionEntityToEnd);
+        }
+        
+      }
+    }
+  }
+  
+  protected void cleanupExecutions(FlowElement currentFlowElement) {
+    if (execution.getParentId() != null && execution.isScope()) {
+      
+      // If the execution is a scope (and not a process instance), the scope must first be 
+      // destroyed before we can continue and follow the sequence flow
+      
+      agenda.planDestroyScopeOperation(execution);
+      
+    } else if (currentFlowElement instanceof Activity) {
+      
+      // If the current activity is an activity, we need to remove any currently active boundary events
+      
+      Activity activity = (Activity) currentFlowElement;
+      if (CollectionUtil.isNotEmpty(activity.getBoundaryEvents())) {
+        
+        // Cancel events are not removed
+        List<String> notToDeleteEvents = new ArrayList<String>();
+        for (BoundaryEvent event : activity.getBoundaryEvents()) {
+          if (CollectionUtil.isNotEmpty(event.getEventDefinitions()) && 
+              event.getEventDefinitions().get(0) instanceof CancelEventDefinition) {
+            notToDeleteEvents.add(event.getId());
+          }
+        }
+        
+        // Delete all child executions
+        Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getId());
+        for (ExecutionEntity childExecution : childExecutions) {
+          if (childExecution.getCurrentFlowElement() == null || !notToDeleteEvents.contains(childExecution.getCurrentFlowElement().getId())) {
+            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution, null, false);
+          }
+        }
+      }
+    }
+  }
+  
+  // Compensation helper methods
+
+  /**
+   * @param executionEntityToIgnore The execution entity which we can ignore to be ended, 
+   * as it's the execution currently being handled in this operation.
+   */
+  protected ExecutionEntity findNextParentScopeExecutionWithAllEndedChildExecutions(ExecutionEntity executionEntity, ExecutionEntity executionEntityToIgnore) {
+    if (executionEntity.getParentId() != null) {
+      ExecutionEntity scopeExecutionEntity = executionEntity.getParent();
+      
+      // Find next scope
+      while (!scopeExecutionEntity.isScope() || !scopeExecutionEntity.isProcessInstanceType()) {
+        scopeExecutionEntity = scopeExecutionEntity.getParent();
+      }
+
+      // Return when all child executions for it are ended
+      if (allChildExecutionsEnded(scopeExecutionEntity, executionEntityToIgnore)) {
+        return scopeExecutionEntity;
+      }
+      
+    }
+    return null;
+  }
+  
+  protected boolean allChildExecutionsEnded(ExecutionEntity parentExecutionEntity, ExecutionEntity executionEntityToIgnore) {
+    for (ExecutionEntity childExecutionEntity : parentExecutionEntity.getExecutions()) {
+      if (executionEntityToIgnore == null || !executionEntityToIgnore.getId().equals(childExecutionEntity.getId())) {
+        if (!childExecutionEntity.isEnded()) {
+          return false;
+        }
+        if (childExecutionEntity.getExecutions() != null && childExecutionEntity.getExecutions().size() > 0) {
+          if (!allChildExecutionsEnded(childExecutionEntity, executionEntityToIgnore)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 
 }

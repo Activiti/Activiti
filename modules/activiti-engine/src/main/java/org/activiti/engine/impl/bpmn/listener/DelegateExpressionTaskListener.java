@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.helper.DelegateExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
@@ -38,12 +38,7 @@ public class DelegateExpressionTaskListener implements TaskListener {
   }
 
   public void notify(DelegateTask delegateTask) {
-    // Note: we can't cache the result of the expression, because the
-    // execution can change: eg.
-    // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
-    Object delegate = expression.getValue(delegateTask.getExecution());
-    ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-
+    Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, delegateTask, fieldDeclarations);
     if (delegate instanceof TaskListener) {
       try {
         Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation((TaskListener) delegate, delegateTask));

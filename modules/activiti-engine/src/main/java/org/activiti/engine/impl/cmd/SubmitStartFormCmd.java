@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.FormHandlerUtil;
-import org.activiti.engine.impl.util.ProcessInstanceUtil;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -50,12 +50,13 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
     }
     
     ExecutionEntity processInstance = null;
+    ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
     
     // TODO: backwards compatibility? Only create the process instance and not start it? How?
     if (businessKey != null) {
-      processInstance = (ExecutionEntity) ProcessInstanceUtil.createProcessInstance(processDefinition, businessKey, null, null);
+      processInstance = (ExecutionEntity) processInstanceHelper.createProcessInstance(processDefinition, businessKey, null, null);
     } else {
-      processInstance = (ExecutionEntity) ProcessInstanceUtil.createProcessInstance(processDefinition, null, null, null);
+      processInstance = (ExecutionEntity) processInstanceHelper.createProcessInstance(processDefinition, null, null, null);
     }
 
     commandContext.getHistoryManager().recordFormPropertiesSubmitted(processInstance.getExecutions().get(0), properties, null);
@@ -63,7 +64,7 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
     StartFormHandler startFormHandler = FormHandlerUtil.getStartFormHandler(commandContext, processDefinition); 
     startFormHandler.submitFormProperties(properties, processInstance);
     
-    ProcessInstanceUtil.startProcessInstance(processInstance, commandContext, convertPropertiesToVariablesMap());
+    processInstanceHelper.startProcessInstance(processInstance, commandContext, convertPropertiesToVariablesMap());
 
     return processInstance;
   }

@@ -59,7 +59,7 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
     
     executionEntityManager.deleteExecutionAndRelatedData(execution, null, false);
     
-    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
     
     return null;
   }

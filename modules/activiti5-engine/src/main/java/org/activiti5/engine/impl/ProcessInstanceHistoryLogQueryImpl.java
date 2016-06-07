@@ -5,12 +5,17 @@ import java.util.List;
 import org.activiti5.engine.history.HistoricActivityInstance;
 import org.activiti5.engine.history.HistoricData;
 import org.activiti5.engine.history.HistoricVariableInstance;
+import org.activiti5.engine.history.HistoricVariableUpdate;
 import org.activiti5.engine.history.ProcessInstanceHistoryLog;
 import org.activiti5.engine.history.ProcessInstanceHistoryLogQuery;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
+import org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti5.engine.impl.variable.CacheableVariable;
+import org.activiti5.engine.impl.variable.JPAEntityListVariableType;
+import org.activiti5.engine.impl.variable.JPAEntityVariableType;
 
 /**
  * @author Joram Barrez
@@ -114,6 +119,12 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 			// Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
       for (HistoricVariableInstance historicVariableInstance : variables) {
         historicVariableInstance.getValue();
+        
+        // make sure JPA entities are cached for later retrieval
+        HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+        if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+          ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
+        }
       }
       
 			processInstanceHistoryLog.addHistoricData(variables);
@@ -129,6 +140,13 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 		if (includeVariableUpdates) {
 			List<? extends HistoricData> variableUpdates = commandContext.getHistoricDetailEntityManager()
 					.findHistoricDetailsByQueryCriteria(new HistoricDetailQueryImpl(commandExecutor).variableUpdates(), null);
+			
+			// Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
+      for (HistoricData historicData : variableUpdates) {
+        HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) historicData;
+        variableUpdate.getValue();
+      }
+			
 			processInstanceHistoryLog.addHistoricData(variableUpdates);
 		}
 		

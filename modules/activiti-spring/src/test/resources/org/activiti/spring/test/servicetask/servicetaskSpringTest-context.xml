@@ -10,7 +10,7 @@
 
     <bean id="sentenceGenerator" class="org.activiti.spring.test.servicetask.SentenceGenerator"/>
 
-    <bean id="delegateExpressionBean" class="org.activiti.spring.test.servicetask.DelegateExpressionBean">
+    <bean id="delegateExpressionBean" class="org.activiti.spring.test.servicetask.DelegateExpressionBean" scope="prototype">
         <property name="sentenceGenerator" ref="sentenceGenerator"/>
     </bean>
 

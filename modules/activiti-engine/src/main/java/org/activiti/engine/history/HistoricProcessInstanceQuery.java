@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  * Allows programmatic querying of {@link HistoricProcessInstance}s.
@@ -58,6 +59,18 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select historic process instances that don't have a process-definition of which the key is present in the given list
    */
   HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys);
+  
+  /** Only select historic process instances whose process definition category is processDefinitionCategory. */
+  HistoricProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory);
+
+  /** Select process historic instances whose process definition name is processDefinitionName*/
+  HistoricProcessInstanceQuery processDefinitionName(String processDefinitionName);
+
+  /**
+   * Only select historic process instances with a certain process definition version.
+   * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
+   */
+  HistoricProcessInstanceQuery processDefinitionVersion(Integer processDefinitionVersion);
 
   /** Only select historic process instances with the given business key */
   HistoricProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
@@ -283,6 +296,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Include process variables in the process query result
    */
   HistoricProcessInstanceQuery includeProcessVariables();
+  
+  /**
+   * Limit process instance variables
+   */
+  HistoricProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
 
   /**
    * Only select process instances that failed due to an exception happening during a job execution.

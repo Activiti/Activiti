@@ -137,8 +137,17 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         if (dueDate instanceof Date) {
           task.setDueDate((Date) dueDate);
         } else if (dueDate instanceof String) {
-          BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(DueDateBusinessCalendar.NAME);
+          String businessCalendarName = null;
+          if (StringUtils.isNotEmpty(userTask.getBusinessCalendarName())) {
+            businessCalendarName = expressionManager.createExpression(userTask.getBusinessCalendarName()).getValue(execution).toString();
+          } else {
+            businessCalendarName = DueDateBusinessCalendar.NAME;
+          }
+          
+          BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager()
+              .getBusinessCalendar(businessCalendarName);
           task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
+          
         } else {
           throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + activeTaskDueDate);
         }
@@ -190,12 +199,13 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     handleAssignments(taskEntityManager, activeTaskAssignee, activeTaskOwner, 
         activeTaskCandidateUsers, activeTaskCandidateGroups, task, expressionManager, execution);
     
+    taskEntityManager.fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
+    
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
-    taskEntityManager.fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
     
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);

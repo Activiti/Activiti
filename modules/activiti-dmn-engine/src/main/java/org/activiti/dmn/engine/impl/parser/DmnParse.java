@@ -20,13 +20,14 @@ import java.util.List;
 
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.domain.entity.DmnDecisionTable;
-import org.activiti.dmn.engine.domain.entity.DmnDeployment;
+import org.activiti.dmn.engine.impl.context.Context;
 import org.activiti.dmn.engine.impl.io.InputStreamSource;
 import org.activiti.dmn.engine.impl.io.ResourceStreamSource;
 import org.activiti.dmn.engine.impl.io.StreamSource;
 import org.activiti.dmn.engine.impl.io.StringStreamSource;
 import org.activiti.dmn.engine.impl.io.UrlStreamSource;
+import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
+import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
 import org.activiti.dmn.model.Decision;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.xml.constants.DmnXMLConstants;
@@ -56,13 +57,13 @@ public class DmnParse implements DmnXMLConstants {
 
     protected String targetNamespace;
 
-    /** The deployment to which the parsed process definitions will be added. */
-    protected DmnDeployment deployment;
+    /** The deployment to which the parsed decision tables will be added. */
+    protected DmnDeploymentEntity deployment;
 
-    /** The end result of the parsing: a list of decisions. */
-    protected List<DmnDecisionTable> decisions = new ArrayList<DmnDecisionTable>();
+    /** The end result of the parsing: a list of decision tables. */
+    protected List<DecisionTableEntity> decisionTables = new ArrayList<DecisionTableEntity>();
 
-    public DmnParse deployment(DmnDeployment deployment) {
+    public DmnParse deployment(DmnDeploymentEntity deployment) {
         this.deployment = deployment;
         return this;
     }
@@ -83,11 +84,13 @@ public class DmnParse implements DmnXMLConstants {
             
             if (dmnDefinition != null && dmnDefinition.getDrgElements() != null) {
                 for (Decision decision : dmnDefinition.getDrgElements()) {
-                    DmnDecisionTable decisionEntity = new DmnDecisionTable();
-                    decisionEntity.setKey(decision.getId());
-                    decisionEntity.setName(decision.getName());
-                    decisionEntity.setResourceName(name);
-                    decisions.add(decisionEntity);
+                    DecisionTableEntity decisionTableEntity = Context.getDmnEngineConfiguration().getDecisionTableEntityManager().create();
+                    decisionTableEntity.setKey(decision.getId());
+                    decisionTableEntity.setName(decision.getName());
+                    decisionTableEntity.setResourceName(name);
+                    decisionTableEntity.setDeploymentId(deployment.getId());
+                    decisionTableEntity.setDescription(decision.getDescription());
+                    decisionTables.add(decisionTableEntity);
                 }
             }
 
@@ -177,19 +180,19 @@ public class DmnParse implements DmnXMLConstants {
         this.validateSchema = validateSchema;
     }
 
-    public List<DmnDecisionTable> getDecisions() {
-        return decisions;
+    public List<DecisionTableEntity> getDecisionTables() {
+        return decisionTables;
     }
 
     public String getTargetNamespace() {
         return targetNamespace;
     }
 
-    public DmnDeployment getDeployment() {
+    public DmnDeploymentEntity getDeployment() {
         return deployment;
     }
 
-    public void setDeployment(DmnDeployment deployment) {
+    public void setDeployment(DmnDeploymentEntity deployment) {
         this.deployment = deployment;
     }
 

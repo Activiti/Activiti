@@ -31,7 +31,10 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.AbstractActivitiTestCase;
@@ -231,6 +234,14 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     
     // Start the process with the JPA-entities as variables. They will be stored in the DB.
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      HistoricVariableInstance historicVariableInstance = 
+          historyService.createHistoricVariableInstanceQuery().variableName("simpleEntityFieldAccess").singleResult();
+      FieldAccessJPAEntity entity = (FieldAccessJPAEntity) historicVariableInstance.getValue();
+      assertNotNull(entity);
+      assertEquals("value1", entity.getValue());
+    }
     
     // Read entity with @Id on field
     Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");

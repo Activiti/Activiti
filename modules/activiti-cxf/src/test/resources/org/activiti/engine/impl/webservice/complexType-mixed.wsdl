@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="Counter" targetNamespace="http://webservice.activiti.org/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.activiti.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://webservice.activiti.org/"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="mixed">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:any />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="MessageIn">
+    <wsdl:part name="mixed" element="tns:mixed" />
+  </wsdl:message>
+  <wsdl:message name="MessageOut">
+    <wsdl:part name="mixed" element="tns:mixed" />
+  </wsdl:message>
+  <wsdl:portType name="MixedSoap">
+    <wsdl:operation name="MixedOP">
+      <wsdl:input message="tns:MessageIn" />
+      <wsdl:output message="tns:MessageOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MixedSoap" type="tns:MixedSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="MixedOP">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Mixed">
+    <wsdl:port name="MixedSoap" binding="tns:MixedSoap">
+      <soap:address location="http://localhost:63081/webservicemock"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

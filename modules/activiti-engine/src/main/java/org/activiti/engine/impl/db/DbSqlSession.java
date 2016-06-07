@@ -37,9 +37,6 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.GroupQueryImpl;
@@ -58,13 +55,11 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
-import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.session.SqlSession;
@@ -133,6 +128,7 @@ public class DbSqlSession implements Session {
     
     // Version 6
     ACTIVITI_VERSIONS.add(new ActivitiVersion("6.0.0.0"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("6.0.0.1"));
     
     /* Current */
     ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
@@ -829,67 +825,15 @@ public class DbSqlSession implements Session {
 
   protected void flushDeletes(List<DeleteOperation> removedOperations) {
     boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled();
-
     flushRegularDeletes(dispatchEvent);
-
-    if (dispatchEvent) {
-      dispatchEventsForRemovedOperations(removedOperations);
-    }
-
     deleteOperations.clear();
   }
 
-  protected void dispatchEventsForRemovedOperations(List<DeleteOperation> removedOperations) {
-    for (DeleteOperation delete : removedOperations) {
-      // dispatch removed delete events
-      if (delete instanceof CheckedDeleteOperation) {
-        CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
-        Entity entity = checkedDeleteOperation.getEntity();
-        if (entity instanceof VariableInstanceEntity) {
-          VariableInstanceEntity variableInstance = (VariableInstanceEntity) entity;
-          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(createVariableDeleteEvent(variableInstance));
-        }
-      }
-    }
-  }
-
-  protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
-    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getType(), variableInstance.getTaskId(),
-        variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
-  }
-
   protected void flushRegularDeletes(boolean dispatchEvent) {
-  
     List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
     for (DeleteOperation delete : optimizedDeleteOperations) {
-    
-//    for (DeleteOperation delete : deleteOperations) {
       log.debug("executing: {}", delete);
-
       delete.execute();
-
-      // fire event for variable delete operation. (BulkDeleteOperation is
-      // not taken into account)
-      if (dispatchEvent) {
-        // prepare delete event to fire for variable delete operation.
-        // (BulkDeleteOperation is not taken into account)
-        if (delete instanceof CheckedDeleteOperation) {
-          CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
-          Entity entity = checkedDeleteOperation.getEntity();
-          if (entity instanceof VariableInstanceEntity) {
-            VariableInstanceEntity variableInstance = (VariableInstanceEntity) entity;
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(createVariableDeleteEvent(variableInstance));
-          }
-        } else if (delete instanceof BulkCheckedDeleteOperation) {
-          BulkCheckedDeleteOperation bulkCheckedDeleteOperation = (BulkCheckedDeleteOperation) delete;
-          if (VariableInstanceEntity.class.isAssignableFrom(bulkCheckedDeleteOperation.getEntityClass())) {
-            for (Entity entity : bulkCheckedDeleteOperation.getEntities()) {
-              VariableInstanceEntity variableInstance = (VariableInstanceEntity) entity;
-              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(createVariableDeleteEvent(variableInstance));
-            }
-          }
-        }
-      }
     }
   }
 
@@ -960,8 +904,6 @@ public class DbSqlSession implements Session {
   }
 
   public void dbSchemaCreate() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-
     if (isEngineTablePresent()) {
       String dbVersion = getDbVersion();
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
@@ -971,11 +913,11 @@ public class DbSqlSession implements Session {
       dbSchemaCreateEngine();
     }
 
-    if (processEngineConfiguration.getHistoryLevel() != HistoryLevel.NONE) {
+    if (dbSqlSessionFactory.isDbHistoryUsed()) {
       dbSchemaCreateHistory();
     }
 
-    if (processEngineConfiguration.isDbIdentityUsed()) {
+    if (dbSqlSessionFactory.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
     }
   }

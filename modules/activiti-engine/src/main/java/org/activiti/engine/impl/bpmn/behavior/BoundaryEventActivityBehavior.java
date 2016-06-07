@@ -152,8 +152,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       }
     }
     
-    executionEntityManager.deleteDataRelatedToExecution(parentExecution, null, false);
-    executionEntityManager.delete(parentExecution);
+    executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
   }
 
   public boolean isInterrupting() {

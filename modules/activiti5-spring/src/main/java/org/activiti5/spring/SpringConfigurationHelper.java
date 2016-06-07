@@ -27,7 +27,7 @@ import org.springframework.core.io.UrlResource;
 /**
  * @author Tom Baeyens
  */
-class SpringConfigurationHelper {
+public class SpringConfigurationHelper {
 
   private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
 

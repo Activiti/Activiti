@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -420,6 +421,16 @@ public class ExecutionImpl implements
   public void setCurrentFlowElement(FlowElement currentFlowElement) {
     this.currentFlowElement = currentFlowElement;
  }
+  
+  @Override
+  public ActivitiListener getCurrentActivitiListener() {
+    throw new UnsupportedOperationException();
+  }
+  
+  @Override
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
+    throw new UnsupportedOperationException();
+  }
   
   // activity /////////////////////////////////////////////////////////////////
   

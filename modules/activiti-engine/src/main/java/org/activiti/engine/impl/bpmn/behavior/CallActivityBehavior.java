@@ -13,13 +13,17 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IOParameter;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -29,6 +33,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -67,12 +72,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       finalProcessDefinitonKey = processDefinitonKey;
     }
 
-    ProcessDefinitionEntity processDefinition = null;
-    if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
-      processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(finalProcessDefinitonKey);
-    } else {
-      processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(finalProcessDefinitonKey, execution.getTenantId());
-    }
+    ProcessDefinitionEntity processDefinition = findProcessDefinition(finalProcessDefinitonKey, execution.getTenantId());
 
     // Get model from cache
     Process subProcess = ProcessDefinitionUtil.getProcess(processDefinition.getId());
@@ -95,6 +95,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     ExecutionEntity subProcessInstance = createSubProcessInstance(processDefinition, executionEntity, initialFlowElement);
 
+    // process template-defined data objects
+    Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
+
     // copy process variables
     ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
     for (IOParameter ioParameter : callActivity.getInParameters()) {
@@ -106,7 +109,11 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       } else {
         value = execution.getVariable(ioParameter.getSource());
       }
-      subProcessInstance.setVariable(ioParameter.getTarget(), value);
+      variables.put(ioParameter.getTarget(), value);
+    }
+
+    if (!variables.isEmpty()) {
+      initializeVariables(subProcessInstance, variables);
     }
 
     // Create the first execution that will visit all the process definition elements
@@ -114,6 +121,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
     Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
+    
+    Context.getProcessEngineConfiguration().getEventDispatcher()
+      .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));
   }
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
@@ -149,6 +159,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
+    subProcessInstance.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
 
     // Inherit tenant id (if any)
     if (processDefinitionEntity.getTenantId() != null) {
@@ -177,5 +189,31 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public String getProcessDefinitonKey() {
     return processDefinitonKey;
+  }
+
+  // Allow subclass to determine which version of a process to start.
+  protected ProcessDefinitionEntity findProcessDefinition(String processDefinitionKey, String tenantId) {
+    if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+    } else {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    }
+  }
+  
+  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+  	Map<String, Object> variablesMap = new HashMap<String,Object>();
+  	// convert data objects to process variables
+  	if (dataObjects != null) {
+        variablesMap = new HashMap<String, Object>(dataObjects.size());
+  	  for (ValuedDataObject dataObject : dataObjects) {
+  	    variablesMap.put(dataObject.getName(), dataObject.getValue());
+  	  }
+  	}
+  	return variablesMap;
+  }
+
+  // Allow a subclass to override how variables are initialized.
+  protected void initializeVariables(ExecutionEntity subProcessInstance, Map<String,Object> variables) {
+    subProcessInstance.setVariables(variables);
   }
 }

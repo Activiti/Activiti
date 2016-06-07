@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
@@ -95,6 +96,8 @@ public interface DelegateTask extends VariableScope {
    * Returns the event name which triggered the task listener to fire for this task.
    */
   String getEventName();
+  
+  ActivitiListener getCurrentActivitiListener();
 
   /**
    * The current {@link org.activiti.engine.task.DelegationState} for this task.

@@ -92,7 +92,7 @@ public class EventLogger implements ActivitiEventListener {
 			CommandContext currentCommandContext = Context.getCommandContext();
 			EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
 			
-			if (eventHandler != null && eventFlusher == null) {
+			if (eventFlusher == null) {
 				
 				eventFlusher = createEventFlusher();
 				if (eventFlusher == null) {
@@ -117,6 +117,13 @@ public class EventLogger implements ActivitiEventListener {
 									}
 								}
 					    }
+
+              public void afterSessionsFlush(CommandContext commandContext) {
+              }
+
+              @Override
+              public void closeFailure(CommandContext commandContext) {
+              }
 					    
 				    });
 			}

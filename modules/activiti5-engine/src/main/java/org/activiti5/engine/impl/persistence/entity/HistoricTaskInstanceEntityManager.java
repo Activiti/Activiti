@@ -68,7 +68,11 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
       int maxResults = historicTaskInstanceQuery.getMaxResults();
       
       // setting max results, limit to 20000 results for performance reasons
-      historicTaskInstanceQuery.setMaxResults(20000);
+      if (historicTaskInstanceQuery.getTaskVariablesLimit() != null) {
+        historicTaskInstanceQuery.setMaxResults(historicTaskInstanceQuery.getTaskVariablesLimit());
+      } else {
+        historicTaskInstanceQuery.setMaxResults(Context.getProcessEngineConfiguration().getHistoricTaskQueryLimit());
+      }
       historicTaskInstanceQuery.setFirstResult(0);
       
       List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", 

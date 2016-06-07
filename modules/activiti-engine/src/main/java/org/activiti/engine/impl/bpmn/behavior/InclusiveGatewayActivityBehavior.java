@@ -85,10 +85,13 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
       logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
 
       // Kill all executions here (except the incoming)
-      Collection<ExecutionEntity> executionsInGateway = executionEntityManager.findInactiveExecutionsByActivityId(execution.getCurrentActivityId());
+      Collection<ExecutionEntity> executionsInGateway = executionEntityManager
+          .findInactiveExecutionsByActivityIdAndProcessInstanceId(execution.getCurrentActivityId(), execution.getProcessInstanceId());
       for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
         if (!executionEntityInGateway.getId().equals(execution.getId())) {
-          executionEntityManager.delete(executionEntityInGateway);
+          commandContext.getHistoryManager().recordActivityEnd(executionEntityInGateway);
+//          executionEntityManager.delete(executionEntityInGateway);
+          executionEntityManager.deleteExecutionAndRelatedData(executionEntityInGateway, null, false);
         }
       }
 

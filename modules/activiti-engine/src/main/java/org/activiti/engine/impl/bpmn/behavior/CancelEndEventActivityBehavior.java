@@ -98,13 +98,13 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
       throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event " + cancelBoundaryEvent.getId());
     }
     
-    ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentScopeExecution, newParentScopeExecution);
+    ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentScopeExecution);
     
     if (subProcess.getLoopCharacteristics() != null) {
       List<? extends ExecutionEntity> multiInstanceExecutions = parentScopeExecution.getExecutions();
       for (ExecutionEntity multiInstanceExecution : multiInstanceExecutions) {
         if (multiInstanceExecution.getId().equals(parentScopeExecution.getId()) == false) {
-          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution, newParentScopeExecution);
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution);
           
           // end all executions in the scope of the transaction
           deleteChildExecutions(multiInstanceExecution, executionEntity, commandContext);
@@ -113,12 +113,17 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
       }
     }
     
+    // The current activity is finished (and will not be ended in the deleteChildExecutions)
+    commandContext.getHistoryManager().recordActivityEnd(executionEntity);
+    
     // set new parent for boundary event execution
     executionEntity.setParent(newParentScopeExecution);
     executionEntity.setCurrentFlowElement(cancelBoundaryEvent);
     
     // end all executions in the scope of the transaction
     deleteChildExecutions(parentScopeExecution, executionEntity, commandContext);
+    commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution);
+    
 
     commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
   }
@@ -135,8 +140,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
       }
     }
 
-    executionEntityManager.deleteDataRelatedToExecution(parentExecution, null, false);
-    executionEntityManager.delete(parentExecution);
+    executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
   }
 
 }

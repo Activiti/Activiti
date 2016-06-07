@@ -86,6 +86,10 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME = "signalName";
   public static final String ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME = "messageName";
   public static final String ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE = "errorCode";
+  public static final String ATTRIBUTE_LISTENER_ON_TRANSACTION = "onTransaction";
+  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS = "customPropertiesResolverClass";
+  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION = "customPropertiesResolverExpression";
+  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION = "customPropertiesResolverDelegateExpression";
 
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL = "signal";
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL = "globalSignal";
@@ -181,6 +185,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEUSERS = "candidateUsers";
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEGROUPS = "candidateGroups";
   public static final String ATTRIBUTE_TASK_USER_DUEDATE = "dueDate";
+  public static final String ATTRIBUTE_TASK_USER_BUSINESS_CALENDAR_NAME = "businessCalendarName";
   public static final String ATTRIBUTE_TASK_USER_CATEGORY = "category";
   public static final String ATTRIBUTE_TASK_USER_PRIORITY = "priority";
   public static final String ATTRIBUTE_TASK_USER_SKIP_EXPRESSION = "skipExpression";
@@ -234,6 +239,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_SIGNAL_REF = "signalRef";
   public static final String ATTRIBUTE_SCOPE = "scope";
   public static final String ELEMENT_EVENT_TIMERDEFINITION = "timerEventDefinition";
+  public static final String ATTRIBUTE_CALENDAR_NAME = "businessCalendarName";
   public static final String ATTRIBUTE_TIMER_DATE = "timeDate";
   public static final String ATTRIBUTE_TIMER_CYCLE = "timeCycle";
   public static final String ATTRIBUTE_END_DATE = "endDate";

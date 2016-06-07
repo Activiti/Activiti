@@ -17,7 +17,14 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
-			<version>5.18.0</version>
+			<version>5.19.0.2</version>
+			<exclusions>
+			 <exclusion>
+			   <!-- Can't get the shaded jar to work otherwise due to the signed activation jar -->
+			   <groupId>org.apache.commons</groupId>
+			   <artifactId>commons-email</artifactId>
+			 </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -62,8 +69,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.3.2</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.7</source>
+						<target>1.7</target>
 						<showDeprecation>true</showDeprecation>
 						<showWarnings>true</showWarnings>
 						<optimize>true</optimize>
@@ -89,6 +96,16 @@
 								<goal>shade</goal>
 							</goals>
 							<configuration>
+								<filters>
+									<filter>
+										<artifact>*:*</artifact>
+										<excludes>
+											<exclude>META-INF/*.SF</exclude>
+											<exclude>META-INF/*.DSA</exclude>
+											<exclude>META-INF/*.RSA</exclude>
+										</excludes>
+									</filter>
+								</filters>
 							</configuration>
 						</execution>
 					</executions>

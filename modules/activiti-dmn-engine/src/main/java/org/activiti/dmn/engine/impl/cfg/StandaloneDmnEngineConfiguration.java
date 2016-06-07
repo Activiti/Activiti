@@ -13,10 +13,15 @@
 package org.activiti.dmn.engine.impl.cfg;
 
 import org.activiti.dmn.engine.DmnEngineConfiguration;
+import org.activiti.dmn.engine.impl.interceptor.CommandInterceptor;
 
 /**
  * @author Tijs Rademakers
  */
 public class StandaloneDmnEngineConfiguration extends DmnEngineConfiguration {
 
+  @Override
+  public CommandInterceptor createTransactionInterceptor() {
+    return null;
+  }
 }

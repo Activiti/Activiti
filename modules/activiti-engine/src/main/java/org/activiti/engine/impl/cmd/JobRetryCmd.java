@@ -26,8 +26,6 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.DurationHelper;
-import org.activiti.engine.impl.cfg.TransactionContext;
-import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
@@ -122,8 +120,7 @@ public class JobRetryCmd implements Command<Object> {
     if (processEngineConfig.isAsyncExecutorEnabled() == false) {
       JobExecutor jobExecutor = processEngineConfig.getJobExecutor();
       JobAddedNotification messageAddedNotification = new JobAddedNotification(jobExecutor);
-      TransactionContext transactionContext = commandContext.getTransactionContext();
-      transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
+      commandContext.addCloseListener(messageAddedNotification);
     }
 
     return null;
