@@ -95,8 +95,7 @@ public class DefaultProcessDiagramCanvas {
   
   // Fonts
   protected static Font LABEL_FONT = null;
-  protected static Font ANNOTATION_FONT = new Font("Arial", Font.PLAIN, FONT_SIZE);
-  protected static Font TASK_FONT = new Font("Arial", Font.PLAIN, FONT_SIZE);
+  protected static Font ANNOTATION_FONT = null;
 
   // Strokes
   protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(3.0f);
@@ -143,6 +142,7 @@ public class DefaultProcessDiagramCanvas {
   protected ClassLoader customClassLoader;
   protected String activityFontName = "Arial";
   protected String labelFontName = "Arial";
+  protected String annotationFontName = "Arial";
   
   /**
    * Creates an empty canvas with given width and height.
@@ -154,7 +154,7 @@ public class DefaultProcessDiagramCanvas {
    * 
    */
   public DefaultProcessDiagramCanvas(int width, int height, int minX, int minY, String imageType, 
-      String activityFontName, String labelFontName, ClassLoader customClassLoader) {
+      String activityFontName, String labelFontName, String annotationFontName, ClassLoader customClassLoader) {
     
     this.canvasWidth = width;
     this.canvasHeight = height;
@@ -165,6 +165,9 @@ public class DefaultProcessDiagramCanvas {
     }
     if (labelFontName != null) {
       this.labelFontName = labelFontName;
+    }
+    if (annotationFontName != null) {
+        this.annotationFontName = annotationFontName;
     }
     this.customClassLoader = customClassLoader;
     
@@ -215,6 +218,7 @@ public class DefaultProcessDiagramCanvas {
     this.fontMetrics = g.getFontMetrics();
 
     LABEL_FONT = new Font(labelFontName, Font.ITALIC, 10);
+    ANNOTATION_FONT = new Font(annotationFontName, Font.PLAIN, FONT_SIZE);
     
     try {
       USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/userTask.png", customClassLoader));

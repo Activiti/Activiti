@@ -13,14 +13,19 @@
 package org.activiti.spring.boot;
 
 import org.activiti.engine.IdentityService;
+import org.activiti.rest.security.BasicAuthenticationProvider;
 import org.activiti.spring.security.IdentityServiceUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -28,6 +33,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * {@link org.activiti.engine.IdentityService}.
  *
  * @author Josh Long
+ * @author Vedran Pavic
  */
 @Configuration
 @AutoConfigureBefore(org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class)
@@ -51,4 +57,27 @@ public class SecurityAutoConfiguration {
     @Autowired
     private IdentityService identityService;
   }
+
+  @Configuration
+  @ConditionalOnClass(name = {"org.activiti.rest.service.api.RestUrls", "org.springframework.web.servlet.DispatcherServlet"})
+  @EnableWebSecurity
+  public static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+      return new BasicAuthenticationProvider();
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+      http
+        .authenticationProvider(authenticationProvider())
+        .csrf().disable()
+        .authorizeRequests()
+          .anyRequest().authenticated()
+          .and()
+        .httpBasic();
+    }
+  }
+
 }

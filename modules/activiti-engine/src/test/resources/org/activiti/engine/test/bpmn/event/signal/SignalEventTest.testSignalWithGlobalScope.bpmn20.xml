@@ -9,9 +9,9 @@
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="signalThrow" />
 
-   <intermediateThrowEvent id="signalThrow">
-    <signalEventDefinition signalRef="theSignal" />
-   </intermediateThrowEvent>
+    <intermediateThrowEvent id="signalThrow">
+      <signalEventDefinition signalRef="theSignal" />
+    </intermediateThrowEvent>
     <sequenceFlow id="flow3" sourceRef="signalThrow" targetRef="theEnd" />
     
     <endEvent id="theEnd" />

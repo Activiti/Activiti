@@ -751,6 +751,7 @@
         <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
+        <module>modules/activiti-secure-javascript</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
@@ -833,7 +834,7 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-cdi</module>
+        <module>modules/activiti-secure-javascript</module>
       </modules>
     </profile>
     <profile>
@@ -855,7 +856,7 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-cdi</module>
+        <module>modules/activiti-secure-javascript</module>
       </modules>
     </profile>
     <profile>
@@ -911,6 +912,7 @@
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-secure-javascript</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-spring-boot</module>
@@ -973,6 +975,7 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
+        <module>modules/activiti-secure-javascript</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-common-rest</module>
@@ -1014,6 +1017,7 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
+        <module>modules/activiti-secure-javascript</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>

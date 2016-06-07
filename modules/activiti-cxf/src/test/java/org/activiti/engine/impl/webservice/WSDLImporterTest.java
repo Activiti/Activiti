@@ -182,4 +182,10 @@ public class WSDLImporterTest {
     assertNotNull(url);
     importer.importFrom(url.toString());
   }
+  
+  @Test
+  public void testComplexTypeMixed() throws Exception {
+    URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/complexType-mixed.wsdl");
+    importer.importFrom(url.toString());
+  }
 }

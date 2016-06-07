@@ -98,6 +98,7 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
       } catch (ActivitiException e) {
         String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");
         notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_FAILED, errorMsg);
+        throw e;
       }
     } finally {
       if (outputStream != null) {
