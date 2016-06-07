@@ -23,29 +23,32 @@ public class ScriptExecutionListener implements ExecutionListener {
 
   private static final long serialVersionUID = 1L;
 
-  private Expression script;
+  protected Expression script;
 
-  private Expression language;
+  protected Expression language;
 
-  private Expression resultVariable;
+  protected Expression resultVariable;
 
   @Override
   public void notify(DelegateExecution execution) {
 
+    validateParameters();
+
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+    Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
+
+    if (resultVariable != null) {
+      execution.setVariable(resultVariable.getExpressionText(), result);
+    }
+  }
+  
+  protected void validateParameters() {
     if (script == null) {
       throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
     }
 
     if (language == null) {
       throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
-    }
-
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-
-    Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
-
-    if (resultVariable != null) {
-      execution.setVariable(resultVariable.getExpressionText(), result);
     }
   }
 
