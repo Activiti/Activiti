@@ -181,8 +181,13 @@ public class BpmnAutoLayout {
 
     graph.getModel().endUpdate();
 
+    // because it's possible to have newly generated ids for some flow elements
+    // then we shoudl regenerate the map of elements.
+    bpmnModel.generateFlowElementsMap();
+
     generateDiagramInterchangeElements();
   }
+
   private void handleTextAnnotation(TextAnnotation artifact) {
     ensureArtifactIdSet(artifact);
     textAnnotations.put(artifact.getId(), artifact);

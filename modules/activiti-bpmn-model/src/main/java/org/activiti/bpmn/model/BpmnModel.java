@@ -12,15 +12,14 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Tijs Rademakers
@@ -564,4 +563,31 @@ public class BpmnModel {
   public void setEventSupport(Object eventSupport) {
     this.eventSupport = eventSupport;
   }
+
+  public void generateFlowElementsMap() {
+
+    for (Process process : processes) {
+      Collection<FlowElement> flowElements = process.getFlowElements();
+      for (FlowElement nextElement : flowElements) {
+        process.addFlowElementToMap(nextElement);
+        if (nextElement instanceof SubProcess){
+          generateFlowElementsMap((SubProcess) nextElement);
+        }
+      }
+    }
+
+  }
+
+  private void generateFlowElementsMap(SubProcess subProcess) {
+    if (subProcess !=null) {
+      Collection<FlowElement> flowElements = subProcess.getFlowElements();
+      for (FlowElement nextElement : flowElements) {
+        subProcess.addFlowElementToMap(nextElement);
+        if (nextElement instanceof SubProcess){
+          generateFlowElementsMap((SubProcess) nextElement);
+        }
+      }
+    }
+  }
+
 }
