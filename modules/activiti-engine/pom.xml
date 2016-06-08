@@ -42,7 +42,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -77,7 +77,7 @@
       <groupId>javax.enterprise.concurrent</groupId>
       <artifactId>javax.enterprise.concurrent-api</artifactId>
       <scope>provided</scope>
-  	</dependency>
+    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -127,7 +127,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-    </dependency>      
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -141,12 +141,12 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.googlecode.catch-exception</groupId>
-          <artifactId>catch-exception</artifactId>
-          <scope>test</scope>
-      </dependency>
-    
+    <dependency>
+      <groupId>com.googlecode.catch-exception</groupId>
+      <artifactId>catch-exception</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Required for testing JTA -->
     <dependency>
       <groupId>org.codehaus.btm</groupId>
@@ -156,7 +156,7 @@
     </dependency>
 
   </dependencies>
-  
+
   <properties>
     <activiti.artifact>
       org.activiti.engine
@@ -182,7 +182,7 @@
   </properties>
 
   <build>
-    <plugins>      
+    <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -256,7 +256,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
   <profiles>
 
     <profile>
@@ -265,7 +265,7 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
-    
+
     <profile>
       <id>create-test-jar</id>
       <build>
@@ -281,7 +281,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>          
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -317,7 +317,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!--  database qa profile -->
     <profile>
       <id>database</id>
@@ -369,7 +369,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>databasewithschema</id>
       <activation>
@@ -420,7 +420,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>databasemssql</id>
       <activation>
@@ -458,7 +458,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!--  Config qa profile -->
     <profile>
       <id>configSpring</id>
@@ -507,7 +507,7 @@
             <configuration>
               <excludes>
                 <exclude>**/*TestCase.java</exclude>
-                
+
                 <!-- Disabling tests that run exclusively using standalone config -->
                 <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
@@ -519,81 +519,81 @@
       </build>
       <dependencies>
         <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-spring</artifactId>
-            <scope>test</scope>
+          <groupId>org.activiti</groupId>
+          <artifactId>activiti-spring</artifactId>
+          <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>
 
-	<profile>
-		<id>configJta</id>
-		<build>
-			<plugins>
-				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<!-- only worked with this version, there might be a bug with antrun 
-						see http://jira.codehaus.org/browse/MANTRUN-109 -->
-					<version>1.4</version>
-					<executions>
-						<execution>
-							<id>configExecution</id>
-							<phase>process-test-classes</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<tasks>
-								    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
-									<echo message="Updating activiti configuration config to db ${database}" />
-									<copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-									   <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
-									</copy>
-								</tasks>
-							</configuration>
-						</execution>
-						<execution>
-							<id>database-test-drop-schema</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<tasks>
-									<echo message="dropping schema in ${database}" />
-									<java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-								</tasks>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<excludes>
-							<exclude>**/*TestCase.java</exclude>
+    <profile>
+      <id>configJta</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!-- only worked with this version, there might be a bug with antrun
+                see http://jira.codehaus.org/browse/MANTRUN-109 -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>configExecution</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
+                    <echo message="Updating activiti configuration config to db ${database}" />
+                    <copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${database}" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*TestCase.java</exclude>
 
-							<!-- Disabling tests that run exclusively using standalone config -->
-							<exclude>**/ProcessDiagramRetrievalTest.java</exclude>
-							<exclude>org/activiti/standalone/**</exclude>
-						</excludes>
-						<runOrder>alphabetical</runOrder>
-					</configuration>
-				</plugin>
-			</plugins>
-		</build>
-		<dependencies>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.7.6</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</profile>
+                <!-- Disabling tests that run exclusively using standalone config -->
+                <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
+                <exclude>org/activiti/standalone/**</exclude>
+              </excludes>
+              <runOrder>alphabetical</runOrder>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+          <version>1.7.6</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
 
     <!--  check history full -->
-      <profile>
+    <profile>
       <id>cfghistoryfull</id>
       <build>
         <plugins>
@@ -634,7 +634,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>databasehistoryfull</id>
       <build>
@@ -694,7 +694,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!-- Same as databasehistoryfull, but for databases that need a schema in the config -->
     <profile>
       <id>databasehistoryfullwithschema</id>
@@ -931,7 +931,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>oraclewithschema</id>
       <activation>
@@ -948,7 +948,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>db2</id>
       <activation>
@@ -982,7 +982,7 @@
         </dependency>
       </dependencies>
     </profile>
-	
+
     <profile>
       <id>mysql</id>
       <activation>

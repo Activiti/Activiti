@@ -501,16 +501,16 @@ public class BpmnAutoLayout {
     return graphicInfo;
   }
 
-  protected void createDiagramInterchangeInformation(BaseElement sequenceFlow, List<mxPoint> waypoints) {
+  protected void createDiagramInterchangeInformation(BaseElement element, List<mxPoint> waypoints) {
     List<GraphicInfo> graphicInfoForWaypoints = new ArrayList<GraphicInfo>();
     for (mxPoint waypoint : waypoints) {
       GraphicInfo graphicInfo = new GraphicInfo();
-      graphicInfo.setElement(sequenceFlow);
+      graphicInfo.setElement(element);
       graphicInfo.setX(waypoint.getX());
       graphicInfo.setY(waypoint.getY());
       graphicInfoForWaypoints.add(graphicInfo);
     }
-    bpmnModel.addFlowGraphicInfoList(sequenceFlow.getId(), graphicInfoForWaypoints);
+    bpmnModel.addFlowGraphicInfoList(element.getId(), graphicInfoForWaypoints);
   }
 
   /**
