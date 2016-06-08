@@ -17,8 +17,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Association;
+import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -42,6 +44,13 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
     association.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
     association.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
 
+    String asociationDirectionString = xtr.getAttributeValue(null, ATTRIBUTE_ASSOCIATION_DIRECTION);
+     if (StringUtils.isNotEmpty(asociationDirectionString)) {
+       AssociationDirection associationDirection = AssociationDirection.valueOf(asociationDirectionString.toUpperCase());
+
+       association.setAssociationDirection(associationDirection);
+     }
+
     parseChildElements(getXMLElementName(), association, model, xtr);
 
     return association;
@@ -52,6 +61,10 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
     Association association = (Association) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, association.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, association.getTargetRef(), xtw);
+    AssociationDirection associationDirection = association.getAssociationDirection();
+    if (associationDirection !=null) {
+      writeDefaultAttribute(ATTRIBUTE_ASSOCIATION_DIRECTION, associationDirection.getValue(), xtw);
+    }
   }
 
   @Override

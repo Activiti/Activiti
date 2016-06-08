@@ -84,9 +84,9 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     }
 
     nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20
-                                         // minutes and 1 second from the
-                                         // baseTime) the BoundaryEndTime is
-                                         // reached
+    // minutes and 1 second from the
+    // baseTime) the BoundaryEndTime is
+    // reached
     nextTimeCal.add(Calendar.SECOND, 1);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 

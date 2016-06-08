@@ -68,7 +68,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     runtimeService.trigger(execution.getId());
     assertProcessEnded(processInstance.getId());
   }
-  
+
   @Deployment
   public void testCompensateSubprocessWithUserTask2() {
     
