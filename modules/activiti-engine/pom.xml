@@ -77,7 +77,7 @@
       <groupId>javax.enterprise.concurrent</groupId>
       <artifactId>javax.enterprise.concurrent-api</artifactId>
       <scope>provided</scope>
-    </dependency>
+  	</dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -141,11 +141,11 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.googlecode.catch-exception</groupId>
-      <artifactId>catch-exception</artifactId>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>com.googlecode.catch-exception</groupId>
+          <artifactId>catch-exception</artifactId>
+          <scope>test</scope>
+      </dependency>
 
     <!-- Required for testing JTA -->
     <dependency>
@@ -519,81 +519,81 @@
       </build>
       <dependencies>
         <dependency>
-          <groupId>org.activiti</groupId>
-          <artifactId>activiti-spring</artifactId>
-          <scope>test</scope>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring</artifactId>
+            <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>
 
-    <profile>
-      <id>configJta</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <!-- only worked with this version, there might be a bug with antrun
-                see http://jira.codehaus.org/browse/MANTRUN-109 -->
-            <version>1.4</version>
-            <executions>
-              <execution>
-                <id>configExecution</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
-                    <echo message="Updating activiti configuration config to db ${database}" />
-                    <copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
-                    </copy>
-                  </tasks>
-                </configuration>
-              </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${database}" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>**/*TestCase.java</exclude>
+	<profile>
+		<id>configJta</id>
+		<build>
+			<plugins>
+				<plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<!-- only worked with this version, there might be a bug with antrun
+						see http://jira.codehaus.org/browse/MANTRUN-109 -->
+					<version>1.4</version>
+					<executions>
+						<execution>
+							<id>configExecution</id>
+							<phase>process-test-classes</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<tasks>
+								    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
+									<echo message="Updating activiti configuration config to db ${database}" />
+									<copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+									   <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+									</copy>
+								</tasks>
+							</configuration>
+						</execution>
+						<execution>
+							<id>database-test-drop-schema</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<tasks>
+									<echo message="dropping schema in ${database}" />
+									<java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+								</tasks>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>**/*TestCase.java</exclude>
 
-                <!-- Disabling tests that run exclusively using standalone config -->
-                <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
-                <exclude>org/activiti/standalone/**</exclude>
-              </excludes>
-              <runOrder>alphabetical</runOrder>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencies>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-          <version>1.7.6</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
+							<!-- Disabling tests that run exclusively using standalone config -->
+							<exclude>**/ProcessDiagramRetrievalTest.java</exclude>
+							<exclude>org/activiti/standalone/**</exclude>
+						</excludes>
+						<runOrder>alphabetical</runOrder>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jdk14</artifactId>
+				<version>1.7.6</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</profile>
 
     <!--  check history full -->
-    <profile>
+      <profile>
       <id>cfghistoryfull</id>
       <build>
         <plugins>
