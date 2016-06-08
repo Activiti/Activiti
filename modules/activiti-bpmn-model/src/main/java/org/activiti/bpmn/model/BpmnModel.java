@@ -563,31 +563,4 @@ public class BpmnModel {
   public void setEventSupport(Object eventSupport) {
     this.eventSupport = eventSupport;
   }
-
-  public void generateFlowElementsMap() {
-
-    for (Process process : processes) {
-      Collection<FlowElement> flowElements = process.getFlowElements();
-      for (FlowElement nextElement : flowElements) {
-        process.addFlowElementToMap(nextElement);
-        if (nextElement instanceof SubProcess){
-          generateFlowElementsMap((SubProcess) nextElement);
-        }
-      }
-    }
-
-  }
-
-  private void generateFlowElementsMap(SubProcess subProcess) {
-    if (subProcess !=null) {
-      Collection<FlowElement> flowElements = subProcess.getFlowElements();
-      for (FlowElement nextElement : flowElements) {
-        subProcess.addFlowElementToMap(nextElement);
-        if (nextElement instanceof SubProcess){
-          generateFlowElementsMap((SubProcess) nextElement);
-        }
-      }
-    }
-  }
-
 }

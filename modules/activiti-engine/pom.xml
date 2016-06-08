@@ -154,16 +154,6 @@
       <version>2.1.3</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-json-converter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-bpmn-layout</artifactId>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
   

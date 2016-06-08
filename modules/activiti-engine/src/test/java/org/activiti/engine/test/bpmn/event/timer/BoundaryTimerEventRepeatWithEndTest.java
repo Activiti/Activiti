@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author Vasile Dirla
  */
-public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
+public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testRepeatWithEnd() throws Throwable {

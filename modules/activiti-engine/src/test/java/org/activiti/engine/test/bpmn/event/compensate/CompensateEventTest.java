@@ -13,17 +13,10 @@
 
 package org.activiti.engine.test.bpmn.event.compensate;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.activiti.bpmn.BpmnAutoLayout;
-import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -31,9 +24,6 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 /**
  * @author Tijs Rademakers
  */
@@ -262,47 +252,6 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
     
-  }
-
-  public void testAutoLayoutForCompensateSubprocess() {
-    final InputStream inputStream = ReflectUtil
-            .getResourceAsStream("org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensateSubprocess.bpmn20.xml");
-    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-    BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
-
-    BpmnModel bpmnModel1 = bpmnXMLConverter.convertToBpmnModel(new StreamSource() {
-
-      @Override
-      public InputStream getInputStream() {
-        return inputStream;
-      }
-    }, false, false);
-
-    if (bpmnModel1.getLocationMap().size() == 0) {
-      BpmnAutoLayout bpmnLayout = new BpmnAutoLayout(bpmnModel1);
-      bpmnLayout.execute();
-    }
-
-    ObjectNode jsonData = bpmnJsonConverter.convertToJson(bpmnModel1);
-
-    assertNotNull(jsonData);
-
-    byte[] xmlByte = bpmnXMLConverter.convertToXML(bpmnModel1);
-    final InputStream byteArrayInputStream = new ByteArrayInputStream(xmlByte);
-
-    BpmnModel bpmnModel2 = bpmnXMLConverter.convertToBpmnModel(new StreamSource() {
-
-      @Override
-      public InputStream getInputStream() {
-        return byteArrayInputStream;
-      }
-    }, false, false);
-
-    assertEquals(10, bpmnModel1.getLocationMap().size());
-    assertEquals(10, bpmnModel2.getLocationMap().size());
-
-    assertEquals(7, bpmnModel1.getFlowLocationMap().size());
-    assertEquals(7, bpmnModel2.getFlowLocationMap().size());
   }
   
 }
