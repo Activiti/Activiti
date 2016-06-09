@@ -495,8 +495,18 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     
     // Draw artifacts
     for (Process process : bpmnModel.getProcesses()) {
+      
       for (Artifact artifact : process.getArtifacts()) {
         drawArtifact(processDiagramCanvas, bpmnModel, artifact);
+      }
+      
+      List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class, true);
+      if (subProcesses != null) {
+        for (SubProcess subProcess : subProcesses) {
+          for (Artifact subProcessArtifact : subProcess.getArtifacts()) {
+            drawArtifact(processDiagramCanvas, bpmnModel, subProcessArtifact);
+          }
+        }
       }
     }
     
@@ -761,7 +771,6 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
   }
   
   protected void drawArtifact(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, Artifact artifact) {
-
     ArtifactDrawInstruction drawInstruction = artifactDrawInstructions.get(artifact.getClass());
     if (drawInstruction != null) {
       drawInstruction.draw(processDiagramCanvas, bpmnModel, artifact);

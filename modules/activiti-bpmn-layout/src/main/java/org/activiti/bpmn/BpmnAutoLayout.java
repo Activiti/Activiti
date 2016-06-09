@@ -108,13 +108,15 @@ public class BpmnAutoLayout {
     cellParent = graph.getDefaultParent();
     graph.getModel().beginUpdate();
     
+    // Subprocesses are handled in a new instance of BpmnAutoLayout, hence they instantiations of new maps here.
+    
     handledFlowElements = new HashMap<String, FlowElement>();
     handledArtifacts = new HashMap<String, Artifact>();
     generatedVertices = new HashMap<String, Object>();
     generatedSequenceFlowEdges = new HashMap<String, Object>();
     generatedAssociationEdges = new HashMap<String, Object>();
 
-    associations = new HashMap<String, Association>(); //Associations are gathered and processed afterwards, because we must be sure we alreadt found source and target
+    associations = new HashMap<String, Association>(); //Associations are gathered and processed afterwards, because we must be sure we alreadydiv found source and target
     textAnnotations = new HashMap<String, TextAnnotation>(); // Text Annotations are gathered and processed afterwards, because we must be sure we already found the parent.
 
     sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
@@ -270,7 +272,7 @@ public class BpmnAutoLayout {
     
     for (SequenceFlow sequenceFlow : sequenceFlows.values()) {
       Object sourceVertex = generatedVertices.get(sequenceFlow.getSourceRef());
-      Object targertVertex = generatedVertices.get(sequenceFlow.getTargetRef());
+      Object targetVertex = generatedVertices.get(sequenceFlow.getTargetRef());
       
       String style = null;
      
@@ -282,7 +284,7 @@ public class BpmnAutoLayout {
         style = STYLE_SEQUENCEFLOW;
       }
       
-      Object sequenceFlowEdge = graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targertVertex, style);
+      Object sequenceFlowEdge = graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targetVertex, style);
       generatedSequenceFlowEdges.put(sequenceFlow.getId(), sequenceFlowEdge);
     }
   }
@@ -306,7 +308,7 @@ public class BpmnAutoLayout {
 
     for (Association association : associations.values()) {
       Object sourceVertex = generatedVertices.get(association.getSourceRef());
-      Object targertVertex = generatedVertices.get(association.getTargetRef());
+      Object targetVertex = generatedVertices.get(association.getTargetRef());
 
       String style = null;
 
@@ -318,7 +320,7 @@ public class BpmnAutoLayout {
         style = STYLE_SEQUENCEFLOW;
       }
 
-      Object associationEdge = graph.insertEdge(cellParent, association.getId(), "", sourceVertex, targertVertex, style);
+      Object associationEdge = graph.insertEdge(cellParent, association.getId(), "", sourceVertex, targetVertex, style);
       generatedAssociationEdges.put(association.getId(), associationEdge);
     }
   }
