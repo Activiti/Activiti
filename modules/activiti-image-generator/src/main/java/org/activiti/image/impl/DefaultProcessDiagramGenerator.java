@@ -495,6 +495,12 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       drawActivity(processDiagramCanvas, bpmnModel, flowNode, highLightedActivities, highLightedFlows, scaleFactor);
     }
     
+    for (Process process: bpmnModel.getProcesses()) {
+      for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
+        drawActivity(processDiagramCanvas, bpmnModel, flowNode, highLightedActivities, highLightedFlows, scaleFactor);
+      }
+    }
+    
     // Draw artifacts
     for (Process process : bpmnModel.getProcesses()) {
       
