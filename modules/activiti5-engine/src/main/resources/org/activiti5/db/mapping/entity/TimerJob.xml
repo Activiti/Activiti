@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.TimerJobEntity">
 
 	<!-- TIMER JOB RESULTMAP -->
 
@@ -144,8 +144,6 @@
             ID_, 
             REV_,
             TYPE_,
-            LOCK_OWNER_, 
-            LOCK_EXP_TIME_,
             EXCLUSIVE_,
             EXECUTION_ID_, 
             PROCESS_INSTANCE_ID_,
@@ -162,8 +160,6 @@
         (#{job.id, jdbcType=VARCHAR},
          #{job.revision, jdbcType=INTEGER},
          #{job.jobType, jdbcType=VARCHAR},
-         #{job.lockOwner, jdbcType=VARCHAR},
-         #{job.lockExpirationTime, jdbcType=TIMESTAMP},
          #{job.exclusive, jdbcType=BOOLEAN},
          #{job.executionId, jdbcType=VARCHAR},
          #{job.processInstanceId, jdbcType=VARCHAR},
@@ -186,8 +182,6 @@
               ID_, 
               REV_,
               TYPE_,
-              LOCK_OWNER_, 
-              LOCK_EXP_TIME_,
               EXCLUSIVE_,
               EXECUTION_ID_, 
               PROCESS_INSTANCE_ID_,
@@ -203,8 +197,6 @@
           (#{job.id, jdbcType=VARCHAR},
            #{job.revision, jdbcType=INTEGER},
            #{job.jobType, jdbcType=VARCHAR},
-           #{job.lockOwner, jdbcType=VARCHAR},
-           #{job.lockExpirationTime, jdbcType=TIMESTAMP},
            #{job.exclusive, jdbcType=BOOLEAN},
            #{job.executionId, jdbcType=VARCHAR},
            #{job.processInstanceId, jdbcType=VARCHAR},

@@ -13,8 +13,8 @@
 
 package org.activiti5.engine.impl.form;
 
+import org.activiti.engine.form.AbstractFormType;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.form.AbstractFormType;
 
 /**
  * @author Frederik Heremans

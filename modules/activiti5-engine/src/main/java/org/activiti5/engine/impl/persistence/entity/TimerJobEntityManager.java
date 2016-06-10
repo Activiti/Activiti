@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.Job;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.JobQueryImpl;
 import org.activiti5.engine.impl.Page;
@@ -48,26 +48,18 @@ public class TimerJobEntityManager extends AbstractManager {
     }
   }
 
-  public JobEntity findJobById(String jobId) {
-    return (JobEntity) getDbSqlSession().selectOne("selectTimerJob", jobId);
+  public TimerJobEntity findJobById(String jobId) {
+    return (TimerJobEntity) getDbSqlSession().selectOne("selectTimerJob", jobId);
   }
   
   @SuppressWarnings("unchecked")
-  public List<JobEntity> findTimerJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
+  public List<TimerJobEntity> findTimerJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
   	return getDbSqlSession().selectList("selectTimerJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
   
   @SuppressWarnings("unchecked")
   public List<Job> findTimerJobsByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectTimerJobsByExecutionId", executionId);
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
-    Map<String,Object> params = new HashMap<String, Object>();
-    params.put("pid", processInstanceId);
-    params.put("now", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    return getDbSqlSession().selectList("selectExclusiveTimerJobsToExecute", params);
   }
 
   @SuppressWarnings("unchecked")

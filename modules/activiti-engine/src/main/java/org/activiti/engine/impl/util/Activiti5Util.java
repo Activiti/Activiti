@@ -17,7 +17,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
@@ -32,29 +32,29 @@ public class Activiti5Util {
     }
     
     try {
-      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
-      if (processDefinitionEntity == null) {
+      ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
+      if (processDefinition == null) {
         return false;
       }
-      return isActiviti5ProcessDefinition(commandContext, processDefinitionEntity);
+      return isActiviti5ProcessDefinition(commandContext, processDefinition);
     } catch (ActivitiObjectNotFoundException e) {
       return false;
     }
   }
   
-  public static boolean isActiviti5ProcessDefinition(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity) {
+  public static boolean isActiviti5ProcessDefinition(CommandContext commandContext, ProcessDefinition processDefinition) {
     
     if (!commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()) {
       return false;
     }
     
-    if (processDefinitionEntity.getEngineVersion() != null) {
-      if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinitionEntity.getEngineVersion())) {
+    if (processDefinition.getEngineVersion() != null) {
+      if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
         if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()) {
           return true;
         }
       } else {
-        throw new ActivitiException("Invalid 'engine' for process definition " + processDefinitionEntity.getId() + " : " + processDefinitionEntity.getEngineVersion());
+        throw new ActivitiException("Invalid 'engine' for process definition " + processDefinition.getId() + " : " + processDefinition.getEngineVersion());
       }
     }
     return false;

@@ -126,7 +126,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     
     // there is still a single job because the timer was created in the same transaction as the 
     // service was executed (which rolled back)
-    assertEquals(1, managementService.createJobQuery().count());    
+    assertEquals(1, managementService.createTimerJobQuery().count());    
     
     runtimeService.deleteProcessInstance(execution.getId(), "dead");        
   }
@@ -268,7 +268,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database:
     assertEquals(1, managementService.createJobQuery().count());
     
-    waitForJobExecutorToProcessAllJobs(10000L, 250L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(20000L, 250L);
     
     assertEquals(0, managementService.createJobQuery().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());

@@ -48,9 +48,10 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
     
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(2, job.getRetries());
     
+    managementService.moveTimerToExecutableJob(job.getId());
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
@@ -58,9 +59,10 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
     
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(1, job.getRetries());
     
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
   }
 
@@ -86,9 +88,10 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
     
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(2, job.getRetries());
     
+    managementService.moveTimerToExecutableJob(job.getId());
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
@@ -96,9 +99,10 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
     
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals(1, job.getRetries());
     
+    managementService.moveTimerToExecutableJob(job.getId());
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
@@ -106,16 +110,17 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       // exception expected;
     }
     
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createDeadLetterJobQuery().singleResult();
     assertEquals(0, job.getRetries());
     
-    managementService.deleteJob(job.getId());
+    managementService.deleteDeadLetterJob(job.getId());
   }
 
   protected JobEntity createTweetExceptionMessage() {
     JobEntity message = processEngineConfiguration.getJobEntityManager().create();
     message.setJobType(JobEntity.JOB_TYPE_MESSAGE);
     message.setJobHandlerType("tweet-exception");
+    message.setRetries(3);
     return message;
   }
 }

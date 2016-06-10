@@ -77,15 +77,16 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testGetJobExceptionStacktrace() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
     
-    // The execution is waiting in the first usertask. This contains a boundry
+    // The execution is waiting in the first usertask. This contains a boundary
     // timer event which we will execute manual for testing purposes.
-    Job timerJob = managementService.createJobQuery()
+    Job timerJob = managementService.createTimerJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
     
     assertNotNull("No job found for process instance", timerJob);
     
     try {
+      managementService.moveTimerToExecutableJob(timerJob.getId());
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
@@ -93,9 +94,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     }
     
     // Fetch the task to see that the exception that occurred is persisted
-    timerJob = managementService.createJobQuery()
-    .processInstanceId(processInstance.getId())
-    .singleResult();
+    timerJob = managementService.createTimerJobQuery()
+        .processInstanceId(processInstance.getId())
+        .singleResult();
     
     assertNotNull(timerJob);
     assertNotNull(timerJob.getExceptionMessage());
@@ -131,7 +132,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
     // The execution is waiting in the first usertask. This contains a boundary timer event.
-    Job timerJob = managementService.createJobQuery()
+    Job timerJob = managementService.createTimerJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
     
@@ -140,9 +141,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertNotNull("No job found for process instance", timerJob);
     assertEquals(JobEntity.DEFAULT_RETRIES, timerJob.getRetries());
 
-    managementService.setJobRetries(timerJob.getId(), 5);
+    managementService.setTimerJobRetries(timerJob.getId(), 5);
 
-    timerJob = managementService.createJobQuery()
+    timerJob = managementService.createTimerJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
     assertEquals(5, timerJob.getRetries());
@@ -208,12 +209,12 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti5/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobDeletion() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull("Task timer should be there", timerJob);
-    managementService.deleteJob(timerJob.getId());
+    managementService.deleteTimerJob(timerJob.getId());
     
-    timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNull("There should be no job now. It was deleted", timerJob);
   }
   
@@ -223,7 +224,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     processEngineConfiguration.resetClock();
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     
     // We need to move time at least one hour to make the timer executable
     clock.setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
@@ -243,6 +244,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     }
     
     // Clean up
+    managementService.moveTimerToExecutableJob(timerJob.getId());
     managementService.executeJob(timerJob.getId());
     
     processEngineConfiguration.resetClock();

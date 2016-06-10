@@ -15,13 +15,13 @@ package org.activiti5.engine.impl;
 
 import java.io.Serializable;
 
+import org.activiti.engine.impl.variable.ByteArrayType;
+import org.activiti.engine.impl.variable.VariableType;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti5.engine.impl.variable.ByteArrayType;
 import org.activiti5.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti5.engine.impl.variable.JPAEntityVariableType;
-import org.activiti5.engine.impl.variable.VariableType;
-import org.activiti5.engine.impl.variable.VariableTypes;
 
 
 /**

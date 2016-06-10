@@ -14,8 +14,8 @@ package org.activiti5.engine.delegate.event.impl;
 
 import java.util.Map;
 
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiProcessStartedEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 
 /**

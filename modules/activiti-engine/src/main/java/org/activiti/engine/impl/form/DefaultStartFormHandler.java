@@ -21,6 +21,7 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -29,14 +30,14 @@ import org.apache.commons.lang3.StringUtils;
 public class DefaultStartFormHandler extends DefaultFormHandler implements StartFormHandler {
 
   @Override
-  public void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
+  public void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinition processDefinition) {
     super.parseConfiguration(formProperties, formKey, deployment, processDefinition);
     if (StringUtils.isNotEmpty(formKey)) {
-      processDefinition.setStartFormKey(true);
+      ((ProcessDefinitionEntity) processDefinition).setStartFormKey(true);
     }
   }
 
-  public StartFormData createStartFormData(ProcessDefinitionEntity processDefinition) {
+  public StartFormData createStartFormData(ProcessDefinition processDefinition) {
     StartFormDataImpl startFormData = new StartFormDataImpl();
     if (formKey != null) {
       startFormData.setFormKey(formKey.getExpressionText());

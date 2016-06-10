@@ -116,7 +116,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no processes deployed with key = 'receiveTask' and version = '23'", ae.getMessage());
-      assertEquals(org.activiti5.engine.repository.ProcessDefinition.class, ae.getObjectClass());
+      assertEquals(ProcessDefinition.class, ae.getObjectClass());
     }
   }
   

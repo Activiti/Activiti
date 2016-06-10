@@ -17,10 +17,10 @@ import java.util.Date;
 import org.activiti.engine.impl.asyncexecutor.AcquiredTimerJobEntities;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
-import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti5.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
@@ -61,6 +61,8 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
   static final long SECOND = 1000;
 
   public void testJobCommandsWithTimer() {
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
     // clock gets automatically reset in LogTestCase.runTest
     Clock clock = processEngineConfiguration.getClock();
     clock.setCurrentTime(new Date(SOME_TIME));
@@ -93,8 +95,9 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     assertEquals(0, tweetHandler.getMessages().size());
 
-    Job executableJob = managementService.moveTimerToExecutableJob(jobId);
-    processEngineConfiguration.getCommandExecutor().execute(new ExecuteAsyncJobCmd(executableJob));
+    managementService.moveTimerToExecutableJob(jobId);
+    JobEntity jobEntity = (JobEntity) activiti5ProcessEngineConfig.getManagementService().createJobQuery().singleResult();
+    activiti5ProcessEngineConfig.getCommandExecutor().execute(new ExecuteAsyncJobCmd(jobEntity));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());

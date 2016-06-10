@@ -35,8 +35,8 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -72,7 +72,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       finalProcessDefinitonKey = processDefinitonKey;
     }
 
-    ProcessDefinitionEntity processDefinition = findProcessDefinition(finalProcessDefinitonKey, execution.getTenantId());
+    ProcessDefinition processDefinition = findProcessDefinition(finalProcessDefinitonKey, execution.getTenantId());
 
     // Get model from cache
     Process subProcess = ProcessDefinitionUtil.getProcess(processDefinition.getId());
@@ -152,10 +152,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     leave(execution);
   }
 
-  protected ExecutionEntity createSubProcessInstance(ProcessDefinitionEntity processDefinitionEntity, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
+  protected ExecutionEntity createSubProcessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
 
     ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().create(); 
-    subProcessInstance.setProcessDefinitionId(processDefinitionEntity.getId());
+    subProcessInstance.setProcessDefinitionId(processDefinition.getId());
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
@@ -163,8 +163,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
 
     // Inherit tenant id (if any)
-    if (processDefinitionEntity.getTenantId() != null) {
-      subProcessInstance.setTenantId(processDefinitionEntity.getTenantId());
+    if (processDefinition.getTenantId() != null) {
+      subProcessInstance.setTenantId(processDefinition.getTenantId());
     }
 
     // Store in database
@@ -192,7 +192,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
 
   // Allow subclass to determine which version of a process to start.
-  protected ProcessDefinitionEntity findProcessDefinition(String processDefinitionKey, String tenantId) {
+  protected ProcessDefinition findProcessDefinition(String processDefinitionKey, String tenantId) {
     if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
       return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
     } else {

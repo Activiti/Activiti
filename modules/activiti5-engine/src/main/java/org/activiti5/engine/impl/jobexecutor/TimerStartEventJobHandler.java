@@ -12,10 +12,11 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti5.engine.impl.context.Context;
@@ -24,7 +25,6 @@ import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
   }
 
   protected void startProcessInstanceWithInitialActivity(Job job, String configuration, DeploymentManager deploymentManager, CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(job.getProcessDefinitionId());
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) deploymentManager.findDeployedProcessDefinitionById(job.getProcessDefinitionId());
     
     String activityId = getActivityIdFromConfiguration(configuration);
     ActivityImpl startActivity = processDefinition.findActivity(activityId);

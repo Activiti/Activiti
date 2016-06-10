@@ -16,8 +16,8 @@ package org.activiti5.engine.impl.form;
 import java.text.Format;
 import java.text.ParseException;
 
+import org.activiti.engine.form.AbstractFormType;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.form.AbstractFormType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 

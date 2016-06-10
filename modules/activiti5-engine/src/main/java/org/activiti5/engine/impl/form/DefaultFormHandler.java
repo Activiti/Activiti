@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
-import org.activiti5.engine.form.AbstractFormType;
-import org.activiti5.engine.form.FormProperty;
+import org.activiti.engine.form.AbstractFormType;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -38,7 +38,7 @@ public class DefaultFormHandler implements FormHandler {
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
   
-  public void parseConfiguration(List<org.activiti.bpmn.model.FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
+  public void parseConfiguration(List<org.activiti.bpmn.model.FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinition processDefinition) {
     this.deploymentId = deployment.getId();
     
     ExpressionManager expressionManager = Context

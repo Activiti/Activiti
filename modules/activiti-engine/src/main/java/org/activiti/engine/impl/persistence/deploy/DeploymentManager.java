@@ -27,10 +27,12 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -59,64 +61,71 @@ public class DeploymentManager {
     }
   }
 
-  public ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId) {
+  public ProcessDefinition findDeployedProcessDefinitionById(String processDefinitionId) {
     if (processDefinitionId == null) {
       throw new ActivitiIllegalArgumentException("Invalid process definition id : null");
     }
 
     // first try the cache
     ProcessDefinitionCacheEntry cacheEntry = processDefinitionCache.get(processDefinitionId);
-    ProcessDefinitionEntity processDefinition = cacheEntry != null ? cacheEntry.getProcessDefinitionEntity() : null;
+    ProcessDefinition processDefinition = cacheEntry != null ? cacheEntry.getProcessDefinition() : null;
 
     if (processDefinition == null) {
       processDefinition = processDefinitionEntityManager.findById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
       }
-      processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinitionEntity();
+      processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     }
     return processDefinition;
   }
 
-  public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
-    ProcessDefinitionEntity processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKey(processDefinitionKey);
+  public ProcessDefinition findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
+    ProcessDefinition processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKey(processDefinitionKey);
 
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key '" + processDefinitionKey + "'", ProcessDefinition.class);
     }
-    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinitionEntity();
+    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     return processDefinition;
   }
 
-  public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
-    ProcessDefinitionEntity processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+  public ProcessDefinition findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
+    ProcessDefinition processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key '" + processDefinitionKey + "' for tenant identifier '" + tenantId + "'", ProcessDefinition.class);
     }
-    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinitionEntity();
+    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     return processDefinition;
   }
 
-  public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId) {
-    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) processDefinitionEntityManager
+  public ProcessDefinition findDeployedProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId) {
+    ProcessDefinition processDefinition = (ProcessDefinitionEntity) processDefinitionEntityManager
         .findProcessDefinitionByKeyAndVersionAndTenantId(processDefinitionKey, processDefinitionVersion, tenantId);
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'", ProcessDefinition.class);
     }
-    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinitionEntity();
+    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     return processDefinition;
   }
 
   /**
    * Resolving the process definition will fetch the BPMN 2.0, parse it and store the {@link BpmnModel} in memory.
    */
-  public ProcessDefinitionCacheEntry resolveProcessDefinition(ProcessDefinitionEntity processDefinition) {
+  public ProcessDefinitionCacheEntry resolveProcessDefinition(ProcessDefinition processDefinition) {
     String processDefinitionId = processDefinition.getId();
     String deploymentId = processDefinition.getDeploymentId();
 
     ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
 
     if (cachedProcessDefinition == null) {
+      CommandContext commandContext = Context.getCommandContext();
+      if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
+          Activiti5Util.isActiviti5ProcessDefinition(Context.getCommandContext(), processDefinition)) {
+        
+        return Activiti5Util.getActiviti5CompatibilityHandler().resolveProcessDefinition(processDefinition);
+      }
+      
       DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
       deployment.setNew(false);
       deploy(deployment, null);

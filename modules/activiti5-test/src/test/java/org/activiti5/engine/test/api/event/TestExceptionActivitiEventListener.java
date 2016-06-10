@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.test.api.event;
 
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 
 public class TestExceptionActivitiEventListener implements ActivitiEventListener {
 

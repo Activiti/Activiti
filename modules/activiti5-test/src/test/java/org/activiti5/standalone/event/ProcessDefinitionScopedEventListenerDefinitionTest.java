@@ -15,14 +15,14 @@ package org.activiti5.standalone.event;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.repository.DeploymentProperties;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti5.engine.test.api.event.StaticTestActivitiEventListener;
 import org.activiti5.engine.test.api.event.TestActivitiEventListener;
@@ -53,20 +53,19 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		taskService.complete(task.getId());
 		
-		
 		// Check if the listener (defined as bean) received events (only creation, not other events)
 		assertFalse(testListenerBean.getEventsReceived().isEmpty());
 		for (ActivitiEvent event : testListenerBean.getEventsReceived()) {
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 		}
 		
-	// First event received should be creation of Process-definition
+		// First event received should be creation of Process-definition
 		assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 		ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
-		assertTrue(event.getEntity() instanceof org.activiti5.engine.repository.ProcessDefinition);
-		assertEquals(processInstance.getProcessDefinitionId(), ((org.activiti5.engine.repository.ProcessDefinition) event.getEntity()).getId());
+		assertTrue(event.getEntity() instanceof ProcessDefinition);
+		assertEquals(processInstance.getProcessDefinitionId(), ((ProcessDefinition) event.getEntity()).getId());
 			
-		// First event received should be creation of Process-instance
+		// Second event received should be creation of Process-instance
 		assertTrue(testListenerBean.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
 		event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(1);
 		assertTrue(event.getEntity() instanceof org.activiti5.engine.runtime.ProcessInstance);
@@ -79,10 +78,10 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		boolean insertFound = false;
 		boolean deleteFound = false;
 		
-		for(ActivitiEvent e : events) {
-			if(ActivitiEventType.ENTITY_CREATED == e.getType() ) {
+		for (ActivitiEvent e : events) {
+			if (ActivitiEventType.ENTITY_CREATED == e.getType() ) {
 				insertFound = true;
-			} else if(ActivitiEventType.ENTITY_DELETED == e.getType()) {
+			} else if (ActivitiEventType.ENTITY_DELETED == e.getType()) {
 				deleteFound = true;
 			}
 		}
@@ -138,11 +137,10 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 			
 			fail("Exception expected");
 			
-		} catch(ActivitiException ae) {
-			assertTrue(ae instanceof ActivitiIllegalArgumentException);
-			assertEquals("Invalid event-type: invalid", ae.getMessage());
+		} catch (ActivitiException ae) {
+			assertEquals("Invalid event-type: invalid", ae.getCause().getMessage());
 		} finally {
-			if(deployment != null) {
+			if (deployment != null) {
 				repositoryService.deleteDeployment(deployment.getId(), true);
 			}
 		}

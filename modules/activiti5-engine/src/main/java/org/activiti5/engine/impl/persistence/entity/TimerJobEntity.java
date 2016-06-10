@@ -19,10 +19,11 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.el.NoExecutionVariableScope;
@@ -34,7 +35,6 @@ import org.activiti5.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,22 +59,26 @@ public class TimerJobEntity extends AbstractJobEntity {
     this.repeat = timerDeclaration.getRepeat();
     this.retries = timerDeclaration.getRetries();
     this.jobType = "timer";
+    this.revision = 1;
   }
 
-  private TimerJobEntity(TimerJobEntity te) {
-    this.jobHandlerConfiguration = te.jobHandlerConfiguration;
-    this.jobHandlerType = te.jobHandlerType;
-    this.isExclusive = te.isExclusive;
-    this.repeat = te.repeat;
-    this.retries = te.retries;
-    this.endDate = te.endDate;
-    this.executionId = te.executionId;
-    this.processInstanceId = te.processInstanceId;
-    this.processDefinitionId = te.processDefinitionId;
+  public TimerJobEntity(AbstractJobEntity te) {
+    this.jobType = te.getJobType();
+    this.revision = te.getRevision();
+    this.jobHandlerConfiguration = te.getJobHandlerConfiguration();
+    this.jobHandlerType = te.getJobHandlerType();
+    this.isExclusive = te.isExclusive();
+    this.repeat = te.getRepeat();
+    this.retries = te.getRetries();
+    this.endDate = te.getEndDate();
+    this.executionId = te.getExecutionId();
+    this.processInstanceId = te.getProcessInstanceId();
+    this.processDefinitionId = te.getProcessDefinitionId();
+    this.exceptionMessage = te.getExceptionMessage();
+    setExceptionStacktrace(te.getExceptionStacktrace());
 
     // Inherit tenant
-    this.tenantId = te.tenantId;
-    this.jobType = "timer";
+    this.tenantId = te.getTenantId();
   }
 
   public void execute(CommandContext commandContext) {
@@ -104,6 +108,16 @@ public class TimerJobEntity extends AbstractJobEntity {
     }
     delete();
 
+    scheduleNextTimerIfRepeat();
+  }
+  
+  public void scheduleNewTimer(CommandContext commandContext) {
+    // set endDate if it was set to the definition
+    restoreExtraData(commandContext, jobHandlerConfiguration);
+    scheduleNextTimerIfRepeat();
+  }
+  
+  public void scheduleNextTimerIfRepeat() {
     if (repeat != null) {
       int repeatValue = calculateRepeatValue();
       if (repeatValue != 0) {
@@ -115,7 +129,7 @@ public class TimerJobEntity extends AbstractJobEntity {
         if (newTimer != null && isValidTime(newTimer)) {
           TimerJobEntity te = new TimerJobEntity(this);
           te.setDuedate(newTimer);
-          Context.getCommandContext().getJobEntityManager().schedule(te);
+          te.insert();
         }
       }
     }
@@ -335,21 +349,5 @@ public class TimerJobEntity extends AbstractJobEntity {
       businessCalendarName = (String) Context.getProcessEngineConfiguration().getExpressionManager().createExpression(calendarName).getValue(execution);
     }
     return businessCalendarName;
-  }
-
-  public String getRepeat() {
-    return repeat;
-  }
-
-  public void setRepeat(String repeat) {
-    this.repeat = repeat;
-  }
-
-  public Date getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(Date endDate) {
-    this.endDate = endDate;
   }
 }

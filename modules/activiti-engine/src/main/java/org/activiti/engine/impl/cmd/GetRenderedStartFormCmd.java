@@ -16,12 +16,13 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.form.FormEngine;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -41,7 +42,14 @@ public class GetRenderedStartFormCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    
+    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
+        Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
+      
+      return Activiti5Util.getActiviti5CompatibilityHandler().getRenderedStartForm(processDefinitionId, formEngineName); 
+    }
+    
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Process Definition '" + processDefinitionId + "' not found", ProcessDefinition.class);
     }

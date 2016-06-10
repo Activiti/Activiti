@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
@@ -34,16 +34,15 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     // After process start, there should be timer created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample");
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertEquals(1, jobQuery.count());
 
     // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 200L);
 
     assertEquals(0, jobQuery.count());
     assertProcessEnded(pi.getProcessInstanceId());
-
   }
 
   @Deployment
@@ -58,27 +57,25 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertEquals(0, jobQuery.count());
 
     Date startDate = new Date();
     runtimeService.setVariable(pi.getId(), "StartDate", startDate);
     taskService.complete(task.getId());
 
-    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertEquals(1, jobQuery.count());
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(startDate.getTime() + 7000L));
 
-    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertEquals(1, jobQuery.count());
-    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
-    assertEquals(0, jobQuery.count());
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(startDate.getTime() + 11000L));
-    waitForJobExecutorToProcessAllJobs(15000L, 25L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(15000L, 200L);
 
-    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertEquals(0, jobQuery.count());
 
     tasks = taskService.createTaskQuery().list();
@@ -103,18 +100,19 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
     ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables2);
 
-    assertEquals(1, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
-    assertEquals(1, managementService.createJobQuery().processInstanceId(pi2.getId()).count());
+    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count());
+    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count());
 
     // After setting the clock to one second in the future the timers should fire
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(2, jobs.size());
     for (Job job : jobs) {
+      managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());
     }
 
-    assertEquals(0, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
-    assertEquals(0, managementService.createJobQuery().processInstanceId(pi2.getId()).count());
+    assertEquals(0, managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count());
+    assertEquals(0, managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count());
 
     assertProcessEnded(pi1.getProcessInstanceId());
     assertProcessEnded(pi2.getProcessInstanceId());
@@ -126,7 +124,8 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     // After looping 3 times, the process should end
     for (int i = 0; i < 3; i++) {
-      Job timer = managementService.createJobQuery().singleResult();
+      Job timer = managementService.createTimerJobQuery().singleResult();
+      managementService.moveTimerToExecutableJob(timer.getId());
       managementService.executeJob(timer.getId());
     }
 
@@ -139,7 +138,8 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     // After looping 3 times, the process should end. Cycle should NOT repeat itself
     for (int i = 0; i < 3; i++) {
-      Job timer = managementService.createJobQuery().singleResult();
+      Job timer = managementService.createTimerJobQuery().singleResult();
+      managementService.moveTimerToExecutableJob(timer.getId());
       managementService.executeJob(timer.getId());
     }
 

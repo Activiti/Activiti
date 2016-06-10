@@ -23,8 +23,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 
@@ -382,7 +382,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       String activityId = null;
       if (execution.getId().equals(execution.getProcessInstanceId())) {
         if (execution.getProcessDefinitionId() != null) {
-          ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration()
+          ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
               .getDeploymentManager()
               .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
           activityId = processDefinition.getKey();

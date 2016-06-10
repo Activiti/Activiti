@@ -17,12 +17,12 @@ import java.io.Serializable;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Tom Baeyens
  */
-public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinitionEntity>, Serializable {
+public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinition>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
@@ -31,7 +31,7 @@ public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinit
     this.processDefinitionId = processDefinitionId;
   }
 
-  public ProcessDefinitionEntity execute(CommandContext commandContext) {
+  public ProcessDefinition execute(CommandContext commandContext) {
     return commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
   }
 }

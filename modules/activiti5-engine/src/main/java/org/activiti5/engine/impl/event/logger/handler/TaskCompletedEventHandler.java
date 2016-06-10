@@ -3,7 +3,7 @@ package org.activiti5.engine.impl.event.logger.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti5.engine.delegate.event.ActivitiEntityWithVariablesEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;

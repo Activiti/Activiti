@@ -10,7 +10,7 @@
     
     <property name="activiti5CompatibilityEnabled" value="true" />
     
-    <property name="activiti5ProcessDefinitionCache">
+    <property name="processDefinitionCache">
         <bean class="org.activiti5.standalone.deploy.CustomDeploymentCache" />
     </property>  
     

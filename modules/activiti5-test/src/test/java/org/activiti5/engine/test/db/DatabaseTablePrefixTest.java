@@ -15,12 +15,12 @@ package org.activiti5.engine.test.db;
 
 import java.sql.Connection;
 
-import junit.framework.TestCase;
-
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+
+import junit.framework.TestCase;
 
 /**
  * @author Daniel Meyer

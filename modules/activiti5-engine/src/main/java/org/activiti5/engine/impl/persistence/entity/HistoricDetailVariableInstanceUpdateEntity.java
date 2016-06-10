@@ -13,12 +13,12 @@
 
 package org.activiti5.engine.impl.persistence.entity;
 
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti5.engine.history.HistoricVariableUpdate;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.db.HasRevision;
 import org.activiti5.engine.impl.db.PersistentObject;
-import org.activiti5.engine.impl.variable.ValueFields;
-import org.activiti5.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -107,21 +107,6 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   @Override
   public void setBytes(byte[] bytes) {
     throw new UnsupportedOperationException("HistoricDetailVariableInstanceUpdateEntity is immutable");
-  }
-
-  @Override @Deprecated
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
-  }
-
-  @Override @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-  
-  @Override @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
   }
   
   // getters and setters //////////////////////////////////////////////////////

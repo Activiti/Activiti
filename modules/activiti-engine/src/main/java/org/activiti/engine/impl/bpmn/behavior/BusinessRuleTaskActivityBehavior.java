@@ -20,10 +20,10 @@ import java.util.Set;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
 import org.activiti.engine.impl.rules.RulesHelper;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -46,8 +46,8 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void execute(DelegateExecution execution) {
-    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
-    String deploymentId = processDefinitionEntity.getDeploymentId();
+    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
+    String deploymentId = processDefinition.getDeploymentId();
 
     KnowledgeBase knowledgeBase = RulesHelper.findKnowledgeBaseByDeploymentId(deploymentId);
     StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();

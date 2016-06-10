@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.history.HistoricActivityInstance;
 import org.activiti5.engine.impl.HistoricActivityInstanceQueryImpl;

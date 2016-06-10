@@ -175,7 +175,7 @@ public class TimerDeclarationImpl implements Serializable {
 
     TimerJobEntity timer = null;
     // if dueDateValue is null -> this is OK - timer will be null and job not scheduled
-   	if (duedate!=null) {
+   	if (duedate != null) {
    		timer = new TimerJobEntity(this);
    		timer.setDuedate(duedate);
    		timer.setEndDate(endDate);

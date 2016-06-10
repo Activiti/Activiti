@@ -17,24 +17,24 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiErrorEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
-import org.activiti5.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti5.engine.delegate.event.ActivitiErrorEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiMessageEvent;
-import org.activiti5.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti5.engine.delegate.event.impl.ActivitiActivityEventImpl;
 import org.activiti5.engine.impl.event.logger.EventLogger;
+import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -54,10 +54,8 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 	  super.setUp();
 	  
 	  // Database event logger setup
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    databaseEventLogger = new EventLogger(activiti5ProcessConfig.getClock(), activiti5ProcessConfig.getObjectMapper());
-	  processEngineConfiguration.getActiviti5CompatibilityHandler().addEventListener(databaseEventLogger);
+	  databaseEventLogger = new EventLogger(processEngineConfiguration.getClock(), processEngineConfiguration.getObjectMapper());
+	  processEngineConfiguration.getEventDispatcher().addEventListener(databaseEventLogger);
 	}
 	
 	@Override
@@ -65,9 +63,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		
 		if (listener != null) {
 			listener.clearEventsReceived();
-			org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-			    processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-			activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 		
 		// Remove entries
@@ -76,7 +72,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		}
 		
 		// Database event logger teardown
-		processEngineConfiguration.getActiviti5CompatibilityHandler().removeEventListener(databaseEventLogger);
+		processEngineConfiguration.getEventDispatcher().removeEventListener(databaseEventLogger);
 		
 	  super.tearDown();
 	}
@@ -85,10 +81,8 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 		super.initializeServices();
 
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 		listener = new TestActivitiActivityEventListener(true);
-		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 
 	/**
@@ -490,27 +484,27 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment(resources = "org/activiti5/engine/test/api/event/JobEventsTest.testJobEntityEvents.bpmn20.xml")
   public void testActivityTimeOutEvent(){
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
-    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
 
     // Force timer to fire
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 100);
 
     // Check timeout has been dispatched
     assertEquals(1, listener.getEventsReceived().size());
     ActivitiEvent activitiEvent = listener.getEventsReceived().get(0);
     assertEquals("ACTIVITY_CANCELLED event expected", ActivitiEventType.ACTIVITY_CANCELLED, activitiEvent.getType());
     ActivitiActivityCancelledEvent cancelledEvent = (ActivitiActivityCancelledEvent) activitiEvent;
-    assertTrue("TIMER is the cause of the cancellation", cancelledEvent.getCause() instanceof TimerJobEntity);
+    assertTrue("TIMER is the cause of the cancellation", cancelledEvent.getCause() instanceof JobEntity);
   }
 
   @Deployment(resources = "org/activiti5/engine/test/bpmn/event/timer/BoundaryTimerEventTest.testTimerOnNestingOfSubprocesses.bpmn20.xml")
   public void testActivityTimeOutEventInSubProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
-    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
 
     // Force timer to fire
@@ -525,7 +519,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     List<String> eventIdList = new ArrayList<String>();
     for (ActivitiEvent event : listener.getEventsReceived()) {
       assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, event.getType());
-      assertTrue("TIMER is the cause of the cancellation", ((ActivitiActivityCancelledEvent) event).getCause() instanceof TimerJobEntity);
+      assertTrue("TIMER is the cause of the cancellation", ((ActivitiActivityCancelledEvent) event).getCause() instanceof JobEntity);
       eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
     }
     assertTrue(eventIdList.indexOf("innerTask1") >= 0);
@@ -536,7 +530,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityTimeOutEventInCallActivity() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnCallActivity");
-    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
 
     // Force timer to fire
@@ -544,14 +538,14 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     timeToFire.add(Calendar.HOUR, 2);
     timeToFire.add(Calendar.SECOND, 5);
     processEngineConfiguration.getClock().setCurrentTime(timeToFire.getTime());
-    waitForJobExecutorToProcessAllJobs(20000, 500);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 500);
 
     // Check timeout-events have been dispatched
     assertEquals(4, listener.getEventsReceived().size());
     List<String> eventIdList = new ArrayList<String>();
     for (ActivitiEvent event : listener.getEventsReceived()) {
       assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, event.getType());
-      assertTrue("TIMER is the cause of the cancellation", ((ActivitiActivityCancelledEvent) event).getCause() instanceof TimerJobEntity);
+      assertTrue("TIMER is the cause of the cancellation", ((ActivitiActivityCancelledEvent) event).getCause() instanceof JobEntity);
       eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
     }
     assertTrue(eventIdList.indexOf("innerTask1") >= 0);

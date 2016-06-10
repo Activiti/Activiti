@@ -26,21 +26,23 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
   @Deployment
   public void testCycleTimer() {
-    List<Job> jobs = this.managementService.createJobQuery().list();
+    List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
     assertThat("One job is scheduled", jobs.size(), is(1));
     assertThat("Job must be scheduled by custom business calendar to Date(0)", jobs.get(0).getDuedate(), is(new Date(0)));
 
+    this.managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     this.managementService.executeJob(jobs.get(0).getId());
 
-    jobs = this.managementService.createJobQuery().list();
+    jobs = this.managementService.createTimerJobQuery().list();
 
     assertThat("One job is scheduled (repetition is 2x)", jobs.size(), is(1));
     assertThat("Job must be scheduled by custom business calendar to Date(0)", jobs.get(0).getDuedate(), is(new Date(0)));
 
+    this.managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     this.managementService.executeJob(jobs.get(0).getId());
 
-    jobs = this.managementService.createJobQuery().list();
+    jobs = this.managementService.createTimerJobQuery().list();
     assertThat("There must be no job.", jobs.isEmpty());
   }
 
@@ -48,13 +50,14 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
   public void testCustomDurationTimerCalendar() {
     ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar");
 
-    List<Job> jobs = this.managementService.createJobQuery().list();
+    List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
     assertThat("One job is scheduled", jobs.size(), is(1));
     assertThat("Job must be scheduled by custom business calendar to Date(0)", jobs.get(0).getDuedate(), is(new Date(0)));
 
+    this.managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     this.managementService.executeJob(jobs.get(0).getId());
-    waitForJobExecutorToProcessAllJobs(10000, 100);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
 
     this.runtimeService.trigger(processInstance.getId());
   }
@@ -73,12 +76,13 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
   public void testBoundaryTimer() {
     this.runtimeService.startProcessInstanceByKey("testBoundaryTimer");
 
-    List<Job> jobs = this.managementService.createJobQuery().list();
+    List<Job> jobs = this.managementService.createTimerJobQuery().list();
     assertThat("One job is scheduled", jobs.size(), is(1));
     assertThat("Job must be scheduled by custom business calendar to Date(0)", jobs.get(0).getDuedate(), is(new Date(0)));
 
+    this.managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     this.managementService.executeJob(jobs.get(0).getId());
-    waitForJobExecutorToProcessAllJobs(10000, 100);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
   }
 
   public static class CustomBusinessCalendar implements BusinessCalendar {

@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.delegate.event.impl;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 
 /**
  * Base class for all {@link ActivitiEvent} implementations, related to entities.

@@ -22,6 +22,9 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -53,6 +56,8 @@ public interface Activiti5CompatibilityHandler {
   BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
   
   ObjectNode getProcessDefinitionInfo(String processDefinitionId);
+  
+  ProcessDefinitionCacheEntry resolveProcessDefinition(ProcessDefinition processDefinition);
   
   boolean isProcessDefinitionSuspended(String processDefinitionId);
   
@@ -122,6 +127,12 @@ public interface Activiti5CompatibilityHandler {
   
   void deleteHistoricTask(String taskId);
   
+  StartFormData getStartFormData(String processDefinitionId);
+  
+  String getFormKey(String processDefinitionId, String taskDefinitionKey);
+  
+  Object getRenderedStartForm(String processDefinitionId, String formEngineName);
+  
   ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
   
   void submitTaskFormData(String taskId, Map<String, String> properties, boolean completeTask);
@@ -158,8 +169,6 @@ public interface Activiti5CompatibilityHandler {
   
   void deleteJob(String jobId);
   
-  void setJobRetries(String jobId, int retries);
-  
   void leaveExecution(DelegateExecution execution);
   
   void propagateError(BpmnError bpmnError, DelegateExecution execution);
@@ -170,9 +179,7 @@ public interface Activiti5CompatibilityHandler {
   
   Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution);
   
-  void addEventListener(Object listener);
-  
-  void removeEventListener(Object listener);
+  void throwErrorEvent(ActivitiEvent event);
   
   void setClock(Clock clock);
   

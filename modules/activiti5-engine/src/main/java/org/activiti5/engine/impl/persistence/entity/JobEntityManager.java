@@ -18,15 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.JobQueryImpl;
 import org.activiti5.engine.impl.Page;
-import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti5.engine.impl.jobexecutor.AsyncJobAddedNotification;
@@ -41,11 +40,10 @@ import org.activiti5.engine.impl.persistence.AbstractManager;
 public class JobEntityManager extends AbstractManager {
 
   public void send(JobEntity message) {
-  	
-  	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-  	
-    message.insert();
-    hintAsyncExecutor(message);
+  	message.insert();
+  	if (Context.getProcessEngineConfiguration().isAsyncExecutorActivate()) {
+  	  hintAsyncExecutor(message);
+  	}
   }
  
   public void schedule(TimerJobEntity timer) {

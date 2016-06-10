@@ -24,11 +24,11 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
@@ -652,17 +652,21 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected void scheduleAtomicOperationAsync(AtomicOperation executionOperation) {
     JobEntity message = new JobEntity();
     message.setJobType(Job.JOB_TYPE_MESSAGE);
+    message.setRevision(1);
     message.setExecution(this);
     message.setExclusive(getActivity().isExclusive());
     message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
     // At the moment, only AtomicOperationTransitionCreateScope can be performed asynchronously,
     // so there is no need to pass it to the handler
     
-    GregorianCalendar expireCal = new GregorianCalendar();
     ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
-    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
-    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
-    message.setLockExpirationTime(expireCal.getTime());
+    
+    if (processEngineConfig.isAsyncExecutorActivate()) {
+      GregorianCalendar expireCal = new GregorianCalendar();
+      expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
+      expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
+      message.setLockExpirationTime(expireCal.getTime());
+    }
     
     // Inherit tenant id (if applicable)
     if (getTenantId() != null) {
@@ -808,7 +812,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   /** for setting the process definition, this setter must be used as subclasses can override */  
   protected void ensureProcessDefinitionInitialized() {
     if ((processDefinition == null) && (processDefinitionId != null)) {
-      ProcessDefinitionEntity deployedProcessDefinition = Context
+      ProcessDefinitionEntity deployedProcessDefinition = (ProcessDefinitionEntity) Context
         .getProcessEngineConfiguration()
         .getDeploymentManager()
         .findDeployedProcessDefinitionById(processDefinitionId);
@@ -1062,6 +1066,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     for (Job job: getTimerJobs()) {
       ((TimerJobEntity) job).delete();
+    }
+    
+    SuspendedJobEntityManager suspendedJobEntityManager = Context.getCommandContext().getSuspendedJobEntityManager();
+    List<SuspendedJobEntity> suspendedJobs = suspendedJobEntityManager.findSuspendedJobsByExecutionId(id);
+    for (SuspendedJobEntity suspendedJob : suspendedJobs) {
+      suspendedJob.delete();
+    }
+    
+    DeadLetterJobEntityManager deadLetterJobEntityManager = Context.getCommandContext().getDeadLetterJobEntityManager();
+    List<DeadLetterJobEntity> deadLetterJobs = deadLetterJobEntityManager.findDeadLetterJobsByExecutionId(id);
+    for (DeadLetterJobEntity deadLetterJob : deadLetterJobs) {
+      deadLetterJob.delete();
     }
   }
 

@@ -32,6 +32,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -46,13 +47,13 @@ public class ProcessInstanceHelper {
     return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, false);
   }
   
-  public ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
+  public ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables) {
     
     return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, true);
   }
   
-  protected ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
+  protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables, boolean startProcessInstance) {
     
     CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
@@ -82,7 +83,7 @@ public class ProcessInstanceHelper {
         processInstanceName, initialFlowElement, process, variables, startProcessInstance);
   }
 
-  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinitionEntity processDefinition, String messageName, Map<String, Object> variables) {
+  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String messageName, Map<String, Object> variables) {
     CommandContext commandContext = Context.getCommandContext();
     if (processDefinition.getEngineVersion() != null) {
       if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
@@ -131,7 +132,7 @@ public class ProcessInstanceHelper {
     return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, true);
   }
 
-  public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, 
+  public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition, 
       String businessKey, String processInstanceName, FlowElement initialFlowElement, 
       Process process, Map<String, Object> variables, boolean startProcessInstance) {
 

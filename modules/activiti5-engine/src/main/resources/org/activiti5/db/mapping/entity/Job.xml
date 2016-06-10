@@ -207,7 +207,7 @@
             HANDLER_CFG_,
             TENANT_ID_)
     values (#{id, jdbcType=VARCHAR},
-            1,
+            #{revision, jdbcType=INTEGER},
             #{jobType, jdbcType=VARCHAR},
             #{lockOwner, jdbcType=VARCHAR},
             #{lockExpirationTime, jdbcType=TIMESTAMP},
@@ -247,7 +247,7 @@
             TENANT_ID_) VALUES 
     <foreach collection="list" item="job" index="index" separator=","> 
         (#{job.id, jdbcType=VARCHAR},
-         1,
+         #{job.revision, jdbcType=INTEGER},
          #{job.jobType, jdbcType=VARCHAR},
          #{job.lockOwner, jdbcType=VARCHAR},
          #{job.lockExpirationTime, jdbcType=TIMESTAMP},

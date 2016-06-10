@@ -22,6 +22,7 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity;

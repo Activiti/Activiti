@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Tom Baeyens
@@ -38,7 +38,7 @@ public class IsActiviti5ProcessDefinitionCmd implements Command<Boolean>, Serial
       return false;
     }
     
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration()
+    ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
         .getDeploymentManager()
         .findDeployedProcessDefinitionById(processDefinitionId);
     

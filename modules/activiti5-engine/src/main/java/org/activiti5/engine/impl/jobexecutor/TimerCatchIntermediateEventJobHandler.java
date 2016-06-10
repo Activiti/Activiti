@@ -12,9 +12,9 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;

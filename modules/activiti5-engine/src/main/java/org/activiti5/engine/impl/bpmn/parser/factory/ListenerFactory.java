@@ -16,7 +16,7 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;

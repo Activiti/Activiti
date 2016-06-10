@@ -40,6 +40,7 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
   protected JobEntity createTweetMessage(String msg) {
     JobEntity message = new JobEntity();
     message.setJobType(Job.JOB_TYPE_MESSAGE);
+    message.setRevision(1);
     message.setJobHandlerType("tweet");
     message.setJobHandlerConfiguration(msg);
     return message;
@@ -48,6 +49,7 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
   protected TimerJobEntity createTweetTimer(String msg, Date duedate) {
     TimerJobEntity timer = new TimerJobEntity();
     timer.setJobType(Job.JOB_TYPE_TIMER);
+    timer.setRevision(1);
     timer.setJobHandlerType("tweet");
     timer.setJobHandlerConfiguration(msg);
     timer.setDuedate(duedate);

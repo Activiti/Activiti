@@ -18,7 +18,6 @@ import java.util.List;
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti.compatibility.wrapper.Activiti5ProcessDefinitionWrapper;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -72,7 +71,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   public void testParseDiagramInterchangeElements() {
 
     ProcessDefinition processDefinition = processEngineConfiguration.getActiviti5CompatibilityHandler().getProcessDefinitionByKey("myProcess");
-    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) ((Activiti5ProcessDefinitionWrapper) processDefinition).getRawObject();
+    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) processDefinition;
     
     assertNotNull(rawEntity);
     assertEquals(7, rawEntity.getActivities().size());
@@ -126,7 +125,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParseNamespaceInConditionExpressionType() {
     ProcessDefinition processDefinition = processEngineConfiguration.getActiviti5CompatibilityHandler().getProcessDefinitionByKey("resolvableNamespacesProcess");
-    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) ((Activiti5ProcessDefinitionWrapper) processDefinition).getRawObject();
+    ProcessDefinitionEntity rawEntity = (ProcessDefinitionEntity) processDefinition;
     
     // Test that the process definition has been deployed
     assertNotNull(rawEntity);

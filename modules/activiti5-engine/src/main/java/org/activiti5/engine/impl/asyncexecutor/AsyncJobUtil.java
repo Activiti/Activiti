@@ -1,7 +1,7 @@
 package org.activiti5.engine.impl.asyncexecutor;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti5.engine.impl.cmd.LockExclusiveJobCmd;

@@ -19,67 +19,65 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class TimeExpressionTest extends PluggableActivitiTestCase {
 	
-	  
-	  private Date testExpression(String timeExpression) {
-		    // Set the clock fixed
-		    HashMap<String, Object> variables1 = new HashMap<String, Object>();
-		    variables1.put("dueDate", timeExpression);
-		  
-		    // After process start, there should be timer created    
-		    ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
-		    assertEquals(1, managementService.createJobQuery().processInstanceId(pi1.getId()).count());
+  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
+  public void testTimeExpressionComplete() throws Exception {
+	    Date dt = new Date();
+	    
+	    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt));
+	    assertEquals(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt),new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dueDate));		    	  
+  }
+  
+  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
+  public void testTimeExpressionWithoutSeconds() throws Exception {
+	    Date dt = new Date();
+	    
+	    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(dt));
+	    assertEquals(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(dt),new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(dueDate));
+  }
+  
+  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	 
+  public void testTimeExpressionWithoutMinutes() throws Exception {
+	    Date dt = new Date();
 
+	    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd'T'HH").format(new Date()));
+	    assertEquals(new SimpleDateFormat("yyyy-MM-dd'T'HH").format(dt),new SimpleDateFormat("yyyy-MM-dd'T'HH").format(dueDate));
+  }
+  
+  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
+  public void testTimeExpressionWithoutTime() throws Exception {
+	    Date dt = new Date();
 
-		    List<Job> jobs = managementService.createJobQuery().list();
-		    assertEquals(1, jobs.size());
-		    return jobs.get(0).getDuedate();
-	  }
-	  
-	  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
-	  public void testTimeExpressionComplete() throws Exception {
-		    Date dt = new Date();
-		    
-		    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt));
-		    assertEquals(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dt),new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(dueDate));		    	  
-	  }
-	  
-	  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
-	  public void testTimeExpressionWithoutSeconds() throws Exception {
-		    Date dt = new Date();
-		    
-		    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(dt));
-		    assertEquals(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(dt),new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(dueDate));
-	  }
-	  
-	  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	 
-	  public void testTimeExpressionWithoutMinutes() throws Exception {
-		    Date dt = new Date();
+	    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+	    assertEquals(new SimpleDateFormat("yyyy-MM-dd").format(dt),new SimpleDateFormat("yyyy-MM-dd").format(dueDate));
+  }
 
-		    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd'T'HH").format(new Date()));
-		    assertEquals(new SimpleDateFormat("yyyy-MM-dd'T'HH").format(dt),new SimpleDateFormat("yyyy-MM-dd'T'HH").format(dueDate));
-	  }
-	  
-	  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
-	  public void testTimeExpressionWithoutTime() throws Exception {
-		    Date dt = new Date();
+  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
+  public void testTimeExpressionWithoutDay() throws Exception {
+	    Date dt = new Date();
 
-		    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		    assertEquals(new SimpleDateFormat("yyyy-MM-dd").format(dt),new SimpleDateFormat("yyyy-MM-dd").format(dueDate));
-	  }
-	
-	  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
-	  public void testTimeExpressionWithoutDay() throws Exception {
-		    Date dt = new Date();
+	    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM").format(new Date()));
+	    assertEquals(new SimpleDateFormat("yyyy-MM").format(dt),new SimpleDateFormat("yyyy-MM").format(dueDate));
+  }
+  
+  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
+  public void testTimeExpressionWithoutMonth() throws Exception {
+	    Date dt = new Date();
+	    
+	    Date dueDate = testExpression(new SimpleDateFormat("yyyy").format(new Date()));
+	    assertEquals(new SimpleDateFormat("yyyy").format(dt),new SimpleDateFormat("yyyy").format(dueDate));
+  }
+  
+  protected Date testExpression(String timeExpression) {
+    // Set the clock fixed
+    HashMap<String, Object> variables1 = new HashMap<String, Object>();
+    variables1.put("dueDate", timeExpression);
+  
+    // After process start, there should be timer created    
+    ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
+    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count());
 
-		    Date dueDate = testExpression(new SimpleDateFormat("yyyy-MM").format(new Date()));
-		    assertEquals(new SimpleDateFormat("yyyy-MM").format(dt),new SimpleDateFormat("yyyy-MM").format(dueDate));
-	  }
-	  
-	  @Deployment(resources = { "org/activiti5/engine/test/bpmn/event/timer/IntermediateTimerEventTest.testExpression.bpmn20.xml"})	  
-	  public void testTimeExpressionWithoutMonth() throws Exception {
-		    Date dt = new Date();
-		    
-		    Date dueDate = testExpression(new SimpleDateFormat("yyyy").format(new Date()));
-		    assertEquals(new SimpleDateFormat("yyyy").format(dt),new SimpleDateFormat("yyyy").format(dueDate));
-	  }
+    List<Job> jobs = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobs.size());
+    return jobs.get(0).getDuedate();
+  }
 }

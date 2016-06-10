@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.el.ExpressionManager;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -66,8 +68,8 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     currentProcessDefinition.setProperty(PROPERTYNAME_DOCUMENTATION, process.getDocumentation()); // Kept for backwards compatibility. See ACT-1020
     currentProcessDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     currentProcessDefinition.setDeploymentId(bpmnParse.getDeployment().getId());
+    createEventListeners(bpmnParse, process.getEventListeners());
     createExecutionListenersOnScope(bpmnParse, process.getExecutionListeners(), currentProcessDefinition);
-    createEventListeners(bpmnParse, process.getEventListeners(), currentProcessDefinition);
     
     ExpressionManager expressionManager = bpmnParse.getExpressionManager();
     
@@ -104,34 +106,36 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     }
     return currentProcessDefinition;
   }
+  
+  protected void createEventListeners(BpmnParse bpmnParse, List<EventListener> eventListeners) {
 
-	protected void createEventListeners(BpmnParse bpmnParse, List<EventListener> eventListeners,
-      ProcessDefinitionEntity currentProcessDefinition) {
-		
-		if(eventListeners != null && !eventListeners.isEmpty()) {
-			for(EventListener eventListener : eventListeners) {
-				// Extract specific event-types (if any)
-				ActivitiEventType[] types = ActivitiEventType.getTypesFromString(eventListener.getEvents());
-				
-				if(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
-					currentProcessDefinition.getEventSupport().addEventListener(
-							bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener),types);
-				} else if(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
-					currentProcessDefinition.getEventSupport().addEventListener(
-							bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener), types);
-				} else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
-						|| ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())
-						|| ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())
-						|| ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())){
-					currentProcessDefinition.getEventSupport().addEventListener(
-							bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
-				} else {
-					LOGGER.warn("Unsupported implementation type for EventLIstener: " + eventListener.getImplementationType() 
-							+ " for element " + bpmnParse.getCurrentFlowElement().getId());
-				}
-			}
-		}
-	  
+    if (eventListeners != null && !eventListeners.isEmpty()) {
+      for (EventListener eventListener : eventListeners) {
+        // Extract specific event-types (if any)
+        ActivitiEventType[] types = ActivitiEventType.getTypesFromString(eventListener.getEvents());
+
+        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
+          getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener), types);
+        
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
+          getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener), types);
+        
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
+            || ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())
+            || ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())
+            || ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
+        
+          getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
+        
+        } else {
+          LOGGER.warn("Unsupported implementation type for EventListener: " + eventListener.getImplementationType() + " for element " + bpmnParse.getCurrentFlowElement().getId());
+        }
+      }
+    }
+
   }
-
+  
+  protected ActivitiEventSupport getEventSupport(BpmnModel bpmnModel) {
+    return (ActivitiEventSupport) bpmnModel.getEventSupport();
+  }
 }

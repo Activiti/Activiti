@@ -13,12 +13,13 @@
 package org.activiti5.standalone.validation;
 
 import org.activiti.bpmn.exceptions.XMLException;
-import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.ProcessEngine;
-import org.activiti5.engine.ProcessEngines;
-import org.activiti5.engine.RepositoryService;
-import org.activiti5.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.activiti5.engine.repository.Deployment;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,9 +36,11 @@ public class DisabledSchemaValidationTest {
 	
 	@Before
 	public void setup() {
-		this.processEngine = new StandaloneInMemProcessEngineConfiguration()
-			.setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
-			.buildProcessEngine();
+		StandaloneInMemProcessEngineConfiguration processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration();
+		processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000");
+		processEngineConfiguration.setActiviti5CompatibilityEnabled(true);
+		
+		this.processEngine = processEngineConfiguration.buildProcessEngine();
 		this.repositoryService = processEngine.getRepositoryService();
 	}
 	
@@ -59,6 +62,7 @@ public class DisabledSchemaValidationTest {
 		try {
 			repositoryService.createDeployment()
 				.addClasspathResource("org/activiti5/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
+				.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 				.deploy();
 			Assert.fail();
 		} catch (XMLException e) {
@@ -69,6 +73,7 @@ public class DisabledSchemaValidationTest {
 		try {
 			repositoryService.createDeployment()
 				.addClasspathResource("org/activiti5/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
+				.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
 				.disableSchemaValidation()
 				.deploy();
 			Assert.fail();

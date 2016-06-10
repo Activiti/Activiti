@@ -16,6 +16,7 @@ package org.activiti5.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
@@ -97,14 +98,14 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     DeploymentManager deploymentCache = commandContext
       .getProcessEngineConfiguration()
       .getDeploymentManager();
-    ProcessDefinitionEntity currentProcessDefinition;
+    ProcessDefinition currentProcessDefinition = null;
     if (currentProcessDefinitionImpl instanceof ProcessDefinitionEntity) {
       currentProcessDefinition = (ProcessDefinitionEntity) currentProcessDefinitionImpl;
     } else {
       currentProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(currentProcessDefinitionImpl.getId());
     }
 
-    ProcessDefinitionEntity newProcessDefinition = deploymentCache
+    ProcessDefinitionEntity newProcessDefinition = (ProcessDefinitionEntity) deploymentCache
       .findDeployedProcessDefinitionByKeyAndVersion(currentProcessDefinition.getKey(), processDefinitionVersion);
     
     validateAndSwitchVersionOfExecution(commandContext, processInstance, newProcessDefinition);

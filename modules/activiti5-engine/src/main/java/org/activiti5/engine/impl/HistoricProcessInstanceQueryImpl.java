@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.history.HistoricProcessInstance;
@@ -26,7 +27,6 @@ import org.activiti5.engine.history.HistoricProcessInstanceQuery;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -610,7 +610,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     processInstance.setLocalizedDescription(null);
 
     if (locale != null && processInstance.getProcessDefinitionId() != null) {
-      ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
+      ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
       ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinition.getKey(), 
           processInstance.getProcessDefinitionId(), withLocalizationFallback);
       

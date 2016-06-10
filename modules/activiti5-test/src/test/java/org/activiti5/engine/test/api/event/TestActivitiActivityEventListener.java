@@ -15,10 +15,10 @@ package org.activiti5.engine.test.api.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
  * Test event listener that only records events related to activities ({@link ActivitiActivityEvent}s).

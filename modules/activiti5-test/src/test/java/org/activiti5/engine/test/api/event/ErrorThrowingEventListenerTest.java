@@ -12,12 +12,12 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.bpmn.helper.ErrorThrowingEventListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -33,13 +33,10 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testThrowError() throws Exception {
 		ErrorThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new ErrorThrowingEventListener();
 			
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
 			assertNotNull(processInstance);
@@ -59,7 +56,7 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 			
 			
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -86,14 +83,11 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testThrowErrorWithErrorcode() throws Exception {
 		ErrorThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new ErrorThrowingEventListener();
 			listener.setErrorCode("123");
 			
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
 			assertNotNull(processInstance);
@@ -129,7 +123,7 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 					.singleResult();
 			assertNotNull(task);
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	

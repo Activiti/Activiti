@@ -87,7 +87,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     // advance the clock after 9 days from starting the process ->
     // the system will execute the pending job and will create a new one (day by day)
     moveByMinutes(9 * 60 * 24);
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 500);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
     // there must be a pending job because the endDate is not reached yet
     jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
@@ -113,7 +113,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     // ADVANCE THE CLOCK SO that all 10 repeats to be executed (last execution)
     moveByMinutes(60 * 24);
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 500);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception e) {
       fail("Because the maximum number of repeats is reached it will not be executed other jobs");
     }

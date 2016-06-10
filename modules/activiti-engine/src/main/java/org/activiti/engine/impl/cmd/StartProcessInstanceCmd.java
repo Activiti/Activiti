@@ -25,7 +25,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -68,7 +67,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
     // Find the process definition
-    ProcessDefinitionEntity processDefinition = null;
+    ProcessDefinition processDefinition = null;
     if (processDefinitionId != null) {
 
       processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
@@ -100,7 +99,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     return processInstance;
   }
 
-  protected ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, String businessKey, String processInstanceName, Map<String,Object> variables) {
+  protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, String businessKey, String processInstanceName, Map<String,Object> variables) {
     return processInstanceHelper.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
   }
   

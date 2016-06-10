@@ -15,9 +15,9 @@ package org.activiti5.engine.impl.cmd;
 
 import java.io.InputStream;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.db.DbSqlSession;
 import org.activiti5.engine.impl.identity.Authentication;

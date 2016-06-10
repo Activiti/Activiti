@@ -25,17 +25,17 @@ import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
  */
 public class FormHandlerUtil {
   
-  public static StartFormHandler getStartFormHandler(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity) {
+  public static StartFormHandler getStartFormHandler(CommandContext commandContext, ProcessDefinition processDefinition) {
     StartFormHandler startFormHandler = new DefaultStartFormHandler();
-    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionEntity.getId());
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinition.getId());
     
     FlowElement initialFlowElement = process.getInitialFlowElement();
     if (initialFlowElement instanceof StartEvent) {
@@ -44,9 +44,9 @@ public class FormHandlerUtil {
       
       List<FormProperty> formProperties = startEvent.getFormProperties();
       String formKey = startEvent.getFormKey();
-      DeploymentEntity deploymentEntity = commandContext.getDeploymentEntityManager().findById(processDefinitionEntity.getDeploymentId());
+      DeploymentEntity deploymentEntity = commandContext.getDeploymentEntityManager().findById(processDefinition.getDeploymentId());
       
-      startFormHandler.parseConfiguration(formProperties, formKey, deploymentEntity, processDefinitionEntity);
+      startFormHandler.parseConfiguration(formProperties, formKey, deploymentEntity, processDefinition);
       return startFormHandler;
     }
     
@@ -60,8 +60,7 @@ public class FormHandlerUtil {
     if (flowElement != null && flowElement instanceof UserTask) {
       UserTask userTask = (UserTask) flowElement;
       
-      ProcessDefinitionEntity processDefinitionEntity = 
-          ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+      ProcessDefinition processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
       DeploymentEntity deploymentEntity = Context.getProcessEngineConfiguration()
           .getDeploymentEntityManager().findById(processDefinitionEntity.getDeploymentId());
       

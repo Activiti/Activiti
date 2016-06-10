@@ -15,7 +15,7 @@ package org.activiti5.engine.impl.persistence.entity;
 import java.util.Date;
 import java.util.Map;
 
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
@@ -44,6 +44,11 @@ public class JobEntity extends AbstractJobEntity {
     JobHandler jobHandler = jobHandlers.get(jobHandlerType);
     jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
     delete();
+    
+    if (repeat != null) {
+      TimerJobEntity timerRepeatJob = new TimerJobEntity(this);
+      timerRepeatJob.scheduleNewTimer(commandContext);
+    }
   }
   
   public void insert() {

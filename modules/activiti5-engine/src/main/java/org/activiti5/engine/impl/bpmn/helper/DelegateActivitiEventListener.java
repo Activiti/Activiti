@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.impl.bpmn.helper;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.util.ReflectUtil;
 
 /**

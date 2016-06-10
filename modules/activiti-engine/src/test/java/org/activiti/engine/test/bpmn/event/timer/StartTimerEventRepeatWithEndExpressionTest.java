@@ -92,7 +92,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // advance the clock to 11 dec -> the system will execute the pending
     // job and will create a new one
     moveByMinutes(60 * 24);
-    waitForJobExecutorToProcessAllJobs(2000L, 200);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000L, 200);
     
     // there must be a pending job because the endDate is not reached yet");
     assertEquals(1, managementService.createTimerJobQuery().count());
@@ -117,11 +117,8 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
     // 12 dec (last execution)
     moveByMinutes(60 * 24);
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
-    } catch (Exception e) {
-      fail("Because the endDate is reached it no other jobs should be created");
-    }
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+    
     // After the second startEvent Execution should have 2 process instances started
     // (since the first one was not completed)
     processInstances = runtimeService.createProcessInstanceQuery().list();

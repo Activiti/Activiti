@@ -25,7 +25,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -192,19 +191,19 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
       // Graphical information is not yet exposed publicly, so we need to
       // do some plumbing
       CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-      ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
-        public ProcessDefinitionEntity execute(CommandContext commandContext) {
+      ProcessDefinition processDefinition = commandExecutor.execute(new Command<ProcessDefinition>() {
+        public ProcessDefinition execute(CommandContext commandContext) {
           return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("myProcess");
         }
       });
 
-      assertNotNull(processDefinitionEntity);
-      BpmnModel processModel = repositoryService.getBpmnModel(processDefinitionEntity.getId());
+      assertNotNull(processDefinition);
+      BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
       assertEquals(14, processModel.getMainProcess().getFlowElements().size());
       assertEquals(7, processModel.getMainProcess().findFlowElementsOfType(SequenceFlow.class).size());
 
       // Check that no diagram has been created
-      List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
+      List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinition.getDeploymentId());
       assertEquals(1, resourceNames.size());
 
       repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);

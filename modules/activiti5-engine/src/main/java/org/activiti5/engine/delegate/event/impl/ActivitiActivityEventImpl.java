@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.delegate.event.impl;
 
-import org.activiti5.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
  * Implementation of an {@link ActivitiActivityEvent}.

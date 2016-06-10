@@ -417,16 +417,19 @@ public class TenancyTest extends PluggableActivitiTestCase {
 		repositoryService.changeDeploymentTenantId(deploymentId, newTenant);
 		
 		// verify job (timer start) 
-		Job job = managementService.createJobQuery().singleResult();
+		Job job = managementService.createTimerJobQuery().singleResult();
 		assertEquals(newTenant, job.getTenantId());
+		managementService.moveTimerToExecutableJob(job.getId());
 		managementService.executeJob(job.getId());
 		
 		// Verify Job tenancy (process intermediary timer)
-		job = managementService.createJobQuery().singleResult();
+		job = managementService.createTimerJobQuery().singleResult();
 		assertEquals(newTenant, job.getTenantId());
 		
 		// Start process, and verify async job has correct tenant id
+		managementService.moveTimerToExecutableJob(job.getId());
 		managementService.executeJob(job.getId());
+		
 		job = managementService.createJobQuery().singleResult();
 		assertEquals(newTenant, job.getTenantId());
 		

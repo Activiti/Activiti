@@ -854,9 +854,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 
   // Can't have a dependency on the activiti5-engine module
-  protected Object activiti5ProcessDefinitionCache;
-  protected Object activiti5KnowledgeBaseCache;
-  
   protected Object activiti5ActivityBehaviorFactory;
   protected Object activiti5ListenerFactory;
   protected List<Object> activiti5PreBpmnParseHandlers;
@@ -864,8 +861,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<Object> activiti5CustomDefaultBpmnParseHandlers;
   protected Set<Class<?>> activiti5CustomMybatisMappers;
   protected Set<String> activiti5CustomMybatisXMLMappers;
-  protected List<Object> activiti5EventListeners;
-  protected Map<String, List<Object>> activiti5TypedEventListeners;
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -3625,8 +3620,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return objectMapper;
   }
   
-  // Activiti 5
+  public ProcessEngineConfigurationImpl setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+    return this;
+  }
   
+  // Activiti 5
+
   public boolean isActiviti5CompatibilityEnabled() {
     return isActiviti5CompatibilityEnabled;
   }
@@ -3651,24 +3651,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
     this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
-    return this;
-  }
-  
-  public Object getActiviti5ProcessDefinitionCache() {
-    return activiti5ProcessDefinitionCache;
-  }
-
-  public ProcessEngineConfigurationImpl setActiviti5ProcessDefinitionCache(Object activiti5ProcessDefinitionCache) {
-    this.activiti5ProcessDefinitionCache = activiti5ProcessDefinitionCache;
-    return this;
-  }
-
-  public Object getActiviti5KnowledgeBaseCache() {
-    return activiti5KnowledgeBaseCache;
-  }
-
-  public ProcessEngineConfigurationImpl setActiviti5KnowledgeBaseCache(Object activiti5KnowledgeBaseCache) {
-    this.activiti5KnowledgeBaseCache = activiti5KnowledgeBaseCache;
     return this;
   }
 
@@ -3732,24 +3714,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setActiviti5CustomMybatisXMLMappers(Set<String> activiti5CustomMybatisXMLMappers) {
     this.activiti5CustomMybatisXMLMappers = activiti5CustomMybatisXMLMappers;
-    return this;
-  }
-
-  public List<Object> getActiviti5EventListeners() {
-    return activiti5EventListeners;
-  }
-
-  public ProcessEngineConfigurationImpl setActiviti5EventListeners(List<Object> activiti5EventListeners) {
-    this.activiti5EventListeners = activiti5EventListeners;
-    return this;
-  }
-
-  public Map<String, List<Object>> getActiviti5TypedEventListeners() {
-    return activiti5TypedEventListeners;
-  }
-
-  public ProcessEngineConfigurationImpl setActiviti5TypedEventListeners(Map<String, List<Object>> activiti5TypedEventListeners) {
-    this.activiti5TypedEventListeners = activiti5TypedEventListeners;
     return this;
   }
 

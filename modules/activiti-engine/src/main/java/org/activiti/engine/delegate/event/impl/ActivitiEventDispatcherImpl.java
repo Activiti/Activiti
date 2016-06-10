@@ -19,8 +19,8 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Class capable of dispatching events.
@@ -90,7 +90,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
     BpmnModel result = null;
     
     if (result == null && event.getProcessDefinitionId() != null) {
-      ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(event.getProcessDefinitionId(), true);
+      ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(event.getProcessDefinitionId(), true);
       if (processDefinition != null) {
         result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(processDefinition).getBpmnModel();
       }

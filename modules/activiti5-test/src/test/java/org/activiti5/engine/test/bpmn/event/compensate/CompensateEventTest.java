@@ -19,8 +19,8 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti5.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 
 
 /**

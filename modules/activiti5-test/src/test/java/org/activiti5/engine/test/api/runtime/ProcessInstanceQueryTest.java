@@ -27,13 +27,13 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

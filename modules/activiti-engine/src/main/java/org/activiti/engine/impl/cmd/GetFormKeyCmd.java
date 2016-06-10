@@ -14,12 +14,14 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.form.DefaultFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Command for retrieving start or task form keys.
@@ -57,7 +59,13 @@ public class GetFormKeyCmd implements Command<String> {
   }
 
   public String execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
+    
+    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
+        Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
+      
+      return Activiti5Util.getActiviti5CompatibilityHandler().getFormKey(processDefinitionId, taskDefinitionKey); 
+    }
     
     DefaultFormHandler formHandler;
     if (taskDefinitionKey == null) {

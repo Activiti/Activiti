@@ -13,13 +13,13 @@
 package org.activiti5.engine.test.api.event;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.bpmn.helper.SignalThrowingEventListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -36,15 +36,12 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testThrowSignal() throws Exception {
 		SignalThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new SignalThrowingEventListener();
 			listener.setSignalName("Signal");
 			listener.setProcessInstanceScope(true);
 			
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
 			assertNotNull(processInstance);
@@ -70,7 +67,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			
 			
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -103,14 +100,11 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testThrowSignalInterrupting() throws Exception {
 		SignalThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new SignalThrowingEventListener();
 			listener.setSignalName("Signal");
 			listener.setProcessInstanceScope(true);
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
 			assertNotNull(processInstance);
@@ -135,7 +129,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			
 			
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -147,14 +141,11 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testThrowSignalInNewTransaction() throws Exception {
 		SignalThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 		  listener = new SignalThrowingEventListener();
 			listener.setSignalName("Signal");
 			listener.setProcessInstanceScope(true);
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.JOB_RETRIES_DECREMENTED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.JOB_RETRIES_DECREMENTED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
 			assertNotNull(processInstance);
@@ -189,7 +180,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 				assertEquals(2, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 			}
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -201,14 +192,11 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testThrowSignalInRolledbackTransaction() throws Exception {
 		SignalThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new SignalThrowingEventListener();
 			listener.setSignalName("Signal");
 			listener.setProcessInstanceScope(true);
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.JOB_EXECUTION_FAILURE);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.JOB_EXECUTION_FAILURE);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
 			assertNotNull(processInstance);
@@ -243,7 +231,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 				assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 			}
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -257,14 +245,11 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 	public void testGlobalSignal() throws Exception {
 		SignalThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new SignalThrowingEventListener();
 			listener.setSignalName("Signal");
 			listener.setProcessInstanceScope(false);
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("globalSignalProcess");
 			assertNotNull(processInstance);
@@ -296,7 +281,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			assertEquals("kermit", task.getAssignee());
 			
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 		
 	}

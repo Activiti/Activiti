@@ -22,10 +22,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti5.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.db.HasRevision;
@@ -36,7 +36,6 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti5.engine.impl.task.TaskDefinition;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.task.IdentityLinkType;
 
 
@@ -67,20 +66,16 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
-  protected transient ActivitiEventSupport eventSupport;
   
   //Backwards compatibility
   protected String engineVersion;
   
   public ProcessDefinitionEntity() {
     super(null);
-    eventSupport = new ActivitiEventSupport();
   }
   
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-	in.defaultReadObject();
-    eventSupport = new ActivitiEventSupport();
-
+    in.defaultReadObject();
   }
   
   public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
@@ -366,10 +361,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void addCandidateStarterGroupIdExpression(Expression groupId) {
     candidateStarterGroupIdExpressions.add(groupId);
-  }
-  
-  public ActivitiEventSupport getEventSupport() {
-	  return eventSupport;
   }
   
   public String getEngineVersion() {

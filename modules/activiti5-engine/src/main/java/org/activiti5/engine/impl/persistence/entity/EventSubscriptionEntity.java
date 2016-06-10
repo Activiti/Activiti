@@ -93,6 +93,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 
     JobEntity message = new JobEntity();
     message.setJobType(Job.JOB_TYPE_MESSAGE);
+    message.setRevision(1);
     message.setJobHandlerType(ProcessEventJobHandler.TYPE);
     message.setJobHandlerConfiguration(id);
     message.setTenantId(getTenantId());

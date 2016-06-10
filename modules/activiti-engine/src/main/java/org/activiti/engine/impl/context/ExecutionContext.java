@@ -15,8 +15,8 @@ package org.activiti.engine.impl.context;
 
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Tom Baeyens
@@ -37,8 +37,8 @@ public class ExecutionContext {
     return execution.getProcessInstance();
   }
 
-  public ProcessDefinitionEntity getProcessDefinition() {
-    return ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
+  public ProcessDefinition getProcessDefinition() {
+    return ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
   }
 
   public DeploymentEntity getDeployment() {

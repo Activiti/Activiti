@@ -2,9 +2,9 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.DeadLetterJobEntity">
 
-    <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+    <resultMap id="jobResultMap" type="org.activiti5.engine.impl.persistence.entity.DeadLetterJobEntity">
         <id property="id" column="ID_" jdbcType="VARCHAR" />
         <result property="revision" column="REV_" jdbcType="INTEGER" />
         <result property="jobType" column="TYPE_" jdbcType="VARCHAR" />
@@ -21,14 +21,14 @@
         <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
     </resultMap>
 
-    <select id="selectDeadLetterJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    <select id="selectDeadLetterJobByTypeAndProcessDefinitionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select J.*
         from ${prefix}ACT_RU_DEADLETTER_JOB J
         where J.HANDLER_TYPE_ = #{parameter.handlerType}
         and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
     </select>
 
-    <delete id="deleteDeadLetterJob" parameterType="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+    <delete id="deleteDeadLetterJob" parameterType="org.activiti5.engine.impl.persistence.entity.DeadLetterJobEntity">
         delete from ${prefix}ACT_RU_DEADLETTER_JOB where ID_ = #{id} and REV_ = #{revision}
     </delete>
 
@@ -36,13 +36,13 @@
         select * from ${prefix}ACT_RU_DEADLETTER_JOB where ID_ = #{id, jdbcType=VARCHAR}
     </select>
 
-    <select id="selectDeadLetterJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    <select id="selectDeadLetterJobsByExecutionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_DEADLETTER_JOB J
         where J.EXECUTION_ID_ = #{parameter}
     </select>
     
-    <select id="selectDeadLetterJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    <select id="selectDeadLetterJobsByProcessInstanceId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_DEADLETTER_JOB J
         where J.PROCESS_INSTANCE_ID_ = #{parameter}
@@ -50,7 +50,7 @@
 
     <!-- TIMER INSERT -->
   
-  	<insert id="insertDeadLetterJob" parameterType="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+  	<insert id="insertDeadLetterJob" parameterType="org.activiti5.engine.impl.persistence.entity.DeadLetterJobEntity">
     insert into ${prefix}ACT_RU_DEADLETTER_JOB (
             ID_, 
             REV_,
@@ -117,7 +117,7 @@
 	    </foreach>
   	</insert>
 
-    <select id="selectDeadLetterJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
+    <select id="selectDeadLetterJobByQueryCriteria" parameterType="org.activiti5.engine.impl.JobQueryImpl" resultMap="jobResultMap">
         ${limitBefore}
         select RES.* ${limitBetween}
         <include refid="selectDeadLetterJobByQueryCriteriaSql"/>
@@ -125,7 +125,7 @@
         ${limitAfter}
     </select>
 
-    <select id="selectDeadLetterJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
+    <select id="selectDeadLetterJobCountByQueryCriteria" parameterType="org.activiti5.engine.impl.JobQueryImpl" resultType="long">
         select count(distinct RES.ID_)
         <include refid="selectDeadLetterJobByQueryCriteriaSql"/>
     </select>
@@ -184,7 +184,7 @@
         </where>
     </sql>
 
-    <select id="selectDeadLetterJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    <select id="selectDeadLetterJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select J.*
         from ${prefix}ACT_RU_DEADLETTER_JOB J
         inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
@@ -193,7 +193,7 @@
         and (P.TENANT_ID_ = ''  or P.TENANT_ID_ is null)
     </select>
 
-    <select id="selectDeadLetterJobByTypeAndProcessDefinitionKeyAndTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    <select id="selectDeadLetterJobByTypeAndProcessDefinitionKeyAndTenantId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select J.*
         from ${prefix}ACT_RU_DEADLETTER_JOB J
         inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_

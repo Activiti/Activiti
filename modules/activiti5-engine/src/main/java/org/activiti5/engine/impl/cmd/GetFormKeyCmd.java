@@ -57,7 +57,7 @@ public class GetFormKeyCmd implements Command<String> {
   }
 
   public String execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) commandContext
             .getProcessEngineConfiguration()
             .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);
