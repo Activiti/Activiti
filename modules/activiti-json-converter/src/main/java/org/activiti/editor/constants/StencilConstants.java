@@ -65,6 +65,7 @@ public interface StencilConstants {
   final String STENCIL_EVENT_CATCH_MESSAGE = "CatchMessageEvent";
 
   final String STENCIL_EVENT_THROW_SIGNAL = "ThrowSignalEvent";
+  final String STENCIL_EVENT_THROW_COMPENSATION = "ThrowCompensationEvent";
   final String STENCIL_EVENT_THROW_NONE = "ThrowNoneEvent";
 
   final String STENCIL_SEQUENCE_FLOW = "SequenceFlow";
@@ -104,6 +105,8 @@ public interface StencilConstants {
   final String PROPERTY_SIGNALREF = "signalref";
 
   final String PROPERTY_ERRORREF = "errorref";
+
+  final String PROPERTY_ACTIVITYREF = "activityref";
 
   final String PROPERTY_CANCEL_ACTIVITY = "cancelactivity";
 
