@@ -187,15 +187,6 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
-  public void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode) {
-    try {
-      getProcessEngine().getDynamicBpmnService().saveProcessDefinitionInfo(processDefinitionId, infoNode);
-      
-    } catch (org.activiti5.engine.ActivitiException e) {
-      handleActivitiException(e);
-    }
-  }
-  
   public void deleteCandidateStarter(String processDefinitionId, String userId, String groupId) {
     try {
       if (userId != null) {
@@ -956,34 +947,22 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
   }
   
   protected org.activiti5.engine.impl.persistence.entity.JobEntity convertToActiviti5JobEntity(final JobEntity job, final ProcessEngineConfigurationImpl processEngineConfiguration) {
-    org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = processEngineConfiguration.getCommandExecutor().execute(
-        new Command<org.activiti5.engine.impl.persistence.entity.JobEntity>() {
-
-      @Override
-      public org.activiti5.engine.impl.persistence.entity.JobEntity execute(CommandContext commandContext) {
-        org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = new org.activiti5.engine.impl.persistence.entity.JobEntity();
-        
-        activity5Job.setJobType(job.getJobType());
-        activity5Job.setDuedate(job.getDuedate());
-        activity5Job.setExclusive(job.isExclusive());
-        activity5Job.setExecutionId(job.getExecutionId());
-        activity5Job.setId(job.getId());
-        activity5Job.setJobHandlerConfiguration(job.getJobHandlerConfiguration());
-        activity5Job.setJobHandlerType(job.getJobHandlerType());
-        activity5Job.setEndDate(job.getEndDate());
-        activity5Job.setRepeat(job.getRepeat());
-        activity5Job.setProcessDefinitionId(job.getProcessDefinitionId());
-        activity5Job.setProcessInstanceId(job.getProcessInstanceId());
-        activity5Job.setRetries(job.getRetries());
-        activity5Job.setRevision(job.getRevision());
-        activity5Job.setTenantId(job.getTenantId());
-        activity5Job.setExceptionMessage(job.getExceptionMessage());
-        activity5Job.setExceptionStacktrace(job.getExceptionStacktrace());
-        
-        return activity5Job;
-      }
-    });
-    
+    org.activiti5.engine.impl.persistence.entity.JobEntity activity5Job = new org.activiti5.engine.impl.persistence.entity.JobEntity();
+    activity5Job.setJobType(job.getJobType());
+    activity5Job.setDuedate(job.getDuedate());
+    activity5Job.setExclusive(job.isExclusive());
+    activity5Job.setExecutionId(job.getExecutionId());
+    activity5Job.setId(job.getId());
+    activity5Job.setJobHandlerConfiguration(job.getJobHandlerConfiguration());
+    activity5Job.setJobHandlerType(job.getJobHandlerType());
+    activity5Job.setEndDate(job.getEndDate());
+    activity5Job.setRepeat(job.getRepeat());
+    activity5Job.setProcessDefinitionId(job.getProcessDefinitionId());
+    activity5Job.setProcessInstanceId(job.getProcessInstanceId());
+    activity5Job.setRetries(job.getRetries());
+    activity5Job.setRevision(job.getRevision());
+    activity5Job.setTenantId(job.getTenantId());
+    activity5Job.setExceptionMessage(job.getExceptionMessage());
     return activity5Job;
   }
   

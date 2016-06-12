@@ -291,7 +291,7 @@
 
 	<!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause 
 		Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
-	<update id="updateTimerJobTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
+	<update id="updateTimerJobTenantIdForDeployment_mysql" parameterType="java.util.Map">
 		update ${prefix}ACT_RU_TIMER_JOB set
 		TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
 		where

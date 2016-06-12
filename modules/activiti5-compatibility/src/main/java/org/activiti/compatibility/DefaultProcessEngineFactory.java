@@ -93,6 +93,10 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.getJdbcMaxActiveConnections() > 0) {
       activiti5Configuration.setJdbcMaxActiveConnections(activiti6Configuration.getJdbcMaxActiveConnections());
     }
+    
+    if (activiti6Configuration.getDatabaseTablePrefix() != null) {
+      activiti5Configuration.setDatabaseTablePrefix(activiti6Configuration.getDatabaseTablePrefix());
+    }
   }
 
   protected void copyHistoryConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {

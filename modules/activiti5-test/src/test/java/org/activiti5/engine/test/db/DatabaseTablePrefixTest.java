@@ -15,8 +15,9 @@ package org.activiti5.engine.test.db;
 
 import java.sql.Connection;
 
-import org.activiti5.engine.ProcessEngine;
-import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti5.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
@@ -50,6 +51,7 @@ public class DatabaseTablePrefixTest extends TestCase {
             .setDataSource(pooledDataSource)
             .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config1.setDatabaseTablePrefix("SCHEMA1.");
+    config1.setActiviti5CompatibilityEnabled(true);
     ProcessEngine engine1 = config1.buildProcessEngine();
     
     ProcessEngineConfigurationImpl config2 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl
@@ -57,6 +59,7 @@ public class DatabaseTablePrefixTest extends TestCase {
             .setDataSource(pooledDataSource)
             .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema        
     config2.setDatabaseTablePrefix("SCHEMA2.");
+    config2.setActiviti5CompatibilityEnabled(true);
     ProcessEngine engine2 = config2.buildProcessEngine();
     
     // create the tables in SCHEMA1
@@ -71,12 +74,12 @@ public class DatabaseTablePrefixTest extends TestCase {
     engine2.getManagementService().databaseSchemaUpgrade(connection, "", "SCHEMA2");
     connection.close();
 
-    // if I deploy a process to one engine, it is not visible to the other
-    // engine:
+    // if I deploy a process to one engine, it is not visible to the other engine:
     try {
       engine1.getRepositoryService()
         .createDeployment()
         .addClasspathResource("org/activiti5/engine/test/db/oneJobProcess.bpmn20.xml")
+        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
         .deploy();
 
       assertEquals(1, engine1.getRepositoryService().createDeploymentQuery().count());

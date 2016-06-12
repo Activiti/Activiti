@@ -61,8 +61,6 @@ public interface Activiti5CompatibilityHandler {
   
   boolean isProcessDefinitionSuspended(String processDefinitionId);
   
-  void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
-  
   void addCandidateStarter(String processDefinitionId, String userId, String groupId);
   
   void deleteCandidateStarter(String processDefinitionId, String userId, String groupId);

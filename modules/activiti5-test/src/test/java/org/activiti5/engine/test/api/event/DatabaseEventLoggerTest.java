@@ -12,7 +12,6 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.event.logger.EventLogger;
 import org.activiti5.engine.impl.event.logger.handler.Fields;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
@@ -35,10 +34,8 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  super.setUp();
 	  
 	  // Database event logger setup
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  processEngineConfiguration.resetClock();
-    databaseEventLogger = new EventLogger(activiti5ProcessEngineConfig.getClock(), activiti5ProcessEngineConfig.getObjectMapper());
+    databaseEventLogger = new EventLogger(processEngineConfiguration.getClock(), processEngineConfiguration.getObjectMapper());
 	  processEngineConfiguration.getEventDispatcher().addEventListener(databaseEventLogger);
 	}
 	
@@ -51,7 +48,6 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	}
 	
-	@Deployment(resources = {"org/activiti5/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"})
 	public void testDatabaseEvents() throws IOException {
 		Authentication.setAuthenticatedUserId(null);
 		String testTenant = "testTenant";

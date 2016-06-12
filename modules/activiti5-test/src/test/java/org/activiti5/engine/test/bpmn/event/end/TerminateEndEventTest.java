@@ -262,7 +262,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     assertEquals(3, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
     
     // a job for boundary event timer should exist 
-    assertEquals(1L, managementService.createJobQuery().count());
+    assertEquals(1L, managementService.createTimerJobQuery().count());
     
     // Complete sub process task that leads to a terminate end event
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTermInnerTask").singleResult();
@@ -272,6 +272,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
     
     // job for boundary event timer should have been removed  
+    assertEquals(0L, managementService.createTimerJobQuery().count());
     assertEquals(0L, managementService.createJobQuery().count());
     
     // complete outerTask

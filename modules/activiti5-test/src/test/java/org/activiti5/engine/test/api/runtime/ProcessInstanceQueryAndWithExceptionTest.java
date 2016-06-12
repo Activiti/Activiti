@@ -5,10 +5,11 @@ import java.util.List;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.runtime.TimerJobQuery;
 
 public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiTestCase {
 
@@ -24,6 +25,7 @@ public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiT
           .addClasspathResource("org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
           .addClasspathResource("org/activiti5/engine/test/api/runtime/JobErrorCheck.bpmn20.xml")
           .addClasspathResource("org/activiti5/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml")
+          .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
           .deploy();
   }
 
@@ -45,7 +47,7 @@ public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiT
     assertEquals(0, queryWithException.withJobException().list().size());
     
     ProcessInstance processWithException1 = startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1);
-    JobQuery jobQuery1 = managementService.createJobQuery().processInstanceId(processWithException1.getId());
+    TimerJobQuery jobQuery1 = managementService.createTimerJobQuery().processInstanceId(processWithException1.getId());
     assertEquals(1, jobQuery1.withException().count());
     assertEquals(1, jobQuery1.withException().list().size());
     assertEquals(1, queryWithException.withJobException().count());
@@ -53,7 +55,7 @@ public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiT
     assertEquals(processWithException1.getId(), queryWithException.withJobException().list().get(0).getId());
 
     ProcessInstance processWithException2 = startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2);
-    JobQuery jobQuery2 = managementService.createJobQuery().processInstanceId(processWithException2.getId());
+    TimerJobQuery jobQuery2 = managementService.createTimerJobQuery().processInstanceId(processWithException2.getId());
     assertEquals(2, jobQuery2.withException().count());
     assertEquals(2, jobQuery2.withException().list().size());
 

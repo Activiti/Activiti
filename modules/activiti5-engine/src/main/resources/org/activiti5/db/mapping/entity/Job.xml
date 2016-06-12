@@ -359,13 +359,6 @@
       (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{dueDate, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null)
-      
-	 <!--  and (
-	  	    (EXECUTION_ID_ is null)
-	  		or 
-	  		(PI.SUSPENSION_STATE_ = 1)
-      ) 
-        -->
   </update>
     
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause

@@ -96,6 +96,11 @@ public class JobRetryCmd implements Command<Object> {
       String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
       try {
         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, processEngineConfig.getClock());
+        int jobRetries = job.getRetries();
+        if (job.getExceptionMessage() == null) {
+          // change default retries to the ones configured
+          jobRetries = durationHelper.getTimes();
+        }
         
         if (job.getRetries() <= 1) {
           DeadLetterJobEntity deadLetterJob = new DeadLetterJobEntity(job);
@@ -111,13 +116,11 @@ public class JobRetryCmd implements Command<Object> {
          
         if (job.getExceptionMessage() == null) {  // is it the first exception 
           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+ durationHelper.getTimes()+" retries");
-          // then change default retries to the ones configured
-          newJobEntity.setRetries(durationHelper.getTimes());
           
         } else {
           log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
         }
-        newJobEntity.setRetries(job.getRetries() - 1);
+        newJobEntity.setRetries(jobRetries - 1);
          
       } catch (Exception e) {
         throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);

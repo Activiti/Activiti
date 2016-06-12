@@ -6,17 +6,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.engine.impl.variable.BooleanType;
-import org.activiti.engine.impl.variable.DateType;
-import org.activiti.engine.impl.variable.DoubleType;
-import org.activiti.engine.impl.variable.IntegerType;
-import org.activiti.engine.impl.variable.LongStringType;
-import org.activiti.engine.impl.variable.LongType;
-import org.activiti.engine.impl.variable.SerializableType;
-import org.activiti.engine.impl.variable.ShortType;
-import org.activiti.engine.impl.variable.StringType;
-import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
+import org.activiti5.engine.impl.variable.BooleanType;
+import org.activiti5.engine.impl.variable.DateType;
+import org.activiti5.engine.impl.variable.DoubleType;
+import org.activiti5.engine.impl.variable.IntegerType;
+import org.activiti5.engine.impl.variable.LongStringType;
+import org.activiti5.engine.impl.variable.LongType;
+import org.activiti5.engine.impl.variable.SerializableType;
+import org.activiti5.engine.impl.variable.ShortType;
+import org.activiti5.engine.impl.variable.StringType;
+import org.activiti5.engine.impl.variable.UUIDType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
