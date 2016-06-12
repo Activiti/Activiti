@@ -15,6 +15,7 @@ package org.activiti.engine.impl.util;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
@@ -35,15 +36,17 @@ public class ProcessDefinitionUtil {
   }
 
   public static ProcessDefinition getProcessDefinition(String processDefinitionId, boolean checkCacheOnly) {
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     if (checkCacheOnly) {
-      ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
+      ProcessDefinitionCacheEntry cacheEntry = processEngineConfiguration.getProcessDefinitionCache().get(processDefinitionId);
       if (cacheEntry != null) {
         return cacheEntry.getProcessDefinition();
       }
       return null;
+      
     } else {
       // This will check the cache in the findDeployedProcessDefinitionById method
-      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+      return processEngineConfiguration.getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
     }
   }
 

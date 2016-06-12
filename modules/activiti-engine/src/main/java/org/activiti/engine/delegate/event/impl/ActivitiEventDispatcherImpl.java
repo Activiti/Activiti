@@ -13,6 +13,7 @@
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -65,6 +66,14 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
       eventSupport.dispatchEvent(event);
     }
 
+    if (event.getType() == ActivitiEventType.ENTITY_DELETED && event instanceof ActivitiEntityEvent) {
+      ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
+      if (entityEvent.getEntity() instanceof ProcessDefinition) {
+        // process definition deleted event doesn't need to be dispatched to event listeners
+        return;
+      }
+    }
+    
     // Try getting hold of the Process definition, based on the process definition key, if a context is active
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {

@@ -78,6 +78,12 @@
     where J.EXECUTION_ID_ = #{parameter}
   </select>
   
+  <select id="selectJobsByProcessInstanceId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    select *
+    from ${prefix}ACT_RU_JOB J
+    where J.PROCESS_INSTANCE_ID_ = #{parameter}
+  </select>
+  
    <select id="selectJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select J.*
     from ${prefix}ACT_RU_JOB J

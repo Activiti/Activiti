@@ -19,8 +19,8 @@ import java.util.concurrent.Callable;
 
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
@@ -579,8 +579,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
     // ///////////////////////////////////
     // Advance the clock to trigger the timer.
-     final JobQuery jobQuery =
-           managementService.createJobQuery().processInstanceId(userTask.getProcessInstanceId());
+     final TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(userTask.getProcessInstanceId());
      assertEquals(1, jobQuery.count());
 
     // After setting the clock to time '1 hour and 5 seconds', the timer should fire.
@@ -651,8 +650,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     // Verify timer firing.
 
     // After setting the clock to time '2 hours and 5 seconds', the timer should fire.
-    processEngineConfiguration.getClock().setCurrentTime(
-        new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
     waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
       @Override
       public Boolean call() throws Exception {
@@ -664,8 +662,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     assertEquals(1L, jobQuery.count());
 
     // After setting the clock to time '3 hours and 5 seconds', the timer should fire again.
-    processEngineConfiguration.getClock().setCurrentTime(
-        new Date(startTime.getTime() + ((3 * 60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((3 * 60 * 60 * 1000) + 5000)));
     waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
       @Override
       public Boolean call() throws Exception {

@@ -21,8 +21,8 @@ import java.util.Map;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti5.engine.impl.JobQueryImpl;
 import org.activiti5.engine.impl.Page;
+import org.activiti5.engine.impl.TimerJobQueryImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.AbstractManager;
 
@@ -58,8 +58,13 @@ public class TimerJobEntityManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
-  public List<Job> findTimerJobsByExecutionId(String executionId) {
+  public List<TimerJobEntity> findTimerJobsByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectTimerJobsByExecutionId", executionId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<TimerJobEntity> findTimerJobsByProcessInstanceId(String processInstanceId) {
+    return getDbSqlSession().selectList("selectTimerJobsByProcessInstanceId", processInstanceId);
   }
 
   @SuppressWarnings("unchecked")
@@ -74,8 +79,8 @@ public class TimerJobEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
-    final String query = "selectJobByQueryCriteria";
+  public List<Job> findTimerJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page) {
+    final String query = "selectTimerJobByQueryCriteria";
     return getDbSqlSession().selectList(query, jobQuery, page);
   }
 
@@ -104,7 +109,7 @@ public class TimerJobEntityManager extends AbstractManager {
      return getDbSqlSession().selectList("selectTimerJobByTypeAndProcessDefinitionId", params);
   }
 
-  public long findTimerJobCountByQueryCriteria(JobQueryImpl jobQuery) {
+  public long findTimerJobCountByQueryCriteria(TimerJobQueryImpl jobQuery) {
     return (Long) getDbSqlSession().selectOne("selectTimerJobCountByQueryCriteria", jobQuery);
   }
   

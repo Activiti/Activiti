@@ -221,6 +221,8 @@ public class BpmnDeployer implements Deployer {
         }
         processDefinition.setId(processDefinitionId);
         
+        addProcessDefinitionToCache(processDefinition, bpmnModelMap, processEngineConfiguration, commandContext);
+        
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
         			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
@@ -261,21 +263,27 @@ public class BpmnDeployer implements Deployer {
         	processDefinition.setVersion(persistedProcessDefinition.getVersion());
         	processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
         }
+        
+        addProcessDefinitionToCache(processDefinition, bpmnModelMap, processEngineConfiguration, commandContext);
       }
-
-      // Add to cache
-      DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
-      BpmnModel bpmnModel = bpmnModelMap.get(processDefinition.getKey());
-      ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, 
-          bpmnModel.getProcessById(processDefinition.getKey()));
-      deploymentManager.getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
-      addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
       
       createLocalizationValues(processDefinition.getId(), bpmnModelMap.get(processDefinition.getKey()).getProcessById(processDefinition.getKey()));
     }
+  }
+  
+  protected void addProcessDefinitionToCache(ProcessDefinitionEntity processDefinition, Map<String, BpmnModel> bpmnModelMap,
+      ProcessEngineConfigurationImpl processEngineConfiguration, CommandContext commandContext) {
+    
+    // Add to cache
+    DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+    BpmnModel bpmnModel = bpmnModelMap.get(processDefinition.getKey());
+    ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, 
+        bpmnModel.getProcessById(processDefinition.getKey()));
+    deploymentManager.getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
+    addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
   }
   
   protected void addDefinitionInfoToCache(ProcessDefinitionEntity processDefinition, 

@@ -94,30 +94,19 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 	 * values cause an exception when process is started.
 	 */
 	public void testProcessDefinitionListenerDefinitionError() throws Exception {
-		
-		// Deploy process with expression which references an unexisting bean
+	  
+	  // Deploy process with listener which references an unexisting class
 		try {
-			repositoryService.createDeployment().addClasspathResource("org/activiti5/standalone/event/invalidEventListenerExpression.bpmn20.xml")
-				.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
-			  .deploy();
+		  repositoryService.createDeployment().addClasspathResource("org/activiti5/standalone/event/invalidEventListenerClass.bpmn20.xml")
+	        .deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
+	        .deploy();
 			fail("Exception expected");
+			
 		} catch(ActivitiException ae) {
 			assertEquals("Exception while executing event-listener", ae.getMessage());
-			assertTrue(ae.getCause() instanceof ActivitiException);
-			assertEquals("Unknown property used in expression: ${unexistingBean}", ae.getCause().getMessage());
+			assertTrue(ae.getCause() instanceof org.activiti5.engine.ActivitiException);
+			assertEquals("couldn't instantiate class org.activiti5.engine.test.api.event.UnexistingClass", ae.getCause().getMessage());
 		}
-		
-	    // Deploy process with listener which references an unexisting class
-			try {
-				repositoryService.createDeployment().addClasspathResource("org/activiti5/standalone/event/invalidEventListenerClass.bpmn20.xml")
-					.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)
-				  .deploy();
-				fail("Exception expected");
-			} catch(ActivitiException ae) {
-				assertEquals("Exception while executing event-listener", ae.getMessage());
-				assertTrue(ae.getCause() instanceof ActivitiException);
-				assertEquals("couldn't instantiate class org.activiti5.engine.test.api.event.UnexistingClass", ae.getCause().getMessage());
-			}
 	}
 	
 	/**

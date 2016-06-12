@@ -44,6 +44,11 @@ public class SuspendedJobEntityManager extends AbstractManager {
   public List<SuspendedJobEntity> findSuspendedJobsByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectSuspendedJobsByExecutionId", executionId);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<SuspendedJobEntity> findSuspendedJobsByProcessInstanceId(String processInstanceId) {
+    return getDbSqlSession().selectList("selectSuspendedJobsByProcessInstanceId", processInstanceId);
+  }
 
   @SuppressWarnings("unchecked")
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {

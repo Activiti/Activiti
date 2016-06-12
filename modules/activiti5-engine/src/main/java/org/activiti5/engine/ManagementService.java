@@ -24,6 +24,7 @@ import org.activiti5.engine.management.TableMetaData;
 import org.activiti5.engine.management.TablePage;
 import org.activiti5.engine.management.TablePageQuery;
 import org.activiti5.engine.runtime.JobQuery;
+import org.activiti5.engine.runtime.TimerJobQuery;
 
 
 
@@ -67,6 +68,12 @@ public interface ManagementService {
    * to dynamically query the jobs.
    */
   JobQuery createJobQuery();
+  
+  /**
+   * Returns a new TimerJobQuery implementation, that can be used
+   * to dynamically query the timerjobs.
+   */
+  TimerJobQuery createTimerJobQuery();
   
   /** 
    * Forced synchronous execution of a job (eg. for administation or testing)

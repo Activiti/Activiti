@@ -16,10 +16,9 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -100,11 +99,11 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     
-    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) activiti5ProcessConfig.getRepositoryService().
+    ProcessDefinition processDefinition = activiti5ProcessConfig.getRepositoryService().
         createProcessDefinitionQuery().processDefinitionKey("startTimerEventExample").singleResult();
     ActivitiEntityEvent processDefinitionCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition);
 
-    TimerJobEntity timer = (TimerJobEntity) activiti5ProcessConfig.getManagementService().createJobQuery().singleResult();
+    Job timer = activiti5ProcessConfig.getManagementService().createTimerJobQuery().singleResult();
     ActivitiEntityEvent timerCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, timer);
     assertSequence(processDefinitionCreated, timerCreated);
     listener.clearEventsReceived();

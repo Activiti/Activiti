@@ -977,11 +977,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     clock.setCurrentTime(new Date(startTime.getTime() + 61000L));
     processEngineConfiguration.setClock(clock); // timer is set to one minute
-    List<Job> timers = managementService.createJobQuery().list();
+    List<Job> timers = managementService.createTimerJobQuery().list();
     assertEquals(5, timers.size());
     
     // Execute all timers one by one (single thread vs thread pool of job executor, which leads to optimisticlockingexceptions!)
     for (Job timer : timers) {
+      managementService.moveTimerToExecutableJob(timer.getId());
       managementService.executeJob(timer.getId());
     }
     

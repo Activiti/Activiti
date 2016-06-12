@@ -14,15 +14,19 @@ package org.activiti5.engine.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti5.engine.impl.persistence.entity.JobEntity;
+import org.activiti5.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.runtime.Execution;
 
 /**
@@ -44,8 +48,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
       throw new ActivitiIllegalArgumentException("ProcessInstanceId cannot be null.");
     }
     
-    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager()
-      .findExecutionById(executionId);
+    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(executionId);
 
     if(executionEntity == null) {
       throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '"+executionId+"'.", Execution.class);
@@ -68,6 +71,37 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(executionId);
     for (TaskEntity taskEntity : tasks) {
       SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
+    }
+    
+    if (getNewState() == SuspensionState.ACTIVE) {
+      List<SuspendedJobEntity> suspendedJobs = commandContext.getSuspendedJobEntityManager().findSuspendedJobsByProcessInstanceId(executionId);
+      for (SuspendedJobEntity suspendedJob : suspendedJobs) {
+        if (Job.JOB_TYPE_TIMER.equals(suspendedJob.getJobType())) {
+          TimerJobEntity timerJob = new TimerJobEntity(suspendedJob);
+          commandContext.getTimerJobEntityManager().insert(timerJob);
+          commandContext.getSuspendedJobEntityManager().delete(suspendedJob);
+          
+        } else {
+          JobEntity job = new JobEntity(suspendedJob);
+          commandContext.getJobEntityManager().insert(job);
+          commandContext.getSuspendedJobEntityManager().delete(suspendedJob);
+        }
+      }
+      
+    } else {
+      List<TimerJobEntity> timerJobs = commandContext.getTimerJobEntityManager().findTimerJobsByProcessInstanceId(executionId);
+      for (TimerJobEntity timerJob : timerJobs) {
+        SuspendedJobEntity suspendedJob = new SuspendedJobEntity(timerJob);
+        commandContext.getSuspendedJobEntityManager().insert(suspendedJob);
+        commandContext.getTimerJobEntityManager().delete(timerJob);
+      }
+      
+      List<JobEntity> jobs = commandContext.getJobEntityManager().findJobsByProcessInstanceId(executionId);
+      for (JobEntity job : jobs) {
+        SuspendedJobEntity suspendedJob = new SuspendedJobEntity(job);
+        commandContext.getSuspendedJobEntityManager().insert(suspendedJob);
+        commandContext.getJobEntityManager().delete(job);
+      }
     }
     
     return null;

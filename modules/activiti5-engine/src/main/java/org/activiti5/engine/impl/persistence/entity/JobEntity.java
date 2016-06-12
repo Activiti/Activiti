@@ -33,6 +33,28 @@ public class JobEntity extends AbstractJobEntity {
 
   protected String lockOwner = null;
   protected Date lockExpirationTime = null;
+  
+  public JobEntity() {}
+  
+  public JobEntity(AbstractJobEntity te) {
+    this.id = te.getId();
+    this.jobType = te.getJobType();
+    this.revision = te.getRevision();
+    this.jobHandlerConfiguration = te.getJobHandlerConfiguration();
+    this.jobHandlerType = te.getJobHandlerType();
+    this.isExclusive = te.isExclusive();
+    this.repeat = te.getRepeat();
+    this.retries = te.getRetries();
+    this.endDate = te.getEndDate();
+    this.executionId = te.getExecutionId();
+    this.processInstanceId = te.getProcessInstanceId();
+    this.processDefinitionId = te.getProcessDefinitionId();
+    this.exceptionMessage = te.getExceptionMessage();
+    setExceptionStacktrace(te.getExceptionStacktrace());
+
+    // Inherit tenant
+    this.tenantId = te.getTenantId();
+  }
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;

@@ -90,27 +90,18 @@ public class JobEntityManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
-  public List<JobEntity> findNextTimerJobsToExecute(Page page) {
-    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
-    Date now = processEngineConfig.getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
-    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
-    Date now = processEngineConfig.getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
-  }
-  
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
   	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
   
   @SuppressWarnings("unchecked")
-  public List<Job> findJobsByExecutionId(String executionId) {
+  public List<JobEntity> findJobsByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectJobsByExecutionId", executionId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findJobsByProcessInstanceId(String processInstanceId) {
+    return getDbSqlSession().selectList("selectJobsByProcessInstanceId", processInstanceId);
   }
   
   @SuppressWarnings("unchecked")

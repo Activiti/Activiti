@@ -84,6 +84,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       } else if (getProcessDefinitionSuspensionState() == SuspensionState.SUSPENDED) {
         activiti5CompatibilityHandler.suspendProcessDefinition(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
       }
+      return null;
     }
 
     if (executionDate != null) { // Process definition state change is delayed
