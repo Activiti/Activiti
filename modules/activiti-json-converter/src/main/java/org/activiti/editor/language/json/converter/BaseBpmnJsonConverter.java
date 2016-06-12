@@ -143,6 +143,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 }
             }
 
+            propertiesNode.put(PROPERTY_ISFORCOMPENSATION, activity.isForCompensation());
+
             if (activity instanceof UserTask) {
                 BpmnJsonConverterUtil.convertListenersToJson(((UserTask) activity).getTaskListeners(), false, propertiesNode);
             }
@@ -293,6 +295,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                     multiInstanceObject.setCompletionCondition(multiInstanceCondition);
                     activity.setLoopCharacteristics(multiInstanceObject);
                 }
+
+                activity.setForCompensation(getPropertyValueAsBoolean(PROPERTY_ISFORCOMPENSATION,elementNode));
                 
             } else if (baseElement instanceof Gateway) {
                 JsonNode flowOrderNode = getProperty(PROPERTY_SEQUENCEFLOW_ORDER, elementNode);
