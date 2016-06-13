@@ -856,10 +856,11 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
              || activityId.equalsIgnoreCase("has_bad_pixel_pattern")
              || activityId.equalsIgnoreCase("")) {
                continue;
-             }
-         System.out.println("Current Activity:" + activityId);
+         }
+         
          runtimeService.trigger(execution.getId());
        }
+       
        processInstance =
            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
      }
