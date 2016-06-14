@@ -35,7 +35,6 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.TimerUtil;
-import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -241,7 +240,7 @@ public class DefaultJobManager implements JobManager {
       execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
     }
 
-    Map<String, JobHandler> jobHandlers = getProcessEngineConfiguration().getJobHandlers();
+    Map<String, JobHandler> jobHandlers = processEngineConfiguration.getJobHandlers();
     JobHandler jobHandler = jobHandlers.get(jobEntity.getJobHandlerType());
     jobHandler.execute(jobEntity, jobEntity.getJobHandlerConfiguration(), execution, getCommandContext());
   }
@@ -255,11 +254,11 @@ public class DefaultJobManager implements JobManager {
       String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(timerEntity.getJobHandlerConfiguration());
 
       if (endDateExpressionString != null) {
-        Expression endDateExpression = getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
+        Expression endDateExpression = processEngineConfiguration.getExpressionManager().createExpression(endDateExpressionString);
 
         String endDateString = null;
 
-        BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+        BusinessCalendar businessCalendar = processEngineConfiguration.getBusinessCalendarManager().getBusinessCalendar(
             getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
 
         if (endDateExpression != null) {
@@ -330,7 +329,7 @@ public class DefaultJobManager implements JobManager {
   }
    
   protected boolean isValidTime(JobEntity timerEntity, Date newTimerDate, VariableScope variableScope) {
-    BusinessCalendar businessCalendar = getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+    BusinessCalendar businessCalendar = processEngineConfiguration.getBusinessCalendarManager().getBusinessCalendar(
         getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.validateDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations(), timerEntity.getEndDate(), newTimerDate);
   }
@@ -371,7 +370,7 @@ public class DefaultJobManager implements JobManager {
   protected void fillDefaultAsyncJobInfo(JobEntity jobEntity, ExecutionEntity execution, boolean exclusive) {
     jobEntity.setJobType(JobEntity.JOB_TYPE_MESSAGE);
     jobEntity.setRevision(1);
-    jobEntity.setRetries(getProcessEngineConfiguration().getAsyncExecutorNumberOfRetries());
+    jobEntity.setRetries(processEngineConfiguration.getAsyncExecutorNumberOfRetries());
     jobEntity.setExecutionId(execution.getId());
     jobEntity.setProcessInstanceId(execution.getProcessInstanceId());
     jobEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
@@ -447,20 +446,12 @@ public class DefaultJobManager implements JobManager {
     return Context.getCommandContext();
   }
   
-  protected ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    return getCommandContext().getProcessEngineConfiguration();
-  }
-  
   protected AsyncExecutor getAsyncExecutor() {
-    return getProcessEngineConfiguration().getAsyncExecutor();
+    return processEngineConfiguration.getAsyncExecutor();
   }
   
   protected ExecutionEntityManager getExecutionEntityManager() {
-    return getProcessEngineConfiguration().getExecutionEntityManager();
+    return processEngineConfiguration.getExecutionEntityManager();
   }
   
-  protected Clock getClock() {
-    return getProcessEngineConfiguration().getClock();
-  }
-
 }
