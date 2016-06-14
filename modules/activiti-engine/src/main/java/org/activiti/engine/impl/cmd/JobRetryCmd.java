@@ -75,7 +75,7 @@ public class JobRetryCmd implements Command<Object> {
       if (job.getRetries() <= 1) {
         newJobEntity = commandContext.getJobManager().moveJobToDeadLetterJob(job);
       } else {
-        newJobEntity = commandContext.getJobManager().moveJobToTimerJob(job);
+        newJobEntity = commandContext.getJobManager().transformJobToTimerJob(job);
       }
       
       newJobEntity.setRetries(job.getRetries() - 1);
@@ -99,7 +99,7 @@ public class JobRetryCmd implements Command<Object> {
         if (jobRetries <= 1) {
           newJobEntity = commandContext.getJobManager().moveJobToDeadLetterJob(job);
         } else {
-          newJobEntity = commandContext.getJobManager().moveJobToTimerJob(job);
+          newJobEntity = commandContext.getJobManager().transformJobToTimerJob(job);
         }
         
         newJobEntity.setDuedate(durationHelper.getDateAfter());

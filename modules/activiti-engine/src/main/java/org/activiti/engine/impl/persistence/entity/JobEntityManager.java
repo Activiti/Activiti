@@ -16,37 +16,64 @@ import java.util.List;
 
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.asyncexecutor.AcquireTimerJobsRunnable;
+import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.runtime.Job;
 
 /**
+ * {@link EntityManager} responsible for the {@link JobEntity} class.
+ * 
  * @author Joram Barrez
  */
 public interface JobEntityManager extends EntityManager<JobEntity> {
   
-  List<JobEntity> findNextJobsToExecute(Page page);
+  /**
+   * Returns {@link JobEntity} that are eligble to be executed.
+   * 
+   * For example used by the default {@link AcquireJobsCmd} command used by 
+   * the default {@link AcquireTimerJobsRunnable} implementation to get async jobs 
+   * that can be executed.
+   */
+  List<JobEntity> findJobsToExecute(Page page);
 
+  /**
+   * Returns all {@link JobEntity} instances related to on {@link ExecutionEntity}. 
+   */
   List<JobEntity> findJobsByExecutionId(String executionId);
   
+  /**
+   * Returns all {@link JobEntity} instances related to one process instance {@link ExecutionEntity}. 
+   */
   List<JobEntity> findJobsByProcessInstanceId(String processInstanceId);
 
-  List<JobEntity> findExclusiveJobsToExecute(String processInstanceId);
-  
+  /**
+   * Returns all {@link JobEntity} instance which are expired, which means 
+   * that the lock time of the {@link JobEntity} is past a certain configurable
+   * date and is deemed to be in error. 
+   */
   List<JobEntity> findExpiredJobs(Page page);
   
-  void unacquireJob(String jobId);
-
+  /**
+   * Executes a {@link JobQueryImpl} and returns the matching {@link JobEntity} instances.
+   */
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
 
-  List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds);
-
-  List<Job> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);
-
-  List<Job> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId);
-
-  List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
-
+  /**
+   * Same as {@link #findJobsByQueryCriteria(JobQueryImpl, Page)}, but only returns a count 
+   * and not the instances itself.
+   */
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
   
+  /**
+   * Unacquires a job. This means that the job before was 'acquired', meaning
+   * a lock owner and lock time was set. Calling this method for a {@link JobEntity}
+   * removes this lock owner and time, thus allowing other executors to pick it up. 
+   */
+  void unacquireJob(String jobId);
+  
+  /**
+   * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}. 
+   */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
   
 }

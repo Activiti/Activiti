@@ -61,9 +61,9 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<TimerJobEntity> selectTimerJobsToDueDate(Page page) {
+  public List<TimerJobEntity> findTimerJobsToExecute(Page page) {
     Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectTimerJobsToDueDate", now, page);
+    return getDbSqlSession().selectList("selectTimerJobsToExecute", now, page);
   }
   
   @Override

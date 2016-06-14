@@ -40,21 +40,6 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
   }
 
   @Override
-  public List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
-  }
-  
-  @Override
-  public List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(jobHandlerType, processDefinitionKey);
-  }
-  
-  @Override
-  public List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyAndTenantId(jobHandlerType, processDefinitionKey, tenantId);
-  }
-  
-  @Override
   public List<DeadLetterJobEntity> findJobsByExecutionId(String id) {
     return jobDataManager.findJobsByExecutionId(id);
   }

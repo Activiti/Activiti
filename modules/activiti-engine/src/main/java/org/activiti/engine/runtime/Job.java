@@ -18,7 +18,7 @@ import java.util.Date;
 import org.activiti.engine.ManagementService;
 
 /**
- * Represents one job (timer, message, etc.).
+ * Represents one job (timer, async job, etc.).
  * 
  * @author Joram Barrez
  */

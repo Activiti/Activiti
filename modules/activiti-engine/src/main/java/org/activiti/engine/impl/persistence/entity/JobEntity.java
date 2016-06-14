@@ -15,8 +15,8 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 /**
- * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
- *
+ * Represents an async job: a piece of logic that needs to be executed asynchronously. 
+ * 
  * @author Tijs Rademakers
  * @author Joram Barrez
  */

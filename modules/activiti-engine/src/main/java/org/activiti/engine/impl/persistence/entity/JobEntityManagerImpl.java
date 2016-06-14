@@ -64,8 +64,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     super.insert(jobEntity, fireCreateEvent);
   }
 
-  public List<JobEntity> findNextJobsToExecute(Page page) {
-    return jobDataManager.findNextJobsToExecute(page); 
+  public List<JobEntity> findJobsToExecute(Page page) {
+    return jobDataManager.findJobsToExecute(page); 
   }
 
   @Override
@@ -79,11 +79,6 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
 
   @Override
-  public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
-    return jobDataManager.findExclusiveJobsToExecute(processInstanceId);
-  }
-  
-  @Override
   public List<JobEntity> findExpiredJobs(Page page) {
     return jobDataManager.findExpiredJobs(page);
   }
@@ -96,26 +91,6 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   @Override
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
     return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
-  }
-  
-  @Override
-  public List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds) {
-   return jobDataManager.findJobsByTypeAndProcessDefinitionIds(jobHandlerType, processDefinitionIds);
-  }
-  
-  @Override
-  public List<Job> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(jobHandlerType, processDefinitionKey);
-  }
-  
-  @Override
-  public List<Job> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyAndTenantId(jobHandlerType, processDefinitionKey, tenantId);
-  }
-  
-  @Override
-  public List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-     return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
   }
   
   @Override

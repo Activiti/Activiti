@@ -63,16 +63,6 @@ public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLet
   }
   
   @Override
-  @SuppressWarnings("unchecked")
-  public List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-    Map<String, String> params = new HashMap<String, String>(2);
-    params.put("handlerType", jobHandlerType);
-    params.put("processDefinitionId", processDefinitionId);
-    return getDbSqlSession().selectList("selectDeadLetterJobByTypeAndProcessDefinitionId", params);
-
-  }
-
-  @Override
   public List<DeadLetterJobEntity> findJobsByExecutionId(final String executionId) {
     return getList("selectDeadLetterJobsByExecutionId", executionId, new CachedEntityMatcher<DeadLetterJobEntity>() {
 
@@ -81,25 +71,6 @@ public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLet
         return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
       }
     }, true);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-    Map<String, String> params = new HashMap<String, String>(2);
-    params.put("handlerType", jobHandlerType);
-    params.put("processDefinitionKey", processDefinitionKey);
-    return getDbSqlSession().selectList("selectDeadLetterJobByTypeAndProcessDefinitionKeyNoTenantId", params);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-    Map<String, String> params = new HashMap<String, String>(3);
-    params.put("handlerType", jobHandlerType);
-    params.put("processDefinitionKey", processDefinitionKey);
-    params.put("tenantId", tenantId);
-    return getDbSqlSession().selectList("selectDeadLetterJobByTypeAndProcessDefinitionKeyAndTenantId", params);
   }
 
   @Override

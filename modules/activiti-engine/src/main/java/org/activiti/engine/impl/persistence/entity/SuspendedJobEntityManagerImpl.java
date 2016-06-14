@@ -40,21 +40,6 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
   }
 
   @Override
-  public List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
-  }
-  
-  @Override
-  public List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(jobHandlerType, processDefinitionKey);
-  }
-  
-  @Override
-  public List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-    return jobDataManager.findJobsByTypeAndProcessDefinitionKeyAndTenantId(jobHandlerType, processDefinitionKey, tenantId);
-  }
-  
-  @Override
   public List<SuspendedJobEntity> findJobsByExecutionId(String id) {
     return jobDataManager.findJobsByExecutionId(id);
   }

@@ -48,7 +48,7 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
   }
   
   @Override
-  public void createAndCalculateNextTimer(JobEntity timerEntity, VariableScope variableScope) {
+  public TimerJobEntity createAndCalculateNextTimer(JobEntity timerEntity, VariableScope variableScope) {
     int repeatValue = calculateRepeatValue(timerEntity);
     if (repeatValue != 0) {
       if (repeatValue > 0) {
@@ -58,14 +58,15 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
       if (newTimer != null && isValidTime(timerEntity, newTimer, variableScope)) {
         TimerJobEntity te = createTimer(timerEntity);
         te.setDuedate(newTimer);
-        insert(te);
+        return te;
       }
     }
+    return null;
   }
 
   @Override
-  public List<TimerJobEntity> selectTimerJobsToDueDate(Page page) {
-    return jobDataManager.selectTimerJobsToDueDate(page);
+  public List<TimerJobEntity> findTimerJobsToExecute(Page page) {
+    return jobDataManager.findTimerJobsToExecute(page);
   }
 
   @Override

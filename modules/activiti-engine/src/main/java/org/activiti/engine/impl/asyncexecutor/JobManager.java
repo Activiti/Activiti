@@ -9,26 +9,80 @@ import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Job;
 
+/**
+ * Contains methods that are not tied to any specific job type (async, timer, suspended or deadletter),
+ * but which are generally applicable or are about going from one type to another.
+ * 
+ * @author Tijs Rademakers
+ * @author Joram Barrez
+ */
 public interface JobManager {
-
-  JobEntity createAsyncJob(ExecutionEntity execution, boolean exclusive);
   
-  void scheduleAsyncJob(JobEntity job);
-  
-  TimerJobEntity createTimerJob(TimerEventDefinition timerEventDefinition, boolean interrupting, 
-      ExecutionEntity execution, String timerEventType, String jobHandlerConfiguration);
-  
-  void scheduleTimerJob(TimerJobEntity timerJob);
-  
-  JobEntity moveTimerJobToExecutableJob(TimerJobEntity timerJob);
-  
-  TimerJobEntity moveJobToTimerJob(AbstractJobEntity job);
-  
-  SuspendedJobEntity moveJobToSuspendedJob(AbstractJobEntity job);
-  
-  AbstractJobEntity activateSuspendedJob(SuspendedJobEntity job);
-  
-  DeadLetterJobEntity moveJobToDeadLetterJob(AbstractJobEntity job);
-  
+  /**
+   * Execute a job, which means that the logic (async logic, timer that fires, etc)
+   * is executed, typically by a background thread of an executor.
+   */
   void execute(Job job);
+
+  /**
+   * Creates an async job for the provided {@link ExecutionEntity}, so that
+   * it can be continued later in a background thread. 
+   */
+  JobEntity createAsyncJob(ExecutionEntity execution, boolean exclusive);
+
+  /**
+   * Schedules and async job. If the {@link AsyncExecutor} is running, it 
+   * can be executed immediately after the transaction. Otherwise it can
+   * be picked up by other executors.
+   */
+  void scheduleAsyncJob(JobEntity job);
+
+  /**
+   * Creates a {@link TimerJobEntity} based on the current {@link ExecutionEntity} and the 
+   * configuration in the {@link TimerEventDefinition}. 
+   */
+  TimerJobEntity createTimerJob(TimerEventDefinition timerEventDefinition, boolean interrupting, ExecutionEntity execution, String timerEventType, String jobHandlerConfiguration);
+
+  /**
+   * Schedules a timer, meaning it will be inserted in the datastore.
+   */
+  void scheduleTimerJob(TimerJobEntity timerJob);
+
+  /**
+   * Transforms a {@link TimerJobEntity} to an async {@link JobEntity}. 
+   * 
+   * This happens for example when the due date of a timer is reached, 
+   * the timer entity then becomes a 'regular' async job that can be 
+   * picked up by the {@link AsyncExecutor}.
+   */
+  JobEntity transformTimerJobToExecutableJob(TimerJobEntity timerJob);
+
+  /**
+   * Transforms an {@link AbstractJobEntity} to a {@link TimerJobEntity}.
+   * 
+   * This happens for example when an async job is executed and fails.
+   * It then becomes a timer, as it needs to be retried later.
+   */
+  TimerJobEntity transformJobToTimerJob(AbstractJobEntity job);
+
+  /**
+   * Transforms an {@link AbstractJobEntity} to a {@link SuspendedJobEntity},
+   * such that the {@link AsyncExecutor} won't pick it up anymore for execution.
+   */
+  SuspendedJobEntity transformJobToSuspendedJob(AbstractJobEntity job);
+
+  /**
+   * Transforms a {@link SuspendedJobEntity} back to an {@link AbstractJobEntity}
+   * (i.e. to what it was originally). The job will now again be able to
+   * picked up by the {@link AsyncExecutor}. 
+   */
+  AbstractJobEntity activateSuspendedJob(SuspendedJobEntity job);
+
+  /**
+   * Transforms an {@link AbstractJobEntity} to a {@link DeadLetterJobEntity}.
+   * This means that the job has been tried a configurable amount of times,
+   * but kept failing.
+   */
+  DeadLetterJobEntity moveJobToDeadLetterJob(AbstractJobEntity job);
+
 }

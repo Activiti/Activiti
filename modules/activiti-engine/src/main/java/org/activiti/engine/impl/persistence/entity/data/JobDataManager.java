@@ -24,25 +24,15 @@ import org.activiti.engine.runtime.Job;
  */
 public interface JobDataManager extends DataManager<JobEntity> {
   
-  List<JobEntity> findNextJobsToExecute(Page page);
+  List<JobEntity> findJobsToExecute(Page page);
 
   List<JobEntity> findJobsByExecutionId(final String executionId);
   
   List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId);
 
-  List<JobEntity> findExclusiveJobsToExecute(String processInstanceId);
-  
   List<JobEntity> findExpiredJobs(Page page);
 
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
   
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 

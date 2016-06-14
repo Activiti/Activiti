@@ -21,13 +21,6 @@
         <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
     </resultMap>
 
-    <select id="selectDeadLetterJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-        select J.*
-        from ${prefix}ACT_RU_DEADLETTER_JOB J
-        where J.HANDLER_TYPE_ = #{parameter.handlerType}
-        and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
-    </select>
-
     <delete id="deleteDeadLetterJob" parameterType="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
         delete from ${prefix}ACT_RU_DEADLETTER_JOB where ID_ = #{id} and REV_ = #{revision}
     </delete>
@@ -183,24 +176,6 @@
             </if>
         </where>
     </sql>
-
-    <select id="selectDeadLetterJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-        select J.*
-        from ${prefix}ACT_RU_DEADLETTER_JOB J
-        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-        where J.HANDLER_TYPE_ = #{parameter.handlerType}
-        and P.KEY_ = #{parameter.processDefinitionKey}
-        and (P.TENANT_ID_ = ''  or P.TENANT_ID_ is null)
-    </select>
-
-    <select id="selectDeadLetterJobByTypeAndProcessDefinitionKeyAndTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-        select J.*
-        from ${prefix}ACT_RU_DEADLETTER_JOB J
-        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-        where J.HANDLER_TYPE_ = #{parameter.handlerType}
-        and P.KEY_ = #{parameter.processDefinitionKey}
-        and P.TENANT_ID_ = #{parameter.tenantId}
-    </select>
 
     <!-- JOB UPDATE STATEMENTS -->
     <update id="updateDeadLetterJobTenantIdForDeployment" parameterType="java.util.Map">

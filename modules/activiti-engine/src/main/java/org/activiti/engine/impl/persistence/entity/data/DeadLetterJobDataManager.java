@@ -24,12 +24,6 @@ import org.activiti.engine.runtime.Job;
  */
 public interface DeadLetterJobDataManager extends DataManager<DeadLetterJobEntity> {
   
-  List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
-  
-  List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);
-  
-  List<DeadLetterJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId);
-
   List<DeadLetterJobEntity> findJobsByExecutionId(String executionId);
 
   List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page);

@@ -96,7 +96,7 @@
 		</where>
 	</sql>
 
-	<select id="selectTimerJobsToDueDate" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+	<select id="selectTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_TIMER_JOB
 		where DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP};

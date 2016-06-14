@@ -111,7 +111,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
       @Override
       public List<TimerJobEntity> execute(CommandContext commandContext) {
-        return processEngineConfiguration.getTimerJobEntityManager().selectTimerJobsToDueDate(new Page(0, 1));
+        return processEngineConfiguration.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
       }
       
     });
@@ -125,7 +125,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
       @Override
       public List<TimerJobEntity> execute(CommandContext commandContext) {
-        return processEngineConfiguration.getTimerJobEntityManager().selectTimerJobsToDueDate(new Page(0, 1));
+        return processEngineConfiguration.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
       }
     });
     
@@ -146,7 +146,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   protected List<TimerJobEntity> executeAcquireJobsCommand() {
     return processEngineConfiguration.getCommandExecutor().execute(new Command<List<TimerJobEntity>>() {
       public List<TimerJobEntity> execute(CommandContext commandContext) {
-        return commandContext.getTimerJobEntityManager().selectTimerJobsToDueDate(new Page(0, 1));
+        return commandContext.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
       }
       
     });

@@ -24,12 +24,6 @@ import org.activiti.engine.runtime.Job;
  */
 public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
   
-  List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
-  
-  List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);
-  
-  List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId);
-
   List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
   
   List<SuspendedJobEntity> findJobsByProcessInstanceId(String processInstanceId);

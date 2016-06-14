@@ -14,8 +14,10 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
+import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
+import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -23,19 +25,30 @@ import org.activiti.engine.runtime.Job;
  */
 public interface SuspendedJobEntityManager extends EntityManager<SuspendedJobEntity> {
   
-  List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionId(String type, String id);
-  
-  List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String type, String processDefinitionKey, String tenantId);
-  
-  List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String type, String processDefinitionKey);
-
+  /**
+   * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
+   */
   List<SuspendedJobEntity> findJobsByExecutionId(String id);
   
+  /**
+   * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}. 
+   */
   List<SuspendedJobEntity> findJobsByProcessInstanceId(String id);
 
+  /**
+   * Executes a {@link JobQueryImpl} and returns the matching {@link SuspendedJobEntity} instances.
+   */
   List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page);
 
+  /**
+   * Same as {@link #findJobsByQueryCriteria(SuspendedJobQueryImpl, Page)}, but only returns a count 
+   * and not the instances itself.
+   */
   long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
   
+  /**
+   * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
+   */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+  
 }

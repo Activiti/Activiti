@@ -98,7 +98,7 @@ public class DefaultJobManager implements JobManager {
   }
   
   @Override
-  public JobEntity moveTimerJobToExecutableJob(TimerJobEntity timerJob) {
+  public JobEntity transformTimerJobToExecutableJob(TimerJobEntity timerJob) {
     if (timerJob == null) {
       throw new ActivitiException("Empty timer job can not be scheduled");
     }
@@ -117,7 +117,7 @@ public class DefaultJobManager implements JobManager {
   }
   
   @Override
-  public TimerJobEntity moveJobToTimerJob(AbstractJobEntity job) {
+  public TimerJobEntity transformJobToTimerJob(AbstractJobEntity job) {
     CommandContext commandContext = Context.getCommandContext();
     TimerJobEntity timerJob = createTimerJobFromOtherJob(job, commandContext);
     commandContext.getTimerJobEntityManager().insert(timerJob);
@@ -132,7 +132,7 @@ public class DefaultJobManager implements JobManager {
   }
   
   @Override
-  public SuspendedJobEntity moveJobToSuspendedJob(AbstractJobEntity job) {
+  public SuspendedJobEntity transformJobToSuspendedJob(AbstractJobEntity job) {
     CommandContext commandContext = Context.getCommandContext();
     SuspendedJobEntity suspendedJob = createSuspendedJobFromOtherJob(job, commandContext);
     commandContext.getSuspendedJobEntityManager().insert(suspendedJob);
@@ -230,7 +230,10 @@ public class DefaultJobManager implements JobManager {
     }
     
     if (timerEntity.getRepeat() != null) {
-      timerJobEntityManager.createAndCalculateNextTimer(timerEntity, variableScope);
+      TimerJobEntity newTimerJobEntity = timerJobEntityManager.createAndCalculateNextTimer(timerEntity, variableScope);
+      if (newTimerJobEntity != null) {
+        timerJobEntityManager.insert(newTimerJobEntity);
+      }
     }
   }
   

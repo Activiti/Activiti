@@ -25,7 +25,7 @@ import org.activiti.engine.runtime.Job;
  */
 public interface TimerJobDataManager extends DataManager<TimerJobEntity> {
   
-  List<TimerJobEntity> selectTimerJobsToDueDate(Page page);
+  List<TimerJobEntity> findTimerJobsToExecute(Page page);
 
   List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
   

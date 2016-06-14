@@ -49,8 +49,8 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   
   @Override
   @SuppressWarnings("unchecked")
-  public List<JobEntity> findNextJobsToExecute(Page page) {
-    return getDbSqlSession().selectList("selectNextJobsToExecute", null, page);
+  public List<JobEntity> findJobsToExecute(Page page) {
+    return getDbSqlSession().selectList("selectJobsToExecute", null, page);
   }
 
   @Override
@@ -71,14 +71,6 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("pid", processInstanceId);
-    return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
-  }
-  
-  @Override
-  @SuppressWarnings("unchecked")
   public List<JobEntity> findExpiredJobs(Page page) {
     Date now = getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectExpiredJobs", now, page);
@@ -89,46 +81,6 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
     final String query = "selectJobByQueryCriteria";
     return getDbSqlSession().selectList(query, jobQuery, page);
-  }
-  
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("handlerType", jobHandlerType);
-    
-    if (processDefinitionIds != null && processDefinitionIds.size() > 0) {
-      params.put("processDefinitionIds", processDefinitionIds);
-    }
-    return getDbSqlSession().selectList("selectJobsByTypeAndProcessDefinitionIds", params);
-  }
-  
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Job> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-     Map<String, String> params = new HashMap<String, String>(2);
-     params.put("handlerType", jobHandlerType);
-     params.put("processDefinitionKey", processDefinitionKey);
-     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionKeyNoTenantId", params);
-  }
-  
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Job> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-     Map<String, String> params = new HashMap<String, String>(3);
-     params.put("handlerType", jobHandlerType);
-     params.put("processDefinitionKey", processDefinitionKey);
-     params.put("tenantId", tenantId);
-     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionKeyAndTenantId", params);
-  }
-  
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-     Map<String, String> params = new HashMap<String, String>(2);
-     params.put("handlerType", jobHandlerType);
-     params.put("processDefinitionId", processDefinitionId);
-     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionId", params);
   }
   
   @Override

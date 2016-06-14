@@ -14,7 +14,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
@@ -58,16 +57,6 @@ public class MybatisSuspendedJobDataManager extends AbstractDataManager<Suspende
   }
   
   @Override
-  @SuppressWarnings("unchecked")
-  public List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
-    Map<String, String> params = new HashMap<String, String>(2);
-    params.put("handlerType", jobHandlerType);
-    params.put("processDefinitionId", processDefinitionId);
-    return getDbSqlSession().selectList("selectSuspendedJobByTypeAndProcessDefinitionId", params);
-
-  }
-
-  @Override
   public List<SuspendedJobEntity> findJobsByExecutionId(final String executionId) {
     return getList("selectSuspendedJobsByExecutionId", executionId, new CachedEntityMatcher<SuspendedJobEntity>() {
 
@@ -82,25 +71,6 @@ public class MybatisSuspendedJobDataManager extends AbstractDataManager<Suspende
   @SuppressWarnings("unchecked")
   public List<SuspendedJobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
     return getDbSqlSession().selectList("selectSuspendedJobsByProcessInstanceId", processInstanceId);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey) {
-    Map<String, String> params = new HashMap<String, String>(2);
-    params.put("handlerType", jobHandlerType);
-    params.put("processDefinitionKey", processDefinitionKey);
-    return getDbSqlSession().selectList("selectSuspendedJobByTypeAndProcessDefinitionKeyNoTenantId", params);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<SuspendedJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId) {
-    Map<String, String> params = new HashMap<String, String>(3);
-    params.put("handlerType", jobHandlerType);
-    params.put("processDefinitionKey", processDefinitionKey);
-    params.put("tenantId", tenantId);
-    return getDbSqlSession().selectList("selectSuspendedJobByTypeAndProcessDefinitionKeyAndTenantId", params);
   }
 
   @Override

@@ -19,8 +19,6 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Job;
 
 /**
- * Stub of the common parts of a Job. You will normally work with a subclass, such as {@link TimerEntity} or {@link JobEntity}.
- *
  * @author Tijs Rademakers
  * @author Joram Barrez
  */

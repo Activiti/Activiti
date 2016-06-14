@@ -22,13 +22,6 @@
         <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
     </resultMap>
 
-    <select id="selectSuspendedJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-        select J.*
-        from ${prefix}ACT_RU_SUSPENDED_JOB J
-        where J.HANDLER_TYPE_ = #{parameter.handlerType}
-        and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
-    </select>
-
     <delete id="deleteSuspendedJob" parameterType="org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl">
         delete from ${prefix}ACT_RU_SUSPENDED_JOB where ID_ = #{id} and REV_ = #{revision}
     </delete>
@@ -191,24 +184,6 @@
             </if>
         </where>
     </sql>
-
-    <select id="selectSuspendedJobByTypeAndProcessDefinitionKeyNoTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-        select J.*
-        from ${prefix}ACT_RU_SUSPENDED_JOB J
-        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-        where J.HANDLER_TYPE_ = #{parameter.handlerType}
-        and P.KEY_ = #{parameter.processDefinitionKey}
-        and (P.TENANT_ID_ = ''  or P.TENANT_ID_ is null)
-    </select>
-
-    <select id="selectSuspendedJobByTypeAndProcessDefinitionKeyAndTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-        select J.*
-        from ${prefix}ACT_RU_SUSPENDED_JOB J
-        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-        where J.HANDLER_TYPE_ = #{parameter.handlerType}
-        and P.KEY_ = #{parameter.processDefinitionKey}
-        and P.TENANT_ID_ = #{parameter.tenantId}
-    </select>
 
     <!-- JOB UPDATE STATEMENTS -->
     <update id="updateSuspendedJobTenantIdForDeployment" parameterType="java.util.Map">
