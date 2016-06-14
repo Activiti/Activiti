@@ -57,7 +57,7 @@ public class DefaultJobManager implements JobManager {
     
     JobEntity jobEntity = null;
     // When the async executor is activated, the job is directly passed on to the async executor thread
-    if (processEngineConfiguration.isAsyncExecutorActivate()) {
+    if (isAsyncExecutorActive()) {
       jobEntity = createLockedAsyncJob(execution, exclusive, commandContext);
       
     } else {
@@ -73,7 +73,7 @@ public class DefaultJobManager implements JobManager {
     commandContext.getJobEntityManager().insert(jobEntity);
     
     // When the async executor is activated, the job is directly passed on to the async executor thread
-    if (processEngineConfiguration.isAsyncExecutorActivate()) {
+    if (isAsyncExecutorActive()) {
       hintAsyncExecutor(jobEntity); 
     }
   }
@@ -110,7 +110,7 @@ public class DefaultJobManager implements JobManager {
     commandContext.getTimerJobEntityManager().delete(timerJob);
     
     // When the async executor is activated, the job is directly passed on to the async executor thread
-    if (processEngineConfiguration.isAsyncExecutorActivate()) {
+    if (isAsyncExecutorActive()) {
       hintAsyncExecutor(executableJob); 
     }
     
@@ -388,7 +388,7 @@ public class DefaultJobManager implements JobManager {
     JobEntity executableJob = commandContext.getJobEntityManager().create();
     copyJobInfo(executableJob, job);
     
-    if (processEngineConfiguration.isAsyncExecutorActivate()) {
+    if (isAsyncExecutorActive()) {
       GregorianCalendar gregorianCalendar = new GregorianCalendar();
       gregorianCalendar.setTime(processEngineConfiguration.getClock().getCurrentTime());
       gregorianCalendar.add(Calendar.MILLISECOND, getAsyncExecutor().getTimerLockTimeInMillis());
@@ -437,6 +437,10 @@ public class DefaultJobManager implements JobManager {
     copyToJob.setTenantId(copyFromJob.getTenantId());
     
     return copyToJob;
+  }
+  
+  protected boolean isAsyncExecutorActive() {
+    return processEngineConfiguration.getAsyncExecutor().isActive();
   }
   
   protected CommandContext getCommandContext() {
