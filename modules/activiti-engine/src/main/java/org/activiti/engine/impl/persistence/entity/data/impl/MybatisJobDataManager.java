@@ -50,8 +50,7 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+    return getDbSqlSession().selectList("selectNextJobsToExecute", null, page);
   }
 
   @Override
@@ -75,7 +74,6 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("pid", processInstanceId);
-    params.put("now", getClock().getCurrentTime());
     return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
   }
   
