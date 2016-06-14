@@ -661,7 +661,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
     
-    if (processEngineConfig.isAsyncExecutorActivate()) {
+    if (processEngineConfig.getAsyncExecutor().isActive()) {
       GregorianCalendar expireCal = new GregorianCalendar();
       expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
       expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());

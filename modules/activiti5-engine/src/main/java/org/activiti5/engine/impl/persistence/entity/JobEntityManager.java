@@ -41,7 +41,7 @@ public class JobEntityManager extends AbstractManager {
 
   public void send(JobEntity message) {
   	message.insert();
-  	if (Context.getProcessEngineConfiguration().isAsyncExecutorActivate()) {
+  	if (Context.getProcessEngineConfiguration().getAsyncExecutor().isActive()) {
   	  hintAsyncExecutor(message);
   	}
   }

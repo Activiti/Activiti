@@ -100,7 +100,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     message.setProcessDefinitionId(getProcessDefinitionId());
     message.setProcessInstanceId(getProcessInstanceId());
     
-    if (Context.getProcessEngineConfiguration().isAsyncExecutorActivate()) {
+    if (Context.getProcessEngineConfiguration().getAsyncExecutor().isActive()) {
       GregorianCalendar expireCal = new GregorianCalendar();
       ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
       expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
