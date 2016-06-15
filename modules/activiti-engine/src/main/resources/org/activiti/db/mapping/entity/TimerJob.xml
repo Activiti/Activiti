@@ -64,7 +64,7 @@
 				and RES.PROC_DEF_ID_ = #{processDefinitionId}
 			</if>
 			<if test="executable">
-				and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+				and RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP}
 			</if>
 			<if test="duedateHigherThan != null">
 				and RES.DUEDATE_ &gt; #{duedateHigherThan}
@@ -99,7 +99,7 @@
 	<select id="selectTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_TIMER_JOB
-		where DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP};
+		where DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP};
 	</select>
 
 	<!-- TIMER INSERT -->
