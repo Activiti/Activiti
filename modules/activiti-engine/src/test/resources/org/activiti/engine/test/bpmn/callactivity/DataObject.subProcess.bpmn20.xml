@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="DataObject_subProcess" isExecutable="true">
+    <dataObject id="subVariable" name="subVariable" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <activiti:value>subVariable</activiti:value>
+      </extensionElements>
+    </dataObject>
+    <startEvent id="startevent1" name="start1"/>
+    <scriptTask id="script1_in_childProcess" name="script1_for_child_task1" activiti:async="false" scriptFormat="groovy" activiti:autoStoreVariables="true">
+      <script>
+System.out.println("groovy start---------");
+System.out.println("subVariable is :" + subVariable);
+System.out.println("fatherVariable from father_process is :" + fatherVariable);
+System.out.println("groovy end---------");</script>
+    </scriptTask>
+    <endEvent id="endevent1" name="end"/>
+    <sequenceFlow id="sid-A2938BB5-FDB0-406B-B254-385829F890A7" sourceRef="startevent1" targetRef="script1_in_childProcess"/>
+    <sequenceFlow id="sid-061BAEA5-53EF-4D54-8991-3BF1DEE1EE62" sourceRef="script1_in_childProcess" targetRef="endevent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_subprocess">
+    <bpmndi:BPMNPlane bpmnElement="subprocess" id="BPMNPlane_subprocess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="105.0" y="188.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="script1_in_childProcess" id="BPMNShape_script1_in_childProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="360.0" y="191.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-061BAEA5-53EF-4D54-8991-3BF1DEE1EE62" id="BPMNEdge_sid-061BAEA5-53EF-4D54-8991-3BF1DEE1EE62">
+        <omgdi:waypoint x="295.0" y="205.0"/>
+        <omgdi:waypoint x="360.0" y="205.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A2938BB5-FDB0-406B-B254-385829F890A7" id="BPMNEdge_sid-A2938BB5-FDB0-406B-B254-385829F890A7">
+        <omgdi:waypoint x="134.99808036856138" y="203.239969285897"/>
+        <omgdi:waypoint x="195.0" y="204.2"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

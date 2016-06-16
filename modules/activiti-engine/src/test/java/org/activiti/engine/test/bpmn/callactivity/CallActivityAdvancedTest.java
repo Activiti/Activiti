@@ -341,5 +341,16 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     assertNotNull(taskList);
     assertEquals(0, taskList.size());
   }
+  
+  /**
+   * Test case for sub process with DataObject
+   */
+  @Deployment(resources = {
+    "org/activiti/engine/test/bpmn/callactivity/DataObject.fatherProcess.bpmn20.xml", 
+    "org/activiti/engine/test/bpmn/callactivity/DataObject.subProcess.bpmn20.xml" })
+  public void testDataObject() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("DataObject_fatherProcess");
+	assertNotNull(processInstance);
+  }
     
 }
