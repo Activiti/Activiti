@@ -90,4 +90,8 @@ public interface AsyncExecutor {
   
   void setRetryWaitTimeInMillis(int retryWaitTimeInMillis);
   
+  int getResetExpiredJobsInterval();
+
+  void setResetExpiredJobsInterval(int resetExpiredJobsInterval);
+  
 }

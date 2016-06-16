@@ -33,9 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests specifically for the {@link AsyncExecutor}.
  * 
- * Note that all tests with jobs already use this async executor, so this is really all the 'edgy' cases here.
- * 
- * @author jbarrez
+ * @author Joram Barrez
  */
 public class AsyncExecutorTest {
 
@@ -258,7 +256,7 @@ public class AsyncExecutorTest {
     }
   }
 
-  // Helpers
+  // Helpers ////////////////////////////////////////////////////////
 
   private ProcessEngine createProcessEngine(boolean enableAsyncExecutor) {
     return createProcessEngine(enableAsyncExecutor, null);

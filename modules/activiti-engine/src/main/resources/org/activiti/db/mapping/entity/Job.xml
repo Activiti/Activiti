@@ -11,7 +11,7 @@
 		<result property="revision" column="REV_" jdbcType="INTEGER" />
 		<result property="jobType" column="TYPE_" jdbcType="VARCHAR" />
 		<result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
-	    <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
+	  <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
 		<result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
 		<result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
 		<result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
@@ -124,6 +124,12 @@
 			</if>
 			<if test="exceptionMessage">
 				and RES.EXCEPTION_MSG_ = #{exceptionMessage}
+			</if>
+			<if test="onlyLocked">
+			  and RES.LOCK_EXP_TIME_ is not null
+			</if>
+			<if test="onlyUnlocked">
+			  and RES.LOCK_EXP_TIME_ is null
 			</if>
 			<if test="tenantId != null">
 				and RES.TENANT_ID_ = #{tenantId}
@@ -325,10 +331,15 @@
 	</update>
 	
 	<update id="unacquireJob" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-    	update ${prefix}ACT_RU_JOB
-    	set LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null
-    	where ID_ = #{id,jdbcType=VARCHAR}
-  	</update>
+    update ${prefix}ACT_RU_JOB
+    set LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="resetExpiredJobs" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    update ${prefix}ACT_RU_JOB set LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null 
+    where LOCK_EXP_TIME_ is not null and LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP}
+  </update>
 	
 	<select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *

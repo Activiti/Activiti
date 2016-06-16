@@ -681,6 +681,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * {@link DefaultAsyncJobExecutor}).
    */
   protected int asyncExecutorLockRetryWaitTimeInMillis = 500;
+  
+  /**
+   * The amount of time (in mulliseconds) that is between two consecutive checks
+   * of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time)
+   * was written by some executor, but the job was never completed.
+   * 
+   * During such a check, jobs that are expired are again made availabe,
+   * meaning the lock owner and lock time will be removed. Other executors
+   * will now be able to pick it up.
+   * 
+   * A job is deemed expired if the lock time is before the current date.
+   * 
+   * By default one minute.
+   */
+  protected int asyncExecutorCheckExpiredJobsInterval = 60 * 1000;
  
  /**
   * Allows to define a custom factory for creating the {@link Runnable} that is executed by the async executor.
@@ -1919,6 +1934,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       
       // Retry
       defaultAsyncExecutor.setRetryWaitTimeInMillis(asyncExecutorLockRetryWaitTimeInMillis);
+      
+      // Reset expired
+      defaultAsyncExecutor.setCheckExpiredJobsInterval(asyncExecutorCheckExpiredJobsInterval);
       
       // Shutdown
       defaultAsyncExecutor.setSecondsToWaitOnShutdown(asyncExecutorSecondsToWaitOnShutdown);
@@ -3858,6 +3876,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setAsyncExecutorLockRetryWaitTimeInMillis(int asyncExecutorLockRetryWaitTimeInMillis) {
     this.asyncExecutorLockRetryWaitTimeInMillis = asyncExecutorLockRetryWaitTimeInMillis;
+    return this;
+  }
+  
+  public int getAsyncExecutorCheckExpiredJobsInterval() {
+    return asyncExecutorCheckExpiredJobsInterval;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorCheckExpiredJobsInterval(int asyncExecutorCheckExpiredJobsInterval) {
+    this.asyncExecutorCheckExpiredJobsInterval = asyncExecutorCheckExpiredJobsInterval;
     return this;
   }
 

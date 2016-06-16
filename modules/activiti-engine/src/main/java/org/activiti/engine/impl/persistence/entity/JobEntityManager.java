@@ -72,6 +72,12 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
   void unacquireJob(String jobId);
   
   /**
+   * Resets all expired jobs. These are jobs that were locked, but not completed.
+   * Resetting these will make them available for being picked up by other executors.
+   */
+  void resetExpiredJobs();
+  
+  /**
    * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}. 
    */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);

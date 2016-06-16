@@ -73,6 +73,16 @@ public interface JobQuery extends Query<JobQuery, Job> {
    * Only select jobs that do not have a tenant id.
    */
   JobQuery jobWithoutTenantId();
+  
+  /**
+   * Only return jobs that are locked (i.e. they are acquired by an executor).
+   */
+  JobQuery locked();
+  
+  /**
+   * Only return jobs that are not locked.
+   */
+  JobQuery unlocked();
 
   // sorting //////////////////////////////////////////
 

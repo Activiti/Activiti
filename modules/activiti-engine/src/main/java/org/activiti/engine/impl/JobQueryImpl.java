@@ -50,6 +50,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected boolean noRetriesLeft;
+  protected boolean onlyLocked;
+  protected boolean onlyUnlocked;
 
   public JobQueryImpl() {
   }
@@ -198,6 +200,16 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     this.withoutTenantId = true;
     return this;
   }
+  
+  public JobQuery locked() {
+    this.onlyLocked = true;
+    return this;
+  }
+  
+  public JobQuery unlocked() {
+    this.onlyUnlocked = true;
+    return this;
+  }
 
   // sorting //////////////////////////////////////////
 
@@ -317,6 +329,14 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
 
   public boolean isNoRetriesLeft() {
     return noRetriesLeft;
+  }
+  
+  public boolean isOnlyLocked() {
+    return onlyLocked;
+  }
+  
+  public boolean isOnlyUnlocked() {
+    return onlyUnlocked;
   }
   
 }

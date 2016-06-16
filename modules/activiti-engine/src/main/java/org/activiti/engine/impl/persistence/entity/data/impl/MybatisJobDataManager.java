@@ -103,4 +103,11 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     getDbSqlSession().update("unacquireJob", params);
   }
   
+  @Override
+  public void resetExpiredJobs() {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    Date now = getClock().getCurrentTime();
+    getDbSqlSession().update("resetExpiredJobs", now);
+  }
+  
 }
