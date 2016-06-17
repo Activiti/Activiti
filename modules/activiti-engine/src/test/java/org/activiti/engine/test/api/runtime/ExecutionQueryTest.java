@@ -1552,7 +1552,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals("SubProcess Description 'en'", execution.getDescription());
     
     
-    infoNode = dynamicBpmnService.changeLocalizationName("en-US", "executionLocalization", "Process Name 'en-US'");
+    dynamicBpmnService.changeLocalizationName("en-US", "executionLocalization", "Process Name 'en-US'", infoNode);
     dynamicBpmnService.changeLocalizationDescription("en-US", "executionLocalization", "Process Description 'en-US'", infoNode);
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
     
@@ -1561,13 +1561,13 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
     
-//    execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).locale("en-US").singleResult();
-//    assertEquals("Process Name 'en-US'", execution.getName());
-//    assertEquals("Process Description 'en-US'", execution.getDescription());
-//
-//    execution = runtimeService.createExecutionQuery().executionId(subProcessId).locale("en-US").singleResult();
-//    assertEquals("SubProcess Name 'en-US'", execution.getName());
-//    assertEquals("SubProcess Description 'en-US'", execution.getDescription());
+    execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).locale("en-US").singleResult();
+    assertEquals("Process Name 'en-US'", execution.getName());
+    assertEquals("Process Description 'en-US'", execution.getDescription());
+
+    execution = runtimeService.createExecutionQuery().executionId(subProcessId).locale("en-US").singleResult();
+    assertEquals("SubProcess Name 'en-US'", execution.getName());
+    assertEquals("SubProcess Description 'en-US'", execution.getDescription());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
