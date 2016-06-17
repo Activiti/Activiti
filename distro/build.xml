@@ -170,9 +170,6 @@
 			<fileset dir="../modules/activiti-jmx/target">
 				<include name="activiti-jmx-*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-crystalball/target">
-				<include name="activiti-crystalball-*.jar" />
-			</fileset>
 		</copy>
 
 	</target>

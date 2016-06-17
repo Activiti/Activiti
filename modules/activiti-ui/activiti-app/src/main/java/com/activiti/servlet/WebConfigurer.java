@@ -56,15 +56,25 @@ public class WebConfigurer implements ServletContextListener {
         ServletContext servletContext = sce.getServletContext();
 
         AnnotationConfigWebApplicationContext rootContext = null;
-
-        if(context == null) {
+        
+        if (context == null) {
             rootContext = new AnnotationConfigWebApplicationContext();
             rootContext.register(ApplicationConfiguration.class);
+            
+            if (rootContext.getServletContext() == null) {
+              rootContext.setServletContext(servletContext);
+            }
+            
             rootContext.refresh();
+            context = rootContext;
+            
         } else {
             rootContext = context;
+            if (rootContext.getServletContext() == null) {
+              rootContext.setServletContext(servletContext);
+            }
         }
-
+        
         servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, rootContext);
 
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);

@@ -25,13 +25,14 @@ The distribution contains most of the sources as jar files. The source code of A
 
 === Required software
 
-==== JDK 6+
+==== JDK 7+
 
-Activiti runs on a JDK higher than or equal to version 6.  Go to link:$$http://www.oracle.com/technetwork/java/javase/downloads/index.html$$[Oracle Java SE downloads] and click on button "Download JDK".  There are installation instructions on that page as well. To verify that your installation was successful, run +java -version+ on the command line.  That should print the installed version of your JDK.
+Activiti runs on a JDK higher than or equal to version 7.  Go to link:$$http://www.oracle.com/technetwork/java/javase/downloads/index.html$$[Oracle Java SE downloads] and click on button "Download JDK".  There are installation instructions on that page as well. To verify that your installation was successful, run +java -version+ on the command line.  That should print the installed version of your JDK.
 
 
-==== Eclipse Indigo and Juno
+==== IDE
 
+Activiti development can be done with the IDE of your choice. If you would like to use the Activiti Designer then you need Eclipse Kepler or Luna.
 Download the eclipse distribution of your choice from link:$$http://www.eclipse.org/downloads/$$[the Eclipse download page]. Unzip the downloaded file and then you should be able to start it with the eclipse file in the directory +eclipse+.
 Further in this user guide, there is a section on <<eclipseDesignerInstallation,installing our eclipse designer plugin>>.
 
@@ -67,4 +68,4 @@ All classes that have +.impl.+ in the package name are internal implementation c
 
 === Internal implementation classes
 
-In the jar file, all classes in packages that have +.impl.+ (e.g. ++org.activiti.engine.impl.pvm.delegate++) in them are implementation classes and should be considered internal. No stability guarantees are given on classes or interfaces that are in implementation classes.
+In the jar file, all classes in packages that have +.impl.+ (e.g. ++org.activiti.engine.impl.db++) in them are implementation classes and should be considered internal. No stability guarantees are given on classes or interfaces that are in implementation classes.

@@ -33,7 +33,7 @@
             -->
     </absolute-ordering>
 
-    <display-name>activiti-app-rest</display-name>
+    <display-name>activiti-app</display-name>
 
     <!-- All the Servlets and Filters are configured by this ServletContextListener : -->
     <listener>
