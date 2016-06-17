@@ -38,7 +38,6 @@
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="mailServerHost" value="localhost" />
 		<property name="mailServerPort" value="5025" />
-		<property name="jobExecutorActivate" value="false" />
         <property name="customFormTypes">
           <list>
             <bean class="org.activiti.rest.form.UserFormType"/>

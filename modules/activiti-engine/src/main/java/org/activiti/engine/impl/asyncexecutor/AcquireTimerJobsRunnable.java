@@ -60,7 +60,7 @@ public class AcquireTimerJobsRunnable implements Runnable {
           @Override
           public Void execute(CommandContext commandContext) {
             for (TimerJobEntity job : acquiredJobs.getJobs()) {
-              jobManager.transformTimerJobToExecutableJob(job);
+              jobManager.moveTimerJobToExecutableJob(job);
             }
             return null;
           }

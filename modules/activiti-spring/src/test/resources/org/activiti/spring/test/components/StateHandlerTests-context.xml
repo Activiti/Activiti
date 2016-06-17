@@ -29,7 +29,6 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="transactionManager" ref="transactionManager"/>
         <property name="databaseSchemaUpdate" value="true"/>
-        <property name="jobExecutorActivate" value="false"/>
         <property name="deploymentResources">
             <list>
                 <value>classpath:/org/activiti/spring/test/autodeployment/autodeploy.b.bpmn20.xml</value>

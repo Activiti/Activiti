@@ -437,7 +437,7 @@ public class BaseSpringRestTestCase extends AbstractTestCase {
       String id = it.next().get("id").textValue();
       toBeFound.remove(id);
     }
-    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    assertTrue("Not all expected ids have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
   }
 
   /**

@@ -98,7 +98,7 @@ public class DefaultJobManager implements JobManager {
   }
   
   @Override
-  public JobEntity transformTimerJobToExecutableJob(TimerJobEntity timerJob) {
+  public JobEntity moveTimerJobToExecutableJob(TimerJobEntity timerJob) {
     if (timerJob == null) {
       throw new ActivitiException("Empty timer job can not be scheduled");
     }
@@ -117,7 +117,7 @@ public class DefaultJobManager implements JobManager {
   }
   
   @Override
-  public TimerJobEntity transformJobToTimerJob(AbstractJobEntity job) {
+  public TimerJobEntity moveJobToTimerJob(AbstractJobEntity job) {
     CommandContext commandContext = Context.getCommandContext();
     TimerJobEntity timerJob = createTimerJobFromOtherJob(job, commandContext);
     commandContext.getTimerJobEntityManager().insert(timerJob);
@@ -132,7 +132,7 @@ public class DefaultJobManager implements JobManager {
   }
   
   @Override
-  public SuspendedJobEntity transformJobToSuspendedJob(AbstractJobEntity job) {
+  public SuspendedJobEntity moveJobToSuspendedJob(AbstractJobEntity job) {
     CommandContext commandContext = Context.getCommandContext();
     SuspendedJobEntity suspendedJob = createSuspendedJobFromOtherJob(job, commandContext);
     commandContext.getSuspendedJobEntityManager().insert(suspendedJob);

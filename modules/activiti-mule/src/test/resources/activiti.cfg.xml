@@ -15,9 +15,6 @@
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
 
-    <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
-
     <property name="history" value="full" />
   </bean>
 

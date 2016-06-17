@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
-import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.runtime.DeadLetterJobQuery;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.common.api.RequestUtil;
 import org.activiti.rest.service.api.RestResponseFactory;
@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Frederik Heremans
+ * @author Joram Barrez
  */
 @RestController
-public class JobCollectionResource {
+public class DeadLetterJobCollectionResource {
 
   @Autowired
   protected RestResponseFactory restResponseFactory;
@@ -41,9 +41,9 @@ public class JobCollectionResource {
   @Autowired
   protected ManagementService managementService;
 
-  @RequestMapping(value = "/management/jobs", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/management/deadletter-jobs", method = RequestMethod.GET, produces = "application/json")
   public DataResponse getJobs(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
-    JobQuery query = managementService.createJobQuery();
+    DeadLetterJobQuery query = managementService.createDeadLetterJobQuery();
 
     if (allRequestParams.containsKey("id")) {
       query.jobId(allRequestParams.get("id"));
@@ -56,6 +56,9 @@ public class JobCollectionResource {
     }
     if (allRequestParams.containsKey("processDefinitionId")) {
       query.processDefinitionId(allRequestParams.get("processDefinitionId"));
+    }
+    if (allRequestParams.containsKey("executable")) {
+      query.executable();
     }
     if (allRequestParams.containsKey("timersOnly")) {
       if (allRequestParams.containsKey("messagesOnly")) {
@@ -93,16 +96,6 @@ public class JobCollectionResource {
     if (allRequestParams.containsKey("withoutTenantId")) {
       if (Boolean.valueOf(allRequestParams.get("withoutTenantId"))) {
         query.jobWithoutTenantId();
-      }
-    }
-    if (allRequestParams.containsKey("locked")) {
-      if (Boolean.valueOf(allRequestParams.get("locked"))) {
-        query.locked();
-      }
-    }
-    if (allRequestParams.containsKey("unlocked")) {
-      if (Boolean.valueOf(allRequestParams.get("unlocked"))) {
-        query.unlocked();
       }
     }
 

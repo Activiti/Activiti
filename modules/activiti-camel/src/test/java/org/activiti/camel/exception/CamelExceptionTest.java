@@ -148,7 +148,9 @@ public class CamelExceptionTest extends SpringActivitiTestCase {
       // expected
     }
 
-    job = managementService.createJobQuery().singleResult();
+    
+    // The job is now a timer job, to be retried later
+    job = managementService.createTimerJobQuery().singleResult();
     assertEquals("Unhandled exception on camel route", job.getExceptionMessage());
 
     assertFalse(ExceptionServiceMock.isCalled());

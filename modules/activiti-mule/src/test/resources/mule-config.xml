@@ -25,7 +25,6 @@
     <spring:property name="dataSource" ref="dataSource"/>
     <spring:property name="transactionManager" ref="transactionManager"/>
     <spring:property name="databaseSchemaUpdate" value="true" />
-    <spring:property name="jobExecutorActivate" value="false" />
     <spring:property name="beans">
       <spring:map>
         <spring:entry key="muleContext" value-ref="_muleContext" />

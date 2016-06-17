@@ -46,7 +46,6 @@ public class JobTestHelper {
 
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
-    processEngineConfiguration.setAsyncExecutorActivate(true);
     
     try {
       Timer timer = new Timer();
@@ -74,7 +73,6 @@ public class JobTestHelper {
 
     } finally {
       if (shutdownExecutorWhenFinished) {
-        processEngineConfiguration.setAsyncExecutorActivate(false);
         asyncExecutor.shutdown();
       }
     }

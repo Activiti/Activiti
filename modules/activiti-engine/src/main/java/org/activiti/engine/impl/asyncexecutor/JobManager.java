@@ -49,27 +49,27 @@ public interface JobManager {
   void scheduleTimerJob(TimerJobEntity timerJob);
 
   /**
-   * Transforms a {@link TimerJobEntity} to an async {@link JobEntity}. 
+   * Moves a {@link TimerJobEntity} to become an async {@link JobEntity}. 
    * 
    * This happens for example when the due date of a timer is reached, 
    * the timer entity then becomes a 'regular' async job that can be 
    * picked up by the {@link AsyncExecutor}.
    */
-  JobEntity transformTimerJobToExecutableJob(TimerJobEntity timerJob);
+  JobEntity moveTimerJobToExecutableJob(TimerJobEntity timerJob);
 
   /**
-   * Transforms an {@link AbstractJobEntity} to a {@link TimerJobEntity}.
+   * Moves an {@link AbstractJobEntity} to become a {@link TimerJobEntity}.
    * 
    * This happens for example when an async job is executed and fails.
    * It then becomes a timer, as it needs to be retried later.
    */
-  TimerJobEntity transformJobToTimerJob(AbstractJobEntity job);
+  TimerJobEntity moveJobToTimerJob(AbstractJobEntity job);
 
   /**
-   * Transforms an {@link AbstractJobEntity} to a {@link SuspendedJobEntity},
+   * Moves an {@link AbstractJobEntity} to become a {@link SuspendedJobEntity},
    * such that the {@link AsyncExecutor} won't pick it up anymore for execution.
    */
-  SuspendedJobEntity transformJobToSuspendedJob(AbstractJobEntity job);
+  SuspendedJobEntity moveJobToSuspendedJob(AbstractJobEntity job);
 
   /**
    * Transforms a {@link SuspendedJobEntity} back to an {@link AbstractJobEntity}

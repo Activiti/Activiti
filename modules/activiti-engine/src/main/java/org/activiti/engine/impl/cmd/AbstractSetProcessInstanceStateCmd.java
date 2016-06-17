@@ -95,12 +95,12 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     } else {
       List<TimerJobEntity> timerJobs = commandContext.getTimerJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
       for (TimerJobEntity timerJob : timerJobs) {
-        commandContext.getJobManager().transformJobToSuspendedJob(timerJob);
+        commandContext.getJobManager().moveJobToSuspendedJob(timerJob);
       }
       
       List<JobEntity> jobs = commandContext.getJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
       for (JobEntity job : jobs) {
-        commandContext.getJobManager().transformJobToSuspendedJob(job);
+        commandContext.getJobManager().moveJobToSuspendedJob(job);
       }
     }
 

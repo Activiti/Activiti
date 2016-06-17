@@ -2,6 +2,7 @@ package org.activiti.spring.test.jobexecutor;
 
 import java.util.List;
 
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -22,7 +23,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(CleanTestExecutionListener.class)
 @ContextConfiguration("classpath:org/activiti/spring/test/components/SpringjobExecutorTest-context.xml")
-public class SpringJobExecutorTest extends SpringActivitiTestCase {
+public class SpringAsyncExecutorTest extends SpringActivitiTestCase {
+  
+  @Autowired
+  protected ManagementService managementService;
 
   @Autowired
   protected RuntimeService runtimeService;
@@ -53,7 +57,20 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
   }
 
   private void waitForTasksToExpire() throws Exception {
-    Thread.sleep(10000L);
+    boolean finished = false;
+    int nrOfSleeps = 0;
+    while (!finished) {
+      long jobCount = managementService.createJobQuery().count();
+      long timerCount = managementService.createTimerJobQuery().count();
+      if (jobCount == 0 && timerCount == 0) {
+        finished = true;
+      } else if (nrOfSleeps < 20){
+        nrOfSleeps++;
+        Thread.sleep(500L);
+      } else {
+        finished = true;
+      }
+    }
   }
 
 }

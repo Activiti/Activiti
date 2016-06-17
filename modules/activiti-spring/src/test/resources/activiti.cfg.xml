@@ -16,8 +16,6 @@
         <property name="databaseSchemaUpdate" value="true"/>
 
         <!-- job executor configurations -->
-        <property name="jobExecutorActivate" value="false"/>
-        <property name="asyncExecutorEnabled" value="true" />
         <property name="asyncExecutorActivate" value="false" />
 
         <!-- mail server configurations -->

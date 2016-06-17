@@ -33,6 +33,7 @@ import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.impl.cmd.GetTableNameCmd;
+import org.activiti.engine.impl.cmd.JobType;
 import org.activiti.engine.impl.cmd.MoveJobToDeadLetterJobCmd;
 import org.activiti.engine.impl.cmd.MoveTimerToExecutableJobCmd;
 import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
@@ -136,7 +137,19 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   public String getJobExceptionStacktrace(String jobId) {
-    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId));
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.ASYNC));
+  }
+  
+  public String getTimerJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.TIMER));
+  }
+  
+  public String getSuspendedJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.SUSPENDED));
+  }
+  
+  public String getDeadLetterJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.DEADLETTER));
   }
 
   public Map<String, String> getProperties() {

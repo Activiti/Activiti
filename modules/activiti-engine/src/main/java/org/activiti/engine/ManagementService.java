@@ -20,6 +20,9 @@ import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
@@ -167,7 +170,8 @@ public interface ManagementService {
   void setTimerJobRetries(String jobId, int retries);
 
   /**
-   * Returns the full stacktrace of the exception that occurs when the job with the given id was last executed. Returns null when the job has no exception stacktrace.
+   * Returns the full stacktrace of the exception that occurs when the job with the given id was last executed. 
+   * Returns null when the job has no exception stacktrace.
    * 
    * @param jobId
    *          id of the job, cannot be null.
@@ -175,6 +179,40 @@ public interface ManagementService {
    *           when no job exists with the given id.
    */
   String getJobExceptionStacktrace(String jobId);
+  
+  /**
+   * Returns the full stacktrace of the exception that occurs when the {@link TimerJobEntity} with the given id was last executed. 
+   * Returns null when the job has no exception stacktrace.
+   * 
+   * @param jobId
+   *          id of the job, cannot be null.
+   * @throws ActivitiObjectNotFoundException
+   *           when no job exists with the given id.
+   */
+  String getTimerJobExceptionStacktrace(String jobId);
+  
+  /**
+   * Returns the full stacktrace of the exception that occurs when the {@link SuspendedJobEntity} with the given id was last executed. 
+   * Returns null when the job has no exception stacktrace.
+   * 
+   * @param jobId
+   *          id of the job, cannot be null.
+   * @throws ActivitiObjectNotFoundException
+   *           when no job exists with the given id.
+   */
+  String getSuspendedJobExceptionStacktrace(String jobId);
+  
+  /**
+   * Returns the full stacktrace of the exception that occurs when the {@link DeadLetterJobEntity} with the given id was last executed. 
+   * Returns null when the job has no exception stacktrace.
+   * 
+   * @param jobId
+   *          id of the job, cannot be null.
+   * @throws ActivitiObjectNotFoundException
+   *           when no job exists with the given id.
+   */
+  String getDeadLetterJobExceptionStacktrace(String jobId);
+  
 
   /** get the list of properties. */
   Map<String, String> getProperties();
