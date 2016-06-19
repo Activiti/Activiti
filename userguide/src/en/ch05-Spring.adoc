@@ -57,7 +57,7 @@ When passing the DataSource to the +SpringProcessEngineConfiguration+ (using pro
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="databaseSchemaUpdate" value="true" />
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
   </bean>
 
   <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
@@ -339,7 +339,7 @@ The Spring Boot - Activiti integration is currently experimental. It has been de
 
 ==== Compatibility
 
-Spring Boot requires a JDK 7 runtime. It can be made to work with JDK6, but it will need configuration tweaks. Please check the Spring Boot documentation.
+Spring Boot requires a JDK 7 runtime. Please check the Spring Boot documentation.
 
 ==== Getting started
 

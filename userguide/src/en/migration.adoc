@@ -28,7 +28,8 @@ The design goals of version 6 are:
 
 == Database migration
 
-There is no database migration when moving from v5 to v6: the database schema is the same for v5 and v6. All data produced by Activiti v5 can simply remain in the database. When the v6 engine is started for the first time, it will do a small automatic update (as with any v5 version) to the schema.
+There is no database migration when moving from v5 to v6: the database schema is the same for v5 and v6. All data produced by Activiti v5 can simply remain in the database. When the v6 engine is started for the first time, it will do an automatic update (as with any v5 version) to the schema. Besides some small schema changes, the main update is the job table that has been split up in a job, timer job, suspended job and dead letter job table.
+The timer jobs that are not yet due, will be moved to the new timer table. Jobs with no more retries left will be moved to the dead letter job table and jobs for suspended process instances will be moved to the suspended job table.
 
 == Conceptual changes
 
@@ -63,6 +64,21 @@ ProcessDefinitionUtil.getProcess(String processDefinitionId);
 We removed ActivityExecution and replaced it where used with the DelegateExecution class.
 
 All methods from the ActivityExecution class are copied to the DelegateExecution class. 
+
+=== Job, timer, suspended and dead letter jobs
+
+Activiti 5 had only 1 job table and this meant that a fairly complex query had to be executed to get the jobs that needed to be executed from the database.
+
+With Activiti 6, the jobs have been split up in a job (ACT_RU_JOB), timer (ACT_RU_TIMER_JOB), suspended (ACT_RU_SUSPENDED_JOB), and (ACT_RU_DEADLETTER_JOB) dead letter table. 
+Jobs in the job table can be directly executed (like asynchronous jobs and due timer jobs). So there's no need for a complex query anymore, the only where clause is a lock time column that should be NULL.
+Timer jobs are now persisted in a dedicated timer jobs table and there's a Runnable that checks for timer jobs due to execute. When a timer job is due to be executed, the job will be moved to the job table.
+When the job executor Runnable is ready to execute the job it will be fetched from the job table and executed.
+When a process definition and process instance is suspended, the corresponding jobs will be moved to a separate suspended job table. This simplifies the job executor query and makes it very clear which jobs are suspended.
+If a job execution fails, the job will be placed in the timer job table with a due date that's set to current time + the async failed job wait time configured on the process engine configuration.
+When the job is due to be executed it will be moved to the job table again and be executed. When the number of retries is down to zero, the job will be moved to the dead letter table and no automatic execution will be performed.
+This also simplifies the default job executor queries and makes it obvious which jobs are stuck and might need manual intervention.
+
+The embedded Activiti 5 engine in Activiti 6 works with these 4 job tables as well. But there's only one threadpool fetching jobs from the database. When a job is fetched from the database, the engine version for the job is checked based on the process definition id, and the job is executed by the Activiti 6 or embedded Activiti 5 Engine.
 
 === Signaling an execution
 
@@ -115,7 +131,7 @@ The following changes will most likely be applied in a next beta release of Acti
 
 == V5 compatibility
 
-When migrating to Activiti version 6 (which basically means replacing the jar on the classpath), all current deployments and process definitions are _tagged_ as being a _version 5_ artifact. At various points (completing a task, starting a new process instance, task assignment, ... quite a long list) the engine will check whether the involved process definition has that _version 5 tag_. If so, it will delegate execution to an _embedded mini version 5 engine_.
+When migrating to Activiti version 6 (which basically means replacing the JAR file on the classpath), all current deployments and process definitions are _tagged_ as being a _version 5_ artifact. At various points (completing a task, starting a new process instance, task assignment, ... quite a long list) the engine will check whether the involved process definition has that _version 5 tag_. If so, it will delegate execution to an _embedded mini version 5 engine_.
 
 This means that the compatibility approach we opted for is that of a phase out: let the current process definitions run in _'version 5 mode_ until the behaviour has been verified and tested to be identical on version 6.
 

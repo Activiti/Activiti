@@ -133,7 +133,7 @@ The XML version of this business process (__FinancialReportProcess.bpmn20.xml__)
 
 	  <startEvent id="theStart" />
 
-	  <sequenceFlow id='flow1' sourceRef='theStart' targetRef='writeReportTask' />
+	  <sequenceFlow id="flow1" sourceRef="theStart" targetRef="writeReportTask" />
 
 	  <userTask id="writeReportTask" name="Write monthly financial report" >
 	    <documentation>
@@ -146,7 +146,7 @@ The XML version of this business process (__FinancialReportProcess.bpmn20.xml__)
 	    </potentialOwner>
 	  </userTask>
 
-	  <sequenceFlow id='flow2' sourceRef='writeReportTask' targetRef='verifyReportTask' />
+	  <sequenceFlow id="flow2" sourceRef="writeReportTask" targetRef="verifyReportTask" />
 
 	  <userTask id="verifyReportTask" name="Verify monthly financial report" >
 	    <documentation>
@@ -160,7 +160,7 @@ The XML version of this business process (__FinancialReportProcess.bpmn20.xml__)
 	    </potentialOwner>
 	  </userTask>
 
-	  <sequenceFlow id='flow3' sourceRef='verifyReportTask' targetRef='theEnd' />
+	  <sequenceFlow id="flow3" sourceRef="verifyReportTask" targetRef="theEnd" />
 
 	  <endEvent id="theEnd" />
 
@@ -206,7 +206,7 @@ This will create a process instance that will first go through the start event. 
 
 After the task is created, the +startProcessInstanceByKey+ method will return since the user task activity is a _wait state_. In this case, the task is assigned to a group, which means that every member of the group is a *candidate* to perform the task.
 
-We can now throw this all together and create a simple Java program. Create a new  Eclipse project and add the Activiti jars and dependencies to its classpath  (these can be found in the _libs_ folder of the Activiti distribution). Before we can call the Activiti services, we must first construct a +ProcessEngine+ that gives us access to the services. Here we use the _'standalone'_ configuration, which constructs a +ProcessEngine+ that uses the database also used in the demo setup.
+We can now throw this all together and create a simple Java program. Create a new Eclipse project and add the Activiti JARs and dependencies to its classpath  (these can be found in the _libs_ folder of the Activiti distribution). Before we can call the Activiti services, we must first construct a +ProcessEngine+ that gives us access to the services. Here we use the _'standalone'_ configuration, which constructs a +ProcessEngine+ that uses the database also used in the demo setup.
 
 You can download the process definition XML link:$$images/FinancialReportProcess.bpmn20.xml$$[here]. This file contains the XML as shown above, but also contains the necessary BPMN  <<generatingProcessDiagram,diagram interchange information>> to visualize the process in the Activiti tools.
 
@@ -294,7 +294,7 @@ The task is now in the *personal task list of the one that claimed the task*.
 List<Task> tasks = taskService.createTaskQuery().taskAssignee("fozzie").list();
 ----
 
-In the Activiti Explorer UI, clicking the _claim_ button will call the same operation. The task will now move to the personal task list of the logged on user. You also see that the assignee of the task changed to the current logged in user.
+In the Activiti UI App, clicking the _claim_ button will call the same operation. The task will now move to the personal task list of the logged on user. You also see that the assignee of the task changed to the current logged in user.
 
 image::images/bpmn.financial.report.example.claim.task.png[align="center"]
 
@@ -324,7 +324,7 @@ In the demo setup, completing the task is done by clicking the _complete_ button
 
 The verification task can be retrieved and claimed in exactly the same way as before. Completing this second task will move process execution to the end event, which finishes the process instance. The process instance and all related runtime execution data are removed from the datastore.
 
-When you log into Activiti Explorer you can verify this, since no records will be  found in the table where the process executions are stored.
+When you log into Activiti Explorer you can verify this, since no records will be found in the table where the process executions are stored.
 
 image::images/bpmn.financial.report.example.process.ended.png[align="center"]
 

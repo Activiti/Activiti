@@ -21,7 +21,7 @@ This will look for an +activiti.cfg.xml+ file on the classpath and construct an 
 ----
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
 
@@ -32,8 +32,6 @@ This will look for an +activiti.cfg.xml+ file on the classpath and construct an 
 
     <property name="databaseSchemaUpdate" value="true" />
 
-    <property name="jobExecutorActivate" value="false" />
-    <property name="asyncExecutorEnabled" value="true" />
     <property name="asyncExecutorActivate" value="false" />
 
     <property name="mailServerHost" value="mail.my-corp.com" />
@@ -73,7 +71,6 @@ All these +ProcessEngineConfiguration.createXXX()+ methods return a +ProcessEngi
 ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration()
   .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
   .setJdbcUrl("jdbc:h2:mem:my-own-db;DB_CLOSE_DELAY=1000")
-  .setAsyncExecutorEnabled(true)
   .setAsyncExecutorActivate(false)
   .buildProcessEngine();
 ----
@@ -189,11 +186,11 @@ To switch the Activiti Explorer and Activiti Rest web apps from db.properties co
 
 ----
 
-Next, we need to add context.xml files that contain the default H2 configuration. These will be overridden by your JNDI configuration, if it exists.  For Activiti Explorer, replace the file at activiti-webapp-explorer2/src/main/webapp/META-INF/context.xml with the following:
+Next, we need to add context.xml files that contain the default H2 configuration. These will be overridden by your JNDI configuration, if it exists.  For the Activiti UI app, add activiti-app/src/main/webapp/META-INF/context.xml with the following:
 
 [source,xml,linenums]
 ----
-<Context antiJARLocking="true" path="/activiti-explorer2">
+<Context antiJARLocking="true" path="/activiti-app">
     <Resource auth="Container"
               name="jdbc/activitiDB"
               type="javax.sql.DataSource"
@@ -216,7 +213,7 @@ For the Activiti REST webapp, add activiti-webapp-rest2/src/main/webapp/META-INF
 [source,xml,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/activiti-rest2">
+<Context antiJARLocking="true" path="/activiti-rest">
     <Resource auth="Container"
               name="jdbc/activitiDB"
               type="javax.sql.DataSource"
@@ -234,7 +231,7 @@ For the Activiti REST webapp, add activiti-webapp-rest2/src/main/webapp/META-INF
 </Context>
 ----
 
-As an optional step, you can now delete the unused db.properties files in both the Activiti Explorer and Activiti REST webapp projects.
+As an optional step, you can now delete the unused db.properties files in the Activiti REST webapp project.
 
 
 [[jndi_configuration]]
@@ -244,12 +241,12 @@ As an optional step, you can now delete the unused db.properties files in both t
 
 Configuration of the JNDI datasource will differ depending on what servlet container application you are using. The instructions below will work for Tomcat, but for other container applications, please refer to the documentation for your container app.
 
-If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.xml). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
+If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-app.xml). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
 
 [source,xml,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-    <Context antiJARLocking="true" path="/activiti-explorer2">
+    <Context antiJARLocking="true" path="/activiti-app">
         <Resource auth="Container"
             name="jdbc/activitiDB"
             type="javax.sql.DataSource"
@@ -368,12 +365,12 @@ To upgrade, you have to start with putting the following configuration property 
 
 [[jobExecutorConfiguration]]
 
-=== Job Executor and Async Executor (since version 5.17.0)
+=== Job Executor (since version 6.0.0)
 
-Starting from version 5.17.0 Activiti provides an Async executor in addition to the Job Executor. The Async executor is a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
-It's therefore recommended to switch to the Async executor. By default the old job executor is still used. More information can be found in the advanced section of the user guide.
+The aysnc executor of Activiti 5 is the only available job executor in Activiti 5 as it was a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
+The old job executor of Activiti 5 is removed. More information can be found in the advanced section of the user guide.
 
-Moreover, if running under Java EE 7, JSR-236 compliant +ManagedJobExecutor+ and +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows:
+Moreover, if running under Java EE 7, JSR-236 compliant +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows:
 
 [source,xml,linenums]
 ----
@@ -381,43 +378,27 @@ Moreover, if running under Java EE 7, JSR-236 compliant +ManagedJobExecutor+ and
    <property name="jndiName" value="java:jboss/ee/concurrency/factory/default" />
 </bean>
 
-<bean id="customJobExecutor" class="org.activiti.engine.impl.jobexecutor.ManagedJobExecutor">
+<bean id="customJobExecutor" class="org.activiti.engine.impl.jobexecutor.ManagedAsyncJobExecutor">
    <!-- ... -->
    <property name="threadFactory" ref="threadFactory" />
    <!-- ... -->
 </bean>
 ----
 
-Both managed implementations fall back to their default counterparts if the thread factory is not specified.
+The managed implementation fall back to their default counterparts if the thread factory is not specified.
 
 === Job executor activation
 
-The +JobExecutor+ is a component that manages a couple of threads to fire timers (and later also asynchronous messages). For unit testing scenarios, it is cumbersome to work with multiple threads. Therefore the API allows to query for (++ManagementService.createJobQuery++) and execute jobs (++ManagementService.executeJob++) through the API so that job execution can be controlled from within a unit test.  To avoid interference by the job executor, it can be turned off.
-
-By default, the +JobExecutor+ is activated when the process engine boots. Specify
-
-[source,xml,linenums]
-----
-<property name="jobExecutorActivate" value="false" />
-----
-
-when you don't want the +JobExecutor+ to be activated upon booting the process engine.
-
-=== Async executor activation
-
 The +AsyncExecutor+ is a component that manages a thread pool to fire timers and other asynchronous tasks.
 
-By default, the +AsyncExecutor+ is not enabled and the JobExecutor is used due to legacy reasons. It's however recommended to use the new AsyncExecutor instead.
-This can be done by defining two properties
+By default, the +AsyncExecutor+ is not activated and not started. With the following configuration the async executor can be started together with the Activiti Engine.
 
 [source,xml,linenums]
 ----
-<property name="asyncExecutorEnabled" value="true" />
 <property name="asyncExecutorActivate" value="true" />
 ----
 
-The asyncExecutorEnabled property is to enable the Async executor instead of the old Job executor.
-The second property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup.
+The property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup.
 
 [[mailServerConfiguration]]
 
@@ -518,13 +499,13 @@ Example when using Maven (version omitted):
 === Mapped Diagnostic Contexts
 
 
-As of version 5.13, Activiti supports Mapped Diagnostic Contexts feature of sl4j. These basic information are passed to the underlying logger along with what is going to be logged:
+As of version 5.13, Activiti supports Mapped Diagnostic Contexts feature of SLF4j. These basic information are passed to the underlying logger along with what is going to be logged:
 
 * processDefinition Id as mdcProcessDefinitionID
 * processInstance Id as mdcProcessInstanceID
 * execution Id as mdcExecutionId
 
-None of these information are logged by default. The logger can be configured to show them in desired format, extra to the usual logged messages. For example in log4j the following sample layout definition  causes the logger to show the above mentioned information:
+None of these information are logged by default. The logger can be configured to show them in desired format, extra to the usual logged messages. For example in Log4j the following sample layout definition  causes the logger to show the above mentioned information:
 
 [source,properties,linenums]
 ----
@@ -532,7 +513,7 @@ log4j.appender.consoleAppender.layout.ConversionPattern=ProcessDefinitionId=%X{m
 executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n
 ----
 
-This is useful where the systems are mission critical and logs should be seriously checked,  by means of a log analyzer for example.
+This is useful when the logs contain information that needs to checked in real time, by means of a log analyzer for example.
 
 
 [[eventDispatcher]]

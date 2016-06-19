@@ -11,7 +11,7 @@ When a business archive is deployed, it is scanned for BPMN files with a +.bpmn2
 
 [NOTE]
 ====
-Java classes present in the business archive *will not be added to the classpath*. All custom classes used in process definitions in the business archive (for example Java service tasks or event listener implementations) should be present on the activiti-engine's classpath in order to run the processes.
+Java classes present in the business archive *will not be added to the classpath*. All custom classes used in process definitions in the business archive (for example Java service tasks or event listener implementations) should be present on the Activiti Engine classpath in order to run the processes.
 ====
 
 ==== Deploying programmatically
@@ -37,7 +37,7 @@ It's also possible to build a deployment from individual resources. See the java
 
 ==== Deploying with Activiti Explorer
 
-The Activiti Explorer webapp allows uploading bar files (and single +bpmn20.xml+ files) through the webapp user interface. Choose the _Management tab_ and click on __Deployment__:
+The Activiti Explorer webapp allows uploading bar files (and single +bpmn20.xml+ or +.bpmn+ files) through the webapp user interface. Choose the _Management tab_ and click on __Deployment__:
 
 image::images/deployment.explorer.png[align="center"]
 

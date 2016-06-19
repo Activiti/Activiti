@@ -22,6 +22,7 @@ ManagementService managementService = processEngine.getManagementService();
 IdentityService identityService = processEngine.getIdentityService();
 HistoryService historyService = processEngine.getHistoryService();
 FormService formService = processEngine.getFormService();
+DynamicBpmnService dynamicBpmnService = processEngine.getDynamicBpmnService();
 ----
 
 +ProcessEngines.getDefaultProcessEngine()+ will initialize and build a process engine the first time it is called and afterwards always return the same process engine. Proper creation and closing of all process engines can be done with +ProcessEngines.init()+  and +ProcessEngines.destroy()+.
@@ -57,6 +58,8 @@ The *FormService* is an optional service. Meaning that Activiti can perfectly be
 The *HistoryService* exposes all historical data gathered by the Activiti engine. When executing processes, a lot of data can be kept by the engine (this is configurable) such as process instance start times, who did which tasks, how long it took to complete the tasks, which path was followed in each process instance, etc. This service exposes mainly query  capabilities to access this data.
 
 The *ManagementService* is typically not needed when coding custom application using Activiti. It allows to retrieve information about the database tables and table metadata. Furthermore, it exposes query capabilities and management operations for jobs. Jobs are used in Activiti for various things such as timers, asynchronous continuations, delayed suspension/activation, etc. Later on, these topics will be discussed in more detail.
+
+The *DynamicBpmnService* can be used to change part of the process definition without needing to redeploy it. You can for example change the assignee definition for a user task in a process definition, or change the class name of a service task.
 
 For more detailed information on the service operations and the engine API, see link:$$http://activiti.org/javadocs/index.html$$[the javadocs].
 
