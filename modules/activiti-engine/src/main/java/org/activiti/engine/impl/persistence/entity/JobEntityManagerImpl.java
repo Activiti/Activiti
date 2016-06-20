@@ -40,6 +40,7 @@ import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -335,12 +336,12 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   protected void executeTimerJob(TimerEntity timerEntity) {
-    
+
     VariableScope variableScope = null;
     if (timerEntity.getExecutionId() != null) {
       variableScope = getExecutionEntityManager().findById(timerEntity.getExecutionId());
     }
-    
+
     if (variableScope == null) {
       variableScope = NoExecutionVariableScope.getSharedInstance();
     }
@@ -382,7 +383,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   protected void restoreExtraData(TimerEntity timerEntity, VariableScope variableScope) {
     String activityId = timerEntity.getJobHandlerConfiguration();
 
-    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
+    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE) ||
+            timerEntity.getJobHandlerType().equalsIgnoreCase(TriggerTimerEventJobHandler.TYPE)) {
 
       activityId = TimerEventHandler.getActivityIdFromConfiguration(timerEntity.getJobHandlerConfiguration());
       String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(timerEntity.getJobHandlerConfiguration());
@@ -497,7 +499,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
         getBusinessCalendarName(TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()), variableScope));
     return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
   }
-  
+
   protected String getBusinessCalendarName(String calendarName, VariableScope variableScope) {
     String businessCalendarName = CycleBusinessCalendar.NAME;
     if (StringUtils.isNotEmpty(calendarName)) {
