@@ -89,7 +89,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
       // refactor each subprocess into a separate Diagram
       List<BpmnModel> subModels = parseSubModels(model);
       for (BpmnModel tempModel : subModels) {
-        if (!tempModel.getFlowLocationMap().isEmpty()) {
+        if (!tempModel.getFlowLocationMap().isEmpty() || !tempModel.getLocationMap().isEmpty()) {
           BPMNDIExport.writeBPMNDI(tempModel, xtw);
         }
       }
