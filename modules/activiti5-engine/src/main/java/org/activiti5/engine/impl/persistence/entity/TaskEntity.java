@@ -27,11 +27,11 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.db.BulkDeleteable;
@@ -785,7 +785,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   public TaskDefinition getTaskDefinition() {
     if (taskDefinition==null && taskDefinitionKey!=null) {
-      ProcessDefinitionEntity processDefinition = Context
+      ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
         .getProcessEngineConfiguration()
         .getDeploymentManager()
         .findDeployedProcessDefinitionById(processDefinitionId);

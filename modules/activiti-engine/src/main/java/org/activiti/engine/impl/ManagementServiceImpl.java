@@ -18,32 +18,38 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
+import org.activiti.engine.impl.cmd.DeleteDeadLetterJobCmd;
 import org.activiti.engine.impl.cmd.DeleteEventLogEntry;
 import org.activiti.engine.impl.cmd.DeleteJobCmd;
+import org.activiti.engine.impl.cmd.DeleteTimerJobCmd;
 import org.activiti.engine.impl.cmd.ExecuteCustomSqlCmd;
-import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
+import org.activiti.engine.impl.cmd.ExecuteJobCmd;
 import org.activiti.engine.impl.cmd.GetEventLogEntriesCmd;
 import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.impl.cmd.GetTableNameCmd;
+import org.activiti.engine.impl.cmd.JobType;
+import org.activiti.engine.impl.cmd.MoveJobToDeadLetterJobCmd;
+import org.activiti.engine.impl.cmd.MoveTimerToExecutableJobCmd;
 import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.cmd.SetTimerJobRetriesCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
-import org.activiti.engine.impl.jobexecutor.SingleJobExecutorContext;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
+import org.activiti.engine.runtime.DeadLetterJobQuery;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.runtime.SuspendedJobQuery;
+import org.activiti.engine.runtime.TimerJobQuery;
 
 /**
  * @author Tom Baeyens
@@ -66,33 +72,48 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   public void executeJob(String jobId) {
-    
     if (jobId == null) {
       throw new ActivitiIllegalArgumentException("JobId is null");
     }
     
-    JobExecutorContext jobExecutorContext = new SingleJobExecutorContext();
-    Context.setJobExecutorContext(jobExecutorContext);
     try {
-      commandExecutor.execute(new ExecuteJobsCmd(jobId));
-    }
-    catch (RuntimeException e) {
-      if ((e instanceof JobNotFoundException)) {
+      commandExecutor.execute(new ExecuteJobCmd(jobId));
+      
+    } catch (RuntimeException e) {
+      if (e instanceof ActivitiException) {
         throw e;
       } else {
         throw new ActivitiException("Job " + jobId + " failed", e);
       }
-    } finally {
-      Context.removeJobExecutorContext();
     }
+  }
+  
+  public Job moveTimerToExecutableJob(String jobId) {
+    return commandExecutor.execute(new MoveTimerToExecutableJobCmd(jobId));
+  }
+  
+  public Job moveJobToDeadLetterJob(String jobId) {
+    return commandExecutor.execute(new MoveJobToDeadLetterJobCmd(jobId));
   }
 
   public void deleteJob(String jobId) {
     commandExecutor.execute(new DeleteJobCmd(jobId));
   }
+  
+  public void deleteTimerJob(String jobId) {
+    commandExecutor.execute(new DeleteTimerJobCmd(jobId));
+  }
+  
+  public void deleteDeadLetterJob(String jobId) {
+    commandExecutor.execute(new DeleteDeadLetterJobCmd(jobId));
+  }
 
   public void setJobRetries(String jobId, int retries) {
     commandExecutor.execute(new SetJobRetriesCmd(jobId, retries));
+  }
+  
+  public void setTimerJobRetries(String jobId, int retries) {
+    commandExecutor.execute(new SetTimerJobRetriesCmd(jobId, retries));
   }
 
   public TablePageQuery createTablePageQuery() {
@@ -102,9 +123,33 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public JobQuery createJobQuery() {
     return new JobQueryImpl(commandExecutor);
   }
+  
+  public TimerJobQuery createTimerJobQuery() {
+    return new TimerJobQueryImpl(commandExecutor);
+  }
+  
+  public SuspendedJobQuery createSuspendedJobQuery() {
+    return new SuspendedJobQueryImpl(commandExecutor);
+  }
+  
+  public DeadLetterJobQuery createDeadLetterJobQuery() {
+    return new DeadLetterJobQueryImpl(commandExecutor);
+  }
 
   public String getJobExceptionStacktrace(String jobId) {
-    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId));
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.ASYNC));
+  }
+  
+  public String getTimerJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.TIMER));
+  }
+  
+  public String getSuspendedJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.SUSPENDED));
+  }
+  
+  public String getDeadLetterJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.DEADLETTER));
   }
 
   public Map<String, String> getProperties() {

@@ -15,6 +15,7 @@
 package org.activiti5.standalone.calendar;
 
 import static groovy.util.GroovyTestCase.assertEquals;
+import static junit.framework.TestCase.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

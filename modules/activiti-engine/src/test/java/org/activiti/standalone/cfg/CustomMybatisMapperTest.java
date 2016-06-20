@@ -32,7 +32,6 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
       public List<Map<String, Object>> execute(MyTestMapper customMapper) {
         return customMapper.selectTasks();
       }
-
     };
 
     // Verify

@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
 import org.activiti5.engine.RepositoryService;
@@ -60,7 +61,6 @@ import org.activiti5.engine.repository.ModelQuery;
 import org.activiti5.engine.repository.NativeDeploymentQuery;
 import org.activiti5.engine.repository.NativeModelQuery;
 import org.activiti5.engine.repository.NativeProcessDefinitionQuery;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.repository.ProcessDefinitionQuery;
 
 
@@ -140,7 +140,7 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   }
   
   public ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
-    return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
+    return (ReadOnlyProcessDefinition) commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
   }
 
   public void suspendProcessDefinitionById(String processDefinitionId) {

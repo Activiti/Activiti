@@ -39,6 +39,7 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.management.TableMetaData;
 import org.activiti5.engine.management.TablePageQuery;
 import org.activiti5.engine.runtime.JobQuery;
+import org.activiti5.engine.runtime.TimerJobQuery;
 
 
 /**
@@ -79,6 +80,10 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   
   public JobQuery createJobQuery() {
     return new JobQueryImpl(commandExecutor);
+  }
+  
+  public TimerJobQuery createTimerJobQuery() {
+    return new TimerJobQueryImpl(commandExecutor);
   }
 
   public String getJobExceptionStacktrace(String jobId) {

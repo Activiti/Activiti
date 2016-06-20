@@ -28,7 +28,6 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.junit.Test;
 
@@ -54,11 +53,11 @@ public class JobExecutorJMXClientTest {
     MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
     ObjectName jobExecutorBeanName = new ObjectName("org.activiti.jmx.Mbeans:type=JobExecutor");
 
-    processEngineConfig.getJobExecutor().shutdown();
+    processEngineConfig.getAsyncExecutor().shutdown();
 
     // first check that job executor is not activated and correctly reported
     // as being inactive
-    assertFalse(processEngineConfig.isJobExecutorActivate());
+    assertFalse(processEngineConfig.isAsyncExecutorActivate());
     assertFalse((Boolean) mbsc.getAttribute(jobExecutorBeanName, "JobExecutorActivated"));
     // now activate it remotely
     mbsc.invoke(jobExecutorBeanName, "setJobExecutorActivate", new Boolean[] { true }, new String[] { Boolean.class.getName() });
@@ -71,7 +70,7 @@ public class JobExecutorJMXClientTest {
     mbsc.invoke(jobExecutorBeanName, "setJobExecutorActivate", new Boolean[] { false }, new String[] { Boolean.class.getName() });
 
     // check if it has the effect and correctly reported
-    assertFalse(processEngineConfig.isJobExecutorActivate());
+    assertFalse(processEngineConfig.isAsyncExecutorActivate());
     assertFalse((Boolean) mbsc.getAttribute(jobExecutorBeanName, "JobExecutorActivated"));
   }
 }

@@ -13,8 +13,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
-import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -27,12 +25,12 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -73,6 +71,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+
+import junit.framework.AssertionFailedError;
 
 public class BaseJPARestTestCase extends AbstractTestCase {
 
@@ -329,7 +329,7 @@ public class BaseJPARestTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    AsyncExecutor jobExecutor = processEngineConfiguration.getAsyncExecutor();
     jobExecutor.start();
 
     try {
@@ -356,7 +356,7 @@ public class BaseJPARestTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    AsyncExecutor jobExecutor = processEngineConfiguration.getAsyncExecutor();
     jobExecutor.start();
 
     try {
@@ -385,7 +385,7 @@ public class BaseJPARestTestCase extends AbstractTestCase {
   }
 
   public boolean areJobsAvailable() {
-    return !managementService.createJobQuery().executable().list().isEmpty();
+    return !managementService.createJobQuery().list().isEmpty();
   }
 
   private static class InteruptTask extends TimerTask {

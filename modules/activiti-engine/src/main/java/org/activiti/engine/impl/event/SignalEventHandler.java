@@ -19,9 +19,9 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Daniel Meyer
@@ -47,7 +47,7 @@ public class SignalEventHandler extends AbstractEventHandler {
       // Find initial flow element matching the signal start event
       String processDefinitionId = eventSubscription.getProcessDefinitionId();
       org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
-      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+      ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
       FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
       if (flowElement == null) {
         throw new ActivitiException("Could not find matching FlowElement for activityId " + eventSubscription.getActivityId());
@@ -59,7 +59,7 @@ public class SignalEventHandler extends AbstractEventHandler {
         variables = (Map<String, Object>) payload;
       }
       ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-      processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, variables, true);
+      processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, flowElement, process, variables, true);
       
     } else {
       throw new ActivitiException("Invalid signal handling: no execution nor process definition set");

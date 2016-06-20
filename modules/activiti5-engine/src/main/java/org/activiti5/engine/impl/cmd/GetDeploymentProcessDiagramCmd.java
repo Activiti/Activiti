@@ -16,10 +16,10 @@ package org.activiti5.engine.impl.cmd;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
   }
 
   public InputStream execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
+    ProcessDefinition processDefinition = commandContext
             .getProcessEngineConfiguration()
             .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);

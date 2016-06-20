@@ -9,7 +9,7 @@
         <property name="targetDataSource">
             <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
                 <property name="driverClass" value="org.h2.Driver"/>
-                <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
+                <property name="url" value="jdbc:h2:mem:activiti-spring-async-executor-test;DB_CLOSE_DELAY=1000;mvcc=true;"/>
                 <property name="username" value="sa"/>
                 <property name="password" value=""/>
             </bean>
@@ -24,8 +24,8 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="transactionManager" ref="transactionManager"/>
         <property name="databaseSchemaUpdate" value="true"/>
-        <property name="jobExecutorActivate" value="true"/>
-        <property name="jobExecutor" ref="springJobExecutor"/>
+        <property name="asyncExecutor" ref="springAsyncExecutor"/>
+        <property name="asyncExecutorActivate" value="true"/>
         <property name="deploymentResources">
             <list>
                 <value>classpath:/org/activiti/spring/test/components/SpringTimersProcess.bpmn20.xml</value>
@@ -44,10 +44,12 @@
     <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
 
-    <bean id="springJobExecutor" class="org.activiti.spring.SpringJobExecutor">
+    <bean id="springAsyncExecutor" class="org.activiti.spring.SpringAsyncExecutor">
         <property name="taskExecutor">
-            <bean class="org.springframework.core.task.SyncTaskExecutor"/>
+            <bean class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
         </property>
+        <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
+        <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
     </bean>
 
 </beans>

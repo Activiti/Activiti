@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
@@ -31,8 +33,7 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
-import org.activiti5.engine.repository.ProcessDefinition;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.runtime.ProcessInstance;
 
 /**
@@ -127,7 +128,9 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   
   protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-      TimerEntity timer = new TimerEntity();
+      TimerJobEntity timer = new TimerJobEntity();
+      timer.setJobType(Job.JOB_TYPE_TIMER);
+      timer.setRevision(1);
       timer.setProcessDefinitionId(processDefinition.getId());
       
       // Inherit tenant identifier (if applicable)
@@ -137,8 +140,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       
       timer.setDuedate(executionDate);
       timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
-      timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler
-              .createJobHandlerConfiguration(includeProcessInstances));
+      timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(includeProcessInstances));
       commandContext.getJobEntityManager().schedule(timer);
     }
   }

@@ -10,8 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.event.timer;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -22,10 +25,6 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author Vasile Dirla
@@ -71,7 +70,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // AFTER DEPLOYMENT
     // when the process is deployed there will be created a timerStartEvent
     // job which will wait to be executed.
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
 
     // dueDate should be after 24 hours from the process deployment
@@ -93,15 +92,12 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // advance the clock to 11 dec -> the system will execute the pending
     // job and will create a new one
     moveByMinutes(60 * 24);
-    try {
-      waitForJobExecutorToProcessAllJobs(2000L, 200);
-      fail("there must be a pending job because the endDate is not reached yet");
-    } catch (Exception e) {
-      // expected failure
-    }
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000L, 200);
+    
+    // there must be a pending job because the endDate is not reached yet");
+    assertEquals(1, managementService.createTimerJobQuery().count());
 
-    // After the first startEvent Execution should be one process instance
-    // started
+    // After the first startEvent Execution should be one process instance started
     processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(1, processInstances.size());
 
@@ -109,9 +105,8 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     tasks = taskService.createTaskQuery().list();
     assertEquals(1, tasks.size());
 
-    // one new job will be created (and the old one will be deleted after
-    // execution)
-    jobs = managementService.createJobQuery().list();
+    // one new job will be created (and the old one will be deleted after execution)
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
 
     dueDateCalendar = Calendar.getInstance();
@@ -122,13 +117,9 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
     // 12 dec (last execution)
     moveByMinutes(60 * 24);
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
-    } catch (Exception e) {
-      fail("Because the endDate is reached it will not be executed other jobs");
-    }
-    // After the second startEvent Execution should have 2 process instances
-    // started
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+    
+    // After the second startEvent Execution should have 2 process instances started
     // (since the first one was not completed)
     processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(2, processInstances.size());
@@ -136,6 +127,8 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // Because the endDate 12.dec.2025 is reached
     // the current job will be deleted after execution and a new one will
     // not be created.
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
     jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
 
@@ -169,8 +162,8 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
       }
     }
     assertEquals(2, timerFiredCount); // 2 timers fired
-    assertEquals(2, eventCreatedCount); // 2 jobs created
-    assertEquals(2, eventDeletedCount); // 2 jobs deleted
+    assertEquals(4, eventCreatedCount); // 4 jobs created, each timer creates one timer and one executable job
+    assertEquals(4, eventDeletedCount); // 4 jobs deleted, each timer results in deleting one timer and one executable job
 
     // for each processInstance
     // let's complete the userTasks where the process is hanging in order to
@@ -188,6 +181,8 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     assertEquals(0, processInstances.size());
 
     // no jobs
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
     jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
 

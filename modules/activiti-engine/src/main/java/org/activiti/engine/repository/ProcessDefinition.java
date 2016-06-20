@@ -76,5 +76,8 @@ public interface ProcessDefinition {
 
   /** The tenant identifier of this process definition */
   String getTenantId();
+  
+  /** The engine version for this process definition (5 or 6) */
+  String getEngineVersion();
 
 }

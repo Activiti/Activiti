@@ -14,10 +14,10 @@ package org.activiti.engine.test.jobexecutor;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -35,15 +35,17 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
     processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
   }
 
-  protected MessageEntity createTweetMessage(String msg) {
-    MessageEntity message = new MessageEntityImpl();
+  protected JobEntity createTweetMessage(String msg) {
+    JobEntity message = new JobEntityImpl();
+    message.setJobType(JobEntity.JOB_TYPE_MESSAGE);
     message.setJobHandlerType("tweet");
     message.setJobHandlerConfiguration(msg);
     return message;
   }
 
-  protected TimerEntity createTweetTimer(String msg, Date duedate) {
-    TimerEntity timer = new TimerEntityImpl();
+  protected TimerJobEntity createTweetTimer(String msg, Date duedate) {
+    TimerJobEntity timer = new TimerJobEntityImpl();
+    timer.setJobType(JobEntity.JOB_TYPE_TIMER);
     timer.setJobHandlerType("tweet");
     timer.setJobHandlerConfiguration(msg);
     timer.setDuedate(duedate);

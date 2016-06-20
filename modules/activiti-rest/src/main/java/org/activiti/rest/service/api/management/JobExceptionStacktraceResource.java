@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 @RestController
 public class JobExceptionStacktraceResource {
@@ -35,7 +36,10 @@ public class JobExceptionStacktraceResource {
 
   @RequestMapping(value = "/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
   public String getJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
-    Job job = getJobFromResponse(jobId);
+    Job job = managementService.createJobQuery().jobId(jobId).singleResult();
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
 
     String stackTrace = managementService.getJobExceptionStacktrace(job.getId());
 
@@ -46,13 +50,56 @@ public class JobExceptionStacktraceResource {
     response.setContentType("text/plain");
     return stackTrace;
   }
-
-  protected Job getJobFromResponse(String jobId) {
-    Job job = managementService.createJobQuery().jobId(jobId).singleResult();
-
+  
+  @RequestMapping(value = "/management/timer-jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
+  public String getTimerJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
+    Job job = managementService.createTimerJobQuery().jobId(jobId).singleResult();
     if (job == null) {
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
     }
-    return job;
+
+    String stackTrace = managementService.getTimerJobExceptionStacktrace(job.getId());
+
+    if (stackTrace == null) {
+      throw new ActivitiObjectNotFoundException("Timer job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
+    }
+
+    response.setContentType("text/plain");
+    return stackTrace;
   }
+  
+  @RequestMapping(value = "/management/suspended-jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
+  public String getSuspendedJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
+    Job job = managementService.createSuspendedJobQuery().jobId(jobId).singleResult();
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
+
+    String stackTrace = managementService.getSuspendedJobExceptionStacktrace(job.getId());
+
+    if (stackTrace == null) {
+      throw new ActivitiObjectNotFoundException("Suspended job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
+    }
+
+    response.setContentType("text/plain");
+    return stackTrace;
+  }
+  
+  @RequestMapping(value = "/management/deadletter-jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
+  public String getDeadLetterJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
+    Job job = managementService.createDeadLetterJobQuery().jobId(jobId).singleResult();
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
+
+    String stackTrace = managementService.getDeadLetterJobExceptionStacktrace(job.getId());
+
+    if (stackTrace == null) {
+      throw new ActivitiObjectNotFoundException("Suspended job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
+    }
+
+    response.setContentType("text/plain");
+    return stackTrace;
+  }
+
 }

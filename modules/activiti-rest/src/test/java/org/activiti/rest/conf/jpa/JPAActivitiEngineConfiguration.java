@@ -59,8 +59,6 @@ public class JPAActivitiEngineConfiguration {
     processEngineConfiguration.setDataSource(dataSource);
     processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
     processEngineConfiguration.setTransactionManager(transactionManager);
-    processEngineConfiguration.setJobExecutorActivate(false);
-    processEngineConfiguration.setAsyncExecutorEnabled(true);
     processEngineConfiguration.setAsyncExecutorActivate(false);
     processEngineConfiguration.setJpaEntityManagerFactory(entityManagerFactory);
     processEngineConfiguration.setJpaHandleTransaction(false);

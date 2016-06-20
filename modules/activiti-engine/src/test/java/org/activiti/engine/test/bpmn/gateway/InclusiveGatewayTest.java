@@ -329,10 +329,6 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertEquals(0, taskService.createTaskQuery().count());
 
-    for (Execution execution : runtimeService.createExecutionQuery().list()) {
-      System.out.println(execution.getActivityId());
-    }
-
     assertEquals("Found executions: " + runtimeService.createExecutionQuery().list(), 0, runtimeService.createExecutionQuery().count());
     assertProcessEnded(pi.getId());
   }

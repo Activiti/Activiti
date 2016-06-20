@@ -14,12 +14,12 @@ package org.activiti5.engine.impl.bpmn.helper;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
@@ -51,9 +51,9 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {
 			} else {
 				String tenantId = null;
 				if (event.getProcessDefinitionId() != null) {
-					ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessEngineConfiguration()
+					ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
 							.getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());
-					tenantId = processDefinitionEntity.getTenantId();
+					tenantId = processDefinition.getTenantId();
 				}
 				subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
 				    .findSignalEventSubscriptionsByEventName(signalName, tenantId);

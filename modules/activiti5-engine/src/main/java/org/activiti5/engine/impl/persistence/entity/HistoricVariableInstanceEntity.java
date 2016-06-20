@@ -17,13 +17,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti5.engine.history.HistoricVariableInstance;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.db.BulkDeleteable;
 import org.activiti5.engine.impl.db.HasRevision;
 import org.activiti5.engine.impl.db.PersistentObject;
-import org.activiti5.engine.impl.variable.ValueFields;
-import org.activiti5.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -89,8 +89,9 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.longValue = variableInstance.getLongValue();
     
     this.variableType = variableInstance.getType();
-    if (variableInstance.getByteArrayValueId()!=null) {
-      setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
+    byte[] bytesValue = variableInstance.getBytes();
+    if (bytesValue != null) {
+      setBytes(bytesValue);
     }
     
     this.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
@@ -141,21 +142,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   @Override
   public void setBytes(byte[] bytes) {
     byteArrayRef.setValue("hist.var-" + name, bytes);
-  }
-  
-  @Override @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-  
-  @Override @Deprecated
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
-  }
-
-  @Override @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
   }
 
   // getters and setters //////////////////////////////////////////////////////

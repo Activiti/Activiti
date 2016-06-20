@@ -1552,7 +1552,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals("SubProcess Description 'en'", execution.getDescription());
     
     
-    infoNode = dynamicBpmnService.changeLocalizationName("en-US", "executionLocalization", "Process Name 'en-US'");
+    dynamicBpmnService.changeLocalizationName("en-US", "executionLocalization", "Process Name 'en-US'", infoNode);
     dynamicBpmnService.changeLocalizationDescription("en-US", "executionLocalization", "Process Description 'en-US'", infoNode);
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
     

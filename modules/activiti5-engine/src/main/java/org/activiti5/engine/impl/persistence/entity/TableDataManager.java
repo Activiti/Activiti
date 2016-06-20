@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.history.HistoricActivityInstance;
 import org.activiti5.engine.history.HistoricDetail;
@@ -40,9 +42,7 @@ import org.activiti5.engine.management.TableMetaData;
 import org.activiti5.engine.management.TablePage;
 import org.activiti5.engine.repository.Deployment;
 import org.activiti5.engine.repository.Model;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.runtime.Execution;
-import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.task.Task;
 import org.apache.ibatis.session.RowBounds;
@@ -68,8 +68,7 @@ public class TableDataManager extends AbstractManager {
     persistentObjectToTableNameMap.put(VariableInstanceEntity.class, "ACT_RU_VARIABLE");
     
     persistentObjectToTableNameMap.put(JobEntity.class, "ACT_RU_JOB");
-    persistentObjectToTableNameMap.put(MessageEntity.class, "ACT_RU_JOB");
-    persistentObjectToTableNameMap.put(TimerEntity.class, "ACT_RU_JOB");
+    persistentObjectToTableNameMap.put(TimerJobEntity.class, "ACT_RU_TIMER_JOB");
     
     persistentObjectToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
     persistentObjectToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");    

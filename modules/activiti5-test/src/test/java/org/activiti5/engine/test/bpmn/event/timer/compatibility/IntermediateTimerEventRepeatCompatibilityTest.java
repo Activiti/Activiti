@@ -75,21 +75,17 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     //Test Timer Catch Intermediate Events after completing Task B (endDate not reached but it will be executed according to the expression)
     taskService.complete(task.getId());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-      fail("Expected that job isn't executed because the timer is in t0");
-    } catch (Exception e) {
-      // expected
-    }
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+    // Expected that job isn't executed because the timer is in t0");
 
     nextTimeCal.add(Calendar.HOUR, 1); //after 1 hour the event must be triggered and the flow will go to the next step
     clock.setCurrentCalendar(nextTimeCal);
     processEngineConfiguration.setClock(clock);
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     //expect to execute because the time is reached.
 
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     tasks = taskService.createTaskQuery().list();
@@ -103,7 +99,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     clock.setCurrentCalendar(nextTimeCal);
     processEngineConfiguration.setClock(clock);
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobs(2000, 200);
     //expect to execute because the end time is reached.
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
@@ -120,6 +116,8 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     //no jobs
     jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     //no tasks

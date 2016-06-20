@@ -20,7 +20,6 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -576,21 +575,22 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Suspending the process instance should also stop the execution of jobs for that process instance
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
     runtimeService.suspendProcessInstanceById(processInstance.getId());
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
+    assertEquals(1, managementService.createSuspendedJobQuery().count());
     
     // The jobs should not be executed now
     processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
-    Job job = managementService.createJobQuery().executable().singleResult();
-    assertNull(job);
-    
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createSuspendedJobQuery().count());
     
     // Activation of the process instance should now allow for job execution
     runtimeService.activateProcessInstanceById(processInstance.getId());
-    waitForJobExecutorToProcessAllJobs(1000L, 100L);
+    assertEquals(1, managementService.createTimerJobQuery().count());
+    
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000L, 200L);
     assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
   

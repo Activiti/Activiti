@@ -70,22 +70,20 @@ public class ProcessDefinitionInfoCache {
   
   public ProcessDefinitionInfoCacheObject get(final String processDefinitionId) {
     ProcessDefinitionInfoCacheObject infoCacheObject = null;
-    if (cache.containsKey(processDefinitionId)) {
-      
-      Command<ProcessDefinitionInfoCacheObject> cacheCommand = new Command<ProcessDefinitionInfoCacheObject>() {
+    Command<ProcessDefinitionInfoCacheObject> cacheCommand = new Command<ProcessDefinitionInfoCacheObject>() {
 
-        @Override
-        public ProcessDefinitionInfoCacheObject execute(CommandContext commandContext) {
-          return retrieveProcessDefinitionInfoCacheObject(processDefinitionId, commandContext);
-        }
-      };
-      
-      if (Context.getCommandContext() != null) {
-        infoCacheObject = retrieveProcessDefinitionInfoCacheObject(processDefinitionId, Context.getCommandContext());
-      } else {
-        infoCacheObject = commandExecutor.execute(cacheCommand);
+      @Override
+      public ProcessDefinitionInfoCacheObject execute(CommandContext commandContext) {
+        return retrieveProcessDefinitionInfoCacheObject(processDefinitionId, commandContext);
       }
-    }
+    };
+    
+    if (Context.getCommandContext() != null) {
+      infoCacheObject = retrieveProcessDefinitionInfoCacheObject(processDefinitionId, Context.getCommandContext());
+    } else {
+      infoCacheObject = commandExecutor.execute(cacheCommand);
+    } 
+    
     return infoCacheObject;
   }
   
@@ -110,7 +108,15 @@ public class ProcessDefinitionInfoCache {
     ProcessDefinitionInfoEntityManager infoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
     ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
     
-    ProcessDefinitionInfoCacheObject cacheObject = cache.get(processDefinitionId);
+    ProcessDefinitionInfoCacheObject cacheObject = null;
+    if (cache.containsKey(processDefinitionId)) {
+      cacheObject = cache.get(processDefinitionId);
+    } else {
+      cacheObject = new ProcessDefinitionInfoCacheObject();
+      cacheObject.setRevision(0);
+      cacheObject.setInfoNode(objectMapper.createObjectNode());
+    }
+    
     ProcessDefinitionInfoEntity infoEntity = infoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinitionId);
     if (infoEntity != null && infoEntity.getRevision() != cacheObject.getRevision()) {
       cacheObject.setRevision(infoEntity.getRevision());
@@ -127,6 +133,7 @@ public class ProcessDefinitionInfoCache {
       cacheObject.setRevision(0);
       cacheObject.setInfoNode(objectMapper.createObjectNode());
     }
+    
     return cacheObject;
   }
   

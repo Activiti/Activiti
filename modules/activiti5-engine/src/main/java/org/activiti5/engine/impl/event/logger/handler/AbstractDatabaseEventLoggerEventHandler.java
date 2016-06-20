@@ -3,14 +3,15 @@ package org.activiti5.engine.impl.event.logger.handler;
 import java.util.Date;
 import java.util.Map;
 
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.identity.Authentication;
-import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +62,12 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 		
 		// Current tenant
 		if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
-			DeploymentCache<ProcessDefinitionEntity> processDefinitionCache = Context.getProcessEngineConfiguration().getProcessDefinitionCache();
+			DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = Context.getProcessEngineConfiguration().getProcessDefinitionCache();
 			if (processDefinitionCache != null) {
-				ProcessDefinitionEntity processDefinitionEntity = processDefinitionCache.get(processDefinitionId);
-				if (processDefinitionEntity != null 
-						&& !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinitionEntity.getTenantId())) {
-					putInMapIfNotNull(data, Fields.TENANT_ID, processDefinitionEntity.getTenantId());
+				ProcessDefinition processDefinition = processDefinitionCache.get(processDefinitionId).getProcessDefinition();
+				if (processDefinition != null 
+						&& !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+					putInMapIfNotNull(data, Fields.TENANT_ID, processDefinition.getTenantId());
 				}
 			}
 		}

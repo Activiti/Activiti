@@ -31,15 +31,15 @@
 	</sql>
 	
 	<sql id="limitBeforeNativeQuerySql">
-				${limitBefore}
+		${limitBefore}
 	</sql>
 	
 	<sql id="limitBeforeNativeQuerySql" databaseId="db2">
-				${limitBeforeNativeQuery}
+		${limitBeforeNativeQuery}
 	</sql>
 	
 	<sql id="limitBeforeNativeQuerySql" databaseId="mssql">
-				${limitBeforeNativeQuery}
+		${limitBeforeNativeQuery}
 	</sql>
 	
 

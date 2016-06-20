@@ -306,7 +306,6 @@ public class EmailServiceTaskTest extends EmailTestCase {
                                      String from, List<String> to, List<String> cc) throws IOException {
     try {
       MimeMessage mimeMessage = emailMessage.getMimeMessage();
-      System.out.println(mimeMessage.getContentType());
       if (htmlMail) {
         assertTrue(mimeMessage.getContentType().contains("multipart/mixed"));
       } else {

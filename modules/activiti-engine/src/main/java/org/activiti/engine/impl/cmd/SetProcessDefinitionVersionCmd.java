@@ -26,9 +26,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -84,9 +84,9 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     }
     
     DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-    ProcessDefinitionEntity currentProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
+    ProcessDefinition currentProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
 
-    ProcessDefinitionEntity newProcessDefinition = deploymentCache
+    ProcessDefinition newProcessDefinition = deploymentCache
         .findDeployedProcessDefinitionByKeyAndVersionAndTenantId(currentProcessDefinition.getKey(), processDefinitionVersion, currentProcessDefinition.getTenantId());
 
     validateAndSwitchVersionOfExecution(commandContext, processInstance, newProcessDefinition);
@@ -105,7 +105,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     return null;
   }
 
-  protected void validateAndSwitchVersionOfExecution(CommandContext commandContext, ExecutionEntity execution, ProcessDefinitionEntity newProcessDefinition) {
+  protected void validateAndSwitchVersionOfExecution(CommandContext commandContext, ExecutionEntity execution, ProcessDefinition newProcessDefinition) {
     // check that the new process definition version contains the current activity
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(newProcessDefinition.getId());
     if (execution.getActivityId() != null && process.getFlowElement(execution.getActivityId(), true) == null) { 

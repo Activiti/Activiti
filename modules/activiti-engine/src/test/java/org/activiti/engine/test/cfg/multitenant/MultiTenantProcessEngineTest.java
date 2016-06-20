@@ -77,7 +77,6 @@ public class MultiTenantProcessEngineTest {
     config.setDatabaseType(MultiSchemaMultiTenantProcessEngineConfiguration.DATABASE_TYPE_H2);
     config.setDatabaseSchemaUpdate(MultiSchemaMultiTenantProcessEngineConfiguration.DB_SCHEMA_UPDATE_DROP_CREATE);
     
-    config.setAsyncExecutorEnabled(true);
     config.setAsyncExecutorActivate(true);
     
     
@@ -182,7 +181,7 @@ public class MultiTenantProcessEngineTest {
     
     Assert.assertEquals(nrOfActiveProcessInstances, processEngine.getRuntimeService().createExecutionQuery().onlyProcessInstanceExecutions().count());
     Assert.assertEquals(nrOfActiveProcessInstances, processEngine.getHistoryService().createHistoricProcessInstanceQuery().unfinished().count());
-    Assert.assertEquals(nrOfActiveJobs, processEngine.getManagementService().createJobQuery().count());
+    Assert.assertEquals(nrOfActiveJobs, processEngine.getManagementService().createTimerJobQuery().count());
     
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();

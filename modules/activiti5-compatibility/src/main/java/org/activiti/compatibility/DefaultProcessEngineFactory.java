@@ -14,9 +14,7 @@
 package org.activiti.compatibility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
@@ -24,13 +22,9 @@ import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngine;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti5.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti5.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.parse.BpmnParseHandler;
 
 
@@ -61,12 +55,11 @@ public class DefaultProcessEngineFactory {
     copyJpaConfig(activiti6Configuration, activiti5Configuration);
     copyBeans(activiti6Configuration, activiti5Configuration);
     copyCaches(activiti6Configuration, activiti5Configuration);
-    activiti5Configuration.setKnowledgeBaseCacheLimit(activiti6Configuration.getKnowledgeBaseCacheLimit());
     copyActivityBehaviorFactory(activiti6Configuration, activiti5Configuration);
     copyListenerFactory(activiti6Configuration, activiti5Configuration);
     convertParseHandlers(activiti6Configuration, activiti5Configuration);
     copyCustomMybatisMappers(activiti6Configuration, activiti5Configuration);
-    convertEventListeners(activiti6Configuration, activiti5Configuration);
+    activiti5Configuration.setEventDispatcher(activiti6Configuration.getEventDispatcher());
     copyPostDeployers(activiti6Configuration, activiti5Configuration);
     activiti5Configuration.setBusinessCalendarManager(activiti6Configuration.getBusinessCalendarManager());
   }
@@ -100,6 +93,10 @@ public class DefaultProcessEngineFactory {
     if (activiti6Configuration.getJdbcMaxActiveConnections() > 0) {
       activiti5Configuration.setJdbcMaxActiveConnections(activiti6Configuration.getJdbcMaxActiveConnections());
     }
+    
+    if (activiti6Configuration.getDatabaseTablePrefix() != null) {
+      activiti5Configuration.setDatabaseTablePrefix(activiti6Configuration.getDatabaseTablePrefix());
+    }
   }
 
   protected void copyHistoryConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
@@ -131,16 +128,12 @@ public class DefaultProcessEngineFactory {
   }
 
   protected void copyAsyncExecutorConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
-    if (activiti6Configuration.isAsyncExecutorEnabled()) {
-      activiti5Configuration.setAsyncExecutorEnabled(true);
-      if (activiti6Configuration.isAsyncExecutorActivate()) {
-        activiti5Configuration.setAsyncExecutorActivate(true);
-      }
+    if (activiti6Configuration.isAsyncExecutorActivate()) {
+      activiti5Configuration.setAsyncExecutorActivate(true);
     }
-    if (activiti6Configuration.getActiviti5AsyncExecutor() != null) {
-      AsyncExecutor activiti5AsyncExecutor = (AsyncExecutor) activiti6Configuration.getActiviti5AsyncExecutor();
-      activiti5Configuration.setAsyncExecutor(activiti5AsyncExecutor);
-    }
+    activiti5Configuration.setDefaultFailedJobWaitTime(activiti6Configuration.getDefaultFailedJobWaitTime());
+    activiti5Configuration.setAsyncFailedJobWaitTime(activiti6Configuration.getAsyncFailedJobWaitTime());
+    activiti5Configuration.setAsyncExecutor(activiti6Configuration.getAsyncExecutor());
   }
 
   protected void copyJpaConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
@@ -164,15 +157,10 @@ public class DefaultProcessEngineFactory {
   protected void copyCaches(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
     activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
     activiti5Configuration.setEnableProcessDefinitionInfoCache(activiti6Configuration.isEnableProcessDefinitionInfoCache());
+    activiti5Configuration.setProcessDefinitionCache(activiti6Configuration.getProcessDefinitionCache());
     
-    if (activiti6Configuration.getActiviti5ProcessDefinitionCache() != null) {
-      activiti5Configuration.setProcessDefinitionCache((DeploymentCache<ProcessDefinitionEntity>) activiti6Configuration.getActiviti5ProcessDefinitionCache());
-    }
-    activiti5Configuration.setProcessDefinitionCacheLimit(activiti6Configuration.getProcessDefinitionCacheLimit());
-    
-    if (activiti6Configuration.getActiviti5KnowledgeBaseCache() != null) {
-      activiti5Configuration.setKnowledgeBaseCache((DeploymentCache<Object>) activiti6Configuration.getActiviti5KnowledgeBaseCache());
-    }
+    activiti5Configuration.setKnowledgeBaseCacheLimit(activiti6Configuration.getKnowledgeBaseCacheLimit());
+    activiti5Configuration.setKnowledgeBaseCache(activiti6Configuration.getKnowledgeBaseCache());
   }
 
   protected void copyActivityBehaviorFactory(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
@@ -221,30 +209,6 @@ public class DefaultProcessEngineFactory {
     activiti5Configuration.setPreBpmnParseHandlers(convert(activiti6Configuration.getActiviti5PreBpmnParseHandlers()));
     activiti5Configuration.setPostBpmnParseHandlers(convert(activiti6Configuration.getActiviti5PostBpmnParseHandlers()));
     activiti5Configuration.setCustomDefaultBpmnParseHandlers(convert(activiti6Configuration.getActiviti5CustomDefaultBpmnParseHandlers()));
-  }
-  
-  protected void convertEventListeners(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
-    if (activiti6Configuration.getActiviti5EventListeners() != null) {
-      List<ActivitiEventListener> eventListeners = new ArrayList<ActivitiEventListener>();
-      for (Object eventObject : activiti6Configuration.getActiviti5EventListeners()) {
-        ActivitiEventListener eventListener = (ActivitiEventListener) eventObject;
-        eventListeners.add(eventListener);
-      }
-      activiti5Configuration.setEventListeners(eventListeners);
-    }
-    
-    if (activiti6Configuration.getActiviti5TypedEventListeners() != null) {
-      Map<String, List<ActivitiEventListener>> eventListenerMap = new HashMap<String, List<ActivitiEventListener>>();
-      for (String eventKey : activiti6Configuration.getActiviti5TypedEventListeners().keySet()) {
-        List<ActivitiEventListener> eventListeners = new ArrayList<ActivitiEventListener>();
-        for (Object eventObject : activiti6Configuration.getActiviti5TypedEventListeners().get(eventKey)) {
-          ActivitiEventListener eventListener = (ActivitiEventListener) eventObject;
-          eventListeners.add(eventListener);
-        }
-        eventListenerMap.put(eventKey, eventListeners);
-      }
-      activiti5Configuration.setTypedEventListeners(eventListenerMap);
-    }
   }
   
   protected List<BpmnParseHandler> convert(List<Object> activiti5BpmnParseHandlers) {

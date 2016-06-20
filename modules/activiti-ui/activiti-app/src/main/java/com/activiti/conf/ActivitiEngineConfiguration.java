@@ -17,7 +17,21 @@
  */
 package com.activiti.conf;
 
-import org.activiti.engine.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -34,10 +48,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @ComponentScan(basePackages= {
@@ -81,8 +91,6 @@ public class ActivitiEngineConfiguration {
     	processEngineConfiguration.setDataSource(dataSource);
     	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
     	processEngineConfiguration.setTransactionManager(transactionManager);
-    	processEngineConfiguration.setJobExecutorActivate(false);
-    	processEngineConfiguration.setAsyncExecutorEnabled(true);
     	processEngineConfiguration.setAsyncExecutorActivate(true);
     	processEngineConfiguration.setAsyncExecutor(asyncExecutor());
 

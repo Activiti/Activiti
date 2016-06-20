@@ -27,7 +27,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -608,7 +608,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     processInstanceEntity.setLocalizedDescription(null);
 
     if (locale != null && processInstance.getProcessDefinitionId() != null) {
-      ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
+      ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
       ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinition.getKey(), 
           processInstanceEntity.getProcessDefinitionId(), withLocalizationFallback);
       

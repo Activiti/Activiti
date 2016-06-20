@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -58,68 +57,54 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-    //Test Boundary Events
+    // Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
 
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
-
-    //change the job in old mode (the configuration should not be json in "old mode" but a simple string).
-    JobEntity job = (JobEntity) jobs.get(0);
-    changeConfigurationToPlainText(job.getId());
 
     //boundary events
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
-    } catch (Exception ex) {
-      //expected exception because a new job is prepared
-    }
+    waitForJobExecutorToProcessAllJobs(2000, 200);
+    // a new job must be prepared because there are 10 repeats 2 seconds interval
 
     for (int i = 0; i < 9; i++) {
       nextTimeCal.add(Calendar.SECOND, 2);
       clock.setCurrentCalendar(nextTimeCal);
       processEngineConfiguration.setClock(clock);
-      try {
-        waitForJobExecutorToProcessAllJobs(2000, 100);
-        fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
-      } catch (Exception ex) {
-        //expected exception because a new job is prepared
-      }
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     }
 
     nextTimeCal.add(Calendar.SECOND, 2);
     clock.setCurrentCalendar(nextTimeCal);
     processEngineConfiguration.setClock(clock);
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
-    }catch (Exception ex){
-      fail("Should not have any other jobs because the endDate is reached");
-    }
+    waitForJobExecutorToProcessAllJobs(2000, 200);
+    
+    // Should not have any other jobs because the endDate is reached
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
+    
     tasks = taskService.createTaskQuery().list();
     task = tasks.get(0);
     assertEquals("Task B", task.getName());
     assertEquals(1, tasks.size());
     taskService.complete(task.getId());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-    } catch (Exception e) {
-      fail("No jobs should be active here.");
-    }
+    waitForJobExecutorToProcessAllJobs(2000, 200);
 
-    //now All the process instances should be completed
+    // now All the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, processInstances.size());
 
-    //no jobs
+    // no jobs
     jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
 
-    //no tasks
+    // no tasks
     tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
 

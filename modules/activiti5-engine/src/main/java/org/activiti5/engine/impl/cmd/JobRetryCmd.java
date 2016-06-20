@@ -18,28 +18,28 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.calendar.DurationHelper;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventDispatcher;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti5.engine.impl.cfg.TransactionContext;
-import org.activiti5.engine.impl.cfg.TransactionState;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.jobexecutor.AsyncContinuationJobHandler;
-import org.activiti5.engine.impl.jobexecutor.JobAddedNotification;
-import org.activiti5.engine.impl.jobexecutor.JobExecutor;
 import org.activiti5.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti5.engine.impl.persistence.entity.AbstractJobEntity;
+import org.activiti5.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,36 +69,58 @@ public class JobRetryCmd implements Command<Object> {
     ActivityImpl activity = getCurrentActivity(commandContext, job);
     ProcessEngineConfiguration processEngineConfig = commandContext.getProcessEngineConfiguration();
    
+    AbstractJobEntity newJobEntity = null;
     if (activity == null || activity.getFailedJobRetryTimeCycleValue() == null) {
       log.debug("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
-      job.setRetries(job.getRetries() - 1);
-      job.setLockOwner(null);
-      job.setLockExpirationTime(null);
+      
+      if (job.getRetries() <= 1) {
+        DeadLetterJobEntity deadLetterJob = new DeadLetterJobEntity(job);
+        deadLetterJob.insert();
+        newJobEntity = deadLetterJob;
+      } else {
+        TimerJobEntity timerJob = new TimerJobEntity(job);
+        timerJob.insert();
+        newJobEntity = timerJob;
+      }
+      
+      newJobEntity.setRetries(job.getRetries() - 1);
       if (job.getDuedate() == null) {
         // add wait time for failed async job
-        job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
+        newJobEntity.setDuedate(calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null));
       } else {
         // add default wait time for failed job
-        job.setDuedate(calculateDueDate(commandContext, processEngineConfig.getDefaultFailedJobWaitTime(), job.getDuedate()));
+        newJobEntity.setDuedate(calculateDueDate(commandContext, processEngineConfig.getDefaultFailedJobWaitTime(), job.getDuedate()));
       }
       
     } else {      
       String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
       try {
         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, processEngineConfig.getClock());
-        job.setLockOwner(null);
-        job.setLockExpirationTime(null);
-        job.setDuedate(durationHelper.getDateAfter());
+        int jobRetries = job.getRetries();
+        if (job.getExceptionMessage() == null) {
+          // change default retries to the ones configured
+          jobRetries = durationHelper.getTimes();
+        }
+        
+        if (job.getRetries() <= 1) {
+          DeadLetterJobEntity deadLetterJob = new DeadLetterJobEntity(job);
+          deadLetterJob.insert();
+          newJobEntity = deadLetterJob;
+        } else {
+          TimerJobEntity timerJob = new TimerJobEntity(job);
+          timerJob.insert();
+          newJobEntity = timerJob;
+        }
+        
+        newJobEntity.setDuedate(durationHelper.getDateAfter());
          
         if (job.getExceptionMessage() == null) {  // is it the first exception 
           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+ durationHelper.getTimes()+" retries");
-          // then change default retries to the ones configured
-          job.setRetries(durationHelper.getTimes());
           
         } else {
           log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
         }
-        job.setRetries(job.getRetries() - 1);
+        newJobEntity.setRetries(jobRetries - 1);
          
       } catch (Exception e) {
         throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
@@ -106,26 +128,21 @@ public class JobRetryCmd implements Command<Object> {
     }
     
     if (exception != null) {
-      job.setExceptionMessage(exception.getMessage());
-      job.setExceptionStacktrace(getExceptionStacktrace());
+      newJobEntity.setExceptionMessage(exception.getMessage());
+      newJobEntity.setExceptionStacktrace(getExceptionStacktrace());
     }
+    
+    job.delete();
     
     // Dispatch both an update and a retry-decrement event
     ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
     if (eventDispatcher.isEnabled()) {
       eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-          ActivitiEventType.ENTITY_UPDATED, job));
+          ActivitiEventType.ENTITY_UPDATED, newJobEntity));
       eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-          ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
+          ActivitiEventType.JOB_RETRIES_DECREMENTED, newJobEntity));
     }
     
-    if (processEngineConfig.isAsyncExecutorEnabled() == false) {
-      JobExecutor jobExecutor = processEngineConfig.getJobExecutor();
-      JobAddedNotification messageAddedNotification = new JobAddedNotification(jobExecutor);
-      TransactionContext transactionContext = commandContext.getTransactionContext();
-      transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
-    }
-
     return null;
   }
   
@@ -142,7 +159,7 @@ public class JobRetryCmd implements Command<Object> {
     return newDateCal.getTime();
   }
 
-  private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
+  private ActivityImpl getCurrentActivity(CommandContext commandContext, Job job) {
     String type = job.getJobHandlerType();
     ActivityImpl activity = null;
 
@@ -157,17 +174,17 @@ public class JobRetryCmd implements Command<Object> {
       DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
       if (TimerEventHandler.hasRealActivityId(job.getJobHandlerConfiguration())) {
         
-        ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(job.getProcessDefinitionId());
+        ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(job.getProcessDefinitionId());
         String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
-        activity = processDefinition.findActivity(activityId);
+        activity = ((ProcessDefinitionEntity) processDefinition).findActivity(activityId);
         
       } else {
         String processId = job.getJobHandlerConfiguration();
-        if (job instanceof TimerEntity) {
+        if (job instanceof TimerJobEntity) {
            processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
         }
         
-        ProcessDefinitionEntity processDefinition = null;
+        ProcessDefinition processDefinition = null;
         if (job.getTenantId() != null && job.getTenantId().length() > 0) {
           processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
         } else {
@@ -175,7 +192,7 @@ public class JobRetryCmd implements Command<Object> {
         }
         
         if (processDefinition != null) {
-          activity = processDefinition.getInitial();
+          activity = ((ProcessDefinitionEntity) processDefinition).getInitial();
         }
       }
       

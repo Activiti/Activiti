@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FormProperty;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 
 /**
@@ -30,7 +30,7 @@ public interface FormHandler extends Serializable {
 
   ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 
-  void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition);
+  void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinition processDefinition);
 
   void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
 }

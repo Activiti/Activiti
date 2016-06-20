@@ -34,7 +34,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -340,16 +339,8 @@ public class BaseSpringRestTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-    }
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -370,25 +361,13 @@ public class BaseSpringRestTestCase extends AbstractTestCase {
       }
 
     } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-      }
+      asyncExecutor.shutdown();
     }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-    }
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -411,11 +390,7 @@ public class BaseSpringRestTestCase extends AbstractTestCase {
       }
 
     } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-      }
+      asyncExecutor.shutdown();
     }
   }
 
@@ -462,7 +437,7 @@ public class BaseSpringRestTestCase extends AbstractTestCase {
       String id = it.next().get("id").textValue();
       toBeFound.remove(id);
     }
-    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    assertTrue("Not all expected ids have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
   }
 
   /**

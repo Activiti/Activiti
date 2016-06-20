@@ -14,12 +14,11 @@ package org.activiti5.engine.impl.cmd;
 
 import java.io.Serializable;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
@@ -36,7 +35,7 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
   
   public T execute(CommandContext commandContext) {
     DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-    ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
 
     if (deploymentManager.isProcessDefinitionSuspended(processDefinitionId)) {
       throw new ActivitiException("Cannot execute operation because process definition '" 
@@ -50,6 +49,6 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
    * Subclasses should implement this. The provided {@link ProcessDefinition} is 
    * guaranteed to be an active process definition (ie. not suspended).
    */
-  protected abstract T execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition);
+  protected abstract T execute(CommandContext commandContext, ProcessDefinition processDefinition);
 
 }

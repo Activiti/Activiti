@@ -15,7 +15,7 @@
     <property name="databaseSchemaUpdate" value="true" />
     
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
     
     <!-- Add typed event listener -->
     <property name="typedEventListeners">

@@ -36,7 +36,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     variables.put("serviceTask2", false);
     variables.put("serviceTask3", true);
 
-    processEngineConfiguration.setJobExecutorActivate(false);
+    processEngineConfiguration.setAsyncExecutorActivate(false);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess", variables);
 
@@ -56,7 +56,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     assertEquals(processInstance.getId(), currentActivities.get(0).getProcessInstanceId());
     assertNotNull(currentActivities.get(0).getProcessInstanceId());
     
-    assertEquals(1, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count());
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstance.getId());
     assertEquals(1, activeActivityIds.size());
     assertEquals("serviceTask2", activeActivityIds.get(0));
@@ -72,7 +72,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     variables.put("serviceTask2", false);
     variables.put("serviceTask3", true);
 
-    processEngineConfiguration.setJobExecutorActivate(false);
+    processEngineConfiguration.setAsyncExecutorActivate(false);
 
     runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess", variables);
 

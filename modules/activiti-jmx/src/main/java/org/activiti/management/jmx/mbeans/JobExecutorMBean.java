@@ -13,7 +13,7 @@
 package org.activiti.management.jmx.mbeans;
 
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.management.jmx.annotations.ManagedAttribute;
 import org.activiti.management.jmx.annotations.ManagedOperation;
 import org.activiti.management.jmx.annotations.ManagedResource;
@@ -24,10 +24,10 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 @ManagedResource(description = "Job executor MBean")
 public class JobExecutorMBean {
 
-  JobExecutor jobExecutor;
+  AsyncExecutor jobExecutor;
 
   public JobExecutorMBean(ProcessEngineConfiguration processEngineConfig) {
-    jobExecutor = processEngineConfig.getJobExecutor();
+    jobExecutor = processEngineConfig.getAsyncExecutor();
 
   }
 

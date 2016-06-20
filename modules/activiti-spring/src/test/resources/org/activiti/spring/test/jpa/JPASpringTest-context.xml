@@ -43,7 +43,6 @@
         <property name="jpaEntityManagerFactory" ref="entityManagerFactory"/>
         <property name="jpaHandleTransaction" value="false"/>
         <property name="jpaCloseEntityManager" value="false"/>
-        <property name="jobExecutorActivate" value="false"/>
     </bean>
 
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">

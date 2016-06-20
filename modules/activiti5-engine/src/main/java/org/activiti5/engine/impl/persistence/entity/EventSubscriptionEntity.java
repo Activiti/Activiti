@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.impl.context.Context;
@@ -90,18 +91,22 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     
     final CommandContext commandContext = Context.getCommandContext();
 
-    MessageEntity message = new MessageEntity();
+    JobEntity message = new JobEntity();
+    message.setJobType(Job.JOB_TYPE_MESSAGE);
+    message.setRevision(1);
     message.setJobHandlerType(ProcessEventJobHandler.TYPE);
     message.setJobHandlerConfiguration(id);
     message.setTenantId(getTenantId());
     message.setProcessDefinitionId(getProcessDefinitionId());
     message.setProcessInstanceId(getProcessInstanceId());
     
-    GregorianCalendar expireCal = new GregorianCalendar();
-    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
-    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
-    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
-    message.setLockExpirationTime(expireCal.getTime());
+    if (Context.getProcessEngineConfiguration().getAsyncExecutor().isActive()) {
+      GregorianCalendar expireCal = new GregorianCalendar();
+      ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
+      expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
+      expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
+      message.setLockExpirationTime(expireCal.getTime());
+    }
 
     // TODO: support payload
 //    if(payload != null) {

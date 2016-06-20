@@ -12,14 +12,11 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
-import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -27,40 +24,21 @@ import org.activiti.engine.runtime.Job;
  */
 public interface JobDataManager extends DataManager<JobEntity> {
   
-  TimerEntity createTimer();
-  
-  MessageEntity createMessage();
-  
-  List<JobEntity> findNextJobsToExecute(Page page);
-
-  List<JobEntity> findNextTimerJobsToExecute(Page page);
-
-  List<JobEntity> findAsyncJobsDueToExecute(Page page);
-
-  List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs);
+  List<JobEntity> findJobsToExecute(Page page);
 
   List<JobEntity> findJobsByExecutionId(final String executionId);
+  
+  List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId);
 
-  List<JobEntity> findExclusiveJobsToExecute(String processInstanceId);
-
-  List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page);
-
-  List<TimerEntity> findTimersByExecutionId(String executionId);
+  List<JobEntity> findExpiredJobs(Page page);
 
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId);
-  
-  List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
   
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
   
   void unacquireJob(String jobId);
-
+  
+  void resetExpiredJobs();
 }

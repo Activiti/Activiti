@@ -12,6 +12,7 @@
  */
 package org.activiti5.engine.impl.variable;
 
+import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti5.engine.ActivitiException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,9 +26,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class LongJsonType extends SerializableType {
 
   protected final int minLength;
-  protected ObjectMapper objectMapper = new ObjectMapper();
-
-  public LongJsonType(int minLength) {this.minLength = minLength;}
+  protected ObjectMapper objectMapper;
+  
+  public LongJsonType(int minLength, ObjectMapper objectMapper) {
+    this.minLength = minLength;
+    this.objectMapper = objectMapper;
+  }
 
   public String getTypeName() {
     return "longJson";

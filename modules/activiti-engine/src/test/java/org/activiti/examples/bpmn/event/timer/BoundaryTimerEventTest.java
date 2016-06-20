@@ -34,11 +34,11 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals("First line support", task.getName());
 
     // Manually execute the job
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
-    // The timer has fired, and the second task (secondlinesupport) now
-    // exists
+    // The timer has fired, and the second task (second line support) now exists
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Handle escalated issue", task.getName());
   }

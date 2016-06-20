@@ -42,9 +42,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess");
-    Task subProcessTask = taskService.createTaskQuery()
-                                                   .processInstanceId(pi.getId())
-                                                   .singleResult();
+    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // After completing the task in the subprocess, 
@@ -236,10 +234,11 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task B", taskB.getName());
 
     Job job = managementService
-      .createJobQuery()
+      .createTimerJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
     
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     // The inner subprocess should be destoyed, and the tsk after the timer should be active
@@ -334,9 +333,10 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess B", taskB.getName());
     
     // Firing the timer should destroy all three subprocesses and activate the task after the timer
-//    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
-//    waitForJobExecutorToProcessAllJobs(5000L, 50L);
-    Job job = managementService.createJobQuery().singleResult();
+    // processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+    // waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    Job job = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
     
     Task taskAfterTimer = taskQuery.singleResult();

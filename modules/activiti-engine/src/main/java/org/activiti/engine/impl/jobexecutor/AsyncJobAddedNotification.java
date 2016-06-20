@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +30,10 @@ public class AsyncJobAddedNotification implements CommandContextCloseListener {
 
   private static Logger log = LoggerFactory.getLogger(AsyncJobAddedNotification.class);
 
-  protected JobEntity job;
+  protected Job job;
   protected AsyncExecutor asyncExecutor;
 
-  public AsyncJobAddedNotification(JobEntity job, AsyncExecutor asyncExecutor) {
+  public AsyncJobAddedNotification(Job job, AsyncExecutor asyncExecutor) {
     this.job = job;
     this.asyncExecutor = asyncExecutor;
   }

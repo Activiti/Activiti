@@ -11,7 +11,9 @@
     <property name="databaseSchemaUpdate" value="true" />
     
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
+    
+    <property name="activiti5CompatibilityEnabled" value="true" />
     
   </bean>
 

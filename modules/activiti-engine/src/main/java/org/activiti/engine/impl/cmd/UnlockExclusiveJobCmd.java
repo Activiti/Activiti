@@ -18,7 +18,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +32,9 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
 
   private static Logger log = LoggerFactory.getLogger(UnlockExclusiveJobCmd.class);
 
-  protected JobEntity job;
+  protected Job job;
 
-  public UnlockExclusiveJobCmd(JobEntity job) {
+  public UnlockExclusiveJobCmd(Job job) {
     this.job = job;
   }
 

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.task.DelegationState;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
@@ -25,7 +26,6 @@ import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
-import org.activiti5.engine.impl.variable.VariableTypes;
 import org.activiti5.engine.task.Task;
 import org.activiti5.engine.task.TaskQuery;
 

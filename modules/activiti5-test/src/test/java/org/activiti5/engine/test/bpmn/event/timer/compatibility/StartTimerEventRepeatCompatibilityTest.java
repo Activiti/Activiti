@@ -16,13 +16,13 @@ package org.activiti5.engine.test.bpmn.event.timer.compatibility;
 import java.util.Calendar;
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.test.api.event.TestActivitiEntityEventListener;
 
 public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibilityTest {
@@ -33,11 +33,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
   protected void setUp() throws Exception {
     super.setUp();
     
-    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    
-    listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Job.class);
-    activiti5ProcessEngineConfig.getEventDispatcher().addEventListener(listener);
+    listener = new TestActivitiEntityEventListener(Job.class);
+    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
   }
 
   @Override
@@ -45,9 +42,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     super.tearDown();
 
     if (listener != null) {
-      org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-          processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-      activiti5ProcessEngineConfig.getEventDispatcher().removeEventListener(listener);
+      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
     }
   }
 
@@ -71,7 +66,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
 
     //AFTER DEPLOYMENT
     //when the process is deployed there will be created a timerStartEvent job which will wait to be executed.
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
 
     //dueDate should be after 24 hours from the process deployment
@@ -93,12 +88,9 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     // advance the clock after 9 days from starting the process ->
     // the system will execute the pending job and will create a new one (day by day)
     moveByMinutes(9 * 60 * 24);
-    try {
-      waitForJobExecutorToProcessAllJobs(10000, 500);
-      fail("there must be a pending job because the endDate is not reached yet");
-    } catch (Exception e) {
-      //expected failure
-    }
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
+    
+    // there must be a pending job because the endDate is not reached yet
 
     // After time advanced 9 days  there should be 9 process instance started
     processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -109,7 +101,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     assertEquals(9, tasks.size());
 
     // one new job will be created (and the old one will be deleted after execution)
-    jobs = managementService.createJobQuery().list();
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
 
     //check if the last job to be executed has the dueDate set correctly
@@ -121,11 +113,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     // ADVANCE THE CLOCK SO that all 10 repeats to be executed
     // (last execution)
     moveByMinutes(60 * 24);
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-    } catch (Exception e) {
-      fail("Because the maximum number of repeats is reached it will not be executed other jobs");
-    }
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+    
     // After the 10nth startEvent Execution should have 10 process instances started
     // (since the first one was not completed)
     processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -133,6 +122,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
 
     // the current job will be deleted after execution and a new one will not be created. (all 10 has already executed)
     jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     // 10 tasks to be executed (the userTask "Task A")
@@ -166,8 +157,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
       }
     }
     assertEquals(10, timerFiredCount); //10 timers fired
-    assertEquals(10, eventCreatedCount); //10 jobs created
-    assertEquals(10, eventDeletedCount); //10 jobs deleted
+    assertEquals(20, eventCreatedCount); //20 jobs created, 10 timer and 10 executable jobs
+    assertEquals(20, eventDeletedCount); //20 jobs deleted, 10 timer and 10 executable jobs
 
     // for each processInstance
     // let's complete the userTasks where the process is hanging in order to complete the processes.
@@ -185,6 +176,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
 
     //no jobs
     jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     //no tasks

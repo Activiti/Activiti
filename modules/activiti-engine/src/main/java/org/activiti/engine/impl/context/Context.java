@@ -27,7 +27,6 @@ import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -42,8 +41,6 @@ public class Context {
   protected static ThreadLocal<Stack<CommandContext>> commandContextThreadLocal = new ThreadLocal<Stack<CommandContext>>();
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
   protected static ThreadLocal<Stack<TransactionContext>> transactionContextThreadLocal = new ThreadLocal<Stack<TransactionContext>>();
-  protected static ThreadLocal<JobExecutorContext> jobExecutorContextThreadLocal = new ThreadLocal<JobExecutorContext>();
-  
   protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
   
   protected static ThreadLocal<Activiti5CompatibilityHandler> activiti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
@@ -113,18 +110,6 @@ public class Context {
     return stack;
   }
 
-  public static JobExecutorContext getJobExecutorContext() {
-    return jobExecutorContextThreadLocal.get();
-  }
-
-  public static void setJobExecutorContext(JobExecutorContext jobExecutorContext) {
-    jobExecutorContextThreadLocal.set(jobExecutorContext);
-  }
-
-  public static void removeJobExecutorContext() {
-    jobExecutorContextThreadLocal.remove();
-  }
-  
   public static ObjectNode getBpmnOverrideElementProperties(String id, String processDefinitionId) {
     ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
     ObjectNode elementProperties = null;

@@ -28,7 +28,6 @@ import org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti5.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.persistence.entity.MembershipEntity;
-import org.activiti5.engine.impl.persistence.entity.MessageEntity;
 import org.activiti5.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.ModelEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -36,7 +35,7 @@ import org.activiti5.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.persistence.entity.UserEntity;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity;
 
@@ -78,11 +77,8 @@ public class EntityDependencyOrder {
 		 */
 		DELETE_ORDER.add(ModelEntity.class); 
 		
-		/* Subclass of JobEntity */
-		DELETE_ORDER.add(MessageEntity.class);
-		
 		/* Subclass of TimerEntity */
-		DELETE_ORDER.add(TimerEntity.class);
+		DELETE_ORDER.add(TimerJobEntity.class);
 		
 		/*
 		 * FK to ByteArray

@@ -16,12 +16,10 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
-import org.activiti.engine.impl.util.Activiti5Util;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,20 +49,12 @@ public class SaveProcessDefinitionInfoCmd implements Command<Void>, Serializable
       throw new ActivitiIllegalArgumentException("process definition info node is null");
     }
     
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processDefinitionId)) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      activiti5CompatibilityHandler.saveProcessDefinitionInfo(processDefinitionId, infoNode);
-      return null;
-    }
-    
     ProcessDefinitionInfoEntityManager definitionInfoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
     ProcessDefinitionInfoEntity definitionInfoEntity = definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinitionId);
     if (definitionInfoEntity == null) {
       definitionInfoEntity = definitionInfoEntityManager.create();
       definitionInfoEntity.setProcessDefinitionId(processDefinitionId);
       commandContext.getProcessDefinitionInfoEntityManager().insertProcessDefinitionInfo(definitionInfoEntity);
-    } else {
-      commandContext.getProcessDefinitionInfoEntityManager().updateProcessDefinitionInfo(definitionInfoEntity);
     }
     
     if (infoNode != null) {

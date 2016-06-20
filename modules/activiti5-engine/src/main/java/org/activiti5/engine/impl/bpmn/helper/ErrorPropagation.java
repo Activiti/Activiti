@@ -16,10 +16,10 @@ package org.activiti5.engine.impl.bpmn.helper;
 import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ActivitiActivityExecutionException;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.BpmnError;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;

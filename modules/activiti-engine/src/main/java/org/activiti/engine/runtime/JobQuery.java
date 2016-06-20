@@ -37,17 +37,6 @@ public interface JobQuery extends Query<JobQuery, Job> {
   /** Only select jobs which exist for the given process definition id */
   JobQuery processDefinitionId(String processDefinitionid);
 
-  /** Only select jobs which have retries left */
-  JobQuery withRetriesLeft();
-
-  /** Only select jobs which have no retries left */
-  JobQuery noRetriesLeft();
-
-  /**
-   * Only select jobs which are executable, ie. retries &gt; 0 and duedate is null or duedate is in the past
-   **/
-  JobQuery executable();
-
   /**
    * Only select jobs that are timers. Cannot be used together with {@link #messages()}
    */
@@ -84,6 +73,16 @@ public interface JobQuery extends Query<JobQuery, Job> {
    * Only select jobs that do not have a tenant id.
    */
   JobQuery jobWithoutTenantId();
+  
+  /**
+   * Only return jobs that are locked (i.e. they are acquired by an executor).
+   */
+  JobQuery locked();
+  
+  /**
+   * Only return jobs that are not locked.
+   */
+  JobQuery unlocked();
 
   // sorting //////////////////////////////////////////
 

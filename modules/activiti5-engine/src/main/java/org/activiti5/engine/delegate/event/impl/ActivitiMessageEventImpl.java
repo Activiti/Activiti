@@ -12,9 +12,9 @@
  */
 package org.activiti5.engine.delegate.event.impl;
 
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiMessageEvent;
-import org.activiti5.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 
 /**
  * An {@link ActivitiSignalEvent} implementation.

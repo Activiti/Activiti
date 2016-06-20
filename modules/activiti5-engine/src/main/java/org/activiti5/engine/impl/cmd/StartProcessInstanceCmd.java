@@ -16,6 +16,7 @@ package org.activiti5.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
@@ -26,7 +27,6 @@ import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.runtime.ProcessInstanceBuilderImpl;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.runtime.ProcessInstance;
 
 
@@ -69,7 +69,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       .getDeploymentManager();
     
     // Find the process definition
-    ProcessDefinitionEntity processDefinition = null;
+    ProcessDefinition processDefinition = null;
     if (processDefinitionId!=null) {
       processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
@@ -96,7 +96,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     }
 
     // Start the process instance
-    ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
+    ExecutionEntity processInstance = ((ProcessDefinitionEntity) processDefinition).createProcessInstance(businessKey);
 
     // now set the variables passed into the start command
     initializeVariables(processInstance);

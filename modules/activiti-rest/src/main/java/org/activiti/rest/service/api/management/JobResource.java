@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 @RestController
 public class JobResource {
@@ -46,7 +47,44 @@ public class JobResource {
 
   @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
   public JobResponse getJob(@PathVariable String jobId, HttpServletRequest request) {
-    Job job = getJobFromResponse(jobId);
+    Job job = managementService.createJobQuery().jobId(jobId).singleResult();
+
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
+
+    return restResponseFactory.createJobResponse(job);
+  }
+  
+  @RequestMapping(value = "/management/timer-jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
+  public JobResponse getTimerJob(@PathVariable String jobId, HttpServletRequest request) {
+    Job job = managementService.createTimerJobQuery().jobId(jobId).singleResult();
+
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a timer job with id '" + jobId + "'.", Job.class);
+    }
+
+    return restResponseFactory.createJobResponse(job);
+  }
+  
+  @RequestMapping(value = "/management/suspended-jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
+  public JobResponse getSuspendedJob(@PathVariable String jobId, HttpServletRequest request) {
+    Job job = managementService.createSuspendedJobQuery().jobId(jobId).singleResult();
+
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a suspended job with id '" + jobId + "'.", Job.class);
+    }
+
+    return restResponseFactory.createJobResponse(job);
+  }
+  
+  @RequestMapping(value = "/management/deadletter-jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
+  public JobResponse getDeadletterJob(@PathVariable String jobId, HttpServletRequest request) {
+    Job job = managementService.createDeadLetterJobQuery().jobId(jobId).singleResult();
+
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a deadletter job with id '" + jobId + "'.", Job.class);
+    }
 
     return restResponseFactory.createJobResponse(job);
   }
@@ -55,6 +93,28 @@ public class JobResource {
   public void deleteJob(@PathVariable String jobId, HttpServletResponse response) {
     try {
       managementService.deleteJob(jobId);
+    } catch (ActivitiObjectNotFoundException aonfe) {
+      // Re-throw to have consistent error-messaging acrosse REST-api
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
+  
+  @RequestMapping(value = "/management/timer-jobs/{jobId}", method = RequestMethod.DELETE)
+  public void deleteTimerJob(@PathVariable String jobId, HttpServletResponse response) {
+    try {
+      managementService.deleteTimerJob(jobId);
+    } catch (ActivitiObjectNotFoundException aonfe) {
+      // Re-throw to have consistent error-messaging acrosse REST-api
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
+  
+  @RequestMapping(value = "/management/deadletter-jobs/{jobId}", method = RequestMethod.DELETE)
+  public void deleteDeadLetterJob(@PathVariable String jobId, HttpServletResponse response) {
+    try {
+      managementService.deleteDeadLetterJob(jobId);
     } catch (ActivitiObjectNotFoundException aonfe) {
       // Re-throw to have consistent error-messaging acrosse REST-api
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
@@ -78,12 +138,4 @@ public class JobResource {
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
-  protected Job getJobFromResponse(String jobId) {
-    Job job = managementService.createJobQuery().jobId(jobId).singleResult();
-
-    if (job == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
-    }
-    return job;
-  }
 }

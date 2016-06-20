@@ -13,11 +13,13 @@ import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
@@ -31,12 +33,14 @@ public class TimerUtil {
    * 
    * Takes in an optional execution, if missing the {@link NoExecutionVariableScope} will be used (eg Timer start event)
    */
-  public static TimerEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean isInterruptingTimer, 
+  public static TimerJobEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean isInterruptingTimer, 
       ExecutionEntity executionEntity, String jobHandlerType, String jobHandlerConfig) {
 
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    
     String businessCalendarRef = null;
     Expression expression = null;
-    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+    ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
     
     // ACT-1415: timer-declaration on start-event may contain expressions NOT
     // evaluating variables but other context, evaluating should happen nevertheless
@@ -71,36 +75,40 @@ public class TimerUtil {
       throw new ActivitiException("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) (" + timerEventDefinition.getId() + ")");
     }
 
-    BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(businessCalendarRef);
+    BusinessCalendar businessCalendar = processEngineConfiguration.getBusinessCalendarManager().getBusinessCalendar(businessCalendarRef);
 
     String dueDateString = null;
     Date duedate = null;
-
+    
     Object dueDateValue = expression.getValue(scopeForExpression);
     if (dueDateValue instanceof String) {
       dueDateString = (String) dueDateValue;
+      
     } else if (dueDateValue instanceof Date) {
       duedate = (Date) dueDateValue;
+      
     } else if (dueDateValue instanceof DateTime) {
       //JodaTime support
       duedate = ((DateTime) dueDateValue).toDate();
-    } else if(dueDateValue!=null){
+      
+    } else if (dueDateValue != null) {
       throw new ActivitiException("Timer '" + executionEntity.getActivityId()
           + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
     }
-    //dueDateValue==null is OK - but unexpected class type must throw an error.
-
+    
     if (duedate == null && dueDateString != null) {
       duedate = businessCalendar.resolveDuedate(dueDateString);
     }
 
-    TimerEntity timer = null;
+    TimerJobEntity timer = null;
     if (duedate != null) {
-      timer = Context.getCommandContext().getJobEntityManager().createTimer();
+      timer = Context.getCommandContext().getTimerJobEntityManager().create();
+      timer.setJobType(JobEntity.JOB_TYPE_TIMER);
+      timer.setRevision(1);
       timer.setJobHandlerType(jobHandlerType);
       timer.setJobHandlerConfiguration(jobHandlerConfig);
       timer.setExclusive(true);
-      timer.setRetries(TimerEntity.DEFAULT_RETRIES);
+      timer.setRetries(processEngineConfiguration.getAsyncExecutorNumberOfRetries());
       timer.setDuedate(duedate);
       if (executionEntity != null) {
         timer.setExecution(executionEntity);

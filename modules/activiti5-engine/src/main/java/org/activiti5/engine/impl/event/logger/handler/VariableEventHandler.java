@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.activiti5.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti5.engine.impl.variable.BooleanType;
 import org.activiti5.engine.impl.variable.DateType;
 import org.activiti5.engine.impl.variable.DoubleType;
@@ -16,7 +17,6 @@ import org.activiti5.engine.impl.variable.SerializableType;
 import org.activiti5.engine.impl.variable.ShortType;
 import org.activiti5.engine.impl.variable.StringType;
 import org.activiti5.engine.impl.variable.UUIDType;
-import org.activiti5.engine.impl.variable.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

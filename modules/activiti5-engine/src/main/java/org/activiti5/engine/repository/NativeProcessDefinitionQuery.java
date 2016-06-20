@@ -1,5 +1,6 @@
 package org.activiti5.engine.repository;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.query.NativeQuery;
 
 /**

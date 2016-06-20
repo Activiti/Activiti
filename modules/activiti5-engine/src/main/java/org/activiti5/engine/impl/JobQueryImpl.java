@@ -17,11 +17,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
-import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.runtime.JobQuery;
 
 

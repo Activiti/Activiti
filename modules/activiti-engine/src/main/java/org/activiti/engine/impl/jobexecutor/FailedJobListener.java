@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +34,9 @@ public class FailedJobListener implements CommandContextCloseListener {
   private static final Logger log = LoggerFactory.getLogger(FailedJobListener.class);
 
   protected CommandExecutor commandExecutor;
-  protected JobEntity job;
+  protected Job job;
 
-  public FailedJobListener(CommandExecutor commandExecutor, JobEntity job) {
+  public FailedJobListener(CommandExecutor commandExecutor, Job job) {
     this.commandExecutor = commandExecutor;
     this.job = job;
   }

@@ -200,6 +200,7 @@ public class BpmnDeployer implements Deployer {
   
   protected void updateTimersAndEvents(ParsedDeployment parsedDeployment, 
       Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
+    
     for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
       bpmnDeploymentHelper.updateTimersAndEvents(processDefinition,
           mapNewToOldProcessDefinitions.get(processDefinition),

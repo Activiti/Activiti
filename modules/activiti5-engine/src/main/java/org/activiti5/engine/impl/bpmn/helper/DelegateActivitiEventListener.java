@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.impl.bpmn.helper;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
 import org.activiti5.engine.impl.util.ReflectUtil;
 
 /**
@@ -41,23 +41,23 @@ public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		if(isValidEvent(event)) {
+		if (isValidEvent(event)) {
 			getDelegateInstance().onEvent(event);
 		}
 	}
 
 	@Override
 	public boolean isFailOnException() {
-		if(delegateInstance != null) {
+		if (delegateInstance != null) {
 			return delegateInstance.isFailOnException();
 		}
 		return failOnException;
 	}
 	
 	protected ActivitiEventListener getDelegateInstance() {
-		if(delegateInstance == null) {
+		if (delegateInstance == null) {
 			Object instance = ReflectUtil.instantiate(className);
-			if(instance instanceof ActivitiEventListener) {
+			if (instance instanceof ActivitiEventListener) {
 				delegateInstance = (ActivitiEventListener) instance;
 			} else {
 				// Force failing of the listener invocation, since the delegate cannot be created

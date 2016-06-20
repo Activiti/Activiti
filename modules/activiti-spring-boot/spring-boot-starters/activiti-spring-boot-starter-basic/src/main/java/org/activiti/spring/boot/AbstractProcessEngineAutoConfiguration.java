@@ -87,8 +87,6 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setDbIdentityUsed(activitiProperties.isDbIdentityUsed());
     conf.setDbHistoryUsed(activitiProperties.isDbHistoryUsed());
     
-    conf.setJobExecutorActivate(activitiProperties.isJobExecutorActivate());
-    conf.setAsyncExecutorEnabled(activitiProperties.isAsyncExecutorEnabled());
     conf.setAsyncExecutorActivate(activitiProperties.isAsyncExecutorActivate());
     
     conf.setMailServerHost(activitiProperties.getMailServerHost());

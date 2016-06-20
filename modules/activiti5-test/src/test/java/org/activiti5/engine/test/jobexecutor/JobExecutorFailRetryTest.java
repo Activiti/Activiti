@@ -12,7 +12,6 @@
  */
 package org.activiti5.engine.test.jobexecutor;
 
-import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 

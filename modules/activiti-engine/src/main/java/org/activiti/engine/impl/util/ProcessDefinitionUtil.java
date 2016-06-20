@@ -15,11 +15,13 @@ package org.activiti.engine.impl.util;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * A utility class that hides the complexity of {@link ProcessDefinitionEntity} and {@link Process} lookup. Use this class rather than accessing the process definition cache or
@@ -29,20 +31,22 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
  */
 public class ProcessDefinitionUtil {
 
-  public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId) {
-    return getProcessDefinitionEntity(processDefinitionId, false);
+  public static ProcessDefinition getProcessDefinition(String processDefinitionId) {
+    return getProcessDefinition(processDefinitionId, false);
   }
 
-  public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId, boolean checkCacheOnly) {
+  public static ProcessDefinition getProcessDefinition(String processDefinitionId, boolean checkCacheOnly) {
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     if (checkCacheOnly) {
-      ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
+      ProcessDefinitionCacheEntry cacheEntry = processEngineConfiguration.getProcessDefinitionCache().get(processDefinitionId);
       if (cacheEntry != null) {
-        return cacheEntry.getProcessDefinitionEntity();
+        return cacheEntry.getProcessDefinition();
       }
       return null;
+      
     } else {
       // This will check the cache in the findDeployedProcessDefinitionById method
-      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+      return processEngineConfiguration.getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
     }
   }
 
@@ -54,7 +58,7 @@ public class ProcessDefinitionUtil {
       DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
       
       // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
-      ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+      ProcessDefinition processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
       return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getProcess();
     }
   }
@@ -67,7 +71,7 @@ public class ProcessDefinitionUtil {
       DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
       
       // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
-      ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+      ProcessDefinition processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
       return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getBpmnModel();
     }
   }

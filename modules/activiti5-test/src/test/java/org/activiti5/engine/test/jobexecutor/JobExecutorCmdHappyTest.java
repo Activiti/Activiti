@@ -14,18 +14,18 @@ package org.activiti5.engine.test.jobexecutor;
 
 import java.util.Date;
 
+import org.activiti.engine.impl.asyncexecutor.AcquiredTimerJobEntities;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
-import org.activiti5.engine.impl.asyncexecutor.AcquiredJobEntities;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti5.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti5.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
-import org.activiti5.engine.impl.persistence.entity.MessageEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
  * @author Tom Baeyens
@@ -39,7 +39,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageEntity message = createTweetMessage("i'm coding a test");
+        JobEntity message = createTweetMessage("i'm coding a test");
         commandContext.getJobEntityManager().send(message);
         return message.getId();
       }
@@ -61,38 +61,43 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
   static final long SECOND = 1000;
 
   public void testJobCommandsWithTimer() {
+    ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
+    
     // clock gets automatically reset in LogTestCase.runTest
     Clock clock = processEngineConfiguration.getClock();
     clock.setCurrentTime(new Date(SOME_TIME));
     processEngineConfiguration.setClock(clock);
 
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     CommandExecutor commandExecutor = (CommandExecutor) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawCommandExecutor();
     
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        TimerEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
+        TimerJobEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
         commandContext.getJobEntityManager().schedule(timer);
         return timer.getId();
       }
     });
 
-    AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 10000, 5));
+    AcquiredTimerJobEntities acquiredJobs = processEngineConfiguration.getCommandExecutor().execute(new AcquireTimerJobsCmd(asyncExecutor));
     assertEquals(0, acquiredJobs.size());
 
     clock.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
     processEngineConfiguration.setClock(clock);
 
-    acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 10000, 5));
+    acquiredJobs = processEngineConfiguration.getCommandExecutor().execute(new AcquireTimerJobsCmd(asyncExecutor));
     assertEquals(1, acquiredJobs.size());
 
-    JobEntity job = acquiredJobs.getJobs().iterator().next();
+    Job job = acquiredJobs.getJobs().iterator().next();
 
     assertEquals(jobId, job.getId());
 
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteAsyncJobCmd(job));
+    managementService.moveTimerToExecutableJob(jobId);
+    JobEntity jobEntity = (JobEntity) activiti5ProcessEngineConfig.getManagementService().createJobQuery().singleResult();
+    activiti5ProcessEngineConfig.getCommandExecutor().execute(new ExecuteAsyncJobCmd(jobEntity));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());

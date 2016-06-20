@@ -17,10 +17,10 @@
     <property name="activiti5CompatibilityEnabled" value="true" />
     
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
     
     <!-- Add event listener -->
-    <property name="activiti5EventListeners">
+    <property name="eventListeners">
       <list>
          <ref bean="eventListener" />
       </list>

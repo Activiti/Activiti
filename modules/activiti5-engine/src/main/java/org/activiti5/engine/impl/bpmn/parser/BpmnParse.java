@@ -37,6 +37,7 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemKind;
@@ -226,7 +227,9 @@ public class BpmnParse implements BpmnXMLConstants {
       	}
       }
       
-      // Validation successfull (or no validation)
+      bpmnModel.setEventSupport(new ActivitiEventSupport());
+      
+      // Validation successful (or no validation)
       createImports();
       createItemDefinitions();
       createMessages();

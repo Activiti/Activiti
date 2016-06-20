@@ -261,12 +261,12 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     runtimeService.startProcessInstanceById(processDefinition.getId());
     repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
     
     // The jobs should simply be executed
     processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
     waitForJobExecutorToProcessAllJobs(2000L, 100L);
-    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
   }
   
   @Deployment(resources={"org/activiti5/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
@@ -287,7 +287,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
     
     // verify there is a job created
-    assertEquals(1, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
+    assertEquals(1, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
     
     // Move clock 8 days further and let job executor run
     long eightDaysSinceStartTime = oneWeekFromStartTime + (24 * 60 * 60 * 1000);
@@ -295,7 +295,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
     
     // verify job is now removed
-    assertEquals(0, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
+    assertEquals(0, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
     
     // Try to start process instance. It should fail now.
     try {
@@ -486,9 +486,9 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
     
     // Verify a job is created for each process definition
-    assertEquals(nrOfProcessDefinitions, managementService.createJobQuery().count());
+    assertEquals(nrOfProcessDefinitions, managementService.createTimerJobQuery().count());
     for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().list()) {
-      assertEquals(1, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
+      assertEquals(1, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
     }
     
     // Move time 3 hours and run job executor

@@ -9,8 +9,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +58,9 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 
     // Current tenant
     if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
-      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
-      if (processDefinitionEntity != null && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinitionEntity.getTenantId())) {
-        putInMapIfNotNull(data, Fields.TENANT_ID, processDefinitionEntity.getTenantId());
+      ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
+      if (processDefinition != null && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+        putInMapIfNotNull(data, Fields.TENANT_ID, processDefinition.getTenantId());
       }
     }
 

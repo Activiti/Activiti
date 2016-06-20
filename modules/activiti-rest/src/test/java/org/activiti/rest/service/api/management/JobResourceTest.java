@@ -31,14 +31,14 @@ public class JobResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = { "org/activiti/rest/service/api/management/JobResourceTest.testTimerProcess.bpmn20.xml" })
   public void testGetJob() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
     Calendar now = Calendar.getInstance();
     now.set(Calendar.MILLISECOND, 0);
     processEngineConfiguration.getClock().setCurrentTime(now.getTime());
 
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId())), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TIMER_JOB, timerJob.getId())), HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
     assertNotNull(responseNode);
@@ -54,7 +54,7 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
 
-    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId())), HttpStatus.SC_OK);
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TIMER_JOB, timerJob.getId())), HttpStatus.SC_OK);
     responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
     assertNotNull(responseNode);
@@ -75,9 +75,11 @@ public class JobResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = { "org/activiti/rest/service/api/management/JobResourceTest.testTimerProcess.bpmn20.xml" })
   public void testExecuteJob() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
+    managementService.moveTimerToExecutableJob(timerJob.getId());
+    
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "execute");
 
@@ -96,7 +98,7 @@ public class JobResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = { "org/activiti/rest/service/api/management/JobResourceTest.testTimerProcess.bpmn20.xml" })
   public void testExecuteUnexistingJob() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
     ObjectNode requestNode = objectMapper.createObjectNode();
@@ -114,7 +116,7 @@ public class JobResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = { "org/activiti/rest/service/api/management/JobResourceTest.testTimerProcess.bpmn20.xml" })
   public void testIllegalActionOnJob() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
     ObjectNode requestNode = objectMapper.createObjectNode();
@@ -132,10 +134,10 @@ public class JobResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = { "org/activiti/rest/service/api/management/JobResourceTest.testTimerProcess.bpmn20.xml" })
   public void testDeleteJob() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess");
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
-    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TIMER_JOB, timerJob.getId()));
     CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
     closeResponse(response);
 

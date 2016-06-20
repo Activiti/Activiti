@@ -1,7 +1,7 @@
 package org.activiti5.engine.delegate.event.impl;
 
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
 /**
  * @author Joram Barrez

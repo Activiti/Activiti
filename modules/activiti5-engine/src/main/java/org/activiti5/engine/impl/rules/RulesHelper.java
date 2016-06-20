@@ -13,10 +13,10 @@
 
 package org.activiti5.engine.impl.rules;
 
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti5.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti5.engine.repository.Deployment;
 import org.drools.KnowledgeBase;

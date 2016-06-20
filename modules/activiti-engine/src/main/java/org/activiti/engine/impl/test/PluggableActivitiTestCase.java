@@ -46,8 +46,7 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
     if (cachedProcessEngine == null) {
 
       pluggableActivitiTestCaseLogger.info("No cached process engine found for test. Retrieving the default engine.");
-      ProcessEngines.destroy(); // Just to be sure we're not getting any
-                                // previously cached version
+      ProcessEngines.destroy(); // Just to be sure we're not getting any previously cached version
 
       cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
       if (cachedProcessEngine == null) {

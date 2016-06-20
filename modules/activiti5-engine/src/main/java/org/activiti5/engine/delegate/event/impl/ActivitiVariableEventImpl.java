@@ -12,9 +12,9 @@
  */
 package org.activiti5.engine.delegate.event.impl;
 
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti5.engine.impl.variable.VariableType;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.impl.variable.VariableType;
 
 /**
  * Implementation of {@link ActivitiVariableEvent}.

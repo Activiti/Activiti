@@ -16,14 +16,14 @@ import java.util.List;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.util.TimerUtil;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
@@ -36,12 +36,12 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
   }
 
   public void execute(DelegateExecution execution) {
-    TimerEntity timer = TimerUtil
-        .createTimerEntityForTimerEventDefinition(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, 
-            TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), 
-                timerEventDefinition.getCalendarName()));
-    if (timer != null) {
-      Context.getCommandContext().getJobEntityManager().schedule(timer);
+    JobManager jobManager = Context.getCommandContext().getJobManager();
+    TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE,
+        TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
+    
+    if (timerJob != null) {
+      jobManager.scheduleTimerJob(timerJob);
     }
   }
   

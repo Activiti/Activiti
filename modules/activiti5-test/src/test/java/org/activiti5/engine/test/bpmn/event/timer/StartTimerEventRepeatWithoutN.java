@@ -14,10 +14,10 @@
 package org.activiti5.engine.test.bpmn.event.timer;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -51,20 +51,14 @@ public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
 		super.setUp();
 		
 		startEventListener = new StartEventListener();
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfiguration = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		activiti5ProcessEngineConfiguration.getEventDispatcher().addEventListener(startEventListener);
+		processEngineConfiguration.getEventDispatcher().addEventListener(startEventListener);
 	}
 	
-	
-
 	@Override
   protected void tearDown() throws Exception {
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfiguration = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    activiti5ProcessEngineConfiguration.getEventDispatcher().removeEventListener(startEventListener);
+	  processEngineConfiguration.getEventDispatcher().removeEventListener(startEventListener);
     super.tearDown();
   }
-
-
 
   @Deployment
 	public void testStartTimerEventRepeatWithoutN() {

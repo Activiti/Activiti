@@ -20,6 +20,7 @@ import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
@@ -73,7 +74,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
     
-    ProcessDefinitionEntity processDefinition = null;
+    ProcessDefinition processDefinition = null;
     if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
     	processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     } else {
@@ -87,7 +88,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
     
     ActivityExecution activityExecution = (ActivityExecution) execution;
-    PvmProcessInstance subProcessInstance = activityExecution.createSubProcessInstance(processDefinition);
+    PvmProcessInstance subProcessInstance = activityExecution.createSubProcessInstance((ProcessDefinitionEntity) processDefinition);
     
     // copy process variables
     for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {

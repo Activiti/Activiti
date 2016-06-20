@@ -1,6 +1,6 @@
 package org.activiti5.engine.impl.interceptor;
 
-import org.activiti5.engine.impl.cfg.TransactionPropagation;
+import org.activiti.engine.impl.cfg.TransactionPropagation;
 
 /**
  * Configuration settings for the command interceptor chain.
