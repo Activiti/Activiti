@@ -45,7 +45,7 @@ alter table ACT_RU_VARIABLE
     drop FOREIGN KEY ACT_FK_VAR_BYTEARRAY;
 
 alter table ACT_RU_JOB
-    drop FOREIGN KEY ACT_FK_JOB_EXCEPTION;
+    drop FOREIGN KEY ACT_FK_JOB_EXECUTION;
     
 alter table ACT_RU_JOB 
     drop foreign key ACT_FK_JOB_PROCESS_INSTANCE;
