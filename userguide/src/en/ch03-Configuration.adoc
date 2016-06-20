@@ -367,7 +367,7 @@ To upgrade, you have to start with putting the following configuration property 
 
 === Job Executor (since version 6.0.0)
 
-The aysnc executor of Activiti 5 is the only available job executor in Activiti 5 as it was a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
+The async executor of Activiti 5 is the only available job executor in Activiti 6 as it was a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
 The old job executor of Activiti 5 is removed. More information can be found in the advanced section of the user guide.
 
 Moreover, if running under Java EE 7, JSR-236 compliant +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows:
