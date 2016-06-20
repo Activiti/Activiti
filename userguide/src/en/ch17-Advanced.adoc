@@ -778,7 +778,7 @@ However, it could be a specific version of a supported and tested database does 
 
 *Experimental*: the secure scripting feature has been added as part of the Activiti 5.21 release.
 
-By default, when using a <<bpmnScriptTask, script task>>, the script that is executed has similar capabilities as a Java delegate. It has full access to the JVM, can run forever (due to infinite loops) or use up a lot of memory. However, Java delegates need to be written and put on the classpath in a jar and they have a different lifecyle from a process definitions. End-users generally will not write Java delegates, as this is a typical the job of a developer.
+By default, when using a <<bpmnScriptTask, script task>>, the script that is executed has similar capabilities as a Java delegate. It has full access to the JVM, can run forever (due to infinite loops) or use up a lot of memory. However, Java delegates need to be written and put on the classpath in a jar and they have a different lifecyle from a process definition. End-users generally will not write Java delegates, as this is a typical job of a developer.
 
 Scripts on the other hand are part of the process definition and its lifecycle is the same. Script tasks don't need the extra step of a jar deployment, but can be executed from the moment the process definition is deployed. Sometimes, scripts for script tasks are not written by developers. Yet, this poses a problem as stated above: a script has full access to the JVM and it is possible to block many system resources when executing the script. Allowing scripts from just about anyone is thus not a good idea.
 
@@ -793,7 +793,7 @@ To solve this problem, the _secure scripting_ feature can be enabled. Currently,
 </dependency>
 ----
 
-Adding this dependency will transitively bring in the Rhino dependency (see link:$https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino$$[https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino]). Rhino is a javascript engine for the JDK. It used to be included in JDK version 6 and 7 and was superseded by the Nashorn engine. However, the Rhino project continued development after it was included in the JDK. Many features (including the ones Activiti uses to implement the secure scripting) were added afterwards. At the time of writing, the Nashorn engine *does not* have the features that are needed to implement the secure scripting feature.
+Adding this dependency will transitively bring in the Rhino dependency (see link:$https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino$$[https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino]). Rhino is a javascript engine for the JDK. It used to be included in JDK version 6 and 7 and was superseded by the Nashorn engine. However, the Rhino project continued development after it was included in the JDK. Many features (including the ones Activiti uses to implement the secure scripting) were added afterwards. At the time of this writing, the Nashorn engine *does not* have the features that are needed to implement the secure scripting feature.
 
 This does mean that there could be (typically small) differences between scripts (for example, _importPackage_ works on Rhino, but _load()_ has to be used on Nashorn). The changes would be similar to switching from JDK 7 to 8 scripts.
 
@@ -817,7 +817,7 @@ Following settings are possible:
 * *whiteListedClasses*: a Set of Strings corresponding with fully qualified classnames of the classes that are allowed to be used in the script. For example, to expose the _execution_ object in a script, the _org.activiti.engine.impl.persistence.entity.ExecutionEntity_ String needs to be added to this Set. By default _empty_.
 * *maxStackDepth*: Limits the stack depth while calling functions within a script. This can be used to avoid stackoverflow exceptions that occur when recursively calling a method defined in the script. By default _-1_ (disabled).
 * *maxScriptExecutionTime*: The maximum time a script is allowed to run. By default _-1_ (disabled).
-* *maxMemoryUsed*: The maximum memory, in bytes, that the script is allowed to use. Note that the script engine itself takes a a certain amount of memory that is counted here too. By default _-1_ (disabled).
+* *maxMemoryUsed*: The maximum memory, in bytes, that the script is allowed to use. Note that the script engine itself takes a certain amount of memory that is counted here too. By default _-1_ (disabled).
 * *nrOfInstructionsBeforeStateCheckCallback*: The maximum script execution time and memory usage is implemented using a callback that is called every x instructions of the script. Note that these are not script instructions, but java byte code instructions (which means one script line could be hundreds of byte code instructions). By default 100.
 
 _Note:_ the _maxMemoryUsed_ setting can only be used by a JVM that supports the com.sun.management.ThreadMXBean#getThreadAllocatedBytes() method. The Oracle JDK has this.
@@ -840,4 +840,4 @@ It's used as follows:
 </activiti:executionListener>
 ----
 
-For examples that demonstrate unsecure scripts and how they are made secure by the _secure scripting_ feature, please check the  link:$$https://github.com/Activiti/Activiti/tree/master/modules/activiti-secure-javascript/src/test/resources$$[unit tests on Github]
+For examples that demonstrate unsecure scripts and how they are made secure by the _secure scripting_ feature, please check the  link:$$https://github.com/Activiti/Activiti/tree/master/modules/activiti-secure-javascript/src/test/resources$$[unit tests on Github].
