@@ -349,9 +349,84 @@ alter table ACT_RU_VARIABLE
     add constraint ACT_FK_VAR_BYTEARRAY 
     foreign key (BYTEARRAY_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
+    
+alter table ACT_RU_JOB 
+    add constraint ACT_FK_JOB_EXECUTION 
+    foreign key (EXECUTION_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_JOB 
+    add constraint ACT_FK_JOB_PROCESS_INSTANCE 
+    foreign key (PROCESS_INSTANCE_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_JOB 
+    add constraint ACT_FK_JOB_PROC_DEF
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);
 
 alter table ACT_RU_JOB 
     add constraint ACT_FK_JOB_EXCEPTION 
+    foreign key (EXCEPTION_STACK_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+    
+alter table ACT_RU_TIMER_JOB 
+    add constraint ACT_FK_TIMER_JOB_EXECUTION 
+    foreign key (EXECUTION_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_TIMER_JOB 
+    add constraint ACT_FK_TIMER_JOB_PROCESS_INSTANCE 
+    foreign key (PROCESS_INSTANCE_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_TIMER_JOB 
+    add constraint ACT_FK_TIMER_JOB_PROC_DEF
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);
+    
+alter table ACT_RU_TIMER_JOB 
+    add constraint ACT_FK_TIMER_JOB_EXCEPTION 
+    foreign key (EXCEPTION_STACK_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+    
+alter table ACT_RU_SUSPENDED_JOB 
+    add constraint ACT_FK_SUSPENDED_JOB_EXECUTION 
+    foreign key (EXECUTION_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_SUSPENDED_JOB 
+    add constraint ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE 
+    foreign key (PROCESS_INSTANCE_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_SUSPENDED_JOB 
+    add constraint ACT_FK_SUSPENDED_JOB_PROC_DEF
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);
+    
+alter table ACT_RU_SUSPENDED_JOB 
+    add constraint ACT_FK_SUSPENDED_JOB_EXCEPTION 
+    foreign key (EXCEPTION_STACK_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+    
+alter table ACT_RU_DEADLETTER_JOB 
+    add constraint ACT_FK_DEADLETTER_JOB_EXECUTION 
+    foreign key (EXECUTION_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_DEADLETTER_JOB 
+    add constraint ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE 
+    foreign key (PROCESS_INSTANCE_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_DEADLETTER_JOB 
+    add constraint ACT_FK_DEADLETTER_JOB_PROC_DEF
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);
+    
+alter table ACT_RU_DEADLETTER_JOB 
+    add constraint ACT_FK_DEADLETTER_JOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
 
