@@ -99,7 +99,7 @@
 	<select id="selectTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_TIMER_JOB
-		where DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP};
+		where DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP}
 	</select>
 
 	<!-- TIMER INSERT -->
