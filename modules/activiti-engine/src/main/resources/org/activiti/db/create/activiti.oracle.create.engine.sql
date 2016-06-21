@@ -370,7 +370,7 @@ alter table ACT_RU_JOB
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
-create index ACT_IDX_JOB_PROCESS_INSTANCE_ID on ACT_RU_JOB(PROCESS_INSTANCE_ID_);
+create index ACT_IDX_JOB_PROC_INST_ID on ACT_RU_JOB(PROCESS_INSTANCE_ID_);
 alter table ACT_RU_JOB 
     add constraint ACT_FK_JOB_PROCESS_INSTANCE 
     foreign key (PROCESS_INSTANCE_ID_) 
@@ -388,75 +388,75 @@ alter table ACT_RU_JOB
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
 
-create index ACT_IDX_TIMER_JOB_EXECUTION_ID on ACT_RU_TIMER_JOB(EXECUTION_ID_);
+create index ACT_IDX_TJOB_EXECUTION_ID on ACT_RU_TIMER_JOB(EXECUTION_ID_);
 alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_EXECUTION 
+    add constraint ACT_FK_TJOB_EXECUTION 
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
-create index ACT_IDX_TIMER_JOB_PROCESS_INSTANCE_ID on ACT_RU_TIMER_JOB(PROCESS_INSTANCE_ID_);
+create index ACT_IDX_TJOB_PROC_INST_ID on ACT_RU_TIMER_JOB(PROCESS_INSTANCE_ID_);
 alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_PROCESS_INSTANCE 
+    add constraint ACT_FK_TJOB_PROCESS_INSTANCE 
     foreign key (PROCESS_INSTANCE_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
-create index ACT_IDX_TIMER_JOB_PROC_DEF_ID on ACT_RU_TIMER_JOB(PROC_DEF_ID_);
+create index ACT_IDX_TJOB_PROC_DEF_ID on ACT_RU_TIMER_JOB(PROC_DEF_ID_);
 alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_PROC_DEF
+    add constraint ACT_FK_TJOB_PROC_DEF
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);
 
-create index ACT_IDX_TIMER_JOB_EXCEPTION on ACT_RU_TIMER_JOB(EXCEPTION_STACK_ID_);    
+create index ACT_IDX_TJOB_EXCEPTION on ACT_RU_TIMER_JOB(EXCEPTION_STACK_ID_);    
 alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_EXCEPTION 
+    add constraint ACT_FK_TJOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
 
-create index ACT_IDX_SUSPENDED_JOB_EXECUTION_ID on ACT_RU_SUSPENDED_JOB(EXECUTION_ID_);    
+create index ACT_IDX_SJOB_EXECUTION_ID on ACT_RU_SUSPENDED_JOB(EXECUTION_ID_);    
 alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_EXECUTION 
+    add constraint ACT_FK_SJOB_EXECUTION 
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
     
-create index ACT_IDX_SUSPENDED_JOB_PROCESS_INSTANCE_ID on ACT_RU_SUSPENDED_JOB(PROCESS_INSTANCE_ID_);    
+create index ACT_IDX_SJOB_PROC_INST_ID on ACT_RU_SUSPENDED_JOB(PROCESS_INSTANCE_ID_);    
 alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE 
+    add constraint ACT_FK_SJOB_PROCESS_INSTANCE 
     foreign key (PROCESS_INSTANCE_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
-create index ACT_IDX_SUSPENDED_JOB_PROC_DEF_ID on ACT_RU_SUSPENDED_JOB(PROC_DEF_ID_);    
+create index ACT_IDX_SJOB_PROC_DEF_ID on ACT_RU_SUSPENDED_JOB(PROC_DEF_ID_);    
 alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_PROC_DEF
+    add constraint ACT_FK_SJOB_PROC_DEF
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);
 
-create index ACT_IDX_SUSPENDED_JOB_EXCEPTION on ACT_RU_SUSPENDED_JOB(EXCEPTION_STACK_ID_);    
+create index ACT_IDX_SJOB_EXCEPTION on ACT_RU_SUSPENDED_JOB(EXCEPTION_STACK_ID_);    
 alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_EXCEPTION 
+    add constraint ACT_FK_SJOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
 
-create index ACT_IDX_DEADLETTER_JOB_EXECUTION_ID on ACT_RU_DEADLETTER_JOB(EXECUTION_ID_);      
+create index ACT_IDX_DJOB_EXECUTION_ID on ACT_RU_DEADLETTER_JOB(EXECUTION_ID_);      
 alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_EXECUTION 
+    add constraint ACT_FK_DJOB_EXECUTION 
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
  
-create index ACT_IDX_DEADLETTER_JOB_PROCESS_INSTANCE_ID on ACT_RU_DEADLETTER_JOB(PROCESS_INSTANCE_ID_);        
+create index ACT_IDX_DJOB_PROC_INST_ID on ACT_RU_DEADLETTER_JOB(PROCESS_INSTANCE_ID_);        
 alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE 
+    add constraint ACT_FK_DJOB_PROCESS_INSTANCE 
     foreign key (PROCESS_INSTANCE_ID_) 
     references ACT_RU_EXECUTION (ID_);
     
-create index ACT_IDX_DEADLETTER_JOB_PROC_DEF_ID on ACT_RU_DEADLETTER_JOB(PROC_DEF_ID_);    
+create index ACT_IDX_DJOB_PROC_DEF_ID on ACT_RU_DEADLETTER_JOB(PROC_DEF_ID_);    
 alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_PROC_DEF
+    add constraint ACT_FK_DJOB_PROC_DEF
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);
     
-create index ACT_IDX_DEADLETTER_JOB_EXCEPTION on ACT_RU_DEADLETTER_JOB(EXCEPTION_STACK_ID_);    
+create index ACT_IDX_DJOB_EXCEPTION on ACT_RU_DEADLETTER_JOB(EXCEPTION_STACK_ID_);    
 alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_EXCEPTION 
+    add constraint ACT_FK_DJOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
     
