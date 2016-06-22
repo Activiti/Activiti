@@ -145,7 +145,6 @@ create table ACT_RU_DEADLETTER_JOB (
     EXECUTION_ID_ nvarchar(64),
     PROCESS_INSTANCE_ID_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
-    RETRIES_ int,
     EXCEPTION_STACK_ID_ nvarchar(64),
     EXCEPTION_MSG_ nvarchar(4000),
     DUEDATE_ datetime NULL,
