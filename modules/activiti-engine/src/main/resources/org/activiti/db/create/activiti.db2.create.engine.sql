@@ -379,10 +379,7 @@ alter table ACT_RU_VARIABLE
     foreign key (BYTEARRAY_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
     
-create index ACT_IDX_JOB_PROCESS_INSTANCE_ID on ACT_RU_JOB(PROCESS_INSTANCE_ID_);
-create index ACT_IDX_JOB_PROC_DEF_ID on ACT_RU_JOB(PROC_DEF_ID_);
-
-alter table ACT_RU_JOB 
+alter table ACT_RU_JOB
     add constraint ACT_FK_JOB_EXECUTION 
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
