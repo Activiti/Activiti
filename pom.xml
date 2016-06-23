@@ -396,19 +396,19 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
-        <version>4.2.0</version>
+        <version>6.0.0</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.compendium</artifactId>
-        <version>4.2.0</version>
+        <version>5.0.0</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.fileinstall</artifactId>
-        <version>3.0.2</version>
+        <version>3.5.4</version>
         <optional>true</optional>
       </dependency>
       <dependency>

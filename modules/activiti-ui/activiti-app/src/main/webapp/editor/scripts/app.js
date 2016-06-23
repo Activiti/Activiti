@@ -120,6 +120,27 @@ activitiModeler
                     verify: authRouteResolver
                 }
             })
+            .when('/decision-tables', {
+                templateUrl: appResourceRoot + 'views/decision-tables.html',
+                controller: 'DecisionTablesController',
+                resolve: {
+                    verify: authRouteResolver
+                }
+            })
+            .when('/decision-tables/:modelId', {
+                templateUrl: appResourceRoot + 'views/decision-table.html',
+                controller: 'DecisionTableDetailsCtrl',
+                resolve: {
+                    verify: authRouteResolver
+                }
+            })
+            .when('/decision-tables/:modelId/history/:modelHistoryId', {
+                templateUrl: appResourceRoot + 'views/decision-table.html',
+                controller: 'DecisionTableDetailsCtrl',
+                resolve: {
+                    verify: authRouteResolver
+                },
+            })
             .when('/apps', {
                 templateUrl: appResourceRoot + 'views/app-definitions.html',
                 controller: 'AppDefinitionsCtrl',
@@ -236,20 +257,22 @@ activitiModeler
                 {
                     'id': 'processes',
                     'title': 'GENERAL.NAVIGATION.PROCESSES',
-                    'path': '/processes',
-                    'enterprise': false
+                    'path': '/processes'
                 },
                 {
                     'id': 'forms',
                     'title': 'GENERAL.NAVIGATION.FORMS',
-                    'path': '/forms',
-                    'enterprise': false
+                    'path': '/forms'
+                },
+                {
+                    'id': 'decision-tables',
+                    'title': 'GENERAL.NAVIGATION.DECISION-TABLES',
+                    'path': '/decision-tables'
                 },
                 {
                     'id': 'apps',
                     'title': 'GENERAL.NAVIGATION.APPS',
-                    'path': '/apps',
-                    'enterprise': false
+                    'path': '/apps'
                 }
             ];
 
