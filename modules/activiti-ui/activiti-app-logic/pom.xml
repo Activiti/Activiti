@@ -61,6 +61,14 @@
         </dependency>
         <dependency>
         	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-dmn-xml-converter</artifactId>
+        </dependency>
+        <dependency>
+       	 	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-dmn-json-converter</artifactId>
+      	</dependency>
+        <dependency>
+        	<groupId>org.activiti</groupId>
         	<artifactId>activiti-spring</artifactId>
         </dependency>
 
@@ -68,16 +76,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-		</dependency>
-
-		<!-- METRICS -->
-		<dependency>
-			<groupId>com.codahale.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ryantenney.metrics</groupId>
-			<artifactId>metrics-spring</artifactId>
 		</dependency>
         
 		<!-- JSON -->

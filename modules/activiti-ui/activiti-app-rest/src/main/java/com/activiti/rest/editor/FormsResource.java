@@ -54,7 +54,6 @@ import com.activiti.security.SecurityUtils;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -74,7 +73,6 @@ public class FormsResource extends BaseModelResource {
     
 	protected ObjectMapper objectMapper = new ObjectMapper();
 	
-	@Timed
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public ResultListDataRepresentation getForms(@RequestParam(required=true) Long referenceId, HttpServletRequest request) {
 	    
@@ -119,7 +117,6 @@ public class FormsResource extends BaseModelResource {
         return result;
 	}
 	
-	@Timed
     @RequestMapping(value = "/editor-values", method = RequestMethod.GET, produces = "application/json")
     public EditorValuesRepresentation getEditorValues(HttpServletRequest request) {
         

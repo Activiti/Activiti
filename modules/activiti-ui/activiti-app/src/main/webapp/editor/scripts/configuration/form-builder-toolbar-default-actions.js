@@ -40,11 +40,7 @@ var FORM_TOOLBAR = {
                     services.$rootScope.formChanges = false;
 
         		    var navigationObject = services.$rootScope.editorHistory.pop();
-        		    if (navigationObject.type == 'bpmnmodel') {
-        		        services.$location.path('/editor/' + navigationObject.id);
-        		    } else {
-        		        services.$location.path('/kickstart-editor/' + navigationObject.id);
-        		    }
+        		    services.$location.path('/editor/' + navigationObject.id);
         		};
 
         		if (services.$rootScope.formChanges == true) {

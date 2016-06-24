@@ -28,7 +28,6 @@ import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.idm.BulkUserUpdateRepresentation;
 import com.activiti.model.idm.UserOverviewRepresentation;
 import com.activiti.model.idm.UserRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * 
@@ -41,7 +40,6 @@ public class IdmUsersResource extends AbstractIdmUsersResource {
     /**
      * GET  /rest/admin/users/summary -> get an overview of the users in the system
      */
-    @Timed
     @RequestMapping(value = "/rest/admin/users/summary", method = RequestMethod.GET)
     public UserOverviewRepresentation getOverview() {
 
@@ -68,7 +66,6 @@ public class IdmUsersResource extends AbstractIdmUsersResource {
         return result;
     }
     
-    @Timed
     @RequestMapping(value = "/rest/admin/users", method = RequestMethod.GET)
     public ResultListDataRepresentation getUsers(@RequestParam(required=false) String filter, 
             @RequestParam(required=false) String sort,
@@ -79,21 +76,16 @@ public class IdmUsersResource extends AbstractIdmUsersResource {
     	return super.getUsers(filter, sort, company, start, null, null, groupId);
     }
 
-
-    @Timed
     @RequestMapping(value = "/rest/admin/users/{userId}", method = RequestMethod.PUT)
     public void updateUserDetails(@PathVariable Long userId, @RequestBody UserRepresentation userRepresentation) {
     	super.updateUserDetails(userId, userRepresentation);
     }
     
-
-    @Timed
     @RequestMapping(value = "/rest/admin/users", method = RequestMethod.PUT)
     public void bulkUpdateUsers(@RequestBody BulkUserUpdateRepresentation update) {
     	super.bulkUpdateUsers(update);
     }
     
-    @Timed
     @RequestMapping(value = "/rest/admin/users", method = RequestMethod.POST)
     public UserRepresentation createNewUser(@RequestBody UserRepresentation userRepresentation) {
     	return super.createNewUser(userRepresentation);

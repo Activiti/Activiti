@@ -42,7 +42,6 @@ import com.activiti.service.api.UserService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -62,7 +61,6 @@ public class HistoricTaskQueryResource {
     protected PermissionService permissionService;
     
 	@RequestMapping(value = "/rest/query/history/tasks", method = RequestMethod.POST, produces = "application/json")
-	@Timed
 	public ResultListDataRepresentation listTasks(@RequestBody ObjectNode requestNode) {
 	    if (requestNode == null) {
 	        throw new BadRequestException("No request found");

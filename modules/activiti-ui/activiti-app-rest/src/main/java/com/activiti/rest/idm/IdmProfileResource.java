@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.activiti.model.common.ImageUploadRepresentation;
 import com.activiti.model.idm.ChangePasswordRepresentation;
 import com.activiti.model.idm.UserRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * 
@@ -40,31 +39,26 @@ import com.codahale.metrics.annotation.Timed;
 @RequestMapping(value="/rest/admin")
 public class IdmProfileResource extends AbstractIdmProfileResource {
     
-    @Timed
     @RequestMapping(value="/profile", method = RequestMethod.GET, produces = "application/json")
     public UserRepresentation getProfile() {
     	return super.getProfile();
     }
     
-    @Timed
     @RequestMapping(value="/profile", method = RequestMethod.POST, produces = "application/json")
     public UserRepresentation updateUser(@RequestBody UserRepresentation userRepresentation) {
     	return super.updateUser(userRepresentation);
     }
     
-    @Timed
     @RequestMapping(value="/profile-picture", method = RequestMethod.GET)
     public void getProfilePicture(HttpServletResponse response) {
     	super.getProfilePicture(response);
     }
     
-    @Timed
     @RequestMapping(value="/profile-picture", method = RequestMethod.POST, produces = "application/json")
 	public ImageUploadRepresentation uploadProfilePicture(@RequestParam("file") MultipartFile file) {
 		return super.uploadProfilePicture(file);
 	}
     
-    @Timed
     @RequestMapping(value="/profile-password", method = RequestMethod.POST, produces = "application/json")
     public void changePassword(@RequestBody ChangePasswordRepresentation changePasswordRepresentation) {
     	super.changePassword(changePasswordRepresentation);

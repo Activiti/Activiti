@@ -49,7 +49,6 @@ import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.service.exception.NotFoundException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.util.UserUtil;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -66,7 +65,6 @@ public class FormResource extends BaseModelResource {
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
-    @Timed
     @RequestMapping(value = "/{formId}", method = RequestMethod.GET, produces = "application/json")
     public FormRepresentation getForm(@PathVariable Long formId) {
         Model model = getFormModel(formId, true, false);
@@ -74,7 +72,6 @@ public class FormResource extends BaseModelResource {
         return form;
     }
 
-    @Timed
     @RequestMapping(value = "/values", method = RequestMethod.GET, produces = "application/json")
     public List<FormRepresentation> getForms(HttpServletRequest request) {
         List<FormRepresentation> formRepresentations = new ArrayList<FormRepresentation>();
@@ -97,14 +94,12 @@ public class FormResource extends BaseModelResource {
     }
 
     @RequestMapping(value = "/{formId}/history/{formHistoryId}", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public FormRepresentation getFormHistory(@PathVariable Long formId, @PathVariable Long formHistoryId) {
         ModelHistory model = getFormModelHistory(formId, formHistoryId, true, false);
         FormRepresentation form = createFormRepresentation(model);
         return form;
     }
 
-    @Timed
     @RequestMapping(value = "/{formId}", method = RequestMethod.PUT, produces = "application/json")
     public FormRepresentation saveForm(@PathVariable Long formId, @RequestBody FormSaveRepresentation saveRepresentation) {
 

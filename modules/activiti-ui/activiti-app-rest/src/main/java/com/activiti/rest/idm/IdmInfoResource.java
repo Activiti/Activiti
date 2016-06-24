@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.service.idm.IdmInfoService;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 @RequestMapping(value="/rest/admin/idm-info")
@@ -32,7 +31,6 @@ public class IdmInfoResource {
 	@Autowired
 	private IdmInfoService idmInfoService;
 	
-    @Timed
     @RequestMapping(method = RequestMethod.GET, produces = "plain/text")
     public String getIdmInfo() {
     	return idmInfoService.getIdmType();

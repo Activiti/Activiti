@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
 /**
  * @author jbarrez
  */
@@ -37,7 +35,6 @@ public class ModelBpmnResource extends AbstractModelBpmnResource {
     /**
      * GET /rest/models/{modelId}/bpmn -> Get BPMN 2.0 xml
      */
-	@Timed
     @RequestMapping(value="/rest/models/{processModelId}/bpmn20", method = RequestMethod.GET)
     public void getProcessModelBpmn20Xml(HttpServletResponse response, @PathVariable Long processModelId) throws IOException {  
 		super.getProcessModelBpmn20Xml(response, processModelId);
@@ -46,7 +43,6 @@ public class ModelBpmnResource extends AbstractModelBpmnResource {
 	 /**
      * GET /rest/models/{modelId}/history/{processModelHistoryId}/bpmn20 -> Get BPMN 2.0 xml
      */
-	@Timed
     @RequestMapping(value="/rest/models/{processModelId}/history/{processModelHistoryId}/bpmn20", method = RequestMethod.GET)
     public void getHistoricProcessModelBpmn20Xml(HttpServletResponse response, @PathVariable Long processModelId, @PathVariable Long processModelHistoryId) throws IOException {
 		super.getHistoricProcessModelBpmn20Xml(response, processModelId, processModelHistoryId);

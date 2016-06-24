@@ -19,12 +19,6 @@ var DECISION_TABLE_TOOLBAR = {
             }, services.$modal, services.$scope);
         },
 
-        validateModel: function (services) {
-
-            services.DecisionTableService.validateDecisionTable();
-
-        },
-
         help: function (services) {
 
         },
@@ -37,7 +31,9 @@ var DECISION_TABLE_TOOLBAR = {
 
             var callback = function() {
                 services.$rootScope.decisiontableChanges = false;
-                services.ProcessScopeService.navigateBack('/decision-tables');
+                
+                var navigationObject = services.$rootScope.editorHistory.pop();
+        		services.$location.path('/editor/' + navigationObject.id);
             };
 
             if (services.$rootScope.decisiontableChanges == true) {
@@ -84,8 +80,7 @@ var DECISION_TABLE_TOOLBAR = {
 /** Custom controller for the save dialog */
 angular.module('activitiModeler')
     .controller('SaveDecisionTableCtrl', [ '$rootScope', '$scope', '$http', '$route', '$location', '$translate', 'DecisionTableService',
-        'ProcessScopeService', 'ModelService',
-        function ($rootScope, $scope, $http, $route, $location, $translate, DecisionTableService, ProcessScopeService, ModelService) {
+        function ($rootScope, $scope, $http, $route, $location, $translate, DecisionTableService) {
 
             var description = '';
             if ($rootScope.currentDecisionTableModel.description) {
@@ -109,21 +104,19 @@ angular.module('activitiModeler')
                 loading: false
             };
 
-            var validateCallback = function(validationErrors) {
-                if (validationErrors && validationErrors.length > 0) {
-                    $scope.saveDialog.validationErrors = true;
-                }
-            };
-
-            DecisionTableService.validateDecisionTable(validateCallback);
-
             $scope.cancel = function () {
                 $scope.$hide();
             };
 
             $scope.saveAndClose = function () {
                 $scope.save(function() {
-                    ProcessScopeService.navigateBack('/decision-tables');
+                    if ($rootScope.editorHistory.length > 0) {
+		    	        var navigationObject = $rootScope.editorHistory.pop();
+		    	        $location.path('/editor/' + navigationObject.id);
+		 
+		            } else {
+		            	$location.path('/decision-tables');
+		            }
                 });
             };
 
@@ -142,18 +135,6 @@ angular.module('activitiModeler')
                     reusable: $scope.saveDialog.reusable,
                     newVersion: $scope.saveDialog.newVersion,
                     comment: $scope.saveDialog.comment
-                };
-
-                var isEmbeddedInProcess = function() {
-                    return $scope.saveDialog.embedded;
-                };
-
-                var getEmbeddedProcessId = function() {
-                    return isEmbeddedInProcess() ? $rootScope.parentReferenceId : null;
-                };
-
-                var relationsCount = function(data) {
-                    return data.length;
                 };
 
                 var saveCallback = function() {
@@ -177,39 +158,7 @@ angular.module('activitiModeler')
                     $rootScope.addAlertPromise($translate('DECISION-TABLE-EDITOR.ALERT.SAVE-ERROR', {name: $scope.saveDialog.name}), 'error');
                 };
 
-                ModelService.getModelParentRelations($rootScope.currentDecisionTable.id).then(function(relationsData) {
-
-                    var model = $rootScope.currentDecisionTable, dtInfo = {
-                        name: $scope.saveDialog.name,
-                        description: $scope.saveDialog.description,
-                        referenceId: getEmbeddedProcessId(),
-                        modelType: 4
-                    };
-
-                    if (isEmbeddedInProcess() && relationsCount(relationsData) > 1) {
-                        ModelService.cloneModel(model, dtInfo).then(function(cloneData) {
-
-                            $scope.oldProcessId = model.id;
-                            model.id = cloneData.id;
-                            model.referenceId = +getEmbeddedProcessId();
-
-                            ModelService.updateFormReferencesInProcess($rootScope.parentReferenceId, $scope.oldProcessId, model.id)
-                                .then(function() {
-                                    DecisionTableService.saveDecisionTable(data, $scope.saveDialog.name, $scope.saveDialog.key, $scope.saveDialog.description).then(saveCallback, errorCallback);
-                                }, errorCallback);
-
-                        }, errorCallback);
-                    } else {
-                        ModelService.saveModel(model, dtInfo, getEmbeddedProcessId()).
-                            then(function() {
-
-                            model.referenceId = +getEmbeddedProcessId();
-                            DecisionTableService.saveDecisionTable(data, $scope.saveDialog.name, $scope.saveDialog.key, $scope.saveDialog.description).then(saveCallback, errorCallback);
-
-                        }, errorCallback);
-                    }
-
-                }, errorCallback);
+                DecisionTableService.saveDecisionTable(data, $scope.saveDialog.name, $scope.saveDialog.key, $scope.saveDialog.description).then(saveCallback, errorCallback);
             };
 
             $scope.isOkButtonDisabled = function() {
@@ -236,21 +185,9 @@ angular.module('activitiModeler')
                     } else if($scope.error.conflictResolveAction === 'saveAs') {
                         $scope.save(function() {
                             $rootScope.ignoreChanges = true;  // Otherwise will get pop up that changes are not saved.
-                            ProcessScopeService.navigateBack('/decision-tables');
+                            $location.path('/decision-tables');
                         });
                     }
-                }
-            };
-
-            $scope.embedClicked = function() {
-                if ($scope.saveDialog.embedded) {
-                    ModelService.getModelParentRelations($rootScope.currentDecisionTable.id).then(function(data) {
-                        $scope.hasOtherRelations = data.length > 1;
-                    }, function() {
-                        $rootScope.addAlert('An error occurred while trying to find the relations');
-                    });
-                } else {
-                    $scope.hasOtherRelations = false;
                 }
             };
 

@@ -51,11 +51,11 @@ import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.AppDefinitionListModelRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.repository.editor.ModelRepository;
-import com.activiti.rest.util.XmlUtil;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
+import com.activiti.util.XmlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

@@ -8,54 +8,14 @@
 
 angular.module('activitiModeler')
     .controller('DecisionTableEditorController', ['$rootScope', '$scope', '$q', '$translate', '$http', '$timeout', '$location', '$modal', '$route', '$routeParams', 'DecisionTableService',
-        'UtilityService', 'FormBuilderService', 'uiGridConstants', 'appResourceRoot', 'ProcessScopeService', 'EditorScopeService',
+        'UtilityService', 'uiGridConstants', 'appResourceRoot',
         function ($rootScope, $scope, $q, $translate, $http, $timeout, $location, $modal, $route, $routeParams, DecisionTableService,
-                  UtilityService, FormBuilderService, uiGridConstants, appResourceRoot, ProcessScopeService, EditorScopeService) {
+                  UtilityService, uiGridConstants, appResourceRoot) {
 
             var MIN_COLUMN_WIDTH = 200;
 
-            ProcessScopeService.init(null, {
-                success: function(){
-                    $scope.availableFormFieldsForStep = ProcessScopeService.getFormFields();
-                    $scope.availableVariablesForStep = ProcessScopeService.getVariables();
-                }
-            });
-
             // Export name to grid's scope
             $scope.appResourceRoot = appResourceRoot;
-
-            $scope.errorsById = undefined;
-
-            if ($rootScope.currentDecisionTableValidationErrors) {
-                $rootScope.currentDecisionTableValidationErrors = undefined;
-            }
-
-            // Listen for validation changes
-            $rootScope.$watch('currentDecisionTableValidationErrors', function(newValue, oldValue){
-                if (newValue === undefined && oldValue === undefined) {
-                    return;
-                }
-                var errorsById = null;
-                var error;
-                if (newValue) {
-                    errorsById = {};
-
-                    for (var i = 0; i < newValue.length; i++) {
-                        error = newValue[i];
-                        var id = error.id !== null ? error.id : "";
-                        if (!errorsById[id]) {
-                            errorsById[id] = [];
-                        }
-                        errorsById[id].push(error);
-                    }
-                }
-                $scope.errorsById = errorsById;
-            });
-
-
-            if ($rootScope.account && $rootScope.account.type && $rootScope.account.type !== 'enterprise') {
-                $location.path('/processes');
-            }
 
             // Model init
             $scope.status = {loading: true};
@@ -65,8 +25,7 @@ angular.module('activitiModeler')
             };
 
             $rootScope.decisionTableChanges = false;
-            $rootScope.parentReferenceId = EditorScopeService.getCurrentProcessModelId();
-
+            
             var hitPolicies = ['FIRST','ANY'];
             $scope.hitPolicies = [];
             hitPolicies.forEach(function(id){
@@ -203,10 +162,6 @@ angular.module('activitiModeler')
 
                 // refresh grid
                 $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-
-                if ($scope.errorsById !== undefined) {
-                    DecisionTableService.validateDecisionTable();
-                }
             };
 
             $scope.enableRemoveInputExpression = function(){
@@ -231,15 +186,6 @@ angular.module('activitiModeler')
                 // remove input expression from table
                 for (var i = 0; i < $scope.currentDecisionTable.inputExpressions.length; i++) {
                     if ($scope.currentDecisionTable.inputExpressions[i].id === column.name) {
-                        // in case the input expression defined a variable delete it
-                        for (var j = 0; j < $scope.currentDecisionTable.executionVariables.length; j++) {
-                            if ($scope.currentDecisionTable.executionVariables[j].processVariableName === $scope.currentDecisionTable.inputExpressions[i].variableId
-                                    && $scope.currentDecisionTable.executionVariables[j].processVariableType === $scope.currentDecisionTable.inputExpressions[i].type) {
-                                $scope.currentDecisionTable.executionVariables.splice(j, 1);
-                                break;
-                            }
-                        }
-                        
                         $scope.currentDecisionTable.inputExpressions.splice(i, 1);
                         expressionPos = i;
                         break;
@@ -249,10 +195,6 @@ angular.module('activitiModeler')
 
                 // set updated column definitions
                 $scope.getColumnDefinitions($scope.currentDecisionTable);
-
-                if ($scope.errorsById !== undefined) {
-                    DecisionTableService.validateDecisionTable();
-                }
 
                 // prevent edit modal opening
                 if (event) {
@@ -310,10 +252,6 @@ angular.module('activitiModeler')
 
                 // refresh grid
                 $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-
-                if ($scope.errorsById !== undefined) {
-                    DecisionTableService.validateDecisionTable();
-                }
             };
 
             $scope.enableRemoveOutputExpression = function(){
@@ -343,10 +281,6 @@ angular.module('activitiModeler')
                     }
                 }
                 $scope.getColumnDefinitions($scope.currentDecisionTable);
-
-                if ($scope.errorsById !== undefined) {
-                    DecisionTableService.validateDecisionTable();
-                }
 
                 // prevent edit modal opening
                 if (event) {
@@ -404,134 +338,6 @@ angular.module('activitiModeler')
                 }
             };
 
-            $scope.hasErrorMessages = function(rowIndex, columnField, allErrors){
-                if (allErrors) {
-                    var id = rowIndex !== null ? rowIndex + ':' + columnField : columnField;
-                    var errors = allErrors[id];
-                    return errors && errors.length > 0;
-                }
-                return false;
-            };
-
-            $scope.showErrorMessage = function(rowIndex, columnField, event){
-                if ($scope.errorsById) {
-                    var id = rowIndex !== null ? rowIndex + ':' + columnField : columnField;
-                    var errors = $scope.errorsById[id];
-                    for (var i = 0; i < errors.length; i++) {
-                        errors[i].defaultDescription = $translate.instant('DECISION-TABLE.VALIDATION.' + errors[i].problem.toUpperCase(), {
-                            reference: errors[i].problemReference ? errors[i].problemReference : ''
-                        });
-                    }
-
-                    $scope.validationErrors = errors;
-
-                    _internalCreateModal({
-                        backdrop: true,
-                        keyboard: true,
-                        template: 'views/popup/decision-table-validation-errors.html?version=' + Date.now(),
-                        scope: $scope
-                    }, $modal, $scope);
-
-                    if (event) {
-                        event.stopPropagation();
-                    }
-                }
-            };
-
-
-            $scope.editRuleExpression = function (row, column, event) {
-
-                var columnId = column.name;
-                var columnType;
-                var expression;
-                var expressions = $scope.currentDecisionTable.inputExpressions.concat($scope.currentDecisionTable.outputExpressions);
-                var i = 0;
-                for (var il = expressions.length; i < il; i++){
-                    expression = expressions[i];
-                    if (expression.id === columnId) {
-                        columnType = expression.type;
-                        break;
-                    }
-                }
-                $scope.model.currentRuleExpression = {
-                    inputExpression: i < $scope.currentDecisionTable.inputExpressions.length,
-                    row: row,
-                    columnDisplayName: column.displayName || (expression ? expression.variableId : '') ,
-                    columnId: columnId,
-                    columnType: columnType
-                };
-
-                var editTemplate = 'views/popup/decision-table-edit-rule-expression.html';
-                _internalCreateModal({
-                    template: editTemplate,
-                    scope: $scope
-                }, $modal, $scope);
-
-                // prevent default inline edit mode
-                event.stopPropagation();
-            };
-
-            $scope.convertVariableType = function (variableType) {
-
-                var gridType = 'string';
-
-                if (!variableType || variableType !== '') {
-
-                    switch (variableType) {
-
-                        case "integer":
-                            gridType = 'number';
-                            break;
-
-                        case "number":
-                            gridType = 'number';
-                            break;
-
-                        case "date":
-                            gridType = 'date';
-                            break;
-
-                        case "boolean":
-                            gridType = 'boolean';
-                            break;
-                    }
-                }
-                return gridType;
-            };
-
-            $scope.convertFormfieldType = function (formFieldType) {
-
-                var gridType = 'string';
-
-                if (!formFieldType || formFieldType !== '') {
-
-                    switch (formFieldType) {
-
-                        case "number":
-                            gridType = 'number';
-                            break;
-
-                        case "integer":
-                            gridType = 'number';
-                            break;
-
-                        case "amount":
-                            gridType = 'number';
-                            break;
-
-                        case "date":
-                            gridType = 'date';
-                            break;
-
-                        case "boolean":
-                            gridType = 'boolean';
-                            break;
-                    }
-                }
-                return gridType;
-            };
-
-
             // helper for looking up variable id by col id
             $scope.getVariableNameByColumnId = function (colId) {
 
@@ -557,7 +363,6 @@ angular.module('activitiModeler')
                     $rootScope.currentDecisionTable.name = decisionTable.name;
                     $rootScope.currentDecisionTable.description = decisionTable.description;
                     $rootScope.currentDecisionTable.referenceId = decisionTable.referenceId;
-                    $rootScope.currentDecisionTable.isEmbeddedTable = decisionTable.isEmbeddedTable;
                     
                     // decision table model to used in save dialog
                     $rootScope.currentDecisionTableModel = {
@@ -611,6 +416,7 @@ angular.module('activitiModeler')
                 // if no output conclusion present; add one
                 if (!decisionTable.outputExpressions || decisionTable.outputExpressions.length === 0) {
                     $scope.addOutputExpression();
+                    
                 } else {
                     // initialize map
                     decisionTable.outputExpressions.forEach( function (outputExpression) {
@@ -635,8 +441,7 @@ angular.module('activitiModeler')
             var _getHeaderInputExpressionCellTemplate = function () {
                 return "" +
                     "<div role=\"columnheader\" ng-class=\"{ 'sortable': sortable }\" ui-grid-one-bind-aria-labelledby-grid=\"col.uid + '-header-text ' + col.uid + '-sortdir-text'\">" +
-                    "   <div role=\"button\" tabindex=\"0\" class=\"ui-grid-cell-contents ui-grid-header-cell-primary-focus\" ng-class=\"{ 'ui-grid-cell-contents-has-error': grid.appScope.hasErrorMessages(null, col.field, grid.appScope.errorsById) }\"col-index=\"renderIndex\" title=\"TOOLTIP\" ng-click=\"grid.appScope.editInputExpression(col)\">" +
-                    "       <span tabindex=\"0\" class=\"show-error-icon\"  ng-click=\"grid.appScope.showErrorMessage(null, col.field, $event)\"><img ng-src=\"{{ appResourceRoot + 'editor-app/images/bpmn-error.png' }}\"/></span>" +
+                    "   <div role=\"button\" tabindex=\"0\" class=\"ui-grid-cell-contents ui-grid-header-cell-primary-focus\" col-index=\"renderIndex\" title=\"TOOLTIP\" ng-click=\"grid.appScope.editInputExpression(col)\">" +
                     "       <div class=\"text-center\"><span>{{ col.displayName CUSTOM_FILTERS }}</span></div>" +
                     "       <div class=\"text-center\"><span ui-grid-one-bind-id-grid=\"col.uid + '-header-text'\" style=\"text-decoration: underline;cursor:pointer\">[ {{ grid.appScope.getVariableNameByColumnId(col.name) }} ]</span></div>" +
                     "       <div tabindex=\"0\" ng-show=\"grid.appScope.enableRemoveInputExpression()\" class=\"ui-grid-column-menu-button\" style=\"margin-right: 10px\" ng-click=\"grid.appScope.removeInputExpression(col, $event)\"><i class=\"glyphicon glyphicon-trash\" style=\"font-size: 12px;\"></i></div>" +
@@ -647,8 +452,7 @@ angular.module('activitiModeler')
             var _getHeaderOutputExpressionCellTemplate = function () {
                 return "" +
                     "<div role=\"columnheader\" ng-class=\"{ 'sortable': sortable }\" ui-grid-one-bind-aria-labelledby-grid=\"col.uid + '-header-text ' + col.uid + '-sortdir-text'\">" +
-                    "   <div role=\"button\" tabindex=\"0\" class=\"ui-grid-cell-contents ui-grid-header-cell-primary-focus\" ng-class=\"{ 'ui-grid-cell-contents-has-error': grid.appScope.hasErrorMessages(null, col.field, grid.appScope.errorsById) }\" col-index=\"renderIndex\" title=\"TOOLTIP\" ng-click=\"grid.appScope.editOutputExpression(col)\">" +
-                    "       <span tabindex=\"0\" class=\"show-error-icon\"  ng-click=\"grid.appScope.showErrorMessage(null, col.field, $event)\"><img ng-src=\"{{ appResourceRoot + 'editor-app/images/bpmn-error.png' }}\"/></span>" +
+                    "   <div role=\"button\" tabindex=\"0\" class=\"ui-grid-cell-contents ui-grid-header-cell-primary-focus\" col-index=\"renderIndex\" title=\"TOOLTIP\" ng-click=\"grid.appScope.editOutputExpression(col)\">" +
                     "       <div class=\"text-center\"><span>{{ col.displayName CUSTOM_FILTERS }}</span></div>" +
                     "       <div class=\"text-center\"><span ui-grid-one-bind-id-grid=\"col.uid + '-header-text'\" style=\"text-decoration: underline;cursor:pointer\">[ {{ grid.appScope.getVariableNameByColumnId(col.name) }} ]</span></div>" +
                     "       <div tabindex=\"0\" ng-show=\"grid.appScope.enableRemoveOutputExpression()\" class=\"ui-grid-column-menu-button\" style=\"margin-right: 10px\" ng-click=\"grid.appScope.removeOutputExpression(col, $event)\"><i class=\"glyphicon glyphicon-trash\" style=\"font-size: 12px;\"></i></div>" +
@@ -663,10 +467,8 @@ angular.module('activitiModeler')
             var _getCellTemplate = function (columnType) {
 
                 var editableCellTemplate = "" +
-                    "<div class=\"ui-grid-cell-contents\" ng-class=\"{ 'ui-grid-cell-contents-empty': !COL_FIELD, 'ui-grid-cell-contents-has-error': grid.appScope.hasErrorMessages(rowRenderIndex, col.field, grid.appScope.errorsById) }\" title=\"TOOLTIP\">" +
-                    "   <span class=\"show-error-icon\" ng-click=\"grid.appScope.showErrorMessage(rowRenderIndex, col.field, $event)\"><img ng-src=\"{{ appResourceRoot + 'editor-app/images/bpmn-error.png' }}\" /></span>" +
+                    "<div class=\"ui-grid-cell-contents\" ng-class=\"{ 'ui-grid-cell-contents-empty': !COL_FIELD }\" title=\"TOOLTIP\">" +
                     "   <span class=\"contents-value\">{{COL_FIELD}}</span>" +
-                    "   <span class=\"edit-icon\" ng-click=\"grid.appScope.editRuleExpression(row.entity, col, $event)\"><i class=\"glyphicon glyphicon-edit\" style=\"cursor:pointer;font-size: 14px;margin-right: 4px\"></i></span>" +
                     "</div>";
                 var cellTemplate;
                 switch (columnType) {
@@ -799,11 +601,7 @@ angular.module('activitiModeler')
                         delete $scope.model.selectedRule;
                     }
                 });
-                gridApi.edit.on.afterCellEdit($scope, function(row, col, newValue, oldValue){
-                    if ($scope.errorsById !== undefined && newValue !== oldValue) {
-                        DecisionTableService.validateDecisionTable();
-                    }
-                });
+                
                 var cellTemplate = _rowHeaderTemplate();   // you could use your own template here
                 $scope.gridApi.core.addRowHeaderColumn( { name: 'rowHeaderCol', displayName: '', width: 35, cellTemplate: cellTemplate} );
             };
@@ -821,127 +619,24 @@ angular.module('activitiModeler')
                 columnIdCounter++;
                 return "" + columnIdCounter;
             };
-
-            $scope.getSelectedVariable = function(variableId){
-                if ($scope.availableFormFieldsForStep && $scope.availableFormFieldsForStep.length > 0) {
-                    for (var i = 0; i < $scope.availableFormFieldsForStep.length; i++) {
-                        if (variableId === $scope.availableFormFieldsForStep[i].id) {
-                            return [$scope.availableFormFieldsForStep[i], 'formfield'];
-                        }
-                    }
-                }
-                if ($scope.availableVariablesForStep && $scope.availableVariablesForStep.length > 0) {
-                    for (var i = 0; i < $scope.availableVariablesForStep.length; i++) {
-                        if (variableId === $scope.availableVariablesForStep[i].processVariableName) {
-                            return [{
-                                id: $scope.availableVariablesForStep[i].processVariableName,
-                                name: $scope.availableVariablesForStep[i].processVariableName,
-                                type: $scope.availableVariablesForStep[i].processVariableType
-                            }, 'variable'];
-                        }
-                    }
-                }
-                return [{
-                    id: variableId,
-                    name: null,
-                    type: null
-                }, 'value'];
-            };
-
-            $scope.getSelectedVariableModel = function(variableId){
-                var searchedVariable;
-
-                $scope.availableFormFieldsForStep.forEach(function(currentVariable){
-                    if(currentVariable.id === variableId ){
-                        currentVariable.variableType = 'formfield';
-                        searchedVariable = currentVariable;
-                    }
-                });
-
-                if(!searchedVariable){
-                    $scope.availableVariablesForStep.forEach(function(currentVariable){
-                        if(currentVariable.id === variableId ){
-                            searchedVariable = {
-                                id: currentVariable.processVariableName,
-                                name: currentVariable.processVariableName,
-                                type: currentVariable.processVariableType,
-                                variableType: 'variable'
-                            };
-                        }
-                    });
-                }
-
-                if(!searchedVariable) {
-                    $scope.currentDecisionTable.executionVariables.forEach(function(currentVariable){
-                        if(currentVariable.processVariableName === variableId ){
-                            searchedVariable = {
-                                id: currentVariable.processVariableName,
-                                name: currentVariable.processVariableName,
-                                type: currentVariable.processVariableType,
-                                variableType: 'variable'
-                            };
-                        }
-                    });
-                }
-
-                return searchedVariable;
-            };
-
-            $scope.isEmbeddedTable = function () {
-                return $rootScope.currentDecisionTable.isEmbeddedTable;
-            };
-
-            $scope.getVariablesAndTablesVariables = function () {
-                var convertProcessVariables = convertVariableToFitInSelectBoxDirective($scope.availableVariablesForStep);
-                var convertTableVariables = convertVariableToFitInSelectBoxDirective($scope.currentDecisionTable.executionVariables);
-                return convertProcessVariables.concat(convertTableVariables).uniq();
-            }
-
-            function convertVariableToFitInSelectBoxDirective(variables) {
-                var selectVariables = [];
-                variables.forEach(function (currentVariable) {
-                    var variable = {
-                        id: currentVariable.processVariableName,
-                        name: currentVariable.processVariableName,
-                        type: currentVariable.processVariableType
-                    };
-
-                    selectVariables.push(variable);
-                });
-
-                return selectVariables ? selectVariables : [];
-            }
         }]);
 
 angular.module('activitiModeler')
     .controller('DecisionTableInputConditionEditorCtlr', ['$rootScope', '$scope', function ($rootScope, $scope) {
-        var previousVariableId = $scope.model.selectedExpression.variableId,
-            defaultVariableType = 'variable';
+        var previousVariableId = $scope.model.selectedExpression.variableId;
 
         // condition input options
         $scope.popup = {
-            selectedExpressionNewVariable: (!$scope.model.selectedExpression.variableId && !$scope.isEmbeddedTable()) ? true : false,
-            selectedExpressionVariableType: $scope.model.selectedExpression.variableType ? $scope.model.selectedExpression.variableType : defaultVariableType,
             selectedExpressionLabel: $scope.model.selectedExpression.label ? $scope.model.selectedExpression.label : '',
             selectedExpressionVariable: previousVariableId ? $scope.getSelectedVariableModel(previousVariableId) : undefined
         };
 
-        $scope.tableVariables = $scope.getVariablesAndTablesVariables();
-
         $scope.save = function () {
             if (previousVariableId !== $scope.popup.selectedExpressionVariable.id) {
-
-                if ($scope.popup.selectedExpressionVariableType === 'formfield') {
-                    $scope.model.selectedExpression.type = $scope.convertFormfieldType($scope.popup.selectedExpressionVariable.type);
-                } else if ($scope.popup.selectedExpressionVariableType === 'variable') {
-                    $scope.model.selectedExpression.type = $scope.convertVariableType($scope.popup.selectedExpressionVariable.type);
-                }
 
                 var newInputExpression = {
                     label: $scope.popup.selectedExpressionLabel,
                     variableId: $scope.popup.selectedExpressionVariable.id,
-                    type: $scope.model.selectedExpression.type,
-                    variableType: $scope.popup.selectedExpressionVariableType,
                     newVariable: $scope.popup.selectedExpressionNewVariable
                 };
 
@@ -992,32 +687,17 @@ angular.module('activitiModeler')
     }]);
 
 angular.module('activitiModeler')
-    .controller('DecisionTableConclusionEditorCtlr', ['$rootScope', '$scope', '$q', '$translate', function ($rootScope, $scope, $q, $translate) {
+    .controller('DecisionTableConclusionEditorCtrl', ['$rootScope', '$scope', '$q', '$translate', function ($rootScope, $scope, $q, $translate) {
 
         // condition input options
         $scope.popup = {
-            selectedExpressionVariableType: $scope.model.selectedExpression.variableType || '',
-            selectedExpressionLabel: $scope.model.selectedExpression.label || '',
-            selectedExpressionNewVariable: $scope.model.selectedExpression.newVariable === true,
+            selectedExpressionVariableType: '',
+            selectedExpressionLabel: '',
             selectedExpressionNewVariableType: $scope.availableVariableTypes[0]
         };
 
-        if ($scope.popup.selectedExpressionNewVariable) {
-            $scope.popup.selectedExpressionNewVariableId = $scope.model.selectedExpression.variableId;
-            $scope.popup.selectedExpressionNewVariableType = $scope.model.selectedExpression.type;
-        }
-        else {
-            var expressionAndType = $scope.getSelectedVariable($scope.model.selectedExpression.variableId);
-            if (expressionAndType[1] !== 'value') {
-                $scope.popup.selectedExpressionVariable = expressionAndType[0];
-                $scope.popup.selectedExpressionVariableType = expressionAndType[1];
-            }
-            else {
-                // The variable or form field doesn't exist anymore,
-                $scope.popup.selectedExpressionVariable = null;
-                $scope.popup.selectedExpressionVariableType = null;
-            }
-        }
+        $scope.popup.selectedExpressionNewVariableId = $scope.model.selectedExpression.variableId;
+        $scope.popup.selectedExpressionNewVariableType = $scope.model.selectedExpression.type;
 
         // make copy of variable id and type to see if full update is needed
         var variableIdCopy = angular.copy($scope.model.selectedExpression.variableId);
@@ -1031,20 +711,9 @@ angular.module('activitiModeler')
 
         // Saving the edited input
         $scope.save = function() {
-            if ($scope.popup.selectedExpressionNewVariable) {
-                $scope.model.selectedExpression.variableId = $scope.popup.selectedExpressionNewVariableId;
-                $scope.model.selectedExpression.type = $scope.popup.selectedExpressionNewVariableType;
-                $scope.model.selectedExpression.variableType = 'variable';
-            }
-            else if ($scope.popup.selectedExpressionVariableType === 'formfield' || !$scope.popup.selectedExpressionVariableType) {
-                $scope.model.selectedExpression.variableId = $scope.popup.selectedExpressionVariable.id;
-                $scope.model.selectedExpression.type = $scope.convertFormfieldType($scope.popup.selectedExpressionVariable.type || 'formfield');
-                $scope.model.selectedExpression.variableType = 'formfield';
-            } else if ($scope.popup.selectedExpressionVariableType === 'variable') {
-                $scope.model.selectedExpression.variableId = $scope.popup.selectedExpressionVariable.id;
-                $scope.model.selectedExpression.type = $scope.convertVariableType($scope.popup.selectedExpressionVariable.type);
-                $scope.model.selectedExpression.variableType = 'variable';
-            }
+            $scope.model.selectedExpression.variableId = $scope.popup.selectedExpressionNewVariableId;
+            $scope.model.selectedExpression.type = $scope.popup.selectedExpressionNewVariableType;
+            
             $scope.model.selectedExpression.newVariable = $scope.popup.selectedExpressionNewVariable;
             $scope.model.selectedExpression.label = $scope.popup.selectedExpressionLabel;
 
@@ -1076,574 +745,3 @@ angular.module('activitiModeler')
         };
 
     }]);
-
-angular.module('activitiModeler')
-    .controller('DecisionTableRuleExpressionEditorCtlr', ['$rootScope', '$scope', '$q', '$translate', '$filter', 'DecisionTableService', function ($rootScope, $scope, $q, $translate, $filter, DecisionTableService) {
-
-        var columnType = $scope.model.currentRuleExpression.columnType;
-        var inputExpression = $scope.model.currentRuleExpression.inputExpression;
-
-        var MVEL_DATE_FORMAT = "yyyy-MM-dd";
-        var MOMENT_DATE_FORMAT = "YYYY-MM-DD";
-
-        $scope.invalidExpressionMessage = false;
-
-        var operatorsByType = {
-            'date': ['==', '!=', '>', '<', '<=', '>=', '__isEmpty__', '__isNotEmpty__'],
-            'number': ['==', '!=', '>', '<', '<=', '>=', '__isEmpty__', '__isNotEmpty__'],
-            'boolean': ['==', '!=', '__isEmpty__', '__isNotEmpty__'],
-            'string': ['==', '!=', '.startsWith', '.endsWith', '.contains', '__isEmpty__', '__isNotEmpty__']
-        };
-
-        $scope.formFieldsByType = {
-            'date': ['date'],
-            'number': ['integer', 'amount'],
-            'boolean': ['boolean'],
-            'string': ['text', 'multi-line-text', 'dropdown', 'radio-buttons', 'typeahead']
-        };
-
-        $scope.variablesByType = {
-            'date': ['date'],
-            'number': ['integer', 'number'],
-            'boolean': ['boolean'],
-            'string': ['string']
-        };
-
-        $scope.additionalValueTypes = {
-            'date': ['date_execution'],
-            'number': [],
-            'boolean': [],
-            'string': []
-        };
-
-        $scope.availableOperatorsByType = {};
-
-        $scope.tableVariables = $scope.getVariablesAndTablesVariables();
-
-        for (var type in operatorsByType) {
-            var operators = operatorsByType[type];
-            var operatorDescriptors = [];
-            operators.forEach(function(operator){
-                operatorDescriptors.push({ id: operator, label: 'DECISION-TABLE-EDITOR.OPERATOR.' + type.toUpperCase() + '.' + operator});
-            });
-            $scope.availableOperatorsByType[type] = operatorDescriptors;
-        }
-        $scope.getOperators = function(columnType) {
-            return $scope.availableOperatorsByType[columnType];
-        };
-
-        $scope.availableDateCalculations = [
-            {key: '', label: 'DECISION-TABLE-EDITOR.CALCULATION.DATE.NONE'},
-            {key: 'fn_addDate', label: 'DECISION-TABLE-EDITOR.CALCULATION.DATE.ADD'},
-            {key: 'fn_subtractDate', label: 'DECISION-TABLE-EDITOR.CALCULATION.DATE.SUBTRACT'}
-        ];
-
-        $scope.availableNumberCalculations = [
-            {key: '',  label: 'DECISION-TABLE-EDITOR.CALCULATION.NUMBER.NONE'},
-            {key: '+', label: 'DECISION-TABLE-EDITOR.CALCULATION.NUMBER.ADD'},
-            {key: '-', label: 'DECISION-TABLE-EDITOR.CALCULATION.NUMBER.SUBTRACT'},
-            {key: '/', label: 'DECISION-TABLE-EDITOR.CALCULATION.NUMBER.DIVIDE'},
-            {key: '*', label: 'DECISION-TABLE-EDITOR.CALCULATION.NUMBER.MULTIPLY'}
-        ];
-
-        $scope.availableBooleanValues = [
-            {id: 'true', label: 'true'},
-            {id: 'false', label: 'false'}
-        ];
-
-        var mapEmptyOperatorKeyword = {
-            '__isEmpty__': '== empty',
-            '__isNotEmpty__': '!= empty'
-        };
-
-        // initialization
-        $scope.popup = {
-            value: { type: 'value' },
-            variable: { reference: null },
-            formfield: { reference: null },
-            selectedExpressionVariableType: 'value',
-            columnType: $scope.model.currentRuleExpression.columnType,
-            inputExpression: inputExpression,
-            selectedOperator: null,
-            date: { type: 'fixed', calculation: { method: null } },
-            number: { type: 'fixed', static: null, calculation: { method: null } },
-            boolean: { type:'fixed', static: null},
-            string: { type:'fixed', static: ''}
-        };
-
-        var _generateDisplayValueCalculationDate = function (calculationDate, dateValue) {
-
-            if (!calculationDate.method || !calculationDate.method.key) {
-                return dateValue;
-            }
-
-            var displayValue = calculationDate.method.key;
-            displayValue += '(';
-            displayValue += dateValue;
-
-            displayValue += ',';
-            if (calculationDate.years) {
-                displayValue += calculationDate.years;
-            }
-            else {
-                displayValue += 0;
-            }
-
-            displayValue += ',';
-            if (calculationDate.months) {
-                displayValue += calculationDate.months;
-            }
-            else {
-                displayValue += 0;
-            }
-
-            displayValue += ',';
-            if (calculationDate.days) {
-                displayValue += calculationDate.days;
-            }
-            else {
-                displayValue += 0;
-            }
-
-            displayValue += ')';
-            return displayValue;
-        };
-
-        var _generateDisplayValueCalculationNumber = function (calculation, value) {
-
-            if (!calculation.method || !calculation.method.key) {
-                return value;
-            }
-
-            var displayValue = '';
-            displayValue += value;
-            displayValue += ' ' + calculation.method.key + ' ';
-
-            if (calculation.param1) {
-                displayValue += calculation.param1;
-            }
-            else {
-                displayValue += 0;
-            }
-            return displayValue;
-        };
-
-        var indexDateCalculationParamMap = {
-            '1': 'years',
-            '2': 'months',
-            '3': 'days'
-        };
-
-        var setDateValue = function(str) {
-            var res = str.match(/^([a-zA-Z0-9_]+)\((.*)\)$/);
-            if (res && res.length >= 2) {
-                var dateFn = res[1];
-                if (dateFn === 'fn_date' && res.length === 3 && res[2]) {
-                    $scope.popup.value.type = 'value';
-                    var d = res[2].replace(/"/g, "");
-                    $scope.popup.date.static = moment(d, MOMENT_DATE_FORMAT).toDate();
-                }
-                else if (dateFn === 'fn_now') {
-                    $scope.popup.value.type = 'date_execution';
-                }
-            }
-            else {
-                var expressionAndType = $scope.getSelectedVariable(str);
-                $scope.popup.value.type = expressionAndType[1];
-                if (expressionAndType[1] !== 'value') {
-                    $scope.popup[expressionAndType[1]].reference = expressionAndType[0];
-                }
-            }
-        };
-
-        var setDateRollParams = function(calculation, dateParams){
-            if (dateParams) {
-                var params = dateParams.split(',');
-                for (var i = 0; i < params.length && i < 4; i++) {
-                    if (i === 0) {
-                        setDateValue(params[i].trim())
-                    }
-                    else {
-                        try {
-                            calculation[indexDateCalculationParamMap[i]] = parseInt(params[i].trim());
-                        }
-                        catch(e){}
-                    }
-
-                }
-            }
-        };
-
-        var setNumberValue = function(str) {
-            var numberValue = '';
-            try {
-                numberValue = parseFloat(str);
-            }
-            catch(e) {
-            }
-            if (!isNaN(numberValue)) {
-                $scope.popup.value.type = 'value';
-                $scope.popup.date.type = 'fixed';
-                $scope.popup.number.static = numberValue;
-            }
-            else {
-                var expressionAndType = $scope.getSelectedVariable(str);
-                if (expressionAndType[1] === 'value') {
-                    $scope.invalidExpressionMessage = true;
-                    $scope.popup.value.type = null;
-                }
-                else {
-                    $scope.popup.value.type = expressionAndType[1];
-                    $scope.popup[expressionAndType[1]].reference = expressionAndType[0];
-                }
-            }
-        };
-
-        var _initValue = function (displayValue, columnType) {
-
-            var expressionAndType;
-
-            displayValue = displayValue.trim();
-
-            if (!displayValue) {
-                if (inputExpression && $scope.availableOperatorsByType[columnType] && $scope.availableOperatorsByType[columnType].length) {
-                    $scope.selectedOperator = $scope.availableOperatorsByType[columnType][0].id;
-                }
-            }
-            else if (columnType === 'date') {
-                var res = displayValue.match(/^([a-zA-Z0-9_]+)\((.*)\)$/);
-                if (res && res.length >= 2) {
-                    var dateFn = res[1];
-                    if ($scope.availableDateCalculations.filter(function(c){ return c.key === dateFn }).length > 0) {
-                        $scope.popup.date.calculation = {
-                            method: { key: dateFn }
-                        };
-                        if (res.length > 2) {
-                            setDateRollParams($scope.popup.date.calculation, res[2]);
-                        }
-                        return;
-                    }
-                }
-                if (!$scope.popup.date.calculation.method) {
-                    $scope.popup.date.calculation.method = { key: '' };
-                }
-                setDateValue(displayValue);
-            }
-            else if (columnType === 'number') {
-                var res = displayValue.match(/^([a-zA-Z0-9_]+)\s*([^a-z^A-Z^0-9^_^\s]+)\s*([0-9\.]+)$/);
-                if (res && res.length === 4) {
-                    var numberFn = res[2];
-                    if ($scope.availableNumberCalculations.filter(function(c){ return c.key === numberFn }).length > 0) {
-                        var param1 = '';
-                        $scope.popup.number.calculation = {
-                            method: { key: numberFn }
-                        };
-                        try {
-                            param1 = parseFloat(res[3]);
-                            $scope.popup.number.calculation.param1 = param1;
-                        }
-                        catch(e){
-                            $scope.invalidExpressionMessage = true;
-                        }
-                        setNumberValue(res[1]);
-                        return;
-                    }
-                }
-                if (!$scope.popup.number.calculation.method) {
-                    $scope.popup.number.calculation.method = { key: '' };
-                }
-                setNumberValue(displayValue);
-            }
-            else if (columnType === 'boolean') {
-                if (displayValue.toLowerCase() === 'true' || displayValue.toLowerCase() === 'false') {
-                    $scope.popup.value.type = 'value';
-                    $scope.popup.boolean.type = 'fixed';
-                    $scope.popup.boolean.static = displayValue;
-                }
-                else {
-                    expressionAndType = $scope.getSelectedVariable(displayValue);
-                    $scope.popup.value.type = expressionAndType[1];
-                    if (expressionAndType[1] !== 'value') {
-                        $scope.popup[expressionAndType[1]].reference = expressionAndType[0];
-                    }
-                }
-            }
-            else if (columnType === 'string') {
-                var res = displayValue.match(/^'(.*)'$/);
-                if (res) {
-                    displayValue = res.length > 1 ? res[1] : '';
-                }
-                else {
-                    res = displayValue.match(/^"(.*)"$/);
-                    if (res) {
-                        displayValue = res.length > 1 ? res[1] : '';
-                    }
-                }
-                if (res) {
-                    $scope.popup.value.type = 'value';
-                    $scope.popup.string.type = 'fixed';
-                    $scope.popup.string.static = displayValue;
-                }
-                else {
-                    expressionAndType = $scope.getSelectedVariable(displayValue);
-                    $scope.popup.value.type = expressionAndType[1];
-                    if (expressionAndType[1] !== 'value') {
-                        $scope.popup[expressionAndType[1]].reference = expressionAndType[0];
-                    }
-                }
-            }
-        };
-
-        // parse the display value
-        var parseExpression = function() {
-            var displayValue = $scope.model.currentRuleExpression.row[$scope.model.currentRuleExpression.columnId] || '';
-            displayValue = displayValue.trim();
-            if (displayValue !== '') {
-                if (inputExpression) {
-                    // input expression
-                    if (displayValue.indexOf("==") === 0 ||
-                        displayValue.indexOf("!=") === 0 ||
-                        displayValue.indexOf(">=") === 0 ||
-                        displayValue.indexOf("<=") === 0) {
-                        $scope.popup.selectedOperator = displayValue.substring(0, 2);
-                        displayValue = displayValue.substring(2);
-                        // check if we are comparing against the empty keyword
-                        if ($scope.popup.selectedOperator.indexOf("==") === 0 && displayValue.trim().indexOf('empty') === 0) {
-                            $scope.popup.selectedOperator = '__isEmpty__';
-                        }
-                        else if ($scope.popup.selectedOperator.indexOf("!=") === 0 && displayValue.trim().indexOf('empty') === 0) {
-                            $scope.popup.selectedOperator = '__isNotEmpty__';
-                        }
-                        else {
-                            _initValue(displayValue, columnType);
-                        }
-                    } else if (displayValue.indexOf("<") === 0 || displayValue.indexOf(">") === 0) {
-                        $scope.popup.selectedOperator = displayValue.substring(0, 1);
-                        displayValue = displayValue.substring(1);
-                        _initValue(displayValue, columnType);
-                    }
-                    else {
-                        var res = displayValue.match(/^(\.[a-zA-Z0-9_]+)\(([^\\]*)\)$/);
-                        if (res && res.length > 1) {
-                            // it was an instance method call .method()
-                            $scope.popup.selectedOperator = res[1];
-                            if ($scope.popup.selectedOperator && operatorsByType[columnType].indexOf($scope.popup.selectedOperator) === -1) {
-                                $scope.invalidExpressionMessage = true;
-                            }
-                            else {
-                                _initValue(res.length > 2 ? res[2] : '', columnType);
-                            }
-                        }
-                        else {
-                            $scope.invalidExpressionMessage = true;
-                        }
-                    }
-                }
-                else {
-                    // output expression
-                    _initValue(displayValue, columnType);
-                }
-            } else if (inputExpression && $scope.availableOperatorsByType[columnType] && $scope.availableOperatorsByType[columnType].length ) {
-                $scope.popup.selectedOperator = $scope.availableOperatorsByType[columnType][0].id;
-            }
-        };
-        parseExpression();
-
-        // Cancel button handler
-        $scope.cancel = function() {
-            $scope.close();
-        };
-
-        var surroundValue = function(value, operator){
-            if (operator && operator.length > 1 && operator[0] === '.') {
-                return '(' + (value || '') + ')';
-            }
-            else if (operator && operator.length) {
-                return ' ' + (value || '');
-            }
-            return value;
-        };
-
-        var saveDateExpression = function() {
-            var displayValue = '';
-            var operator = $scope.popup.selectedOperator;
-
-            if (operator && mapEmptyOperatorKeyword[operator]) {
-                displayValue = mapEmptyOperatorKeyword[operator];
-            }
-            else {
-                if (inputExpression) {
-                    displayValue += operator;
-                }
-
-                var dateValue;
-                if ($scope.popup.value.type === 'value') {
-                    if ($scope.popup.date.static) {
-                        dateValue = 'fn_date("' + $filter('date')($scope.popup.date.static, MVEL_DATE_FORMAT) + '")';
-                    }
-                    else {
-                        dateValue = '';
-                    }
-                }
-                else if ($scope.popup.value.type === 'date_execution') {
-                    dateValue = 'fn_now()';
-                }
-                else if ($scope.popup[$scope.popup.value.type].reference) {
-                    dateValue = $scope.popup[$scope.popup.value.type].reference.id + '';
-                }
-                displayValue += surroundValue(_generateDisplayValueCalculationDate($scope.popup.date.calculation, dateValue), operator);
-            }
-
-            $scope.model.currentRuleExpression.row[$scope.model.currentRuleExpression.columnId] = displayValue;
-        };
-
-        var saveNumberExpression = function() {
-            var displayValue = '';
-            var operator = $scope.popup.selectedOperator;
-
-            if (operator && mapEmptyOperatorKeyword[operator]) {
-                displayValue = mapEmptyOperatorKeyword[operator];
-            }
-            else {
-                if (inputExpression) {
-                    displayValue += operator;
-                }
-
-                var dateValue;
-                if ($scope.popup.value.type === 'value') {
-                    try {
-                        dateValue = parseFloat($scope.popup.number.static);
-                    }
-                    catch (e) {
-                    }
-                }
-                else if ($scope.popup[$scope.popup.value.type].reference) {
-                    dateValue = $scope.popup[$scope.popup.value.type].reference.id + '';
-                }
-                displayValue += surroundValue(_generateDisplayValueCalculationNumber($scope.popup.number.calculation, dateValue), operator);
-            }
-
-            $scope.model.currentRuleExpression.row[$scope.model.currentRuleExpression.columnId] = displayValue;
-        };
-
-        var saveBooleanExpression = function() {
-            var displayValue = '';
-            var operator = $scope.popup.selectedOperator;
-
-            if (operator && mapEmptyOperatorKeyword[operator]) {
-                displayValue = mapEmptyOperatorKeyword[operator];
-            }
-            else {
-                if (inputExpression) {
-                    displayValue = operator;
-                }
-                if ($scope.popup.value.type === 'value') {
-                    displayValue += surroundValue($scope.popup.boolean.static + '', operator);
-                }
-                else if ($scope.popup[$scope.popup.value.type].reference) {
-                    displayValue += surroundValue($scope.popup[$scope.popup.value.type].reference.id + '', operator);
-                }
-            }
-            $scope.model.currentRuleExpression.row[$scope.model.currentRuleExpression.columnId] = displayValue;
-
-        };
-
-        var saveStringExpression = function() {
-            var displayValue = '';
-            var operator = $scope.popup.selectedOperator;
-            if (operator && mapEmptyOperatorKeyword[operator]) {
-                displayValue = mapEmptyOperatorKeyword[operator];
-            }
-            else {
-                if (inputExpression) {
-                    displayValue = operator;
-                }
-
-                if ($scope.popup.value.type === 'value') {
-                    displayValue += surroundValue('"' + $scope.popup.string.static + '"' , operator);
-                }
-                else if ($scope.popup[$scope.popup.value.type].reference) {
-                    displayValue += surroundValue($scope.popup[$scope.popup.value.type].reference.id + '', operator);
-                }
-            }
-            $scope.model.currentRuleExpression.row[$scope.model.currentRuleExpression.columnId] = displayValue;
-        };
-
-
-        // Saving the edited input
-        $scope.save = function() {
-            if (inputExpression && !$scope.popup.selectedOperator) {
-                $scope.model.currentRuleExpression.row[$scope.model.currentRuleExpression.columnId] = '';
-            }
-            else {
-                var columnType = $scope.model.currentRuleExpression.columnType;
-                if (columnType === 'date') {
-                    saveDateExpression();
-                } else if (columnType === 'number') {
-                    saveNumberExpression();
-                } else if (columnType === 'boolean') {
-                    saveBooleanExpression();
-                } else if (columnType === 'string') {
-                    saveStringExpression();
-                }
-            }
-            $scope.close();
-            if ($scope.errorsById !== undefined) {
-                DecisionTableService.validateDecisionTable();
-            }
-        };
-
-        $scope.close = function () {
-            $scope.$hide();
-        };
-
-
-        $scope.closeDatePopup = function() {
-            jQuery("#date").blur();
-        };
-
-        $scope.clearDate = function() {
-            $scope.popup.date.static = undefined;
-            jQuery("#date").blur();
-        };
-
-        $scope.selectToday = function(field, callback) {
-            var today = new Date();
-            today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-            field = today;
-            if (callback) {
-                callback(field);
-            }
-            jQuery("#date").blur();
-        };
-
-    }]);
-
-
-angular.module('activitiModeler')
-    .controller('ValidateDecisionTableModelCtrl', ['$rootScope', '$scope', '$translate', '$timeout', function ($rootScope, $scope, $translate, $timeout) {
-
-        // Config for grid
-        $scope.gridOptions = {
-            data: $scope.validationErrors,
-            headerRowHeight: 28,
-            enableHorizontalScrollbar: 0,
-            enableColumnMenus: false,
-            enableSorting: false,
-            columnDefs: [
-                {field: 'defaultDescription', displayName: $translate.instant('MODEL.VALIDATION.ERRORS.DESCRIPTION')},
-                {field: 'warning', displayName: $translate.instant('MODEL.VALIDATION.ERRORS.WARNING'), width: 100},
-                {field: 'validatorSetName', displayName: $translate.instant('MODEL.VALIDATION.ERRORS.SET'), width: 200}
-            ]
-        };
-
-        $scope.ok = function () {
-            $scope.$hide();
-        };
-
-        // Close button handler
-        $scope.close = function () {
-            $scope.$hide();
-        };
-    }
-    ]);

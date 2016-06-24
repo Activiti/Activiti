@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing the Engine process definitions.
@@ -32,7 +31,6 @@ import com.codahale.metrics.annotation.Timed;
 public class ProcessDefinitionsResource extends AbstractProcessDefinitionsResource {
 
 	@RequestMapping(value = "/rest/process-definitions", method = RequestMethod.GET)
-    @Timed
     public ResultListDataRepresentation getProcessDefinitions(
     		@RequestParam(value="latest", required=false) Boolean latest,
             @RequestParam(value="appDefinitionId", required=false) Long appDefinitionId) {

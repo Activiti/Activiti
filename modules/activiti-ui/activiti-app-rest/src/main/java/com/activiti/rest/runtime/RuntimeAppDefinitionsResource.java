@@ -33,7 +33,6 @@ import com.activiti.security.SecurityUtils;
 import com.activiti.service.api.AppDefinitionService;
 import com.activiti.service.api.AppDefinitionServiceRepresentation;
 import com.activiti.service.api.RuntimeAppDefinitionService;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 public class RuntimeAppDefinitionsResource {
@@ -46,7 +45,6 @@ public class RuntimeAppDefinitionsResource {
 
 	
 	@RequestMapping(value = "/rest/editor/app-definitions", method = RequestMethod.GET, produces = "application/json")
-	@Timed
 	public ResultListDataRepresentation getAppDefinitions() {
 	    User user = SecurityUtils.getCurrentUserObject();
 	    List<AppDefinitionServiceRepresentation> appDefinitions = appDefinitionService.getDeployableAppDefinitions(user);

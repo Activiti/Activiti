@@ -27,10 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.activiti.model.idm.AddGroupCapabilitiesRepresentation;
 import com.activiti.model.idm.GroupRepresentation;
 import com.activiti.model.idm.LightGroupRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author Joram Barrez
@@ -39,50 +37,43 @@ import com.codahale.metrics.annotation.Timed;
 @RequestMapping(value="/rest/admin/groups")
 public class IdmGroupsResource extends AbstractIdmGroupsResource {
     
-    @Timed
     @RequestMapping(method = RequestMethod.GET)
     public List<LightGroupRepresentation> getGroups() {
     	return super.getGroups();
     }
 
-    @Timed
     @RequestMapping(value="/{groupId}", method = RequestMethod.GET)
     public GroupRepresentation getGroup(@PathVariable Long groupId, @RequestParam(required=false) Boolean includeAllUsers) {
         return super.getGroup(groupId, includeAllUsers);
     }
     
-    @Timed
     @RequestMapping(value="/{groupId}/users", method = RequestMethod.GET)
     public ResultListDataRepresentation  getGroupUsers(@PathVariable Long groupId, @RequestParam(required=false) String filter,
     		@RequestParam(required=false) Integer page, @RequestParam(required=false) Integer pageSize) {
     	return super.getGroupUsers(groupId, filter, page, pageSize);
     }
     
-    @Timed
     @RequestMapping(method = RequestMethod.POST)
     public GroupRepresentation createNewGroup(@RequestBody GroupRepresentation groupRepresentation) {
     	return super.createNewGroup(groupRepresentation);
     }
     
-    @Timed
     @RequestMapping(value="/{groupId}", method = RequestMethod.PUT)
     public GroupRepresentation updateGroup(@PathVariable Long groupId, @RequestBody GroupRepresentation groupRepresentation) {
     	return super.updateGroup(groupId, groupRepresentation);
     }
     
-    @Timed
     @RequestMapping(value="/{groupId}", method = RequestMethod.DELETE)
     public void deleteGroup(@PathVariable Long groupId) {
     	super.deleteGroup(groupId);
     }
     
-    @Timed
     @RequestMapping(value="/{groupId}/members/{userId}", method = RequestMethod.POST)
     public void addGroupMember(@PathVariable Long groupId, @PathVariable Long userId) {
     	super.addGroupMember(groupId, userId);
     }
     
-    @Timed
+
     @RequestMapping(value="/{groupId}/members/{userId}", method = RequestMethod.DELETE)
     public void deleteGroupMember(@PathVariable Long groupId, @PathVariable Long userId) {
     	super.deleteGroupMember(groupId, userId);

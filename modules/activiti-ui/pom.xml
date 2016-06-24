@@ -7,10 +7,9 @@
 	  <name>Alfresco</name>
   </organization>
   <inceptionYear>2014</inceptionYear>
-  <groupId>org.activiti</groupId>
+  
   <artifactId>activiti-ui-root</artifactId>
   <packaging>pom</packaging>
-  <version>6.0.0.Beta3-SNAPSHOT</version>
   
   <parent>
     <groupId>org.activiti</groupId>
@@ -167,38 +166,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.5</version>
-		</dependency>
-
-		<!-- METRICS -->
-		<dependency>
-			<groupId>com.codahale.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
-			<version>${codahale.metrics.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.codahale.metrics</groupId>
-			<artifactId>metrics-jvm</artifactId>
-			<version>${codahale.metrics.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.codahale.metrics</groupId>
-			<artifactId>metrics-servlet</artifactId>
-			<version>${codahale.metrics.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.codahale.metrics</groupId>
-			<artifactId>metrics-servlets</artifactId>
-			<version>${codahale.metrics.version}</version>
-		</dependency>
-		<dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-graphite</artifactId>
-            <version>${codahale.metrics.version}</version>
-        </dependency>
-		<dependency>
-			<groupId>com.ryantenney.metrics</groupId>
-			<artifactId>metrics-spring</artifactId>
-			<version>3.0.3</version>
 		</dependency>
 
 		<!-- JSON -->

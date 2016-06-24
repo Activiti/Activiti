@@ -42,7 +42,6 @@ import com.activiti.repository.common.ImageUploadRepository;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.service.exception.NotFoundException;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -60,7 +59,6 @@ public class ImageResource {
 	
 	@RequestMapping(value = "/rest/image/{imageId}",
             method = RequestMethod.GET)
-    @Timed
     public void getImage(@PathVariable Long imageId, HttpServletResponse response) {
 	    ImageUpload imageUpload = imageUploadRepository.findOne(imageId);
 	    
@@ -101,7 +99,6 @@ public class ImageResource {
 	@RequestMapping(value = "/rest/images",
 	        method = RequestMethod.POST,
 	        produces = "application/json")
-	@Timed
 	public ImageUploadRepresentation createImage(@RequestParam("file") MultipartFile file) {
 	    User currentUser = SecurityUtils.getCurrentUserObject();
         
@@ -125,7 +122,6 @@ public class ImageResource {
 	
 	   @RequestMapping(value = "/rest/images/text",
 	            method = RequestMethod.POST)
-	    @Timed
 	    public String createImageText(@RequestParam("file") MultipartFile file) {
 	        User currentUser = SecurityUtils.getCurrentUserObject();
 	        

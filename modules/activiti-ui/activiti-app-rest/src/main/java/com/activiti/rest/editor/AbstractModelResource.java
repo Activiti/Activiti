@@ -34,11 +34,11 @@ import com.activiti.domain.editor.Model;
 import com.activiti.domain.idm.User;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.repository.editor.ModelShareInfoRepository;
-import com.activiti.rest.util.XmlUtil;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.NonJsonResourceNotFoundException;
+import com.activiti.util.XmlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

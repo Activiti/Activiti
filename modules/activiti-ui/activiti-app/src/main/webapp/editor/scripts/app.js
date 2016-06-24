@@ -30,6 +30,8 @@ var activitiModeler = angular.module('activitiModeler', [
   'ui.grid.edit',
   'ui.grid.selection',
   'ui.grid.autoResize',
+  'ui.grid.moveColumns',
+  'ui.grid.cellNav',
   'ngAnimate',
   'pascalprecht.translate',
   'ngFileUpload',
@@ -176,20 +178,21 @@ activitiModeler
 	                verify: authRouteResolver
 	            }
 	        })
+	        .when('/decision-table-editor/:modelId', {
+                templateUrl: appResourceRoot + 'views/decision-table-editor.html',
+                controller: 'DecisionTableEditorController',
+                resolve: {
+                    verify: authRouteResolver
+                }
+            })
 	        .when('/app-editor/:modelId', {
                 templateUrl: appResourceRoot + 'views/app-definition-builder.html',
                 controller: 'AppDefinitionBuilderController',
                 resolve: {
                     verify: authRouteResolver
                 }
-            })
-            .when('/stencil-editor/:stencilId', {
-                templateUrl: appResourceRoot + 'views/stencil-editor.html',
-                controller: 'StencilEditorController',
-                resolve: {
-                    verify: authRouteResolver
-                }
             });
+            
         if (ACTIVITI.CONFIG.appDefaultRoute) {
             $routeProvider.when('/', {
                 redirectTo: ACTIVITI.CONFIG.appDefaultRoute

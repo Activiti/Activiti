@@ -23,14 +23,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
 public class TaskQueryResource extends AbstractTaskQueryResource {
 	
 	@RequestMapping(value = "/rest/query/tasks", method = RequestMethod.POST, produces = "application/json")
-	@Timed
 	public ResultListDataRepresentation listTasks(@RequestBody ObjectNode requestNode) {
 		return super.listTasks(requestNode);	
 	}

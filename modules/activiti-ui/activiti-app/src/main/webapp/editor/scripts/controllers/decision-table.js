@@ -5,8 +5,8 @@
  * agreement is prohibited.
  */
 angular.module('activitiModeler')
-    .controller('DecisionTableDetailsCtrl', ['$rootScope', '$scope', '$translate', '$http', '$location', '$routeParams','$modal', '$timeout', '$popover', 'DecisionTableService', 'uiGridConstants', 'ProcessScopeService',
-        function ($rootScope, $scope, $translate, $http, $location, $routeParams, $modal, $timeout, $popover, DecisionTableService, uiGridConstants, ProcessScopeService) {
+    .controller('DecisionTableDetailsCtrl', ['$rootScope', '$scope', '$translate', '$http', '$location', '$routeParams','$modal', '$timeout', '$popover', 'DecisionTableService', 'uiGridConstants',
+        function ($rootScope, $scope, $translate, $http, $location, $routeParams, $modal, $timeout, $popover, DecisionTableService, uiGridConstants) {
 
             var MIN_COLUMN_WIDTH = 200;
 
@@ -52,7 +52,6 @@ angular.module('activitiModeler')
                     success(function(data, status, headers, config) {
                         $scope.model.decisionTable = data;
                         $scope.model.decisionTableDownloadUrl = decisionTableUrl + '/export?version=' + Date.now();
-                        $scope.loadComments();
                         $scope.loadVersions();
 
                     }).error(function(data, status, headers, config) {
@@ -160,42 +159,6 @@ angular.module('activitiModeler')
             $scope.openEditor = function() {
                 if ($scope.model.decisionTable) {
                     $location.path("/decision-table-editor/" + $scope.model.decisionTable.id);
-                }
-            };
-
-
-            $scope.loadComments = function() {
-                var params = {
-                    latestFirst: true
-                };
-                $http({method: 'GET', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/models/' + $scope.model.latestModelId + '/comments', params: params}).
-                    success(function(data, status, headers, config) {
-                        $scope.model.comments = data;
-                    });
-            };
-
-            $scope.toggleComments = function($event) {
-                if (!$scope.commentsState) {
-                    var state = {};
-                    $scope.commentsState = state;
-
-                    // Create popover
-                    state.popover = $popover(angular.element($event.target), {
-                        template: 'views/popover/comments.html',
-                        placement: 'bottom-right',
-                        show: true,
-                        scope: $scope,
-                        container: 'body'
-                    });
-
-                    var destroy = function() {
-                        state.popover.destroy();
-                        delete $scope.commentsState;
-                    };
-
-                    // When popup is hidden or scope is destroyed, hide popup
-                    state.popover.$scope.$on('tooltip.hide', destroy);
-                    $scope.$on('$destroy', destroy);
                 }
             };
 

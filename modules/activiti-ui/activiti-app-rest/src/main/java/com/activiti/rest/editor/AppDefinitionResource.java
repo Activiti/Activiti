@@ -42,7 +42,6 @@ import com.activiti.model.editor.AppDefinitionSaveRepresentation;
 import com.activiti.model.editor.AppDefinitionUpdateResultRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.InternalServerErrorException;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 public class AppDefinitionResource extends AbstractAppDefinitionResource {
@@ -50,7 +49,6 @@ public class AppDefinitionResource extends AbstractAppDefinitionResource {
     private static final Logger logger = LoggerFactory.getLogger(AppDefinitionResource.class);
     
     @RequestMapping(value = "/rest/app-definitions/{modelId}", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public AppDefinitionRepresentation getAppDefinition(@PathVariable("modelId") Long modelId) {
         Model model = getModel(modelId, true, false);
         return createAppDefinitionRepresentation(model);
@@ -59,14 +57,12 @@ public class AppDefinitionResource extends AbstractAppDefinitionResource {
     @RequestMapping(value = "/rest/app-definitions/{modelId}/history/{modelHistoryId}",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public AppDefinitionRepresentation getAppDefinitionHistory(@PathVariable Long modelId, @PathVariable Long modelHistoryId) {
         ModelHistory model = getModelHistory(modelId, modelHistoryId, true, false);
         return createAppDefinitionRepresentation(model);
     }
     
     @RequestMapping(value = "/rest/app-definitions/{modelId}", method = RequestMethod.PUT, produces = "application/json")
-    @Timed
     public AppDefinitionUpdateResultRepresentation updateAppDefinition(@PathVariable("modelId") Long modelId, 
     		@RequestBody AppDefinitionSaveRepresentation updatedModel) {
     	
@@ -99,7 +95,6 @@ public class AppDefinitionResource extends AbstractAppDefinitionResource {
     }
     
     @RequestMapping(value = "/rest/app-definitions/{modelId}/publish", method = RequestMethod.POST, produces = "application/json")
-    @Timed
     public AppDefinitionUpdateResultRepresentation publishAppDefinition(@PathVariable("modelId") Long modelId, 
             @RequestBody AppDefinitionPublishRepresentation publishModel) {
         
@@ -107,20 +102,17 @@ public class AppDefinitionResource extends AbstractAppDefinitionResource {
     	
     }
     
-    @Timed
     @RequestMapping(value="/rest/app-definitions/{modelId}/export", method = RequestMethod.GET)
     public void exportAppDefinition(HttpServletResponse response, @PathVariable Long modelId) throws IOException {  
         super.exportAppDefinition(response, modelId);
     }
     
-    @Timed
     @Transactional
     @RequestMapping(value="/rest/app-definitions/{modelId}/import", method = RequestMethod.POST, produces = "application/json")
     public AppDefinitionRepresentation importAppDefinition(HttpServletRequest request, @PathVariable Long modelId, @RequestParam("file") MultipartFile file) {  
         return super.importAppDefinitionNewVersion(request, file, modelId);
     }
     
-    @Timed
     @Transactional
     @RequestMapping(value="/rest/app-definitions/{modelId}/text/import", method = RequestMethod.POST)
     public String importAppDefinitionText(HttpServletRequest request, @PathVariable Long modelId, @RequestParam("file") MultipartFile file) {  
@@ -137,14 +129,12 @@ public class AppDefinitionResource extends AbstractAppDefinitionResource {
         return appDefinitionRepresentationJson;
     }
     
-    @Timed
     @Transactional
     @RequestMapping(value="/rest/app-definitions/import", method = RequestMethod.POST, produces = "application/json")
     public AppDefinitionRepresentation importAppDefinition(HttpServletRequest request, @RequestParam("file") MultipartFile file) {  
     	return super.importAppDefinition(request, file);
     }
     
-    @Timed
     @Transactional
     @RequestMapping(value="/rest/app-definitions/text/import", method = RequestMethod.POST)
     public String importAppDefinitionText(HttpServletRequest request, @RequestParam("file") MultipartFile file) {  

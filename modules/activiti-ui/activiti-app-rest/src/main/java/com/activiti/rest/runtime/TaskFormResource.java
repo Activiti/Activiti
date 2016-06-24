@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.model.runtime.CompleteFormRepresentation;
 import com.activiti.model.runtime.ProcessInstanceVariableRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author Joram Barrez
@@ -37,19 +36,16 @@ import com.codahale.metrics.annotation.Timed;
 @RequestMapping("/rest/task-forms")
 public class TaskFormResource extends AbstractTaskFormResource {
     
-	@Timed
 	@RequestMapping(value="/{taskId}", method = RequestMethod.GET, produces = "application/json")
 	public FormDefinitionRepresentation getTaskForm(@PathVariable String taskId) {
 	    return super.getTaskForm(taskId);
 	}
 	
-	@Timed
 	@RequestMapping(value="/{taskId}", method = RequestMethod.POST, produces = "application/json")
 	public void completeTaskForm(@PathVariable String taskId, @RequestBody CompleteFormRepresentation completeTaskFormRepresentation) {
 		super.completeTaskForm(taskId, completeTaskFormRepresentation);
 	}
 	
-    @Timed
     @RequestMapping(value="/{taskId}/variables", method = RequestMethod.GET, produces = "application/json")
     public List<ProcessInstanceVariableRepresentation> getProcessInstanceVariables(@PathVariable String taskId) {
         return super.getProcessInstanceVariables(taskId);

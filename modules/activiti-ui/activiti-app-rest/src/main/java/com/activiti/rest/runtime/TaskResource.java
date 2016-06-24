@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activiti.model.runtime.TaskRepresentation;
 import com.activiti.model.runtime.TaskUpdateRepresentation;
 import com.activiti.service.runtime.PermissionService;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing the current user's account.
@@ -55,7 +54,6 @@ public class TaskResource extends AbstractTaskResource {
     @RequestMapping(value = "/rest/tasks/{taskId}",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public TaskRepresentation getTask(@PathVariable String taskId, HttpServletResponse response) {
     	return super.getTask(taskId, response);
     }
@@ -63,7 +61,6 @@ public class TaskResource extends AbstractTaskResource {
     @RequestMapping(value = "/rest/tasks/{taskId}",
             method = RequestMethod.PUT,
             produces = "application/json")
-    @Timed
     public TaskRepresentation updateTask(@PathVariable("taskId") String taskId, @RequestBody TaskUpdateRepresentation updated) {
         return super.updateTask(taskId, updated);
     }

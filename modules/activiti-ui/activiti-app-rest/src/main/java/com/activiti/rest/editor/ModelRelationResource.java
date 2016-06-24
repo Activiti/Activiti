@@ -29,7 +29,6 @@ import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelInformation;
 import com.activiti.service.editor.ModelRelationService;
 import com.activiti.service.exception.NotFoundException;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 public class ModelRelationResource extends AbstractModelResource {
@@ -38,7 +37,6 @@ public class ModelRelationResource extends AbstractModelResource {
     private ModelRelationService modelRelationService;
     
     @RequestMapping(value = "/rest/models/{modelId}/parent-relations", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public List<ModelInformation>  getModelRelations(@PathVariable Long modelId) {    
     	Model model = getModel(modelId, true, false); 
     	if (model == null) {

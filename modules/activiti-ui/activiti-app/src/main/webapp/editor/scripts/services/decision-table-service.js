@@ -7,8 +7,8 @@
 'use strict';
 
 // Decision Table service
-angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope', '$http', '$q', '$timeout', '$translate', 'ProcessScopeService', 'ThumbnailService',
-    function ($rootScope, $http, $q, $timeout, $translate, ProcessScopeService, ThumbnailService) {
+angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope', '$http', '$q', '$timeout', '$translate', 'ThumbnailService',
+    function ($rootScope, $http, $q, $timeout, $translate, ThumbnailService) {
 
         var httpAsPromise = function(options) {
             var deferred = $q.defer();

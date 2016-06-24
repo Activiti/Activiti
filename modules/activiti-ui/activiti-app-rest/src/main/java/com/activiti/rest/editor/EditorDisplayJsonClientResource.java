@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.service.editor.BpmnDisplayJsonConverter;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -42,7 +41,6 @@ public class EditorDisplayJsonClientResource extends BaseModelResource {
 	protected ObjectMapper objectMapper = new ObjectMapper();
 	
 	@RequestMapping(value = "/rest/models/{processModelId}/model-json", method = RequestMethod.GET, produces = "application/json")
-	@Timed
 	public JsonNode getModelJSON(@PathVariable Long processModelId) {
 		ObjectNode displayNode = objectMapper.createObjectNode();
 		Model model = getModel(processModelId, true, false);
@@ -51,7 +49,6 @@ public class EditorDisplayJsonClientResource extends BaseModelResource {
 	}
 	
 	@RequestMapping(value = "/rest/models/{processModelId}/history/{processModelHistoryId}/model-json", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public JsonNode getModelHistoryJSON(@PathVariable Long processModelId, @PathVariable Long processModelHistoryId) {
 	    ObjectNode displayNode = objectMapper.createObjectNode();
         ModelHistory model = getModelHistory(processModelId, processModelHistoryId, true, false);

@@ -7,6 +7,7 @@
         "NAVIGATION" : {
             "PROCESSES": "Processes",
             "FORMS": "Forms",
+            "DECISION-TABLES": "Decision Tables",
             "APPS": "Apps"
         },
         "TITLE": {
@@ -136,6 +137,35 @@
             "MY-REUSABLE-FORMS-EMPTY": "You have no reusable forms.  To add one, click Create Form.",
             "FILTER-TEXT": ", matching \"{{filterText}}\"",
             "FILTER-TEXT-EMPTY": "You have no form, matching \"{{filterText}}\""
+        },
+
+        "SORT": {
+            "MODIFIED-ASC": "Oldest",
+            "MODIFIED-DESC": "Last modified",
+            "NAME-ASC": "Name, A-Z",
+            "NAME-DESC": "Name, Z-A"
+        }
+    },
+    
+    "DECISION-TABLES-LIST": {
+        "TITLE": "Decision Tables",
+        "SEARCH-PLACEHOLDER": "Search",
+        "LOADING": "Getting decision-tables...",
+
+        "ACTION": {
+            "CREATE": "Create Decision Table",
+            "IMPORT": "Import Decision Table",
+            "CREATE-INLINE": "Create a new decision table now!",
+            "SHOW-MORE": "Show more..."
+        },
+
+        "FILTER": {
+            "MY-REUSABLE-DECISION-TABLES": "My reusable decision tables",
+            "MY-REUSABLE-DECISION-TABLES-COUNT": "You have {{total}} reusable decision tables",
+            "MY-REUSABLE-DECISION-TABLES-ONE": "You have one reusable decision table",
+            "MY-REUSABLE-DECISION-TABLES-EMPTY": "You have no decision tables.  To add one, click Create Decision Table.",
+            "FILTER-TEXT": ", matching \"{{filterText}}\"",
+            "FILTER-TEXT-EMPTY": "You have no decision table, matching \"{{filterText}}\""
         },
 
         "SORT": {
@@ -393,6 +423,97 @@
         },
         "ERROR": {
           "NOT-FOUND": "The requested form does not exist"
+        }
+    },
+    
+    "DECISION-TABLE": {
+        "NAME": "Decision Table name",
+        "KEY": "Decision Table key",
+        "DESCRIPTION": "Description",
+        "REUSABLE": "Reusable decision table",
+        "VERSION-COMMENT": "Version comment",
+        "HIT-POLICY": "Hit Policy:",
+        "ACTION": {
+            "DETAILS": "Show details",
+            "EDIT": "Modify model properties",
+            "COMPARE": "Compare with another version",
+            "SHARE": "Share this decision table",
+            "SHARE-CONFIRM": "Confirm changes",
+            "DELETE": "Delete this decision table",
+            "ADD-COMMENT": "+ Add comment",
+            "ADD-COMMENT-CONFIRM": "Add comment",
+            "CREATE-CONFIRM": "Create new decision table",
+            "DUPLICATE-CONFIRM": "Duplicate the decision table",
+            "OPEN-IN-EDITOR": "Decision Table Editor",
+            "EXPORT": "Export decision table",
+            "EDIT-CONFIRM": "Save",
+            "DELETE-CONFIRM": "Delete decision table",
+            "USE-AS-NEW-VERSION": "Use as new version",
+            "USE-AS-NEW-VERSION-CONFIRM": "Use as new version",
+            "FAVORITE": "Favorite this decision table",
+            "DUPLICATE": "Duplicate this decision table"
+
+        },
+        "DETAILS": {
+            "TITLE": "Decision table details {{name}}",
+            "COMPARE-WITH-TITLE": "Compare with",
+            "HISTORY-TITLE": "History",
+            "COMMENTS-TITLE": "Comments",
+            "LAST-UPDATED-BY": "Last updated by {{lastUpdatedByFullName}} - {{lastUpdated | dateformat}}",
+            "CREATED-BY": "Created by {{createdByFullName}}",
+            "VERSION": "(Version {{version}})"
+        },
+        "EDIT": {
+            "TITLE": "Edit decision table"
+        },
+        "HIT-POLICIES": {
+            "FIRST": "First (Single pass)",
+            "ANY": "Any (Single pass)"
+        },
+        "POPUP": {
+            "ADD-COMMENT-TITLE": "Add Comment",
+            "ADD-COMMENT-DESCRIPTION": "Enter a new comment below for \"{{name}}\"",
+            "ADD-COMMENT-SIZE-ERROR": "The comment cannot exceed 4000 characters",
+            "CREATE-TITLE": "Create a new decision table",
+            "DUPLICATE-TITLE": "Duplicate decision table",
+            "CREATE-DESCRIPTION": "You need to give a name for the new decision table and you may want to add a description at the same time.",
+            "SAVE-DESCRIPTION": "You need to give a name and a unique key for the new decision table and you may want to add a description at the same time.",
+            "DUPLICATE-DESCRIPTION": "You need to give a name for the new decision table and you may want to add a description at the same time.",
+            "SAVE-DECISION-TABLE-TITLE": "Save decision table",
+
+            "EDIT-DESCRIPTION": "Change any of the decision table properties below and then click Save to update the decision table.",
+            "EDIT-TITLE":"Edit decision table details",
+
+            "DELETE-TITLE": "Delete decision table",
+            "DELETE-DESCRIPTION": "Are you sure you want to delete the decision table \"{{name}}\"?",
+            "DELETE-CASCADE-FALSE": "Only delete the current version of this decision table (v{{version}})",
+            "DELETE-CASCADE-TRUE": "Also delete all previous versions of this decision table",
+            "USE-AS-NEW-TITLE": "Use as new version",
+            "USE-AS-NEW-DESCRIPTION": "Are you sure you want to use version {{version}} to create a new version of \"{{name}}\"?",
+            "SHARE-TITLE": "Share decision table",
+            "SHARE-DESCRIPTION": "You can decide who you wish to share this decision table with and if they can edit it.",
+            "NOT-SHARED": "This decision table is not shared with anyone.",
+            "IMPORT-DESCRIPTION": "Browse for or drop a decision table file with a .dmn or .xml extension",
+            "IMPORT-TITLE": "Import a decision table",
+            "IMPORT-DROPZONE": "Drop a .dmn or .xml decision table file",
+            "IMPORT-NO-DROP": "Drag and drop not supported",
+            "IMPORT-CANCEL-UPLOAD": "Cancel the upload",
+            "IMPORT-ERROR": "Error while processing the decision table file",
+            "REUSABLE": "Reusable decision table",
+            "SAVE-EMBEDDED": "Embed this decision table within the current process model?",
+            "SAVE-EMBEDDED-COPY": "A copy of the decision table will be created since other processes are also using it"
+        },
+        "ALERT": {
+            "EDIT-CONFIRM": "Decision table updated",
+            "FAVORITE-CONFIRM": "This decision table is now favorited",
+            "UN-FAVORITE-CONFIRM": "This decision table is no longer favorited",
+            "DELETE-CONFIRM": "Decision table deleted",
+            "SHARE-CONFIRM": "The decision table sharing options have been updated",
+            "NEW-VERSION-CONFIRM": "A new version of the decision table has been created",
+            "COMMENT-ADDED-CONFIRM": "A new comment was added to the decision table"
+        },
+        "ERROR": {
+            "NOT-FOUND": "The requested decision table does not exist"
         }
     },
 
@@ -725,6 +846,137 @@
           "VALIDATION-ERROR": "Form contains validation errors."
         }
     },
+    
+    "DECISION-TABLE-EDITOR": {
+        "EMPTY-MESSAGES": {
+            "NO-COLUMN": "You need to create at least 1 condition and 1 action column before you can start adding decision rows to your table.",
+            "NO-CONDITION-COLUMN": "Great! You now have an action column for '{{variable}}', now go ahead and create a condition column...",
+            "NO-ACTION-COLUMN": "Great! You now have a condition column for '{{variable}}', now go ahead and create an action column...",
+            "NO-VARIABLE-SELECTED": "Undefined"
+        },
+        "POPUP": {
+            "EXPRESSION-EDITOR": {
+                "INPUT-TITLE": "Edit input column",
+                "INPUT-DESCRIPTION": "Select input variable as input for the column",
+                "OUTPUT-TITLE": "Edit output column",
+                "OUTPUT-DESCRIPTION": "Select an existing output variable or create a new one",
+                "EXPRESSION-LABEL": "Column label:",
+                "EXPRESSION-PLACEHOLDER": "Enter an optional label",
+                "EXPRESSION-TYPE-LABEL": "Column type:",
+                "EXPRESSION-TYPE-VARIABLE": "Expression",
+                "EXPRESSION-TYPE-SCRIPT": "Script",
+                "EXPRESSION-VARIABLE-TYPE-LABEL": "Variable type:",
+                "EXPRESSION-VARIABLE-TYPE-BOOLEAN": "Boolean",
+                "EXPRESSION-VARIABLE-TYPE-DATE": "Date",
+                "EXPRESSION-VARIABLE-TYPE-DATE_EXECUTION": "Execution Date",
+                "EXPRESSION-VARIABLE-TYPE-NUMBER": "Number",
+                "EXPRESSION-VARIABLE-TYPE-STRING": "String",
+                "EXPRESSION-VARIABLE-TYPE-FORMFIELD": "Form field",
+                "EXPRESSION-VARIABLE-TYPE-VARIABLE": "Variable",
+                "EXPRESSION-VARIABLE-TYPE-STATIC": "Static",
+                "EXPRESSION-VARIABLE-NAME": "Variable name:",
+                "EXPRESSION-VARIABLE-NAME-PLACEHOLDER": "Enter a variable name",
+                "INPUT-EXISTING-VARIABLE": "Existing",
+                "INPUT-NEW-VARIABLE": "Create new",
+                "OUTPUT-EXISTING-VARIABLE": "Existing",
+                "OUTPUT-NEW-VARIABLE": "Create new",
+                "OUTPUT-NEW-VARIABLE-ID": "Variable ID:",
+                "OUTPUT-NEW-VARIABLE-TYPE": "Variable type:"
+            },
+            "RULE-EDITOR": {
+                "TITLE": "Edit rule expression for column \"{{name }}\"",
+                "DESCRIPTION": "Compose the \"{{columnType}}\" expression",
+                "OPERATOR-LABEL": "Operator:",
+                "DATE-TYPE-LABEL": "Date type:",
+                "DATE-LABEL": "Date:",
+                "METHOD-LABEL": "Method:",
+                "YEARS-LABEL": "Years:",
+                "MONTHS-LABEL": "Months:",
+                "DAYS-LABEL": "Days:",
+                "DATE-TYPE-FIXED": "Fixed",
+                "DATE-TYPE-DYNAMIC": "Dynamic",
+                "NUMBER-LABEL": "Number:",
+                "NUMBER-FORMAT-MESSAGE": "123.45",
+                "BOOLEAN-LABEL": "Boolean:",
+                "STRING-LABEL": "String:",
+                "SELECT-VALUE": "Select value...",
+                "DATE_CALCULATION-LABEL": "Calculation:",
+                "DATE_EXECUTION-LABEL": "Execution Date:",
+                "DATE_EXECUTION-TEXT": "The date when the decision table is being executed will be used",
+                "ERROR": "The cell expression could not be understood by the graphical editor. This does NOT mean that the expression is invalid.<br/>To keep the expression click \"Cancel\". To create a new expression just complete  the form and click \"OK\".",
+                "NUMBER_CALCULATION-LABEL": "Calculation:",
+                "NUMBER_CALCULATION-PARAM1-LABEL": "Number:"
+            }
+        },
+        "OPERATOR": {
+            "STRING": {
+                "==": "Equals",
+                "!=": "Not equals",
+                ".startsWith": "Starts with",
+                ".endsWith": "Ends with",
+                ".contains": "Contains",
+                "__isEmpty__": "Is empty",
+                "__isNotEmpty__": "Is Not empty"
+            },
+            "BOOLEAN": {
+                "==": "Equals",
+                "!=": "Not equals",
+                "__isEmpty__": "Is empty",
+                "__isNotEmpty__": "Is Not empty"
+            },
+            "DATE": {
+                "==": "Same as",
+                "!=": "Other than",
+                ">": "After",
+                "<": "Before",
+                ">=": "After or same as",
+                "<=": "Before or same as",
+                ".startsWith": "Starts with",
+                ".endsWith": "Ends with",
+                ".contains": "Contains",
+                "__isEmpty__": "Is empty",
+                "__isNotEmpty__": "Is Not empty"
+            },
+            "NUMBER": {
+                "==": "Equals",
+                "!=": "Not equals",
+                ">": "Greater than",
+                "<": "Less than",
+                ">=": "Greater than or equals",
+                "<=": "Less than or equals",
+                "__isEmpty__": "Is empty",
+                "__isNotEmpty__": "Is Not empty"
+            }
+        },
+        "CALCULATION": {
+            "DATE": {
+                "NONE": "",
+                "ADD": "Add",
+                "SUBTRACT": "Subtract"
+            },
+            "NUMBER": {
+                "NONE": "",
+                "ADD": "Add",
+                "SUBTRACT": "Subtract",
+                "DIVIDE": "Divide",
+                "MULTIPLY": "Multiply"
+            }
+        },
+        "BUTTON-ADD-INPUT-LABEL": "Add input",
+        "BUTTON-ADD-OUTPUT-LABEL": "Add output",
+        "BUTTON-ADD-RULE-LABEL": "Add rule",
+        "BUTTON-MOVE-RULE-UPWARDS-LABEL": "Move up",
+        "BUTTON-MOVE-RULE-DOWNWARDS-LABEL": "Move down",
+        "BUTTON-REMOVE-RULE-LABEL": "Remove rule",
+        "ALERT": {
+            "EXPRESSION-VARIABLE-REQUIRED-ERROR": "All input and output expressions must reference a form field or variable.",
+            "SAVE-CONFIRM": "Saved decision table '{{name}}'",
+            "SAVE-ERROR": "Decision table '{{name}}' could not be saved",
+            "VALIDATION-OK": "Decision table model contains no validation errors.",
+            "VALIDATION-ERROR": "Decision table model contains validation errors."
+        }
+    },
+    
     "RECAPTCHA": {
         "RECAPTCHA-IMAGE": "Enter the words you read below",
         "RECAPTCHA-AUDIO": "Enter the numbers you hear",

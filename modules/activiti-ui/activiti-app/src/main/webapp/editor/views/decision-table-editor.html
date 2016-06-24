@@ -43,8 +43,7 @@
         </div>
     </div>
 
-    <div class="decision-table-grid-wrapper" ng-class="{ 'ui-grid-cell-contents-has-error': hasErrorMessages(null, '', errorsById) }">
-        <span tabindex="0" class="show-error-icon"  ng-click="showErrorMessage(null, '', $event)"><img ng-src="{{ appResourceRoot + 'editor-app/images/bpmn-error.png' }}"/></span>
+    <div class="decision-table-grid-wrapper">
         <div id="decisionTableGrid" class="decision-table-grid" ui-grid="gridOptions" ui-grid-selection ui-grid-edit ui-grid-cellnav ui-grid-auto-resize></div>
     </div>
 

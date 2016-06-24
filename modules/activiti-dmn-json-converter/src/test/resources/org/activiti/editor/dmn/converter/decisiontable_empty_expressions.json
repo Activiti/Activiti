@@ -1,0 +1,40 @@
+{
+    "hitIndicator": "ANY",
+    "id": 38002,
+    "inputExpressions": [
+        {
+            "entries": null,
+            "id": "3",
+            "label": null,
+            "type": "string",
+            "variableId": "inputVar1",
+            "variableType": "variable"
+        }
+    ],
+    "key": "emptyExpression1",
+    "name": "EmptyExpressionTable1",
+    "outputExpressions": [
+        {
+            "entries": null,
+            "id": "4",
+            "label": null,
+            "type": "string",
+            "variableId": "outputVar1",
+            "variableType": "variable"
+        }
+    ],
+    "rules": [
+        {
+            "3": "== \"TEST\"",
+            "4": "\"1\""
+        },
+        {
+            "3": "!= \"TEST\"",
+            "4": ""
+        },
+        {
+            "3": "",
+            "4": "\"3\""
+        }
+    ]
+}

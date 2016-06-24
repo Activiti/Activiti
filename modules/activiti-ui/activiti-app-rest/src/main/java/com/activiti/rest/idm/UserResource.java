@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.idm.UserActionRepresentation;
 import com.activiti.model.idm.UserRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing users.
@@ -39,7 +38,6 @@ public class UserResource extends AbstractUserResource {
     @RequestMapping(value = "/rest/users/{userId}",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public UserRepresentation getUser(@PathVariable Long userId, HttpServletResponse response) {
        return super.getUser(userId, response);
     }
@@ -47,7 +45,6 @@ public class UserResource extends AbstractUserResource {
     @RequestMapping(value = "/rest/users/{userId}",
             method = RequestMethod.PUT,
             produces = "application/json")
-    @Timed
     public UserRepresentation updateUser(@PathVariable Long userId, @RequestBody UserRepresentation userRequest, HttpServletResponse response) {
         return super.updateUser(userId, userRequest, response);
     }
@@ -55,18 +52,15 @@ public class UserResource extends AbstractUserResource {
     @RequestMapping(value = "/rest/users/{userId}",
             method = RequestMethod.POST,
             produces = "application/json")
-    @Timed
     public void executeAction(@PathVariable Long userId, @RequestBody UserActionRepresentation actionRequest, HttpServletResponse response) {
         super.executeAction(userId, actionRequest, response);
     }
     
     @RequestMapping(value = "/rest/idm/signups", method = RequestMethod.POST)
-    @Timed
     public void registerUser(@RequestBody UserRepresentation signup, HttpServletRequest request) {
     	super.registerUser(signup, request);
     }
     
-    @Timed
     @RequestMapping(value="/rest/users/{userId}/picture", method = RequestMethod.GET)
     public void getProfilePicture(HttpServletResponse response, @PathVariable("userId") Long userId) {
     	super.getProfilePicture(response, userId);

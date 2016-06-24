@@ -16,10 +16,7 @@ angular.module('activitiModeler')
 
 	  $scope.model = {
         filters: [
-            {id: 'myReusableDecisionTables', labelKey: 'MY-REUSABLE-DECISION-TABLES'},
-            {id: 'sharedWithMe', labelKey: 'SHARED-WITH-ME'},
-            {id: 'sharedWithOthers', labelKey: 'SHARED-WITH-OTHERS'},
-            {id: 'favorite', labelKey: 'FAVORITES'}
+            {id: 'myReusableDecisionTables', labelKey: 'MY-REUSABLE-DECISION-TABLES'}
 		],
 
 		sorts: [
@@ -29,10 +26,6 @@ angular.module('activitiModeler')
 		        {id: 'nameDesc', labelKey: 'NAME-DESC'}
 		]
 	  };
-
-	  if ($scope.hasAccessAllModelsInTenantCapability()){
-		  $scope.model.filters.push({id: 'everyone', labelKey: 'EVERYONE'});
-	  }
 
 	  if ($rootScope.decisionTableFilter) {
 		  $scope.model.activeFilter = $rootScope.decisionTableFilter.filter;
@@ -147,8 +140,7 @@ angular.module('activitiModeler')
 
 
 angular.module('activitiModeler')
-.controller('CreateNewDecisionTableCtrl', ['$rootScope', '$scope', '$http', 'EventTrackingService',
-    function ($rootScope, $scope, $http, EventTrackingService) {
+.controller('CreateNewDecisionTableCtrl', ['$rootScope', '$scope', '$http', function ($rootScope, $scope, $http) {
 
     $scope.model = {
        loading: false,
@@ -175,8 +167,6 @@ angular.module('activitiModeler')
             success(function(data, status, headers, config) {
                 $scope.$hide();
                 $scope.model.loading = false;
-
-                EventTrackingService.trackEvent('editor', 'decision-table-model-created');
 
                 if ($scope.createDecisionTableCallback) {
                 	$scope.createDecisionTableCallback(data);

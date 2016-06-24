@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * Rest resource for managing groups, used in the editor app.
@@ -31,7 +30,6 @@ import com.codahale.metrics.annotation.Timed;
 @RestController
 public class EditorGroupsResource extends AbstractEditorGroupsResource {
 	
-    @Timed
     @RequestMapping(value = "/rest/editor-groups", method = RequestMethod.GET)
     public ResultListDataRepresentation getGroups(@RequestParam(required=false, value="filter") String filter) {
         

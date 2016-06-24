@@ -5,8 +5,8 @@
  * agreement is prohibited.
  */
 angular.module('activitiModeler')
-    .controller('DecisionTableToolbarController', ['$scope', '$http', '$modal', '$q', '$rootScope', '$translate', '$location', 'DecisionTableService', 'ProcessScopeService',
-        function ($scope, $http, $modal, $q, $rootScope, $translate, $location, DecisionTableService, ProcessScopeService) {
+    .controller('DecisionTableToolbarController', ['$scope', '$http', '$modal', '$q', '$rootScope', '$translate', '$location', 'DecisionTableService',
+        function ($scope, $http, $modal, $q, $rootScope, $translate, $location, DecisionTableService) {
 
     	var toolbarItems = DECISION_TABLE_TOOLBAR_CONFIG.items;
         $scope.items = [];
@@ -34,14 +34,14 @@ angular.module('activitiModeler')
 
             // Default behaviour
             var buttonClicked = $scope.items[buttonIndex];
-            var services = { '$scope' : $scope, '$rootScope' : $rootScope, '$http' : $http, '$modal' : $modal, '$q' : $q, '$translate' : $translate, 'DecisionTableService': DecisionTableService, 'ProcessScopeService': ProcessScopeService };
+            var services = { '$scope' : $scope, '$rootScope' : $rootScope, '$http' : $http, '$modal' : $modal, '$q' : $q, '$translate' : $translate, 'DecisionTableService': DecisionTableService};
             executeFunctionByName(buttonClicked.action, window, services);
         };
         
         // Click handler for secondary toolbar buttons
         $scope.toolbarSecondaryButtonClicked = function(buttonIndex) {
             var buttonClicked = $scope.secondaryItems[buttonIndex];
-            var services = { '$scope' : $scope, '$rootScope' : $rootScope, '$http' : $http, '$modal' : $modal, '$q' : $q, '$translate' : $translate, '$location': $location, 'DecisionTableService': DecisionTableService, 'ProcessScopeService': ProcessScopeService };
+            var services = { '$scope' : $scope, '$rootScope' : $rootScope, '$http' : $http, '$modal' : $modal, '$q' : $q, '$translate' : $translate, '$location': $location, 'DecisionTableService': DecisionTableService };
             executeFunctionByName(buttonClicked.action, window, services);
         };
 }]);

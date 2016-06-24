@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.runtime.CommentRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST resource related to comment collection on tasks and process instances.
@@ -38,7 +37,6 @@ import com.codahale.metrics.annotation.Timed;
 public class CommentsResource extends AbstractCommentsResource {
 
     @RequestMapping(value = "/rest/tasks/{taskId}/comments", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getTaskComments(@PathVariable("taskId") String taskId,
             @RequestParam(value = "latestFirst", required = false) Boolean latestFirst) {
 
@@ -47,7 +45,6 @@ public class CommentsResource extends AbstractCommentsResource {
     }
 
     @RequestMapping(value = "/rest/tasks/{taskId}/comments", method = RequestMethod.POST, produces = "application/json")
-    @Timed
     public CommentRepresentation addTaskComment(@RequestBody CommentRepresentation commentRequest,
             @PathVariable("taskId") String taskId) {
 
@@ -56,7 +53,6 @@ public class CommentsResource extends AbstractCommentsResource {
     }
     
     @RequestMapping(value = "/rest/process-instances/{processInstanceId}/comments", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getProcessInstanceComments(@PathVariable("processInstanceId") String processInstanceId,
             @RequestParam(value = "latestFirst", required = false) Boolean latestFirst) {
 
@@ -65,7 +61,6 @@ public class CommentsResource extends AbstractCommentsResource {
     }
     
     @RequestMapping(value = "/rest/process-instances/{processInstanceId}/comments", method = RequestMethod.POST, produces = "application/json")
-    @Timed
     public CommentRepresentation addProcessInstanceComment(@RequestBody CommentRepresentation commentRequest,
             @PathVariable("processInstanceId") String processInstanceId) {
 

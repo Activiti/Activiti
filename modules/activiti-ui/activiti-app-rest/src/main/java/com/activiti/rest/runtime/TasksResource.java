@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.runtime.TaskRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing the current user's account.
@@ -39,7 +38,6 @@ public class TasksResource extends AbstractTasksResource {
     protected TaskService taskService;
     
 	@RequestMapping(value = "/rest/tasks", method = RequestMethod.POST)
-    @Timed
     public TaskRepresentation createNewTask(@RequestBody TaskRepresentation taskRepresentation, HttpServletRequest request) {
 		return super.createNewTask(taskRepresentation, request);
     }

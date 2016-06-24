@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * Rest resource for managing users, specifically related to tasks and processes.
@@ -32,7 +31,6 @@ import com.codahale.metrics.annotation.Timed;
 @RestController
 public class WorkflowUsersResource extends AbstractWorkflowUsersResource {
 	
-    @Timed
     @RequestMapping(value = "/rest/workflow-users", method = RequestMethod.GET)
     public ResultListDataRepresentation getUsers(
     		@RequestParam(value="filter", required=false) String filter, 
@@ -46,34 +44,11 @@ public class WorkflowUsersResource extends AbstractWorkflowUsersResource {
     	return super.getUsers(filter, email, excludeTaskId, excludeProcessId, groupId);
     }
     
-    @Timed
     @RequestMapping(value = "/rest/workflow-users/{userId}/recent-users", method = RequestMethod.GET)
     public ResultListDataRepresentation getRecentUsers(@PathVariable(value="userId") Long userId,
             @RequestParam(value="excludeTaskId", required=false) String excludeTaskId,
             @RequestParam(value="excludeProcessId", required=false) String excludeProcessId) {
         
-        // TODO: Actually implement this using recent people instead of the full people list
-    	
-    	
-    	// Disabled recent users for now
-//        int page = 0;
-//        int pageSize = MAX_RECENT_PEOPLE;
-//        
-//        List<User> matchingUsers = userService.findUsers("", false, UserStatus.ACTIVE, null, null, 
-//        		SecurityUtils.getCurrentUserObject().getTenantId(), new PageRequest(page, pageSize));
-//        
-//        // Filter out users already part of the task/process of which the ID has been passed
-//        if(excludeTaskId != null) {
-//            filterUsersInvolvedInTask(excludeTaskId, matchingUsers);
-//        } else if(excludeProcessId != null) {
-//            filterUsersInvolvedInProcess(excludeProcessId, matchingUsers);
-//        }
-//        
-//        List<LightUserRepresentation> resultList = new ArrayList<LightUserRepresentation>();
-//        for(User user : matchingUsers) {
-//            resultList.add(new LightUserRepresentation(user));
-//        }
-//        return new ResultListDataRepresentation(resultList);
     	return new ResultListDataRepresentation();
     }
     

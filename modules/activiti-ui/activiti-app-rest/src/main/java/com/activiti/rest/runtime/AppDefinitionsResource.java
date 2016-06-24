@@ -39,7 +39,6 @@ import com.activiti.service.exception.NotFoundException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
 import com.activiti.service.runtime.RuntimeAppDefinitionInternalService;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -60,13 +59,11 @@ public class AppDefinitionsResource extends AbstractAppDefinitionsResource {
     protected PermissionService permissionService;
     
 	@RequestMapping(value = "/rest/runtime/app-definitions", method = RequestMethod.GET)
-    @Timed
     public ResultListDataRepresentation getAppDefinitions() {
 	    return super.getAppDefinitions();
     }
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions/model/{modelId}", method = RequestMethod.GET)
-    @Timed
     public AppDefinitionRepresentation getAppDefinitionForModel(@PathVariable("modelId") Long modelId) {
         AppDefinitionRepresentation result = null;
         RuntimeAppDefinition appDefinition = runtimeAppDefinitionService.getDefinitionForModelAndUser(modelId, SecurityUtils.getCurrentUserObject());
@@ -78,14 +75,12 @@ public class AppDefinitionsResource extends AbstractAppDefinitionsResource {
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-    @Timed
     public void deployAppDefinitions(@RequestBody RuntimeAppDefinitionSaveRepresentation saveObject) {
 	    super.deployAppDefinitions(saveObject);
 	}
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions/{appDefinitionId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-    @Timed
 	public void deleteAppDefinition(@PathVariable("appDefinitionId") Long appDefinitionId) {
 	    RuntimeAppDefinition appDefinition = runtimeAppDefinitionService.getRuntimeAppDefinition(appDefinitionId);
 	    
@@ -105,7 +100,6 @@ public class AppDefinitionsResource extends AbstractAppDefinitionsResource {
 	}
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions/{appDefinitionId}", method = RequestMethod.GET)
-    @Timed
     public AppDefinitionRepresentation getAppDefinition(@PathVariable("appDefinitionId") Long appDefinitionId) {
         RuntimeAppDefinition runtimeAppDefinition = runtimeAppDefinitionService.getRuntimeAppDefinition(appDefinitionId);
         

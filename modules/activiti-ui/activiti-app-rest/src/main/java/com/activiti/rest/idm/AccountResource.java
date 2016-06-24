@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.idm.UserRepresentation;
 import com.activiti.service.exception.UnauthorizedException;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -46,7 +45,6 @@ public class AccountResource extends AbstractAccountResource {
     /**
      * GET  /rest/authenticate -> check if the user is authenticated, and return its full name.
      */
-    @Timed
     @RequestMapping(value = "/rest/authenticate", method = RequestMethod.GET, produces = {"application/json"})
     public ObjectNode isAuthenticated(HttpServletRequest request) {
         String user = request.getRemoteUser();
@@ -63,7 +61,6 @@ public class AccountResource extends AbstractAccountResource {
     /**
      * GET  /rest/account -> get the current user.
      */
-    @Timed
     @RequestMapping(value = "/rest/account", method = RequestMethod.GET, produces = "application/json")
     public UserRepresentation getAccount(HttpServletResponse response, @RequestParam(value="includeApps", required=false) Boolean includeApps) {
     	return super.getAccount(response, includeApps);

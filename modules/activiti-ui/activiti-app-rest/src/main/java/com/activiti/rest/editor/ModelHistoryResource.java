@@ -31,7 +31,6 @@ import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.BadRequestException;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 public class ModelHistoryResource extends AbstractModelHistoryResource {
@@ -39,7 +38,6 @@ public class ModelHistoryResource extends AbstractModelHistoryResource {
     @RequestMapping(value = "/rest/models/{modelId}/history",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getModelHistoryCollection(@PathVariable Long modelId, 
             @RequestParam(value="includeLatestVersion", required=false) Boolean includeLatestVersion) {
 
@@ -50,7 +48,6 @@ public class ModelHistoryResource extends AbstractModelHistoryResource {
     @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public ModelRepresentation getProcessModelHistory(@PathVariable Long modelId, @PathVariable Long modelHistoryId) {
        return super.getProcessModelHistory(modelId, modelHistoryId);
     }
@@ -58,7 +55,6 @@ public class ModelHistoryResource extends AbstractModelHistoryResource {
     @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}",
             method = RequestMethod.POST,
             produces = "application/json")
-    @Timed
     public ReviveModelResultRepresentation executeProcessModelHistoryAction(@PathVariable Long modelId, 
             @PathVariable Long modelHistoryId, @RequestBody(required=true) BaseRestActionRepresentation action) {
         

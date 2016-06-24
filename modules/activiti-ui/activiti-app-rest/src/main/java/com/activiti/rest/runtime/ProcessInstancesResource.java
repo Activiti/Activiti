@@ -24,13 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.runtime.CreateProcessInstanceRepresentation;
 import com.activiti.model.runtime.ProcessInstanceRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 public class ProcessInstancesResource extends AbstractProcessInstancesResource {
 
 	@RequestMapping(value = "/rest/process-instances", method = RequestMethod.POST)
-    @Timed
     public ProcessInstanceRepresentation startNewProcessInstance(@RequestBody CreateProcessInstanceRepresentation startRequest) {
 		return super.startNewProcessInstance(startRequest);
 	}

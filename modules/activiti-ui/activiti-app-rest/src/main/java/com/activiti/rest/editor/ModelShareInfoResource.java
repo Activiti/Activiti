@@ -53,7 +53,6 @@ import com.activiti.service.api.UserCache;
 import com.activiti.service.api.UserCache.CachedUser;
 import com.activiti.service.api.UserService;
 import com.activiti.service.editor.ModelShareService;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * 
@@ -79,7 +78,6 @@ public class ModelShareInfoResource extends BaseModelResource {
     @RequestMapping(value = "/rest/models/{modelId}/share-info",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getProcessModelShareInfo(@PathVariable Long modelId) {
         // Only owner can view with who the process is shared
         Model model = getProcessModelForOwner(modelId);

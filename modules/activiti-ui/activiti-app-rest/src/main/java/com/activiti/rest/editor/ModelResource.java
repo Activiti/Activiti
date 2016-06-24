@@ -48,7 +48,6 @@ import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.ConflictingRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -78,7 +77,6 @@ public class ModelResource extends AbstractModelResource {
      * GET /rest/models/{modelId} -> Get process model
      */
     @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public ModelRepresentation getModel(@PathVariable Long modelId, @RequestParam(required=false) Boolean includePermissions) {    
        return super.getModel(modelId, includePermissions);
     }
@@ -87,7 +85,6 @@ public class ModelResource extends AbstractModelResource {
      * GET /rest/models/{modelId}/thumbnail -> Get process model thumbnail
      */
     @RequestMapping(value = "/rest/models/{modelId}/thumbnail", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-    @Timed
     public byte[] getModelThumbnail(@PathVariable Long modelId) {    
        return super.getModelThumbnail(modelId);
     }
@@ -96,7 +93,6 @@ public class ModelResource extends AbstractModelResource {
      * PUT /rest/models/{modelId} -> update process model properties
      */
     @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.PUT)
-    @Timed
     public ModelRepresentation updateModel(@PathVariable Long modelId, @RequestBody ModelRepresentation updatedModel) {
         // Get model, write-permission required if not a favorite-update
         Model model = getModel(modelId, true, true);
@@ -121,7 +117,6 @@ public class ModelResource extends AbstractModelResource {
      * remove the share info link for that user specifically
      */
     @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.DELETE)
-    @Timed
     public void deleteModel(@PathVariable Long modelId, @RequestParam(required=false) Boolean cascade, @RequestParam(required=false) Boolean deleteRuntimeApp) {
 
         // Get model to check if it exists, read-permission required for delete (in case user is not owner, only share info
@@ -150,7 +145,6 @@ public class ModelResource extends AbstractModelResource {
 	 * GET /rest/models/{modelId}/editor/json -> get the JSON model
 	 */
 	@RequestMapping(value = "/rest/models/{modelId}/editor/json", method = RequestMethod.GET, produces = "application/json")
-	@Timed
 	public ObjectNode getModelJSON(@PathVariable Long modelId) {
 	    Model model = getModel(modelId, true, true);
 		ObjectNode modelNode = objectMapper.createObjectNode();
@@ -185,7 +179,6 @@ public class ModelResource extends AbstractModelResource {
 	 * POST /rest/models/{modelId}/editor/json -> save the JSON model
 	 */
 	@RequestMapping(value = "/rest/models/{modelId}/editor/json", method = RequestMethod.POST)
-	@Timed
 	public ModelRepresentation saveModel(@PathVariable Long modelId,
 	        @RequestBody MultiValueMap<String, String> values) {
 	    
@@ -250,7 +243,6 @@ public class ModelResource extends AbstractModelResource {
      * POST /rest/models/{modelId}/editor/newversion -> create a new model version
      */
     @RequestMapping(value = "/rest/models/{modelId}/newversion", method = RequestMethod.POST)
-    @Timed
     public ModelRepresentation importNewVersion(@PathVariable Long modelId, @RequestParam("file") MultipartFile file) {
         return super.importNewVersion(modelId, file);
     }

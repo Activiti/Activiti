@@ -23,14 +23,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
 public class ProcessInstanceQueryResource extends AbstractProcessInstanceQueryResource {
     
 	@RequestMapping(value = "/rest/query/process-instances", method = RequestMethod.POST, produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getProcessInstances(@RequestBody ObjectNode requestNode) {
 		return super.getProcessInstances(requestNode);
     }

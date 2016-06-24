@@ -73,7 +73,6 @@ import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -120,7 +119,6 @@ public class RuntimeDisplayJsonClientResource {
 	}
 
 	@RequestMapping(value = "/rest/process-instances/{processInstanceId}/model-json", method = RequestMethod.GET, produces = "application/json")
-	@Timed
 	public JsonNode getModelJSON(@PathVariable String processInstanceId) {
 		
 	    User currentUser = SecurityUtils.getCurrentUserObject();
@@ -206,7 +204,6 @@ public class RuntimeDisplayJsonClientResource {
 	
 	@RequestMapping(value = "/rest/process-definitions/{processDefinitionId}/model-json", 
 			        method = RequestMethod.GET, produces = "application/json")
-	@Timed
 	public JsonNode getModelJSONForProcessDefinition(@PathVariable String processDefinitionId) {
 		
 		User currentUser = SecurityUtils.getCurrentUserObject();
@@ -225,7 +222,6 @@ public class RuntimeDisplayJsonClientResource {
 	}
 	
 	@RequestMapping(value = "/rest/process-instances/history/{processInstanceId}/model-json", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public JsonNode getModelHistoryJSON(@PathVariable String processInstanceId) {
 
 		User currentUser = SecurityUtils.getCurrentUserObject();

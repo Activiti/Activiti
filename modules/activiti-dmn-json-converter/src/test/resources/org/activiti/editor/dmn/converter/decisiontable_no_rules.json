@@ -1,0 +1,34 @@
+{
+    "id": 11,
+    "key": "decTable1",
+    "hitIndicator": "ANY",
+    "inputExpressions": [
+        {
+            "entries": null,
+            "id": "1",
+            "label": "Order Size",
+            "type": "number",
+            "variableId": "ordersize",
+            "variableType": "formfield"
+        },
+        {
+            "entries": null,
+            "id": "2",
+            "label": "Registered On",
+            "type": "date",
+            "variableId": "registered",
+            "variableType": "formfield"
+        }
+    ],
+    "name": "decisionTableRule1",
+    "outputExpressions": [
+        {
+            "entries": null,
+            "id": "3",
+            "label": "Has discount",
+            "type": "boolean",
+            "variableId": "newVariable1",
+            "variableType": "variable"
+        }
+    ]
+}

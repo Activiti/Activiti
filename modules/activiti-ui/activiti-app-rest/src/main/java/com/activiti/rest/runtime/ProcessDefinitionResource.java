@@ -24,12 +24,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.editor.form.FormDefinitionRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 @RestController
 public class ProcessDefinitionResource extends AbstractProcessDefinitionResource {
     
-    @Timed
     @RequestMapping(value = "/rest/process-definitions/{processDefinitionId}/start-form", method = RequestMethod.GET, produces = "application/json")
     public FormDefinitionRepresentation getProcessDefinitionStartForm(HttpServletRequest request) {
     	return super.getProcessDefinitionStartForm(request);

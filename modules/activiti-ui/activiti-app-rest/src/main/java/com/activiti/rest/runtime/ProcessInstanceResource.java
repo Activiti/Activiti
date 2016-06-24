@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.model.runtime.ProcessInstanceRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing a process instance.
@@ -39,7 +38,6 @@ public class ProcessInstanceResource extends AbstractProcessInstanceResource {
     @RequestMapping(value = "/rest/process-instances/{processInstanceId}",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public ProcessInstanceRepresentation getProcessInstance(@PathVariable String processInstanceId, HttpServletResponse response) {
     	return super.getProcessInstance(processInstanceId, response);
     }
@@ -47,14 +45,12 @@ public class ProcessInstanceResource extends AbstractProcessInstanceResource {
     @RequestMapping(value = "/rest/process-instances/{processInstanceId}/start-form",
             method = RequestMethod.GET,
             produces = "application/json")
-    @Timed
     public FormDefinitionRepresentation getProcessInstanceStartForm(@PathVariable String processInstanceId, HttpServletResponse response) {
     	return super.getProcessInstanceStartForm(processInstanceId, response);
     }
     
     @RequestMapping(value = "/rest/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
-    @Timed
     public void deleteProcessInstance(@PathVariable String processInstanceId) {
     	super.deleteProcessInstance(processInstanceId);
     }

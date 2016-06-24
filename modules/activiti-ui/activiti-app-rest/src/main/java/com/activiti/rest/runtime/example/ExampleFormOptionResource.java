@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -35,7 +34,6 @@ public class ExampleFormOptionResource {
     @Inject
     protected ObjectMapper objectMapper;
     
-    @Timed
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ArrayNode getOptions() {
         ArrayNode optionsNode = objectMapper.createArrayNode();

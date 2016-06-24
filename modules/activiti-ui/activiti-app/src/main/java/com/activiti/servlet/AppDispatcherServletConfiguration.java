@@ -17,8 +17,10 @@
  */
 package com.activiti.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -35,12 +37,10 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.inject.Inject;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @ComponentScan(value = {"com.activiti.rest"})
-@EnableMetrics(proxyTargetClass = true) 
 @EnableAsync
 public class AppDispatcherServletConfiguration extends WebMvcConfigurationSupport {
 
