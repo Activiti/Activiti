@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
+import java.util.List;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
@@ -35,6 +37,12 @@ public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEn
   @Override
   public Class<? extends ByteArrayEntity> getManagedEntityClass() {
     return ByteArrayEntityImpl.class;
+  }
+  
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<ByteArrayEntity> findAll() {
+    return getDbSqlSession().selectList("selectByteArrays");
   }
   
   @Override

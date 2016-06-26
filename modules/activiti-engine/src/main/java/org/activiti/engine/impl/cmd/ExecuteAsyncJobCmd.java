@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
 
@@ -43,15 +44,29 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
     if (job == null) {
       throw new ActivitiIllegalArgumentException("job is null");
     }
-
-    if (log.isDebugEnabled()) {
-      log.debug("Executing async job {}", job.getId());
+    
+    // We need to refetch the job, as it could have been deleted by another concurrent job
+    // For exampel: an embedded subprocess with a couple of async tasks and a timer on the boundary of the subprocess
+    // when the timer fires, all executions and thus also the jobs inside of the embedded subprocess are destroyed.
+    // However, the async task jobs could already have been fetched and put in the queue.... while in reality they have been deleted. 
+    // A refetch is thus needed here to be sure that it exists for this transaction.
+    
+    Job refetchedJob = commandContext.getJobEntityManager().findById(job.getId());
+    if (refetchedJob == null) {
+      log.debug("Job does not exist anymore and will not be executed. It has most likely been deleted "
+          + "as part of another concurrent part of the process instance.");
+      return null;
     }
 
-    commandContext.getJobManager().execute(job);
+    if (log.isDebugEnabled()) {
+      log.debug("Executing async job {}", refetchedJob.getId());
+    }
+
+    commandContext.getJobManager().execute(refetchedJob);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
+      commandContext.getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, refetchedJob));
     }
 
     return null;

@@ -53,7 +53,7 @@
   <!-- PROPERTY DELETE -->
   
   <delete id="deleteProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntityImpl">
-    delete from ${prefix}ACT_GE_PROPERTY where NAME_ = #{propertyName} and REV_ = #{revision}
+    delete from ${prefix}ACT_GE_PROPERTY where NAME_ = #{name} and REV_ = #{revision}
   </delete>
 
 

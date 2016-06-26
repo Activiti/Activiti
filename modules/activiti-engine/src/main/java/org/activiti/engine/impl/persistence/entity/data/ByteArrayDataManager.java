@@ -12,12 +12,16 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
+import java.util.List;
+
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
 /**
  * @author Joram Barrez
  */
 public interface ByteArrayDataManager extends DataManager<ByteArrayEntity> {
+  
+  List<ByteArrayEntity> findAll();
   
   void deleteByteArrayNoRevisionCheck(String byteArrayEntityId);
   

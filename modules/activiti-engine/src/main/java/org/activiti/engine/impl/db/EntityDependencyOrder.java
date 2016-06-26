@@ -8,6 +8,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
@@ -34,7 +35,9 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 
@@ -80,6 +83,9 @@ public class EntityDependencyOrder {
 		 * FK to ByteArray
 		 */
 		DELETE_ORDER.add(JobEntityImpl.class);
+		DELETE_ORDER.add(TimerJobEntityImpl.class);
+		DELETE_ORDER.add(SuspendedJobEntityImpl.class);
+		DELETE_ORDER.add(DeadLetterJobEntityImpl.class);
 		
 		/*
 		 * FK to ByteArray

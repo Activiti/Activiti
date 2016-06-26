@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -34,6 +36,11 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
   @Override
   protected DataManager<ByteArrayEntity> getDataManager() {
     return byteArrayDataManager;
+  }
+  
+  @Override
+  public List<ByteArrayEntity> findAll() {
+    return byteArrayDataManager.findAll();
   }
   
   @Override
