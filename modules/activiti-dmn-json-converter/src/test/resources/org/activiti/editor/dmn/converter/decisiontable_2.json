@@ -1,0 +1,39 @@
+{
+  "id": 73001,
+  "inputExpressions": [
+    {
+      "entries": null,
+      "id": "4",
+      "label": "Input 1",
+      "type": "string",
+      "variableId": "input1",
+      "variableType": "formfield"
+    },
+    {
+      "entries": null,
+      "id": "7",
+      "label": null,
+      "type": "date",
+      "variableId": "label",
+      "variableType": "formfield"
+    }
+  ],
+  "name": "new23232",
+  "outputExpressions": [
+    {
+      "entries": null,
+      "id": "8",
+      "label": "Output 1",
+      "type": "string",
+      "variableId": "ruleConclusion1",
+      "variableType": "variable"
+    }
+  ],
+  "rules": [
+    {
+      "4": "!= 1",
+      "7": "> 9-9-2015",
+      "8": "123"
+    }
+  ]
+}

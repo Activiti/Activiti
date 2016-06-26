@@ -168,6 +168,7 @@
       junit*;resolution:=optional,
       org.junit*;resolution:=optional,
       com.sun*;resolution:=optional,
+      javax.activation*;resolution:=optional,
       javax.persistence*;resolution:=optional,
       org.apache.commons.mail*;resolution:=optional,
       org.apache.xerces*;resolution:=optional,

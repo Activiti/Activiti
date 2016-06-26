@@ -1,0 +1,54 @@
+<div class="modal" ng-controller="DecisionTableConclusionEditorCtrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form name="outputExpressionForm">
+                <div class="modal-header"><h2>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.OUTPUT-TITLE' | translate}}</h2>
+                    <p>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.OUTPUT-DESCRIPTION' | translate}}</p>
+                </div>
+                <div class="modal-body">
+                    <div class="clearfix form-group">
+                        <div class="col-xs-4">
+                            <label>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.EXPRESSION-LABEL' | translate}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" placeholder="{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.EXPRESSION-PLACEHOLDER' | translate}}" type="text" ng-model="popup.selectedExpressionLabel" />
+                        </div>
+                    </div>
+
+                    <div class="clearfix form-group">
+                        <div class="col-xs-4">
+                            <label>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.OUTPUT-NEW-VARIABLE-ID' | translate}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" placeholder="Enter variable id" type="text" ng-model="popup.selectedExpressionNewVariableId" variable-identifier/>
+                        </div>
+                    </div>
+                    
+                    <div class="clearfix form-group" ng-class="{'has-error': outputExpressionForm.newVariable.$invalid}">
+                        <div class="col-xs-4">
+                            <label>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.OUTPUT-NEW-VARIABLE-TYPE' | translate}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <select class="form-control" ng-options="type for type in availableVariableTypes"
+                                    ng-model="popup.selectedExpressionNewVariableType" name="newVariable" ng-required="true"  />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-sm btn-default" ng-click="cancel()">
+                            {{'GENERAL.ACTION.CANCEL' | translate}}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default" ng-click="save()" ng-disabled="!outputExpressionForm.$valid || readOnly">
+                            {{'GENERAL.ACTION.SAVE' | translate}}
+                        </button>
+                    </div>
+                    <div class="loading pull-right" ng-show="model.loading">
+                        <div class="l1"></div><div class="l2"></div><div class="l2"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

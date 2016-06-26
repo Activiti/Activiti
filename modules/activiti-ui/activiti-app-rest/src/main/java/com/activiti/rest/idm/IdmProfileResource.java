@@ -1,19 +1,14 @@
-/**
- * Activiti app component part of the Activiti project
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.activiti.rest.idm;
 
@@ -29,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.activiti.model.common.ImageUploadRepresentation;
 import com.activiti.model.idm.ChangePasswordRepresentation;
 import com.activiti.model.idm.UserRepresentation;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * 
@@ -40,31 +34,26 @@ import com.codahale.metrics.annotation.Timed;
 @RequestMapping(value="/rest/admin")
 public class IdmProfileResource extends AbstractIdmProfileResource {
     
-    @Timed
     @RequestMapping(value="/profile", method = RequestMethod.GET, produces = "application/json")
     public UserRepresentation getProfile() {
     	return super.getProfile();
     }
     
-    @Timed
     @RequestMapping(value="/profile", method = RequestMethod.POST, produces = "application/json")
     public UserRepresentation updateUser(@RequestBody UserRepresentation userRepresentation) {
     	return super.updateUser(userRepresentation);
     }
     
-    @Timed
     @RequestMapping(value="/profile-picture", method = RequestMethod.GET)
     public void getProfilePicture(HttpServletResponse response) {
     	super.getProfilePicture(response);
     }
     
-    @Timed
     @RequestMapping(value="/profile-picture", method = RequestMethod.POST, produces = "application/json")
 	public ImageUploadRepresentation uploadProfilePicture(@RequestParam("file") MultipartFile file) {
 		return super.uploadProfilePicture(file);
 	}
     
-    @Timed
     @RequestMapping(value="/profile-password", method = RequestMethod.POST, produces = "application/json")
     public void changePassword(@RequestBody ChangePasswordRepresentation changePasswordRepresentation) {
     	super.changePassword(changePasswordRepresentation);

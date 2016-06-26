@@ -1,19 +1,14 @@
-/*
- * Activiti app component part of the Activiti project
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 'use strict';
 
@@ -30,6 +25,8 @@ var activitiModeler = angular.module('activitiModeler', [
   'ui.grid.edit',
   'ui.grid.selection',
   'ui.grid.autoResize',
+  'ui.grid.moveColumns',
+  'ui.grid.cellNav',
   'ngAnimate',
   'pascalprecht.translate',
   'ngFileUpload',
@@ -120,6 +117,27 @@ activitiModeler
                     verify: authRouteResolver
                 }
             })
+            .when('/decision-tables', {
+                templateUrl: appResourceRoot + 'views/decision-tables.html',
+                controller: 'DecisionTablesController',
+                resolve: {
+                    verify: authRouteResolver
+                }
+            })
+            .when('/decision-tables/:modelId', {
+                templateUrl: appResourceRoot + 'views/decision-table.html',
+                controller: 'DecisionTableDetailsCtrl',
+                resolve: {
+                    verify: authRouteResolver
+                }
+            })
+            .when('/decision-tables/:modelId/history/:modelHistoryId', {
+                templateUrl: appResourceRoot + 'views/decision-table.html',
+                controller: 'DecisionTableDetailsCtrl',
+                resolve: {
+                    verify: authRouteResolver
+                },
+            })
             .when('/apps', {
                 templateUrl: appResourceRoot + 'views/app-definitions.html',
                 controller: 'AppDefinitionsCtrl',
@@ -155,20 +173,21 @@ activitiModeler
 	                verify: authRouteResolver
 	            }
 	        })
+	        .when('/decision-table-editor/:modelId', {
+                templateUrl: appResourceRoot + 'views/decision-table-editor.html',
+                controller: 'DecisionTableEditorController',
+                resolve: {
+                    verify: authRouteResolver
+                }
+            })
 	        .when('/app-editor/:modelId', {
                 templateUrl: appResourceRoot + 'views/app-definition-builder.html',
                 controller: 'AppDefinitionBuilderController',
                 resolve: {
                     verify: authRouteResolver
                 }
-            })
-            .when('/stencil-editor/:stencilId', {
-                templateUrl: appResourceRoot + 'views/stencil-editor.html',
-                controller: 'StencilEditorController',
-                resolve: {
-                    verify: authRouteResolver
-                }
             });
+            
         if (ACTIVITI.CONFIG.appDefaultRoute) {
             $routeProvider.when('/', {
                 redirectTo: ACTIVITI.CONFIG.appDefaultRoute
@@ -236,20 +255,22 @@ activitiModeler
                 {
                     'id': 'processes',
                     'title': 'GENERAL.NAVIGATION.PROCESSES',
-                    'path': '/processes',
-                    'enterprise': false
+                    'path': '/processes'
                 },
                 {
                     'id': 'forms',
                     'title': 'GENERAL.NAVIGATION.FORMS',
-                    'path': '/forms',
-                    'enterprise': false
+                    'path': '/forms'
+                },
+                {
+                    'id': 'decision-tables',
+                    'title': 'GENERAL.NAVIGATION.DECISION-TABLES',
+                    'path': '/decision-tables'
                 },
                 {
                     'id': 'apps',
                     'title': 'GENERAL.NAVIGATION.APPS',
-                    'path': '/apps',
-                    'enterprise': false
+                    'path': '/apps'
                 }
             ];
 

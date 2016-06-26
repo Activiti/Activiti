@@ -541,7 +541,7 @@ public class DbSqlSession implements Session {
 
     if (log.isDebugEnabled()) {
       Collection<List<Entity>> insertedObjectLists = insertedObjects.values();
-      log.debug("Flishing dbSqlSession");
+      log.debug("Flushing dbSqlSession");
       int nrOfInserts = 0, nrOfUpdates = 0, nrOfDeletes = 0;
       for (List<Entity> insertedObjectList: insertedObjectLists) {
       	for (Entity insertedObject : insertedObjectList) {

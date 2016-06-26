@@ -239,6 +239,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-dmn-json-converter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-camel</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -396,19 +401,19 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
-        <version>4.2.0</version>
+        <version>6.0.0</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.compendium</artifactId>
-        <version>4.2.0</version>
+        <version>5.0.0</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.fileinstall</artifactId>
-        <version>3.0.2</version>
+        <version>3.5.4</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -540,17 +545,17 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.2.3</version>
+        <version>2.7.5</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>2.2.3</version>
+        <version>2.7.5</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.2.3</version>
+        <version>2.7.5</version>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -916,6 +921,9 @@
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-dmn-model</module>
+        <module>modules/activiti-dmn-json-converter</module>
+        <module>modules/activiti-dmn-xml-converter</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti5-engine</module>
         <module>modules/activiti5-compatibility</module>

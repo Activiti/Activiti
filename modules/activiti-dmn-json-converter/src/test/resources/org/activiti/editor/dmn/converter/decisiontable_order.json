@@ -1,0 +1,53 @@
+{
+    "id": 58300,
+    "name": "Output DT 2",
+    "key": "OutputDT2",
+    "hitIndicator": "FIRST",
+    "inputExpressions": [
+        {
+            "id": "3",
+            "variableId": "BooleanVar",
+            "variableType": "variable",
+            "type": "boolean",
+            "label": null,
+            "entries": null
+        }
+    ],
+    "outputExpressions": [
+        {
+            "id": "14",
+            "variableId": "boolvarfield",
+            "variableType": "formfield",
+            "type": "boolean",
+            "label": "",
+            "entries": null,
+            "newVariable": false
+        },
+        {
+            "id": "13",
+            "variableId": "datevarfield",
+            "variableType": "formfield",
+            "type": "date",
+            "label": "",
+            "entries": null,
+            "newVariable": false
+        },
+        {
+            "id": "15",
+            "variableId": "stringvarfield",
+            "variableType": "formfield",
+            "type": "string",
+            "label": "",
+            "entries": null,
+            "newVariable": false
+        }
+    ],
+    "rules": [
+        {
+            "3": "== true",
+            "13": "DateVar",
+            "14": "BooleanVar",
+            "15": "StringVar"
+        }
+    ]
+}
