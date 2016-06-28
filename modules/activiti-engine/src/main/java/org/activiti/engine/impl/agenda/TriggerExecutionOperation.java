@@ -38,7 +38,7 @@ public class TriggerExecutionOperation extends AbstractOperation {
         ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
         
         if (currentFlowElement instanceof BoundaryEvent) {
-          commandContext.getHistoryManager().recordActivityEnd(execution);
+          commandContext.getHistoryManager().recordActivityEnd(execution, null);
         }
         
       } else {

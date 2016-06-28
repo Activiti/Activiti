@@ -97,7 +97,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_END);
       }
       
-      commandContext.getHistoryManager().recordActivityEnd(execution);
+      commandContext.getHistoryManager().recordActivityEnd(execution, null);
       
       if (!(execution.getCurrentFlowElement() instanceof SubProcess)) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
@@ -245,7 +245,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
   }
   
   protected void handleSequenceFlow() {
-    commandContext.getHistoryManager().recordActivityEnd(execution);
+    commandContext.getHistoryManager().recordActivityEnd(execution, null);
     agenda.planContinueProcessOperation(execution);
   }
 
@@ -253,7 +253,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     
     // The compensation is at the end here. Simply stop the execution.
     
-    commandContext.getHistoryManager().recordActivityEnd(execution);
+    commandContext.getHistoryManager().recordActivityEnd(execution, null);
     commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null, false);
     
     ExecutionEntity parentExecutionEntity = execution.getParent();

@@ -17,6 +17,7 @@ import java.util.List;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -47,9 +48,10 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
   }
   
   @Override
-  public void cancelEvent(DelegateExecution execution) {
+  public void eventCancelledByEventGateway(DelegateExecution execution) {
     deleteSignalEventSubscription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, 
+        DeleteReason.EVENT_BASED_GATEWAY_CANCEL, false);
   }
 
   protected ExecutionEntity deleteSignalEventSubscription(DelegateExecution execution) {

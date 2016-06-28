@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -107,40 +108,40 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
           ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution);
           
           // end all executions in the scope of the transaction
-          deleteChildExecutions(multiInstanceExecution, executionEntity, commandContext);
+          deleteChildExecutions(multiInstanceExecution, executionEntity, commandContext, DeleteReason.TRANSACTION_CANCELED);
           
         }
       }
     }
     
     // The current activity is finished (and will not be ended in the deleteChildExecutions)
-    commandContext.getHistoryManager().recordActivityEnd(executionEntity);
+    commandContext.getHistoryManager().recordActivityEnd(executionEntity, null);
     
     // set new parent for boundary event execution
     executionEntity.setParent(newParentScopeExecution);
     executionEntity.setCurrentFlowElement(cancelBoundaryEvent);
     
     // end all executions in the scope of the transaction
-    deleteChildExecutions(parentScopeExecution, executionEntity, commandContext);
-    commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution);
+    deleteChildExecutions(parentScopeExecution, executionEntity, commandContext, DeleteReason.TRANSACTION_CANCELED);
+    commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution, DeleteReason.TRANSACTION_CANCELED);
     
-
     commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
   }
   
-  protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {
+  protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, 
+      CommandContext commandContext, String deleteReason) {
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtil.isNotEmpty(childExecutions)) {
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getId().equals(notToDeleteExecution.getId()) == false) {
-          deleteChildExecutions(childExecution, notToDeleteExecution, commandContext);
+          deleteChildExecutions(childExecution, notToDeleteExecution, commandContext, deleteReason);
         }
       }
     }
 
-    executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
+    executionEntityManager.deleteExecutionAndRelatedData(parentExecution, deleteReason, false);
   }
 
 }

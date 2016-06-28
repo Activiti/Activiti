@@ -67,7 +67,8 @@ public class MybatisHistoricActivityInstanceDataManager extends AbstractDataMana
     return getList("selectUnfinishedHistoricActivityInstanceByProcessInstanceId", params, new CachedEntityMatcher<HistoricActivityInstanceEntity>() {
       @Override
       public boolean isRetained(HistoricActivityInstanceEntity entity) {
-        return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals(processInstanceId)
+        return entity.getProcessInstanceId() != null 
+            && entity.getProcessInstanceId().equals(processInstanceId)
             && entity.getEndTime() == null;
       }
     }, true);

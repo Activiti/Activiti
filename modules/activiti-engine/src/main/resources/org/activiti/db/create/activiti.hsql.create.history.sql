@@ -31,6 +31,7 @@ create table ACT_HI_ACTINST (
   START_TIME_ timestamp not null,
   END_TIME_ timestamp,
   DURATION_ bigint,
+  DELETE_REASON_ varchar(4000),
   TENANT_ID_ varchar(255) default '',
   primary key (ID_)
 );

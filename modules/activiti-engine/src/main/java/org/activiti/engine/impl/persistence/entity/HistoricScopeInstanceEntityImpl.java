@@ -35,9 +35,11 @@ public abstract class HistoricScopeInstanceEntityImpl implements HistoricScopeIn
   protected String deleteReason;
 
   public void markEnded(String deleteReason) {
-    this.deleteReason = deleteReason;
-    this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    this.durationInMillis = endTime.getTime() - startTime.getTime();
+    if (this.endTime == null) {
+      this.deleteReason = deleteReason;
+      this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+      this.durationInMillis = endTime.getTime() - startTime.getTime();
+    }
   }
 
   // getters and setters ////////////////////////////////////////////////////////

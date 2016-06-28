@@ -225,11 +225,11 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
    * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityEnd (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
    */
   @Override
-  public void recordActivityEnd(ExecutionEntity executionEntity) {
+  public void recordActivityEnd(ExecutionEntity executionEntity, String deleteReason) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false, true);
       if (historicActivityInstance != null) {
-        historicActivityInstance.markEnded(null);
+        historicActivityInstance.markEnded(deleteReason);
         
         // Fire event
         ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();

@@ -21,6 +21,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -58,8 +59,9 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
    * Should be subclassed by the more specific types.
    * For an intermediate catch without type, it's simply leaving the event. 
    */
-  public void cancelEvent(DelegateExecution execution) {
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+  public void eventCancelledByEventGateway(DelegateExecution execution) {
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, 
+        DeleteReason.EVENT_BASED_GATEWAY_CANCEL, false);
   }
   
   protected EventGateway getPrecedingEventBasedGateway(DelegateExecution execution) {
@@ -111,7 +113,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
       if (eventActivityIds.contains(executionEntity.getActivityId()) && execution.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
         IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) execution.getCurrentFlowElement();
         if (intermediateCatchEvent.getBehavior() instanceof IntermediateCatchEventActivityBehavior) {
-          ((IntermediateCatchEventActivityBehavior) intermediateCatchEvent.getBehavior()).cancelEvent(executionEntity);
+          ((IntermediateCatchEventActivityBehavior) intermediateCatchEvent.getBehavior()).eventCancelledByEventGateway(executionEntity);
           eventActivityIds.remove(executionEntity.getActivityId()); // We only need to delete ONE execution at the event.
         }
       }

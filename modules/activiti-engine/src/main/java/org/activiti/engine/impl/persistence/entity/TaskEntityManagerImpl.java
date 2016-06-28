@@ -272,8 +272,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
     List<TaskEntity> tasks = findTasksByProcessInstanceId(processInstanceId);
 
-    String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
-
     for (TaskEntity task : tasks) {
       if (getEventDispatcher().isEnabled()) {
         getEventDispatcher().dispatchEvent(
@@ -281,7 +279,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
                     task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
       }
 
-      deleteTask(task, reason, cascade, false);
+      deleteTask(task, deleteReason, cascade, false);
     }
   }
   
@@ -382,8 +380,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         return;
       }
 
-      String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
-      deleteTask(task, reason, cascade, false);
+      deleteTask(task, deleteReason, cascade, false);
     } else if (cascade) {
       getHistoricTaskInstanceEntityManager().delete(taskId);
     }

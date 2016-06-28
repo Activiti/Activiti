@@ -89,8 +89,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
           .findInactiveExecutionsByActivityIdAndProcessInstanceId(execution.getCurrentActivityId(), execution.getProcessInstanceId());
       for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
         if (!executionEntityInGateway.getId().equals(execution.getId())) {
-          commandContext.getHistoryManager().recordActivityEnd(executionEntityInGateway);
-//          executionEntityManager.delete(executionEntityInGateway);
+          commandContext.getHistoryManager().recordActivityEnd(executionEntityInGateway, null);
           executionEntityManager.deleteExecutionAndRelatedData(executionEntityInGateway, null, false);
         }
       }

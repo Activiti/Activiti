@@ -25,6 +25,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -308,6 +309,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   protected void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
+    
+    // fill default reason if none provided
+    if (deleteReason == null) {
+      deleteReason = DeleteReason.PROCESS_INSTANCE_DELETED;
+    }
+    
     for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
       if (subExecutionEntity.isMultiInstanceRoot()) {
         for (ExecutionEntity miExecutionEntity : subExecutionEntity.getExecutions()) {
@@ -323,11 +330,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     
     getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
     
-    // fill default reason if none provided
-    if (deleteReason == null) {
-      deleteReason = "ACTIVITY_DELETED";
-    }
-
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getProcessInstanceId(), 
           execution.getProcessInstanceId(), null, deleteReason));
@@ -359,8 +361,8 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   @Override
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
-    getHistoryManager().recordActivityEnd(executionEntity);
-    deleteDataRelatedToExecution(executionEntity, deleteReason, cancel);
+    getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
+    deleteDataForExecution(executionEntity, deleteReason, cancel);
     delete(executionEntity);
   }
   
@@ -479,8 +481,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return null;
   }
   
-  @Override
-  public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+  public void deleteDataForExecution(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
 
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);

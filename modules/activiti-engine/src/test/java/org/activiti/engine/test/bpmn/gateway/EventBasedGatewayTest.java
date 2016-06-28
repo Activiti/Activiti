@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.gateway;
 
 import java.util.Date;
 
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -26,6 +27,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
@@ -33,13 +35,13 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       "org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.throwAlertSignal.bpmn20.xml" })
   public void testCatchSignalCancelsTimer() {
 
-    runtimeService.startProcessInstanceByKey("catchSignal");
+    ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("catchSignal");
 
     assertEquals(1, createEventSubscriptionQuery().count());
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createTimerJobQuery().count());
 
-    runtimeService.startProcessInstanceByKey("throwSignal");
+    ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("throwSignal");
 
     assertEquals(0, createEventSubscriptionQuery().count());
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
@@ -47,46 +49,44 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     assertEquals(0, managementService.createTimerJobQuery().count());
 
     Task task = taskService.createTaskQuery().taskName("afterSignal").singleResult();
-
     assertNotNull(task);
-
     taskService.complete(task.getId());
 
+    assertHistoricActivitiesDeleteReason(pi1, DeleteReason.EVENT_BASED_GATEWAY_CANCEL, "timerEvent");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testCatchAlertAndTimer.bpmn20.xml" })
   public void testCatchTimerCancelsSignal() {
 
-    runtimeService.startProcessInstanceByKey("catchSignal");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
 
     assertEquals(1, createEventSubscriptionQuery().count());
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createTimerJobQuery().count());
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
-    try {
-      // wait for timer to fire
-      waitForJobExecutorToProcessAllJobs(10000, 100);
+    
+    // wait for timer to fire
+    waitForJobExecutorToProcessAllJobs(10000, 100);
 
-      assertEquals(0, createEventSubscriptionQuery().count());
-      assertEquals(1, runtimeService.createProcessInstanceQuery().count());
-      assertEquals(0, managementService.createJobQuery().count());
-      assertEquals(0, managementService.createTimerJobQuery().count());
+    assertEquals(0, createEventSubscriptionQuery().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
 
-      Task task = taskService.createTaskQuery().taskName("afterTimer").singleResult();
+    Task task = taskService.createTaskQuery().taskName("afterTimer").singleResult();
 
-      assertNotNull(task);
+    assertNotNull(task);
 
-      taskService.complete(task.getId());
-    } finally {
-      processEngineConfiguration.getClock().setCurrentTime(new Date());
-    }
+    taskService.complete(task.getId());
+    
+    assertHistoricActivitiesDeleteReason(processInstance, DeleteReason.EVENT_BASED_GATEWAY_CANCEL, "signalEvent");
   }
 
   @Deployment
   public void testCatchSignalAndMessageAndTimer() {
 
-    runtimeService.startProcessInstanceByKey("catchSignal");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
 
     assertEquals(2, createEventSubscriptionQuery().count());
     EventSubscriptionQueryImpl messageEventSubscriptionQuery = createEventSubscriptionQuery().eventType("message");
@@ -102,24 +102,21 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     assertNotNull(execution);
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
-    try {
 
-      EventSubscriptionEntity messageEventSubscription = messageEventSubscriptionQuery.singleResult();
-      runtimeService.messageEventReceived(messageEventSubscription.getEventName(), messageEventSubscription.getExecutionId());
+    EventSubscriptionEntity messageEventSubscription = messageEventSubscriptionQuery.singleResult();
+    runtimeService.messageEventReceived(messageEventSubscription.getEventName(), messageEventSubscription.getExecutionId());
 
-      assertEquals(0, createEventSubscriptionQuery().count());
-      assertEquals(1, runtimeService.createProcessInstanceQuery().count());
-      assertEquals(0, managementService.createTimerJobQuery().count());
-      assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, createEventSubscriptionQuery().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().count());
 
-      Task task = taskService.createTaskQuery().taskName("afterMessage").singleResult();
-
-      assertNotNull(task);
-
-      taskService.complete(task.getId());
-    } finally {
-      processEngineConfiguration.getClock().setCurrentTime(new Date());
-    }
+    Task task = taskService.createTaskQuery().taskName("afterMessage").singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    
+    assertHistoricActivitiesDeleteReason(processInstance, DeleteReason.EVENT_BASED_GATEWAY_CANCEL, "signalEvent");
+    assertHistoricActivitiesDeleteReason(processInstance, DeleteReason.EVENT_BASED_GATEWAY_CANCEL, "timerEvent");
   }
 
   public void testConnectedToActivity() {

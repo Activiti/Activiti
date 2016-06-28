@@ -55,8 +55,6 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
       commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
     }
 
-    // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
-    // commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);
     return null;
   }
 

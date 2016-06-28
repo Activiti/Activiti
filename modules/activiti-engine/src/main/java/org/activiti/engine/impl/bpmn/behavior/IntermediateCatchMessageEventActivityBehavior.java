@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -44,9 +45,10 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   }
   
   @Override
-  public void cancelEvent(DelegateExecution execution) {
+  public void eventCancelledByEventGateway(DelegateExecution execution) {
     deleteMessageEventSubScription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, 
+        DeleteReason.EVENT_BASED_GATEWAY_CANCEL, false);
   }
 
   protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {

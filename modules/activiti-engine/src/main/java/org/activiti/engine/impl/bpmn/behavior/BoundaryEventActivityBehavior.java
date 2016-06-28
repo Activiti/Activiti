@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -65,8 +66,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     //
     // The take outgoing seq flows operation below (the non-interrupting else clause) on the other hand uses the 
     // child execution to leave, which keeps the scope alive.
-    //
-    // Which is what we need.
+    // Which is what we need here.
 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     ExecutionEntity attachedRefScopeExecution = executionEntityManager.findById(executionEntity.getParentId());
@@ -145,14 +145,16 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       }
     }
     
+    String deleteReason = DeleteReason.BOUNDARY_EVENT_INTERRUPTING + " (" + notToDeleteExecution.getCurrentActivityId() + ")";
     if (parentExecution.getCurrentFlowElement() instanceof CallActivity) {
       ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(parentExecution.getId());
       if (subProcessExecution != null) {
-        executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution.getId(), subProcessExecution.getCurrentActivityId(), "boundary event interrupting", true, false, true);
+        executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution.getId(), 
+            subProcessExecution.getCurrentActivityId(), deleteReason, true, false, true);
       }
     }
     
-    executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
+    executionEntityManager.deleteExecutionAndRelatedData(parentExecution, deleteReason, false);
   }
 
   public boolean isInterrupting() {

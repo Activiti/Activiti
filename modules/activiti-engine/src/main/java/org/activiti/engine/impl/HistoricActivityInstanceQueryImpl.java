@@ -40,6 +40,8 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected boolean withoutTenantId;
   protected boolean finished;
   protected boolean unfinished;
+  protected String deleteReason;
+  protected String deleteReasonLike;
 
   public HistoricActivityInstanceQueryImpl() {
   }
@@ -106,6 +108,16 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   public HistoricActivityInstanceQueryImpl unfinished() {
     this.unfinished = true;
+    return this;
+  }
+  
+  public HistoricActivityInstanceQuery deleteReason(String deleteReason) {
+    this.deleteReason = deleteReason;
+    return this;
+  }
+  
+  public HistoricActivityInstanceQuery deleteReasonLike(String deleteReasonLike) {
+    this.deleteReasonLike = deleteReasonLike;
     return this;
   }
 
@@ -247,4 +259,13 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public String getActivityInstanceId() {
     return activityInstanceId;
   }
+
+  public String getDeleteReason() {
+    return deleteReason;
+  }
+
+  public String getDeleteReasonLike() {
+    return deleteReasonLike;
+  }
+  
 }
