@@ -97,5 +97,9 @@ KISBPM.PROPERTY_CONFIG =
     "oryx-duedatedefinition-complex": {
         "readModeTemplateUrl": "editor-app/configuration/properties/duedate-display-template.html",
         "writeModeTemplateUrl": "editor-app/configuration/properties/duedate-write-template.html"
+    },
+    "oryx-decisiontaskdecisiontablereference-complex": {
+        "readModeTemplateUrl": "editor-app/configuration/properties/decisiontable-reference-display-template.html",
+        "writeModeTemplateUrl": "editor-app/configuration/properties/decisiontable-reference-write-template.html"
     }
 };

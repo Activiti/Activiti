@@ -27,9 +27,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter {
+public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
+  
+  protected Map<Long, JsonNode> decisionTableMap;
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, 
+      Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
 
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
@@ -54,13 +57,18 @@ public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter {
     ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
     GraphicInfo graphicInfo = model.getGraphicInfo(subProcess.getId());
     processor.processFlowElements(subProcess, model, subProcessShapesArrayNode, graphicInfo.getX(), graphicInfo.getY());
-    flowElementNode.put("childShapes", subProcessShapesArrayNode);
+    flowElementNode.set("childShapes", subProcessShapesArrayNode);
   }
 
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     EventSubProcess subProcess = new EventSubProcess();
     JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
-    processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, model);
+    processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, decisionTableMap, model);
     return subProcess;
+  }
+  
+  @Override
+  public void setDecisionTableMap(Map<Long, JsonNode> decisionTableMap) {
+    this.decisionTableMap = decisionTableMap;
   }
 }

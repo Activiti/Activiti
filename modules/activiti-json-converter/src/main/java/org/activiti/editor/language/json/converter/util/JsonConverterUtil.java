@@ -84,40 +84,56 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
    * Returns a map with said json nodes, with the key the name of the childshape.
    */
   
-  public static List<JsonLookupResult> getBpmnProcessModelFormReferences(JsonNode editorJsonNode) {
-    return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "formreference");
-  }
-  
-  protected static List<JsonLookupResult> getBpmnProcessModelChildShapesPropertyValues(JsonNode editorJsonNode, String propertyName) {
+  protected static List<JsonLookupResult> getBpmnProcessModelChildShapesPropertyValues(JsonNode editorJsonNode, String propertyName, List<String> allowedStencilTypes) {
     List<JsonLookupResult> result = new ArrayList<JsonLookupResult>();
-    internalGetBpmnProcessChildShapePropertyValues(editorJsonNode, propertyName, result);
+    internalGetBpmnProcessChildShapePropertyValues(editorJsonNode, propertyName, allowedStencilTypes, result);
     return result;
   }
   
-  protected static void internalGetBpmnProcessChildShapePropertyValues(JsonNode editorJsonNode, String propertyName, List<JsonLookupResult> result) {
+  protected static void internalGetBpmnProcessChildShapePropertyValues(JsonNode editorJsonNode, String propertyName, 
+      List<String> allowedStencilTypes, List<JsonLookupResult> result) {
+    
     JsonNode childShapesNode = editorJsonNode.get("childShapes");
     if (childShapesNode != null && childShapesNode.isArray()) {
       ArrayNode childShapesArrayNode = (ArrayNode) childShapesNode;
       Iterator<JsonNode> childShapeNodeIterator = childShapesArrayNode.iterator();
       while (childShapeNodeIterator.hasNext()) {
         JsonNode childShapeNode = childShapeNodeIterator.next();
+        
+        String childShapeNodeStencilId = BpmnJsonConverterUtil.getStencilId(childShapeNode);
+        boolean readPropertiesNode = allowedStencilTypes.contains(childShapeNodeStencilId);
 
-        // Properties
-        JsonNode properties = childShapeNode.get("properties");
-        if (properties != null && properties.has(propertyName)) {
-          JsonNode nameNode = properties.get("name");
-          JsonNode propertyNode = properties.get(propertyName);
-          result.add(new JsonLookupResult(BpmnJsonConverterUtil.getElementId(childShapeNode), 
-                  nameNode != null ? nameNode.asText() : null, propertyNode));
+        if (readPropertiesNode) {
+          // Properties
+          JsonNode properties = childShapeNode.get("properties");
+          if (properties != null && properties.has(propertyName)) {
+            JsonNode nameNode = properties.get("name");
+            JsonNode propertyNode = properties.get(propertyName);
+            result.add(new JsonLookupResult(BpmnJsonConverterUtil.getElementId(childShapeNode), 
+                    nameNode != null ? nameNode.asText() : null, propertyNode));
+          }
         }
 
         // Potential nested child shapes
         if (childShapeNode.has("childShapes")) {
-          internalGetBpmnProcessChildShapePropertyValues(childShapeNode, propertyName, result);
+          internalGetBpmnProcessChildShapePropertyValues(childShapeNode, propertyName, allowedStencilTypes, result);
         }
 
       }
     }
+  }
+  
+  public static List<JsonLookupResult> getBpmnProcessModelFormReferences(JsonNode editorJsonNode) {
+    List<String> allowedStencilTypes = new ArrayList<String>();
+    allowedStencilTypes.add(STENCIL_TASK_USER);
+    allowedStencilTypes.add(STENCIL_EVENT_START_NONE);
+    return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "formreference", allowedStencilTypes);
+  }
+  
+  public static List<JsonLookupResult> getBpmnProcessModelDecisionTableReferences(JsonNode editorJsonNode) {
+    List<String> allowedStencilTypes = new ArrayList<String>();
+    allowedStencilTypes.add(STENCIL_TASK_DECISION);
+    return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "decisiontaskdecisiontablereference", allowedStencilTypes);
   }
   
   // APP MODEL

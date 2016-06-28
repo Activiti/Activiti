@@ -83,8 +83,8 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
       itemsNode.add(parameterItemNode);
     }
 
-    parametersNode.put(valueName, itemsNode);
-    propertiesNode.put(propertyName, parametersNode);
+    parametersNode.set(valueName, itemsNode);
+    propertiesNode.set(propertyName, parametersNode);
   }
 
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {

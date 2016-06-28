@@ -78,11 +78,11 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getTargetRef()).getWidth() / 2.0);
     dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getTargetRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
-    flowNode.put("dockers", dockersArrayNode);
+    flowNode.set("dockers", dockersArrayNode);
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
     outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
-    flowNode.put("outgoing", outgoingArrayNode);
-    flowNode.put("target", BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
+    flowNode.set("outgoing", outgoingArrayNode);
+    flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
 
     ObjectNode propertiesNode = objectMapper.createObjectNode();
     propertiesNode.put(PROPERTY_OVERRIDE_ID, sequenceFlow.getId());
@@ -122,7 +122,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
       BpmnJsonConverterUtil.convertListenersToJson(sequenceFlow.getExecutionListeners(), true, propertiesNode);
     }
 
-    flowNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
+    flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     shapesArrayNode.add(flowNode);
   }
 

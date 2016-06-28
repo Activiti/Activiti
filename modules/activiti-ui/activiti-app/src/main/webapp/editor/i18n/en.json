@@ -34,7 +34,9 @@
             "CONFIRM": "Confirm",
             "CONFIRM-AND-CLOSE": "Confirm and close",
             "NEW-FORM": "New form",
-            "CREATE-FORM": "Create form"
+            "CREATE-FORM": "Create form",
+            "NEW-DECISION-TABLE": "New Decision Table",
+            "CREATE-DECISION-TABLE": "Create Decision Table"
         },
         "MESSAGE": {
           "SELECT-PEOPLE-HELP": "Use &uparrow; and &downarrow; to select and press Enter to confirm",
@@ -1785,5 +1787,14 @@
     "EVENT_TYPE.UNCAUGHT.BPMNERROR.TOOLTIP": "When a BPMN Error was thrown, but was not caught within in the process",
     "EVENT_TYPE.VARIABLE.CREATED.TOOLTIP": "A new variable has been created",
     "EVENT_TYPE.VARIABLE.DELETED.TOOLTIP": "An existing variable has been deleted",
-    "EVENT_TYPE.VARIABLE.UPDATED.TOOLTIP": "An existing variable has been updated"
+    "EVENT_TYPE.VARIABLE.UPDATED.TOOLTIP": "An existing variable has been updated",
+    
+    "PROPERTY.DECISIONTABLEREFERENCE.EMPTY" : "No reference selected",
+    "PROPERTY.DECISIONTABLEREFERENCE.TITLE" : "Decision table reference",
+    "PROPERTY.DECISIONTABLEREFERENCE.ERROR.FORM" : "There was an error loading the decision tables. Try again later",
+    "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.ROOT" : "Folders",
+    "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.LOADING" : "Loading folders...",
+    "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.EMPTY" : "This folder contains no subfolders",
+    "PROPERTY.DECISIONTABLEREFERENCE.DECISIONTABLE.LOADING" : "Loading decision tables...",
+    "PROPERTY.DECISIONTABLEREFERENCE.DECISIONTABLE.EMPTY" : "This folder contains no decision tables"
 }

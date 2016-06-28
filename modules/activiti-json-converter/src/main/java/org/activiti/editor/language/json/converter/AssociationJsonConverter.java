@@ -96,16 +96,16 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
       dockNode.put(EDITOR_BOUNDS_Y, targetGraphicInfo.getHeight() / 2.0);
     }
     dockersArrayNode.add(dockNode);
-    flowNode.put("dockers", dockersArrayNode);
+    flowNode.set("dockers", dockersArrayNode);
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
     outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
-    flowNode.put("outgoing", outgoingArrayNode);
-    flowNode.put("target", BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
+    flowNode.set("outgoing", outgoingArrayNode);
+    flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
 
     ObjectNode propertiesNode = objectMapper.createObjectNode();
     propertiesNode.put(PROPERTY_OVERRIDE_ID, association.getId());
 
-    flowNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
+    flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
 
     shapesArrayNode.add(flowNode);
   }

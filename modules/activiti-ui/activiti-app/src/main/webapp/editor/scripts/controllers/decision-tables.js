@@ -9,6 +9,7 @@
 angular.module('activitiModeler')
   .controller('DecisionTablesController', ['$rootScope', '$scope', '$translate', '$http', '$timeout','$location', '$modal', function ($rootScope, $scope, $translate, $http, $timeout, $location, $modal) {
 
+	  $rootScope.setMainPageById('decision-tables');
 	  $rootScope.decisionTableItems = undefined;
 
       // get latest thumbnails
@@ -112,6 +113,7 @@ angular.module('activitiModeler')
 		  $rootScope.currentKickstartModel = undefined;
 	      $rootScope.currentDecisionTableModel = undefined;
 		  $scope.createDecisionTableCallback = function(result) {
+		      $rootScope.editorHistory = [];
 		      $location.url("/decision-table-editor/" + encodeURIComponent(result.id));
 		  };
 
@@ -123,6 +125,7 @@ angular.module('activitiModeler')
 
 	  $scope.showDecisionTableDetails = function(decisionTable) {
 	      if (decisionTable) {
+	      	  $rootScope.editorHistory = [];
 			  $rootScope.currentKickstartModel = undefined;
 	          $location.url("/decision-tables/" + encodeURIComponent(decisionTable.id));
 	      }
@@ -130,6 +133,7 @@ angular.module('activitiModeler')
 
 	  $scope.editDecisionTableDetails = function(decisionTable) {
 		  if (decisionTable) {
+		  	  $rootScope.editorHistory = [];
 			  $location.url("/decision-table-editor/" + encodeURIComponent(decisionTable.id));
 		  }
 	  };
