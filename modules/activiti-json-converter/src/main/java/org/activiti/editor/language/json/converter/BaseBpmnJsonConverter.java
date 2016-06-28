@@ -123,7 +123,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
 
         convertElementToJson(propertiesNode, baseElement);
 
-        flowElementNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
+        flowElementNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
         ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
 
         if (baseElement instanceof FlowNode) {
@@ -213,7 +213,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             }
         }
 
-        flowElementNode.put("outgoing", outgoingArrayNode);
+        flowElementNode.set("outgoing", outgoingArrayNode);
     }
     
     protected void processDataStoreReferences(FlowElementsContainer container, String dataStoreReferenceId, ArrayNode outgoingArrayNode) {
@@ -269,16 +269,16 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(targetRef).getWidth() / 2.0);
         dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(targetRef).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
-        flowNode.put("dockers", dockersArrayNode);
+        flowNode.set("dockers", dockersArrayNode);
         ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(targetRef));
-        flowNode.put("outgoing", outgoingArrayNode);
-        flowNode.put("target", BpmnJsonConverterUtil.createResourceNode(targetRef));
+        flowNode.set("outgoing", outgoingArrayNode);
+        flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(targetRef));
         
         ObjectNode propertiesNode = objectMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, dataAssociation.getId());
         
-        flowNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
+        flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
         shapesArrayNode.add(flowNode);
     }
 
@@ -423,7 +423,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                     valueNode.put(PROPERTY_FORM_ENUM_VALUES_ID, formValue.getId());
                     valuesNode.add(valueNode);
                 }
-                propertyItemNode.put(PROPERTY_FORM_ENUM_VALUES, valuesNode);
+                propertyItemNode.set(PROPERTY_FORM_ENUM_VALUES, valuesNode);
             }
             propertyItemNode.put(PROPERTY_FORM_REQUIRED, property.isRequired());
             propertyItemNode.put(PROPERTY_FORM_READABLE, property.isReadable());
@@ -432,8 +432,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             propertiesArrayNode.add(propertyItemNode);
         }
 
-        formPropertiesNode.put("formProperties", propertiesArrayNode);
-        propertiesNode.put(PROPERTY_FORM_PROPERTIES, formPropertiesNode);
+        formPropertiesNode.set("formProperties", propertiesArrayNode);
+        propertiesNode.set(PROPERTY_FORM_PROPERTIES, formPropertiesNode);
     }
 
     protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
@@ -451,8 +451,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             itemsNode.add(propertyItemNode);
         }
 
-        fieldExtensionsNode.put("fields", itemsNode);
-        propertiesNode.put(PROPERTY_SERVICETASK_FIELDS, fieldExtensionsNode);
+        fieldExtensionsNode.set("fields", itemsNode);
+        propertiesNode.set(PROPERTY_SERVICETASK_FIELDS, fieldExtensionsNode);
     }
 
     protected void addEventProperties(Event event, ObjectNode propertiesNode) {

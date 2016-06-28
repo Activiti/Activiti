@@ -12,23 +12,14 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import java.util.Map;
 
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.FlowElementsContainer;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 /**
- * @author Tijs Rademakers
+ * @author Yvo Swillens
  */
-public interface ActivityProcessor {
+public interface DecisionTableAwareConverter {
 
-  public void processFlowElements(FlowElementsContainer container, BpmnModel model, ArrayNode shapesArrayNode, 
-      double subProcessX, double subProcessY);
-
-  public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement, 
-      Map<String, JsonNode> shapeMap, Map<Long, JsonNode> decisionTableMap, BpmnModel bpmnModel);
+    public void setDecisionTableMap(Map<Long, JsonNode> decisionTableMap);
 }

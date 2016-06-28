@@ -47,6 +47,7 @@ public interface StencilConstants {
   final String STENCIL_TASK_CAMEL = "CamelTask";
   final String STENCIL_TASK_MULE = "MuleTask";
   final String STENCIL_TASK_SHELL = "ShellTask";
+  final String STENCIL_TASK_DECISION = "DecisionTask";
 
   final String STENCIL_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
   final String STENCIL_GATEWAY_PARALLEL = "ParallelGateway";
@@ -236,4 +237,9 @@ public interface StencilConstants {
   
   final String PROPERTY_TERMINATE_ALL = "terminateall";
   final String PROPERTY_TERMINATE_MULTI_INSTANCE = "terminateMultiInstance";
+  
+  final String PROPERTY_DECISIONTABLE_REFERENCE = "decisiontaskdecisiontablereference";
+  final String PROPERTY_DECISIONTABLE_REFERENCE_ID = "decisiontablereferenceid";
+  final String PROPERTY_DECISIONTABLE_REFERENCE_NAME = "decisiontablereferencename";
+  final String PROPERTY_DECISIONTABLE_REFERENCE_KEY = "decisionTableReferenceKey";
 }

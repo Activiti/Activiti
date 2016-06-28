@@ -138,6 +138,7 @@ angular.module('activitiModeler')
                 modalInstance.$scope.originalModel = $scope.model;
 
                 modalInstance.$scope.duplicateDecisionTableCallback = function(result) {
+                    $rootScope.editorHistory = [];
                     $location.url("/decision-table-editor/" + encodeURIComponent(result.id));
                 };
             };

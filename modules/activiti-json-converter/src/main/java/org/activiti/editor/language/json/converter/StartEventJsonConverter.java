@@ -84,7 +84,7 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
           ObjectNode formRefNode = objectMapper.createObjectNode();
           formRefNode.put("id", Long.valueOf(formIdExtensions.get(0).getElementText()));
           formRefNode.put("name", formNameExtensions.get(0).getElementText());
-          propertiesNode.put(PROPERTY_FORM_REFERENCE, formRefNode);
+          propertiesNode.set(PROPERTY_FORM_REFERENCE, formRefNode);
           
       } else if (startEvent.getFormKey().startsWith("FORM_REFERENCE")) {
           String formReference = startEvent.getFormKey().replace("FORM_REFERENCE", "");
@@ -95,7 +95,7 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
               ObjectNode formRefNode = objectMapper.createObjectNode();
               formRefNode.put("id", Long.valueOf(formIdString));
               formRefNode.put("name", formNameString);
-              propertiesNode.put(PROPERTY_FORM_REFERENCE, formRefNode);
+              propertiesNode.set(PROPERTY_FORM_REFERENCE, formRefNode);
           }
 
       } else {

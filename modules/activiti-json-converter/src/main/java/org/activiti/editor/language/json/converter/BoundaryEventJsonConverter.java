@@ -88,7 +88,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX() - parentGraphicInfo.getX());
     dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY() - parentGraphicInfo.getY());
     dockersArrayNode.add(dockNode);
-    flowElementNode.put("dockers", dockersArrayNode);
+    flowElementNode.set("dockers", dockersArrayNode);
 
     propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, boundaryEvent.isCancelActivity());
 

@@ -74,11 +74,11 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
     dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getTargetRef()).getWidth() / 2.0);
     dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getTargetRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
-    flowNode.put("dockers", dockersArrayNode);
+    flowNode.set("dockers", dockersArrayNode);
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
     outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(messageFlow.getTargetRef()));
-    flowNode.put("outgoing", outgoingArrayNode);
-    flowNode.put("target", BpmnJsonConverterUtil.createResourceNode(messageFlow.getTargetRef()));
+    flowNode.set("outgoing", outgoingArrayNode);
+    flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(messageFlow.getTargetRef()));
 
     ObjectNode propertiesNode = objectMapper.createObjectNode();
     propertiesNode.put(PROPERTY_OVERRIDE_ID, messageFlow.getId());
@@ -86,7 +86,7 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
       propertiesNode.put(PROPERTY_NAME, messageFlow.getName());
     }
 
-    flowNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
+    flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     shapesArrayNode.add(flowNode);
   }
 

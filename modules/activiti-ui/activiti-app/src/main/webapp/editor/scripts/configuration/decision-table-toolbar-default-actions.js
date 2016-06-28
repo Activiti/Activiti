@@ -32,8 +32,12 @@ var DECISION_TABLE_TOOLBAR = {
             var callback = function() {
                 services.$rootScope.decisiontableChanges = false;
                 
-                var navigationObject = services.$rootScope.editorHistory.pop();
-        		services.$location.path('/editor/' + navigationObject.id);
+                if (services.$rootScope.editorHistory.length > 0) {
+                	var navigationObject = services.$rootScope.editorHistory.pop();
+        			services.$location.path('/editor/' + navigationObject.id);
+        		} else {
+        			services.$location.path('/decision-tables');
+        		}
             };
 
             if (services.$rootScope.decisiontableChanges == true) {

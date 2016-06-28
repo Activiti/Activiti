@@ -29,9 +29,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
+public class SubProcessJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
   
-  protected Map<Long, JsonNode> subProcessMap;
+  protected Map<Long, JsonNode> decisionTableMap;
   
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
           Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -62,7 +62,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
     GraphicInfo graphicInfo = model.getGraphicInfo(subProcess.getId());
     processor.processFlowElements(subProcess, model, subProcessShapesArrayNode,
             graphicInfo.getX(), graphicInfo.getY());
-    flowElementNode.put("childShapes", subProcessShapesArrayNode);
+    flowElementNode.set("childShapes", subProcessShapesArrayNode);
     
     if (subProcess instanceof Transaction) {
       propertiesNode.put("istransaction", true);
@@ -81,7 +81,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
     }
     
     JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
-    processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, model);
+    processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, decisionTableMap, model);
     
     JsonNode processDataPropertiesNode = elementNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_DATA_PROPERTIES);
     if (processDataPropertiesNode != null) {
@@ -91,6 +91,11 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
     }
     
     return subProcess;
+  }
+  
+  @Override
+  public void setDecisionTableMap(Map<Long, JsonNode> decisionTableMap) {
+    this.decisionTableMap = decisionTableMap;
   }
 
 }

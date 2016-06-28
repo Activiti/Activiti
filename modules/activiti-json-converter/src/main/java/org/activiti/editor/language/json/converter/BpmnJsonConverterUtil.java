@@ -63,20 +63,20 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
 
   public static ObjectNode createChildShape(String id, String type, double lowerRightX, double lowerRightY, double upperLeftX, double upperLeftY) {
     ObjectNode shapeNode = objectMapper.createObjectNode();
-    shapeNode.put(EDITOR_BOUNDS, createBoundsNode(lowerRightX, lowerRightY, upperLeftX, upperLeftY));
+    shapeNode.set(EDITOR_BOUNDS, createBoundsNode(lowerRightX, lowerRightY, upperLeftX, upperLeftY));
     shapeNode.put(EDITOR_SHAPE_ID, id);
     ArrayNode shapesArrayNode = objectMapper.createArrayNode();
-    shapeNode.put(EDITOR_CHILD_SHAPES, shapesArrayNode);
+    shapeNode.set(EDITOR_CHILD_SHAPES, shapesArrayNode);
     ObjectNode stencilNode = objectMapper.createObjectNode();
     stencilNode.put(EDITOR_STENCIL_ID, type);
-    shapeNode.put(EDITOR_STENCIL, stencilNode);
+    shapeNode.set(EDITOR_STENCIL, stencilNode);
     return shapeNode;
   }
   
   public static ObjectNode createBoundsNode(double lowerRightX, double lowerRightY, double upperLeftX, double upperLeftY) {
     ObjectNode boundsNode = objectMapper.createObjectNode();
-    boundsNode.put(EDITOR_BOUNDS_LOWER_RIGHT, createPositionNode(lowerRightX, lowerRightY));
-    boundsNode.put(EDITOR_BOUNDS_UPPER_LEFT, createPositionNode(upperLeftX, upperLeftY));
+    boundsNode.set(EDITOR_BOUNDS_LOWER_RIGHT, createPositionNode(lowerRightX, lowerRightY));
+    boundsNode.set(EDITOR_BOUNDS_UPPER_LEFT, createPositionNode(upperLeftX, upperLeftY));
     return boundsNode;
   }
   
@@ -127,7 +127,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         messagesNode.add(propertyItemNode);
       }
 
-      propertiesNode.put(propertyName, messagesNode);
+      propertiesNode.set(propertyName, messagesNode);
     }
   
   public static void convertListenersToJson(List<ActivitiListener> listeners, boolean isExecutionListener, ObjectNode propertiesNode) {
@@ -170,14 +170,14 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                   }
                   fieldsArray.add(fieldNode);
               }
-              propertyItemNode.put(PROPERTY_LISTENER_FIELDS, fieldsArray);
+              propertyItemNode.set(PROPERTY_LISTENER_FIELDS, fieldsArray);
           }
 
           itemsNode.add(propertyItemNode);
       }
 
-      listenersNode.put(valueName, itemsNode);
-      propertiesNode.put(propertyName, listenersNode);
+      listenersNode.set(valueName, itemsNode);
+      propertiesNode.set(propertyName, listenersNode);
   }
   
   public static void convertEventListenersToJson(List<EventListener> listeners, ObjectNode propertiesNode) {
@@ -197,7 +197,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                   }
               }
               propertyItemNode.put(PROPERTY_EVENTLISTENER_EVENT, listener.getEvents());
-              propertyItemNode.put(PROPERTY_EVENTLISTENER_EVENTS, eventArrayNode);
+              propertyItemNode.set(PROPERTY_EVENTLISTENER_EVENTS, eventArrayNode);
           }
 
           String implementationText = null;
@@ -245,8 +245,8 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
           itemsNode.add(propertyItemNode);
       }
 
-      listenersNode.put(PROPERTY_EVENTLISTENER_VALUE, itemsNode);
-      propertiesNode.put(PROPERTY_EVENT_LISTENERS, listenersNode);
+      listenersNode.set(PROPERTY_EVENTLISTENER_VALUE, itemsNode);
+      propertiesNode.set(PROPERTY_EVENT_LISTENERS, listenersNode);
   }
   
   public static void convertSignalDefinitionsToJson(BpmnModel bpmnModel, ObjectNode propertiesNode) {
@@ -258,7 +258,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         signalNode.put(PROPERTY_SIGNAL_DEFINITION_NAME, signal.getName());
         signalNode.put(PROPERTY_SIGNAL_DEFINITION_SCOPE, signal.getScope());
       }
-      propertiesNode.put(PROPERTY_SIGNAL_DEFINITIONS, signalDefinitions);
+      propertiesNode.set(PROPERTY_SIGNAL_DEFINITIONS, signalDefinitions);
     }
   }
   
@@ -270,7 +270,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         messageNode.put(PROPERTY_MESSAGE_DEFINITION_ID, message.getId());
         messageNode.put(PROPERTY_MESSAGE_DEFINITION_NAME, message.getName());
       }
-      propertiesNode.put(PROPERTY_MESSAGE_DEFINITIONS, messageDefinitions);
+      propertiesNode.set(PROPERTY_MESSAGE_DEFINITIONS, messageDefinitions);
     }
   }
   
@@ -593,8 +593,8 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
       itemsNode.add(propertyItemNode);
     }
 
-    dataPropertiesNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
-    propertiesNode.put("dataproperties", dataPropertiesNode);
+    dataPropertiesNode.set(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+    propertiesNode.set("dataproperties", dataPropertiesNode);
   }
   
   public static JsonNode validateIfNodeIsTextual(JsonNode node) {
