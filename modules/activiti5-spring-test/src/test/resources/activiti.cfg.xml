@@ -18,8 +18,6 @@
         <property name="activiti5CompatibilityHandlerFactory" ref="activiti5CompabilityFactory" />
 
         <!-- job executor configurations -->
-        <property name="jobExecutorActivate" value="false"/>
-        <property name="asyncExecutorEnabled" value="true" />
         <property name="asyncExecutorActivate" value="false" />
 
         <!-- mail server configurations -->

@@ -1,5 +1,8 @@
 package org.activiti.engine.test.bpmn.event.timer.compatibility;
 
+import java.util.Calendar;
+import java.util.List;
+
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,9 +24,6 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
-
-import java.util.Calendar;
-import java.util.List;
 
 public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibilityTest {
 
@@ -64,9 +64,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 
     // AFTER DEPLOYMENT
-    // when the process is deployed there will be created a timerStartEvent
-    // job which will wait to be executed.
-    List<Job> jobs = managementService.createJobQuery().list();
+    // when the process is deployed there will be created a timerStartEvent job which will wait to be executed.
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
 
     // dueDate should be after 24 hours from the process deployment
@@ -86,15 +85,12 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
 
     // ADVANCE THE CLOCK
     // advance the clock after 9 days from starting the process ->
-    // the system will execute the pending job and will create a new one
-    // (day by day)
+    // the system will execute the pending job and will create a new one (day by day)
     moveByMinutes(9 * 60 * 24);
-    try {
-      waitForJobExecutorToProcessAllJobs(10000, 500);
-      fail("there must be a pending job because the endDate is not reached yet");
-    } catch (Exception e) {
-      // expected failure
-    }
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(20000, 200);
+    // there must be a pending job because the endDate is not reached yet
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobs.size());
 
     // After time advanced 9 days there should be 9 process instance started
     processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -104,9 +100,8 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     tasks = taskService.createTaskQuery().list();
     assertEquals(9, tasks.size());
 
-    // one new job will be created (and the old one will be deleted after
-    // execution)
-    jobs = managementService.createJobQuery().list();
+    // one new job will be created (and the old one will be deleted after execution)
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
 
     // check if the last job to be executed has the dueDate set correctly
@@ -115,16 +110,15 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     dueDateCalendar.set(2025, Calendar.DECEMBER, 20, 0, 0, 0);
     assertEquals(true, Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000);
 
-    // ADVANCE THE CLOCK SO that all 10 repeats to be executed
-    // (last execution)
+    // ADVANCE THE CLOCK SO that all 10 repeats to be executed (last execution)
     moveByMinutes(60 * 24);
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception e) {
       fail("Because the maximum number of repeats is reached it will not be executed other jobs");
     }
-    // After the 10nth startEvent Execution should have 10 process instances
-    // started
+    
+    // After the 10nth startEvent Execution should have 10 process instances started
     // (since the first one was not completed)
     processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(10, processInstances.size());
@@ -165,12 +159,11 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
       }
     }
     assertEquals(10, timerFiredCount); // 10 timers fired
-    assertEquals(10, eventCreatedCount); // 10 jobs created
-    assertEquals(10, eventDeletedCount); // 10 jobs deleted
+    assertEquals(20, eventCreatedCount); // 20 job entities created, 2 per job (timer and executable job)
+    assertEquals(20, eventDeletedCount); // 20 jobs entities deleted, 2 per job (timer and executable job)
 
     // for each processInstance
-    // let's complete the userTasks where the process is hanging in order to
-    // complete the processes.
+    // let's complete the userTasks where the process is hanging in order to complete the processes.
     for (ProcessInstance processInstance : processInstances) {
       tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
       Task task = tasks.get(0);
@@ -185,6 +178,9 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
 
     // no jobs
     jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(0, jobs.size());
 
     // no tasks

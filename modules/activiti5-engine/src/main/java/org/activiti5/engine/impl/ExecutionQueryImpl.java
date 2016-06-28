@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
 import org.activiti5.engine.runtime.Execution;
 import org.activiti5.engine.runtime.ExecutionQuery;
@@ -327,7 +327,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       String activityId = null;
       if (execution.getId().equals(execution.getProcessInstanceId())) {
         if (execution.getProcessDefinitionId() != null) {
-          ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration()
+          ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
               .getDeploymentManager()
               .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
           activityId = processDefinition.getKey();

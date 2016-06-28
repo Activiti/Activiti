@@ -1,0 +1,58 @@
+<div class="subheader editor-toolbar" id="editor-header">
+    <div class="fixed-container">
+        <div class="btn-group">
+            <div class="btn-toolbar pull-left" ng-controller="DecisionTableToolbarController" ng-cloak>
+                <button id="{{item.id}}"
+                        title="{{item.title | translate}}"
+                        ng-repeat="item in items"
+                        ng-switch on="item.type"
+                        class="btn btn-inverse" ng-class="{'separator': item.type == 'separator'}"
+                        ng-disabled="item.type == 'separator' || item.enabled == false || (readOnly && item.disableOnReadonly)"
+                        ng-click="toolbarButtonClicked($index)">
+                    <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}"></i>
+                    <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                </button>
+              </div>
+            </div>
+            <div class="btn-group pull-right" ng-show="!secondaryItems.length">
+                <div class="btn-toolbar pull-right" ng-controller="DecisionTableToolbarController">
+                <button title="{{item.title | translate}}" ng-repeat="item in secondaryItems" ng-switch on="item.type" class="btn btn-inverse" ng-class="{'separator': item.type == 'separator'}"
+                    ng-disabled="item.type == 'separator' || (readOnly && item.disableOnReadonly)" ng-click="toolbarSecondaryButtonClicked($index)" id="{{item.id}}">
+                    <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}"></i>
+                    <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid content decision-table" auto-height offset="40">
+
+    <br/>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label>{{'DECISION-TABLE.HIT-POLICY' | translate}}</label>
+                <select ng-options="policy.id as (policy.label | translate) for policy in hitPolicies" ng-model="currentDecisionTable.hitIndicator" class="form-control form-control-inline">
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-6 text-right">
+            <button type="button" class="btn btn-default" ng-click="addInputExpression()" ng-disabled="readOnly" translate="DECISION-TABLE-EDITOR.BUTTON-ADD-INPUT-LABEL"></button>
+            <button type="button" class="btn btn-success" ng-click="addOutputExpression()" ng-disabled="readOnly" translate="DECISION-TABLE-EDITOR.BUTTON-ADD-OUTPUT-LABEL"></button>
+        </div>
+    </div>
+
+    <div class="decision-table-grid-wrapper">
+        <div id="decisionTableGrid" class="decision-table-grid" ui-grid="gridOptions" ui-grid-selection ui-grid-edit ui-grid-cellnav ui-grid-auto-resize></div>
+    </div>
+
+    <div class="center">
+        <div ng-if="currentDecisionTable.inputExpressions.length > 0 || currentDecisionTable.outputExpressions.length > 0">
+            <button class="btn btn-default" ng-click="removeRule()" ng-disabled="!model.selectedRule || readOnly" translate="DECISION-TABLE-EDITOR.BUTTON-REMOVE-RULE-LABEL"></button>
+            <button class="btn btn-default" ng-click="moveRuleUpwards()" ng-disabled="!enableMoveUpwards(model.selectedRule) || readOnly" translate="DECISION-TABLE-EDITOR.BUTTON-MOVE-RULE-UPWARDS-LABEL"></button>
+            <button class="btn btn-default" ng-click="moveRuleDownwards()" ng-disabled="!enableMoveDownwards(model.selectedRule) || readOnly" translate="DECISION-TABLE-EDITOR.BUTTON-MOVE-RULE-DOWNWARDS-LABEL"></button>
+            <button class="btn btn-default" ng-click="addRule()" ng-disabled="readOnly" translate="DECISION-TABLE-EDITOR.BUTTON-ADD-RULE-LABEL"></button>
+        </div>
+    </div>
+</div>

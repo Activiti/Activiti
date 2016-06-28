@@ -78,9 +78,14 @@
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="${blobType}"/>  
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- BYTE ARRAY SELECT -->
+  
+  <select id="selectByteArrays" resultMap="byteArrayResultMap">
+    select * from ${prefix}ACT_GE_BYTEARRAY 
+  </select>
   
   <select id="selectByteArray" parameterType="string" resultMap="byteArrayResultMap">
    select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id, jdbcType=VARCHAR}

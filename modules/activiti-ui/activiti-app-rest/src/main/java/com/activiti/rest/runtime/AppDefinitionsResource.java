@@ -1,19 +1,14 @@
-/**
- * Activiti app component part of the Activiti project
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.activiti.rest.runtime;
 
@@ -39,7 +34,6 @@ import com.activiti.service.exception.NotFoundException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
 import com.activiti.service.runtime.RuntimeAppDefinitionInternalService;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -60,13 +54,11 @@ public class AppDefinitionsResource extends AbstractAppDefinitionsResource {
     protected PermissionService permissionService;
     
 	@RequestMapping(value = "/rest/runtime/app-definitions", method = RequestMethod.GET)
-    @Timed
     public ResultListDataRepresentation getAppDefinitions() {
 	    return super.getAppDefinitions();
     }
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions/model/{modelId}", method = RequestMethod.GET)
-    @Timed
     public AppDefinitionRepresentation getAppDefinitionForModel(@PathVariable("modelId") Long modelId) {
         AppDefinitionRepresentation result = null;
         RuntimeAppDefinition appDefinition = runtimeAppDefinitionService.getDefinitionForModelAndUser(modelId, SecurityUtils.getCurrentUserObject());
@@ -78,14 +70,12 @@ public class AppDefinitionsResource extends AbstractAppDefinitionsResource {
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-    @Timed
     public void deployAppDefinitions(@RequestBody RuntimeAppDefinitionSaveRepresentation saveObject) {
 	    super.deployAppDefinitions(saveObject);
 	}
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions/{appDefinitionId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-    @Timed
 	public void deleteAppDefinition(@PathVariable("appDefinitionId") Long appDefinitionId) {
 	    RuntimeAppDefinition appDefinition = runtimeAppDefinitionService.getRuntimeAppDefinition(appDefinitionId);
 	    
@@ -105,7 +95,6 @@ public class AppDefinitionsResource extends AbstractAppDefinitionsResource {
 	}
 	
 	@RequestMapping(value = "/rest/runtime/app-definitions/{appDefinitionId}", method = RequestMethod.GET)
-    @Timed
     public AppDefinitionRepresentation getAppDefinition(@PathVariable("appDefinitionId") Long appDefinitionId) {
         RuntimeAppDefinition runtimeAppDefinition = runtimeAppDefinitionService.getRuntimeAppDefinition(appDefinitionId);
         

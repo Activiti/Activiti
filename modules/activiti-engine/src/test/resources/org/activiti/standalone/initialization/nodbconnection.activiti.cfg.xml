@@ -10,7 +10,7 @@
     <property name="jdbcUrl" value="jdbc:h2:tcp://non-existing-host/non-existing-db;DB_CLOSE_DELAY=1000" />
     
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorActivate" value="false" />
     
   </bean>
 

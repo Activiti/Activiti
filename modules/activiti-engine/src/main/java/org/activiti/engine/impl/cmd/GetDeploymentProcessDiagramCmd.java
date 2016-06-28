@@ -19,7 +19,7 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
   }
 
   public InputStream execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
     String deploymentId = processDefinition.getDeploymentId();
     String resourceName = processDefinition.getDiagramResourceName();
     if (resourceName == null) {

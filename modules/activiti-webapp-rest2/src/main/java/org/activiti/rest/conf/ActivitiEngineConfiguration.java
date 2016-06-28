@@ -1,6 +1,5 @@
 package org.activiti.rest.conf;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +27,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 public class ActivitiEngineConfiguration {
@@ -41,23 +41,45 @@ public class ActivitiEngineConfiguration {
 
   @Bean
   public DataSource dataSource() {
-    SimpleDriverDataSource ds = new SimpleDriverDataSource();
-
-    try {
-      @SuppressWarnings("unchecked")
-      Class<? extends Driver> driverClass = (Class<? extends Driver>) Class.forName(environment.getProperty("jdbc.driver", "org.h2.Driver"));
-      ds.setDriverClass(driverClass);
-
-    } catch (Exception e) {
-      log.error("Error loading driver class", e);
+    
+    String jdbcUrl = environment.getProperty("jdbc.url", "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000");
+    String jdbcDriver = environment.getProperty("jdbc.driver", "org.h2.Driver");
+    String jdbcUsername = environment.getProperty("jdbc.username", "sa");
+    String jdbcPassword = environment.getProperty("jdbc.password", "");
+    
+    HikariDataSource dataSource = new HikariDataSource();
+    dataSource.setJdbcUrl(jdbcUrl);
+    dataSource.setDriverClassName(jdbcDriver);
+    dataSource.setUsername(jdbcUsername);
+    dataSource.setPassword(jdbcPassword);
+    
+    // Connection pool settings (see https://github.com/brettwooldridge/HikariCP)
+    Long connectionTimeout = environment.getProperty("datasource.connection.timeout", Long.class);
+    if (connectionTimeout != null) {
+      dataSource.setConnectionTimeout(connectionTimeout);
     }
-
-    // Connection settings
-    ds.setUrl(environment.getProperty("jdbc.url", "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"));
-    ds.setUsername(environment.getProperty("jdbc.username", "sa"));
-    ds.setPassword(environment.getProperty("jdbc.password", ""));
-
-    return ds;
+    
+    Long idleTimeout = environment.getProperty("datasource.connection.idletimeout", Long.class);
+    if (idleTimeout != null) {
+      dataSource.setIdleTimeout(idleTimeout);
+    }
+    
+    Long maxLifetime = environment.getProperty("datasource.connection.maxlifetime", Long.class);
+    if (maxLifetime != null) {
+      dataSource.setMaxLifetime(maxLifetime);
+    }
+    
+    Integer minIdle = environment.getProperty("datasource.connection.minidle", Integer.class);
+    if (minIdle != null) {
+      dataSource.setMinimumIdle(minIdle);
+    }
+    
+    Integer maxPoolSize = environment.getProperty("datasource.connection.maxpoolsize", Integer.class);
+    if (maxPoolSize != null) {
+      dataSource.setMaximumPoolSize(maxPoolSize);
+    }
+    
+    return dataSource;
   }
   
   @Bean(name = "transactionManager")
@@ -93,8 +115,6 @@ public class ActivitiEngineConfiguration {
     processEngineConfiguration.setDataSource(dataSource());
     processEngineConfiguration.setDatabaseSchemaUpdate(environment.getProperty("engine.schema.update", "true"));
     processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
-    processEngineConfiguration.setJobExecutorActivate(Boolean.valueOf(environment.getProperty("engine.activate.jobexecutor", "false")));
-    processEngineConfiguration.setAsyncExecutorEnabled(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.enabled", "true")));
     processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.activate", "true")));
     processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
 

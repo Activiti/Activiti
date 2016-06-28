@@ -299,7 +299,6 @@ public class EmailServiceTaskTest extends EmailTestCase {
   public static void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message, String from, List<String> to, List<String> cc) throws IOException {
     try {
       MimeMessage mimeMessage = emailMessage.getMimeMessage();
-      System.out.println(mimeMessage.getContentType());
       if (htmlMail) {
         assertTrue(mimeMessage.getContentType().contains("multipart/mixed"));
       } else {

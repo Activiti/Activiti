@@ -121,7 +121,7 @@
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
     <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />

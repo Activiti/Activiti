@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.impl.pvm.runtime;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.ActivitiActivityExecutionException;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.pvm.PvmException;

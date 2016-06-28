@@ -24,8 +24,7 @@ public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> impleme
 
   private String getValueToSet(ByteArrayRef parameter) {
     if (parameter == null) {
-      // Note that this should not happen: ByteArrayRefs should always be
-      // initialized.
+      // Note that this should not happen: ByteArrayRefs should always be initialized.
       return null;
     }
     return parameter.getId();

@@ -16,8 +16,10 @@ package org.activiti5.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.DeploymentQueryImpl;
 import org.activiti5.engine.impl.Page;
@@ -30,8 +32,6 @@ import org.activiti5.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti5.engine.impl.persistence.AbstractManager;
 import org.activiti5.engine.repository.Deployment;
 import org.activiti5.engine.repository.Model;
-import org.activiti5.engine.repository.ProcessDefinition;
-import org.activiti5.engine.runtime.Job;
 
 
 /**
@@ -101,8 +101,8 @@ public class DeploymentEntityManager extends AbstractManager {
       
       // remove timer start events for current process definition:
     	
-    	List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager()
-    			.findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
+    	List<Job> timerStartJobs = Context.getCommandContext().getTimerJobEntityManager()
+    			.findTimerJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
     	if (timerStartJobs != null && timerStartJobs.size() > 0) {
     		for (Job timerStartJob : timerStartJobs) {
 					if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -111,7 +111,7 @@ public class DeploymentEntityManager extends AbstractManager {
 						       .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
 					}
 
-					((JobEntity) timerStartJob).delete();
+					((TimerJobEntity) timerStartJob).delete();
     		}
     	}
     	
@@ -126,15 +126,15 @@ public class DeploymentEntityManager extends AbstractManager {
         if (previousProcessDefinition != null) {
           
           // Need to resolve process definition to make sure it's parsed
-          ProcessDefinitionEntity resolvedProcessDefinition = Context.getProcessEngineConfiguration()
-              .getDeploymentManager().resolveProcessDefinition((ProcessDefinitionEntity) previousProcessDefinition);
+          ProcessDefinitionEntity resolvedProcessDefinition = (ProcessDefinitionEntity) Context.getProcessEngineConfiguration()
+              .getDeploymentManager().resolveProcessDefinition((ProcessDefinitionEntity) previousProcessDefinition).getProcessDefinition();
           
           // Timer start
           List<TimerDeclarationImpl> timerDeclarations = 
               (List<TimerDeclarationImpl>) resolvedProcessDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
           if (timerDeclarations != null) {
             for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-              TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+              TimerJobEntity timer = timerDeclaration.prepareTimerEntity(null);
               timer.setProcessDefinitionId(previousProcessDefinition.getId());
               
               if (previousProcessDefinition.getTenantId() != null) {

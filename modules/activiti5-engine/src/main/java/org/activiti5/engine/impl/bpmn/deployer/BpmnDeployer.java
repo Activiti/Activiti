@@ -31,11 +31,14 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.DynamicBpmnService;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParser;
@@ -65,9 +68,8 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti5.engine.impl.persistence.entity.TimerEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti5.engine.impl.util.IoUtil;
-import org.activiti5.engine.runtime.Job;
 import org.activiti5.engine.task.IdentityLinkType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -147,7 +149,7 @@ public class BpmnDeployer implements Deployer {
           // Only generate the resource when deployment is new to prevent modification of deployment resources 
           // after the process-definition is actually deployed. Also to prevent resource-generation failure every
           // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
-          if(deployment.isNew()) {
+          if (deployment.isNew()) {
             if (processEngineConfiguration.isCreateDiagramOnDeploy() &&
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               
@@ -166,6 +168,7 @@ public class BpmnDeployer implements Deployer {
           }
           
           processDefinition.setDiagramResourceName(diagramResourceName);
+          processDefinition.setEngineVersion(Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG);
           processDefinitions.add(processDefinition);
           bpmnModelMap.put(processDefinition.getKey(), bpmnParse.getBpmnModel());
         }
@@ -185,7 +188,7 @@ public class BpmnDeployer implements Deployer {
     ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
     DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-      List<TimerEntity> timers = new ArrayList<TimerEntity>();
+      List<TimerJobEntity> timers = new ArrayList<TimerJobEntity>();
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
@@ -217,6 +220,8 @@ public class BpmnDeployer implements Deployer {
           processDefinitionId = nextId; 
         }
         processDefinition.setId(processDefinitionId);
+        
+        addProcessDefinitionToCache(processDefinition, bpmnModelMap, processEngineConfiguration, commandContext);
         
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
@@ -258,18 +263,27 @@ public class BpmnDeployer implements Deployer {
         	processDefinition.setVersion(persistedProcessDefinition.getVersion());
         	processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
         }
+        
+        addProcessDefinitionToCache(processDefinition, bpmnModelMap, processEngineConfiguration, commandContext);
       }
-
-      // Add to cache
-      DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
-      deploymentManager.getProcessDefinitionCache().add(processDefinition.getId(), processDefinition);
-      addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
       
       createLocalizationValues(processDefinition.getId(), bpmnModelMap.get(processDefinition.getKey()).getProcessById(processDefinition.getKey()));
     }
+  }
+  
+  protected void addProcessDefinitionToCache(ProcessDefinitionEntity processDefinition, Map<String, BpmnModel> bpmnModelMap,
+      ProcessEngineConfigurationImpl processEngineConfiguration, CommandContext commandContext) {
+    
+    // Add to cache
+    DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+    BpmnModel bpmnModel = bpmnModelMap.get(processDefinition.getKey());
+    ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, 
+        bpmnModel.getProcessById(processDefinition.getKey()));
+    deploymentManager.getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
+    addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
   }
   
   protected void addDefinitionInfoToCache(ProcessDefinitionEntity processDefinition, 
@@ -312,8 +326,8 @@ public class BpmnDeployer implements Deployer {
     deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
   }
 
-  private void scheduleTimers(List<TimerEntity> timers) {
-    for (TimerEntity timer : timers) {
+  private void scheduleTimers(List<TimerJobEntity> timers) {
+    for (TimerJobEntity timer : timers) {
       Context
         .getCommandContext()
         .getJobEntityManager()
@@ -322,11 +336,11 @@ public class BpmnDeployer implements Deployer {
   }
 
   @SuppressWarnings("unchecked")
-  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, List<TimerEntity> timers) {
+  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, List<TimerJobEntity> timers) {
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-        TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+        TimerJobEntity timer = timerDeclaration.prepareTimerEntity(null);
         if (timer!=null) {
           timer.setProcessDefinitionId(processDefinition.getId());
 	        
@@ -345,11 +359,11 @@ public class BpmnDeployer implements Deployer {
   	List<Job> jobsToDelete = null;
   	
   	if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-  		jobsToDelete = Context.getCommandContext().getJobEntityManager().findJobsByTypeAndProcessDefinitionKeyAndTenantId(
+  		jobsToDelete = Context.getCommandContext().getTimerJobEntityManager().findTimerJobsByTypeAndProcessDefinitionKeyAndTenantId(
   				TimerStartEventJobHandler.TYPE, processDefinition.getKey(), processDefinition.getTenantId());
     } else {
-    	jobsToDelete = Context.getCommandContext().getJobEntityManager()
-    			.findJobsByTypeAndProcessDefinitionKeyNoTenantId(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+    	jobsToDelete = Context.getCommandContext().getTimerJobEntityManager()
+    			.findTimerJobsByTypeAndProcessDefinitionKeyNoTenantId(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     }
 
   	if (jobsToDelete != null) {
@@ -361,7 +375,7 @@ public class BpmnDeployer implements Deployer {
   
   protected void removeExistingMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
     // remove all subscriptions for the previous version    
-    if(latestProcessDefinition != null) {
+    if (latestProcessDefinition != null) {
       CommandContext commandContext = Context.getCommandContext();
       
       List<EventSubscriptionEntity> subscriptionsToDelete = commandContext

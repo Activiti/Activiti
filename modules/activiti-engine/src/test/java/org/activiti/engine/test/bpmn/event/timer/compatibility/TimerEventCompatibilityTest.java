@@ -1,5 +1,7 @@
 package org.activiti.engine.test.bpmn.event.timer.compatibility;
 
+import java.util.Date;
+
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,18 +22,16 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-
-import java.util.Date;
 
 public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestCase {
 
-  protected void changeConfigurationToPlainText(JobEntity job) {
+  protected void changeConfigurationToPlainText(TimerJobEntity job) {
 
     String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
 
-    final JobEntity finalJob = job;
+    final TimerJobEntity finalJob = job;
     CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
     CommandConfig config = new CommandConfig().transactionNotSupported();
     final String finalActivityId = activityId;

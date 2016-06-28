@@ -25,6 +25,7 @@ import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.agenda.Agenda;
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
@@ -33,6 +34,7 @@ import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -54,8 +56,10 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.logging.LogMDC;
@@ -366,6 +370,18 @@ public class CommandContext {
   public JobEntityManager getJobEntityManager() {
     return processEngineConfiguration.getJobEntityManager();
   }
+  
+  public TimerJobEntityManager getTimerJobEntityManager() {
+    return processEngineConfiguration.getTimerJobEntityManager();
+  }
+  
+  public SuspendedJobEntityManager getSuspendedJobEntityManager() {
+    return processEngineConfiguration.getSuspendedJobEntityManager();
+  }
+  
+  public DeadLetterJobEntityManager getDeadLetterJobEntityManager() {
+    return processEngineConfiguration.getDeadLetterJobEntityManager();
+  }
 
   public UserEntityManager getUserEntityManager() {
     return processEngineConfiguration.getUserEntityManager();
@@ -405,6 +421,10 @@ public class CommandContext {
 
   public HistoryManager getHistoryManager() {
     return processEngineConfiguration.getHistoryManager();
+  }
+  
+  public JobManager getJobManager() {
+    return processEngineConfiguration.getJobManager();
   }
 
   // Involved executions ////////////////////////////////////////////////////////

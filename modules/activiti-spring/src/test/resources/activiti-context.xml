@@ -33,8 +33,6 @@
         <property name="jpaEntityManagerFactory" ref="entityManagerFactory"/>
         <property name="jpaHandleTransaction" value="true"/>
         <property name="jpaCloseEntityManager" value="true"/>
-        <property name="jobExecutorActivate" value="false"/>
-        <property name="asyncExecutorEnabled" value="true" />
         <property name="asyncExecutorActivate" value="false" />
     </bean>
 

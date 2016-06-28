@@ -21,7 +21,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -219,18 +218,18 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
       // Graphical information is not yet exposed publicly, so we need to do some plumbing
       CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-      ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
-        public ProcessDefinitionEntity execute(CommandContext commandContext) {
+      ProcessDefinition processDefinition = commandExecutor.execute(new Command<ProcessDefinition>() {
+        public ProcessDefinition execute(CommandContext commandContext) {
           return Context.getProcessEngineConfiguration()
                         .getDeploymentManager()
                         .findDeployedLatestProcessDefinitionByKey("myProcess");
         }
       });
 
-      assertNotNull(processDefinitionEntity);
+      assertNotNull(processDefinition);
       
       // Check that no diagram has been created
-      List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
+      List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinition.getDeploymentId());
       assertEquals(1, resourceNames.size());
 
       repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);

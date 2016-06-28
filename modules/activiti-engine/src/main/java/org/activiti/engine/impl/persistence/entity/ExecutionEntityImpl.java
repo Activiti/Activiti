@@ -92,6 +92,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   // (we cache associated entities here to minimize db queries)
   protected List<EventSubscriptionEntity> eventSubscriptions;
   protected List<JobEntity> jobs;
+  protected List<TimerJobEntity> timerJobs;
   protected List<TaskEntity> tasks;
   protected List<IdentityLinkEntity> identityLinks;
   protected int cachedEntityState;
@@ -548,6 +549,17 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected void ensureJobsInitialized() {
     if (jobs == null) {
       jobs = Context.getCommandContext().getJobEntityManager().findJobsByExecutionId(id);
+    }
+  }
+  
+  public List<TimerJobEntity> getTimerJobs() {
+    ensureTimerJobsInitialized();
+    return timerJobs;
+  }
+  
+  protected void ensureTimerJobsInitialized() {
+    if (timerJobs == null) {
+      timerJobs = Context.getCommandContext().getTimerJobEntityManager().findJobsByExecutionId(id);
     }
   }
 

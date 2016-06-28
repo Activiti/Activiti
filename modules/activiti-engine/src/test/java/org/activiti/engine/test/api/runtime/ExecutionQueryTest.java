@@ -1552,7 +1552,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals("SubProcess Description 'en'", execution.getDescription());
     
     
-    infoNode = dynamicBpmnService.changeLocalizationName("en-US", "executionLocalization", "Process Name 'en-US'");
+    dynamicBpmnService.changeLocalizationName("en-US", "executionLocalization", "Process Name 'en-US'", infoNode);
     dynamicBpmnService.changeLocalizationDescription("en-US", "executionLocalization", "Process Description 'en-US'", infoNode);
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
     
@@ -1597,7 +1597,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStartedAfter() throws Exception {
     Calendar calendar = new GregorianCalendar();
-    calendar.set(Calendar.YEAR, 2200);
+    calendar.set(Calendar.YEAR, 2030);
     calendar.set(Calendar.MONTH, 8);
     calendar.set(Calendar.DAY_OF_MONTH, 30);
     calendar.set(Calendar.HOUR_OF_DAY, 12);

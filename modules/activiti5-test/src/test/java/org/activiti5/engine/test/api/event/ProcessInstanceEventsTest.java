@@ -20,16 +20,16 @@ import static org.junit.Assert.assertNotEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
-import org.activiti5.engine.delegate.event.ActivitiCancelledEvent;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti5.engine.delegate.event.impl.ActivitiActivityCancelledEventImpl;
 import org.activiti5.engine.delegate.event.impl.ActivitiProcessCancelledEventImpl;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -494,10 +494,8 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
   @Override
 	protected void initializeServices() {
 	  super.initializeServices();
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  this.listener = new TestInitializedEntityEventListener();
-	  activiti5ProcessConfig.getEventDispatcher().addEventListener(this.listener);
+	  processEngineConfiguration.getEventDispatcher().addEventListener(this.listener);
 	}
 	
 	@Override
@@ -505,10 +503,8 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	  
 	  if (listener != null) {
-	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	  	listener.clearEventsReceived();
-	  	activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+	    listener.clearEventsReceived();
+	    processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 

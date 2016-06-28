@@ -16,12 +16,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -209,13 +209,10 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
   @Deployment(resources= {"org/activiti5/engine/test/api/event/TaskEventsTest.testEventFiring.bpmn20.xml"})
   public void testEventFiringOrdering() {
     
-    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-    
-    //We need to add a special listener that copies the Task values - to record its state when the event fires,
+    // We need to add a special listener that copies the Task values - to record its state when the event fires,
     //otherwise the in-memory task instances is changed after the event fires.
     TestActivitiEntityEventTaskListener tlistener = new TestActivitiEntityEventTaskListener(org.activiti5.engine.task.Task.class);
-    activiti5ProcessConfig.getEventDispatcher().addEventListener(tlistener);
+    processEngineConfiguration.getEventDispatcher().addEventListener(tlistener);
 
     try {
 
@@ -247,7 +244,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
       assertEquals("The ScriptTaskListener must set this value before the dispatchEvent fires.", 877, taskFromEvent.getPriority());
 
     } finally {
-      activiti5ProcessConfig.getEventDispatcher().removeEventListener(tlistener);
+      processEngineConfiguration.getEventDispatcher().removeEventListener(tlistener);
     }
   }
 	
@@ -260,10 +257,8 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
 	  listener = new TestActivitiEntityEventListener(org.activiti5.engine.task.Task.class);
-	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
@@ -271,9 +266,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	  
 	  if (listener != null) {
-	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	    activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+	    processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

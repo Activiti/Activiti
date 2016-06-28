@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -98,13 +98,13 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.createProcessDefinitionQuery().processDefinitionKey("startTimerEventExample").singleResult();
     ActivitiEntityEvent processDefinitionCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition);
 
-    TimerEntity timer = (TimerEntity) managementService.createJobQuery().singleResult();
+    TimerJobEntity timer = (TimerJobEntity) managementService.createTimerJobQuery().singleResult();
     ActivitiEntityEvent timerCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, timer);
     assertSequence(processDefinitionCreated, timerCreated);
     listener.clearEventsReceived();
   }
 
-  private void assertSequence(ActivitiEntityEvent before, ActivitiEntityEvent after) {
+  protected void assertSequence(ActivitiEntityEvent before, ActivitiEntityEvent after) {
     int beforeIndex = 0;
     int afterIndex = 0;
     for (int index = 0; index < listener.getEventsReceived().size(); index++) {
@@ -137,7 +137,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
     listener = new TestMultipleActivitiEventListener();
     listener.setEventClasses(ActivitiEntityEvent.class);
-    listener.setEntityClasses(ProcessDefinition.class, TimerEntity.class);
+    listener.setEntityClasses(ProcessDefinition.class, TimerJobEntity.class);
 
     processEngineConfiguration.getEventDispatcher().addEventListener(listener);
   }

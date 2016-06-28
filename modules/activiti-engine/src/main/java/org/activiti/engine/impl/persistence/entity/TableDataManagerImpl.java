@@ -74,8 +74,10 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     entityToTableNameMap.put(VariableInstanceEntity.class, "ACT_RU_VARIABLE");
 
     entityToTableNameMap.put(JobEntity.class, "ACT_RU_JOB");
-    entityToTableNameMap.put(MessageEntity.class, "ACT_RU_JOB");
-    entityToTableNameMap.put(TimerEntity.class, "ACT_RU_JOB");
+    entityToTableNameMap.put(TimerJobEntity.class, "ACT_RU_TIMER_JOB");
+    entityToTableNameMap.put(SuspendedJobEntity.class, "ACT_RU_SUSPENDED_JOB");
+    entityToTableNameMap.put(DeadLetterJobEntity.class, "ACT_RU_DEADLETTER_JOB");
+    
 
     entityToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
     entityToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
@@ -91,7 +93,7 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     entityToTableNameMap.put(CommentEntity.class, "ACT_HI_COMMENT");
 
     entityToTableNameMap.put(HistoricActivityInstanceEntity.class, "ACT_HI_ACTINST");
-    entityToTableNameMap.put(AttachmentEntity.class, "ACT_HI_ATTACHMEN");
+    entityToTableNameMap.put(AttachmentEntity.class, "ACT_HI_ATTACHMENT");
     entityToTableNameMap.put(HistoricProcessInstanceEntity.class, "ACT_HI_PROCINST");
     entityToTableNameMap.put(HistoricVariableInstanceEntity.class, "ACT_HI_VARINST");
     entityToTableNameMap.put(HistoricTaskInstanceEntity.class, "ACT_HI_TASKINST");
@@ -114,6 +116,8 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     entityToTableNameMap.put(PropertyEntity.class, "ACT_GE_PROPERTY");
     entityToTableNameMap.put(ByteArrayEntity.class, "ACT_GE_BYTEARRAY");
     entityToTableNameMap.put(ResourceEntity.class, "ACT_GE_BYTEARRAY");
+    
+    entityToTableNameMap.put(EventLogEntryEntity.class, "ACT_EVT_LOG");
 
     // and now the map for the API types (does not cover all cases)
     apiTypeToTableNameMap.put(Task.class, "ACT_RU_TASK");

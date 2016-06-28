@@ -169,7 +169,8 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertNotNull(processInstance);
     assertFalse(processInstance.isEnded());
 
-    Job job = managementService.createJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     Task task = taskService.createTaskQuery().singleResult();
@@ -186,13 +187,13 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertNotNull(processInstance);
     assertFalse(processInstance.isEnded());
 
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
 
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("The famous task", task.getName());
     taskService.complete(task.getId());
 
-    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
 
@@ -208,7 +209,8 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertNotNull(processInstance);
     assertFalse(processInstance.isEnded());
 
-    Job job = managementService.createJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
@@ -225,7 +227,8 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     // execution, then parent execution (easier case)
     processInstance = runtimeService.startProcessInstanceByKey("simpleBoundaryTimer");
 
-    job = managementService.createJobQuery().singleResult();
+    job = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     tasks = taskService.createTaskQuery().orderByTaskName().desc().list(); // Not the desc() here: Task B, Task A will be the result (task b being associated with the child execution)
@@ -298,9 +301,10 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertEquals("B", tasks.get(1).getName());
 
     // Triggering the timers cancels B, but A is not interrupted
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(2, jobs.size());
     for (Job job : jobs) {
+      managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());
     }
 
@@ -313,8 +317,9 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertEquals("F", tasks.get(4).getName());
 
     // Firing timer shouldn't cancel anything, but create new task
-    jobs = managementService.createJobQuery().list();
+    jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
+    managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
 
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
@@ -348,18 +353,18 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertEquals(2, tasks.size());
     assertEquals("A", tasks.get(0).getName());
     assertEquals("B", tasks.get(1).getName());
-    assertEquals(2, managementService.createJobQuery().count());
+    assertEquals(2, managementService.createTimerJobQuery().count());
 
     // Completing A
     taskService.complete(tasks.get(0).getId());
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     assertEquals(1, tasks.size());
     assertEquals("B", tasks.get(0).getName());
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
 
     // Completing B should end the process
     taskService.complete(tasks.get(0).getId());
-    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createTimerJobQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
 
     // Use case 2: The non interrupting timer on B fires
@@ -368,17 +373,19 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertEquals(2, tasks.size());
     assertEquals("A", tasks.get(0).getName());
     assertEquals("B", tasks.get(1).getName());
-    assertEquals(2, managementService.createJobQuery().count());
+    assertEquals(2, managementService.createTimerJobQuery().count());
 
     // Completing B
     taskService.complete(tasks.get(1).getId());
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     assertEquals(1, tasks.size());
     assertEquals("A", tasks.get(0).getName());
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
 
     // Firing the timer should activate E and F too
-    managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+    String jobId = managementService.createTimerJobQuery().singleResult().getId();
+    managementService.moveTimerToExecutableJob(jobId);
+    managementService.executeJob(jobId);
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     assertEquals(3, tasks.size());
     assertEquals("A", tasks.get(0).getName());
@@ -386,8 +393,10 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertEquals("D", tasks.get(2).getName());
 
     // Firing the timer on D
-    assertEquals(1, managementService.createJobQuery().count());
-    managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+    assertEquals(1, managementService.createTimerJobQuery().count());
+    jobId = managementService.createTimerJobQuery().singleResult().getId();
+    managementService.moveTimerToExecutableJob(jobId);
+    managementService.executeJob(jobId);
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     assertEquals(4, tasks.size());
     assertEquals("A", tasks.get(0).getName());
@@ -395,8 +404,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     assertEquals("D", tasks.get(2).getName());
     assertEquals("G", tasks.get(3).getName());
 
-    // Completing C, D, A and G in that order to give the engine a bit of
-    // exercise
+    // Completing C, D, A and G in that order to give the engine a bit of exercise
     taskService.complete(taskService.createTaskQuery().taskName("C").singleResult().getId());
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     assertEquals(3, tasks.size());

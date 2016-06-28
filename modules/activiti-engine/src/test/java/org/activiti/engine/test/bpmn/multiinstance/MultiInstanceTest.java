@@ -117,7 +117,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -205,7 +206,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -519,7 +521,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals(2, tasks.size());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -576,7 +579,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -628,7 +632,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(1).getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -732,7 +737,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -807,7 +813,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(1).getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -881,7 +888,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -927,7 +935,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -963,7 +972,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     // Fire timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task taskAfterTimer = taskService.createTaskQuery().singleResult();
@@ -1030,12 +1040,13 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
-    List<Job> timers = managementService.createJobQuery().list();
+    List<Job> timers = managementService.createTimerJobQuery().list();
     assertEquals(5, timers.size());
 
     // Execute all timers one by one (single thread vs thread pool of job
     // executor, which leads to optimisticlockingexceptions!)
     for (Job timer : timers) {
+      managementService.moveTimerToExecutableJob(timer.getId());
       managementService.executeJob(timer.getId());
     }
 

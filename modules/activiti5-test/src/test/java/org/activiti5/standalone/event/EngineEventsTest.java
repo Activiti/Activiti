@@ -12,8 +12,8 @@
  */
 package org.activiti5.standalone.event;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ProcessEngine;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti5.engine.test.api.event.TestActivitiEventListener;
 
@@ -33,11 +33,10 @@ public class EngineEventsTest extends ResourceActivitiTestCase {
   	TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
   	assertNotNull(listener);
   	
-  	processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-  	
   	// Check create-event
-  	assertEquals(1, listener.getEventsReceived().size());
+  	assertEquals(2, listener.getEventsReceived().size());
   	assertEquals(ActivitiEventType.ENGINE_CREATED, listener.getEventsReceived().get(0).getType());
+  	assertEquals(ActivitiEventType.ENGINE_CREATED, listener.getEventsReceived().get(1).getType());
   	listener.clearEventsReceived();
   	
   	// Check close-event

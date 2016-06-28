@@ -42,7 +42,6 @@ import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -91,7 +90,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       
       // If previous process definition version has a timer/signal/message start event, it must be added
       // Only if the currently deleted process definition is the latest version, 
-      // we fall back to the previous timer/signal/messagee start event
+      // we fall back to the previous timer/signal/message start event
       
       restorePreviousStartEventsIfNeeded(processDefinition);
     }
@@ -136,15 +135,15 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
   }
   
   protected void removeTimerStartJobs(ProcessDefinition processDefinition) {
-    List<Job> timerStartJobs = getJobEntityManager()
+    List<TimerJobEntity> timerStartJobs = getTimerJobEntityManager()
         .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
     if (timerStartJobs != null && timerStartJobs.size() > 0) {
-      for (Job timerStartJob : timerStartJobs) {
+      for (TimerJobEntity timerStartJob : timerStartJobs) {
         if (getEventDispatcher().isEnabled()) {
           getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
         }
 
-        getJobEntityManager().delete((JobEntity) timerStartJob);
+        getTimerJobEntityManager().delete(timerStartJob);
       }
     }
   }
@@ -189,17 +188,20 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
 
   protected void restoreTimerStartEvent(ProcessDefinition previousProcessDefinition, StartEvent startEvent, EventDefinition eventDefinition) {
     TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
-    TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+    TimerJobEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
         TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
     
     if (timer != null) {
-      timer.setProcessDefinitionId(previousProcessDefinition.getId());
- 
+      TimerJobEntity timerJob = getJobManager().createTimerJob((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+          TimerEventHandler.createConfiguration(startEvent.getId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
+      
+      timerJob.setProcessDefinitionId(previousProcessDefinition.getId());
+      
       if (previousProcessDefinition.getTenantId() != null) {
-        timer.setTenantId(previousProcessDefinition.getTenantId());
+        timerJob.setTenantId(previousProcessDefinition.getTenantId());
       }
- 
-      getJobEntityManager().schedule(timer);
+      
+      getJobManager().scheduleTimerJob(timerJob);
     }
   }
 

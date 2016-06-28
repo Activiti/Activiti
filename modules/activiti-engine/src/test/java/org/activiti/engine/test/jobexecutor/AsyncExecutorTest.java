@@ -22,8 +22,9 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.JobTestHelper;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -32,9 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests specifically for the {@link AsyncExecutor}.
  * 
- * Note that all tests with jobs already use this async executor, so this is really all the 'edgy' cases here.
- * 
- * @author jbarrez
+ * @author Joram Barrez
  */
 public class AsyncExecutorTest {
 
@@ -62,7 +61,7 @@ public class AsyncExecutorTest {
       }
       Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("The Task").count());
       Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
-      Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
+      Assert.assertEquals(1, processEngine.getManagementService().createTimerJobQuery().count());
       Assert.assertEquals(0, getAsyncExecutorJobCount(processEngine));
 
       // Move clock 3 minutes and 1 second. Triggers the timer
@@ -72,6 +71,7 @@ public class AsyncExecutorTest {
       // Verify if all is as expected
       Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("The Task").count());
       Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
+      Assert.assertEquals(0, processEngine.getManagementService().createTimerJobQuery().count());
       Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
 
       Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
@@ -81,9 +81,7 @@ public class AsyncExecutorTest {
       if (processEngine != null) {
         cleanup(processEngine);
       }
-
     }
-
   }
 
   @Test
@@ -107,7 +105,7 @@ public class AsyncExecutorTest {
       addSecondsToCurrentTime(firstProcessEngine, 301); // 301 = 5m01s
       Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("The Task").count());
       Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
-      Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
+      Assert.assertEquals(1, firstProcessEngine.getManagementService().createTimerJobQuery().count());
 
       // Create second engine, with async executor enabled. Same time as
       // the first engine to start, then add 301 seconds
@@ -118,6 +116,7 @@ public class AsyncExecutorTest {
       // Verify if all is as expected
       Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("The Task").count());
       Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
+      Assert.assertEquals(0, firstProcessEngine.getManagementService().createTimerJobQuery().count());
       Assert.assertEquals(0, firstProcessEngine.getManagementService().createJobQuery().count());
 
       Assert.assertEquals(0, getAsyncExecutorJobCount(firstProcessEngine));
@@ -146,12 +145,14 @@ public class AsyncExecutorTest {
       deploy(processEngine, "AsyncExecutorTest.testAsyncScriptExecution.bpmn20.xml");
 
       // Start process instance. Wait for all jobs to be done
-      processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+      ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
       waitForAllJobsBeingExecuted(processEngine);
 
       // Verify if all is as expected
-      Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
       Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
+      Assert.assertEquals(0, processEngine.getManagementService().createTimerJobQuery().count());
+      Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getId()).count());
+      Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
 
       Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
 
@@ -183,10 +184,7 @@ public class AsyncExecutorTest {
       Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
 
       // Start second engine, with async executor enabled
-      secondProcessEngine = createProcessEngine(true, now); // Same
-                                                            // timestamp
-                                                            // as first
-                                                            // engine
+      secondProcessEngine = createProcessEngine(true, now); // Same timestamp as first engine
       Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
       Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
 
@@ -232,19 +230,22 @@ public class AsyncExecutorTest {
       processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
 
       final ProcessEngine processEngineCopy = processEngine;
-      JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 2000L, new Callable<Boolean>() {
+      JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 1000L, new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
-          return processEngineCopy.getManagementService().createJobQuery().withRetriesLeft().count() == 0;
+          long timerJobCount = processEngineCopy.getManagementService().createTimerJobQuery().count();
+          if (timerJobCount == 0) {
+            return processEngineCopy.getManagementService().createJobQuery().count() == 0;
+          } else {
+            return false;
+          }
         }
       });
 
       // Verify if all is as expected
       Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-      Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
-      Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().withRetriesLeft().count());
-      Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().noRetriesLeft().count());
-      Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().withException().count());
+      Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
+      Assert.assertEquals(1, processEngine.getManagementService().createDeadLetterJobQuery().count());
 
       Assert.assertEquals(3, getAsyncExecutorJobCount(processEngine));
 
@@ -252,12 +253,10 @@ public class AsyncExecutorTest {
 
       // Clean up
       cleanup(processEngine);
-
     }
-
   }
 
-  // Helpers
+  // Helpers ////////////////////////////////////////////////////////
 
   private ProcessEngine createProcessEngine(boolean enableAsyncExecutor) {
     return createProcessEngine(enableAsyncExecutor, null);
@@ -267,25 +266,12 @@ public class AsyncExecutorTest {
     ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration();
     processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:activiti-AsyncExecutorTest;DB_CLOSE_DELAY=1000");
     processEngineConfiguration.setDatabaseSchemaUpdate("true");
-    processEngineConfiguration.setJobExecutorActivate(false); // No need for
-                                                              // that old
-                                                              // job
-                                                              // executor
 
     if (enableAsyncExecutor) {
-      processEngineConfiguration.setAsyncExecutorEnabled(true);
       processEngineConfiguration.setAsyncExecutorActivate(true);
 
       CountingAsyncExecutor countingAsyncExecutor = new CountingAsyncExecutor();
-      countingAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(50); // To
-                                                                           // avoid
-                                                                           // waiting
-                                                                           // too
-                                                                           // long
-                                                                           // when
-                                                                           // a
-                                                                           // retry
-                                                                           // happens
+      countingAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(50); // To avoid waiting too long when a retry happens
       countingAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(50);
       processEngineConfiguration.setAsyncExecutor(countingAsyncExecutor);
     }
@@ -326,12 +312,12 @@ public class AsyncExecutorTest {
   }
 
   private void waitForAllJobsBeingExecuted(ProcessEngine processEngine, long maxWaitTime) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 1000L, false);
+    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 1000L, false);
   }
 
   private int getAsyncExecutorJobCount(ProcessEngine processEngine) {
     AsyncExecutor asyncExecutor = processEngine.getProcessEngineConfiguration().getAsyncExecutor();
-    if (asyncExecutor != null) {
+    if (asyncExecutor instanceof CountingAsyncExecutor) {
       return ((CountingAsyncExecutor) asyncExecutor).getCounter().get();
     }
     return 0;
@@ -344,7 +330,7 @@ public class AsyncExecutorTest {
     private AtomicInteger counter = new AtomicInteger(0);
 
     @Override
-    public boolean executeAsyncJob(JobEntity job) {
+    public boolean executeAsyncJob(Job job) {
       logger.info("About to execute job " + job.getId());
       counter.incrementAndGet();
       boolean success = super.executeAsyncJob(job);

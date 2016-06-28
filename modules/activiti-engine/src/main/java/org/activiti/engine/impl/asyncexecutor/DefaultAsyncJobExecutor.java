@@ -13,7 +13,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +58,11 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
   protected Thread timerJobAcquisitionThread;
   protected Thread asyncJobAcquisitionThread;
+  protected Thread resetExpiredJobThread;
+  
   protected AcquireTimerJobsRunnable timerJobRunnable;
   protected AcquireAsyncJobsDueRunnable asyncJobsDueRunnable;
+  protected ResetExpiredJobsRunnable resetExpiredJobsRunnable;
   
   protected ExecuteAsyncRunnableFactory executeAsyncRunnableFactory;
 
@@ -76,16 +80,18 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   protected int asyncJobLockTimeInMillis = 5 * 60 * 1000;
   protected int retryWaitTimeInMillis = 500;
   
+  protected int resetExpiredJobsInterval = 60 * 1000;
+  
   // Job queue used when async executor is not yet started and jobs are already added.
   // This is mainly used for testing purpose.
-  protected LinkedList<JobEntity> temporaryJobQueue = new LinkedList<JobEntity>();
+  protected LinkedList<Job> temporaryJobQueue = new LinkedList<Job>();
 
   protected CommandExecutor commandExecutor;
+  protected JobManager jobManager;
 
-  public boolean executeAsyncJob(final JobEntity job) {
+  public boolean executeAsyncJob(final Job job) {
     Runnable runnable = null;
     if (isActive) {
-      
       runnable = createRunnableForJob(job);
       
       try {
@@ -100,11 +106,12 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         
         // This can happen while already in a command context (for example in a transaction listener
         // after the async executor has been hinted that a new async job is created)
-        // or not (when executed in the aquire thread runnable)
+        // or not (when executed in the acquire thread runnable)
         
         CommandContext commandContext = Context.getCommandContext();
         if (commandContext != null) {
           unacquireJob(job, commandContext);
+          
         } else {
           commandExecutor.execute(new Command<Void>() {
             public Void execute(CommandContext commandContext) {
@@ -125,7 +132,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     return true;
   }
 
-  protected Runnable createRunnableForJob(final JobEntity job) {
+  protected Runnable createRunnableForJob(final Job job) {
     if (executeAsyncRunnableFactory == null) {
       return new ExecuteAsyncRunnable(job, commandExecutor);
     } else {
@@ -133,7 +140,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     }
   }
   
-  protected void unacquireJob(final JobEntity job, CommandContext commandContext) {
+  protected void unacquireJob(final Job job, CommandContext commandContext) {
     commandContext.getJobEntityManager().unacquireJob(job.getId());
   }
   
@@ -144,18 +151,26 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     }
 
     log.info("Starting up the default async job executor [{}].", getClass().getName());
+    
     if (timerJobRunnable == null) {
-      timerJobRunnable = new AcquireTimerJobsRunnable(this);
+      timerJobRunnable = new AcquireTimerJobsRunnable(this, jobManager);
     }
+    
     if (asyncJobsDueRunnable == null) {
       asyncJobsDueRunnable = new AcquireAsyncJobsDueRunnable(this);
     }
+    
+    if (resetExpiredJobsRunnable == null) {
+      resetExpiredJobsRunnable = new ResetExpiredJobsRunnable(this);
+    }
+    
     startExecutingAsyncJobs();
+    startResetExpiredJobsThread();
 
     isActive = true;
 
     while (temporaryJobQueue.isEmpty() == false) {
-      JobEntity job = temporaryJobQueue.pop();
+      Job job = temporaryJobQueue.pop();
       executeAsyncJob(job);
     }
     isActive = true;
@@ -167,12 +182,18 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
       return;
     }
     log.info("Shutting down the default async job executor [{}].", getClass().getName());
+    
     timerJobRunnable.stop();
     asyncJobsDueRunnable.stop();
+    resetExpiredJobsRunnable.stop();
+    
+    stopResetExpiredJobsThread();
     stopExecutingAsyncJobs();
 
     timerJobRunnable = null;
     asyncJobsDueRunnable = null;
+    resetExpiredJobsRunnable = null;
+    
     isActive = false;
   }
 
@@ -185,7 +206,8 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     if (executorService == null) {
       log.info("Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}", corePoolSize, maxPoolSize, keepAliveTime);
 
-      executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);
+      BasicThreadFactory threadFactory = new BasicThreadFactory.Builder().namingPattern("activiti-async-job-executor-thread-%d").build();
+      executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue, threadFactory);
     }
 
     startJobAcquisitionThread();
@@ -239,6 +261,25 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     timerJobAcquisitionThread = null;
     asyncJobAcquisitionThread = null;
   }
+  
+  /** Starts the reset expired jobs thread */
+  protected void startResetExpiredJobsThread() {
+    if (resetExpiredJobThread == null) {
+      resetExpiredJobThread = new Thread(resetExpiredJobsRunnable);
+    }
+    resetExpiredJobThread.start();
+  }
+  
+  /** Stops the reset expired jobs thread */
+  protected void stopResetExpiredJobsThread() {
+    try {
+      resetExpiredJobThread.join();
+    } catch (InterruptedException e) {
+      log.warn("Interrupted while waiting for the reset expired jobs thread to terminate", e);
+    }
+
+    resetExpiredJobThread = null;
+  }
 
   /* getters and setters */
 
@@ -248,6 +289,38 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
   public void setCommandExecutor(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
+  }
+  
+  public Thread getTimerJobAcquisitionThread() {
+    return timerJobAcquisitionThread;
+  }
+
+  public void setTimerJobAcquisitionThread(Thread timerJobAcquisitionThread) {
+    this.timerJobAcquisitionThread = timerJobAcquisitionThread;
+  }
+
+  public Thread getAsyncJobAcquisitionThread() {
+    return asyncJobAcquisitionThread;
+  }
+
+  public void setAsyncJobAcquisitionThread(Thread asyncJobAcquisitionThread) {
+    this.asyncJobAcquisitionThread = asyncJobAcquisitionThread;
+  }
+
+  public Thread getResetExpiredJobThread() {
+    return resetExpiredJobThread;
+  }
+
+  public void setResetExpiredJobThread(Thread resetExpiredJobThread) {
+    this.resetExpiredJobThread = resetExpiredJobThread;
+  }
+
+  public JobManager getJobManager() {
+    return jobManager;
+  }
+
+  public void setJobManager(JobManager jobManager) {
+    this.jobManager = jobManager;
   }
 
   public boolean isAutoActivate() {
@@ -389,14 +462,34 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   public void setAsyncJobsDueRunnable(AcquireAsyncJobsDueRunnable asyncJobsDueRunnable) {
     this.asyncJobsDueRunnable = asyncJobsDueRunnable;
   }
+  
+  public void setResetExpiredJobsRunnable(ResetExpiredJobsRunnable resetExpiredJobsRunnable) {
+    this.resetExpiredJobsRunnable = resetExpiredJobsRunnable;
+  }
 
-	public int getRetryWaitTimeInMillis() {
+  public int getRetryWaitTimeInMillis() {
 		return retryWaitTimeInMillis;
 	}
 
 	public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
 		this.retryWaitTimeInMillis = retryWaitTimeInMillis;
 	}
+	
+  public int getResetExpiredJobsInterval() {
+    return resetExpiredJobsInterval;
+  }
+
+  public void setResetExpiredJobsInterval(int resetExpiredJobsInterval) {
+    this.resetExpiredJobsInterval = resetExpiredJobsInterval;
+  }
+
+  public int getCheckExpiredJobsInterval() {
+    return resetExpiredJobsInterval;
+  }
+
+  public void setCheckExpiredJobsInterval(int checkExpiredJobsInterval) {
+    this.resetExpiredJobsInterval = checkExpiredJobsInterval;
+  }
 
   public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {
     return executeAsyncRunnableFactory;

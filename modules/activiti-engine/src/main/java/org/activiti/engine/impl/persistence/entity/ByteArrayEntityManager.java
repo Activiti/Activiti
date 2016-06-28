@@ -12,10 +12,17 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+
 /**
  * @author Joram Barrez
  */
 public interface ByteArrayEntityManager extends EntityManager<ByteArrayEntity> {
+  
+  /**
+   * Returns all {@link ByteArrayEntity}. 
+   */
+  List<ByteArrayEntity> findAll();
 
   /**
    * Deletes the {@link ByteArrayEntity} with the given id from the database. 

@@ -15,8 +15,8 @@ package org.activiti5.engine.impl.event;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;

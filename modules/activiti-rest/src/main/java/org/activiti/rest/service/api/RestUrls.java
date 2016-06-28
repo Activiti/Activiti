@@ -61,6 +61,9 @@ public final class RestUrls {
   public static final String SEGMENT_COLUMNS = "columns";
   public static final String SEGMENT_DATA = "data";
   public static final String SEGMENT_JOBS = "jobs";
+  public static final String SEGMENT_TIMER_JOBS = "timer-jobs";
+  public static final String SEGMENT_SUSPENDED_JOBS = "suspended-jobs";
+  public static final String SEGMENT_DEADLETTER_JOBS = "deadletter-jobs";
   public static final String SEGMENT_JOB_EXCEPTION_STACKTRACE = "exception-stacktrace";
   public static final String SEGMENT_USERS = "users";
   public static final String SEGMENT_GROUPS = "groups";
@@ -449,6 +452,21 @@ public final class RestUrls {
    * URL template for a single job: <i>management/jobs/{0:jobId}</i>
    */
   public static final String[] URL_JOB = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}" };
+  
+  /**
+   * URL template for a single job: <i>management/timer-jobs/{0:jobId}</i>
+   */
+  public static final String[] URL_TIMER_JOB = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TIMER_JOBS, "{0}" };
+  
+  /**
+   * URL template for a single job: <i>management/suspended-jobs/{0:jobId}</i>
+   */
+  public static final String[] URL_SUSPENDED_JOB = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_SUSPENDED_JOBS, "{0}" };
+  
+  /**
+   * URL template for a single job: <i>management/deadletter-jobs/{0:jobId}</i>
+   */
+  public static final String[] URL_DEADLETTER_JOB = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_DEADLETTER_JOBS, "{0}" };
 
   /**
    * URL template for the stacktrace of a single job: <i>management/jobs/{0:jobId}/exception-stacktrace</i>
@@ -456,9 +474,39 @@ public final class RestUrls {
   public static final String[] URL_JOB_EXCEPTION_STRACKTRACE = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}", SEGMENT_JOB_EXCEPTION_STACKTRACE };
 
   /**
+   * URL template for the stacktrace of a single job: <i>management/timer-jobs/{jobId}/exception-stacktrace</i>
+   */
+  public static final String[] URL_TIMER_JOB_EXCEPTION_STRACKTRACE = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TIMER_JOBS, "{0}", SEGMENT_JOB_EXCEPTION_STACKTRACE };
+
+  /**
+   * URL template for the stacktrace of a single job: <i>management/suspended-jobs/{0:jobId}/exception-stacktrace</i>
+   */
+  public static final String[] URL_SUSPENDED_JOB_EXCEPTION_STRACKTRACE = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_SUSPENDED_JOBS, "{0}", SEGMENT_JOB_EXCEPTION_STACKTRACE };
+  
+  /**
+   * URL template for the stacktrace of a single job: <i>management/deadletter-jobs/{0:jobId}/exception-stacktrace</i>
+   */
+  public static final String[] URL_DEADLETTER_JOB_EXCEPTION_STRACKTRACE = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_DEADLETTER_JOBS, "{0}", SEGMENT_JOB_EXCEPTION_STACKTRACE };
+
+  /**
    * URL template for the collection of jobs: <i>management/jobs</i>
    */
   public static final String[] URL_JOB_COLLECTION = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS };
+  
+  /**
+   * URL template for the collection of timer jobs: <i>management/timer-jobs</i>
+   */
+  public static final String[] URL_TIMER_JOB_COLLECTION = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TIMER_JOBS };
+  
+  /**
+   * URL template for the collection of timer jobs: <i>management/suspended-jobs</i>
+   */
+  public static final String[] URL_SUSPENDED_JOB_COLLECTION = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_SUSPENDED_JOBS };
+  
+  /**
+   * URL template for the collection of timer jobs: <i>management/deadletter-jobs</i>
+   */
+  public static final String[] URL_DEADLETTER_JOB_COLLECTION = { SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_DEADLETTER_JOBS };
 
   /**
    * URL template for the collection of properties: <i>management/properties</i>

@@ -16,8 +16,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,7 @@ public class AcquireTimerJobsRunnable implements Runnable {
   private static Logger log = LoggerFactory.getLogger(AcquireTimerJobsRunnable.class);
 
   protected final AsyncExecutor asyncExecutor;
+  protected final JobManager jobManager;
 
   protected volatile boolean isInterrupted;
   protected final Object MONITOR = new Object();
@@ -37,8 +40,9 @@ public class AcquireTimerJobsRunnable implements Runnable {
 
   protected long millisToWait;
 
-  public AcquireTimerJobsRunnable(AsyncExecutor asyncExecutor) {
+  public AcquireTimerJobsRunnable(AsyncExecutor asyncExecutor, JobManager jobManager) {
     this.asyncExecutor = asyncExecutor;
+    this.jobManager = jobManager;
   }
 
   public synchronized void run() {
@@ -49,27 +53,24 @@ public class AcquireTimerJobsRunnable implements Runnable {
     while (!isInterrupted) {
 
       try {
-        AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor.getLockOwner(), asyncExecutor.getTimerLockTimeInMillis(), asyncExecutor
-            .getMaxTimerJobsPerAcquisition()));
+        final AcquiredTimerJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
 
-        boolean allJobsSuccessfullyOffered = true; 
-        for (JobEntity job : acquiredJobs.getJobs()) {
-          boolean jobSuccessFullyOffered = asyncExecutor.executeAsyncJob(job);
-          if (!jobSuccessFullyOffered) {
-            allJobsSuccessfullyOffered = false;
+        commandExecutor.execute(new Command<Void>() {
+
+          @Override
+          public Void execute(CommandContext commandContext) {
+            for (TimerJobEntity job : acquiredJobs.getJobs()) {
+              jobManager.moveTimerJobToExecutableJob(job);
+            }
+            return null;
           }
-        }
+        });
         
         // if all jobs were executed
         millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.size();
         if (jobsAcquired >= asyncExecutor.getMaxTimerJobsPerAcquisition()) {
           millisToWait = 0; 
-        }
-        
-        // If the queue was full, we wait too (even if we got enough jobs back), as not overload the queue
-        if (millisToWait == 0 && !allJobsSuccessfullyOffered) {
-          millisToWait = asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis();
         }
 
       } catch (ActivitiOptimisticLockingException optimisticLockingException) {

@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.Page;
 import org.activiti5.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti5.engine.impl.persistence.AbstractManager;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 
 /**

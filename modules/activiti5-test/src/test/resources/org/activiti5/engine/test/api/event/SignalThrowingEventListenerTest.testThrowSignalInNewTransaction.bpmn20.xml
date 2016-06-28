@@ -24,7 +24,7 @@
     </boundaryEvent>
     <sequenceFlow sourceRef="boundary" targetRef="boundaryTask" />
 
-  <userTask id="boundaryTask" />
+  	<userTask id="boundaryTask" />
     <sequenceFlow sourceRef="eventSubProcess" targetRef="end" />
 
     <endEvent id="end" />

@@ -20,8 +20,8 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * An {@link ActivitiEventListener} that throws a signal event when an event is dispatched to it.
@@ -50,8 +50,8 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {
       } else {
         String tenantId = null;
         if (event.getProcessDefinitionId() != null) {
-          ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());
-          tenantId = processDefinitionEntity.getTenantId();
+          ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());
+          tenantId = processDefinition.getTenantId();
         }
         subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(signalName, tenantId);
       }

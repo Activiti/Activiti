@@ -18,11 +18,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
 import org.activiti5.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti5.engine.JobNotFoundException;
-import org.activiti5.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.cfg.TransactionContext;
 import org.activiti5.engine.impl.context.Context;
@@ -32,6 +32,7 @@ import org.activiti5.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti5.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti5.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti5.engine.impl.persistence.entity.DeadLetterJobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti5.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -52,8 +53,10 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntityManag
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti5.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti5.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti5.engine.impl.persistence.entity.SuspendedJobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.TableDataManager;
 import org.activiti5.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti5.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti5.engine.impl.pvm.runtime.AtomicOperation;
@@ -338,6 +341,18 @@ public class CommandContext {
   
   public JobEntityManager getJobEntityManager() {
     return getSession(JobEntityManager.class);
+  }
+  
+  public TimerJobEntityManager getTimerJobEntityManager() {
+    return getSession(TimerJobEntityManager.class);
+  }
+  
+  public SuspendedJobEntityManager getSuspendedJobEntityManager() {
+    return getSession(SuspendedJobEntityManager.class);
+  }
+  
+  public DeadLetterJobEntityManager getDeadLetterJobEntityManager() {
+    return getSession(DeadLetterJobEntityManager.class);
   }
 
   public UserIdentityManager getUserIdentityManager() {

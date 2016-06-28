@@ -24,12 +24,12 @@ import java.util.UUID;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti5.engine.impl.variable.ValueFields;
-import org.activiti5.engine.impl.variable.VariableType;
 
 /**
  * @author Tom Baeyens

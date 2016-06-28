@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
@@ -25,22 +25,22 @@ public class ProcessDefinitionCacheEntry implements Serializable {
 
   private static final long serialVersionUID = 6833801933658529070L;
 
-  protected ProcessDefinitionEntity processDefinitionEntity;
+  protected ProcessDefinition processDefinition;
   protected BpmnModel bpmnModel;
   protected Process process;
 
-  public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, BpmnModel bpmnModel, Process process) {
-    this.processDefinitionEntity = processDefinitionEntity;
+  public ProcessDefinitionCacheEntry(ProcessDefinition processDefinition, BpmnModel bpmnModel, Process process) {
+    this.processDefinition = processDefinition;
     this.bpmnModel = bpmnModel;
     this.process = process;
   }
 
-  public ProcessDefinitionEntity getProcessDefinitionEntity() {
-    return processDefinitionEntity;
+  public ProcessDefinition getProcessDefinition() {
+    return processDefinition;
   }
 
-  public void setProcessDefinitionEntity(ProcessDefinitionEntity processDefinitionEntity) {
-    this.processDefinitionEntity = processDefinitionEntity;
+  public void setProcessDefinition(ProcessDefinition processDefinition) {
+    this.processDefinition = processDefinition;
   }
 
   public BpmnModel getBpmnModel() {

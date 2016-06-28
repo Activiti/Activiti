@@ -32,13 +32,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
 import org.activiti5.engine.ActivitiWrongDbException;
 import org.activiti5.engine.ProcessEngine;
 import org.activiti5.engine.ProcessEngineConfiguration;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
-import org.activiti5.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.DeploymentQueryImpl;
 import org.activiti5.engine.impl.ExecutionQueryImpl;
@@ -831,7 +832,10 @@ public class DbSqlSession implements Session {
      
      // See https://activiti.atlassian.net/browse/ACT-1290
      if (persistentObject instanceof HasRevision) {
-       ((HasRevision) persistentObject).setRevision(((HasRevision) persistentObject).getRevisionNext());
+       HasRevision revisionEntity = (HasRevision) persistentObject;
+       if (revisionEntity.getRevision() == 0) {
+         revisionEntity.setRevision(revisionEntity.getRevisionNext());
+       }
      }
   }
 
@@ -857,7 +861,10 @@ public class DbSqlSession implements Session {
 
     if (persistentObjectList.get(0) instanceof HasRevision) {
       for (PersistentObject insertedObject: persistentObjectList) {
-        ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
+        HasRevision revisionEntity = (HasRevision) insertedObject;
+        if (revisionEntity.getRevision() == 0) {
+          revisionEntity.setRevision(revisionEntity.getRevisionNext());
+        }
       }
     }
   }
@@ -887,7 +894,11 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushDeletes(List<DeleteOperation> removedOperations) {
-    boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled();
+    boolean dispatchEvent = false;
+    ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
+    if (eventDispatcher != null && eventDispatcher.isEnabled()) {
+      dispatchEvent = eventDispatcher.isEnabled();
+    }
 
     flushRegularDeletes(dispatchEvent);
 

@@ -12,22 +12,22 @@
  */
 package org.activiti5.standalone.deploy;
 
-import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 
 /**
  * Very simplistic cache implementation that only caches one process definition.
  * 
  * @author Joram Barrez
  */
-public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionEntity> {
+public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionCacheEntry> {
   
   protected String id;
   
-  protected ProcessDefinitionEntity processDefinition;
+  protected ProcessDefinitionCacheEntry processDefinition;
   
   @Override
-  public ProcessDefinitionEntity get(String id) {
+  public ProcessDefinitionCacheEntry get(String id) {
     if (id.equals(id)) {
       return processDefinition;
     }
@@ -35,7 +35,7 @@ public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionE
   }
 
   @Override
-  public void add(String id, ProcessDefinitionEntity object) {
+  public void add(String id, ProcessDefinitionCacheEntry object) {
     this.id = id;
     this.processDefinition = object;
   }
@@ -55,8 +55,17 @@ public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionE
   }
   
   // For testing purposes only
-  public ProcessDefinitionEntity getCachedProcessDefinition() {
+  public ProcessDefinitionCacheEntry getCachedProcessDefinition() {
     return processDefinition;
+  }
+
+  @Override
+  public boolean contains(String id) {
+    if (id.equals(id)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

@@ -89,6 +89,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     }
 
     try {
+      managementService.moveTimerToExecutableJob(jobJava.getId());
       managementService.executeJob(jobJava.getId());
       fail("Expected exception");
     } catch (Exception e) {
@@ -96,6 +97,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     }
 
     try {
+      managementService.moveTimerToExecutableJob(jobJava.getId());
       managementService.executeJob(jobJava.getId());
       fail("Expected exception");
     } catch (Exception e) {
@@ -103,9 +105,9 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     }
 
     // Assert that there is a failed job.
-    jobJava = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+    assertEquals(0, managementService.createTimerJobQuery().processInstanceId(instanceJava.getId()).count());
+    jobJava = managementService.createDeadLetterJobQuery().processInstanceId(instanceJava.getId()).singleResult();
     assertNotNull(jobJava);
-    assertEquals(0, jobJava.getRetries());
 
     // Delete the process instance.
     runtimeService.deleteProcessInstance(instanceJava.getId(), null);

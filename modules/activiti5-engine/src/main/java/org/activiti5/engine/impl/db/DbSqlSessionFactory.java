@@ -71,6 +71,9 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mysql", "updateExecutionTenantIdForDeployment", "updateExecutionTenantIdForDeployment_mysql");
     addDatabaseSpecificStatement("mysql", "updateTaskTenantIdForDeployment", "updateTaskTenantIdForDeployment_mysql");
     addDatabaseSpecificStatement("mysql", "updateJobTenantIdForDeployment", "updateJobTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateTimerJobTenantIdForDeployment", "updateTimerJobTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateSuspendedJobTenantIdForDeployment", "updateSuspendedJobTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateDeadLetterJobTenantIdForDeployment", "updateDeadLetterJobTenantIdForDeployment_mysql");
     
     //postgres specific
     databaseSpecificLimitBeforeStatements.put("postgres", "");

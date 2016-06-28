@@ -13,7 +13,7 @@
 
     <boundaryEvent attachedToRef="task" id="timer" cancelActivity="false">
       <timerEventDefinition>
-        <timeCycle>R2/PT10S</timeCycle>
+        <timeCycle>R2/PT1H</timeCycle>
       </timerEventDefinition>
     </boundaryEvent>
 

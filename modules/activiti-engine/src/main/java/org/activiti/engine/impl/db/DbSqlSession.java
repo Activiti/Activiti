@@ -418,11 +418,19 @@ public class DbSqlSession implements Session {
 
   @SuppressWarnings("rawtypes")
   public List selectList(String statement, ListQueryParameterObject parameter, Page page) {
+    
+    ListQueryParameterObject parameterToUse = parameter;
+    if (parameterToUse == null) {
+      parameterToUse = new ListQueryParameterObject();
+    } 
+    
     if (page != null) {
-      parameter.setFirstResult(page.getFirstResult());
-      parameter.setMaxResults(page.getMaxResults());
+      parameterToUse.setFirstResult(page.getFirstResult());
+      parameterToUse.setMaxResults(page.getMaxResults());
     }
-    return selectList(statement, parameter);
+
+    return selectList(statement, parameterToUse);
+      
   }
 
   @SuppressWarnings("rawtypes")
@@ -533,6 +541,7 @@ public class DbSqlSession implements Session {
 
     if (log.isDebugEnabled()) {
       Collection<List<Entity>> insertedObjectLists = insertedObjects.values();
+      log.debug("Flushing dbSqlSession");
       int nrOfInserts = 0, nrOfUpdates = 0, nrOfDeletes = 0;
       for (List<Entity> insertedObjectList: insertedObjectLists) {
       	for (Entity insertedObject : insertedObjectList) {
@@ -766,7 +775,10 @@ public class DbSqlSession implements Session {
      
      // See https://activiti.atlassian.net/browse/ACT-1290
      if (entity instanceof HasRevision) {
-       ((HasRevision) entity).setRevision(((HasRevision) entity).getRevisionNext());
+       HasRevision revisionEntity = (HasRevision) entity;
+       if (revisionEntity.getRevision() == 0) {
+         revisionEntity.setRevision(revisionEntity.getRevisionNext());
+       }
      }
   }
 
@@ -792,7 +804,10 @@ public class DbSqlSession implements Session {
     
     if (entityList.get(0) instanceof HasRevision) {
       for (Entity insertedObject: entityList) {
-        ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
+        HasRevision revisionEntity = (HasRevision) insertedObject;
+        if (revisionEntity.getRevision() == 0) {
+          revisionEntity.setRevision(revisionEntity.getRevisionNext());
+        }
       }
     }
    

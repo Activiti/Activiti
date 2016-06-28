@@ -14,6 +14,7 @@ package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tijd Rademakers
@@ -36,7 +37,7 @@ public interface AsyncExecutor {
    * to execute. If the offering does not work for some reason, false 
    * will be returned (For example when the job queue is full in the {@link DefaultAsyncJobExecutor}). 
    */
-  boolean executeAsyncJob(JobEntity job);
+  boolean executeAsyncJob(Job job);
   
   
   /* Getters and Setters */
@@ -44,6 +45,10 @@ public interface AsyncExecutor {
   void setCommandExecutor(CommandExecutor commandExecutor);
   
   CommandExecutor getCommandExecutor();
+  
+  void setJobManager(JobManager jobManager);
+  
+  JobManager getJobManager();
   
   boolean isAutoActivate();
 
@@ -84,5 +89,9 @@ public interface AsyncExecutor {
   int getRetryWaitTimeInMillis();
   
   void setRetryWaitTimeInMillis(int retryWaitTimeInMillis);
+  
+  int getResetExpiredJobsInterval();
+
+  void setResetExpiredJobsInterval(int resetExpiredJobsInterval);
   
 }

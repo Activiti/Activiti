@@ -12,10 +12,10 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.activiti5.engine.impl.util.json.JSONObject;
 
 /**
@@ -29,7 +29,7 @@ public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefi
     return TYPE;
   }
   
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(Job job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     JSONObject cfgJson = new JSONObject(configuration);
     String processDefinitionId = job.getProcessDefinitionId();
     boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);

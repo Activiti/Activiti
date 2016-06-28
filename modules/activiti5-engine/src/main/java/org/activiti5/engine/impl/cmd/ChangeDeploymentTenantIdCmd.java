@@ -15,13 +15,13 @@ package org.activiti5.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti5.engine.repository.Deployment;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 
 /**
@@ -59,6 +59,9 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
     commandContext.getExecutionEntityManager().updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getTaskEntityManager().updateTaskTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getTimerJobEntityManager().updateTimerJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getSuspendedJobEntityManager().updateSuspendedJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getDeadLetterJobEntityManager().updateDeadLetterJobTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
     
     // Doing process definitions in memory, cause we need to clear the process definition cache

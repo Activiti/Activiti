@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -41,14 +41,15 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     Task task1 = taskService.createTaskQuery().singleResult();
     assertEquals("First Task", task1.getName());
     
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(2, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    Job job = managementService.createJobQuery().executable().singleResult();
+    Job job = managementService.createTimerJobQuery().executable().singleResult();
     assertNotNull(job);
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
     
     // we still have one timer more to fire
@@ -69,7 +70,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // After setting the clock to time '2 hour and 5 seconds', the second timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 25L);
     
     // no more timers to fire
     assertEquals(0L, jobQuery.count());
@@ -104,13 +105,13 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     Task task1 = taskService.createTaskQuery().singleResult();
     assertEquals("Main Task", task1.getName());
     
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(1, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 200L);
     
     // timer has fired
     assertEquals(0L, jobQuery.count());
@@ -138,7 +139,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     String procId = runtimeService.startProcessInstanceByKey("nonInterruptingOnConcurrentTasks").getId();
     assertEquals(2, taskService.createTaskQuery().count());
     
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     assertEquals(3, taskService.createTaskQuery().count());
     
@@ -160,7 +162,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     String procId = runtimeService.startProcessInstanceByKey("nonInterruptingOnConcurrentTasks").getId();
     assertEquals(2, taskService.createTaskQuery().count());
     
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     assertEquals(3, taskService.createTaskQuery().count());
     
@@ -180,26 +183,22 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
   @Deployment
   public void testTimerWithCycle() throws Exception {
-    runtimeService.startProcessInstanceByKey("nonInterruptingCycle").getId();
+    String processInstanceId = runtimeService.startProcessInstanceByKey("nonInterruptingCycle").getId();
 
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
+    
     //boundary events
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are undefinite number of repeats 1 hour interval");
-    }catch (Exception ex){
-      //expected exception because a new job is prepared
-    }
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+    
+    // a new job must be prepared because there are indefinite number of repeats 1 hour interval
+    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(processInstanceId).count());
 
-   moveByMinutes(60);
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are undefinite number of repeats 1 hour interval");
-    }catch (Exception ex){
-      //expected exception because a new job is prepared
-    }
-
+    moveByMinutes(60);
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+    
+    // a new job must be prepared because there are undefinite number of repeats 1 hour interval
+    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(processInstanceId).count());
 
     Task task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
     taskService.complete(task.getId());
@@ -207,10 +206,11 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     moveByMinutes(60);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
-     }catch (Exception ex){
+    } catch (Exception ex){
       fail("No more jobs since the user completed the task");
-
     }
+    
+    assertEquals(0, managementService.createTimerJobQuery().processInstanceId(processInstanceId).count());
   }
   
   @Deployment
@@ -225,7 +225,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertEquals(1, tq.count());
     
     // Simulate timer
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     
     tq = taskService.createTaskQuery().taskAssignee("kermit");
@@ -252,7 +253,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     // After process start, there should be a timer created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingCycle",variables);
 
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(1, jobs.size());
     
@@ -281,7 +282,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     String procId = runtimeService.startProcessInstanceByKey("testTimerOnConcurrentSubprocess").getId();
     assertEquals(4, taskService.createTaskQuery().count());
     
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     assertEquals(5, taskService.createTaskQuery().count());
     
@@ -308,7 +310,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     String procId = runtimeService.startProcessInstanceByKey("testTimerOnConcurrentSubprocess").getId();
     assertEquals(4, taskService.createTaskQuery().count());
     
-    Job timer = managementService.createJobQuery().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
     assertEquals(5, taskService.createTaskQuery().count());
     

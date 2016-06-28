@@ -1,19 +1,14 @@
-/**
- * Activiti app component part of the Activiti project
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.activiti.rest.editor;
 
@@ -37,10 +32,10 @@ import com.activiti.domain.editor.AppDefinition;
 import com.activiti.domain.editor.Model;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
+import com.activiti.model.editor.decisiontable.DecisionTableDefinitionRepresentation;
 import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.InternalServerErrorException;
-import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,7 +46,6 @@ public class ModelsResource extends AbstractModelsResource {
     private final Logger logger = LoggerFactory.getLogger(ModelsResource.class);
 
     @RequestMapping(value = "/rest/models", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getModels(
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String sort,
@@ -62,7 +56,6 @@ public class ModelsResource extends AbstractModelsResource {
     }
 
     @RequestMapping(value = "/rest/models-for-app-definition", method = RequestMethod.GET, produces = "application/json")
-    @Timed
     public ResultListDataRepresentation getModelsToIncludeInAppDefinition() {
         return super.getModelsToIncludeInAppDefinition();
     }
@@ -70,7 +63,6 @@ public class ModelsResource extends AbstractModelsResource {
     @RequestMapping(value = "/rest/import-process-model",
             method = RequestMethod.POST,
             produces = "application/json")
-    @Timed
     public ModelRepresentation importProcessModel(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         return super.importProcessModel(request, file);
     }
@@ -80,7 +72,6 @@ public class ModelsResource extends AbstractModelsResource {
      */
     @RequestMapping(value = "/rest/import-process-model/text",
             method = RequestMethod.POST)
-    @Timed
     public String importProcessModelText(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
 
         ModelRepresentation modelRepresentation = super.importProcessModel(request, file);
@@ -98,7 +89,6 @@ public class ModelsResource extends AbstractModelsResource {
     @RequestMapping(value = "/rest/models",
             method = RequestMethod.POST,
             produces = "application/json")
-    @Timed
     public ModelRepresentation createModel(@RequestBody ModelRepresentation modelRepresentation) {
         String json = null;
         if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_FORM)) {
@@ -108,6 +98,19 @@ public class ModelsResource extends AbstractModelsResource {
                 logger.error("Error creating form model", e);
                 throw new InternalServerErrorException("Error creating form");
             }
+            
+        } else if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_DECISION_TABLE)) {
+          try {
+              DecisionTableDefinitionRepresentation decisionTableDefinition = new DecisionTableDefinitionRepresentation();
+  
+              String decisionTableDefinitionKey = modelRepresentation.getName().replaceAll(" ", "");
+              decisionTableDefinition.setKey(decisionTableDefinitionKey);
+  
+              json = objectMapper.writeValueAsString(decisionTableDefinition);
+          } catch (Exception e) {
+              logger.error("Error creating decision table model", e);
+              throw new InternalServerErrorException("Error creating decision table");
+          }
 
         } else if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_APP)) {
             try {
@@ -164,7 +167,6 @@ public class ModelsResource extends AbstractModelsResource {
     @RequestMapping(value = "/rest/models/{modelId}/clone",
             method = RequestMethod.POST,
             produces = "application/json")
-    @Timed
     public ModelRepresentation duplicateModel(@PathVariable Long modelId, @RequestBody ModelRepresentation modelRepresentation) {
 
         String json = null;

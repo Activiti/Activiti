@@ -1,0 +1,19 @@
+<div role="rowgroup"
+     class="ui-grid-header"> <!-- theader -->
+    <div class="ui-grid-top-panel">
+        <div class="ui-grid-header-viewport">
+            <div class="ui-grid-header-canvas">
+                <div class="ui-grid-header-cell-wrapper" ng-style="colContainer.headerCellWrapperStyle()">
+                    <div role="row" class="ui-grid-header-cell-row"><pre></pre>
+                        <div class="ui-grid-header-cell ui-grid-clearfix"
+                             ng-repeat="col in colContainer.renderedColumns track by col.uid"
+                             ui-grid-header-cell
+                             col="col"
+                             render-index="$index">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

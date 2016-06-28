@@ -39,8 +39,6 @@
         <property name="databaseSchemaUpdate" value="true"/>
         <property name="activiti5CompatibilityEnabled" value="true" />
         <property name="activiti5CompatibilityHandlerFactory" ref="activiti5CompabilityFactory" />
-        <property name="jobExecutorActivate" value="false"/>
-        <property name="asyncExecutorEnabled" value="true" />
         <property name="asyncExecutorActivate" value="false" />
     </bean>
 

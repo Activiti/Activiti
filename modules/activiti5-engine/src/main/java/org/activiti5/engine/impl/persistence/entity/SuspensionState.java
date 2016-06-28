@@ -12,8 +12,8 @@
  */
 package org.activiti5.engine.impl.persistence.entity;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.ActivitiException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.context.Context;
 

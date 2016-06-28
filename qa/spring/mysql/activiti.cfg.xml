@@ -32,9 +32,7 @@
     <property name="transactionManager" ref="transactionManager" />
     <property name="transactionsExternallyManaged" value="true" />
     <property name="databaseSchemaUpdate" value="true" />
-    <property name="jobExecutorActivate" value="false" />
     <property name="asyncExecutor" ref="asyncExecutor" />
-    <property name="asyncExecutorEnabled" value="true" />
     <property name="asyncExecutorActivate" value="false" />
     <property name="defaultFailedJobWaitTime" value="1" />
     <property name="asyncFailedJobWaitTime" value="1" />

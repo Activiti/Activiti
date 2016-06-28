@@ -1,0 +1,59 @@
+<div class="modal" ng-controller="DecisionTableInputConditionEditorCtlr">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form name="inputExpressionForm">
+                <div class="modal-header"><h2>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.INPUT-TITLE' | translate}}</h2>
+                    <p>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.INPUT-DESCRIPTION' | translate}}</p>
+                </div>
+                <div class="modal-body">
+
+                    <!--Column name start-->
+                    <div class="clearfix form-group">
+                        <div class="col-xs-4">
+                            <label>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.EXPRESSION-LABEL' | translate}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" placeholder="{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.EXPRESSION-PLACEHOLDER' | translate}}" type="text" ng-model="popup.selectedExpressionLabel" />
+                        </div>
+                    </div>
+                    <!--Column name  end-->
+
+                    <div>
+
+                        <div>
+
+                            <!--Variable name start-->
+                            <div class="clearfix form-group" ng-class="{'has-error': inputExpressionForm.formfield.$invalid}">
+                                <div class="col-xs-4">
+                                    <label>{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.EXPRESSION-VARIABLE-NAME' | translate}}</label>
+                                </div>
+                                <div class="col-xs-8">
+                                    <input class="form-control" variable-identifier placeholder="{{'DECISION-TABLE-EDITOR.POPUP.EXPRESSION-EDITOR.EXPRESSION-VARIABLE-NAME-PLACEHOLDER' | translate}}" type="text"
+                                            ng-model="popup.selectedExpressionVariable.id" />
+                                </div>
+                            </div>
+                            <!--Variable name end-->
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-sm btn-default" ng-click="cancel()">
+                            {{'GENERAL.ACTION.CANCEL' | translate}}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default" ng-click="save()" ng-disabled="!inputExpressionForm.$valid || readOnly">
+                            {{'GENERAL.ACTION.SAVE' | translate}}
+                        </button>
+                    </div>
+                    <div class="loading pull-right" ng-show="model.loading">
+                        <div class="l1"></div><div class="l2"></div><div class="l2"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

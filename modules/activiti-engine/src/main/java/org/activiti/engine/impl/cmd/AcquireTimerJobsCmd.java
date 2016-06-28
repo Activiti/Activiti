@@ -17,45 +17,40 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.asyncexecutor.AcquiredJobEntities;
+import org.activiti.engine.impl.asyncexecutor.AcquiredTimerJobEntities;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
  * @author Tijs Rademakers
  */
-public class AcquireTimerJobsCmd implements Command<AcquiredJobEntities> {
+public class AcquireTimerJobsCmd implements Command<AcquiredTimerJobEntities> {
 
-  private final String lockOwner;
-  private final int lockTimeInMillis;
-  private final int maxJobsPerAcquisition;
+  private final AsyncExecutor asyncExecutor;
 
-  public AcquireTimerJobsCmd(String lockOwner, int lockTimeInMillis, int maxJobsPerAcquisition) {
-    this.lockOwner = lockOwner;
-    this.lockTimeInMillis = lockTimeInMillis;
-    this.maxJobsPerAcquisition = maxJobsPerAcquisition;
+  public AcquireTimerJobsCmd(AsyncExecutor asyncExecutor) {
+    this.asyncExecutor = asyncExecutor;
   }
 
-  public AcquiredJobEntities execute(CommandContext commandContext) {
-    AcquiredJobEntities acquiredJobs = new AcquiredJobEntities();
-    List<JobEntity> jobs = commandContext.getJobEntityManager().findNextTimerJobsToExecute(new Page(0, maxJobsPerAcquisition));
+  public AcquiredTimerJobEntities execute(CommandContext commandContext) {
+    AcquiredTimerJobEntities acquiredJobs = new AcquiredTimerJobEntities();
+    List<TimerJobEntity> timerJobs = commandContext.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
 
-    for (JobEntity job : jobs) {
-      if (job != null && !acquiredJobs.contains(job.getId())) {
-        lockJob(commandContext, job, lockOwner, lockTimeInMillis);
-        acquiredJobs.addJob(job);
-      }
+    for (TimerJobEntity job : timerJobs) {
+      lockJob(commandContext, job, asyncExecutor.getAsyncJobLockTimeInMillis());
+      acquiredJobs.addJob(job);
     }
 
     return acquiredJobs;
   }
 
-  protected void lockJob(CommandContext commandContext, JobEntity job, String lockOwner, int lockTimeInMillis) {
-    job.setLockOwner(lockOwner);
+  protected void lockJob(CommandContext commandContext, TimerJobEntity job, int lockTimeInMillis) {
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
     gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
+    job.setLockOwner(asyncExecutor.getLockOwner());
     job.setLockExpirationTime(gregorianCalendar.getTime());
   }
 }

@@ -18,11 +18,17 @@ import java.util.Date;
 import org.activiti.engine.ManagementService;
 
 /**
- * Represents one job (timer, message, etc.).
+ * Represents one job (timer, async job, etc.).
  * 
  * @author Joram Barrez
  */
 public interface Job {
+  
+  String JOB_TYPE_TIMER = "timer";
+  String JOB_TYPE_MESSAGE = "message";
+  
+  boolean DEFAULT_EXCLUSIVE = true;
+  int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
   /**
    * Returns the unique identifier for this job.
@@ -66,5 +72,25 @@ public interface Job {
    * Get the tenant identifier for this job.
    */
   String getTenantId();
+  
+  /**
+   * Is the job exclusive?
+   */
+  boolean isExclusive();
+  
+  /**
+   * Get the job type for this job.
+   */
+  String getJobType();
+  
+  /**
+   * Get the job handler type.
+   */
+  String getJobHandlerType();
+  
+  /**
+   * Get the job configuration.
+   */
+  String getJobHandlerConfiguration();
 
 }

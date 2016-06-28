@@ -370,7 +370,7 @@
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <if test="withJobException">
-      left outer join ${prefix}ACT_RU_JOB JOB ON RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
+      left outer join ${prefix}ACT_RU_TIMER_JOB JOB ON RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
     </if>
     <where>
       <if test="processInstanceId != null">

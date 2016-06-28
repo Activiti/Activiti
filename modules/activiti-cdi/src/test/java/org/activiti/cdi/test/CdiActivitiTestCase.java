@@ -31,8 +31,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.test.ActivitiRule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -106,8 +106,8 @@ public abstract class CdiActivitiTestCase {
   // ////////////////////// copied from AbstractActivitiTestcase
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -128,13 +128,13 @@ public abstract class CdiActivitiTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
+      asyncExecutor.shutdown();
     }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -157,12 +157,12 @@ public abstract class CdiActivitiTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
+      asyncExecutor.shutdown();
     }
   }
 
   public boolean areJobsAvailable() {
-    return !managementService.createJobQuery().executable().list().isEmpty();
+    return !managementService.createJobQuery().list().isEmpty();
   }
 
   private static class InteruptTask extends TimerTask {

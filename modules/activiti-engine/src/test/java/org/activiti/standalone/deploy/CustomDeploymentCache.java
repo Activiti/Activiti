@@ -14,7 +14,7 @@ package org.activiti.standalone.deploy;
 
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Very simplistic cache implementation that only caches one process definition.
@@ -60,11 +60,11 @@ public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionC
   }
 
   // For testing purposes only
-  public ProcessDefinitionEntity getCachedProcessDefinition() {
+  public ProcessDefinition getCachedProcessDefinition() {
     if (entry == null) {
       return null;
     }
-    return entry.getProcessDefinitionEntity();
+    return entry.getProcessDefinition();
   }
 
 }

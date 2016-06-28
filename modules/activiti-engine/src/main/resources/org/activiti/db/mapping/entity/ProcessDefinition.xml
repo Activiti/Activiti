@@ -26,7 +26,7 @@
   </insert>
 
   <insert id="bulkInsertProcessDefinition" parameterType="java.util.List">
-    INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_)
+    INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
     VALUES 
       <foreach collection="list" item="processDefinition" index="index" separator=","> 
         (#{processDefinition.id, jdbcType=VARCHAR},
@@ -42,7 +42,8 @@
          #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
          #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
          #{processDefinition.suspensionState, jdbcType=INTEGER},
-         #{processDefinition.tenantId, jdbcType=VARCHAR})
+         #{processDefinition.tenantId, jdbcType=VARCHAR},
+         #{processDefinition.engineVersion, jdbcType=VARCHAR})
     </foreach>
   </insert>
 
@@ -64,7 +65,8 @@
          #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
          #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
          #{processDefinition.suspensionState, jdbcType=INTEGER},
-         #{processDefinition.tenantId, jdbcType=VARCHAR})
+         #{processDefinition.tenantId, jdbcType=VARCHAR},
+         #{processDefinition.engineVersion, jdbcType=VARCHAR})
     </foreach>
     SELECT * FROM dual
   </insert>

@@ -57,7 +57,7 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
     
     repositoryService.deleteDeployment(deploymentId4, true);
     assertTimerJobs(1);
-    Job job = managementService.createJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId(), job.getProcessDefinitionId());
     
     cleanup(deploymentId1, deploymentId2, deploymentId3);
@@ -77,7 +77,7 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
     assertTimerJobs(0);
     repositoryService.deleteDeployment(deploymentId4, true);
     assertTimerJobs(1);
-    Job job = managementService.createJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
     assertEquals(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId(), job.getProcessDefinitionId());
     
     cleanup(deploymentId1);
@@ -106,7 +106,7 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
   }
   
   private void assertTimerJobs(long count) {
-    assertEquals(count, managementService.createJobQuery().timers().count());
+    assertEquals(count, managementService.createTimerJobQuery().count());
   }
   
   private void cleanup(String ... deploymentIds) {

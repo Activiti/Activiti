@@ -12,12 +12,11 @@
  */
 package org.activiti5.engine.test.api.event;
 
-import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -98,11 +97,8 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 	protected void initializeServices() {
 	  super.initializeServices();
 	  
-	  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	  
 	  listener = new TestActivitiEntityEventListener(org.activiti5.engine.runtime.Execution.class);
-	  activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 	
 	@Override
@@ -110,10 +106,8 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	  
 	  if (listener != null) {
-	    org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-	  	listener.clearEventsReceived();
-	  	activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+	    listener.clearEventsReceived();
+	    processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
 }

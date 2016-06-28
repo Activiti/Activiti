@@ -24,12 +24,12 @@ import java.util.Set;
 
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.impl.variable.VariableType;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.javax.el.ELContext;
-import org.activiti5.engine.impl.variable.VariableType;
-import org.activiti5.engine.impl.variable.VariableTypes;
 
 
 

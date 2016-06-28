@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.event;
 
 import java.util.Map;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
 import org.activiti5.engine.impl.context.Context;
@@ -24,7 +25,6 @@ import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 
 
@@ -51,7 +51,7 @@ public class SignalEventHandler extends AbstractEventHandler {
            .getProcessEngineConfiguration()
            .getDeploymentManager();
          
-  		ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+  		ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
   		if (processDefinition == null) {
   			throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
   		}

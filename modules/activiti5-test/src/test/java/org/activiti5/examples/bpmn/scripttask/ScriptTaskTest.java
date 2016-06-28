@@ -12,8 +12,6 @@
  */
 package org.activiti5.examples.bpmn.scripttask;
 
-import groovy.lang.MissingPropertyException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +23,8 @@ import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.impl.util.CollectionUtil;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import groovy.lang.MissingPropertyException;
 
 /**
  * @author Joram Barrez

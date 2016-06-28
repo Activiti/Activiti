@@ -14,9 +14,9 @@ package org.activiti5.engine.delegate.event.impl;
 
 import java.util.Map;
 
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEntityWithVariablesEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
  * Base class for all {@link ActivitiEntityEvent} implementations, related to entities with variables.

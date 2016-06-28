@@ -14,10 +14,10 @@ package org.activiti5.standalone.deploy;
 
 import java.text.MessageFormat;
 
+import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentProperties;
-import org.activiti5.engine.impl.persistence.deploy.DefaultDeploymentCache;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.test.ResourceActivitiTestCase;
 
 /**
@@ -35,7 +35,7 @@ public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
     org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessEngineConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
         processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
     
-    DefaultDeploymentCache<ProcessDefinitionEntity> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionEntity>) 
+    DefaultDeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionCacheEntry>) 
         activiti5ProcessEngineConfig.getProcessDefinitionCache();
     assertEquals(0, processDefinitionCache.size());
     

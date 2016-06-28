@@ -19,12 +19,12 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventDispatcher;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.runtime.Execution;
 import org.activiti5.engine.runtime.ExecutionQuery;
 import org.activiti5.engine.runtime.NativeExecutionQuery;

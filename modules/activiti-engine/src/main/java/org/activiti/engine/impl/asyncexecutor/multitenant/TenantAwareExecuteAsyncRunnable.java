@@ -16,7 +16,7 @@ package org.activiti.engine.impl.asyncexecutor.multitenant;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnable;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.runtime.Job;
 
 /**
  * Extends the default {@link ExecuteAsyncRunnable} by setting the 'tenant' context before executing.
@@ -28,7 +28,7 @@ public class TenantAwareExecuteAsyncRunnable extends ExecuteAsyncRunnable {
   protected TenantInfoHolder tenantInfoHolder;
   protected String tenantId;
   
-  public TenantAwareExecuteAsyncRunnable(JobEntity job, CommandExecutor commandExecutor, TenantInfoHolder tenantInfoHolder, String tenantId) {
+  public TenantAwareExecuteAsyncRunnable(Job job, CommandExecutor commandExecutor, TenantInfoHolder tenantInfoHolder, String tenantId) {
     super(job, commandExecutor);
     this.tenantInfoHolder = tenantInfoHolder;
     this.tenantId = tenantId;

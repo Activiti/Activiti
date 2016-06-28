@@ -17,11 +17,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti5.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
+import org.activiti5.engine.impl.persistence.entity.TimerJobEntity;
 
 
 /**
@@ -50,14 +51,25 @@ public class CancelJobsCmd implements Command<Void>, Serializable {
         .getJobEntityManager()
         .findJobById(jobId);
       
-      if(jobToDelete != null) {
-        // When given job doesn't exist, ignore
+      if (jobToDelete != null) {
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
         }
 
         jobToDelete.delete();
+      
+      } else {
+        TimerJobEntity timerJobToDelete = commandContext.getTimerJobEntityManager().findJobById(jobId);
+
+        if (timerJobToDelete != null) {
+          if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerJobToDelete));
+          }
+
+          timerJobToDelete.delete();
+        }
       }
     }
     return null;

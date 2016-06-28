@@ -4,12 +4,18 @@ import java.util.Collection;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 
@@ -58,10 +64,28 @@ public class DestroyScopeOperation extends AbstractOperation {
     }
 
     // Delete all scope jobs
+    TimerJobEntityManager timerJobEntityManager = commandContext.getTimerJobEntityManager();
+    Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+    for (TimerJobEntity job : timerJobsForExecution) {
+      timerJobEntityManager.delete(job);
+    }
+    
     JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(scopeExecution.getId());
     for (JobEntity job : jobsForExecution) {
       jobEntityManager.delete(job);
+    }
+    
+    SuspendedJobEntityManager suspendedJobEntityManager = commandContext.getSuspendedJobEntityManager();
+    Collection<SuspendedJobEntity> suspendedJobsForExecution = suspendedJobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+    for (SuspendedJobEntity job : suspendedJobsForExecution) {
+      suspendedJobEntityManager.delete(job);
+    }
+    
+    DeadLetterJobEntityManager deadLetterJobEntityManager = commandContext.getDeadLetterJobEntityManager();
+    Collection<DeadLetterJobEntity> deadLetterJobsForExecution = deadLetterJobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+    for (DeadLetterJobEntity job : deadLetterJobsForExecution) {
+      deadLetterJobEntityManager.delete(job);
     }
     
     // Remove variables associated with this scope

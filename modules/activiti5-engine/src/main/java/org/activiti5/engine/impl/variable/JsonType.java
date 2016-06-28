@@ -12,6 +12,8 @@
  */
 package org.activiti5.engine.impl.variable;
 
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +30,12 @@ public class JsonType implements VariableType {
   private static final Logger logger = LoggerFactory.getLogger(JsonType.class);
   
   protected final int maxLength;
-  protected ObjectMapper objectMapper = new ObjectMapper();
-
-  public JsonType(int maxLength) {this.maxLength = maxLength;}
+  protected ObjectMapper objectMapper;
+  
+  public JsonType(int maxLength, ObjectMapper objectMapper) {
+    this.maxLength = maxLength;
+    this.objectMapper = objectMapper;
+  }
 
   public String getTypeName() {
     return "json";

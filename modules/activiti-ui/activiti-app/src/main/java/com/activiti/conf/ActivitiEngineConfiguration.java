@@ -1,23 +1,32 @@
-/**
- * Activiti app component part of the Activiti project
- * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.activiti.conf;
 
-import org.activiti.engine.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -34,10 +43,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @ComponentScan(basePackages= {
@@ -81,8 +86,6 @@ public class ActivitiEngineConfiguration {
     	processEngineConfiguration.setDataSource(dataSource);
     	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
     	processEngineConfiguration.setTransactionManager(transactionManager);
-    	processEngineConfiguration.setJobExecutorActivate(false);
-    	processEngineConfiguration.setAsyncExecutorEnabled(true);
     	processEngineConfiguration.setAsyncExecutorActivate(true);
     	processEngineConfiguration.setAsyncExecutor(asyncExecutor());
 

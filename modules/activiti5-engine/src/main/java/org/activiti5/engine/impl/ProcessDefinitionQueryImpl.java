@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.identity.Group;
@@ -24,7 +25,6 @@ import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 import org.activiti5.engine.impl.persistence.entity.SuspensionState;
-import org.activiti5.engine.repository.ProcessDefinition;
 import org.activiti5.engine.repository.ProcessDefinitionQuery;
 
 

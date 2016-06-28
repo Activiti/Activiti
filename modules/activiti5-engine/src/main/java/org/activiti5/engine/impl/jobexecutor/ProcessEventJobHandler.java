@@ -13,10 +13,10 @@
 
 package org.activiti5.engine.impl.jobexecutor;
 
+import org.activiti.engine.runtime.Job;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti5.engine.impl.persistence.entity.JobEntity;
 
 
 /**
@@ -30,7 +30,7 @@ public class ProcessEventJobHandler implements JobHandler {
     return TYPE;
   }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(Job job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     // lookup subscription:    
     EventSubscriptionEntity eventSubscription = commandContext.getEventSubscriptionEntityManager()
       .findEventSubscriptionbyId(configuration);

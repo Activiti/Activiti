@@ -20,14 +20,13 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.activiti.engine.cfg.MailServerInfo;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti5.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti5.engine.impl.history.HistoryLevel;
-import org.activiti5.engine.impl.jobexecutor.JobExecutor;
 
 
 /** Configuration information from which a process engine can be build.
@@ -103,8 +102,6 @@ public abstract class ProcessEngineConfiguration {
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
   protected int idBlockSize = 2500;
   protected String history = HistoryLevel.AUDIT.getKey();
-  protected boolean jobExecutorActivate;
-  protected boolean asyncExecutorEnabled;
   protected boolean asyncExecutorActivate;
 
   protected String mailServerHost = "localhost";
@@ -145,8 +142,8 @@ public abstract class ProcessEngineConfiguration {
   protected boolean jpaCloseEntityManager;
 
   protected Clock clock;
-  protected JobExecutor jobExecutor;
   protected AsyncExecutor asyncExecutor;
+  
   /** 
    * Define the default lock time for an async job in seconds.
    * The lock time is used when creating an async job and when it expires the async executor
@@ -570,24 +567,6 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public boolean isJobExecutorActivate() {
-    return jobExecutorActivate;
-  }
-  
-  public ProcessEngineConfiguration setJobExecutorActivate(boolean jobExecutorActivate) {
-    this.jobExecutorActivate = jobExecutorActivate;
-    return this;
-  }
-  
-  public boolean isAsyncExecutorEnabled() {
-    return asyncExecutorEnabled;
-  }
-
-  public ProcessEngineConfiguration setAsyncExecutorEnabled(boolean asyncExecutorEnabled) {
-    this.asyncExecutorEnabled = asyncExecutorEnabled;
-    return this;
-  }
-
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
   }
@@ -776,20 +755,11 @@ public abstract class ProcessEngineConfiguration {
     this.processDiagramGenerator = processDiagramGenerator;
     return this;
   }
-
-  public JobExecutor getJobExecutor() {
-    return jobExecutor;
-  }
-  
-  public ProcessEngineConfiguration setJobExecutor(JobExecutor jobExecutor) {
-    this.jobExecutor = jobExecutor;
-    return this;
-  }
   
   public AsyncExecutor getAsyncExecutor() {
     return asyncExecutor;
   }
-  
+
   public ProcessEngineConfiguration setAsyncExecutor(AsyncExecutor asyncExecutor) {
     this.asyncExecutor = asyncExecutor;
     return this;

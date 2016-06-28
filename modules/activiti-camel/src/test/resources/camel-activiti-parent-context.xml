@@ -26,9 +26,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="transactionManager" ref="transactionManager"/>
         <property name="databaseSchemaUpdate" value="true"/>
-        <property name="jobExecutorActivate" value="false"/>
         <property name="asyncExecutor" ref="asyncExecutor" />
-        <property name="asyncExecutorEnabled" value="true" />
         <property name="asyncExecutorActivate" value="false" />
     </bean>
 

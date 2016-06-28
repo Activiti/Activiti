@@ -15,15 +15,16 @@ package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -42,7 +43,9 @@ import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.runtime.Clock;
@@ -87,16 +90,16 @@ public abstract class AbstractManager {
     return getProcessEngineConfiguration().getAsyncExecutor();
   }
   
-  protected JobExecutor getJobExecutor() {
-    return getProcessEngineConfiguration().getJobExecutor();
-  }
-  
   protected ActivitiEventDispatcher getEventDispatcher() {
     return getProcessEngineConfiguration().getEventDispatcher();
   }
   
   protected HistoryManager getHistoryManager() {
     return getProcessEngineConfiguration().getHistoryManager();
+  }
+  
+  protected JobManager getJobManager() {
+    return getProcessEngineConfiguration().getJobManager();
   }
 
   protected DeploymentEntityManager getDeploymentEntityManager() {
@@ -141,6 +144,22 @@ public abstract class AbstractManager {
 
   protected VariableInstanceEntityManager getVariableInstanceEntityManager() {
     return getProcessEngineConfiguration().getVariableInstanceEntityManager();
+  }
+  
+  protected JobEntityManager getJobEntityManager() {
+    return getProcessEngineConfiguration().getJobEntityManager();
+  }
+  
+  protected TimerJobEntityManager getTimerJobEntityManager() {
+    return getProcessEngineConfiguration().getTimerJobEntityManager();
+  }
+  
+  protected SuspendedJobEntityManager getSuspendedJobEntityManager() {
+    return getProcessEngineConfiguration().getSuspendedJobEntityManager();
+  }
+  
+  protected DeadLetterJobEntityManager getDeadLetterJobEntityManager() {
+    return getProcessEngineConfiguration().getDeadLetterJobEntityManager();
   }
 
   protected HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {
@@ -190,9 +209,4 @@ public abstract class AbstractManager {
   protected CommentEntityManager getCommentEntityManager() {
     return getProcessEngineConfiguration().getCommentEntityManager();
   }
-  
-  protected JobEntityManager getJobEntityManager() {
-    return getProcessEngineConfiguration().getJobEntityManager();
-  }
-
 }

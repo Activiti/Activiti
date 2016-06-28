@@ -12,15 +12,16 @@
  */
 package org.activiti5.engine.impl.cmd;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.ActivitiObjectNotFoundException;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
-import org.activiti5.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti5.engine.repository.ProcessDefinition;
 
 /**
  * @author Joram Barrez
@@ -53,7 +54,7 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
     processDefinition.setCategory(category);
     
     // Remove process definition from cache, it will be refetched later
-    DeploymentCache<ProcessDefinitionEntity> processDefinitionCache = 
+    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = 
         commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
     if (processDefinitionCache != null) {
       processDefinitionCache.remove(processDefinitionId);

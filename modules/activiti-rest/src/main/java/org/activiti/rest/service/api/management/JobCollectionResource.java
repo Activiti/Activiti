@@ -13,15 +13,12 @@
 
 package org.activiti.rest.service.api.management;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
-import org.activiti.engine.impl.JobQueryProperty;
-import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.common.api.RequestUtil;
@@ -37,18 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class JobCollectionResource {
-
-  protected static Map<String, QueryProperty> properties;
-
-  static {
-    properties = new HashMap<String, QueryProperty>();
-    properties.put("id", JobQueryProperty.JOB_ID);
-    properties.put("dueDate", JobQueryProperty.DUEDATE);
-    properties.put("executionId", JobQueryProperty.EXECUTION_ID);
-    properties.put("processInstanceId", JobQueryProperty.PROCESS_INSTANCE_ID);
-    properties.put("retries", JobQueryProperty.RETRIES);
-    properties.put("tenantId", JobQueryProperty.TENANT_ID);
-  }
 
   @Autowired
   protected RestResponseFactory restResponseFactory;
@@ -71,16 +56,6 @@ public class JobCollectionResource {
     }
     if (allRequestParams.containsKey("processDefinitionId")) {
       query.processDefinitionId(allRequestParams.get("processDefinitionId"));
-    }
-    if (allRequestParams.containsKey("withRetriesLeft")) {
-      if (Boolean.valueOf(allRequestParams.get("withRetriesLeft"))) {
-        query.withRetriesLeft();
-      }
-    }
-    if (allRequestParams.containsKey("executable")) {
-      if (Boolean.valueOf(allRequestParams.get("executable"))) {
-        query.executable();
-      }
     }
     if (allRequestParams.containsKey("timersOnly")) {
       if (allRequestParams.containsKey("messagesOnly")) {
@@ -120,7 +95,17 @@ public class JobCollectionResource {
         query.jobWithoutTenantId();
       }
     }
+    if (allRequestParams.containsKey("locked")) {
+      if (Boolean.valueOf(allRequestParams.get("locked"))) {
+        query.locked();
+      }
+    }
+    if (allRequestParams.containsKey("unlocked")) {
+      if (Boolean.valueOf(allRequestParams.get("unlocked"))) {
+        query.unlocked();
+      }
+    }
 
-    return new JobPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
+    return new JobPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", JobQueryProperties.PROPERTIES);
   }
 }

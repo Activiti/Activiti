@@ -72,6 +72,8 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
 
   List<JobEntity> getJobs();
   
+  List<TimerJobEntity> getTimerJobs();
+  
   List<IdentityLinkEntity> getIdentityLinks();
 
   void setProcessInstanceId(String processInstanceId);

@@ -12,12 +12,12 @@
  */
 package org.activiti5.examples.pvm;
 
-import junit.framework.TestCase;
-
 import org.activiti5.engine.impl.pvm.ProcessDefinitionBuilder;
 import org.activiti5.engine.impl.pvm.PvmExecution;
 import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;
+
+import junit.framework.TestCase;
 
 /**
  * @author Tom Baeyens

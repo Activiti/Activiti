@@ -210,7 +210,7 @@ public class ExecutionEntityManager extends AbstractManager {
   public void updateProcessInstanceLockTime(String processInstanceId) {
     CommandContext commandContext = Context.getCommandContext();
     Date expirationTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-    int lockMillis = commandContext.getProcessEngineConfiguration().getAsyncExecutor().getAsyncJobLockTimeInMillis();
+    int lockMillis = commandContext.getProcessEngineConfiguration().getAsyncExecutorAsyncJobLockTimeInMillis();
     GregorianCalendar lockCal = new GregorianCalendar();
     lockCal.setTime(expirationTime);
     lockCal.add(Calendar.MILLISECOND, lockMillis);

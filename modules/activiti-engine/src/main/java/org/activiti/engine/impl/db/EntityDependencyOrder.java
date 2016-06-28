@@ -8,6 +8,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
@@ -28,15 +29,15 @@ import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
-import org.activiti.engine.impl.persistence.entity.MessageEntityImpl;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
-import org.activiti.engine.impl.persistence.entity.TimerEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 
@@ -78,16 +79,13 @@ public class EntityDependencyOrder {
 		 */
 		DELETE_ORDER.add(ModelEntityImpl.class); 
 		
-		/* Subclass of JobEntity */
-		DELETE_ORDER.add(MessageEntityImpl.class);
-		
-		/* Subclass of TimerEntity */
-		DELETE_ORDER.add(TimerEntityImpl.class);
-		
 		/*
 		 * FK to ByteArray
 		 */
 		DELETE_ORDER.add(JobEntityImpl.class);
+		DELETE_ORDER.add(TimerJobEntityImpl.class);
+		DELETE_ORDER.add(SuspendedJobEntityImpl.class);
+		DELETE_ORDER.add(DeadLetterJobEntityImpl.class);
 		
 		/*
 		 * FK to ByteArray

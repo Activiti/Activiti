@@ -16,6 +16,7 @@ package org.activiti5.engine.impl;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.history.HistoricVariableInstance;
 import org.activiti5.engine.history.HistoricVariableInstanceQuery;
@@ -26,7 +27,6 @@ import org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEnti
 import org.activiti5.engine.impl.variable.CacheableVariable;
 import org.activiti5.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti5.engine.impl.variable.JPAEntityVariableType;
-import org.activiti5.engine.impl.variable.VariableTypes;
 
 /**
  * @author Christian Lipphardt (camunda)

@@ -12,12 +12,12 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventListener;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.bpmn.helper.MessageThrowingEventListener;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
@@ -33,14 +33,11 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 	public void testThrowMessage() throws Exception {
 		MessageThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new MessageThrowingEventListener();
 			listener.setMessageName("Message");
 			
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
 			assertNotNull(processInstance);
@@ -66,7 +63,7 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 			
 			
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 	
@@ -99,14 +96,11 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 	public void testThrowMessageInterrupting() throws Exception {
 		MessageThrowingEventListener listener = null;
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		try {
 			listener = new MessageThrowingEventListener();
 			listener.setMessageName("Message");
 			
-			activiti5ProcessConfig.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+			processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 			
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
 			assertNotNull(processInstance);
@@ -129,7 +123,7 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
 					.singleResult();
 			assertNotNull(boundaryTask);
 		} finally {
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

@@ -16,9 +16,8 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.logging.LogMDC;
@@ -152,19 +151,8 @@ public class ContinueProcessOperation extends AbstractOperation {
   }
   
   protected void executeAsynchronous(FlowNode flowNode) {
-    MessageEntity message = commandContext.getJobEntityManager().createMessage();
-    message.setExecutionId(execution.getId());
-    message.setProcessInstanceId(execution.getProcessInstanceId());
-    message.setProcessDefinitionId(execution.getProcessDefinitionId());
-    message.setExclusive(flowNode.isExclusive());
-    message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
-
-    // Inherit tenant id (if applicable)
-    if (execution.getTenantId() != null) {
-      message.setTenantId(execution.getTenantId());
-    }
-
-    commandContext.getJobEntityManager().send(message);
+    JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
+    commandContext.getJobManager().scheduleAsyncJob(job);
   }
 
   protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {

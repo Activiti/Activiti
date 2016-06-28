@@ -39,8 +39,8 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
 
     public void execute(DelegateExecution execution) {
       Variable v = new Variable();
-      execution.setVariable("variable", v);
       v.value = "delegate1";
+      execution.setVariable("variable", v);
     }
 
   }
@@ -54,6 +54,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
         isOkInDelegate2 = (v.value != null && v.value.equals("delegate1"));
       }
       v.value = "delegate2";
+      execution.setVariable("variable", v);
     }
 
   }

@@ -23,8 +23,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -63,7 +63,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // After process start, there should be 3 timers created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(3, jobs.size());
 
@@ -91,7 +91,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // Timer will fire in 2 hours
     processEngineConfiguration.getClock().setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
-    Job timer = managementService.createJobQuery().timers().singleResult();
+    Job timer = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(timer.getId());
     managementService.executeJob(timer.getId());
 
     Task task = taskService.createTaskQuery().singleResult();
@@ -109,7 +110,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // After process start, there should be a timer created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimer", variables);
 
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(1, jobs.size());
 
@@ -138,7 +139,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("testNullExpressionOnTimer", variables);
 
     //NO job scheduled as null expression set
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(0, jobs.size());
 
@@ -164,7 +165,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   @Deployment
   public void testRepeatingTimerWithCancelActivity() {
     runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
     assertEquals(1, taskService.createTaskQuery().count());
 
     // Firing job should cancel the user task, destroy the scope,
@@ -172,9 +173,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // created.
     // This didn't happen before 5.11 (new jobs kept being created). See
     // ACT-1427
-    Job job = managementService.createJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
+    managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, managementService.createTimerJobQuery().count());
     assertEquals(1, taskService.createTaskQuery().count());
   }
   
@@ -195,7 +197,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 		
 		// Move clock, job should fire
 		for (int i=0; i<30; i++) {
-			Job job = managementService.createJobQuery().singleResult();
+			Job job = managementService.createTimerJobQuery().singleResult();
 			
 			// Verify due date
 			if (previousDueDate != null) {
@@ -205,7 +207,9 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 			
 			currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
 			processEngineConfiguration.getClock().setCurrentTime(currentTime);
-			managementService.executeJob(managementService.createJobQuery().executable().singleResult().getId());
+			String jobId = managementService.createTimerJobQuery().singleResult().getId();
+			managementService.moveTimerToExecutableJob(jobId);
+			managementService.executeJob(jobId);
 		}
 		
 	}
@@ -225,7 +229,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // Move clock, job should fire
     for (int i = 0; i < 3; i++) {
-      Job job = managementService.createJobQuery().singleResult();
+      Job job = managementService.createTimerJobQuery().singleResult();
 
       // Verify due date
       if (previousDueDate != null) {
@@ -235,6 +239,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
       currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
       processEngineConfiguration.getClock().setCurrentTime(currentTime);
+      managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());
     }
 
@@ -253,7 +258,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // just wait for 2 seconds to run any job if it's the case
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception ex) {
       //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
     }
@@ -262,9 +267,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(1,tasks.size());
     assertEquals("First Task",tasks.get(0).getName());
-    List<Job> jobList = managementService.createJobQuery().list();
-    assertEquals(1,jobList.size());
-
+    List<Job> jobList = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobList.size());
 
     // let's see what's happening after 2 minutes
     // nothing should change since the timer have to executed after 10 minutes
@@ -274,7 +278,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception ex) {
       //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
     }
@@ -282,9 +286,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     tasks = taskService.createTaskQuery().list();
     assertEquals(1,tasks.size());
     assertEquals("First Task",tasks.get(0).getName());
-    jobList = managementService.createJobQuery().list();
-    assertEquals(1,jobList.size());
-
+    jobList = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobList.size());
 
     // after another 8 minutes (the timer will have to execute because it wasa set to be executed @ 10 minutes after process start)
     long tenMinutes = 8L * 60L * 1000L;
@@ -292,7 +295,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception ex) {
       ex.getCause();
       //expected exception because a new job is prepared
@@ -301,10 +304,12 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // there should be only one userTask and it should be the one triggered by the boundary timer event.
     // after the boundary event is triggered there should be no active job.
     tasks = taskService.createTaskQuery().list();
-    assertEquals(1,tasks.size());
+    assertEquals(1, tasks.size());
     assertEquals("Second Task",tasks.get(0).getName());
     jobList = managementService.createJobQuery().list();
-    assertEquals(0,jobList.size());
+    assertEquals(0, jobList.size());
+    jobList = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobList.size());
   }
 
 
@@ -327,11 +332,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // there should be a userTask waiting for user input
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(1,tasks.size());
+    assertEquals(1, tasks.size());
     assertEquals("Start",tasks.get(0).getName());
-    List<Job> jobList = managementService.createJobQuery().list();
-    assertEquals(1,jobList.size());
-
+    List<Job> jobList = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobList.size());
 
     // after another 2 minutes
     long tenMinutes = 2L * 60L * 1000L;
@@ -339,7 +343,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception ex) {
       ex.getCause();
       //expected exception because a new job is prepared
@@ -349,6 +353,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     tasks = taskService.createTaskQuery().list();
     assertEquals(0,tasks.size());
     jobList = managementService.createJobQuery().list();
+    assertEquals(0,jobList.size());
+    jobList = managementService.createTimerJobQuery().list();
     assertEquals(0,jobList.size());
   }
 

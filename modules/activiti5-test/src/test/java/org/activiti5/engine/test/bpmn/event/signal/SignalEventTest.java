@@ -107,7 +107,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     try {
       clock.setCurrentTime(new Date(System.currentTimeMillis() + 1000));
       processEngineConfiguration.setClock(clock);
-      waitForJobExecutorToProcessAllJobs(10000, 100l);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200l);
       
       assertEquals(0, createEventSubscriptionQuery().count());    
       assertEquals(0, runtimeService.createProcessInstanceQuery().count());
@@ -356,7 +356,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 		
 		assertEquals(1, managementService.createJobQuery().messages().count());
 		
-		waitForJobExecutorToProcessAllJobs(8000L, 200L);
+		waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(8000L, 200L);
 		assertEquals(0, createEventSubscriptionQuery().count());    
 		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
 		assertEquals(0, managementService.createJobQuery().count()); 

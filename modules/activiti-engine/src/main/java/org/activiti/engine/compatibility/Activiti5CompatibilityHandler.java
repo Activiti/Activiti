@@ -22,7 +22,9 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -55,9 +57,9 @@ public interface Activiti5CompatibilityHandler {
   
   ObjectNode getProcessDefinitionInfo(String processDefinitionId);
   
-  boolean isProcessDefinitionSuspended(String processDefinitionId);
+  ProcessDefinitionCacheEntry resolveProcessDefinition(ProcessDefinition processDefinition);
   
-  void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
+  boolean isProcessDefinitionSuspended(String processDefinitionId);
   
   void addCandidateStarter(String processDefinitionId, String userId, String groupId);
   
@@ -123,6 +125,12 @@ public interface Activiti5CompatibilityHandler {
   
   void deleteHistoricTask(String taskId);
   
+  StartFormData getStartFormData(String processDefinitionId);
+  
+  String getFormKey(String processDefinitionId, String taskDefinitionKey);
+  
+  Object getRenderedStartForm(String processDefinitionId, String formEngineName);
+  
   ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
   
   void submitTaskFormData(String taskId, Map<String, String> properties, boolean completeTask);
@@ -153,13 +161,11 @@ public interface Activiti5CompatibilityHandler {
 
   void executeJob(Job job);
   
-  void executeJobWithLockAndRetry(JobEntity job);
+  void executeJobWithLockAndRetry(Job job);
   
-  void handleFailedJob(JobEntity job, Throwable exception);
+  void handleFailedJob(Job job, Throwable exception);
   
   void deleteJob(String jobId);
-  
-  void setJobRetries(String jobId, int retries);
   
   void leaveExecution(DelegateExecution execution);
   
@@ -171,9 +177,7 @@ public interface Activiti5CompatibilityHandler {
   
   Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution);
   
-  void addEventListener(Object listener);
-  
-  void removeEventListener(Object listener);
+  void throwErrorEvent(ActivitiEvent event);
   
   void setClock(Clock clock);
   

@@ -25,7 +25,6 @@ import org.activiti.engine.impl.asyncexecutor.multitenant.TenantAwareAsyncExecut
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.slf4j.Logger;
@@ -92,9 +91,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
     if (booted) {
       createTenantSchema(tenantId);
       
-      if (isAsyncExecutorEnabled()) {
-        createTenantAsyncJobExecutor(tenantId);
-      }
+      createTenantAsyncJobExecutor(tenantId);
     }
   }
   

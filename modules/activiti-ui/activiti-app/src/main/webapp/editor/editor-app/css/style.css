@@ -536,3 +536,217 @@ li.x-menu-list-item.x-menu-item-active a {
 .step-types .fa {
     margin-right: 6px;
 }
+
+.decision-table-grid {
+	border: 1px solid rgb(212,212,212);
+	width: 100%;
+	height: 372px;
+	margin-bottom: 10px;
+}
+
+.decision-table .btn-success {
+	color: #fff;
+	background-color: #5cb85c;
+}
+
+.decision-table .btn-success:hover,
+.decision-table .btn-success:focus {
+	background-color: #419641;
+	background-position: 0 -15px;
+}
+
+.decision-table-grid .ui-grid-header-viewport, .decision-table-grid .ui-grid-header-canvas {
+	height: 70px;
+}
+
+.decision-table-grid .header-expression {
+	height: 70px;
+	border-bottom: 5px solid rgb(43, 37, 37);
+	border-bottom: 5px solid rgba(43, 37, 37, 0.22);
+}
+
+.decision-table-grid .header-input-expression {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(54, 167, 196);
+	/* RGBa with 0.6 opacity */
+	background: rgba(54, 167, 196, 0.6);
+	/*background-color: #668b94;*/
+	color: #ffffff;
+	font-size: 14px;
+}
+
+.decision-table-grid .header-output-expression {
+	border-left: 5px solid rgb(212,212,212);
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(92, 184, 92);
+	/* RGBa with 0.6 opacity */
+	background: rgba(92, 184, 92, 0.6);
+	color: #ffffff;
+	font-size: 14px;
+}
+
+.decision-table-grid .header-output-expression ~ .header-output-expression {
+	border-left: none;
+}
+
+.decision-table-grid .cell-input-expression {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(54, 167, 196);
+	/* RGBa with 0.6 opacity */
+	background: rgba(54, 167, 196, 0.1);
+}
+
+.decision-table-grid .cell-output-expression {
+	border-left: 5px solid rgb(212,212,212);
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(92, 184, 92);
+	/* RGBa with 0.6 opacity */
+	background: rgba(92, 184, 92, 0.1);
+	border-left: 3px solid rgb(212,212,212);
+}
+
+.decision-table-grid .cell-output-expression ~ .cell-output-expression {
+	border-left: none;
+}
+
+.decision-table-grid {
+	font-size: 13px;
+	line-height: 20px
+}
+
+.decision-table-grid .ui-grid-header-cell-wrapper .ui-grid-selection-row-header-buttons {
+    display: none;
+}
+
+.decision-table-output-expression-input, .decision-table-output-expression-input:active, .decision-table-output-expression-input:focus, .decision-table-output-expression-input:visited {
+	background-color: inherit;
+}
+
+.decision-table-output-expression-input:hover {
+	background-color: #287d92;
+}
+
+.decision-table-input-expression-input .caret {
+	display:none;
+}
+
+.decision-table-grid .ui-grid-row.ui-grid-row-selected  .cell-input-expression > [ui-grid-row] > .ui-grid-cell {
+	background: rgba(92, 184, 92, 0.4);
+}
+
+.decision-table-grid .ui-grid-row:nth-child(odd) .ui-grid-cell.cell-output-expression,
+.decision-table-grid .ui-grid-row:nth-child(even) .ui-grid-cell.cell-output-expression  {
+	background: rgb(92, 184, 92);
+	/* RGBa with 0.6 opacity */
+	background: rgba(92, 184, 92, 0.1);
+	border-bottom: 1px solid rgba(43, 37, 37, 0.22);
+}
+
+.decision-table-grid .ui-grid-row.ui-grid-row-selected:nth-child(odd) .ui-grid-cell.cell-output-expression,
+.decision-table-grid .ui-grid-row.ui-grid-row-selected:nth-child(even) .ui-grid-cell.cell-output-expression  {
+    background: rgba(92, 184, 92, 0.2);
+}
+
+.decision-table-grid .ui-grid-row:nth-child(odd) .ui-grid-cell.cell-input-expression,
+.decision-table-grid .ui-grid-row:nth-child(even) .ui-grid-cell.cell-input-expression {
+	background: rgb(54, 167, 196);
+	/* RGBa with 0.6 opacity */
+	background: rgba(54, 167, 196, 0.1);
+	border-bottom: 1px solid rgba(43, 37, 37, 0.22);
+}
+
+.decision-table-grid .ui-grid-row.ui-grid-row-selected:nth-child(odd) .ui-grid-cell.cell-input-expression,
+.decision-table-grid .ui-grid-row.ui-grid-row-selected:nth-child(even) .ui-grid-cell.cell-input-expression {
+    background: rgba(54, 167, 196, 0.2);
+}
+
+.decision-table-grid .ui-grid-render-container-left .ui-grid-header-cell {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(54, 167, 196);
+	/* RGBa with 0.6 opacity */
+	background: rgba(54, 167, 196, 0.6);
+	/*background-color: #668b94;*/
+	color: #ffffff;
+	font-size: 14px;
+
+	border-bottom: 5px solid rgb(43, 37, 37);
+	border-bottom: 5px solid rgba(43, 37, 37, 0.22);
+
+}
+
+.decision-table-grid .ui-grid-pinned-container.ui-grid-pinned-container-left .ui-grid-header-cell:last-child {
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-left-width: 0px;
+	border-bottom: 5px solid rgb(43, 37, 37);
+	border-bottom: 5px solid rgba(43, 37, 37, 0.22);
+}
+
+.decision-table-grid .ui-grid-cell-focus {
+	outline: 0;
+	background-color: transparent;
+}
+
+.decision-table .ui-grid-row-selected .customRowHeader {
+	background-color: #c9dde1;
+	color: #ffffff;
+	border-bottom: 1px solid rgba(43, 37, 37, 0.22);
+}
+
+.decision-table .ui-grid-cell-contents {
+    position: relative;
+}
+
+.decision-table .ui-grid-cell-contents-empty::before {
+    content: "-";
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    color: gray;
+}
+
+.decision-table .ui-grid-cell-contents .show-error-icon {
+    display: none;
+}
+
+.decision-table .ui-grid-cell-contents .edit-icon {
+    position: absolute;
+    right: 0;
+}
+
+.decision-table .ui-grid-cell-contents.ui-grid-cell-contents-has-error {
+    padding-left: 20px;
+}
+
+.decision-table .decision-table-grid-wrapper {
+    position: relative;
+    margin-top: 10px;
+}
+.decision-table .decision-table-grid-wrapper > span {
+    display: none;
+}
+
+.decision-table .decision-table-grid-wrapper .ui-grid-header-cell .ui-grid-cell-contents .text-center {
+    min-height: 20px;
+}
+
+.decision-table .decision-table-grid-wrapper.ui-grid-cell-contents-has-error > .decision-table-grid {
+    border: 1px solid #a94442;
+}
+
+.decision-table .ui-grid-cell-contents.ui-grid-cell-contents-has-error .contents-value,
+.decision-table .ui-grid-cell-contents.ui-grid-cell-contents-has-error .text-center {
+    color: #a94442;
+}
+
+.decision-table .ui-grid-cell-contents.ui-grid-cell-contents-has-error .show-error-icon,
+.decision-table .decision-table-grid-wrapper.ui-grid-cell-contents-has-error > .show-error-icon {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 3px;
+    cursor: pointer;
+    z-index: 1;
+}

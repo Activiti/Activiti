@@ -174,7 +174,13 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
   }
 
   public String getTypeName() {
-    return typeName;
+    if (typeName != null) {
+      return typeName;
+    } else if (type != null) {
+      return type.getTypeName();
+    } else {
+      return typeName;
+    }
   }
   public void setTypeName(String typeName) {
     this.typeName = typeName;

@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.cmd;
 
 import java.util.Map;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti5.engine.impl.form.StartFormHandler;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
@@ -39,18 +40,19 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
     this.properties = properties;
   }
   
-  protected ProcessInstance execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
+  protected ProcessInstance execute(CommandContext commandContext, ProcessDefinition processDefinition) {
+    ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) processDefinition;
     ExecutionEntity processInstance = null;
     if (businessKey != null) {
-      processInstance = processDefinition.createProcessInstance(businessKey);
+      processInstance = processDefinitionEntity.createProcessInstance(businessKey);
     } else {
-      processInstance = processDefinition.createProcessInstance();
+      processInstance = processDefinitionEntity.createProcessInstance();
     }
 
     commandContext.getHistoryManager()
       .reportFormPropertiesSubmitted(processInstance, properties, null);
     
-    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+    StartFormHandler startFormHandler = processDefinitionEntity.getStartFormHandler();
     startFormHandler.submitFormProperties(properties, processInstance);
 
     processInstance.start();

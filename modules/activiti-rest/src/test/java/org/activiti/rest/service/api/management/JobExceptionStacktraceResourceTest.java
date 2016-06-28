@@ -29,11 +29,12 @@ public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
     // Start process, forcing error on job-execution
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess", Collections.singletonMap("error", (Object) Boolean.TRUE));
 
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
     // Force execution of job
     try {
+      managementService.moveTimerToExecutableJob(timerJob.getId());
       managementService.executeJob(timerJob.getId());
       fail();
     } catch (ActivitiException expected) {
@@ -44,11 +45,12 @@ public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
     now.set(Calendar.MILLISECOND, 0);
     processEngineConfiguration.getClock().setCurrentTime(now.getTime());
 
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(
+        SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TIMER_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_OK);
 
     String stack = IOUtils.toString(response.getEntity().getContent());
     assertNotNull(stack);
-    assertEquals(managementService.getJobExceptionStacktrace(timerJob.getId()), stack);
+    assertEquals(managementService.getTimerJobExceptionStacktrace(timerJob.getId()), stack);
 
     // Also check content-type
     assertEquals("text/plain", response.getEntity().getContentType().getValue());
@@ -68,9 +70,9 @@ public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = { "org/activiti/rest/service/api/management/JobExceptionStacktraceResourceTest.testTimerProcess.bpmn20.xml" })
   public void testGetStrackForJobWithoutException() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess", Collections.singletonMap("error", (Object) Boolean.FALSE));
-    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
 
-    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_NOT_FOUND));
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TIMER_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_NOT_FOUND));
   }
 }

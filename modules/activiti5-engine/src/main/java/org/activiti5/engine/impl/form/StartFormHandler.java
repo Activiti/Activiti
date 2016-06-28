@@ -13,8 +13,8 @@
 
 package org.activiti5.engine.impl.form;
 
-import org.activiti5.engine.form.StartFormData;
-import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
@@ -22,5 +22,5 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public interface StartFormHandler extends FormHandler {
 
-  StartFormData createStartFormData(ProcessDefinitionEntity processDefinition);
+  StartFormData createStartFormData(ProcessDefinition processDefinition);
 }

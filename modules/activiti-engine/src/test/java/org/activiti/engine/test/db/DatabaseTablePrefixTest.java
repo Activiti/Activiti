@@ -43,14 +43,12 @@ public class DatabaseTablePrefixTest extends TestCase {
     // configure & build two different process engines, each having a
     // separate table prefix
     ProcessEngineConfigurationImpl config1 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration().setDataSource(pooledDataSource)
-        .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto
-                                              // create/drop schema
+        .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config1.setDatabaseTablePrefix("SCHEMA1.");
     ProcessEngine engine1 = config1.buildProcessEngine();
 
     ProcessEngineConfigurationImpl config2 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration().setDataSource(pooledDataSource)
-        .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto
-                                              // create/drop schema
+        .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config2.setDatabaseTablePrefix("SCHEMA2.");
     ProcessEngine engine2 = config2.buildProcessEngine();
 

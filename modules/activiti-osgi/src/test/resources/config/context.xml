@@ -23,15 +23,11 @@
     <property name="blueprintELResolver" ref="blueprintELResolver" />
   </bean>
 
-  <bean id="processEngine" factory-ref="processEngineFactory"
-    factory-method="getObject" />
+  <bean id="processEngine" factory-ref="processEngineFactory" factory-method="getObject" />
 
-  <bean id="runtimeService" factory-ref="processEngine"
-    factory-method="getRuntimeService" />
-  <bean id="repositoryService" factory-ref="processEngine"
-    factory-method="getRepositoryService" />
-  <bean id="historyService" factory-ref="processEngine"
-    factory-method="getHistoryService" />
+  <bean id="runtimeService" factory-ref="processEngine" factory-method="getRuntimeService" />
+  <bean id="repositoryService" factory-ref="processEngine" factory-method="getRepositoryService" />
+  <bean id="historyService" factory-ref="processEngine" factory-method="getHistoryService" />
     
   <reference-list id="activityProviders" availability="optional" 
       interface="org.activiti.engine.delegate.JavaDelegate"
@@ -39,6 +35,7 @@
       
       <reference-listener ref="blueprintELResolver" bind-method="bindService" unbind-method="unbindService"/>
   </reference-list>
+  
   <reference-list id="activityProvidersActivityBehaviour" availability="optional"
                   interface="org.activiti.engine.impl.delegate.ActivityBehavior"
                   activation="eager">

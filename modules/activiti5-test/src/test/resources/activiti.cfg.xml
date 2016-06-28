@@ -6,6 +6,11 @@
 
 	<bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
 
+		<!-- <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/activitiunit?characterEncoding=UTF-8" />
+		<property name="jdbcDriver" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUsername" value="alfresco" />
+		<property name="jdbcPassword" value="alfresco" /> -->
+
 		<property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
 		<property name="jdbcDriver" value="org.h2.Driver" />
 		<property name="jdbcUsername" value="sa" />
@@ -17,9 +22,7 @@
 		<property name="activiti5CompatibilityEnabled" value="true" />
 
 		<!-- job executor configurations -->
-		<property name="jobExecutorActivate" value="false" />
 		<property name="asyncExecutor" ref="asyncExecutor" />
-		<property name="asyncExecutorEnabled" value="true" />
 		<property name="asyncExecutorActivate" value="false" />
 
 		<property name="defaultFailedJobWaitTime" value="1" />

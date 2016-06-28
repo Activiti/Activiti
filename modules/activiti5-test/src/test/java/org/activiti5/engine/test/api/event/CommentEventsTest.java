@@ -12,14 +12,14 @@
  */
 package org.activiti5.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti5.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
-import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -74,11 +74,8 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		
 		listener = new TestActivitiEntityEventListener(org.activiti5.engine.task.Comment.class);
-		activiti5ProcessConfig.getEventDispatcher().addEventListener(listener);
+		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 
 	@Override
@@ -86,9 +83,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 		super.tearDown();
 
 		if (listener != null) {
-		  org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5ProcessConfig = (org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl) 
-	        processEngineConfiguration.getActiviti5CompatibilityHandler().getRawProcessConfiguration();
-		  activiti5ProcessConfig.getEventDispatcher().removeEventListener(listener);
+		  processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 		}
 	}
 }

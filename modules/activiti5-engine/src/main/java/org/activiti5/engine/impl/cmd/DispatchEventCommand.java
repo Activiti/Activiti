@@ -12,9 +12,9 @@
  */
 package org.activiti5.engine.impl.cmd;
 
+import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
-import org.activiti5.engine.delegate.event.ActivitiEvent;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
