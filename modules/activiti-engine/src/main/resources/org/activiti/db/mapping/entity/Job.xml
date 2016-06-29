@@ -298,7 +298,7 @@
 			#{job.revision, jdbcType=INTEGER},
 			#{job.jobType, jdbcType=VARCHAR},
 			#{job.lockOwner, jdbcType=VARCHAR},
-            #{job.lockExpirationTime, jdbcType=TIMESTAMP},
+      #{job.lockExpirationTime, jdbcType=TIMESTAMP},
 			#{job.exclusive, jdbcType=BOOLEAN},
 			#{job.executionId, jdbcType=VARCHAR},
 			#{job.processInstanceId, jdbcType=VARCHAR},

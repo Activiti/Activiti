@@ -154,6 +154,10 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("oracle", "bulkInsertComment", "bulkInsertComment_oracle");
     addDatabaseSpecificStatement("oracle", "bulkInsertByteArray", "bulkInsertByteArray_oracle");
     addDatabaseSpecificStatement("oracle", "bulkInsertAttachment", "bulkInsertAttachment_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertJob", "bulkInsertJob_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertTimerJob", "bulkInsertTimerJob_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertSuspendedJob", "bulkInsertSuspendedJob_oracle");
+    addDatabaseSpecificStatement("oracle", "bulkInsertDeadLetterJob", "bulkInsertDeadLetterJob_oracle");
 
     // db2
     databaseSpecificLimitBeforeStatements.put("db2", "SELECT SUB.* FROM (");
