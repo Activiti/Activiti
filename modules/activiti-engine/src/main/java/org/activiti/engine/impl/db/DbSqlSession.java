@@ -109,7 +109,10 @@ public class DbSqlSession implements Session {
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.2"));
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.0"));
     ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.1"));
-    
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("5.20.0.0"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("5.20.0.1"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("5.20.0.2"));
+    ACTIVITI_VERSIONS.add(new ActivitiVersion("5.21.0.0"));
     
     /*
      * Version 5.18.0.1 is the latest v5 version in the list here, although if you would look at the v5 code,
