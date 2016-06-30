@@ -1,0 +1,52 @@
+<div class="container" id="detail-container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" ng-show="decisionTable">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{decisionTable.name &amp;&amp; decisionTable.name +" - " || ""}}{{decisionTable.id}}</h2>
+				</div>
+
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="DECISION-TABLE.ID"></td>
+							<td>{{decisionTable.id}}</td>
+							<td class="property-name" translate="DECISION-TABLE.VERSION"></td>
+							<td>{{decisionTable.version}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="DECISION-TABLE.NAME"></td>
+							<td>{{decisionTable.name | empty}}</td>
+							<td class="property-name" translate="DECISION-TABLE.KEY"></td>
+							<td>{{decisionTable.key}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="DECISION-TABLE.RESOURCE-NAME"></td>
+							<td>{{decisionTable.resourceName | empty}}</td>
+							<td class="property-name" translate="DECISION-TABLE.DESCRIPTION"></td>
+							<td>{{decisionTable.description | empty}}</td>
+						</tr>
+						<tr class="property">
+                            <td class="property-name" translate="DECISION-TABLE.TENANT"></td>
+                            <td>{{decisionTable.tenantId | empty}}</td>
+                            <td ng-if="appId" class="property-name" translate="APP-DEPLOYMENT.APP-ID"></td>
+                            <td ng-if="appId"><a ng-href="#/app/{{appId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{appId}}</a></td>
+                        </tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div>
+</div>

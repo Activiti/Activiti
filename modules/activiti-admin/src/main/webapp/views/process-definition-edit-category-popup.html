@@ -1,0 +1,29 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'PROCESS-DEFINITION.POPUP.EDIT-CATEGORY.TITLE' | translate}} '{{model.name &amp;&amp; model.name || model.key}}'</h2>	
+	</div>
+</div>
+<div class="modal-body">
+	<p translate="PROCESS-DEFINITION.POPUP.EDIT-CATEGORY.MESSAGE"></p>
+	<div class="input-group input-group-sm">
+	 	 <label for="user" translate="PROCESS-DEFINITION.POPUP.EDIT-CATEGORY.CATEGORY"></label>
+         <input id="user" type="text" class="form-control" value="" ng-model="model.category" placeholder="{{'PROCESS-DEFINITION.POPUP.EDIT-CATEGORY.CATEGORY-PLACEHOLDER' | translate}}"/>
+    </div>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       	translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="status.loading"
+	        translate="PROCESS-DEFINITION.POPUP.EDIT-CATEGORY.CONFIRM">
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

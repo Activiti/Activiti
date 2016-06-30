@@ -1,0 +1,87 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'TASK.POPUP.EDIT.TITLE' | translate}} '{{task.name &amp;&amp; task.name || task.id}}'</h2>
+	</div>
+</div>
+<div class="modal-body no-overflow">
+	<table class="edit-table">
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.NAME"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.name" auto-focus>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.DESCRIPTION"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<textarea class="form-control" rows="2" ng-model="model.description"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.ASSIGNEE"></td>
+			<td>
+				<div class="input-group input-group-sm type-ahead-scrollable">
+					<input type="text" users-typeahead user-model="model.assignee" user-display-model="assigneeDisplay" user-status="active" class="form-control">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.OWNER"></td>
+			<td>
+				<div class="input-group input-group-sm type-ahead-scrollable">
+					<input type="text" users-typeahead user-model="model.owner" user-display-model="ownerDisplay" user-status="active" class="form-control">
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.DUE-DATE"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+					<input id="filter-dueBefore" type="text" class="form-control"
+                           ng-model="model.dueDate"
+                           datepicker-popup="dd/MM/yyyy"
+                           is-open="dueDatePicker.isOpen" ng-click="dueDatePicker.isOpen=true"/>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.PRIORITY"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.priority">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="TASK.POPUP.EDIT.CATEGORY"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.category">
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	        <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       		translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="status.loading"
+	       		translate="TASK.POPUP.EDIT.CONFIRM">
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

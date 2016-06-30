@@ -1,0 +1,132 @@
+<!-- LIST PAGE -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="component">
+                <div class="title">
+                    <div class="btn-group btn-group-sm pull-right">
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+								{{'GENERAL.ACTION.SHOW-RESULTS' | translate:filter}}&nbsp;
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                            	<li ng-repeat="resultSize in config.filter.resultSizes"><a href="" ng-click="filter.setResultSize(resultSize)">{{'GENERAL.RESULT-SIZES.' + resultSize.toString() | translate}}</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn btn-default" ng-click="filter.toggleOrder()">
+                        	<i class="glyphicon" ng-class="{'glyphicon-sort-by-attributes': filter.order == 'asc', 'glyphicon-sort-by-attributes-alt': filter.order == 'desc'}"></i>
+                        </button>
+                    </div>
+                    <div class="btn-group btn-group-sm pull-right">
+                    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						     {{'GENERAL.ACTION.SORT-BY' | translate:filter.sort}}&nbsp;
+                            <span class="caret"></span>
+                        </button>
+                    	<ul class="dropdown-menu">
+                           <li ng-repeat="sort in filter.sortObjects"><a href="" ng-click="filter.setSort(sort)">{{sort.name | translate}}</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group btn-group-sm pull-right">
+                        <a class="btn btn-default" role="button"
+                           title="{{'GENERAL.ACTION.REFRESH-LIST' | translate}}"
+                           ng-click="filter.refresh();">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                    </div>
+                    <div class="pull-right loading" ng-show="filter.loading">
+                    	<i class="glyphicon glyphicon-refresh"></i>
+                    </div>
+
+                    <h2 translate="JOBS.TITLE"></h2>
+                </div>
+
+                <div class="grid-wrapper" id="jobs">
+                    <div class="grid-message" ng-if="jobData.size > 0">
+                         <span>{{'JOBS.LIST-MESSAGE' | translate:jobs}}</span>
+                    </div>
+                     <div class="grid-message" ng-if="jobData.size == 0">
+                        <span>{{'JOBS.LIST-MESSAGE-EMPTY' | translate}}</span>
+                    </div>
+                    <div ng-grid="gridJobs" class="gridStyle" ng-if="gridJobs && jobData.data"/>
+                </div>
+            </div>
+        </div>
+
+		<!-- Task filters -->
+		<div class="col-md-4">
+            <div class="component tip-left">
+                <div class="title">
+                    <div class="btn-group btn-group-sm pull-right" ng-show="filter.supportedProperties.length > 0">
+                        <button type="button" class="btn btn-default" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="prop in filter.supportedProperties"><a href="" ng-click="filter.addProperty(prop)">{{prop.name | translate}}</a></li>
+                        </ul>
+                    </div>
+                    <div class="pull-right">
+                        <a class="action" ng-click="filter.clear()" translate="GENERAL.ACTION.CLEAR-FILTERS"></a>
+                    </div>
+                    <h2 translate="GENERAL.TITLE.FILTERS"></h2>
+                </div>
+	            <div class="section">
+                    <div class="subtitle"><label for="filter-processdefinition" translate="JOBS.FILTER.PROCESS-DEFINITION"></label> </div>
+                    <div>
+                        <select ui-select2
+                                data-placeholder="{{'JOBS.FILTER.ALL-PROCESS-DEFINITIONS' | translate}}"
+                         		ng-model="filter.processDefinition"
+                         		ng-change="processDefinitionFilterChanged()"
+                         		style="min-width:250px">
+                            <option value=""></option>
+                            <option value="-1">{{'JOBS.FILTER.ALL-PROCESS-DEFINITIONS' | translate}}</option>
+                         	<option ng-title="123" ng-repeat="processDefinition in processDefinitionsCache.data" value="{{processDefinition.id}}">{{processDefinition.name ? processDefinition.name : processDefinition.key}} (v{{processDefinition.version}})</option>
+                         </select>
+                    </div>
+                </div>
+                <div class="section" ng-if="filter.properties.processInstanceId !== undefined">
+                    <div class="subtitle"><label for="filter-processInstanceId" translate="JOBS.FILTER.PROCESS-INSTANCE-ID"></label> </div>
+                    <div class="input-group input-group-sm">
+                        <input id="filter-processInstanceId" type="text" class="form-control" value="" ng-model="filter.properties.processInstanceId" ng-change="filter.refreshDelayed()">
+                    </div>
+                </div>
+                <div class="section" ng-if="filter.properties.tenantIdLike !== undefined">
+                    <div class="subtitle"><label for="filter-tenantId" translate="JOBS.FILTER.TENANT-ID"></label> </div>
+                    <div class="input-group input-group-sm">
+                        <input id="filter-tenantId" type="text" class="form-control" value="" ng-model="filter.properties.tenantIdLike" ng-change="filter.refreshDelayed()">
+                    </div>
+                </div>
+                <div class="section" ng-if="filter.properties.dueBefore !== undefined">
+                  <div class="subtitle"><label for="filter-dueBefore" translate="JOBS.FILTER.DUE-BEFORE"></label> </div>
+               	  <div class="input-group input-group-sm">
+               	  	<span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+                      <input id="filter-dueBefore" type="text" class="form-control"
+                             ng-model="filter.properties.dueBefore"
+                             ng-change="filter.refreshDelayed()"
+                             datepicker-popup="yyyy/MM/dd"
+                             is-open="dueBeforePicker.isOpen"
+                             ng-click="dueBeforePicker.isOpen=true"/>
+	              </div>
+	            </div>
+                <div class="section" ng-if="filter.properties.dueAfter !== undefined">
+	              <div class="subtitle"><label for="filter-dueAfter" translate="JOBS.FILTER.DUE-AFTER"></label> </div>
+               	  <div class="input-group input-group-sm">
+               	  	<span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+	              	<input id="filter-dueAfter" type="text" class="form-control"
+                           ng-model="filter.properties.dueAfter"
+                           ng-change="filter.refreshDelayed()"
+                           datepicker-popup="dd/MM/yyyy"
+                           is-open="dueAfterPicker.isOpen"
+                           ng-click="dueAfterPicker.isOpen=true"/>
+	              </div>
+	            </div>
+                <div class="section" ng-if="filter.properties.withException !== undefined">
+	              <div class="subtitle"><label for="filter-withException" translate="JOBS.FILTER.EXCEPTION"></label> </div>
+               	  <div class="input-group input-group-sm">
+               	  	<input type="checkbox" id="filter-withException" ng-model="filter.properties.withException" ng-change="filter.refresh()" />&nbsp;<span class="check" translate="JOBS.FILTER.EXCEPTION-HELP"></span>
+	              </div>
+	            </div>
+            </div>
+        </div>
+    </div>
+</div>

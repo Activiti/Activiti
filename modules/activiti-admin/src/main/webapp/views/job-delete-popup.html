@@ -1,0 +1,25 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'JOB.POPUP.DELETE-JOB.TITLE' | translate:job}}</h2>	
+	</div>
+</div>
+<div class="modal-body">
+	<p>{{'JOB.POPUP.DELETE-JOB.MESSAGE' | translate:job}}</p>	
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	           translate="GENERAL.ACTION.CANCEL">
+	       </button>
+	       <button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="status.loading"
+	       	   translate="JOB.POPUP.DELETE-JOB.CONFIRM">
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

@@ -1,0 +1,56 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.TITLE' | translate:originalVariable.variable}}</h2>
+	</div>
+</div>
+<div class="modal-body">
+
+    <div ng-switch on="originalVariable.type" style="margin-top:10px">
+
+        <div style="margin-bottom: 10px">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.VALUE' | translate}}</div>
+        <div ng-switch-when="string">
+            <input class="form-control" type="text" ng-model="updateVariable.value">
+        </div>
+        <div ng-switch-when="boolean">
+            <input type="checkbox" ng-model="updateVariable.value">
+            <span ng-show="updateVariable.value">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.CHECKED' | translate}}</span>
+            <span ng-show="!updateVariable.value">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.UNCHECKED' | translate}}</span>
+        </div>
+        <div ng-switch-when="date">
+            <input class="form-control" type="text" ng-model="updateVariable.value">
+            <div style="margin: 5px 0 0 5px; font-size:12px">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.DATE-HELP' | translate}}</div>
+        </div>
+        <div ng-switch-when="double">
+            <input class="form-control" type="number" ng-model="updateVariable.value">
+        </div>
+        <div ng-switch-when="integer">
+            <input class="form-control" type="number" ng-model="updateVariable.value">
+        </div>
+        <div ng-switch-when="long">
+            <input class="form-control" type="number" ng-model="updateVariable.value">
+        </div>
+        <div ng-switch-when="short">
+            <input class="form-control" type="number" ng-model="updateVariable.value">
+        </div>
+        <div ng-switch-default>
+            <input class="form-control" type="text" ng-model="updateVariable.value">
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       	translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-info" ng-click="executeUpdateVariable()" ng-disabled="status.loading">
+               {{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.ACTION-UPDATE' | translate}}
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

@@ -1,0 +1,139 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Activiti Admin</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="icon" type="image/ico" href="favicon.ico" >
+
+        <link href="styles/bootstrap.min.css" rel="stylesheet" >
+        <link href="additional_components/angular-ui-select2/select2.css" rel="stylesheet" >
+        <link href="additional_components/ng-grid/ng-grid-2.0.14.min.css" rel="stylesheet" >
+        <link href="additional_components/ui-grid/ui-grid.min.css" rel="stylesheet" >
+        <link href="styles/style.css" rel="stylesheet" >
+
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' >
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body ng-app="activitiAdminApp">
+        <div class="navbar navbar-fixed-top navbar-inverse" role="navigation" ng-show="serverLoaded || !authenticated" ng-cloak>
+            <div class="container">
+                <!-- Profile/user -->
+                <div ng-show="authenticated" class="btn-group btn-group-sm pull-right">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{account.login}}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#users" translate="GENERAL.MENU.CONFIGURATION-USERS"></a></li>
+                        <li><a href="#logout" translate="GENERAL.ACTION.LOGOUT"></a></li>
+                    </ul>
+                </div>
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" title="{{'GENERAL.MAIN-TITLE' | translate}}"><span class="sr-only">{{'GENERAL.TITLE.MAIN' | translate}}</span></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav" ng-show="authenticated">
+                    	<!--<li ng-class="{active: navigation.selection == 'apps'}"><a href="#apps" translate="GENERAL.MENU.APPS"></a></li>-->
+                    	<li ng-class="{active: navigation.selection == 'deployments'}"><a href="#deployments" translate="GENERAL.MENU.DEPLOYMENTS"></a></li>
+                        <li ng-class="{active: navigation.selection == 'process-definitions'}"><a href="#process-definitions" translate="GENERAL.MENU.PROCESS-DEFINITIONS"></a></li>
+                        <li ng-class="{active: navigation.selection == 'process-instances'}"><a href="#process-instances" translate="GENERAL.MENU.PROCESS-INSTANCES"></a></li>
+                        <li ng-class="{active: navigation.selection == 'tasks'}"><a href="#tasks" translate="GENERAL.MENU.TASKS"></a></li>
+                        <li ng-class="{active: navigation.selection == 'jobs'}"><a href="#jobs" translate="GENERAL.MENU.JOBS"></a></li>
+                        <li ng-class="{active: navigation.selection == 'engine'}"><a href="#engine" translate="GENERAL.MENU.CONFIGURATION"></a></li>
+                    </ul>
+                </div><!-- /.nav-collapse -->
+            </div><!-- /.container -->
+        </div><!-- /.navbar -->
+
+		<div class="alert-wrapper" ng-cloak>
+			<div class="alert fadein {{alerts.current.type}}" ng-show="alerts.current" ng-click="dismissAlert()">
+				<i class="glyphicon" ng-class="{'glyphicon-ok': alerts.current.type == 'info', 'glyphicon-remove': alerts.current.type == 'error'}"></i>
+				<span>{{alerts.current.message}}</span>
+				<div class="pull-right" ng-show="alerts.queue.length > 0">
+					<span class="badge">{{alerts.queue.length + 1}}</span>
+				</div>
+			</div>
+		</div>
+
+        <div ng-view="" ng-show="serverLoaded || !authenticated" ng-cloak></div>
+        <script type="text/ng-template" id="userItemTemplate.html"><a typeahead-scroll-item="$parent.$index"><span class="glyphicon glyphicon-user"></span><span class="user-label" bind-html-unsafe="match.label | typeaheadHighlight:query"></span></a></script>
+
+        <!-- build:js scripts/scripts.js -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="additional_components/angular-ui-select2/select2.min.js"></script>
+        <script src="bower_components/ng-file-upload/angular-file-upload-shim.js" ></script>
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/ng-file-upload/angular-file-upload.min.js" ></script>
+        <script src="bower_components/momentjs/min/moment.min.js"></script>
+        <script src="bower_components/angular-route/angular-route.min.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+        <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+        <script src="bower_components/angular-translate/angular-translate.min.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js"></script>
+        <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+        <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
+        <script src="additional_components/angular-ui-select2/angular-ui-select2.js"></script>
+        <script src="additional_components/ng-grid/ng-grid-2.0.14.min.js"></script>
+        <script src="additional_components/ui-grid/ui-grid.min.js"></script>
+        <script src="bower_components/sass-bootstrap/js/affix.js"></script>
+        <script src="bower_components/sass-bootstrap/js/alert.js"></script>
+        <script src="bower_components/sass-bootstrap/js/dropdown.js"></script>
+        <script src="bower_components/sass-bootstrap/js/tooltip.js"></script>
+        <script src="bower_components/sass-bootstrap/js/modal.js"></script>
+        <script src="bower_components/sass-bootstrap/js/transition.js"></script>
+        <script src="bower_components/sass-bootstrap/js/button.js"></script>
+        <script src="bower_components/sass-bootstrap/js/popover.js"></script>
+        <script src="bower_components/sass-bootstrap/js/carousel.js"></script>
+        <script src="bower_components/sass-bootstrap/js/scrollspy.js"></script>
+        <script src="bower_components/sass-bootstrap/js/collapse.js"></script>
+        <script src="bower_components/sass-bootstrap/js/tab.js"></script>
+
+        <script src="scripts/http-auth-interceptor.js"></script>
+        <script src="scripts/config.js"></script>
+        <script src="scripts/utils.js"></script>
+        <script src="scripts/app.js"></script>
+        <script src="scripts/recursion-helper.js"></script>
+        <script src="scripts/controllers.js"></script>
+        <script src="scripts/deployments-controllers.js"></script>
+        <script src="scripts/deployment-controllers.js"></script>
+        <script src="scripts/process-definitions-controllers.js"></script>
+        <script src="scripts/process-definition-controllers.js"></script>
+        <script src="scripts/process-instances-controllers.js"></script>
+        <script src="scripts/process-instance-controllers.js"></script>
+        <script src="scripts/tasks-controllers.js"></script>
+        <script src="scripts/task-controllers.js"></script>
+        <script src="scripts/engine-controller.js"></script>
+        <script src="scripts/jobs-controllers.js"></script>
+        <script src="scripts/job-controllers.js"></script>
+        <script src="scripts/users-controllers.js"></script>
+        <script src="scripts/services.js"></script>
+        <script src="scripts/directives.js"></script>
+        <script src="scripts/constants.js"></script>
+        <script src="scripts/app-deployments-controllers.js"></script>
+        <script src="scripts/app-deployment-controllers.js"></script>
+        <script src="scripts/decision-tables-controllers.js"></script>
+        <script src="scripts/decision-table-controllers.js"></script>
+        <script src="scripts/forms-controllers.js"></script>
+        <script src="scripts/form-controllers.js"></script>
+        <script src="scripts/submitted-form-controllers.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

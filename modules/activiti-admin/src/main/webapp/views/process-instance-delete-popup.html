@@ -1,0 +1,31 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'PROCESS-INSTANCE.POPUP.DELETE.TITLE' | translate}} '{{process.name &amp;&amp; process.name + " - " || ""}}{{process.id}}'</h2>	
+	</div>
+</div>
+<div class="modal-body">
+	<p ng-if="action == 'delete'">{{'PROCESS-INSTANCE.POPUP.DELETE.MESSAGE-DELETE' | translate}} '{{process.name &amp;&amp; task.name + " - " || ""}}{{process.id}}'?</p>
+	<p ng-if="action == 'terminate'">{{'PROCESS-INSTANCE.POPUP.DELETE.MESSAGE-TERMINATE' | translate}} '{{process.name &amp;&amp; task.name + " - " || ""}}{{process.id}}'?</p>
+	
+	<div class="input-group input-group-sm" ng-if="action == 'terminate'">
+	 	 <label for="user" translate="PROCESS-INSTANCE.POPUP.DELETE.DELETE-REASON"></label>
+         <input id="user" type="text" class="form-control" value="" ng-model="model.deleteReason" focus-me placeholder="{{'PROCESS-INSTANCE.POPUP.DELETE.DELETE-REASON-HELP' | translate}}"/>
+    </div>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       	translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-danger" ng-click="ok()" ng-disabled="status.loading">
+	       		{{(action == 'delete') &amp;&amp; ('PROCESS-INSTANCE.POPUP.DELETE.CONFIRM-DELETE' | translate) || ('PROCESS-INSTANCE.POPUP.DELETE.CONFIRM-TERMINATE' | translate)}}
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

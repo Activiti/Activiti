@@ -1,0 +1,108 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()" ng-show="!status.loading">&times; Cancel and close</a>
+        </div>
+		<h2>Edit endpoint configuration</h2>
+	</div>
+</div>
+<div class="modal-body">
+	<table class="edit-table">
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-NAME"></td>
+			<td>
+				<input type="text" class="form-control" id="name" ng-model="model.server.name">
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-DESCRIPTION"></td>
+			<td>
+                 <input type="text" class="form-control" id="description"
+                 	ng-model="model.server.description">
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-ADDRESS"></td>
+			<td>
+                  <input type="text" class="form-control" id="serverAddress"
+                                       ng-model="model.server.serverAddress">
+			</td>
+
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-PORT"></td>
+			<td>
+                <input type="text" class="form-control" id="serverPort"
+                   ng-model="model.server.serverPort">
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-CONTEXT-ROOT"></td>
+			<td>
+               <input type="text" class="form-control" id="contextRoot"
+                                       ng-model="model.server.contextRoot">
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-REST-ROOT"></td>
+			<td>
+              <input type="text" class="form-control" id="restRoot"
+                                        ng-model="model.server.restRoot">
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-USERNAME"></td>
+			<td>
+              <input type="text" class="form-control" id="userName"
+                                        ng-model="model.server.userName">
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-PASSWORD"></td>
+			<td>
+              <input ng-if="model.server.id" type="password" class="form-control" id="password"
+                                        ng-model="model.server.password" placeholder="{{'CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-PASSWORD-HELP' | translate}}">
+              <input ng-if="!model.server.id" type="password" class="form-control" id="password" ng-model="model.server.password">
+			</td>
+		</tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-ENDPOINT.ENDPOINT-URL-PREVIEW"></td>
+            <td ng-if="model.server.contextRoot && model.server.contextRoot.length > 0">
+                {{model.server.serverAddress}}:{{model.server.serverPort}}/{{model.server.contextRoot}}/{{model.server.restRoot}}
+            </td>
+            <td ng-if="!model.server.contextRoot || model.server.contextRoot.length == 0">
+                {{model.server.serverAddress}}:{{model.server.serverPort}}/{{model.server.restRoot}}
+            </td>
+        </tr>
+	</table>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+        <div ng-if="model.error" class="pull-left error-text">
+            <div ng-switch="model.error.statusCode">
+                 <span ng-switch-when="401">
+                    {{'CLUSTER.POPUP.EDIT-ENDPOINT.ERROR-401' | translate}}
+                </span>
+                <span ng-switch-when="403">
+                    {{'CLUSTER.POPUP.EDIT-ENDPOINT.ERROR-403' | translate}}
+                </span>
+                <span ng-switch-when="500">
+                    {{'CLUSTER.POPUP.EDIT-ENDPOINT.ERROR-500' | translate}}
+                </span>
+                <span ng-switch-default>
+                    {{model.error.statusCode}} : {{model.error.message}}
+                </span>
+            </div>
+        </div>
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       	translate="GENERAL.ACTION.CANCEL">
+	       </button>
+	       <button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="status.loading || !model.server.name"
+	       	translate="CLUSTER.POPUP.EDIT-ENDPOINT.ACTION-CONFIRM">
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>
