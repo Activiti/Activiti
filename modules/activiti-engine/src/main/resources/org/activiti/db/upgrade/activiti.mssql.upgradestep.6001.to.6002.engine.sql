@@ -194,4 +194,8 @@ alter table ACT_RU_EXECUTION add START_TIME_ datetime;
 alter table ACT_RU_EXECUTION add START_USER_ID_ nvarchar(255);
 alter table ACT_RU_TASK add CLAIM_TIME_ datetime;
 
+-- Upgrade added in upgradestep.52001.to.52002.engine, which is not applied when already on beta2 
+update ACT_RU_EVENT_SUBSCR set PROC_DEF_ID_ = CONFIGURATION_ where EVENT_TYPE_ = 'message' and PROC_INST_ID_ is null and EXECUTION_ID_ is null and PROC_DEF_ID_ is null;
+
+
 update ACT_GE_PROPERTY set VALUE_ = '6.0.0.2' where NAME_ = 'schema.version';
