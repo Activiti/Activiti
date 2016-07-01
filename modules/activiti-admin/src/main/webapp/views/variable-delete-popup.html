@@ -1,0 +1,27 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'PROCESS-INSTANCE.POPUP.DELETE-VARIABLE.TITLE' | translate:variable}}</h2>
+	</div>
+</div>
+<div class="modal-body">
+    <div style="margin-top:40px">
+        {{'PROCESS-INSTANCE.POPUP.DELETE-VARIABLE.MESSAGE' | translate}}
+    </div>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       	translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-danger" ng-click="deleteVariable()" ng-disabled="status.loading">
+               {{'PROCESS-INSTANCE.POPUP.DELETE-VARIABLE.DELETE' | translate}}
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

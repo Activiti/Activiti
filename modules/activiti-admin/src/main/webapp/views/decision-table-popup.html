@@ -1,0 +1,35 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'DECISION-TABLE.POPUP.TITLE' | translate}} '{{popup.currentDecisionTable.name &amp;&amp; popup.currentDecisionTable.name || popup.currentDecisionTable.key}}'</h2>
+	</div>
+</div>
+<div class="modal-body modal-body-medium">
+	<div class="container-fluid content decision-table" ng-if="popup.currentDecisionTable" auto-height offset="40">
+
+		<br/>
+		<div class="row" ng-if="popup.currentDecisionTable.hitIndicator">
+			<div class="col-xs-6">
+				<span>
+					<label>{{'DECISION-TABLE.POPUP.HIT-POLICY' | translate}} {{'DECISION-TABLE.POPUP.HIT-POLICIES.' + popup.currentDecisionTable.hitIndicator | translate}}</label>
+				</span>
+			</div>
+		</div>
+
+		<div class="decision-table-grid-wrapper">
+			<div id="decisionTableGrid" class="decision-table-grid" ui-grid="popup.gridOptions" ui-grid-selection  ui-grid-cellnav ui-grid-auto-resize></div>
+		</div>
+
+	</div></div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+		       	translate="GENERAL.ACTION.CLOSE">
+	       	</button>
+		</div>
+	</div>
+</div>	

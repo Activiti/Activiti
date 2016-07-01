@@ -1,0 +1,932 @@
+{
+    "GENERAL": {
+        "YES": "Yes",
+        "NO": "No",
+        "ACTION": {
+            "LOGOUT": "Sign out",
+            "DISMISS-ALERT": "Click to dismiss this message",
+            "RETURN-TO-LIST": "Return to list",
+            "SHOW-RESULTS": "Show {{'GENERAL.RESULT-SIZES.' + resultSize.toString() | translate}} results",
+            "REFRESH-LIST": "Refresh list",
+            "SORT-BY": "Sort by {{name | translate}}",
+            "CLEAR-FILTERS": "Clear filters",
+            "CANCEL-AND-CLOSE": "Cancel and Close",
+            "CANCEL": "Cancel",
+            "NEXT": "Next",
+            "PREVIOUS": "Previous",
+            "CLOSE": "Close",
+            "SHOWLICENSE": "License info"
+        },
+        "TITLE": {
+            "MAIN": "Activiti Administrator",
+            "ACTIONS": "Actions",
+            "FILTERS": "Filters"
+        },
+        "MENU": {
+            "DEPLOYMENTS": "Deployments",
+            "PROCESS-DEFINITIONS": "Definitions",
+            "PROCESS-INSTANCES": "Instances",
+            "TASKS": "Tasks",
+            "JOBS": "Jobs",
+            "CONFIGURATION": "Configuration",
+            "CONFIGURATION-ENGINE": "Engine",
+            "CONFIGURATION-USERS": "Configure users",
+            "APPS": "Apps"
+        },
+        "RESULT-SIZES": {
+            "10": "10",
+            "25": "25",
+            "50": "50",
+            "100": "100",
+            "100000000": "all"
+        }
+    },
+    "PROCESS-DEFINITION": {
+        "ID": "ID:",
+        "NAME": "Name:",
+        "VERSION": "Version:",
+        "DESCRIPTION": "Description:",
+        "KEY": "Key:",
+        "CATEGORY": "Category:",
+        "SUSPENDED": "Suspended:",
+        "DEPLOYMENT": "Deployment:",
+        "TENANT": "Tenant:",
+        "START-FORM-DEFINED": "Start form defined:",
+        "GRAPHICAL-NOTATION-DEFINED": "Graphical notation defined:",
+        "PROCESS-INSTANCES-SIZE": "Definition has {{total}} process instances running",
+        "PROCESS-INSTANCES-SHOWING": ", showing {{size}} most recently started",
+        "PROCESS-INSTANCES-EMPTY": "Definition has no process instances running",
+        "JOBS-SIZE": "Definition has {{total}} jobs running",
+        "JOBS-EMPTY": "Definition has no jobs running",
+        "DECISION-TABLES-SIZE": "Definition has {{total}} decision tables.",
+        "DECISION-TABLES-EMPTY": "Definition has no decision tables.",
+        "FORMS-SIZE": "Definition has {{total}} forms.",
+        "FORMS-EMPTY": "Definition has no forms.",
+        "TITLE": {
+            "PROCESS-INSTANCES": "Process instances",
+            "JOBS": "Jobs",
+            "DECISION-TABLES": "Decision Tables",
+            "FORMS": "Forms"
+        },
+        "ACTION": {
+            "EDIT-CATEGORY": "Edit category",
+            "SHOW-ALL-JOBS": "Show all jobs",
+            "SHOW-ALL-PROCESSES": "Show all processes",
+            "SHOW-DIAGRAM": "Show process diagram"
+        },
+        "POPUP": {
+            "EDIT-CATEGORY": {
+                "TITLE": "Edit category for definition",
+                "MESSAGE": "The initial category for the definition is populated from the targetNameSpace attribute in the BPMN 2.0 XML, but can be altered after deployment.",
+                "CATEGORY": "Category",
+                "CATEGORY-PLACEHOLDER": "Enter a category",
+                "CONFIRM": "Update category"
+            },
+            "SHOW-PROCESS-MODEL": {
+                "TITLE": "Process diagram"
+            }
+        }
+    },
+    "PROCESS-DEFINITIONS": {
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching definitions.",
+        "LIST-MESSAGE-EMPTY": "No matching process definitions.",
+        "FILTER": {
+            "NAME": "Name (case sensitive)",
+            "KEY": "Key (case sensitive)",
+            "DEPLOYMENT-ID": "Deployment ID",
+            "TENANT-ID": "Tenant ID",
+            "LATEST": "Latest version",
+            "LATEST-HELP": "Only show latest versions"
+        },
+        "TITLE": {
+            "MAIN": "Process Definitions"
+        },
+        "SORT": {
+            "ID": "ID",
+            "NAME": "Name",
+            "VERSION": "Version"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "NAME": "Name",
+            "VERSION": "Version",
+            "KEY": "Key",
+            "TENANT": "Tenant"
+        },
+        "ACTIONS": {
+            "UPLOAD-FROM-MODELER": "Upload from Activiti Editor"
+        },
+        "POPUP": {
+            "UPLOAD-FROM-MODELER": {
+                "NAME": "User name",
+                "PASSWORD": "Password",
+                "ERROR": "We couldn't contact the Editor",
+                "UNAUTHORIZED": "Invalid credentials",
+                "UPLOAD-DESCRIPTION": "The process model will now be fetched and deployed to the currently active Activiti cluster. Select an appropriate name for deployment package."
+            }
+        }
+    },
+    "PROCESS-INSTANCE": {
+        "ID": "ID:",
+        "NAME": "Name:",
+        "DESCRIPTION": "Description:",
+        "BUSINESS-KEY": "Business key:",
+        "TENANT-ID": "Tenant:",
+        "STATUS": "Status:",
+        "STATUS-ACTIVE": "Active",
+        "STATUS-COMPLETED": "Completed",
+        "ACTIVITY-ID-STARTED": "Activity ID started:",
+        "ACTIVITY-ID-ENDED": "Ended in activity:",
+        "DELETE-REASON": "Delete reason:",
+        "STARTED-BY": "Started by:",
+        "END-TIME": "End time:",
+        "DURATION": "Duration:",
+        "SUPER-PROCESS-INSTANCE-ID": "Super process instance ID:",
+        "TASKS-SIZE": "This process instance has {{total}} tasks.",
+        "TASKS-EMPTY": "This process instance has no tasks.",
+        "VARIABLES-SIZE": "This process instance has {{total}} variables.",
+        "VARIABLES-EMPTY": "This process instance has no variables.",
+        "JOBS-SIZE": "This process instance has {{total}} jobs.",
+        "JOBS-EMPTY": "This process instance has no jobs.",
+        "SUBPROCESSES-SIZE": "This process instance has {{total}} subprocesses.",
+        "SUBPROCESSES-EMPTY": "This process instance has no subprocesses.",
+        "DECISION-TABLES-SIZE": "This process instance has {{total}} decision tables.",
+        "DECISION-TABLES-EMPTY": "This process instance has no decision tables.",
+        "FORMS-SIZE": "This process instance has {{total}} submitted forms.",
+        "FORMS-EMPTY": "This process instance has no submitted forms.",
+        "TITLE": {
+            "TASKS": "Tasks",
+            "VARIABLES": "Variables",
+            "JOBS": "Jobs",
+            "SUBPROCESSES": "Subprocesses",
+            "DECISION-TABLES": "Decision Tables",
+            "FORMS": "Forms"
+        },
+        "ACTION": {
+            "DELETE": "Delete process instance",
+            "TERMINATE": "Terminate process instance",
+            "SHOW-ALL-TASKS": "Show all tasks",
+            "SHOW-ALL-JOBS": "Show all jobs",
+            "SHOW-ALL-SUBPROCESSES": "Show all subprocesses",
+            "SHOW-DIAGRAM": "Show process diagram",
+            "TITLE-VARIABLES": "Actions on selected variable",
+            "DELETE-VARIABLE": "Delete the variable",
+            "UPDATE-VALUE": "Update variable",
+            "ADD-VARIABLE": "Add variable"
+        },
+        "POPUP": {
+            "DELETE": {
+                "TITLE": "Delete process instance",
+                "MESSAGE-DELETE": "Are you sure you want to delete the process instance",
+                "MESSAGE-TERMINATE": "Are you sure you want to terminate the process instance",
+                "DELETE-REASON": "Delete reason",
+                "DELETE-REASON-HELP": "Enter an optional delete reason",
+                "CONFIRM-DELETE": "Delete process instance",
+                "CONFIRM-TERMINATE": "Terminate process instance"
+            },
+            "SHOW-PROCESS-MODEL": {
+                "TITLE": "Process diagram"
+            },
+            "CREATE-VARIABLE": {
+                "TITLE": "Create Variable",
+                "NAME": "Variable name",
+                "TYPE": "Activiti variable type",
+                "VALUE": "Variable value",
+                "CREATE": "Create"
+            },
+            "UPDATE-VARIABLE": {
+                "TITLE": "Update variable '{{name}}'",
+                "NAME": "Variable name",
+                "VALUE": "Value",
+                "CHECKED": "true",
+                "UNCHECKED": "false",
+                "DATE-HELP": "ISO-8601 format (example : 2016-01-28T23:00:00Z)",
+                "ACTION-UPDATE": "Update"
+            },
+            "DELETE-VARIABLE": {
+                "TITLE": "Delete variable '{{name}}",
+                "MESSAGE": "Are you sure you want to remove this variable?",
+                "DELETE": "Delete"
+            }
+        }
+    },
+    "PROCESS-INSTANCES": {
+        "TITLE": "Process instances",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching process instances.",
+        "LIST-MESSAGE-EMPTY": "No matching process instances.",
+        "FILTER": {
+            "NAME": "Name",
+            "PROCESS-DEFINITION": "Process definition",
+            "ALL-PROCESS-DEFINITIONS": "All process definitions",
+            "BUSINESS-KEY": "Business key",
+            "SUPER-PROCESS-INSTANCE-ID": "Super process instance ID",
+            "STARTED-BEFORE": "Started before",
+            "STARTED-AFTER": "Started after",
+            "ENDED-BEFORE": "Ended before",
+            "ENDED-AFTER": "Ended after",
+            "VARIABLE": "Variable",
+            "VARIABLE-NAME": "Variable name",
+            "VARIABLE-VALUE": "Variable value",
+            "VARIABLE-BOOLEAN-VALUE": "Boolean value: {{value}}",
+            "TENANT-ID": "Tenant identifier"
+        },
+        "SORT": {
+            "ID": "ID",
+            "START-TIME": "Time started"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "NAME": "Name",
+            "BUSINESS-KEY": "Business key",
+            "PROCESS-DEFINITION": "Process definition",
+            "CREATE-TIME": "Created",
+            "END-TIME": "Ended",
+            "STATUS": "Status"
+        }
+    },
+    "TASK": {
+        "ID": "ID:",
+        "NAME": "Name:",
+        "STATUS": "Status:",
+        "STATUS-COMPLETED": "Completed",
+        "STATUS-ACTIVE": "Active",
+        "DESCRIPTION": "Description:",
+        "TASK-DEFINITION-KEY": "Definition key:",
+        "FORM-KEY": "Form key:",
+        "PRIORITY": "Priority:",
+        "DELEGATION-STATE": "Delegation state:",
+        "CATEGORY": "Category:",
+        "TENANT-ID": "Tenant:",
+        "PARENT": "Parent task:",
+        "ASSIGNEE": "Assignee:",
+        "OWNER": "Owner:",
+        "START-DATE": "Start date:",
+        "DUE-DATE": "Due date:",
+        "END-DATE": "End date:",
+        "DELETE-REASON": "Delete reason:",
+        "PROCESS-INSTANCE": "Process Instance",
+        "PROCESS-DEFINITION": "Process definition",
+        "EXECUTION-ID": "Execution ID:",
+        "SUBTASKS-MESSAGE": "This task has {{total}} subtasks, showing {{size}}.",
+        "SUBTASKS-MESSAGE-EMPTY": "This task has no subtasks.",
+        "VARIABLES-MESSAGE": "This task has {{size}} variables.",
+        "VARIABLES-MESSAGE-EMPTY": "This task has no variables.",
+        "IDENTITY-LINKS-MESSAGE": "This task has {{size}} identity links.",
+        "IDENTITY-LINKS-MESSAGE-EMPTY": "This task has no identity links.",
+        "ACTION": {
+            "EDIT": "Edit task",
+            "ASSIGN-CLAIM": "Assign/Claim task",
+            "DELEGATE": "Delegate task",
+            "RESOLVE": "Resolve task",
+            "COMPLETE": "Complete task",
+            "DELETE": "Delete task",
+            "SHOW-ALL-SUBTASKS": "Show all subtasks",
+            "SHOW-SUBMITTED-FORM": "Show submitted form"
+        },
+        "TITLE": {
+            "SUBTASKS": "Sub tasks",
+            "IDENTITY-LINKS": "Identity links",
+            "VARIABLES": "Variables"
+        },
+        "POPUP": {
+            "ASSIGN": {
+                "TITLE": "Assign task",
+                "MESSAGE": "Are you sure you want to assign task",
+                "NEW-ASSIGNEE": "New assignee",
+                "NEW-ASSIGNEE-HELP": "Leave the assignee field empty if you want to assign the task to nobody.",
+                "CONFIRM": "Assign task"
+            },
+            "COMPLETE": {
+                "TITLE": "Complete task",
+                "MESSAGE": "Are you sure you want to complete task",
+                "CONFIRM": "Complete task"
+            },
+            "DELEGATE": {
+                "TITLE": "Delegate task",
+                "MESSAGE": "Are you sure you want to delegate task",
+                "CONFIRM": "Delegate task",
+                "DELEGATE-TO": "User to delegate to"
+            },
+            "RESOLVE": {
+                "TITLE": "Resolve task",
+                "MESSAGE": "Are you sure you want to resolve task",
+                "CONFIRM": "Resolve task"
+            },
+            "DELETE": {
+                "TITLE": "Delete task",
+                "MESSAGE": "Are you sure you want to delete task",
+                "CONFIRM": "Delete task"
+            },
+            "EDIT": {
+                "TITLE": "Edit task",
+                "CONFIRM": "Update task",
+                "NAME": "Name",
+                "DESCRIPTION": "Description",
+                "PRIORITY": "Priority",
+                "CATEGORY": "Category",
+                "ASSIGNEE": "Assignee",
+                "OWNER": "Owner",
+                "DUE-DATE": "Due date"
+            }
+        }
+    },
+    "TASKS": {
+        "TITLE": "Tasks",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching tasks.",
+        "LIST-MESSAGE-EMPTY": "No matching tasks.",
+        "FILTER": {
+            "NAME": "Name (case sensitive)",
+            "ASSIGNEE": "Assignee (case sensitive)",
+            "STATUS": "Status",
+            "STATUS-ANY": "Any status",
+            "STATUS-ACTIVE": "Active tasks",
+            "STATUS-COMPLETE": "Completed tasks",
+            "PROCESS-INSTANCE-ID": "Process instance ID",
+            "TENANT-ID": "Tenant identifier",
+            "OWNER": "Owner (case sensitive)",
+            "PARENT-TASK-ID": "Parent task ID",
+            "CREATED-BEFORE": "Created before",
+            "CREATED-AFTER": "Created after",
+            "ENDED-BEFORE": "Ended before",
+            "ENDED-AFTER": "Ended after",
+            "DUE-BEFORE": "Due before",
+            "DUE-AFTER": "Due after",
+            "TASK-VARIABLE": "Task local variable",
+            "PROCESS-VARIABLE": "Process variable",
+            "VARIABLE-NAME": "Variable name",
+            "VARIABLE-VALUE": "Variable value",
+            "VARIABLE-BOOLEAN-VALUE": "Boolean value: {{value}}"
+        },
+        "SORT": {
+            "NAME": "Name",
+            "DUE-DATE": "Due date",
+            "START-TIME": "Time started",
+            "END-TIME": "Time ended",
+            "PRIORITY": "Priority"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "NAME": "Name",
+            "ASSIGNEE": "Assignee",
+            "OWNER": "Owner",
+            "CREATE-TIME": "Created",
+            "END-TIME": "Ended",
+            "PRIORITY": "Priority"
+        }
+    },
+    "DEPLOYMENTS": {
+        "TITLE": "Deployments",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching deployments.",
+        "LIST-MESSAGE-EMPTY": "No matching deployments.",
+        "FILTER": {
+            "NAME": "Name (case sensitive)",
+            "TENANTID": "Tenant identifier (case sensitive)"
+        },
+        "SORT": {
+            "ID": "ID",
+            "NAME": "Name"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "NAME": "Name",
+            "DEPLOY-TIME": "Deploy time",
+            "CATEGORY": "Category",
+            "TENANT": "Tenant"
+        },
+        "ACTION": {
+            "UPLOAD": "Upload process or package",
+            "DELETE": "Delete deployment"
+        },
+        "POPUP": {
+            "UPLOAD": {
+                "DESCRIPTION": "Select a .bpmn, .bpmn20.xml process file to deploy or upload a package of processes (with assets) contained in .zip or .bar file.",
+                "WARNING": "Uploading a process is only possible to an Activiti Core Engine, not to an Activiti 6 UI instance. Processes in the Activiti 6 UI should be deployed using an app that is shared with individuals or groups.",
+                "DROPZONE": "Or drop a file here",
+                "NO-DROP": "File drop is not supported by your browser",
+                "CANCEL-UPLOAD": "Cancel upload",
+                "ERROR": "Could not upload this file"
+            },
+            "DELETE": {
+            	"CONFIRM-MESSAGE": "Delete deployment '{{name}}'?"
+            	}
+        }
+    },
+    "DEPLOYMENT": {
+        "ID": "ID:",
+        "NAME": "Name:",
+        "TIME": "Deployment time:",
+        "CATEGORY": "Category:",
+        "TENANTID": "Tenant identifier:",
+        "DEFINITIONS-MESSAGE": "This deployment has {{total}} process definitions, showing {{size}}.",
+        "DEFINITIONS-MESSAGE-EMPTY": "This deployment has no process definitions.",
+        "TITLE": {
+            "DEFINITIONS": "Process Definitions",
+            "RESOURCES": "Resources"
+        },
+        "ACTION": {
+            "SHOW-ALL-DEFINITIONS": "Show all definitions"
+        }
+    },
+    "JOB": {
+        "TITLE": {
+            "MAIN": "Job {{id}}",
+            "EXCEPTION": "Exception"
+        },
+        "ACTIONS": {
+            "EXECUTE": "Execute job",
+            "DELETE": "Delete job"
+        },
+        "POPUP": {
+            "DELETE-JOB": {
+                "TITLE": "Delete job '{{id}}'",
+                "MESSAGE": "Are you sure you want to delete job {{id}}?",
+                "CONFIRM": "Delete job"
+            }
+        },
+        "ID": "ID:",
+        "EXECUTION-ID": "Execution ID:",
+        "PROCESS-INSTANCE": "Process instance:",
+        "PROCESS-DEFINITION": "Process definition:",
+        "DUEDATE": "Due date:",
+        "RETRIES-LEFT": "Retries left:",
+        "TENANT-ID": "Tenant:"
+    },
+    "JOBS": {
+        "TITLE": "Jobs",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching jobs.",
+        "LIST-MESSAGE-EMPTY": "No matching jobs.",
+        "FILTER": {
+            "PROCESS-DEFINITION": "Process definition",
+            "ALL-PROCESS-DEFINITIONS": "All process definitions",
+            "PROCESS-INSTANCE-ID": "Process instance ID",
+            "TENANT-ID": "Tenant identifier",
+            "DUE-BEFORE": "Due before",
+            "DUE-AFTER": "Due after",
+            "EXCEPTION": "Exception",
+            "EXCEPTION-HELP": "Only show jobs with an exception"
+        },
+        "SORT": {
+            "ID": "Job ID",
+            "DUE-DATE": "Due date",
+            "PROCESS-INSTANCE-ID": "Process instance ID"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "DUE-DATE": "Due date",
+            "PROCESS-DEFINITION": "Process definition",
+            "RETRIES": "Retries",
+            "EXCEPTION": "Exception"
+        }
+    },
+    "LOGIN": {
+        "TITLE": "Sign in",
+        "USERNAME": "Username",
+        "USERNAME-PLACEHOLDER": "Enter your username",
+        "PASSWORD": "Password",
+        "PASSWORD-PLACEHOLDER": "Enter your password",
+        "ACTION": {
+            "CONFIRM": "Sign in"
+        }
+    },
+    "USER": {
+        "POPUP": {
+            "CHANGE-PASSWORD": {
+                "TITLE": "Change password for '{{login}}'",
+                "OLD-PASSWORD": "Old password",
+                "NEW-PASSWORD": "New password",
+                "CONFIRM": "Change password"
+            },
+            "DELETE": {
+                "TITLE": "Delete user {{login}}",
+                "MESSAGE": "Are you sure you want to delete user '{{login}}'?",
+                "CONFIRM": "Delete user"
+            },
+            "EDIT": {
+                "TITLE": "Edit user {{login}}",
+                "LOGIN": "Login",
+                "EMAIL": "Email",
+                "FIRSTNAME": "Firstname",
+                "LASTNAME": "Lastname",
+                "CONFIRM": "Update user"
+            },
+            "NEW": {
+                "TITLE": "Create new user",
+                "LOGIN": "Login",
+                "EMAIL": "Email",
+                "FIRSTNAME": "Firstname",
+                "LASTNAME": "Lastname",
+                "PASSWORD": "Password",
+                "ADMIN": "Has admin rights",
+                "CONFIRM": "Create user"
+            }
+        }
+    },
+    "USERS": {
+        "TITLE": "Users",
+        "ACTION": {
+            "EDIT": "Edit user",
+            "NEW": "Create new user",
+            "DELETE": "Delete user",
+            "CHANGE-PASSWORD": "Change password"
+        },
+        "HEADER": {
+            "LOGIN": "Login",
+            "FIRSTNAME": "Firstname",
+            "LASTNAME": "Lastname",
+            "EMAIL": "Email",
+            "CLUSTER_USER": "Cluster user"
+        }
+    },
+    "LICENSE": {
+        "POPUP": {
+            "TITLE": "License information",
+            "HOLDER": "Holder",
+            "SUBJECT": "Subject",
+            "PRODUCTKEY": "Product type",
+            "GOODAFTERDATE": "License valid after",
+            "GOODBEFOREDATE": "License valid until",
+            "NUMBER_OF_PROCESSES": "Number of active processes",
+            "NUMBER_OF_ADMINS": "Number of administrator users",
+            "MULTI_TENANT": "Multi tenant",
+            "DEFAULT_TENANT": "Default tenant"
+        }
+    },
+    "CLUSTER": {
+        "NAME": "Name:",
+        "USER": "User:",
+        "MASTER-MANDATORY": "Master configuration mandatory:",
+        "METRICS-SEND-INTERVAL": "Metric send interval:",
+        "ENDPOINT-HELP": "The endpoint configuration (each cluster has only one) needs to point to an Activiti REST installation. This endpoint will then be used to retrieve and manage the data used in the other sections (for example deployments, process definitions, and so on) of this application.",
+        "ENDPOINT-NAME": "Name:",
+        "ENDPOINT-DESCRIPTION": "Description:",
+        "ENDPOINT-ADDRESS": "Server address:",
+        "ENDPOINT-PORT": "Server port:",
+        "ENDPOINT-CONTEXT-ROOT": "Context root:",
+        "ENDPOINT-REST-ROOT": "REST root:",
+        "ENDPOINT-USERNAME": "Username:",
+        "PROCESS-ENGINE-HELP": "This section allows you to define a 'master configuration' for the cluster. All instances in the cluster will use this configuration when they boot up (if the cluster config jar is on the classpath or if the corresponding properties are set). If not set, the instances will use their local configuration files.",
+        "NO-MASTER-DEFINED": "No master configuration defined",
+        "ACTION": {
+            "SHOW-PASSWORD": "Show password",
+            "EDIT-CLUSTER-CONFIG": "Edit cluster configuration",
+            "CREATE-CLUSTER-CONFIG": "Create new cluster",
+            "DELETE-CLUSTER-CONFIG": "Delete cluster configuration",
+            "GENERATE-JAR": "Generate cluster config jar",
+            "EDIT-ENDPOINT": "Edit Activiti REST endpoint",
+            "CHECK-ENDPOINT": "Check Activiti REST endpoint",
+            "SELECT-MASTER": "Select master configuration",
+            "ADD-CONFIGURATION": "Add master configuration",
+            "EDIT-CONFIGURATION": "Edit master configuration",
+            "DELETE-CONFIGURATION": "Delete master configuration"
+        },
+        "TITLE": {
+            "ENDPOINT": "Endpoint configuration"
+        },
+        "POPUP": {
+            "EDIT-ENDPOINT": {
+                "ENDPOINT-NAME": "Name",
+                "ENDPOINT-DESCRIPTION": "Description",
+                "ENDPOINT-ADDRESS": "Server address",
+                "ENDPOINT-PORT": "Server port",
+                "ENDPOINT-CONTEXT-ROOT": "Context root",
+                "ENDPOINT-REST-ROOT": "REST root",
+                "ENDPOINT-USERNAME": "Username",
+                "ENDPOINT-PASSWORD": "Password",
+                "ENDPOINT-PASSWORD-HELP": "Leave blank to keep current password",
+                "ENDPOINT-URL-PREVIEW": "URL preview",
+                "ACTION-CONFIRM": "Save endpoint configuration",
+                "ERROR-401": "Error: invalid credentials",
+                "ERROR-403": "Error: invalid credentials or URL",
+                "ERROR-404": "Error: URL not found",
+                "ERROR-500": "Error: server error. Check server logs."
+            }
+        }
+    },
+    "APP-DEPLOYMENTS": {
+        "TITLE": "App Deployments",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching app deployments.",
+        "LIST-MESSAGE-EMPTY": "No matching app deployments.",
+        "FILTER": {
+            "NAME": "Name",
+            "TENANTID": "Tenant identifier",
+            "LATEST": "Latest version",
+            "LATEST-HELP": "Only show latest versions"
+        },
+        "SORT": {
+            "ID": "ID",
+            "NAME": "Name"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "APP-DEFINITION-ID": "App ID",
+            "DEPLOYMENT-ID": "Process Deployment ID",
+            "DMN-DEPLOYMENT-ID": "DMN Deployment ID",
+            "NAME": "Name",
+            "DEPLOY-TIME": "Deploy time",
+            "DEPLOYED-BY": "Deployed by",
+            "TENANT": "Tenant ID"
+        },
+        "ACTION": {
+            "UPLOAD": "Upload and publish an app"
+        },
+        "POPUP": {
+            "UPLOAD": {
+                "DESCRIPTION": "Select a .zip app definition to deploy.",
+                "WARNING": "Uploading a process is only possible to an Activiti UI instance.",
+                "DROPZONE": "Or drop a file here",
+                "NO-DROP": "File drop is not supported by your browser",
+                "CANCEL-UPLOAD": "Cancel upload",
+                "ERROR": "Could not upload this file"
+            }
+        }
+    },
+    "APP-DEPLOYMENT": {
+        "APP-ID": "App ID:",
+        "DEPLOYMENT-ID": "Deployment ID:",
+        "DMN-DEPLOYMENT-ID": "DMN Deployment ID:",
+        "DEPLOYED-BY": "Deployed by:",
+        "DEPLOYED-ON": "Deployed on:",
+        "APP-NAME": "App Name:",
+        "VERSION": "Version:",
+        "DESCRIPTION": "Description:",
+        "KEY": "Key:",
+        "CATEGORY": "Category:",
+        "SUSPENDED": "Suspended:",
+        "DEPLOYMENT": "Deployment:",
+        "TENANT-ID": "Tenant ID:",
+        "START-FORM-DEFINED": "Start form defined:",
+        "GRAPHICAL-NOTATION-DEFINED": "Graphical notation defined:",
+        "PROCESS-DEFINITIONS-SIZE": "App definition has {{total}} process definitions",
+        "PROCESS-DEFINITIONS-SHOWING": ", showing {{size}} process definitions",
+        "PROCESS-DEFINITIONS-EMPTY": "App deployment has no process definitions",
+        "DECISION-TABLES-SIZE": "App deployment has {{total}} decision tables",
+        "DECISION-TABLES-SHOWING": ", showing {{size}} decision tables",
+        "DECISION-TABLES-EMPTY": "App deployment has no decision tables",
+        "FORMS-SIZE": "App deployment has {{total}} forms",
+        "FORMS-SHOWING": ", showing {{size}} forms",
+        "FORMS-EMPTY": "App deployment has no forms",
+        "TITLE": {
+            "PROCESS-DEFINITIONS": "Process definitions",
+            "DECISION-TABLES": "Decision tables",
+            "FORMS": "Forms"
+        },
+        "ACTION": {
+            "EDIT-CATEGORY": "Edit category",
+            "SHOW-ALL-PROCESS-DEFINITIONS": "Show all process definitions",
+            "SHOW-ALL-DECISION-TABLES": "Show all decision tables",
+            "SHOW-ALL-FORMS": "Show all forms",
+            "SHOW-DIAGRAM": "Show process diagram"
+        },
+        "POPUP": {
+            "EDIT-CATEGORY": {
+                "TITLE": "Edit category for definition",
+                "MESSAGE": "The initial category for the definition is populated from the targetNameSpace attribute in the BPMN 2.0 XML, but can be altered after deployment.",
+                "CATEGORY": "Category",
+                "CATEGORY-PLACEHOLDER": "Enter a category",
+                "CONFIRM": "Update category"
+            },
+            "SHOW-PROCESS-MODEL": {
+                "TITLE": "Process diagram"
+            }
+        }
+    },
+    "VARIABLES": {
+        "HEADER": {
+            "NAME": "Name",
+            "TYPE": "Type",
+            "VALUE": "Value"
+        }
+    },
+    "IDENTITY-LINKS": {
+        "HEADER": {
+            "GROUP-ID": "Group ID",
+            "TYPE": "Type",
+            "USER-ID": "User ID"
+        }
+    },
+    "ALERT": {
+        "GENERAL": {
+            "HTTP-ERROR": "We couldn't get data from the server",
+            "AUTHENTICATION-ERROR": "You entered invalid login credentials"
+        },
+        "ENGINE": {
+            "ENDPOINT-UPDATED": "Endpoint '{{name}}' updated.",
+            "ENDPOINT-INVALID": "Endpoint configuration for '{{name}}' is invalid.",
+            "ENDPOINT-VALID": "Endpoint valid, Engine at endpoint: {{name}} - {{version}}"
+        },
+        "JOB": {
+            "DELETED": "Job '{{id}}' deleted successfully.",
+            "EXECUTED": "Job '{{id}}' was executed successfully."
+        },
+        "PROCESS-INSTANCE": {
+            "DELETED": "Process instance '{{id}}' deleted successfully.",
+            "TERMINATED": "Process instance '{{id}}' terminated successfully."
+        },
+        "TASK": {
+            "DELETED": "Task '{{id}}' deleted successfully.",
+            "COMPLETED": "Task '{{id}}' completed successfully.",
+            "DELEGATED": "Task '{{id}}' delegated to user {{user}}.",
+            "RESOLVED": "Task '{{id}}' successfully resolved.",
+            "ASSIGNED": "Task '{{id}}' is now assigned to {{user}}.",
+            "UNASSIGNED": "Task '{{id}}' is now unassigned.",
+            "UPDATED": "Task '{{id}}' updated successfully."
+        },
+        "USER": {
+            "DELETED": "User '{{login}}' deleted successfully.",
+            "UPDATED": "User '{{login}}' updated successfully.",
+            "CREATED": "User '{{login}}' created.",
+            "PASSWORD-CHANGED": "Password for '{{login}}' is changed successfully."
+        },
+        "PROCESS-DEFINITION": {
+            "CATEGORY-UPDATED": "Process definition category updated"
+        },
+        "DEPLOYMENT": {
+        	"DELETED-DEPLOYMENT": "Deleted deployment '{{name}}'",
+        	"DELETE-ERROR": "Could not delete deployment. {{exception || ''}}"
+        },
+        "APP-DEPLOYMENT": {
+        	"DELETED-APP": "Deleted app '{{appDefinition.name}}'",
+        	"DELETE-ERROR": "Could not delete app. {{message || ''}}"
+        }
+    },
+    "DECISION-TABLES": {
+        "TITLE": "Decision tables",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching decision tables.",
+        "LIST-MESSAGE-EMPTY": "No matching decision tables.",
+        "FILTER": {
+            "NAME": "Name",
+            "KEY": "Key",
+            "TENANTID": "Tenant identifier"
+        },
+        "SORT": {
+            "ID": "ID",
+            "NAME": "Name"
+        },
+        "HEADER": {
+            "ID": "ID",
+            "NAME": "Name",
+            "VERSION": "Version",
+            "KEY": "Key",
+            "DEPLOY-TIME": "Deploy time",
+            "TENANT-ID": "Tenant ID"
+        }
+    },
+    "DECISION-TABLE": {
+        "ID": "ID:",
+        "NAME": "Name:",
+        "VERSION": "Version:",
+        "KEY": "Key:",
+        "DEPLOYMENT-ID": "Deployment ID:",
+        "RESOURCE-NAME": "Resource name:",
+        "DESCRIPTION": "Description:",
+        "TENANT": "Tenant:",
+        "TITLE": {
+            "DECISION-AUDITS": "Decision audits"
+        },
+        "DECISION-AUDITS-MESSAGE": "This decision table has {{total}} audits, showing {{size}}.",
+        "DECISION-AUDITS-MESSAGE-EMPTY": "This decision table has no audits",
+        "ACTION": {
+            "EDIT-CATEGORY": "Edit category",
+            "SHOW-ALL-JOBS": "Show all jobs",
+            "SHOW-ALL-PROCESSES": "Show all processes",
+            "SHOW-DIAGRAM": "Show process diagram",
+            "SHOW-DECISION-TABLE": "Show decision table"
+        },
+        "POPUP": {
+            "TITLE": "Decision Table: ",
+            "KEY": "Key: ",
+            "HIT-POLICY": "Hit Policy: ",
+            "HIT-POLICIES": {
+                "FIRST": "First (Single pass)",
+                "ANY": "Any (Single pass)"
+            }
+        }
+    },
+    "FORMS": {
+    	"TITLE": "Forms",
+        "LIST-MESSAGE": "Showing {{size}} results, from a total of {{total}} matching forms.",
+        "LIST-MESSAGE-EMPTY": "No matching forms.",
+        "HEADER": {
+            "ID": "ID",
+            "NAME": "Name",
+            "APPID": "App ID",
+            "TENANTID": "Tenant ID"
+        },
+        "FILTER": {
+            "NAME": "Name",
+            "APPID": "App deployment ID",
+            "TENANTID": "Tenant identifier"
+        },
+        "SORT": {
+            "ID": "ID",
+            "NAME": "Name"
+        }
+    },
+    "FORM": {
+        "ID": "ID:",
+        "NAME": "Name:",
+        "APP-ID": "APP ID:",
+        "DEPLOYMENT-ID": "Deployment ID:",
+        "DESCRIPTION": "Description:",
+        "TENANT": "Tenant:",
+        "MESSAGE-EMPTY": "(None)",
+        "TITLE": {
+            "SUBMITTED-FORMS": "Submitted forms"
+        },
+        "SUBMITTED-FORMS-MESSAGE": "This form has {{total}} submitted forms, showing {{size}}.",
+        "SUBMITTED-FORMS-MESSAGE-EMPTY": "This form has no submitted forms",
+        "ACTION": {
+            "EDIT-CATEGORY": "Edit category",
+            "SHOW-ALL-JOBS": "Show all jobs",
+            "SHOW-ALL-PROCESSES": "Show all processes",
+            "SHOW-DIAGRAM": "Show process diagram",
+            "SHOW-FORM": "Show form"
+        },
+        "POPUP": {
+            "TITLE": "Form: "
+        },
+        "FIELD-PREVIEW" : {
+        	"DISPLAY-REF": "Display value",
+        	"SELECT-FIELD": "(No field selected)",
+        	"FIELD-VALUE": "Show value of field \"{{name}}\"",
+        	"UNKNOWN-TYPE": "Unknown field type {{type}}",
+        	"TEXT-VALUE": "Text",
+        	"MULTI-TEXT-VALUE": "Multi-line text",
+        	"NUMBER-VALUE": "123",
+        	"DATE-VALUE": "Date",
+        	"DROPDOWN-VALUE": "Select ...",
+        	"UPLOAD-VALUE": "Upload or import content...",
+        	"RADIOS-OPTION1": "Option 1",
+        	"SELECT-PERSON": "Select a person",
+        	"SELECT-GROUP": "Select a group"
+        	}
+    },
+    "SUBMITTED-FORM": {
+    	"HEADER": {
+            "ID": "ID",
+            "TASK-ID": "Task ID",
+            "PROCESS-ID": "Process Instance ID",
+            "SUBMITTED": "Submitted on",
+            "SUBMITTED-BY": "Submitted by",
+            "FORM-ID": "Form ID"
+        },
+        "ACTION": {
+        	"SHOW-SUBMITTED-FORM": "Show submitted form"
+        }
+    },
+    "APPS": {
+    	"ACTION": {
+            "UPLOAD": "Upload and publish an app",
+            "DOWNLOAD": "Download app",
+            "REDEPLOY": "Redeploy app to another cluster",
+            "DELETE": "Delete app"
+        },
+    	"POPUP": {
+    		"DELETE": {
+    			"CONFIRM-MESSAGE": "Delete app '{{appDefinition.name}}'?"
+    		},
+            "UPLOAD": {
+                "DESCRIPTION": "Select a .zip app file to deploy.",
+                "WARNING": "Uploading an app is only possible to an Activiti UI instance, not to an Activiti Core Engine instance.",
+                "DROPZONE": "Or drop a file here",
+                "NO-DROP": "File drop is not supported by your browser",
+                "CANCEL-UPLOAD": "Cancel upload",
+                "ERROR": "Could not upload this file"
+            },
+            "PUBLISH-MODEL": {
+            	"TITLE": "Publish app model",
+            	"PUBLISH" : "Publish",
+            	"ERROR": "Could not publish app",
+                "DESCRIPTION": "Select a .zip app file to deploy.",
+                "WARNING": "Uploading an app is only possible to an Activiti UI instance, not to an Activiti Core Engine instance.",
+                "DROPZONE": "Or drop a file here",
+                "NO-DROP": "File drop is not supported by your browser",
+                "LIST-MESSAGE": "Showing total of {{total}} matching app models.",
+        		"LIST-MESSAGE-EMPTY": "No matching app models.",
+        		"PUBLISH-ERROR": "Could not publish app",
+        		"EVERYONES-APPS": "Show everyone's apps",
+        		"APP-CONFLICT-ERROR": "App conflicts with existing app '{{name}}' created by '{{createdBy.firstName}} {{createdBy.lastName}}' ",
+        		"PUBLISH-TO-ANOTHER-CLUSTER": "Publish app to another cluster",
+            	"SELECT-CLUSTER": "Select cluster",
+            	"PUBLISH-TO-CLUSTER": "Publish app to {{name}}",
+            	"PUBLISH-AS-NEW-VERSION": "Publish as a new app version",
+        		"HEADER": {
+        			"ID": "ID",
+        			"NAME": "Name",
+        			"LAST-UPDATE": "Last update",
+        			"CREATED-BY": "Created by"
+        		}
+            },
+            "REDEPLOY": {
+            	"TITLE": "Redeploy app",
+            	"DESCRIPTION": "Select a cluster to redeploy '{{name}}' to",
+            	"ERROR": "Could not deploy app",
+            	"APP-CONFLICT-ERROR": "App conflicts with existing app '{{name}}' created by '{{createdBy.firstName}} {{createdBy.lastName}}' ",
+            	"SELECT-CLUSTER": "Select cluster",
+            	"DEPLOY-TO-CLUSTER": "Deploy app to {{name}}",
+            	"DEPLOY": "Deploy",
+            	"DEPLOY-AS-NEW-VERSION": "Deploy as a new app version"
+            }
+        }
+    }
+}

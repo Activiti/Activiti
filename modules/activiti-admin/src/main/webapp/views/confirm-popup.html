@@ -1,0 +1,24 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="$close()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{model.title}}</h2>
+	</div>
+</div>
+<div class="modal-body">
+	<p>{{model.message}}</p>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="$close()" ng-disabled="status.loading"
+	       		translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-danger" ng-click="ok()" ng-disabled="status.loading"
+	           translate="{{model.confirm}}">
+	       </button>
+		</div>
+</div>
+</div>

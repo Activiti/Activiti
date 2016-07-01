@@ -1,0 +1,70 @@
+<div class="container" id="detail-container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" ng-show="form">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{form.name &amp;&amp; form.name +" - " || ""}}{{form.id}}</h2>
+				</div>
+
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="FORM.ID"></td>
+							<td>{{form.id}}</td>
+							<td class="property-name" translate="FORM.NAME"></td>
+							<td>{{form.name | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="FORM.APP-ID"></td>
+							<td ng-if="form.appDeploymentId"><a ng-href="#/app/{{form.appDeploymentId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{form.appDeploymentId}}</a></td>
+							<td ng-if="!form.appDeploymentId">{{form.appDefinitionId | empty}}</td>
+							<td class="property-name" translate="FORM.DEPLOYMENT-ID"></td>
+							<td>{{form.appDefinitionId | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="FORM.DESCRIPTION"></td>
+							<td>{{form.description | empty}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default" ng-click="showForm()">
+							<i class="glyphicon glyphicon-zoom-in"></i><span translate="FORM.ACTION.SHOW-FORM"></span>
+					    </button>
+					  </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-9">
+            <div class="component">
+                <div class="title">
+                    <h2 translate="FORM.TITLE.SUBMITTED-FORMS"></h2>
+                </div>
+                <div class="grid-wrapper grid-wrapper-compact" ng-if="submittedForms">
+                    <div class="grid-message" ng-if="submittedForms.size > 0">
+                        <span>{{'FORM.SUBMITTED-FORMS-MESSAGE' | translate:submittedForms}}</span>
+                    </div>
+                    <div class="grid-message" ng-if="submittedForms.size == 0">
+                        <span>{{'FORM.SUBMITTED-FORMS-MESSAGE-EMPTY' | translate}}</span>
+                    </div>
+                    <div ng-grid="gridSubmittedForms" class="gridStyle" ng-if="gridSubmittedForms && submittedForms.data" ng-show="submittedForms.size > 0"></div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+<div>
+</div>

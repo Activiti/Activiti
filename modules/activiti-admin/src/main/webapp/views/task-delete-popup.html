@@ -1,0 +1,25 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'TASK.POPUP.DELETE.TITLE' | translate}} '{{task.name &amp;&amp; task.name || task.id}}'</h2>	
+	</div>
+</div>
+<div class="modal-body">
+	<p>{{'TASK.POPUP.DELETE.MESSAGE' | translate}} '{{task.name &amp;&amp; task.name + ' (' + task.id + ')' || task.id}}'?</p>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	        <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       		translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-danger" ng-click="ok()" ng-disabled="status.loading"
+	       	    translate="TASK.POPUP.DELETE.CONFIRM">
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

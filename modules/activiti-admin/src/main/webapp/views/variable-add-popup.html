@@ -1,0 +1,71 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2>{{'PROCESS-INSTANCE.POPUP.CREATE-VARIABLE.TITLE' | translate}}</h2>
+	</div>
+</div>
+<div class="modal-body">
+
+    <div style="margin-top:20px">
+        <div>{{'PROCESS-INSTANCE.POPUP.CREATE-VARIABLE.NAME' | translate}}</div>
+        <input type="text" class="form-control" ng-model="newVariable.name">
+    </div>
+
+    <div style="margin-top:20px">
+        <div>{{'PROCESS-INSTANCE.POPUP.CREATE-VARIABLE.TYPE' | translate}}</div>
+        <div>
+            <select ng-model="newVariable.type" ng-options="type as type for type in types">
+            </select>
+        </div>
+    </div>
+
+    <div ng-show="newVariable.type != null && newVariable.type != undefined" style="margin-top:20px">
+        <div>{{'PROCESS-INSTANCE.POPUP.CREATE-VARIABLE.VALUE' | translate}}</div>
+        <div ng-switch on="newVariable.type" style="margin-top:10px">
+            <div ng-switch-when="string">
+                <input class="form-control" type="text" ng-model="newVariable.value">
+            </div>
+            <div ng-switch-when="boolean">
+                <input type="checkbox" ng-model="newVariable.value">
+                <span ng-show="newVariable.value">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.CHECKED' | translate}}</span>
+                <span ng-show="!newVariable.value">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.UNCHECKED' | translate}}</span>
+            </div>
+            <div ng-switch-when="date">
+                <input class="form-control" type="text" ng-model="newVariable.value">
+                <div style="margin: 5px 0 0 5px; font-size:12px">{{'PROCESS-INSTANCE.POPUP.UPDATE-VARIABLE.DATE-HELP' | translate}}</div>
+            </div>
+            <div ng-switch-when="double">
+                <input class="form-control" type="number" ng-model="newVariable.value">
+            </div>
+            <div ng-switch-when="integer">
+                <input class="form-control" type="number" ng-model="newVariable.value">
+            </div>
+            <div ng-switch-when="long">
+                <input class="form-control" type="number" ng-model="newVariable.value">
+            </div>
+            <div ng-switch-when="short">
+                <input class="form-control" type="number" ng-model="newVariable.value">
+            </div>
+            <div ng-switch-default>
+                <input class="form-control" type="text" ng-model="newVariable.value">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       	translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-info" ng-click="createVariable()"
+                   ng-disabled="status.loading || newVariable.name == null || newVariable.name == undefined || newVariable.type == null || newVariable.type == undefined ">
+               {{'PROCESS-INSTANCE.POPUP.CREATE-VARIABLE.CREATE' | translate}}
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

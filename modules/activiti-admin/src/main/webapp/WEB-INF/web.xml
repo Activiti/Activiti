@@ -1,0 +1,42 @@
+<!--
+
+    Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+    License rights for this program may be obtained from Alfresco Software, Ltd.
+    pursuant to a written agreement and any use of this program without such an
+    agreement is prohibited.
+
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0"
+         metadata-complete="true">
+
+    <!--
+     Remove classpath scanning (from servlet 3.0) in order to speed jetty startup :
+     metadata-complete="true" above + empty absolute ordering below
+     -->
+    <absolute-ordering>
+        <!--
+           Empty absolute ordering is necessary to completely desactivate classpath scanning
+            -->
+    </absolute-ordering>
+
+    <display-name>activiti-admin</display-name>
+
+    <!-- All the Servlets and Filters are configured by this ServletContextListener : -->
+    <listener>
+        <listener-class>com.activiti.conf.WebConfigurer</listener-class>
+    </listener>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/500.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.html</location>
+    </error-page>
+
+</web-app>

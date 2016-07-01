@@ -1,0 +1,185 @@
+<div class="container" id="detail-container" ng-cloak ng-show="task">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" >
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{task.name &amp;&amp; task.name + " - " || ""}}{{task.id}}</h2>
+				</div>
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="TASK.ID"></td>
+							<td>{{task.id}}</td>
+							<td class="property-name" translate="TASK.STATUS"></td>
+							<td>{{task.endTime &amp;&amp; ('TASK.STATUS-COMPLETED' | translate) || ('TASK.STATUS-ACTIVE' | translate)}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="TASK.NAME"></td>
+							<td>{{task.name | empty}}</td>
+							<td class="property-name" translate="TASK.DESCRIPTION"></td>
+							<td>{{task.description | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="TASK.TASK-DEFINITION-KEY"></td>
+							<td>{{task.taskDefinitionKey | empty}}</td>
+							<td class="property-name" translate="TASK.FORM-KEY"></td>
+							<td ng-if="task.formKey && task.endTime"> {{task.formKey | empty}} <a ng-click="showTaskForm()"><i class="glyphicon glyphicon-zoom-in"></i> {{'TASK.ACTION.SHOW-SUBMITTED-FORM' | translate}}</a></td>
+							<td ng-if="!task.endTime && task.formKey">
+								<a ng-href="#/form/{{task.formKey}}"><i class="glyphicon glyphicon-zoom-in"></i> {{task.formKey}}</a>
+							</td>
+							<td ng-if="!isBpmSuite || !task.formKey">{{task.formKey | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="TASK.PRIORITY"></td>
+							<td>{{task.priority | empty}}</td>
+							<td class="property-name" translate="TASK.DELEGATION-STATE"></td>
+							<td>{{task.delegationState | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="TASK.CATEGORY"></td>
+							<td>{{task.category | empty}}</td>
+							<td class="property-name" translate="TASK.PARENT"></td>
+							<td ng-if="task.parentTaskId"><a ng-click="openTask(task.parentTaskId)"><i class="glyphicon glyphicon-zoom-in"></i> {{task.parentTaskId}}</a></td>
+						</tr>
+						<tr class="property">
+                            <td class="property-tenant" translate="TASK.TENANT-ID"></td>
+                            <td>{{task.tenantId | empty}}</td>
+                        </tr>
+					</table>
+				</div>
+				<div class="seperator"></div>
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name"><span class="glyphicon glyphicon-user"></span> {{'TASK.ASSIGNEE' | translate}}</td>
+							<td>{{task.assignee | empty}}</td>
+							<td class="property-name"><span class="glyphicon glyphicon-user"></span> {{'TASK.OWNER' | translate}}</td>
+							<td>{{task.assignee | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name"><span class="glyphicon glyphicon-time"></span> {{'TASK.START-DATE' | translate}}</td>
+							<td>{{task.startTime | dateformat | empty}}</td>
+							<td class="property-name"><span class="glyphicon glyphicon-time"></span> {{'TASK.DUE-DATE' | translate}}</td>
+							<td>{{task.dueDate | dateformat | empty}}</td>
+						</tr>
+						<tr class="property" ng-if="task.endTime">
+							<td class="property-name"><span class="glyphicon glyphicon-time"></span> {{'TASK.END-DATE' | translate}}</td>
+							<td>{{task.endTime | dateformat | empty}}</td>
+							<td class="property-name" translate="TASK.DELETE-REASON"></td>
+							<td>{{task.deleteReason | empty}}</td>
+						</tr>
+					</table>
+				</div>
+				
+				<!-- Only visible for tasks associated to an execution -->
+				<div class="seperator" ng-if="taskPartOfProcess"></div>
+				<div class="property-wrapper">
+					<table ng-if="taskPartOfProcess">
+						<tr class="property">
+							<td class="property-name"></span> {{'TASK.PROCESS-INSTANCE' | translate}}</td>
+							<td><a ng-click="openProcessInstance(task.processInstanceId)"><i class="glyphicon glyphicon-zoom-in"></i> {{task.processInstanceId | empty}}</a></td>
+							<td class="property-name" translate="TASK.EXECUTION-ID"></td>
+							<td><a><i class="glyphicon glyphicon-zoom-in"></i> {{task.executionId | empty}}</a></td>
+						</tr>
+						<tr class="property">
+							<td class="property-name"></span> {{'TASK.PROCESS-DEFINITION' | translate}}</td>
+							<td><a ng-click="openProcessDefinition(task.processDefinitionId)"><i class="glyphicon glyphicon-zoom-in"></i> {{task.processDefinitionId | empty}}</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li ng-if="!taskCompleted">
+					    <button type="button" class="btn btn-sm btn-default"  ng-click="editTask()">
+							<i class="glyphicon glyphicon-pencil"></i>{{'TASK.ACTION.EDIT' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="!taskCompleted">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="assignTask()">
+							<i class="glyphicon glyphicon-user"></i>{{'TASK.ACTION.ASSIGN-CLAIM' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="!taskCompleted && task.delegationState != 'pending' && task.delegationStateLoaded">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="delegateTask()">
+							<i class="glyphicon glyphicon-transfer"></i>{{'TASK.ACTION.DELEGATE' | translate}}
+					    </button>
+					  </li>
+					   <li ng-if="!taskCompleted && task.delegationState == 'pending' && task.delegationStateLoaded">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="resolveTask()">
+							<i class="glyphicon glyphicon-transfer"></i>{{'TASK.ACTION.RESOLVE' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="!taskCompleted">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="completeTask()">
+							<i class="glyphicon glyphicon-check"></i>{{'TASK.ACTION.COMPLETE' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="taskCompleted || (!taskCompleted && !taskPartOfProcess)">
+					    <button type="button" class="btn btn-sm btn-default btn-danger" ng-click="deleteTask()">
+							<i class="glyphicon glyphicon-remove"></i>{{'TASK.ACTION.DELETE' | translate}}
+					    </button>
+					  </li>
+			    </ul>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component">
+				<div class="tabs-wrapper">
+					<div class="pull-right">
+						<a ng-click="showAllSubtasks()" class="action" ng-show="tabData.activeTab == tabData.tabs[0].id"><i class="glyphicon glyphicon-zoom-in"></i> {{'TASK.ACTION.SHOW-ALL-SUBTASKS' | translate}}</a>
+					</div>
+		       		<div class="tabs clearfix">
+		       			<div class="tab" ng-repeat="tab in tabData.tabs" ng-class="{'active': tabData.activeTab == tab.id}">
+		       				<a ng-click="tabData.activeTab = tab.id">
+		       					{{tab.name | translate:node}}&nbsp;
+		    					<span class="badge" ng-if="tab.info != undefined">{{tab.info}}</span>
+		    				</a>
+		       			</div>
+		       		</div>
+		        	<div class="title"></div>
+		        	
+		        	<div class="grid-wrapper grid-wrapper-compact" ng-if="subTasks && tabData.activeTab == tabData.tabs[0].id">
+						<div class="grid-message" ng-if="subTasks.size > 0">
+	                        <span>{{'TASK.SUBTASKS-MESSAGE' | translate:subTasks}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="subTasks.size == 0">
+	                        <span>{{'TASK.SUBTASKS-MESSAGE-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="subTaskGridDefinitions" class="gridStyle" ng-if="subTasks" ng-show="subTasks.size > 0"></div>
+					</div>
+					
+					<div class="grid-wrapper grid-wrapper-compact" ng-if="variables && tabData.activeTab == tabData.tabs[1].id">
+						<div class="grid-message" ng-if="variables.size > 0">
+	                        <span>{{'TASK.VARIABLES-MESSAGE' | translate:variables}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="variables.size == 0">
+	                        <span>{{'TASK.VARIABLES-MESSAGE-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="variableGridDefinitions" class="gridStyle" ng-if="variables" ng-show="variables.size > 0"></div>
+					</div>
+					
+					<div class="grid-wrapper grid-wrapper-compact" ng-if="identityLinks && tabData.activeTab == tabData.tabs[2].id">
+						<div class="grid-message" ng-if="identityLinks.size > 0">
+						<span>{{'TASK.IDENTITY-LINKS-MESSAGE' | translate:identityLinks}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="identityLinks.size == 0">
+	                        <span>{{'TASK.IDENTITY-LINKS-MESSAGE-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="identityLinkGridDefinitions" class="gridStyle" ng-if="identityLinks" ng-show="identityLinks.size > 0"></div>
+					</div>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

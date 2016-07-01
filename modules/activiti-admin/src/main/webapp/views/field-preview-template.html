@@ -1,0 +1,181 @@
+<div ng-if="field != null && field != undefined && !customFieldTemplates[field.type]" ng-switch="field.type">
+
+    <div ng-switch-when="text" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <input type="text" class="form-control" value="{{'FORM.FIELD-PREVIEW.TEXT-VALUE' | translate}}" disabled>
+    </div>
+
+    <div ng-switch-when="container" class="form-group">
+        <div class="container-control row">
+            <div class="col-sm-6" ng-repeat="(colName, colItems) in field.fields">
+                <div ng-repeat="item in colItems">
+                    <field-preview field="item" custom-field-templates="customFieldTemplates"></field-preview>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-switch-when="multi-line-text" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <textarea rows="4" class="form-control" disabled>{{'FORM.FIELD-PREVIEW.MULTI-TEXT-VALUE' | translate}}</textarea>
+    </div>
+
+    <div ng-switch-when="integer" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <input type="text" class="form-control" value="{{'FORM.FIELD-PREVIEW.NUMBER-VALUE' | translate}}" disabled>
+    </div>
+
+    <div ng-switch-when="date" class="form-group">
+        <label class="control-label"><i class="glyphicon glyphicon-calendar"></i> {{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <span class="control-label" ng-if="field.acceptedFormat">({{field.acceptedFormat}})</span>
+        <input type="text" class="form-control" value="{{'FORM.FIELD-PREVIEW.DATE-VALUE' | translate}}" disabled>
+    </div>
+
+    <div ng-switch-when="boolean" class="form-group">
+        <label class="control-label" style="cursor: pointer;">
+            <input type="checkbox"  disabled> <span>{{field.name}}</span>
+            <span class="marker" ng-if="field.required">*</span>
+        </label>
+    </div>
+
+	<div ng-switch-when="amount" class="form-group">
+		<label class="control-label">{{field.name}}</label>
+		<div class="input-group amount-field">
+			<span class="input-group-addon">{{field.currency || '$'}}</span>
+			<input type="text" class="form-control" value="123" disabled>
+			<span ng-if="field.enableFractions" class="input-group-addon">.00</span>
+		</div>
+	</div>
+
+	<div ng-switch-when="dropdown" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <select class="form-control" disabled>
+          <option>{{'FORM.FIELD-PREVIEW.DROPDOWN-VALUE' | translate}}</option>
+    </select>
+    </div>
+
+    <div ng-switch-when="typeahead" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <select class="form-control" disabled>
+      <option>{{formElement.placeholder}}</option>
+    </select>
+    </div>
+
+    <div ng-switch-when="radio-buttons" class="form-group">
+        <div>
+            <label class="control-label">{{field.name}}</label>
+            <span class="marker" ng-if="field.required">*</span>
+        </div>
+        
+      <div ng-show="field.optionType != 'rest' && field.options && field.options.length> 0" class="radio" ng-repeat="option in field.options">
+          <label>
+              <input type="radio" name="optionsRadios" id="optionsRadios{{$index}}" value="option{{$index}}" ng-checked="field.value == option.name" disabled>{{option.name}}</input>
+          </label>
+      </div>
+      <div ng-show="field.optionType != 'rest' && !field.options && field.options.length === 0" class="radio">
+          <label>
+              <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" disabled>
+              {{'FORM.FIELD-PREVIEW.RADIOS-OPTION1' | translate}}
+          </label>
+      </div>
+      <div ng-show="field.optionType == 'rest'" class="radio">
+          <label>
+              <input type="radio" name="optionsRadios" id="optionsRadios1" disabled>
+              {{formElement.restUrl}}
+          </label>
+      </div>
+    </div>
+
+    <div ng-switch-when="people" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <div class="input-group">
+      <span class="input-group-addon"><i class="icon icon-user-add"></i></span>
+      <input type="text" class="form-control" placeholder="{{'FORM.FIELD-PREVIEW.SELECT-PERSON' | translate}}" value="{{field.placeholder}}" disabled>
+    </div>
+    
+    </div>
+
+    <div ng-switch-when="functional-group" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <div class="input-group">
+      <span class="input-group-addon"><i class="icon icon-user-add"></i></span>
+      <input type="text" class="form-control" placeholder="{{'FORM.FIELD-PREVIEW.SELECT-GROUP' | translate}}" value="{{field.placeholder}}" disabled>
+    </div>
+    </div>
+
+    <div ng-switch-when="group" class="form-group">
+        <h3>{{field.name}}</h3>
+        <hr style="width:100%; height: 1px; background-color: black" />
+        <div class="container-control row">
+            <div class="col-sm-6" ng-repeat="(colName, colItems) in field.fields">
+                <div ng-repeat="item in colItems">
+                    <field-preview field="item" custom-field-templates="customFieldTemplates"></field-preview>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div ng-switch-when="dynamic-table" class="form-group dynamicTableContainer">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+		<div class="dynamicTable" ui-grid="gridOptions" ui-grid-auto-resize></div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div ng-switch-when="upload" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <div class="input-group clearfix">
+      <span class="input-group-addon"><i class="icon icon-folder"></i></span>
+      <input type="text" class="form-control" value="{{'FORM.FIELD-PREVIEW.UPLOAD-VALUE' | translate}}" disabled>
+    </div>
+    </div>
+
+
+    <div ng-switch-when="hyperlink" class="form-group">
+        <label class="control-label">{{field.name}}</label>
+        <div class="message">
+      {{field.hyperlinkUrl}}
+    </div>
+
+    </div>
+
+    <div ng-switch-when="readonly">
+      <div ng-if="field.params.field.type == 'dynamic-table'">
+      <label class="control-label form-field-label">{{field.name}} - <i>{{'FORM.FIELD-PREVIEW.DISPLAY-REF' | translate}}</i></label>
+      <div class="dynamicTable" ui-grid="gridOptions" ui-grid-auto-resize></div>
+    </div>
+    <div ng-if="field.params.field.type != 'dynamic-table'">
+      <div class="message">
+        {{field.params.field.name && ('FORM.FIELD-PREVIEW.FIELD-VALUE' | translate:field.params.field) || ('FORM.FIELD-PREVIEW.SELECT-FIELD' | translate)}}
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    </div>
+
+    <div ng-switch-when="readonly-text" class="form-group">
+        <p>{{field.value}}</p>
+    </div>
+
+    <div ng-switch-default translate="FORM.FIELD-PREVIEW.UNKNOWN-TYPE" translate-values="{type: field.type}">
+    </div>
+</div>
+
+<div ng-if="field != null && field != undefined && customFieldTemplates[field.type]">
+    <div class="form-group" ng-class="{'has-error': field.required && isEmpty(field)}">
+        <label class="control-label">{{field.name}}</label>
+        <span class="marker" ng-if="field.required">*</span>
+        <div compile-html="getHtmlTemplate(field)"></div>
+    </div>
+</div>
