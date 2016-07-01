@@ -7,7 +7,7 @@
 package com.activiti.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +24,6 @@ import java.util.List;
 
 @Configuration
 @ComponentScan(value = {"org.activiti.rest"})
-@EnableMetrics(proxyTargetClass = true) // Needs to be here, or @Timed doesn't work on REST resources
 @EnableAsync
 public class ApiDispatcherServletConfiguration extends WebMvcConfigurationSupport {
 
