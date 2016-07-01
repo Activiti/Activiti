@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 component">
+
+            <div class="title">
+                <h2 translate="CLUSTER.TITLE.ENDPOINT"></h2>
+            </div>
+            <p class="message"><i class="glyphicon glyphicon-info-sign"></i>
+                {{'CLUSTER.ENDPOINT-HELP' | translate}}
+            </p>
+
+            <div class="property-wrapper">
+                <table>
+                    <tr class="property">
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-NAME"></td>
+                        <td>{{activeServer.name | empty}}</td>
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-DESCRIPTION"></td>
+                        <td>{{activeServer.description | empty}}</td>
+                    </tr>
+                    <tr class="property">
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-ADDRESS"></td>
+                        <td>{{activeServer.serverAddress | empty}}</td>
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-PORT"></td>
+                        <td>{{activeServer.serverPort | empty}}</td>
+                    </tr>
+                    <tr class="property">
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-CONTEXT-ROOT"></td>
+                        <td>{{activeServer.contextRoot | empty}}</td>
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-REST-ROOT"></td>
+                        <td>{{activeServer.restRoot | empty}}</td>
+                    </tr>
+                    <tr class="property">
+                        <td class="property-name" translate="CLUSTER.ENDPOINT-USERNAME"></td>
+                        <td>{{activeServer.userName | empty}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <div class="component tip-left">
+                <div class="title">
+                    <h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+                </div>
+                <div class="seperator"></div>
+                <ul class="list-group">
+                    <li>
+                        <button type="button" class="btn btn-sm btn-default" ng-click="editEndpointConfig()">
+                            <i class="glyphicon glyphicon-pencil"></i>{{'CLUSTER.ACTION.EDIT-ENDPOINT' | translate}}
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-sm btn-default" ng-click="checkEndpointConfig()">
+                            <i class="glyphicon glyphicon-ok"></i>{{'CLUSTER.ACTION.CHECK-ENDPOINT' | translate}}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

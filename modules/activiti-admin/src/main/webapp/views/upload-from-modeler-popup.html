@@ -1,0 +1,82 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2 translate="PROCESS-DEFINITIONS.ACTIONS.UPLOAD-FROM-MODELER"></h2>
+	</div>
+</div>
+<div class="modal-body">
+
+    <div class="upload-from-modeler-form" ng-show="model.showingCredentials">
+        <span class="glyphicon glyphicon-cloud-download" style="font-size: 70px"></span>
+
+        <form role="form">
+            <div class="form-group">
+                <label for="name">{{'PROCESS-DEFINITIONS.POPUP.UPLOAD-FROM-MODELER.NAME' | translate}}</label>
+                <input type="text" class="form-control" id="name" ng-model="model.username" ui-keypress="{13:'next()'}" auto-focus>
+            </div>
+            <div class="form-group">
+                <label for="password">{{'PROCESS-DEFINITIONS.POPUP.UPLOAD-FROM-MODELER.PASSWORD' | translate}}</label>
+                <input type="password" class="form-control" id="password" ng-model="model.password" ui-keypress="{13:'next()'}">
+            </div>
+        </form>
+
+    </div>
+
+    <div class="process-model-wrapper" ng-show="model.showingProcesses">
+        <div class="process-model"
+             ng-repeat="process in model.processes.data track by $index"
+             ng-click="model.selectedProcess = process">
+            <div class="process-model-box" style="background-image: url('{{getProcessDiagramUrl(process.id)}}')">
+                <div class="actions">
+                    <span class="badge">{{process.version}}</span>
+                </div>
+                <div class="details" ng-class="{'selected-process': process.id == model.selectedProcess.id}">
+                    <h3 class="truncate" title="{{process.name}}">
+                        {{process.name}}
+                    </h3>
+                    <div class="basic-details truncate">
+                        <span><i class="glyphicon glyphicon-user"></i> {{process.createdBy}}</span> <span title="{{process.lastUpdated | dateformat:'LLLL'}}"><i class="glyphicon glyphicon-pencil"></i> {{process.lastUpdated | dateformat}}</span>
+                    </div>
+                    <p>{{process.description}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="upload-from-modeler-form" ng-show="model.showingProcessName">
+        <p style="margin-left:15%; margin-right: 15%">
+            <i class="glyphicon glyphicon-info-sign"></i>
+            {{'PROCESS-DEFINITIONS.POPUP.UPLOAD-FROM-MODELER.UPLOAD-DESCRIPTION' | translate}}
+        </p>
+        <form role="form">
+            <div class="form-group">
+                <input type="text" class="form-control" id="processName" ng-model="model.processName" ui-keypress="{13:'next()'}" auto-focus>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="modal-footer-wrapper">
+    <div class="modal-footer">
+        <div class="pull-right">
+            <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+                    translate="GENERAL.ACTION.CANCEL">
+            </button>
+            <button type="button" class="btn btn-sm btn-default"
+                    ng-click="next()"
+                    ng-disabled="status.loading || !showNextButton()"
+                    translate="GENERAL.ACTION.NEXT">
+            </button>
+        </div>
+        <loading-indicator></loading-indicator>
+        <div class="pull-right modeler-processes-error" ng-if="model.unauthorizedError">
+            <span>{{'PROCESS-DEFINITIONS.POPUP.UPLOAD-FROM-MODELER.UNAUTHORIZED' | translate}}</span>
+        </div>
+        <div class="pull-right modeler-processes-error" ng-if="model.error">
+            <span>{{'PROCESS-DEFINITIONS.POPUP.UPLOAD-FROM-MODELER.ERROR' | translate}}</span>
+        </div>
+    </div>
+</div>

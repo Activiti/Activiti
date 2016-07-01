@@ -1,0 +1,31 @@
+<div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+        	<div class="component-pack component login">
+        		<div class="title">
+		            <h1 translate="LOGIN.TITLE"></h1>
+        		</div>
+				<div class="login-wrapper clearfix">
+		            <form class="form" role="form">
+		                <div class="form-group">
+		                    <label for="username" translate="LOGIN.USERNAME"></label>
+		                    <input type="text" class="form-control" id="username" placeholder="{{'LOGIN.USERNAME-PLACEHOLDER' | translate}}" ng-model="username">
+		                </div>
+		                <div class="form-group">
+		                    <label for="password" translate="LOGIN.PASSWORD"></label>
+		                    <input type="password" class="form-control" id="password" placeholder="{{'LOGIN.PASSWORD-PLACEHOLDER' | translate}}"
+		                           ng-model="password">
+		                </div>
+		                <div class="btn-group pull-right">
+			                <button type="submit" class="btn btn-default" ng-click="login()" ng-disabled="!username || !password">
+			                	{{'LOGIN.ACTION.CONFIRM' | translate}}
+			                </button>
+		                </div>
+		            </form>
+	            </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>

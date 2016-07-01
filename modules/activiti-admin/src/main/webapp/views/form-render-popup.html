@@ -1,0 +1,46 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+			<a class="action" ng-click="cancel()">&times;
+				{{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+		</div>
+		<h2>{{'FORM.POPUP.TITLE' | translate}} '{{popup.formName}}'</h2>
+	</div>
+</div>
+<div class="modal-body modal-body-medium">
+	<div class="container-fluid content decision-table" ng-if="popup.currentForm" auto-height offset="40">
+
+		<div style="padding-top: 10px;" class="form-wrapper container-fluid form-popup">
+			<div class="form-center-pane"
+				ng-if="popup.currentForm.tabs && popup.currentForm.tabs.length > 0">
+				<div class="content">
+					<div class="tabs clearfix">
+						<div style="min-width: 100px; text-align: center;" class="tab" ng-repeat="tab in popup.currentForm.tabs"
+							ng-class="{'active': tab.id == activeFormTab.id}">
+							<a ng-click="formTabClicked(tab)"> {{tab.title | translate}}&nbsp; </a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div style="padding-top: 10px;" ng-if="!activeFormTab || !activeFormTab.id || (activeFormTab && activeFormTab.id && activeFormTab.id === field.tab)"
+				ng-repeat="field in popup.currentForm.fields">
+				<form-element field="field" custom-field-templates="popup.currentForm.customFieldTemplates"></form-element>
+			</div>
+
+			<div class="center out-come-buttons" ng-if="popup.currentForm.selectedOutcome">
+				<button class="activiti-btn" disabled="disabled">{{popup.currentForm.selectedOutcome}}</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+			<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading" translate="GENERAL.ACTION.CLOSE"></button>
+		</div>
+	</div>
+</div>
