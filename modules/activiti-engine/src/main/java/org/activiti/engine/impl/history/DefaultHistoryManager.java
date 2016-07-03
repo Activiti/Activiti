@@ -333,6 +333,36 @@ public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execu
       }
     }
   }
+
+/* (non-Javadoc)
+* @see org.activiti.engine.impl.history.HistoryManagerInterface#recordExecutionDefinitionChange(java.lang.String, java.lang.String)
+*/
+@Override
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public void recordExecutionDefinitionChange(String executionId, String processDefinitionId) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+
+        // Update the cached historic activity instances that are open
+        List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
+        for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
+            if ( (cachedHistoricActivityInstance.getEndTime()==null)
+                    && (executionId.equals(cachedHistoricActivityInstance.getExecutionId()))
+                    ) {
+                cachedHistoricActivityInstance.setProcessDefinitionId(processDefinitionId);
+            }
+        }
+
+        // Update the persisted historic activity instances that are open
+        List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+                .executionId(executionId)
+                .unfinished()
+                .list();
+        for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
+            historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+        }
+    }
+}
+
   /* (non-Javadoc)
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessDefinitionChange(java.lang.String, java.lang.String)
  */
@@ -572,8 +602,20 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
       }
     }
   }
-  
- 
+
+/* (non-Javadoc)
+* @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionChange(java.lang.String, java.lang.String)
+*/
+@Override
+public void recordTaskDefinitionChange(String taskId, String processDefinitionId) {
+    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+        HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+        if(historicTaskInstance != null) {
+            historicTaskInstance.setProcessDefinitionId(processDefinitionId);
+        }
+    }
+}
+
   // Variables related history
   
   /* (non-Javadoc)

@@ -83,6 +83,11 @@ public interface HistoryManager extends Session {
 			InterpretableExecution replacedBy);
 
 	/**
+	 * Record a change of the process-definition id of a execution instance, if activity history is enabled.
+	 */
+	public abstract void recordExecutionDefinitionChange(String executionId, String processDefinitionId);
+
+	/**
 	 * Record a change of the process-definition id of a process instance, if activity history is enabled.
 	 */
 	public abstract void recordProcessDefinitionChange(
@@ -174,6 +179,12 @@ public interface HistoryManager extends Session {
 	 */
 	public abstract void recordTaskDefinitionKeyChange(TaskEntity task,
 			String taskDefinitionKey);
+
+	/**
+	 * Record a change of the process-definition id of a task instance, if activity history is enabled.
+	 */
+	public abstract void recordTaskDefinitionChange(
+			String taskId, String processDefinitionId);
 
 	/**
 	 * Record a variable has been created, if audit history is enabled.

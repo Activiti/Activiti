@@ -18,7 +18,9 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionVersionCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -195,6 +197,26 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
         .processInstanceId(pi.getId())
         .singleResult();
       assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
+
+      // check tasks
+      List<HistoricTaskInstance> historicTask = historyService
+              .createHistoricTaskInstanceQuery()
+              .unfinished()
+              .processInstanceId(pi.getId())
+              .list();
+      for (HistoricTaskInstance t : historicTask) {
+        assertEquals(newProcessDefinition.getId(), t.getProcessDefinitionId());
+      }
+
+      // check executions
+      List<HistoricActivityInstance> historicActivity = historyService
+              .createHistoricActivityInstanceQuery()
+              .unfinished()
+              .processInstanceId(pi.getId())
+              .list();
+      for (HistoricActivityInstance a : historicActivity) {
+        assertEquals(newProcessDefinition.getId(), a.getProcessDefinitionId());
+      }
     }
 
     // undeploy "manually" deployed process definition
