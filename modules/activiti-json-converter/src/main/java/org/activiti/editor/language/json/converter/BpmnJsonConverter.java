@@ -741,7 +741,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             for (JsonNode jsonChildNode : objectNode.get(EDITOR_CHILD_SHAPES)) {
 
                 String stencilId = BpmnJsonConverterUtil.getStencilId(jsonChildNode);
-                if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false) {
+                if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false
+                        && STENCIL_ASSOCIATION.equals(stencilId) == false) {
 
                     GraphicInfo graphicInfo = new GraphicInfo();
 
