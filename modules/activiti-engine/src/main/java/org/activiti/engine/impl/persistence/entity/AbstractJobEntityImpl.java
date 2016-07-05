@@ -250,5 +250,10 @@ public abstract class AbstractJobEntityImpl implements AbstractJobEntity, BulkDe
       throw new ActivitiException("UTF-8 is not a supported encoding");
     }
   }
+  
+  @Override
+  public String toString() {
+    return getClass().getName() + " [id=" + id + "]";
+  }
 
 }

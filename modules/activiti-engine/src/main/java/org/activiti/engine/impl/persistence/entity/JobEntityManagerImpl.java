@@ -48,20 +48,33 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   @Override
+  public boolean insertJobEntity(JobEntity timerJobEntity) {
+    return doInsert(timerJobEntity, true);
+  }
+  
+  @Override
   public void insert(JobEntity jobEntity, boolean fireCreateEvent) {
+    doInsert(jobEntity, fireCreateEvent);
+  }
 
+  protected boolean doInsert(JobEntity jobEntity, boolean fireCreateEvent) {
     // add link to execution
     if (jobEntity.getExecutionId() != null) {
       ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getJobs().add(jobEntity);
+      if (execution != null) {
+        execution.getJobs().add(jobEntity);
 
-      // Inherit tenant if (if applicable)
-      if (execution.getTenantId() != null) {
-        jobEntity.setTenantId(execution.getTenantId());
+        // Inherit tenant if (if applicable)
+        if (execution.getTenantId() != null) {
+          jobEntity.setTenantId(execution.getTenantId());
+        }
+      } else {
+        return false;
       }
     }
 
     super.insert(jobEntity, fireCreateEvent);
+    return true;
   }
 
   public List<JobEntity> findJobsToExecute(Page page) {
@@ -89,8 +102,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   @Override
-  public void resetExpiredJobs() {
-    jobDataManager.resetExpiredJobs();
+  public void resetExpiredJob(String jobId) {
+    jobDataManager.unacquireJob(jobId);
   }
 
   @Override

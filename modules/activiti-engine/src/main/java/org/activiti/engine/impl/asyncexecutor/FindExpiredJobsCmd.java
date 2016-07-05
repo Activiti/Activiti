@@ -12,28 +12,27 @@
  */
 package org.activiti.engine.impl.asyncexecutor;
 
-import java.util.Collection;
+import java.util.List;
 
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Joram Barrez
  */
-public class ResetExpiredJobsCmd implements Command<Void> {
+public class FindExpiredJobsCmd implements Command<List<JobEntity>> {
   
-  protected Collection<String> jobIds;
+  protected int pageSize;
   
-  public ResetExpiredJobsCmd(Collection<String> jobsIds) {
-    this.jobIds = jobsIds;
+  public FindExpiredJobsCmd(int pageSize) {
+    this.pageSize = pageSize;
   }
   
   @Override
-  public Void execute(CommandContext commandContext) {
-    for (String jobId : jobIds) {
-      commandContext.getJobEntityManager().resetExpiredJob(jobId);
-    }
-    return null;
+  public List<JobEntity> execute(CommandContext commandContext) {
+    return commandContext.getJobEntityManager().findExpiredJobs(new Page(0, pageSize));
   }
 
 }

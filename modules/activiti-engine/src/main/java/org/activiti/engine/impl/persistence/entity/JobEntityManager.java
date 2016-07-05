@@ -28,6 +28,13 @@ import org.activiti.engine.runtime.Job;
 public interface JobEntityManager extends EntityManager<JobEntity> {
   
   /**
+   * Insert the {@link JobEntity}, similar to {@link #insert(JobEntity)},
+   * but returns a boolean in case the insert did not go through.
+   * This could happen if the execution related to the {@link JobEntity} has been removed. 
+   */
+  boolean insertJobEntity(JobEntity timerJobEntity);
+  
+  /**
    * Returns {@link JobEntity} that are eligble to be executed.
    * 
    * For example used by the default {@link AcquireJobsCmd} command used by 
@@ -70,12 +77,12 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
    * removes this lock owner and time, thus allowing other executors to pick it up. 
    */
   void unacquireJob(String jobId);
-  
+
   /**
-   * Resets all expired jobs. These are jobs that were locked, but not completed.
+   * Resets an expired job. These are jobs that were locked, but not completed.
    * Resetting these will make them available for being picked up by other executors.
    */
-  void resetExpiredJobs();
+  void resetExpiredJob(String jobId);
   
   /**
    * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}. 

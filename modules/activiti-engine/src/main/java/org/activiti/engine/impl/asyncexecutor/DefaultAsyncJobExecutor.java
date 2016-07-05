@@ -81,6 +81,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   protected int retryWaitTimeInMillis = 500;
   
   protected int resetExpiredJobsInterval = 60 * 1000;
+  protected int resetExpiredJobsPageSize = 3;
   
   // Job queue used when async executor is not yet started and jobs are already added.
   // This is mainly used for testing purpose.
@@ -482,13 +483,13 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   public void setResetExpiredJobsInterval(int resetExpiredJobsInterval) {
     this.resetExpiredJobsInterval = resetExpiredJobsInterval;
   }
-
-  public int getCheckExpiredJobsInterval() {
-    return resetExpiredJobsInterval;
+  
+  public int getResetExpiredJobsPageSize() {
+    return resetExpiredJobsPageSize;
   }
 
-  public void setCheckExpiredJobsInterval(int checkExpiredJobsInterval) {
-    this.resetExpiredJobsInterval = checkExpiredJobsInterval;
+  public void setResetExpiredJobsPageSize(int resetExpiredJobsPageSize) {
+    this.resetExpiredJobsPageSize = resetExpiredJobsPageSize;
   }
 
   public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {

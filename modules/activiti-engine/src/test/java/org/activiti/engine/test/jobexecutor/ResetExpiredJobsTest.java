@@ -12,9 +12,11 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.impl.asyncexecutor.FindExpiredJobsCmd;
 import org.activiti.engine.impl.asyncexecutor.ResetExpiredJobsCmd;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -43,7 +45,9 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count());
    
     // Running the 'reset expired' logic should have no effect now
-    managementService.executeCommand(new ResetExpiredJobsCmd());
+    int expiredJobsPagesSize = processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
+    List<JobEntity> expiredJobs = managementService.executeCommand(new FindExpiredJobsCmd(expiredJobsPagesSize));
+    assertEquals(0, expiredJobs.size());
     assertJobDetails(false);
     
     // Run the acquire logic. This should lock the job
@@ -51,7 +55,8 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     assertJobDetails(true);
     
     // Running the 'reset expired' logic should have no effect, the lock time is not yet passed
-    managementService.executeCommand(new ResetExpiredJobsCmd());
+    expiredJobs = managementService.executeCommand(new FindExpiredJobsCmd(expiredJobsPagesSize));
+    assertEquals(0, expiredJobs.size());
     assertJobDetails(true);
     
     // Move clock to past the lock time
@@ -59,7 +64,15 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(newDate);
     
     // Running the reset logic should now reset the lock
-    managementService.executeCommand(new ResetExpiredJobsCmd());
+    expiredJobs = managementService.executeCommand(new FindExpiredJobsCmd(expiredJobsPagesSize));
+    assertTrue(expiredJobs.size() > 0);
+    
+    List<String> jobIds = new ArrayList<String>();
+    for (JobEntity jobEntity : expiredJobs) {
+      jobIds.add(jobEntity.getId());
+    }
+    
+    managementService.executeCommand(new ResetExpiredJobsCmd(jobIds));
     assertJobDetails(false);
     
     // And it can be re-acquired

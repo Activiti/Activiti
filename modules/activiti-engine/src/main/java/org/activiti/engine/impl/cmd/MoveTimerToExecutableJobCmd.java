@@ -54,9 +54,7 @@ public class MoveTimerToExecutableJobCmd implements Command<JobEntity>, Serializ
       log.debug("Executing timer job {}", timerJob.getId());
     }
     
-    JobEntity executableJob = commandContext.getJobManager().moveTimerJobToExecutableJob(timerJob);
-
-    return executableJob;
+    return commandContext.getJobManager().moveTimerJobToExecutableJob(timerJob);
   }
 
   public String getJobId() {

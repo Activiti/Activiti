@@ -105,30 +105,35 @@ public class DefaultJobManager implements JobManager {
     
     CommandContext commandContext = Context.getCommandContext();
     JobEntity executableJob = createExecutableJobFromOtherJob(timerJob, commandContext);
-    commandContext.getJobEntityManager().insert(executableJob);
-    commandContext.getTimerJobEntityManager().delete(timerJob);
+    boolean insertSuccesful = commandContext.getJobEntityManager().insertJobEntity(executableJob);
+    if (insertSuccesful) {
+      commandContext.getTimerJobEntityManager().delete(timerJob);
+      
+      // When the async executor is activated, the job is directly passed on to the async executor thread
+      if (isAsyncExecutorActive()) {
+        hintAsyncExecutor(executableJob); 
+      }
     
-    // When the async executor is activated, the job is directly passed on to the async executor thread
-    if (isAsyncExecutorActive()) {
-      hintAsyncExecutor(executableJob); 
+      return executableJob;
     }
-    
-    return executableJob;
+    return null;
   }
   
   @Override
   public TimerJobEntity moveJobToTimerJob(AbstractJobEntity job) {
     CommandContext commandContext = Context.getCommandContext();
     TimerJobEntity timerJob = createTimerJobFromOtherJob(job, commandContext);
-    commandContext.getTimerJobEntityManager().insert(timerJob);
-    
-    if (job instanceof JobEntity) {
-      commandContext.getJobEntityManager().delete((JobEntity) job);
-    } else if (job instanceof SuspendedJobEntity) {
-      commandContext.getSuspendedJobEntityManager().delete((SuspendedJobEntity) job);
+    boolean insertSuccesful = commandContext.getTimerJobEntityManager().insertTimerJobEntity(timerJob);
+    if (insertSuccesful) {
+      if (job instanceof JobEntity) {
+        commandContext.getJobEntityManager().delete((JobEntity) job);
+      } else if (job instanceof SuspendedJobEntity) {
+        commandContext.getSuspendedJobEntityManager().delete((SuspendedJobEntity) job);
+      }
+      
+      return timerJob;
     }
-    
-    return timerJob;
+    return null;
   }
   
   @Override

@@ -94,4 +94,8 @@ public interface AsyncExecutor {
 
   void setResetExpiredJobsInterval(int resetExpiredJobsInterval);
   
+  int getResetExpiredJobsPageSize();
+  
+  void setResetExpiredJobsPageSize(int resetExpiredJobsPageSize);
+  
 }

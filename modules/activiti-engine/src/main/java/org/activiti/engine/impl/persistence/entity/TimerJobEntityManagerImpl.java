@@ -110,27 +110,43 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
   }
   
   @Override
-  public void insert(TimerJobEntity jobEntity, boolean fireCreateEvent) {
-
-    // add link to execution
-    if (jobEntity.getExecutionId() != null) {
-      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getTimerJobs().add(jobEntity);
-
-      // Inherit tenant if (if applicable)
-      if (execution.getTenantId() != null) {
-        jobEntity.setTenantId(execution.getTenantId());
-      }
-    }
-
-    super.insert(jobEntity, fireCreateEvent);
+  public boolean insertTimerJobEntity(TimerJobEntity timerJobEntity) {
+    return doInsert(timerJobEntity, true);
   }
-
+  
   @Override
   public void insert(TimerJobEntity jobEntity) {
     insert(jobEntity, true);
   }
   
+  @Override
+  public void insert(TimerJobEntity jobEntity, boolean fireCreateEvent) {
+    doInsert(jobEntity, fireCreateEvent);
+  }
+
+  protected boolean doInsert(TimerJobEntity jobEntity, boolean fireCreateEvent) {
+    // add link to execution
+    if (jobEntity.getExecutionId() != null) {
+      ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
+      if (execution != null) {
+        execution.getTimerJobs().add(jobEntity);
+  
+        // Inherit tenant if (if applicable)
+        if (execution.getTenantId() != null) {
+          jobEntity.setTenantId(execution.getTenantId());
+        }
+      } else {
+        // In case the job has an executionId, but the Execution is not found,
+        // it means that for example for a boundary timer event on a user task,
+        // the task has been completed and the Execution and job have been removed.
+        return false;
+      }
+    }
+
+    super.insert(jobEntity, fireCreateEvent);
+    return true;
+  }
+
   @Override
   public void delete(TimerJobEntity jobEntity) {
     super.delete(jobEntity);
@@ -152,7 +168,9 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
   protected void removeExecutionLink(TimerJobEntity jobEntity) {
     if (jobEntity.getExecutionId() != null) {
       ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      execution.getTimerJobs().remove(jobEntity);
+      if (execution != null) {
+        execution.getTimerJobs().remove(jobEntity);
+      }
     }
   }
 

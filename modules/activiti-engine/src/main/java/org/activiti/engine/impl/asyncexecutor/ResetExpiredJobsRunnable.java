@@ -12,8 +12,11 @@
  */
 package org.activiti.engine.impl.asyncexecutor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +52,18 @@ public class ResetExpiredJobsRunnable implements Runnable {
     while (!isInterrupted) {
 
       try {
-        asyncExecutor.getCommandExecutor().execute(new ResetExpiredJobsCmd());
+        
+        List<JobEntity> expiredJobs = asyncExecutor.getCommandExecutor().execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
+        
+        List<String> expiredJobIds = new ArrayList<String>(expiredJobs.size());
+        for (JobEntity expiredJob : expiredJobs) {
+          expiredJobIds.add(expiredJob.getId());
+        }
+        
+        if (expiredJobIds.size() > 0) {
+          asyncExecutor.getCommandExecutor().execute(new ResetExpiredJobsCmd(expiredJobIds));
+        }
+        
       } catch (Throwable e) {
         log.error("exception during resetting expired jobs", e.getMessage(), e);
       }

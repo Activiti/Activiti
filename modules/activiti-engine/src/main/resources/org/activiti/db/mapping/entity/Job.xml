@@ -42,9 +42,10 @@
 	</select>
 
 	<select id="selectExpiredJobs" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-    	select * from ${prefix}ACT_RU_JOB
-     	where LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP}
-  	</select>
+    select * from ${prefix}ACT_RU_JOB
+    where LOCK_EXP_TIME_ is not null and LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP} 
+    ${limitAfter}
+  </select>
 
 	<select id="selectJobsByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select * from ${prefix}ACT_RU_JOB
@@ -321,7 +322,7 @@
 		<set>
 			REV_ = #{revisionNext, jdbcType=INTEGER},
 			LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
-       		LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+      LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
 			RETRIES_ = #{retries, jdbcType=INTEGER},
 			EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
 			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
@@ -336,11 +337,6 @@
     where ID_ = #{id,jdbcType=VARCHAR}
   </update>
   
-  <update id="resetExpiredJobs" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
-    update ${prefix}ACT_RU_JOB set LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null 
-    where LOCK_EXP_TIME_ is not null and LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP}
-  </update>
-	
 	<select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_JOB

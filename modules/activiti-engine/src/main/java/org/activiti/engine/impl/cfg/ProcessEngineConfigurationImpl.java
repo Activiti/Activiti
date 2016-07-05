@@ -66,6 +66,7 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultJobManager;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnableFactory;
@@ -695,7 +696,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * 
    * By default one minute.
    */
-  protected int asyncExecutorCheckExpiredJobsInterval = 60 * 1000;
+  protected int asyncExecutorResetExpiredJobsInterval = 60 * 1000;
  
  /**
   * Allows to define a custom factory for creating the {@link Runnable} that is executed by the async executor.
@@ -703,6 +704,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   * (This property is only applicable when using the {@link DefaultAsyncJobExecutor}).
   */
   protected ExecuteAsyncRunnableFactory asyncExecutorExecuteAsyncRunnableFactory;
+  
+  /**
+   * The {@link AsyncExecutor} has a 'cleanup' thread that resets expired jobs
+   * so they can be re-acquired by other executors. This setting defines the size
+   * of the page being used when fetching these expired jobs.
+   */
+  protected int asyncExecutorResetExpiredJobsPageSize = 3;
 
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
 
@@ -1936,7 +1944,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       defaultAsyncExecutor.setRetryWaitTimeInMillis(asyncExecutorLockRetryWaitTimeInMillis);
       
       // Reset expired
-      defaultAsyncExecutor.setCheckExpiredJobsInterval(asyncExecutorCheckExpiredJobsInterval);
+      defaultAsyncExecutor.setResetExpiredJobsInterval(asyncExecutorResetExpiredJobsInterval);
+      defaultAsyncExecutor.setResetExpiredJobsPageSize(asyncExecutorResetExpiredJobsPageSize);
       
       // Shutdown
       defaultAsyncExecutor.setSecondsToWaitOnShutdown(asyncExecutorSecondsToWaitOnShutdown);
@@ -3879,12 +3888,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public int getAsyncExecutorCheckExpiredJobsInterval() {
-    return asyncExecutorCheckExpiredJobsInterval;
+  public int getAsyncExecutorResetExpiredJobsInterval() {
+    return asyncExecutorResetExpiredJobsInterval;
   }
 
-  public ProcessEngineConfigurationImpl setAsyncExecutorCheckExpiredJobsInterval(int asyncExecutorCheckExpiredJobsInterval) {
-    this.asyncExecutorCheckExpiredJobsInterval = asyncExecutorCheckExpiredJobsInterval;
+  public ProcessEngineConfigurationImpl setAsyncExecutorResetExpiredJobsInterval(int asyncExecutorResetExpiredJobsInterval) {
+    this.asyncExecutorResetExpiredJobsInterval = asyncExecutorResetExpiredJobsInterval;
     return this;
   }
 
@@ -3896,6 +3905,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.asyncExecutorExecuteAsyncRunnableFactory = asyncExecutorExecuteAsyncRunnableFactory;
     return this;
   }
-  
+
+  public int getAsyncExecutorResetExpiredJobsPageSize() {
+    return asyncExecutorResetExpiredJobsPageSize;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorResetExpiredJobsPageSize(int asyncExecutorResetExpiredJobsPageSize) {
+    this.asyncExecutorResetExpiredJobsPageSize = asyncExecutorResetExpiredJobsPageSize;
+    return this;
+  }
   
 }

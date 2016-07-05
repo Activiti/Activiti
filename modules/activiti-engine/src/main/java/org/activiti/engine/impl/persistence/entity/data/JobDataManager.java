@@ -40,5 +40,4 @@ public interface JobDataManager extends DataManager<JobEntity> {
   
   void unacquireJob(String jobId);
   
-  void resetExpiredJobs();
 }

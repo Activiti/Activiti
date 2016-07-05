@@ -249,5 +249,17 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
       asyncExecutor.setResetExpiredJobsInterval(resetExpiredJobsInterval);
     }
   }
+  
+  @Override
+  public int getResetExpiredJobsPageSize() {
+    return determineAsyncExecutor().getResetExpiredJobsPageSize();
+  }
+  
+  @Override
+  public void setResetExpiredJobsPageSize(int resetExpiredJobsPageSize) {
+    for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
+      asyncExecutor.setResetExpiredJobsPageSize(resetExpiredJobsPageSize);
+    }    
+  }
 
 }
