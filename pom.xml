@@ -244,6 +244,16 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-form-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-form-json-converter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-camel</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -924,6 +934,10 @@
         <module>modules/activiti-dmn-model</module>
         <module>modules/activiti-dmn-json-converter</module>
         <module>modules/activiti-dmn-xml-converter</module>
+        <module>modules/activiti-dmn-engine</module>
+        <module>modules/activiti-form-model</module>
+        <module>modules/activiti-form-json-converter</module>
+        <module>modules/activiti-form-engine</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti5-engine</module>
         <module>modules/activiti5-compatibility</module>

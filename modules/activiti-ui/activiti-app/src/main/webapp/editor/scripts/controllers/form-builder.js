@@ -107,19 +107,12 @@ angular.module('activitiModeler')
                 var fieldId = paletteElementOrField.type;
                 var fieldType;
 
-                var colspan = 1;
-                var numberOfRows = 1;
-
                 var field = {
                     type: fieldId,
                     fieldType: fieldType,
                     name: 'Label',
                     required: false,
-                    readOnly: false,
-                    sizeX: colspan,
-                    sizeY: numberOfRows,
-                    row: -1,
-                    col: -1
+                    readOnly: false
                 };
                 setFieldDragDropAttributes(field, 'newField');
 
@@ -149,8 +142,7 @@ angular.module('activitiModeler')
 
                 var url;
                 if ($routeParams.modelHistoryId) {
-                    url = ACTIVITI.CONFIG.contextRoot + '/app/rest/form-models/' + $routeParams.modelId
-                    + '/history/' + $routeParams.modelHistoryId;
+                    url = ACTIVITI.CONFIG.contextRoot + '/app/rest/form-models/' + $routeParams.modelId + '/history/' + $routeParams.modelHistoryId;
                 } else {
                     url = ACTIVITI.CONFIG.contextRoot + '/app/rest/form-models/' + $routeParams.modelId;
                 }
