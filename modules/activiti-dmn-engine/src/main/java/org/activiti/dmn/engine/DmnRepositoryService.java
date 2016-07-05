@@ -21,6 +21,7 @@ import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
 import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
 import org.activiti.dmn.engine.repository.NativeDecisionTableQuery;
 import org.activiti.dmn.engine.repository.NativeDmnDeploymentQuery;
+import org.activiti.dmn.model.DmnDefinition;
 
 /**
  * Service providing access to the repository of process definitions and deployments.
@@ -55,4 +56,6 @@ public interface DmnRepositoryService {
     InputStream getDmnResource(String decisionTableId);
     
     void setDecisionTableCategory(String decisionTableId, String category);
+
+    DmnDefinition getDmnDefinition(String decisionTableId);
 }
