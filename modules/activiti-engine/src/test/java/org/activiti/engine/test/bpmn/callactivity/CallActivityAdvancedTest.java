@@ -21,10 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
@@ -34,6 +36,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Nils Preusker
  * @author Bernd Ruecker
+ * @author Joram Barrez
  */
 public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
@@ -226,21 +229,15 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     Date startTime = processEngineConfiguration.getClock().getCurrentTime();
 
     // After process start, the task in the subprocess should be active
-    runtimeService.startProcessInstanceByKey("timerOnCallActivity");
+    ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("timerOnCallActivity");
     TaskQuery taskQuery = taskService.createTaskQuery();
     Task taskInSubProcess = taskQuery.singleResult();
     assertEquals("Task in subprocess", taskInSubProcess.getName());
+    
+    ProcessInstance pi2 = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi1.getId()).singleResult();
 
-    // When the timer on the subprocess is fired, the complete subprocess is
-    // destroyed
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // +
-                                                                                                           // 6
-                                                                                                           // minutes,
-                                                                                                           // timer
-                                                                                                           // fires
-                                                                                                           // on
-                                                                                                           // 5
-                                                                                                           // minutes
+    // When the timer on the subprocess is fired, the complete subprocess is destroyed
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
     waitForJobExecutorToProcessAllJobs(10000, 5000L);
 
     Task escalatedTask = taskQuery.singleResult();
@@ -249,6 +246,14 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     // Completing the task ends the complete process
     taskService.complete(escalatedTask.getId());
     assertEquals(0, runtimeService.createExecutionQuery().list().size());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      assertTrue(historyService.createHistoricProcessInstanceQuery().processInstanceId(pi2.getId()).singleResult()
+          .getDeleteReason().startsWith(DeleteReason.BOUNDARY_EVENT_INTERRUPTING));
+      assertHistoricTasksDeleteReason(pi2, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "Task in subprocess");
+      assertHistoricActivitiesDeleteReason(pi1, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "callSubProcess");
+      assertHistoricActivitiesDeleteReason(pi2, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "task");
+    }
   }
 
   /**
@@ -342,6 +347,36 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     taskList = taskService.createTaskQuery().list();
     assertNotNull(taskList);
     assertEquals(0, taskList.size());
+  }
+  
+  @Deployment(resources = {
+      "org/activiti/engine/test/bpmn/callactivity/CallActivity.testStartUserIdSetWhenLooping.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
+  })
+  public void testStartUserIdSetWhenLooping() {
+    identityService.setAuthenticatedUserId("kermit");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("loopingCallActivity", CollectionUtil.singletonMap("input", 0));
+    for (int i=1; i<4; i++) {
+      Task task = taskService.createTaskQuery().singleResult();
+      assertEquals("Task in subprocess", task.getName());
+      identityService.setAuthenticatedUserId("kermit");
+      taskService.complete(task.getId(), CollectionUtil.singletonMap("input", i));
+    }
+    identityService.setAuthenticatedUserId(null);
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Final task", task.getName());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
+          .superProcessInstanceId(processInstance.getId()).list();
+      assertEquals(3, historicProcessInstances.size());
+      for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+        assertNotNull(historicProcessInstance.getStartUserId());
+        assertNotNull(historicProcessInstance.getStartTime());
+        assertNotNull(historicProcessInstance.getEndTime());
+      }
+    }
   }
 
 }

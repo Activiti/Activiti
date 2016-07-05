@@ -1,0 +1,72 @@
+<div class="container" id="detail-container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" ng-show="deployment">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{deployment.name + " - " + deployment.id}}</h2>
+				</div>
+
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="DEPLOYMENT.ID"></td>
+							<td>{{deployment.id}}</td>
+							<td class="property-name" translate="DEPLOYMENT.NAME"></td>
+							<td>{{deployment.name}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="DEPLOYMENT.TIME"></td>
+							<td>{{deployment.deploymentTime | dateformat:'full'}}</td>
+							<td class="property-name" translate="DEPLOYMENT.CATEGORY"></td>
+							<td>{{deployment.category | empty}}</td>
+						</tr>
+						<tr class="property">
+                            <td class="property-name" translate="DEPLOYMENT.TENANTID"></td>
+                            <td>{{deployment.tenantId | empty}}</td>
+                            <td ng-if="appId" class="property-name" translate="APP-DEPLOYMENT.APP-ID"></td>
+                            <td ng-if="appId"><a ng-href="#/app/{{appId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{appId}}</a></td>
+                        </tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	    <div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default btn-danger" ng-click="deleteDeployment()">
+							<i class="glyphicon glyphicon-remove"></i><span translate="DEPLOYMENTS.ACTION.DELETE"></span>
+					    </button>
+					  </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="showAllDefinitions()" class="action"><i class="glyphicon glyphicon-zoom-in"></i> {{'DEPLOYMENT.ACTION.SHOW-ALL-DEFINITIONS' | translate}}</a>
+					</div>
+					<h2 translate="DEPLOYMENT.TITLE.DEFINITIONS"></h2>
+				</div>
+				<div class="grid-wrapper grid-wrapper-compact" ng-if="definitions">
+					<div class="grid-message" ng-if="definitions.size > 0">
+	                       <span>{{'DEPLOYMENT.DEFINITIONS-MESSAGE' | translate:definitions}}</span>
+	                   </div>
+	                    <div class="grid-message" ng-if="definitions.size == 0">
+	                       <span>{{'DEPLOYMENT.DEFINITIONS-MESSAGE-EMPTY' | translate}}</span>
+	                   </div>
+					<div ng-grid="gridDefinitions" class="gridStyle" ng-if="gridDefinitions && definitions.data" ng-show="definitions.size > 0"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

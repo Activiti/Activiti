@@ -1,0 +1,43 @@
+<div class="container" id="list-container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="component">
+                <div class="title">
+                   <h2 translate="USERS.TITLE"></h2>
+                </div>
+                <div class="grid-wrapper" id="users">
+                    <div ng-grid="gridUsers" class="gridStyle" ng-if="gridUsers && usersData"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li ng-if="selectedUsers[0]">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="editUser()">
+							<i class="glyphicon glyphicon-pencil"></i>{{'USERS.ACTION.EDIT' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="account.adminUser">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="newUser()">
+							<i class="glyphicon glyphicon-user"></i>{{'USERS.ACTION.NEW' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="selectedUsers[0]">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="changePassword()">
+							<i class="glyphicon glyphicon-pencil"></i>{{'USERS.ACTION.CHANGE-PASSWORD' | translate}}
+					    </button>
+					  </li>
+					  <li ng-if="account.adminUser && selectedUsers[0] && !selectedUsers[0].clusterUser && selectedUsers[0].login !== account.login">
+					    <button type="button" class="btn btn-sm btn-default btn-danger"  ng-click="deleteUser()">
+							<i class="glyphicon glyphicon-remove"></i>{{'USERS.ACTION.DELETE' | translate}}
+					    </button>
+					  </li>
+			    </ul>
+			</div>
+		</div>
+    </div>
+</div>

@@ -1,0 +1,120 @@
+<div class="container" id="detail-container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" ng-show="appDeployment">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{appDeployment.appDefinition.name + " - " + appDeployment.id}}</h2>
+				</div>
+
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="APP-DEPLOYMENT.APP-ID"></td>
+							<td>{{appDeployment.appDefinition.id}}</td>
+							<td class="property-name" translate="APP-DEPLOYMENT.APP-NAME"></td>
+							<td>{{appDeployment.appDefinition.name}}</td>
+						</tr>
+						<tr class="property">
+                            <td class="property-name" translate="APP-DEPLOYMENT.DEPLOYMENT-ID"></td>
+                            <td><a ng-href="#/deployment/{{appDeployment.deploymentId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{appDeployment.deploymentId}}</a></td>
+							<td class="property-name" translate="APP-DEPLOYMENT.TENANT-ID"></td>
+							<td>{{appDeployment.appDefinition.tenantId}}</td>
+						</tr>
+                        <tr class="property">
+                            <td class="property-name" translate="APP-DEPLOYMENT.DMN-DEPLOYMENT-ID"></td>
+                            <td>{{appDeployment.dmnDeploymentId}}</td>
+                            <td class="property-name" translate="APP-DEPLOYMENT.DEPLOYED-BY"></td>
+                            <td user="appDeployment.createdBy"></td>
+                        </tr>
+                        <tr class="property">
+                            <td class="property-name" translate="APP-DEPLOYMENT.DEPLOYED-ON"></td>
+                            <td>{{appDeployment.created | date}}</td>
+                        </tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default" ng-click="showRedoplyApp()">
+							<i class="glyphicon glyphicon-share"></i><span translate="APPS.ACTION.REDEPLOY"></span>
+					    </button>
+					  </li>
+					   <li>
+					    <a ng-href="{{downloadAppUrl}}" target="_blank" class="btn btn-sm btn-default">
+							<i class="glyphicon glyphicon-save"></i><span translate="APPS.ACTION.DOWNLOAD"></span>
+					    </a>
+					  </li>
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default btn-danger" ng-click="deleteApp()">
+							<i class="glyphicon glyphicon-remove"></i><span translate="APPS.ACTION.DELETE"></span>
+					    </button>
+					  </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="component">
+                <div class="tabs-wrapper">
+                    <div class="pull-right">
+                        <a href="#/process-definitions" class="action" ng-show="tabData.activeTab == tabData.tabs[0].id"><i class="glyphicon glyphicon-zoom-in"></i> {{'APP-DEPLOYMENT.ACTION.SHOW-ALL-PROCESS-DEFINITIONS' | translate}}</a>
+                        <a href="#/decision-tables" class="action" ng-show="tabData.activeTab == tabData.tabs[1].id"><i class="glyphicon glyphicon-zoom-in"></i> {{'APP-DEPLOYMENT.ACTION.SHOW-ALL-DECISION-TABLES' | translate}}</a>
+                        <a href="#/forms" class="action" ng-show="tabData.activeTab == tabData.tabs[2].id"><i class="glyphicon glyphicon-zoom-in"></i> {{'APP-DEPLOYMENT.ACTION.SHOW-ALL-FORMS' | translate}}</a>
+                    </div>
+                    <div class="tabs clearfix">
+                        <div class="tab" ng-repeat="tab in tabData.tabs" ng-class="{'active': tabData.activeTab == tab.id}">
+                            <a ng-click="tabData.activeTab = tab.id">
+                                {{tab.name | translate:node}}&nbsp;
+                                <span class="badge" ng-if="tab.info != undefined">{{tab.info}}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="title"></div>
+
+                    <div class="grid-wrapper" ng-if="processDefinitions && tabData.activeTab == tabData.tabs[0].id" >
+                        <div class="grid-message" ng-if="processDefinitions.size > 0">
+                            <span>{{'APP-DEPLOYMENT.PROCESS-DEFINITIONS-SIZE' | translate:processDefinitions}}</span>
+                            <span ng-if="processDefinitions.size < processDefinitions.total">{{'APP-DEPLOYMENT.PROCESS-DEFINITIONS-SHOWING' | translate:decisionTables}}</span>
+                        </div>
+                        <div class="grid-message" ng-if="processDefinitions.size == 0">
+                            <span>{{'APP-DEPLOYMENT.PROCESS-DEFINITIONS-EMPTY' | translate}}</span>
+                        </div>
+                        <div ng-grid="gridProcessDefinitions" class="gridStyle" ng-if="processDefinitions" ng-show="processDefinitions.size > 0"></div>
+                    </div>
+
+                    <div class="grid-wrapper grid-wrapper-compact" ng-if="decisionTables && tabData.activeTab == tabData.tabs[1].id">
+                        <div class="grid-message" ng-if="decisionTables.size > 0">
+                            <span>{{'APP-DEPLOYMENT.DECISION-TABLES-SIZE' | translate:decisionTables}}</span>
+                        </div>
+                        <div class="grid-message" ng-if="decisionTables.size == 0">
+                            <span>{{'APP-DEPLOYMENT.DECISION-TABLES-EMPTY' | translate}}</span>
+                        </div>
+                        <div ng-grid="gridDecisionTables" class="gridStyle" ng-if="decisionTables" ng-show="decisionTables.size > 0"></div>
+                    </div>
+
+                    <div class="grid-wrapper grid-wrapper-compact" ng-if="forms && tabData.activeTab == tabData.tabs[2].id">
+                        <div class="grid-message" ng-if="forms.size > 0">
+                            <span>{{'APP-DEPLOYMENT.FORMS-SIZE' | translate:forms}}</span>
+                        </div>
+                        <div class="grid-message" ng-if="jobs.size == 0">
+                            <span>{{'APP-DEPLOYMENT.FORMS-EMPTY' | translate}}</span>
+                        </div>
+                        <div ng-grid="gridForms" class="gridStyle" ng-if="forms" ng-show="forms.size > 0"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

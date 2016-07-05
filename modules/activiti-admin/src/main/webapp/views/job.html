@@ -1,0 +1,80 @@
+
+<div class="container" id="detail-container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" ng-show="job">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{'JOB.TITLE.MAIN' | translate:job}}</h2>
+				</div>
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="JOB.ID"></td>
+							<td>{{job.id}}</td>
+							<td class="property-name"><span class="glyphicon glyphicon-time"></span> {{'JOB.DUEDATE' | translate}}</td>
+							<td>{{job.dueDate | dateformat}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" ng-if="job.processInstanceId"></span> {{'JOB.PROCESS-INSTANCE' | translate}}</td>
+							<td ng-if="job.processInstanceId"><a ng-click="openProcessInstance(job.processInstanceId)"><i class="glyphicon glyphicon-zoom-in"></i> {{job.processInstanceId | empty}}</a></td>
+							<td class="property-name" translate="JOB.EXECUTION-ID"></td>
+							<td>{{job.executionId}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="JOB.RETRIES-LEFT"></td>
+							<td>{{job.retries}}</td>
+							<td class="property-name" ng-if="job.processDefinitionId"></span> {{'JOB.PROCESS-DEFINITION' | translate}}</td>
+							<td ng-if="job.processDefinitionId"><a ng-click="openProcessDefinition(job.processDefinitionId)"><i class="glyphicon glyphicon-zoom-in"></i> {{job.processDefinitionId | empty}}</a></td>
+						</tr>
+						<tr class="property">
+                            <td class="property-name" translate="JOB.TENANT-ID"></td>
+                            <td>{{job.tenantId}}</td>
+                        </tr>
+					</table>
+				</div>
+				
+				
+				<div ng-if="job.exceptionMessage">
+					<div class="title">
+						<h3 translate="JOB.TITLE.EXCEPTION"></h3>
+					</div>
+					<div class="property-wrapper">
+						<table>
+							<tr class="property">
+								<td class="property-name">Exception during last execution:</td>
+								<td>{{job.exceptionMessage}}</td>
+							</tr>
+						</table>
+					</div>	
+					<pre>{{job.exceptionStack}}</pre>			
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default" ng-click="executeJob()">
+							<i class="glyphicon glyphicon-play"></i> {{'JOB.ACTIONS.EXECUTE' | translate}}
+					    </button>
+					  </li>
+				</ul>
+				<div class="seperator"></div>
+				<ul class="list-group">
+					  
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default btn-danger" ng-click="deleteJob()">
+							<i class="glyphicon glyphicon-remove"></i> {{'JOB.ACTIONS.DELETE' | translate}}
+					    </button>
+					  </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

@@ -53,14 +53,14 @@ public class DestroyScopeOperation extends AbstractOperation {
     // Delete all child executions
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(scopeExecution.getId());
     for (ExecutionEntity childExecution : childExecutions) {
-      executionEntityManager.deleteExecutionAndRelatedData(childExecution, null, false);
+      executionEntityManager.deleteExecutionAndRelatedData(childExecution, execution.getDeleteReason(), false);
     }
 
     // Delete all scope tasks
     TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(scopeExecution.getId());
     for (TaskEntity taskEntity : tasksForExecution) {
-      taskEntityManager.delete(taskEntity);
+      taskEntityManager.deleteTask(taskEntity, execution.getDeleteReason(), false, false);
     }
 
     // Delete all scope jobs
@@ -95,7 +95,7 @@ public class DestroyScopeOperation extends AbstractOperation {
       variableInstanceEntityManager.delete(variable);
     }
 
-    commandContext.getHistoryManager().recordActivityEnd(scopeExecution);
+    commandContext.getHistoryManager().recordActivityEnd(scopeExecution, scopeExecution.getDeleteReason());
     executionEntityManager.delete(scopeExecution);
   }
 

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
@@ -46,7 +47,7 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
   }
   
   @Override
-  public void cancelEvent(DelegateExecution execution) {
+  public void eventCancelledByEventGateway(DelegateExecution execution) {
     JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
     List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(execution.getId());
     
@@ -54,7 +55,8 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
       jobEntityManager.delete(jobEntity);
     }
     
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, null, false);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, 
+        DeleteReason.EVENT_BASED_GATEWAY_CANCEL, false);
   }
 
   @Override

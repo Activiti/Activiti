@@ -1,0 +1,54 @@
+<!-- LIST PAGE -->
+<div class="container" id="list-container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="component" ng-show="submittedForm">
+                <div class="title">
+                    <div class="pull-right">
+                        <a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+                    </div>
+                    <h2>{{submittedForm.name &amp;&amp; submittedForm.name +" - " || ""}}{{submittedForm.id}}</h2>
+                </div>
+
+                <div class="property-wrapper">
+                    <table>
+                        <tr class="property">
+                            <td class="property-name" translate="SUBMITTED-FORM.HEADER.ID"></td>
+                            <td>{{submittedForm.id}}</td>
+                            <td class="property-name" translate="SUBMITTED-FORM.HEADER.TASK-ID"></td>
+                            <td ng-if="submittedForm.taskId"><a ng-href="#/task/{{submittedForm.taskId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{submittedForm.taskId}}</a></td>
+                            <td ng-if="!submittedForm.taskId">{{submittedForm.taskId | empty}}</td>
+                        </tr>
+                        <tr class="property">
+                        	<td class="property-name" translate="SUBMITTED-FORM.HEADER.PROCESS-ID"></td>
+                            <td ng-if="submittedForm.processId"><a ng-href="#/process-instance/{{submittedForm.processId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{submittedForm.processId}}</a></td>
+                            <td ng-if="!submittedForm.processId">{{submittedForm.processId | empty}}</td>
+                            <td class="property-name" translate="SUBMITTED-FORM.HEADER.SUBMITTED"></td>
+                            <td>{{submittedForm.submitted | date}}</td>
+                        </tr>
+                        <tr class="property">
+                            <td class="property-name" translate="SUBMITTED-FORM.HEADER.SUBMITTED-BY"></td>
+                            <td user="submittedForm.submittedBy"></td>
+                            <td class="property-name" translate="SUBMITTED-FORM.HEADER.FORM-ID"></td>
+                            <td><a ng-href="#/form/{{submittedForm.formId}}"><i class="glyphicon glyphicon-zoom-in"></i> {{submittedForm.formId}}</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="component tip-left">
+                <div class="title">
+                    <h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+                </div>
+                <ul class="list-group">
+                    <li>
+                        <button type="button" class="btn btn-sm btn-default" ng-click="showSubmittedForm()">
+                            <i class="glyphicon glyphicon-zoom-in"></i>{{'SUBMITTED-FORM.ACTION.SHOW-SUBMITTED-FORM' | translate}}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

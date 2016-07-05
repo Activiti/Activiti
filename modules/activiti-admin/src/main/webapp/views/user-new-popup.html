@@ -1,0 +1,78 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2 translate="USER.POPUP.NEW.TITLE"></h2>	
+	</div>
+</div>
+<div class="modal-body">
+	<div class="alert error" ng-show="model.errorMessage">
+		<i class="glyphicon glyphicon-remove"></i>
+		{{model.errorMessage}}
+	</div>
+	<table class="edit-table">
+		<tr>
+			<td class="edit-label" translate="USER.POPUP.NEW.LOGIN"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.login">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="USER.POPUP.NEW.PASSWORD"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="password" class="form-control" value="" ng-model="model.password">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="USER.POPUP.NEW.FIRSTNAME"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.firstName"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="USER.POPUP.NEW.LASTNAME"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.lastName"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="edit-label" translate="USER.POPUP.NEW.EMAIL"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control" value="" ng-model="model.email"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr ng-if="account.multiTenant">
+			<td class="edit-label" translate="USER.POPUP.NEW.ADMIN"></td>
+			<td>
+				<div class="input-group input-group-sm">
+					<input type="checkbox" style="box-shadow:none;" class="form-control" value="" ng-model="model.adminUser"></textarea>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="modal-footer-wrapper">
+	<div class="modal-footer">
+		<div class="pull-right">
+	       <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+	       		translate="GENERAL.ACTION.CANCEL">
+	       	</button>
+	       <button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="status.loading || !model.login || !model.password"
+	       		 translate="USER.POPUP.NEW.CONFIRM">>
+	       </button>
+		</div>
+        <loading-indicator></loading-indicator>
+</div>
+</div>

@@ -93,7 +93,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals("Schedule an engineering meeting for next week with the new hire.", historicTaskInstance.getDescription());
     assertEquals(dueDate, historicTaskInstance.getDueDate());
     assertEquals("kermit", historicTaskInstance.getAssignee());
-    assertEquals(TaskEntity.DELETE_REASON_COMPLETED, historicTaskInstance.getDeleteReason());
+    assertNull(historicTaskInstance.getDeleteReason());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
     assertEquals("expressionFormKey", historicTaskInstance.getFormKey());
     assertNotNull(historicTaskInstance.getEndTime());
@@ -200,7 +200,6 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskAssigneeLike("%johndoe%").count());
 
     // Delete reason
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDeleteReason(TaskEntity.DELETE_REASON_COMPLETED).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDeleteReason("deleted").count());
 
     // Task definition ID
@@ -398,7 +397,6 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskAssignee("kermit").endOr().or().taskAssigneeLike("%johndoe%").endOr().count());
     
     // Delete reason
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskDeleteReason(TaskEntity.DELETE_REASON_COMPLETED).endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskDeleteReason("deleted").endOr().count());
 
     // Task definition ID

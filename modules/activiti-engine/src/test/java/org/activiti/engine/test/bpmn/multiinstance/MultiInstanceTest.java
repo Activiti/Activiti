@@ -864,7 +864,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         assertNotNull(hti.getStartTime());
         assertNotNull(hti.getEndTime());
         assertNotNull(hti.getAssignee());
-        assertEquals("completed", hti.getDeleteReason());
+        assertNull(hti.getDeleteReason());
       }
 
       // Validate historic activities

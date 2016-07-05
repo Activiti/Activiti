@@ -1,0 +1,139 @@
+<div class="container" id="detail-container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component" ng-show="definition">
+				<div class="title">
+					<div class="pull-right">
+						<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
+					</div>
+					<h2>{{definition.name &amp;&amp; definition.name +" - " || ""}}{{definition.id}}</h2>
+				</div>
+
+				<div class="property-wrapper">
+					<table>
+						<tr class="property">
+							<td class="property-name" translate="PROCESS-DEFINITION.ID"></td>
+							<td>{{definition.id}}</td>
+							<td class="property-name" translate="PROCESS-DEFINITION.VERSION"></td>
+							<td>{{definition.version}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="PROCESS-DEFINITION.NAME"></td>
+							<td>{{definition.name | empty}}</td>
+							<td class="property-name" translate="PROCESS-DEFINITION.KEY"></td>
+							<td>{{definition.key}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="PROCESS-DEFINITION.CATEGORY"></td>
+							<td>{{definition.category | empty}}</td>
+							<td class="property-name" translate="PROCESS-DEFINITION.DESCRIPTION"></td>
+							<td>{{definition.description | empty}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="PROCESS-DEFINITION.DEPLOYMENT"></td>
+							<td><a ng-click="openDeployment(definition.deploymentId)"><i class="glyphicon glyphicon-zoom-in"></i> {{definition.deploymentId}}</a></td>
+							<td class="property-name" translate="PROCESS-DEFINITION.SUSPENDED"></td>
+							<td>{{definition.suspended &amp;&amp; ('GENERAL.YES' | translate) || ('GENERAL.NO' | translate)}}</td>
+						</tr>
+						<tr class="property">
+							<td class="property-name" translate="PROCESS-DEFINITION.START-FORM-DEFINED"></td>
+							<td>{{definition.startFormDefined &amp;&amp; ('GENERAL.YES' | translate) || ('GENERAL.NO' | translate)}}<span ng-if="definition.startFormDefined"> - <a ng-click="openStartForm()"><i class="glyphicon glyphicon-zoom-in"></i> {{startForm.id}}</a></span></td>
+							<td class="property-name" translate="PROCESS-DEFINITION.GRAPHICAL-NOTATION-DEFINED"></td>
+							<td>
+								{{definition.graphicalNotationDefined &amp;&amp; ('GENERAL.YES' | translate) || ('GENERAL.NO' | translate)}}
+							</td>
+						</tr>
+						<tr class="property">
+                            <td class="property-name" translate="PROCESS-DEFINITION.TENANT"></td>
+                            <td>{{definition.tenantId | empty}}</td>
+                        </tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="component tip-left">
+				<div class="title">
+					<h2 translate="GENERAL.TITLE.ACTIONS"></h2>
+				</div>
+				<ul class="list-group">
+					  <li ng-show="definition.graphicalNotationDefined">
+					    <button type="button" class="btn btn-sm btn-default" ng-click="showProcessDiagram()">
+							<i class="glyphicon glyphicon-zoom-in"></i>{{'PROCESS-DEFINITION.ACTION.SHOW-DIAGRAM' | translate}}
+					    </button>
+					  </li>
+					  <li>
+					    <button type="button" class="btn btn-sm btn-default" ng-click="editCategory()">
+							<i class="glyphicon glyphicon-pencil"></i>{{'PROCESS-DEFINITION.ACTION.EDIT-CATEGORY' | translate}}
+					    </button>
+					  </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-9">
+			<div class="component">
+				<div class="tabs-wrapper">
+					<div class="pull-right">
+						<a ng-click="showAllProcesses()" class="action" ng-show="tabData.activeTab == tabData.tabs[0].id"><i class="glyphicon glyphicon-zoom-in"></i> {{'PROCESS-DEFINITION.ACTION.SHOW-ALL-PROCESSES' | translate}}</a>
+						<a ng-click="showAllJobs()" class="action" ng-show="tabData.activeTab == tabData.tabs[1].id"><i class="glyphicon glyphicon-zoom-in"></i> {{'PROCESS-DEFINITION.ACTION.SHOW-ALL-JOBS' | translate}}</a>
+					</div>
+		       		<div class="tabs clearfix">
+		       			<div class="tab" ng-repeat="tab in tabData.tabs" ng-class="{'active': tabData.activeTab == tab.id}">
+		       				<a ng-click="tabData.activeTab = tab.id">
+		       					{{tab.name | translate:node}}&nbsp;
+		    					<span class="badge" ng-if="tab.info != undefined">{{tab.info}}</span>
+		    				</a>
+		       			</div>
+		       		</div>
+		        	<div class="title"></div>
+
+		        	<div class="grid-wrapper" ng-if="processInstances && tabData.activeTab == tabData.tabs[0].id" >
+						<div class="grid-message" ng-if="processInstances.size > 0">
+	                        <span>{{'PROCESS-DEFINITION.PROCESS-INSTANCES-SIZE' | translate:processInstances}}</span>
+                            <span ng-if="processInstances.size < processInstances.total">{{'PROCESS-DEFINITION.PROCESS-INSTANCES-SHOWING' | translate:processInstances}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="processInstances.size == 0">
+	                        <span>{{'PROCESS-DEFINITION.PROCESS-INSTANCES-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="gridProcessInstances" class="gridStyle" ng-if="processInstances" ng-show="processInstances.size > 0"></div>
+					</div>
+
+					<div class="grid-wrapper grid-wrapper-compact" ng-if="jobs && tabData.activeTab == tabData.tabs[1].id">
+						<div class="grid-message" ng-if="jobs.size > 0">
+	                        <span>{{'PROCESS-DEFINITION.JOBS-SIZE' | translate:jobs}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="jobs.size == 0">
+	                        <span>{{'PROCESS-DEFINITION.JOBS-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="gridJobs" class="gridStyle" ng-if="jobs" ng-show="jobs.size > 0"></div>
+					</div>
+					
+					<div class="grid-wrapper grid-wrapper-compact" ng-if="decisionTables && tabData.activeTab == tabData.tabs[2].id">
+						<div class="grid-message" ng-if="decisionTables.size > 0">
+	                        <span>{{'PROCESS-DEFINITION.DECISION-TABLES-SIZE' | translate:decisionTables}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="decisionTables.size == 0">
+	                        <span>{{'PROCESS-DEFINITION.DECISION-TABLES-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="gridDecisionTables" class="gridStyle" ng-if="decisionTables" ng-show="decisionTables.size > 0"></div>
+					</div>
+					
+					<div class="grid-wrapper grid-wrapper-compact" ng-if="forms && tabData.activeTab == tabData.tabs[3].id">
+						<div class="grid-message" ng-if="forms.size > 0">
+	                        <span>{{'PROCESS-DEFINITION.FORMS-SIZE' | translate:forms}}</span>
+	                    </div>
+	                     <div class="grid-message" ng-if="forms.size == 0">
+	                        <span>{{'PROCESS-DEFINITION.FORMS-EMPTY' | translate}}</span>
+	                    </div>
+						<div ng-grid="gridForms" class="gridStyle" ng-if="forms" ng-show="forms.size > 0"></div>
+					</div>
+
+	        	</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div>
+</div>

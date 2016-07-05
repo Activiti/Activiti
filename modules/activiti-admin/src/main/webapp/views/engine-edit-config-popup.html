@@ -1,0 +1,430 @@
+<div class="modal-header-wrapper">
+    <div class="modal-header">
+        <div class="pull-right">
+            <a class="action" ng-click="cancel()" ng-show="!status.loading">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+        <h2 ng-if="model.newConfig" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-NEW"></h2>
+
+        <h2 ng-if="!model.newConfig" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-EDIT"></h2>
+    </div>
+</div>
+<div class="modal-body">
+
+    <div>
+        <table class="edit-table">
+            <tr>
+                <td class="edit-label">
+                    <span>{{'CLUSTER.POPUP.EDIT-CONFIG.CONFIG-OPTIONS' | translate}}</span>
+                </td>
+                <td>
+                    <select class="form-control" ng-model="model.configType" ng-change="configTypeChanged()">
+                        <option value="engine">{{'CLUSTER.POPUP.EDIT-CONFIG.OPTION-ENGINE' | translate}}</option>
+                        <option value="bpmSuite">{{'CLUSTER.POPUP.EDIT-CONFIG.OPTION-SUITE' | translate}}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- BPM Suite -->
+    <div ng-if="model.configType == 'bpmSuite' && model.fetchingTemplate == false" class="bpm-suite-config">
+        <textarea class="form-control" style="height:100%;margin-top:15px;"  ng-model="model.bpmSuiteConfig"></textarea>
+    </div>
+    <div ng-if="model.fetchingTemplate == true">
+        <span>{{'CLUSTER.POPUP.EDIT-CONFIG.FETCHING-TEMPLATE' | translate}}</span>
+    </div>
+
+    <!-- Process Engine -->
+    <table class="edit-table" ng-if="model.configType == 'engine'">
+        <tr>
+            <td>
+                <h4 translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-DATABASE"></h4>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JDBC-URL"></td>
+            <td>
+                <input type="text" class="form-control" id="jdbcUrl" ng-model="model.engineConfig.jdbcUrl">
+            </td>
+
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JDBC-DRIVER"></td>
+            <td>
+                <input type="text" class="form-control" id="jdbcDriver" ng-model="model.engineConfig.jdbcDriver">
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JDBC-USERNAME"></td>
+            <td>
+                <input type="text" class="form-control" id="jdbcUsername" ng-model="model.engineConfig.jdbcUsername">
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JDBC-PASSWORD"></td>
+            <td>
+                <input type="password" class="form-control" id="jdbcPassword"  ng-model="model.engineConfig.jdbcPassword">
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JDBC-JNDI-NAME"></td>
+            <td>
+                <input type="text" class="form-control"  ng-model="model.engineConfig.dataSourceJndiName">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.JDBC-JNDI-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>
+                <h4 translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-SCHEMA"></h4>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.SCHEMA-UPDATE"></td>
+            <td>
+                <select class="form-control" id="databaseSchemaUpdate"
+                        ng-model="model.engineConfig.databaseSchemaUpdate">
+                    <option ng-repeat="option in options.schemaUpdate">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                   {{'CLUSTER.POPUP.EDIT-CONFIG.SCHEMA-UPDATE-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>
+                <h4 translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-HISTORY"></h4>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.HISTORY-LEVEL"></td>
+            <td>
+                <select class="form-control" ng-model="model.engineConfig.history">
+                    <option ng-repeat="option in options.history">{{option}}</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                 <h4 translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-JOB-EXECUTOR"></h4>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-EXECUTOR-ENABLE"></td>
+            <td>
+                <input type="checkbox" ng-model="model.engineConfig.enableJobExecutor">
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>
+                 <h4 translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-ADVANCED"></h4>
+            </td>
+            <td>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.PROCESS-DEF-CACHE-LIMIT"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.processDefinitionCacheLimit">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                   {{'CLUSTER.POPUP.EDIT-CONFIG.PROCESS-DEF-CACHE-LIMIT-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.ID-BLOCK-SIZE"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.idBlockSize">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.ID-BLOCK-SIZE-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="edit-label-top">
+                <span ng-if="!model.enableJobExecutorCfg" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-JOB-TWEAKING"></span>
+                <h4 ng-if="model.enableJobExecutorCfg" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-JOB-TWEAKING"></h4>
+            </td>
+            <td>
+                <div ng-if="model.newConfig">
+                    <input type="checkbox" ng-model="model.enableJobExecutorCfg">
+                    <span translate="CLUSTER.POPUP.EDIT-CONFIG.ENABLE-JOB-TWEAKING"></span>
+                    <p  ng-if="!model.enableJobExecutorCfg" class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                        {{'CLUSTER.POPUP.EDIT-CONFIG.ENABLE-JOB-TWEAKING-HELP' | translate}}
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAX-JOBS-PER-ACQUISITION"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.maxJobsPerAcquisition">
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.MAX-JOBS-PER-ACQUISITION-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-WAIT-TIME"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.jobWaitTime">
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.JOB-WAIT-TIME-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-LOCK-TIME"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.jobLockTime">
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>
+                   {{'CLUSTER.POPUP.EDIT-CONFIG.JOB-LOCK-TIME-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-QUEUE-SIZE"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.jobQueueSize">
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.JOB-QUEUE-SIZE-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-CORE-POOL-SIZE"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.jobCorePoolSize">
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.JOB-CORE-POOL-SIZE-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-POOL-SIZE"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.jobMaxPoolSize">
+            </td>
+        </tr>
+        <tr ng-if="model.enableJobExecutorCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-POOL-SIZE-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td class="edit-label-top">
+                 <span ng-if="!model.enableJobExecutorCfg" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-DB-POOL"></span>
+                <h4 ng-if="model.enableJobExecutorCfg" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-DB-POOL"></h4>
+            </td>
+            <td>
+                <div ng-if="model.newConfig">
+                    <input type="checkbox" ng-model="model.enableConnectionPoolCfg">
+                    <span translate="CLUSTER.POPUP.EDIT-CONFIG.ENABLE-DB-POOL"></span>
+                    <p  ng-if="!model.enableConnectionPoolCfg" class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                       {{'CLUSTER.POPUP.EDIT-CONFIG.ENABLE-DB-POOL-HELP' | translate}}
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr ng-if="model.enableConnectionPoolCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-ACTIVE-CONNECTIONS"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.jdbcMaxActiveConnections">
+            </td>
+        </tr>
+        <tr ng-if="model.enableConnectionPoolCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-IDLE-CONNECTIONS"></td>
+            <td>
+                <input type="number" class="form-control"  ng-model="model.engineConfig.jdbcMaxIdleConnections">
+            </td>
+        </tr>
+        <tr ng-if="model.enableConnectionPoolCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-CHECKOUT-TIME"></td>
+            <td>
+                <input type="number" class="form-control"  ng-model="model.engineConfig.jdbcMaxCheckoutTime">
+            </td>
+        </tr>
+        <tr ng-if="model.enableConnectionPoolCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+            		{{'CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-CHECKOUT-TIME-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+        <tr ng-if="model.enableConnectionPoolCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-WAIT-TIME"></td>
+            <td>
+                <input type="number" class="form-control"  ng-model="model.engineConfig.jdbcMaxWaitTime">
+            </td>
+        </tr>
+        <tr ng-if="model.enableConnectionPoolCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                	{{'CLUSTER.POPUP.EDIT-CONFIG.JOB-MAX-WAIT-TIME-HELP' | translate}}
+                </p>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td class="edit-label-top">
+                <span ng-if="!model.enableJobExecutorCfg" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-MAIL-SERVER"></span>
+                <h4 ng-if="model.enableJobExecutorCfg" translate="CLUSTER.POPUP.EDIT-CONFIG.TITLE-MAIL-SERVER"></h4>
+            </td>
+            <td>
+                <div ng-if="model.newConfig">
+                    <input type="checkbox" ng-model="model.enableMailServerCfg">
+                    <span translate="CLUSTER.POPUP.EDIT-CONFIG.ENABLE-MAIL-SERVER"></span>
+                    <p  ng-if="!model.enableMailServerCfg" class="message"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;
+                        {{'CLUSTER.POPUP.EDIT-CONFIG.ENABLE-MAIL-SERVER-INFO' | translate}}
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-DEFAULT-FROM"></td>
+            <td>
+                <input type="text" class="form-control" ng-model="model.coengineConfignfig.mailServerDefaultFrom">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-HOST"></td>
+            <td>
+                <input type="text" class="form-control" ng-model="model.engineConfig.mailServerHost">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-PORT"></td>
+            <td>
+                <input type="number" class="form-control" ng-model="model.engineConfig.mailServerPort">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-USERNAME"></td>
+            <td>
+                <input type="text" class="form-control" ng-model="model.engineConfig.mailServerUsername">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-PASSWORD"></td>
+            <td>
+                <input type="password" class="form-control"  ng-model="model.engineConfig.mailServerPassword">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-USE-SSL"></td>
+            <td>
+                <input type="checkbox" class="form-control" ng-model="model.engineConfig.mailServerUseSsl">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-USE-TLS"></td>
+            <td>
+                <input type="checkbox" class="form-control" ng-model="model.engineConfig.mailServerUseTls">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td class="edit-label" translate="CLUSTER.POPUP.EDIT-CONFIG.MAIL-JNDI-NAME"></td>
+            <td>
+                <input type="text" class="form-control" ng-model="model.engineConfig.mailServerJndi">
+            </td>
+        </tr>
+        <tr ng-if="model.enableMailServerCfg">
+            <td></td>
+            <td>
+                <p class="message"><i class="glyphicon glyphicon-info-sign"></i>
+                    {{'CLUSTER.POPUP.EDIT-CONFIG.MAIL-JNDI-NAME-INFO' | translate}}
+                </p>
+            </td>
+        </tr>
+
+    </table>
+
+
+</div>
+
+<div class="modal-footer-wrapper">
+    <div class="modal-footer">
+        <div class="pull-right">
+            <button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="status.loading"
+            	translate="GENERAL.ACTION.CANCEL">
+            </button>
+            <button type="button" class="btn btn-sm btn-default" ng-click="ok()"
+                    ng-disabled="status.loading">
+                {{model.newConfig &amp;&amp; ('CLUSTER.POPUP.EDIT-CONFIG.ACTION-CREATE-CONFIGURATION' | translate) || ('CLUSTER.POPUP.EDIT-CONFIG.ACTION-UPDATE-CONFIGURATION' | translate)}}
+            </button>
+        </div>
+        <loading-indicator></loading-indicator>
+    </div>
+</div>

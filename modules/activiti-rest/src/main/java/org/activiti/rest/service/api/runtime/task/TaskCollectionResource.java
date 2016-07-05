@@ -74,6 +74,10 @@ public class TaskCollectionResource extends TaskBaseResource {
     if (requestParams.containsKey("assignee")) {
       request.setAssignee(requestParams.get("assignee"));
     }
+    
+    if (requestParams.containsKey("assigneeLike")) {
+      request.setAssigneeLike(requestParams.get("assigneeLike"));
+    }
 
     if (requestParams.containsKey("owner")) {
       request.setOwner(requestParams.get("owner"));

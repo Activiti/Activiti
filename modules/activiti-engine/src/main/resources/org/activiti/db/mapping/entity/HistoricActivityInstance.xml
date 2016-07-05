@@ -35,6 +35,7 @@
         START_TIME_,
         END_TIME_,
         DURATION_,
+        DELETE_REASON_,
         TENANT_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
@@ -50,6 +51,7 @@
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
+        #{deleteReason, jdbcType=VARCHAR},
         #{tenantId, jdbcType=VARCHAR}
       )
   </insert>
@@ -69,6 +71,7 @@
         START_TIME_,
         END_TIME_,
         DURATION_,
+        DELETE_REASON_,
         TENANT_ID_
       ) values 
       <foreach collection="list" item="historicActivityInstance" index="index" separator=",">
@@ -85,6 +88,7 @@
           #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
           #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
           #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
+          #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
           #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
       </foreach>
   </insert>
@@ -106,6 +110,7 @@
           START_TIME_,
           END_TIME_,
           DURATION_,
+          DELETE_REASON_,
           TENANT_ID_
         ) VALUES 
            (#{historicActivityInstance.id ,jdbcType=VARCHAR},
@@ -121,6 +126,7 @@
             #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
             #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
             #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
+            #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
             #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
@@ -133,7 +139,8 @@
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
-      DURATION_ = #{durationInMillis ,jdbcType=BIGINT}
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
+      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -159,6 +166,7 @@
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
@@ -222,6 +230,12 @@
       </if>
       <if test="finished">
        and RES.END_TIME_ is not null
+      </if>
+      <if test="deleteReason != null">
+        and RES.DELETE_REASON_ = #{deleteReason}
+      </if>
+      <if test="deleteReasonLike != null">
+        and RES.DELETE_REASON_ like #{deleteReasonLike}
       </if>
     </where>
   </sql>

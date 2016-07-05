@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -42,7 +43,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     
     ExecutionEntity subProcessExecution = null;
-    // TODO: this can be optimized. A full search in the all executions shouldn't bee needed
+    // TODO: this can be optimized. A full search in the all executions shouldn't be needed
     List<ExecutionEntity> processInstanceExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
     for (ExecutionEntity childExecution : processInstanceExecutions) {
       if (childExecution.getCurrentFlowElement() != null 
@@ -62,9 +63,12 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
     if (eventSubscriptions.isEmpty()) {
       leave(execution);
     } else {
+      
+      String deleteReason = DeleteReason.BOUNDARY_EVENT_INTERRUPTING + "(" + boundaryEvent.getId() + ")";
+      
       // cancel boundary is always sync
       ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
-      executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution, null, false);
+      executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution, deleteReason, false);
       if (subProcessExecution.getCurrentFlowElement() instanceof Activity) {
         Activity activity = (Activity) subProcessExecution.getCurrentFlowElement();
         if (activity.getLoopCharacteristics() != null) {
@@ -72,7 +76,7 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
           List<ExecutionEntity> miChildExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(miExecution.getId());
           for (ExecutionEntity miChildExecution : miChildExecutions) {
             if (subProcessExecution.getId().equals(miChildExecution.getId()) == false && activity.getId().equals(miChildExecution.getCurrentActivityId())) {
-              executionEntityManager.deleteExecutionAndRelatedData(miChildExecution, null, false);
+              executionEntityManager.deleteExecutionAndRelatedData(miChildExecution, deleteReason, false);
             }
           }
         }

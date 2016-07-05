@@ -31,9 +31,6 @@ import org.activiti.engine.task.Task;
  */
 public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, HasRevision {
 
-  String DELETE_REASON_COMPLETED = "completed";
-  String DELETE_REASON_DELETED = "deleted";
-
   ExecutionEntity getExecution();
   
   void setExecutionId(String executionId);

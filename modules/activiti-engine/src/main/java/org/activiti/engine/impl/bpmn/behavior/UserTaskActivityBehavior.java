@@ -210,7 +210,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
       if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
-        taskEntityManager.deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, false);
+        taskEntityManager.deleteTask(task, null, false, false);
         leave(execution);
       }
     }

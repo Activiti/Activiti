@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -210,13 +211,13 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, processInstanceQuery.count());
     HistoricProcessInstance processInstance = processInstanceQuery.singleResult();
     assertEquals(processInstanceId, processInstance.getId());
-    assertEquals("ACTIVITY_DELETED", processInstance.getDeleteReason());
+    assertEquals(DeleteReason.PROCESS_INSTANCE_DELETED, processInstance.getDeleteReason());
 
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).deleted();
     assertEquals(1, processInstanceQuery.count());
     processInstance = processInstanceQuery.singleResult();
     assertEquals(processInstanceId, processInstance.getId());
-    assertEquals("ACTIVITY_DELETED", processInstance.getDeleteReason());
+    assertEquals(DeleteReason.PROCESS_INSTANCE_DELETED, processInstance.getDeleteReason());
 
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).notDeleted();
     assertEquals(0, processInstanceQuery.count());

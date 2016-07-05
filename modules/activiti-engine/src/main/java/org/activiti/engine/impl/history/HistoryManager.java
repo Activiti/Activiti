@@ -51,7 +51,7 @@ public interface HistoryManager {
   /**
    * Record the end of an activity, if activity history is enabled.
    */
-  void recordActivityEnd(ExecutionEntity executionEntity);
+  void recordActivityEnd(ExecutionEntity executionEntity, String deleteReason);
 
   /**
    * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution.

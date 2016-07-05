@@ -167,10 +167,8 @@ RETRIES_, EXCEPTION_STACK_ID_,     EXCEPTION_MSG_, DUEDATE_, REPEAT_, HANDLER_TY
 job.RETRIES_, job.EXCEPTION_STACK_ID_, job.EXCEPTION_MSG_, job.DUEDATE_, job.REPEAT_, job.HANDLER_TYPE_, job.HANDLER_CFG_, job.TENANT_ID_ 
 from ACT_RU_JOB job INNER JOIN ACT_RU_EXECUTION execution on execution.ID_ = job.PROCESS_INSTANCE_ID_ where execution.SUSPENSION_STATE_ = 2);
 
-DELETE job FROM ACT_RU_JOB job
-INNER JOIN ACT_RU_EXECUTION execution 
-on execution.ID_ = job.PROCESS_INSTANCE_ID_ 
-where execution.SUSPENSION_STATE_ = 2;
+DELETE FROM ACT_RU_JOB
+WHERE PROCESS_INSTANCE_ID_ IN (SELECT ID_ FROM ACT_RU_EXECUTION execution WHERE execution.PARENT_ID_ is null and execution.SUSPENSION_STATE_ = 2);
 
 
 
@@ -195,5 +193,9 @@ and LOCK_EXP_TIME_ is null;
 alter table ACT_RU_EXECUTION add START_TIME_ datetime;
 alter table ACT_RU_EXECUTION add START_USER_ID_ nvarchar(255);
 alter table ACT_RU_TASK add CLAIM_TIME_ datetime;
+
+-- Upgrade added in upgradestep.52001.to.52002.engine, which is not applied when already on beta2 
+update ACT_RU_EVENT_SUBSCR set PROC_DEF_ID_ = CONFIGURATION_ where EVENT_TYPE_ = 'message' and PROC_INST_ID_ is null and EXECUTION_ID_ is null and PROC_DEF_ID_ is null;
+
 
 update ACT_GE_PROPERTY set VALUE_ = '6.0.0.2' where NAME_ = 'schema.version';

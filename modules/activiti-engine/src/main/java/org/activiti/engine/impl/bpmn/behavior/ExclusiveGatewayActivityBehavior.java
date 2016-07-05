@@ -91,7 +91,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     
     // We have to record the end here, or else we're already past it
-    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
 
     // Leave the gateway
     if (outgoingSequenceFlow != null) {

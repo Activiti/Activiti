@@ -1,0 +1,55 @@
+<div class="modal-header-wrapper">
+	<div class="modal-header">
+		<div class="pull-right">
+            <a class="action" ng-click="cancel()">&times; {{'GENERAL.ACTION.CANCEL-AND-CLOSE' | translate}}</a>
+        </div>
+		<h2 translate="APPS.POPUP.REDEPLOY.TITLE"></h2>
+	</div>
+</div>
+<div class="modal-body no-overflow">
+
+	<p>
+		<i class="glyphicon glyphicon-info-sign"></i>
+		{{'APPS.POPUP.REDEPLOY.DESCRIPTION' | translate:app.appDefinition }}
+	</p>
+
+
+	<div style="padding-left: 30%;">
+		<button type="button" class="btn btn-sm dropdown-toggle"
+			style="border-color: #ccc; background-color: #fff" data-toggle="dropdown">
+			<span ng-if="!targetServer" translate="APPS.POPUP.REDEPLOY.SELECT-CLUSTER"></span> 
+			<span ng-if="targetServer" translate="APPS.POPUP.REDEPLOY.DEPLOY-TO-CLUSTER" translate-values="{name: targetServer.clusterName}"></span> 
+			<span class="caret"></span>
+		</button>
+
+		<ul class="dropdown-menu"
+			style="top: auto; left: auto; z-index: 1000000;">
+			<li ng-repeat="cluster in availableClusters"
+				ng-if="cluster.id != activeCluster.id"><a
+				ng-click="selectTargetServer(cluster)">{{cluster.clusterName}}</a></li>
+		</ul>
+		
+	</div>
+	
+	<p ng-if="model.isConflict && !model.error" class="text-warning">
+        <i class="glyphicon glyphicon-warning-sign"></i>&nbsp;
+        <span translate="APPS.POPUP.REDEPLOY.APP-CONFLICT-ERROR" translate-values="{ name: model.conflictingAppName, createdBy: model.conflictingAppCreatedBy }"></span>
+        <span style="display: block; padding-left: 18px;">{{model.conflictMessage}}</span>
+    </p>
+    
+    <p ng-if="model.error" class="modeler-processes-error">
+        <i class="glyphicon glyphicon-remove-circle"></i>
+        <span translate="APPS.POPUP.REDEPLOY.ERROR"></span>
+        {{model.errorMessage}}
+    </p>
+    
+</div>
+
+<div class="modal-footer-wrapper">
+    <div class="modal-footer">
+        <div class="pull-right">
+			<button ng-if="!model.isConflict" type="button" class="btn btn-sm btn-default" ng-click="deployApp(targetServer.id)" ng-disabled="status.loading || !targetServer.id" translate="APPS.POPUP.REDEPLOY.DEPLOY"></button>
+			<button ng-if="model.isConflict" type="button" class="btn btn-sm btn-default" ng-click="deployAppAsNewVersion(targetServer.id, model.conflictAppId)" ng-disabled="status.loading || !targetServer.id || model.error" translate="APPS.POPUP.REDEPLOY.DEPLOY-AS-NEW-VERSION"></button>
+		</div>
+    </div>
+</div>

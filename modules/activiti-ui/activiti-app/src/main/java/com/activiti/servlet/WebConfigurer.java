@@ -95,6 +95,17 @@ public class WebConfigurer implements ServletContextListener {
         appDispatcherServlet.addMapping("/app/*");
         appDispatcherServlet.setLoadOnStartup(1);
         appDispatcherServlet.setAsyncSupported(true);
+
+        log.debug("Registering Activiti public REST API");
+        AnnotationConfigWebApplicationContext apiDispatcherServletConfiguration = new AnnotationConfigWebApplicationContext();
+        apiDispatcherServletConfiguration.setParent(rootContext);
+        apiDispatcherServletConfiguration.register(ApiDispatcherServletConfiguration.class);
+
+        ServletRegistration.Dynamic apiDispatcherServlet = servletContext.addServlet("apiDispatcher",
+                new DispatcherServlet(apiDispatcherServletConfiguration));
+        apiDispatcherServlet.addMapping("/api/*");
+        apiDispatcherServlet.setLoadOnStartup(1);
+        apiDispatcherServlet.setAsyncSupported(true);
     }
 
     /**

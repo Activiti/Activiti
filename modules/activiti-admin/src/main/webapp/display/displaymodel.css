@@ -1,0 +1,26 @@
+div[class*='ui-tooltip-kisbpm-'] {
+    background-color: #ffffff;
+    border-color: #2674aa;
+    color: #4a4a4a;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+}
+
+div[class*='ui-tooltip-kisbpm-'] .qtip-content {
+  color: #4a4a4a;
+  background-color: #ffffff;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  padding-top: 10px;
+}
+
+.ui-tooltip-kisbpm-bpmn .qtip-titlebar {
+  color: #ffffff;
+  font-size: 12px;
+  background: #2674aa;
+  font-weight: bolder;
+}
+
+.ui-tooltip-kisbpm-bpmn .qtip-tip {
+  background-color: #2674aa;
+}

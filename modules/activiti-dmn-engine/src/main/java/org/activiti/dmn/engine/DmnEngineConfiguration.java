@@ -17,6 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,6 +31,12 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.activiti.dmn.engine.impl.DmnEngineImpl;
 import org.activiti.dmn.engine.impl.DmnRepositoryServiceImpl;
 import org.activiti.dmn.engine.impl.DmnRuleServiceImpl;
@@ -102,7 +111,24 @@ public abstract class DmnEngineConfiguration {
     public static final String NO_TENANT_ID = "";
     
     public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/dmn/db/mapping/mappings.xml";
-    
+
+    public static final String LIQUIBASE_CHANGELOG_PREFIX = "DMN_";
+
+    /**
+     * Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
+     */
+    public static final String DB_SCHEMA_UPDATE_FALSE = "false";
+
+    /**
+     * Creates the schema when the process engine is being created and drops the schema when the process engine is being closed.
+     */
+    public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "create-drop";
+
+    /**
+     * Upon building of the process engine, a check is performed and an update of the schema is performed if it is necessary.
+     */
+    public static final String DB_SCHEMA_UPDATE_TRUE = "true";
+
     protected String dmnEngineName = DmnEngines.NAME_DEFAULT;
 
     protected String databaseType;
@@ -117,6 +143,8 @@ public abstract class DmnEngineConfiguration {
     protected int jdbcMaxIdleTimeExcessConnections = 1800;
     protected String jdbcPingQuery;
     protected DataSource dataSource;
+
+    protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
 
     protected String xmlEncoding = "UTF-8";
 
@@ -257,6 +285,32 @@ public abstract class DmnEngineConfiguration {
       return databaseTypeMappings;
     }
 
+    public void initDatabaseType() {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            String databaseProductName = databaseMetaData.getDatabaseProductName();
+            logger.debug("database product name: '{}'", databaseProductName);
+            databaseType = databaseTypeMappings.getProperty(databaseProductName);
+            if (databaseType == null) {
+                throw new ActivitiDmnException("couldn't deduct database type from database product name '" + databaseProductName + "'");
+            }
+            logger.debug("using database type: {}", databaseType);
+
+        } catch (SQLException e) {
+            logger.error("Exception while initializing Database connection", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                logger.error("Exception while closing the Database connection", e);
+            }
+        }
+    }
+
     // DEPLOYERS
     // ////////////////////////////////////////////////////////////////
 
@@ -365,6 +419,7 @@ public abstract class DmnEngineConfiguration {
       initCommandExecutors();
       initIdGenerator();
       initDataSource();
+      initDbSchema();
       initTransactionFactory();
       initSqlSessionFactory();
       initSessionFactories();
@@ -469,8 +524,39 @@ public abstract class DmnEngineConfiguration {
                 this.dataSource = ds;
             }
         }
+        if (databaseType == null) {
+            initDatabaseType();
+        }
     }
-    
+
+    // data model
+    // ///////////////////////////////////////////////////////////////
+
+    public void initDbSchema() {
+        try {
+            DatabaseConnection connection = new JdbcConnection(dataSource.getConnection());
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+            database.setDatabaseChangeLogTableName(LIQUIBASE_CHANGELOG_PREFIX+database.getDatabaseChangeLogTableName());
+            database.setDatabaseChangeLogLockTableName(LIQUIBASE_CHANGELOG_PREFIX+database.getDatabaseChangeLogLockTableName());
+
+            Liquibase liquibase = new Liquibase("liquibase/db-changelog.xml", new ClassLoaderResourceAccessor(), database);
+
+            if (DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
+                logger.debug("Dropping and creating schema DMN");
+                liquibase.dropAll();
+                liquibase.update("dmn");
+            } else if (DB_SCHEMA_UPDATE_TRUE.equals(databaseSchemaUpdate)) {
+                logger.debug("Updating schema DMN");
+                 liquibase.update("dmn");
+            } else if (DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
+                logger.debug("Validating schema DMN");
+                liquibase.validate();
+            }
+        } catch (Exception e) {
+            throw new ActivitiDmnException("Error initialising dmn data model");
+        }
+    }
+
     // session factories ////////////////////////////////////////////////////////
 
     public void initSessionFactories() {
@@ -1248,5 +1334,11 @@ public abstract class DmnEngineConfiguration {
 
     public void setCustomPropertyHandlers(Map<Class<?>, PropertyHandler> customPropertyHandlers) {
         this.customPropertyHandlers = customPropertyHandlers;
+    }
+
+
+    public DmnEngineConfiguration setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
+        this.databaseSchemaUpdate = databaseSchemaUpdate;
+        return this;
     }
 }

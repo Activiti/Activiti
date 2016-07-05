@@ -210,23 +210,6 @@ public class ActivitiDmnRule implements TestRule {
     }
 
     protected void initializeDmnEngine() {
-        try {
-            ComboPooledDataSource ds = new ComboPooledDataSource();
-            ds.setDriverClass("org.h2.Driver");
-            ds.setJdbcUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000");
-            ds.setUser("sa");
-            ds.setPassword("");
-            
-            DatabaseConnection connection = new JdbcConnection(ds.getConnection());
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
-            
-            Liquibase liquibase = new Liquibase("liquibase/db-changelog.xml", new ClassLoaderResourceAccessor(), database);
-            liquibase.dropAll();
-            liquibase.update("dmn");
-            
-        } catch (Exception e) {
-            throw new ActivitiDmnException("Error initialising dmn engine");
-        }
         dmnEngine = DmnTestHelper.getDmnEngine(configurationResource);
     }
 

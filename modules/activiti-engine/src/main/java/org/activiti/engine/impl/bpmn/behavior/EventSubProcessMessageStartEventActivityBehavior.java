@@ -24,6 +24,7 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -71,7 +72,8 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
       List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(executionEntity.getParentId());
       for (ExecutionEntity childExecution : childExecutions) {
         if (childExecution.getId().equals(executionEntity.getId()) == false) {
-          executionEntityManager.deleteExecutionAndRelatedData(childExecution, null, false);
+          executionEntityManager.deleteExecutionAndRelatedData(childExecution, 
+              DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")", false);
         }
       }
     }

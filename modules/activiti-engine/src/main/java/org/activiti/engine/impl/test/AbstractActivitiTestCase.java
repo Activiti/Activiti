@@ -398,4 +398,45 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
     return processDefinition.getId();
   }
+  
+  //
+  // HELPERS
+  //
+
+  protected void assertHistoricTasksDeleteReason(ProcessInstance processInstance, String expectedDeleteReason, String ... taskNames) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      for (String taskName : taskNames) {
+        List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
+            .processInstanceId(processInstance.getId()).taskName(taskName).list();
+        assertTrue(historicTaskInstances.size() > 0);
+        for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
+          assertNotNull(historicTaskInstance.getEndTime());
+          if (expectedDeleteReason == null) {
+            assertNull(historicTaskInstance.getDeleteReason());
+          } else {
+            assertTrue(historicTaskInstance.getDeleteReason().startsWith(expectedDeleteReason));
+          }
+        }
+      }
+    }
+  }
+  
+  protected void assertHistoricActivitiesDeleteReason(ProcessInstance processInstance, String expectedDeleteReason, String ... activityIds) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      for (String activityId : activityIds) {
+        List<HistoricActivityInstance> historicActiviyInstances = historyService.createHistoricActivityInstanceQuery()
+            .activityId(activityId).processInstanceId(processInstance.getId()).list();
+        assertTrue("Could not find historic activities", historicActiviyInstances.size() > 0);
+        for (HistoricActivityInstance historicActiviyInstance : historicActiviyInstances) {
+          assertNotNull(historicActiviyInstance.getEndTime());
+          if (expectedDeleteReason == null) {
+            assertNull(historicActiviyInstance.getDeleteReason()); 
+          } else {
+            assertTrue(historicActiviyInstance.getDeleteReason().startsWith(expectedDeleteReason));
+          }
+        }
+      }
+    }
+  }
+  
 }
