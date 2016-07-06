@@ -42,6 +42,7 @@
 	</select>
 
 	<select id="selectExpiredJobs" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+	  ${limitBefore}
     select * from ${prefix}ACT_RU_JOB
     where LOCK_EXP_TIME_ is not null and LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP} 
     ${limitAfter}
