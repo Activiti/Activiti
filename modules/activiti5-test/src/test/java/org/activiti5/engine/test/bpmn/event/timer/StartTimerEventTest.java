@@ -297,7 +297,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
    	assertEquals(3, repositoryService.createProcessDefinitionQuery().count());
    	assertEquals(0, managementService.createTimerJobQuery().count());
    	
-    // Deploy v4: no timer 
+    // Deploy v4: 1 start timer 
    	String deployment4 = repositoryService.createDeployment()
  			.addClasspathResource("org/activiti5/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v4.bpmn20.xml")
  			.deploymentProperty(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION, Boolean.TRUE)

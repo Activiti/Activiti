@@ -77,7 +77,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor 
     clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
     processEngineConfiguration.setClock(clock);
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 100L);
 
     // The subprocess should be left, and the escalated task should be active
     Task escalationTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();

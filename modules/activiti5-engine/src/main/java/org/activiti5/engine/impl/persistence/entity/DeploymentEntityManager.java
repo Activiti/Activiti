@@ -93,9 +93,6 @@ public class DeploymentEntityManager extends AbstractManager {
       
       getProcessDefinitionInfoManager().deleteProcessDefinitionInfo(processDefinitionId);
     }
-
-    // delete process definitions from db
-    getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
     
     for (ProcessDefinition processDefinition : processDefinitions) {
       
@@ -114,7 +111,13 @@ public class DeploymentEntityManager extends AbstractManager {
 					((TimerJobEntity) timerStartJob).delete();
     		}
     	}
+    }
+    
+    // delete process definitions from db
+    getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
     	
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      
     	 // If previous process definition version has a timer/message/signal start event, it must be added
       ProcessDefinitionEntity latestProcessDefinition = findLatestProcessDefinition(processDefinition);
 

@@ -17,11 +17,11 @@ import java.util.List;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.history.HistoricActivityInstance;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.

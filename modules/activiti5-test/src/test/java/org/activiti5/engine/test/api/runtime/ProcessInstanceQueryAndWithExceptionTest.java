@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.runtime.TimerJobQuery;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiTestCase {
 

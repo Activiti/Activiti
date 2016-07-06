@@ -60,7 +60,6 @@ import org.activiti5.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti5.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti5.engine.impl.pvm.runtime.StartingExecution;
-import org.activiti5.engine.impl.util.BitMaskUtil;
 import org.activiti5.engine.runtime.Execution;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
@@ -1156,6 +1155,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       job.setExecution((ExecutionEntity) replacedBy);
     }
     
+    List<TimerJobEntity> timerJobs = getTimerJobs();
+    for (TimerJobEntity job: timerJobs) {
+      job.setExecution((ExecutionEntity) replacedBy);
+    }
+    
     // update the related event subscriptions
     List<EventSubscriptionEntity> eventSubscriptions = getEventSubscriptions();
     for (EventSubscriptionEntity subscriptionEntity: eventSubscriptions) {
@@ -1538,33 +1542,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   // getters and setters //////////////////////////////////////////////////////
   
-  
   public void setCachedEntityState(int cachedEntityState) {
     this.cachedEntityState = cachedEntityState;
-    
-    // Check for flags that are down. These lists can be safely initialized as empty, preventing
-    // additional queries that end up in an empty list anyway
-    if(jobs == null && !BitMaskUtil.isBitOn(cachedEntityState, JOBS_STATE_BIT)) {
-      jobs = new ArrayList<JobEntity>();
-    }
-    if(tasks == null && !BitMaskUtil.isBitOn(cachedEntityState, TASKS_STATE_BIT)) {
-      tasks = new ArrayList<TaskEntity>();
-    }
-    if(eventSubscriptions == null && !BitMaskUtil.isBitOn(cachedEntityState, EVENT_SUBSCRIPTIONS_STATE_BIT)) {
-      eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
-    }
   }
     
   public int getCachedEntityState() {
-    cachedEntityState = 0;
-    
-    // Only mark a flag as false when the list is not-null and empty. If null, we can't be sure there are no entries in it since
-    // the list hasn't been initialized/queried yet.
-    cachedEntityState = BitMaskUtil.setBit(cachedEntityState, TASKS_STATE_BIT, (tasks == null || !tasks.isEmpty()));
-    cachedEntityState = BitMaskUtil.setBit(cachedEntityState, EVENT_SUBSCRIPTIONS_STATE_BIT, (eventSubscriptions == null || !eventSubscriptions
-            .isEmpty()));
-    cachedEntityState = BitMaskUtil.setBit(cachedEntityState, JOBS_STATE_BIT, (jobs == null || !jobs.isEmpty()));
-    
     return cachedEntityState;
   }
   

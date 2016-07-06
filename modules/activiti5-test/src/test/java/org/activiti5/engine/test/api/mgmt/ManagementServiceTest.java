@@ -103,7 +103,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertTextPresent("This is an exception thrown from scriptTask", timerJob.getExceptionMessage());
     
     // Get the full stacktrace using the managementService
-    String exceptionStack = managementService.getJobExceptionStacktrace(timerJob.getId());
+    String exceptionStack = managementService.getTimerJobExceptionStacktrace(timerJob.getId());
     assertNotNull(exceptionStack);
     assertTextPresent("This is an exception thrown from scriptTask", exceptionStack);    
   }

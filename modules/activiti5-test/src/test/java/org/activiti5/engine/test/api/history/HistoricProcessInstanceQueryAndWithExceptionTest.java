@@ -3,11 +3,11 @@ package org.activiti5.engine.test.api.history;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.TimerJobQuery;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiTestCase {
 
