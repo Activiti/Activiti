@@ -67,7 +67,6 @@ angular.module('activitiApp')
                     completeButtonDisabled: false,
                     saveButtonDisabled: false,
                     uploadInProgress: false,
-                    restValues: {},
                     isTaskForm: false
                 };
             }
@@ -300,10 +299,7 @@ angular.module('activitiApp')
                         field.isVisible = true;
                     }
                     
-                    if (((field.type == 'dropdown' || field.type == 'radio-buttons') && field.optionType == 'rest' && (field.restUrl || field.endpoint))) {
-                        $scope.invokeRestUrl(field);
-
-                    } else if (field.type == 'dropdown' && field.optionType != 'rest' && field.value && field.options) {
+                    if (field.type == 'dropdown' && field.value && field.options) {
                         for (var j = 0; j < field.options.length; j++) {
                             if (field.options[j].name == field.value) {
                                 field.value = field.options[j];
@@ -436,11 +432,7 @@ angular.module('activitiApp')
                                         break;
 
                                     case 'radio-buttons':
-                                        var selectOptions = [];
-                                        if (field.optionType === 'rest') {
-                                            selectOptions = $scope.model.restValues[field.id];
-                                        } else {
-                                            selectOptions = field.options;
+                                        var selectOptions = field.options;
                                         }
 
                                         if (field.value === undefined || field.value == '' || field.value == null) {
@@ -454,8 +446,6 @@ angular.module('activitiApp')
                                         break;
 
                                     case 'dropdown':
-
-                                        // hasEmptyValue was added in 1.2 for dropdowns. If true, the first value of the options array is the 'empty' value
 
                                         var emptyValue;
                                         if (field.hasEmptyValue !== null && field.hasEmptyValue !== undefined && field.hasEmptyValue === true) {

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -128,17 +129,21 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
     ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
     assertProcessEnded(firstProcessInstance.getId());
 
-    List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-    assertEquals(1, historicProcessInstances.size());
-    assertEquals("transactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+      assertEquals(1, historicProcessInstances.size());
+      assertEquals("transactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    }
 
     ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("secondTransactionDependentExecutionListenerProcess");
     assertProcessEnded(secondProcessInstance.getId());
 
-    // first historic process instance was deleted by execution listener
-    historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-    assertEquals(1, historicProcessInstances.size());
-    assertEquals("secondTransactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      // first historic process instance was deleted by execution listener
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+      assertEquals(1, historicProcessInstances.size());
+      assertEquals("secondTransactionDependentExecutionListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    }
 
     List<MyTransactionalOperationTransactionDependentExecutionListener.CurrentActivity> currentActivities = MyTransactionalOperationTransactionDependentExecutionListener.getCurrentActivities();
     assertEquals(1, currentActivities.size());

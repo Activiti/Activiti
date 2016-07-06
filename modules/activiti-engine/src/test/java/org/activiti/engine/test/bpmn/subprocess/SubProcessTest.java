@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
@@ -78,11 +79,13 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Fix escalated problem", escalationTask.getName());
     
     // Verify history for task that was killed
-    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskName("Task in subprocess").singleResult();
-    assertNotNull(historicTaskInstance.getEndTime());
-    
-    HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("subProcessTask").singleResult();
-    assertNotNull(historicActivityInstance.getEndTime());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskName("Task in subprocess").singleResult();
+      assertNotNull(historicTaskInstance.getEndTime());
+      
+      HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("subProcessTask").singleResult();
+      assertNotNull(historicActivityInstance.getEndTime());
+    }
   }
 
   /**

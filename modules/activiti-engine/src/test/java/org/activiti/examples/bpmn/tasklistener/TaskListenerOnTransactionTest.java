@@ -12,15 +12,16 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yvo Swillens
@@ -132,9 +133,11 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("transactionDependentTaskListenerProcess");
     assertProcessEnded(firstProcessInstance.getId());
 
-    List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-    assertEquals(1, historicProcessInstances.size());
-    assertEquals("transactionDependentTaskListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+      assertEquals(1, historicProcessInstances.size());
+      assertEquals("transactionDependentTaskListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    }
 
     ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("secondTransactionDependentTaskListenerProcess");
 
@@ -143,10 +146,12 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(secondProcessInstance.getId());
 
-    // first historic process instance was deleted by task listener
-    historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-    assertEquals(1, historicProcessInstances.size());
-    assertEquals("secondTransactionDependentTaskListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      // first historic process instance was deleted by task listener
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+      assertEquals(1, historicProcessInstances.size());
+      assertEquals("secondTransactionDependentTaskListenerProcess", historicProcessInstances.get(0).getProcessDefinitionKey());
+    }
 
     List<MyTransactionalOperationTransactionDependentTaskListener.CurrentTask> currentTasks = MyTransactionalOperationTransactionDependentTaskListener.getCurrentTasks();
     assertEquals(1, currentTasks.size());

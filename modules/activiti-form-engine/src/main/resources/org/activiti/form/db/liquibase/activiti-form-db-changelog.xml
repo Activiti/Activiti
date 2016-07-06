@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="activiti">
+
+        <createTable tableName="FORM_DEPLOYMENT">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name_" type="varchar(255)" />
+            <column name="category_" type="varchar(255)" />
+            <column name="deploy_time_" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="tenant_id_" type="varchar(255)" />
+        </createTable>
+        
+        <createTable tableName="FORM_DEPLOYMENT_RESOURCE">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name_" type="varchar(255)" />
+            <column name="deployment_id_" type="varchar(255)" />
+            <column name="resource_bytes_" type="longblob">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+        
+        <createTable tableName="FORM_DEFINITION">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name_" type="varchar(255)" />
+            <column name="version_" type="int" />
+            <column name="key_" type="varchar(255)" />
+            <column name="category_" type="varchar(255)" />
+            <column name="deployment_id_" type="varchar(255)" />
+            <column name="tenant_id_" type="varchar(255)" />
+            <column name="resource_name_" type="varchar(255)" />
+            <column name="description_" type="varchar(255)" />
+        </createTable>
+
+    </changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,39 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20151130" id="full" name="Full" namespace="http://www.activiti.org/dmn">
+  <decision id="decisionThree" name="Full Decision Three">
+    <decisionTable id="decisionTableThree" hitPolicy="FIRST">
+      <input>
+        <inputExpression id="inputExpression1" typeRef="double">
+          <text>inputVariable1</text>
+        </inputExpression>
+      </input>
+      <input>
+        <inputExpression id="inputExpression22" typeRef="string">
+          <text>inputVariable2</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Output 1" name="outputVariable1" typeRef="string"></output>
+      <rule>
+        <inputEntry id="inputEntry1">
+          <text>== 1</text>
+        </inputEntry>
+        <inputEntry id="inputEntry2">
+          <text>== 'test1'</text>
+        </inputEntry>
+        <outputEntry id="outputEntry1">
+          <text>== 'result1'</text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry3">
+          <text>!= 1</text>
+        </inputEntry>
+        <inputEntry id="inputEntry4">
+          <text>== 'test2'</text>
+        </inputEntry>
+        <outputEntry id="outputEntry2">
+          <text>== 'result2'</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

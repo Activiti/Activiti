@@ -229,6 +229,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-dmn-engine</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-dmn-model</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -240,6 +245,21 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dmn-json-converter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-dmn-rest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-form-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-form-json-converter</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -850,6 +870,11 @@
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-secure-javascript</module>
+		<module>modules/activiti-dmn-engine</module>
+		<module>modules/activiti-dmn-model</module>
+		<module>modules/activiti-dmn-json-converter</module>
+		<module>modules/activiti-dmn-xml-converter</module>
+		<module>modules/activiti-dmn-rest</module>
       </modules>
     </profile>
     <profile>
@@ -924,6 +949,10 @@
         <module>modules/activiti-dmn-model</module>
         <module>modules/activiti-dmn-json-converter</module>
         <module>modules/activiti-dmn-xml-converter</module>
+        <module>modules/activiti-dmn-engine</module>
+        <module>modules/activiti-form-model</module>
+        <module>modules/activiti-form-json-converter</module>
+        <module>modules/activiti-form-engine</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti5-engine</module>
         <module>modules/activiti5-compatibility</module>
@@ -1047,6 +1076,11 @@
     </developer>
     <developer>
       <name>Erik Winlöf</name>
+      <organization>Alfresco</organization>
+      <url>http://www.alfresco.com</url>
+    </developer>
+    <developer>
+      <name>Yvo Swillens</name>
       <organization>Alfresco</organization>
       <url>http://www.alfresco.com</url>
     </developer>

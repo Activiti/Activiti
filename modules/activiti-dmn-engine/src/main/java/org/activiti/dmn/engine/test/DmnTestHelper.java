@@ -111,7 +111,7 @@ public abstract class DmnTestHelper {
         DmnEngine dmnEngine = dmnEngines.get(configurationResource);
         if (dmnEngine == null) {
             log.debug("==== BUILDING DMN ENGINE ========================================================================");
-            dmnEngine = DmnEngineConfiguration.createDmnEngineConfigurationFromResource(configurationResource).buildDmnEngine();
+            dmnEngine = DmnEngineConfiguration.createDmnEngineConfigurationFromResource(configurationResource).setDatabaseSchemaUpdate(DmnEngineConfiguration.DB_SCHEMA_UPDATE_DROP_CREATE).buildDmnEngine();
             log.debug("==== DMN ENGINE CREATED =========================================================================");
             dmnEngines.put(configurationResource, dmnEngine);
         }
