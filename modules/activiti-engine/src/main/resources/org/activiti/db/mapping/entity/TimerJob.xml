@@ -32,7 +32,7 @@
 		select * from ${prefix}ACT_RU_TIMER_JOB where ID_ = #{id, jdbcType=VARCHAR}
 	</select>
 
-	<select id="selectTimerJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
+	<select id="selectTimerJobByQueryCriteria" parameterType="org.activiti.engine.impl.TimerJobQueryImpl" resultMap="jobResultMap">
 		${limitBefore}
 		select RES.* ${limitBetween}
 		<include refid="selectTimerJobByQueryCriteriaSql" />
@@ -40,7 +40,7 @@
 		${limitAfter}
 	</select>
 
-	<select id="selectTimerJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
+	<select id="selectTimerJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.TimerJobQueryImpl" resultType="long">
 		select count(distinct RES.ID_)
 		<include refid="selectTimerJobByQueryCriteriaSql" />
 	</select>
@@ -187,10 +187,11 @@
       EXECUTION_ID_,
       PROCESS_INSTANCE_ID_,
       PROC_DEF_ID_,
-      DUEDATE_,
       RETRIES_,
       EXCEPTION_STACK_ID_,
       EXCEPTION_MSG_,
+      DUEDATE_,
+      REPEAT_,
       HANDLER_TYPE_,
       HANDLER_CFG_,
       TENANT_ID_) VALUES
@@ -201,10 +202,11 @@
       #{job.executionId, jdbcType=VARCHAR},
       #{job.processInstanceId, jdbcType=VARCHAR},
       #{job.processDefinitionId, jdbcType=VARCHAR},
-      #{job.duedate, jdbcType=TIMESTAMP},
       #{job.retries, jdbcType=INTEGER},
       #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
       #{job.exceptionMessage, jdbcType=VARCHAR},
+      #{job.duedate, jdbcType=TIMESTAMP},
+      #{job.repeat, jdbcType=VARCHAR},
       #{job.jobHandlerType, jdbcType=VARCHAR},
       #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
       #{job.tenantId, jdbcType=VARCHAR})
