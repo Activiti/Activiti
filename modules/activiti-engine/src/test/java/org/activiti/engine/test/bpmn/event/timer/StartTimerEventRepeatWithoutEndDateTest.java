@@ -91,8 +91,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     
     // ADVANCE THE CLOCK
     // advance the clock after 9 days from starting the process ->
-    // the system will execute the pending job and will create a new one
-    // (day by day)
+    // the system will execute the pending job and will create a new one (day by day)
     moveByMinutes((9 * 60 * 24));
     waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000L, 200);
     

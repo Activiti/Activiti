@@ -179,7 +179,7 @@
     parameterType="java.util.List">
     INSERT ALL
     <foreach collection="list" item="job" index="index">
-      INTO ${prefix}ACT_RU_JOB (
+      INTO ${prefix}ACT_RU_TIMER_JOB (
       ID_,
       REV_,
       TYPE_,
