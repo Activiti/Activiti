@@ -97,9 +97,10 @@
 	</sql>
 
 	<select id="selectTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-	  ${limitBefore}
-		select *
-		from ${prefix}ACT_RU_TIMER_JOB
+	    ${limitBefore}
+		select
+		RES.* ${limitBetween} 
+		from ${prefix}ACT_RU_TIMER_JOB RES
 		where DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP} 
 		and LOCK_OWNER_ is null 
 		${limitAfter}
@@ -222,7 +223,7 @@
 		<set>
 			REV_ = #{revisionNext, jdbcType=INTEGER},
 			LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
-      LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+            LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
 			RETRIES_ = #{retries, jdbcType=INTEGER},
 			DUEDATE_ = #{duedate, jdbcType=TIMESTAMP},
 			EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
