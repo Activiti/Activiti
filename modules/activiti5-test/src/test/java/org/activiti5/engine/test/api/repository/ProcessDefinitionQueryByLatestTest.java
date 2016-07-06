@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCase {
 

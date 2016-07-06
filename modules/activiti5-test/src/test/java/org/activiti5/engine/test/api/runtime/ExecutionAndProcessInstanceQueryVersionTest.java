@@ -1,6 +1,6 @@
 package org.activiti5.engine.test.api.runtime;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class ExecutionAndProcessInstanceQueryVersionTest extends PluggableActivitiTestCase {
 

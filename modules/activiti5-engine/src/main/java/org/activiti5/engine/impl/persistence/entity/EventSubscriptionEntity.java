@@ -98,6 +98,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     message.setJobHandlerConfiguration(id);
     message.setTenantId(getTenantId());
     message.setProcessDefinitionId(getProcessDefinitionId());
+    message.setExecutionId(getExecutionId());
     message.setProcessInstanceId(getProcessInstanceId());
     
     if (Context.getProcessEngineConfiguration().getAsyncExecutor().isActive()) {

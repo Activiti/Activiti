@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 public class HistoricProcessInstanceQueryVersionTest extends PluggableActivitiTestCase{
 

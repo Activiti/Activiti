@@ -22,8 +22,8 @@ import org.activiti.engine.history.ProcessInstanceHistoryLog;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 
 /**
  * @author Daisuke Yoshimoto

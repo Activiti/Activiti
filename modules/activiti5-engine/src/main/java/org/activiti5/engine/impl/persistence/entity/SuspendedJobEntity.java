@@ -38,6 +38,7 @@ public class SuspendedJobEntity extends AbstractJobEntity {
     this.jobHandlerConfiguration = te.getJobHandlerConfiguration();
     this.jobHandlerType = te.getJobHandlerType();
     this.isExclusive = te.isExclusive();
+    this.duedate = te.getDuedate();
     this.repeat = te.getRepeat();
     this.retries = te.getRetries();
     this.endDate = te.getEndDate();

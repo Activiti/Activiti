@@ -28,12 +28,12 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
+import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.test.api.runtime.ProcessInstanceQueryTest;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
