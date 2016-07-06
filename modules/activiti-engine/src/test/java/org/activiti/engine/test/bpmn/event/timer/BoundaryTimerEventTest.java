@@ -320,12 +320,11 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
-
     runtimeService.startProcessInstanceByKey("timerprocess");
 
     // just wait for 2 seconds to run any job if it's the case
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     } catch (Exception ex) {
       //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
     }

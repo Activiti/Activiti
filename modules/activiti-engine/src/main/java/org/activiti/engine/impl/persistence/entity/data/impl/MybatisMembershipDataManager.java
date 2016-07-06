@@ -45,17 +45,17 @@ public class MybatisMembershipDataManager extends AbstractDataManager<Membership
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
     parameters.put("groupId", groupId);
-    getDbSqlSession().delete("deleteMembership", parameters);
+    getDbSqlSession().delete("deleteMembership", parameters, MembershipEntityImpl.class);
   }
   
   @Override
   public void deleteMembershipByGroupId(String groupId) {
-    getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
+    getDbSqlSession().delete("deleteMembershipsByGroupId", groupId, MembershipEntityImpl.class);
   }
   
   @Override
   public void deleteMembershipByUserId(String userId) {
-    getDbSqlSession().delete("deleteMembershipsByUserId", userId);
+    getDbSqlSession().delete("deleteMembershipsByUserId", userId, MembershipEntityImpl.class);
   }
   
 }

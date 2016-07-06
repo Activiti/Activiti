@@ -300,7 +300,7 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
   
   @Override
   public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
-    getDbSqlSession().delete("deleteEventSubscriptionsForProcessDefinition", processDefinitionId);
+    getDbSqlSession().delete("deleteEventSubscriptionsForProcessDefinition", processDefinitionId, EventSubscriptionEntityImpl.class);
   }
   
   protected List<SignalEventSubscriptionEntity> toSignalEventSubscriptionEntityList(List<EventSubscriptionEntity> result) {

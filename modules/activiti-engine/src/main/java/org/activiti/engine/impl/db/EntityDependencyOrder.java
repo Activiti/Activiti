@@ -32,6 +32,7 @@ import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
@@ -92,6 +93,12 @@ public class EntityDependencyOrder {
 		 * FK to Exeution
 		 */
 		DELETE_ORDER.add(VariableInstanceEntityImpl.class);
+		
+		/* 
+		 * FK to ByteArray
+		 * FK to ProcessDefinition
+		 */
+		DELETE_ORDER.add(ProcessDefinitionInfoEntityImpl.class);
 		
 		/*
 		 * FK from ModelEntity

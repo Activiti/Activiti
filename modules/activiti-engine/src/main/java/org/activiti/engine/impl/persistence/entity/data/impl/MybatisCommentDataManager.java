@@ -78,12 +78,12 @@ public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity
 
   @Override
   public void deleteCommentsByTaskId(String taskId) {
-    getDbSqlSession().delete("deleteCommentsByTaskId", taskId);
+    getDbSqlSession().delete("deleteCommentsByTaskId", taskId, CommentEntityImpl.class);
   }
 
   @Override
   public void deleteCommentsByProcessInstanceId(String processInstanceId) {
-    getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId);
+    getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId, CommentEntityImpl.class);
   }
 
   @Override

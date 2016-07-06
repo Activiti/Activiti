@@ -76,7 +76,7 @@ public class MybatisHistoricActivityInstanceDataManager extends AbstractDataMana
   
   @Override
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
-    getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
+    getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId, HistoricActivityInstanceEntityImpl.class);
   }
 
   @Override

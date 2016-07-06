@@ -26,9 +26,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,8 +143,15 @@ public class DbSqlSession implements Session {
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected EntityCache entityCache;
-  protected Map<Class<? extends Entity>, List<Entity>> insertedObjects = new HashMap<Class<? extends Entity>, List<Entity>>();
-  protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
+  
+  protected Map<Class<? extends Entity>, Map<String, Entity>> insertedObjects 
+    = new HashMap<Class<? extends Entity>, Map<String, Entity>>();
+  protected Map<Class<? extends Entity>, Map<String, Entity>> deletedObjects 
+    = new HashMap<Class<? extends Entity>, Map<String, Entity>>();
+  protected Map<Class<? extends Entity>, List<BulkDeleteOperation>> bulkDeleteOperations
+    = new HashMap<Class<? extends Entity>, List<BulkDeleteOperation>>();
+  protected List<Entity> updatedObjects = new ArrayList<Entity>();
+ 
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
 
@@ -170,10 +180,10 @@ public class DbSqlSession implements Session {
     
     Class<? extends Entity> clazz = entity.getClass();
     if (!insertedObjects.containsKey(clazz)) {
-    	insertedObjects.put(clazz, new ArrayList<Entity>());
+    	insertedObjects.put(clazz, new LinkedHashMap<String, Entity>()); // order of insert is important, hence LinkedHashMap
     }
     
-    insertedObjects.get(clazz).add(entity);
+    insertedObjects.get(clazz).put(entity.getId(), entity);
     entityCache.put(entity, false); // False -> entity is inserted, so always changed
   }
 
@@ -192,209 +202,24 @@ public class DbSqlSession implements Session {
   // delete
   // ///////////////////////////////////////////////////////////////////
 
-  public void delete(String statement, Object parameter) {
-    deleteOperations.add(new BulkDeleteOperation(statement, parameter));
-  }
-
-  public void delete(Entity entity) {
-    for (DeleteOperation deleteOperation : deleteOperations) {
-      if (deleteOperation.sameIdentity(entity)) {
-        log.debug("skipping redundant delete: {}", entity);
-        return; // Skip this delete. It was already added.
-      }
-    }
-
-    deleteOperations.add(new CheckedDeleteOperation(entity));
-  }
-
-  public interface DeleteOperation {
-  	
-  	/**
-  	 * @return The persistent object class that is being deleted.
-  	 *         Null in case there are multiple objects of different types!
-  	 */
-  	Class<? extends Entity> getEntityClass();
-    
-    boolean sameIdentity(Entity other);
-
-    void clearCache();
-
-    void execute();
-
-  }
-
   /**
-   * Use this {@link DeleteOperation} to execute a dedicated delete statement. It is important to note there won't be any optimistic locking checks done for these kind of delete operations!
-   * 
-   * For example, a usage of this operation would be to delete all variables for a certain execution, when that certain execution is removed. The optimistic locking happens on the execution, but the
-   * variables can be removed by a simple 'delete from var_table where execution_id is xxx'. It could very well be there are no variables, which would also work with this query, but not with the
-   * regular {@link CheckedDeleteOperation}.
+   * Executes a {@link BulkDeleteOperation}, with the sql in the statement parameter.
+   * The passed class determines when this operation will be executed: it will be executed
+   * when the particular class has passed in the {@link EntityDependencyOrder}. 
    */
-  public class BulkDeleteOperation implements DeleteOperation {
-    private String statement;
-    private Object parameter;
-
-    public BulkDeleteOperation(String statement, Object parameter) {
-      this.statement = dbSqlSessionFactory.mapStatement(statement);
-      this.parameter = parameter;
+  public void delete(String statement, Object parameter, Class<? extends Entity> entityClass) {
+    if (!bulkDeleteOperations.containsKey(entityClass)) {
+      bulkDeleteOperations.put(entityClass, new ArrayList<BulkDeleteOperation>(1));
     }
-
-    @Override
-    public Class<? extends Entity> getEntityClass() {
-    	return null;
-    }
-    
-    @Override
-    public boolean sameIdentity(Entity other) {
-      // this implementation is unable to determine what the identity of
-      // the removed object(s) will be.
-      return false;
-    }
-
-    @Override
-    public void clearCache() {
-      // this implementation cannot clear the object(s) to be removed from the cache.
-    }
-
-    @Override
-    public void execute() {
-      sqlSession.delete(statement, parameter);
-    }
-
-    @Override
-    public String toString() {
-      return "bulk delete: " + statement + "(" + parameter + ")";
-    }
+    bulkDeleteOperations.get(entityClass).add(new BulkDeleteOperation(dbSqlSessionFactory.mapStatement(statement), parameter));
   }
 
-  /**
-   * A {@link DeleteOperation} that checks for concurrent modifications if the persistent object implements {@link HasRevision}. That is, it employs optimisting concurrency control. Used when the
-   * persistent object has been fetched already.
-   */
-  public class CheckedDeleteOperation implements DeleteOperation {
-    protected final Entity entity;
-
-    public CheckedDeleteOperation(Entity entity) {
-      this.entity = entity;
+  public void delete(Entity entityToDelete) {
+    Class<? extends Entity> clazz = entityToDelete.getClass();
+    if (!deletedObjects.containsKey(clazz)) {
+      deletedObjects.put(clazz, new LinkedHashMap<String, Entity>()); // order of insert is important, hence LinkedHashMap
     }
-
-    @Override
-    public Class<? extends Entity> getEntityClass() {
-    	return entity.getClass();
-    }
-    
-    @Override
-    public boolean sameIdentity(Entity other) {
-      return entity.getClass().equals(other.getClass()) && entity.getId().equals(other.getId());
-    }
-
-    @Override
-    public void clearCache() {
-      entityCache.cacheRemove(entity.getClass(), entity.getId());
-    }
-
-    public void execute() {
-      String deleteStatement = dbSqlSessionFactory.getDeleteStatement(entity.getClass());
-      deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
-      if (deleteStatement == null) {
-        throw new ActivitiException("no delete statement for " + entity.getClass() + " in the ibatis mapping files");
-      }
-
-      // It only makes sense to check for optimistic locking exceptions
-      // for objects that actually have a revision
-      if (entity instanceof HasRevision) {
-        int nrOfRowsDeleted = sqlSession.delete(deleteStatement, entity);
-        if (nrOfRowsDeleted == 0) {
-          throw new ActivitiOptimisticLockingException(entity + " was updated by another transaction concurrently");
-        }
-      } else {
-        sqlSession.delete(deleteStatement, entity);
-      }
-    }
-
-    public Entity getEntity() {
-      return entity;
-    }
-
-    @Override
-    public String toString() {
-      return "delete " + entity;
-    }
-  }
-
-  /**
-   * A bulk version of the {@link CheckedDeleteOperation}.
-   */
-  public class BulkCheckedDeleteOperation implements DeleteOperation {
-
-    protected Class<? extends Entity> entityClass;
-    protected List<Entity> entities = new ArrayList<Entity>();
-
-    public BulkCheckedDeleteOperation(Class<? extends Entity> entityClass) {
-      this.entityClass = entityClass;
-    }
-
-    public void addEntity(Entity entity) {
-      entities.add(entity);
-    }
-
-    @Override
-    public boolean sameIdentity(Entity other) {
-      for (Entity entity : entities) {
-        if (entity.getClass().equals(other.getClass()) && entity.getId().equals(other.getId())) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    @Override
-    public void clearCache() {
-      for (Entity entity : entities) {
-        entityCache.cacheRemove(entity.getClass(), entity.getId());
-      }
-    }
-
-    public void execute() {
-
-      if (entities.isEmpty()) {
-        return;
-      }
-
-      String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(entityClass);
-      bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
-      if (bulkDeleteStatement == null) {
-        throw new ActivitiException("no bulk delete statement for " + entityClass + " in the mapping files");
-      }
-
-      sqlSession.delete(bulkDeleteStatement, entities);
-    }
-
-    public Class<? extends Entity> getEntityClass() {
-      return entityClass;
-    }
-
-    public void setEntityClass(Class<? extends Entity> entityClass) {
-      this.entityClass = entityClass;
-    }
-
-    public List<Entity> getEntities() {
-      return entities;
-    }
-
-    public void setEntities(List<Entity> entities) {
-      this.entities = entities;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public void setEntityObjects(List<? extends Entity> entities) {
-      this.entities = (List<Entity>) entities;
-    }
-
-    @Override
-    public String toString() {
-      return "bulk delete of " + entities.size() + (!entities.isEmpty() ? " entities of " + entities.get(0).getClass() : 0);
-    }
+    deletedObjects.get(clazz).put(entityToDelete.getId(), entityToDelete);
   }
 
   // select
@@ -538,153 +363,53 @@ public class DbSqlSession implements Session {
   // ////////////////////////////////////////////////////////////////////
 
   public void flush() {
-    List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
-
-    List<Entity> updatedObjects = getUpdatedObjects();
+    determineUpdatedObjects(); // Needs to be done before the removeUnnecessaryOperations, as removeUnnecessaryOperations will remove stuff from the cache
+    removeUnnecessaryOperations();
 
     if (log.isDebugEnabled()) {
-      Collection<List<Entity>> insertedObjectLists = insertedObjects.values();
-      log.debug("Flushing dbSqlSession");
-      int nrOfInserts = 0, nrOfUpdates = 0, nrOfDeletes = 0;
-      for (List<Entity> insertedObjectList: insertedObjectLists) {
-      	for (Entity insertedObject : insertedObjectList) {
-      		log.debug("  insert {}", insertedObject);
-      		nrOfInserts++;
-      	}
-      }
-      for (Entity updatedObject : updatedObjects) {
-        log.debug("  update {}", updatedObject);
-        nrOfUpdates++;
-      }
-      for (DeleteOperation deleteOperation : deleteOperations) {
-        log.debug("  {}", deleteOperation);
-        nrOfDeletes++;
-      }
-      log.debug("flush summary: {} insert, {} update, {} delete.", nrOfInserts, nrOfUpdates, nrOfDeletes);
-      log.debug("now executing flush...");
+      debugFlush();
     }
 
     flushInserts();
-    flushUpdates(updatedObjects);
-    flushDeletes(removedOperations);
+    flushUpdates();
+    flushDeletes();
   }
 
   /**
-   * Clears all deleted and inserted objects from the cache, and removes inserts and deletes that cancel each other.
+   * Clears all deleted and inserted objects from the cache, 
+   * and removes inserts and deletes that cancel each other.
+   * 
+   * Also removes deletes with duplicate ids.
    */
-  protected List<DeleteOperation> removeUnnecessaryOperations() {
-    List<DeleteOperation> removedDeleteOperations = new ArrayList<DeleteOperation>();
-
-    for (Iterator<DeleteOperation> deleteIterator = deleteOperations.iterator(); deleteIterator.hasNext();) {
-    	
-      DeleteOperation deleteOperation = deleteIterator.next();
-      Class<? extends Entity> deletedEntity = deleteOperation.getEntityClass();
+  protected void removeUnnecessaryOperations() {
+    
+    for (Class<? extends Entity> entityClass : deletedObjects.keySet()) {
       
-      List<Entity> insertedObjectsOfSameClass = insertedObjects.get(deletedEntity);
-      if (insertedObjectsOfSameClass != null && insertedObjectsOfSameClass.size() > 0) {
-      	
-	      for (Iterator<Entity> insertIterator = insertedObjectsOfSameClass.iterator(); insertIterator.hasNext();) {
-	        Entity insertedObject = insertIterator.next();
-	        
-	        // if the deleted object is inserted,
-	        if (deleteOperation.sameIdentity(insertedObject)) {
-	          // remove the insert and the delete, they cancel each other
-	          insertIterator.remove();
-	          deleteIterator.remove();
-	          // add removed operations to be able to fire events
-	          removedDeleteOperations.add( deleteOperation);
-	        }
-	      }
-	      
-	      if (insertedObjects.get(deletedEntity).size() == 0) {
-	      	insertedObjects.remove(deletedEntity);
-	      }
-	      
-      }
-
-      // in any case, remove the deleted object from the cache
-      deleteOperation.clearCache();
-    }
-    
-    for (Class<? extends Entity> entityClass : insertedObjects.keySet()) {
-    	for (Entity insertedObject : insertedObjects.get(entityClass)) {
-    	  entityCache.cacheRemove(insertedObject.getClass(), insertedObject.getId());
-    	}
-    }
-
-    return removedDeleteOperations;
-  }
-
-  protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
-    
-    // TODO: cannot be deleted yet, determines the order of deletion
-    
-    // TODO: currently only for Execution entities. Needs to be done for all.
-    
-    List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>(deleteOperations.size());
-
-    int nrOfExecutionEntities = 0;
-
-    for (int i = 0; i < deleteOperations.size(); i++) {
-      DeleteOperation deleteOperation = deleteOperations.get(i);
-      if (isCheckedExecutionEntityDelete(deleteOperation)) {
-        nrOfExecutionEntities++;
-      }
-    }
-
-    List<ExecutionEntity> executionEntitiesToDelete = new ArrayList<ExecutionEntity>(nrOfExecutionEntities);
-
-    for (DeleteOperation deleteOperation : deleteOperations) {
-
-      if (isCheckedExecutionEntityDelete(deleteOperation) && nrOfExecutionEntities > 1) {
-
-        // Check parent id / super execution id to know the order of deletions
-        // (children first)
-        ExecutionEntity executionEntity = (ExecutionEntity) ((CheckedDeleteOperation) deleteOperation).getEntity();
-        int parentIndex = -1;
-        for (int deleteIndex = 0; deleteIndex < executionEntitiesToDelete.size(); deleteIndex++) {
-          ExecutionEntity executionEntityToDelete = executionEntitiesToDelete.get(deleteIndex);
-          if (executionEntityToDelete.getId().equals(executionEntity.getParentId()) || executionEntityToDelete.getId().equals(executionEntity.getSuperExecutionId())) {
-            parentIndex = deleteIndex;
-            break;
-          }
-        }
-
-        if (parentIndex == -1) {
-          executionEntitiesToDelete.add(executionEntity);
+      // Collect ids of deleted entities + remove duplicates 
+      Set<String> ids = new HashSet<String>();
+      Iterator<Entity> entitiesToDeleteIterator = deletedObjects.get(entityClass).values().iterator();
+      while (entitiesToDeleteIterator.hasNext()) {
+        Entity entityToDelete = entitiesToDeleteIterator.next();
+        if (!ids.contains(entityToDelete.getId())) {
+          ids.add(entityToDelete.getId());
         } else {
-          executionEntitiesToDelete.add(parentIndex, executionEntity);
+          entitiesToDeleteIterator.remove(); // Removing duplicate deletes
         }
-
-        // If all execution entities have been found, make a bulk delete out of it
-        
-        if (executionEntitiesToDelete.size() == nrOfExecutionEntities) {
-          
-          // All Databases except MySQL can handle bulk deletes. 
-          // The next best thing if mysql can't have bulk deletes is 'layered' deletes, ie the childs are removed first
-          // before the parents, but in two different sql statements (vs 1 in the bulk delete).
-          
-          BulkCheckedDeleteOperation bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(ExecutionEntity.class);
-          bulkCheckedDeleteOperation.setEntityObjects(executionEntitiesToDelete);
-          optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
-          
-        }
-          
-      } else {
-        optimizedDeleteOperations.add(deleteOperation);
       }
-
+      
+      // Now we have the deleted ids, we can remove the inserted objects (as they cancel each other)
+      for (String id : ids) {
+        if (insertedObjects.containsKey(entityClass) && insertedObjects.get(entityClass).containsKey(id)) {
+          insertedObjects.get(entityClass).remove(id);
+          deletedObjects.get(entityClass).remove(id);
+        }
+      }
+      
     }
-    
-    return optimizedDeleteOperations;
   }
-  
-  protected boolean isCheckedExecutionEntityDelete(DeleteOperation deleteOperation) {
-    return deleteOperation instanceof CheckedDeleteOperation && ((CheckedDeleteOperation) deleteOperation).getEntity() instanceof ExecutionEntity;
-  }
-  
-  public List<Entity> getUpdatedObjects() {
-    List<Entity> updatedObjects = new ArrayList<Entity>();
+
+  public void determineUpdatedObjects() {
+    updatedObjects = new ArrayList<Entity>();
     Map<Class<?>, Map<String, CachedEntity>> cachedObjects = entityCache.getAllCachedEntities();
     for (Class<?> clazz : cachedObjects.keySet()) {
 
@@ -692,41 +417,58 @@ public class DbSqlSession implements Session {
       for (CachedEntity cachedObject : classCache.values()) {
 
         Entity cachedEntity = cachedObject.getEntity();
-        if (!isEntityToBeDeleted(cachedEntity)) {
-          if (cachedObject.hasChanged()) {
-            updatedObjects.add(cachedEntity);
-          } else {
-            log.trace("loaded object '{}' was not updated", cachedEntity);
-          }
+        
+        // Executions are stored as a hierarchical tree, and updates are important to execute
+        // even when the execution are deleted, as they can change the parent-child relationships.
+        // For the other entities, this is not applicable and an update can be discarded when an update follows.
+        
+        if (!isEntityInserted(cachedEntity) && 
+            (ExecutionEntity.class.isAssignableFrom(cachedEntity.getClass()) || !isEntityToBeDeleted(cachedEntity)) &&
+            cachedObject.hasChanged() 
+            ) {
+          updatedObjects.add(cachedEntity);
         }
-
       }
-
     }
-    return updatedObjects;
   }
-
+  
+  protected void debugFlush() {
+    log.debug("Flushing dbSqlSession");
+    int nrOfInserts = 0, nrOfUpdates = 0, nrOfDeletes = 0;
+    for (Map<String, Entity> insertedObjectMap: insertedObjects.values()) {
+      for (Entity insertedObject : insertedObjectMap.values()) {
+        log.debug("  insert {}", insertedObject);
+        nrOfInserts++;
+      }
+    }
+    for (Entity updatedObject : updatedObjects) {
+      log.debug("  update {}", updatedObject);
+      nrOfUpdates++;
+    }
+    for (Map<String, Entity> deletedObjectMap: deletedObjects.values()) {
+      for (Entity deletedObject : deletedObjectMap.values()) {
+        log.debug("  delete {} with id {}", deletedObject, deletedObject.getId());
+        nrOfDeletes++;
+      }
+    }
+    for (Collection<BulkDeleteOperation> bulkDeleteOperations : bulkDeleteOperations.values()) {
+      for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperations) {
+        log.debug("  {}", bulkDeleteOperation);
+        nrOfDeletes++;
+      }
+    }
+    log.debug("flush summary: {} insert, {} update, {} delete.", nrOfInserts, nrOfUpdates, nrOfDeletes);
+    log.debug("now executing flush...");
+  }
+  
+  public boolean isEntityInserted(Entity entity) {
+    return insertedObjects.containsKey(entity.getClass())
+        && insertedObjects.get(entity.getClass()).containsKey(entity.getId());
+  }
+  
   public boolean isEntityToBeDeleted(Entity entity) {
-    for (DeleteOperation deleteOperation : deleteOperations) {
-      if (deleteOperation.sameIdentity(entity)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public <T extends Entity> List<T> pruneDeletedEntities(List<T> listToPrune) {
-    List<T> prunedList = new ArrayList<T>(listToPrune);
-    for (T potentiallyDeleted : listToPrune) {
-      for (DeleteOperation deleteOperation : deleteOperations) {
-
-        if (deleteOperation.sameIdentity(potentiallyDeleted)) {
-          prunedList.remove(potentiallyDeleted);
-        }
-
-      }
-    }
-    return prunedList;
+    return deletedObjects.containsKey(entity.getClass())
+        && deletedObjects.get(entity.getClass()).containsKey(entity.getId());
   }
 
   protected void flushInserts() {
@@ -738,7 +480,7 @@ public class DbSqlSession implements Session {
   	// Handle in entity dependency order
     for (Class<? extends Entity> entityClass : EntityDependencyOrder.INSERT_ORDER) {
       if (insertedObjects.containsKey(entityClass)) {
-      	flushEntities(entityClass, insertedObjects.get(entityClass));
+        flushInsertEntities(entityClass, insertedObjects.get(entityClass).values());
       	insertedObjects.remove(entityClass);
       }
     }
@@ -746,25 +488,111 @@ public class DbSqlSession implements Session {
     // Next, in case of custom entities or we've screwed up and forgotten some entity
     if (insertedObjects.size() > 0) {
 	    for (Class<? extends Entity> entityClass : insertedObjects.keySet()) {
-      	flushEntities(entityClass, insertedObjects.get(entityClass));
+      	flushInsertEntities(entityClass, insertedObjects.get(entityClass).values());
 	    }
     }
     
     insertedObjects.clear();
   }
 
-	protected void flushEntities(Class<? extends Entity> entityClass, List<Entity> entitiesToInsert) {
+	protected void flushInsertEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToInsert) {
 	  if (entitiesToInsert.size() == 1) {
-	  	flushRegularInsert(entitiesToInsert.get(0), entityClass);
+	  	flushRegularInsert(entitiesToInsert.iterator().next(), entityClass);
 	  } else if (Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(entityClass))) {
 	  	for (Entity entity : entitiesToInsert) {
 	  		flushRegularInsert(entity, entityClass);
 	  	}
 	  }	else {
-	  	flushBulkInsert(insertedObjects.get(entityClass), entityClass);
+	  	flushBulkInsert(entitiesToInsert, entityClass);
 	  }
   }
-  
+	
+	protected Collection<Entity> orderExecutionEntities(Map<String, Entity> executionEntities, boolean parentBeforeChildExecution) {
+	  
+	  // For insertion: parent executions should go before child executions
+	  
+	  List<Entity> result = new ArrayList<Entity>(executionEntities.size());
+	  
+	  // Gather parent-child relationships
+	  Map<String, String> childToParentExecutionMapping = new HashMap<String, String>();
+	  Map<String, List<ExecutionEntity>> parentToChildrenMapping = new HashMap<String, List<ExecutionEntity>>();
+    
+	  Collection<Entity> executionCollection = executionEntities.values();
+    Iterator<Entity> executionIterator = executionCollection.iterator();
+    while (executionIterator.hasNext()) {
+      ExecutionEntity currentExecutionEntity = (ExecutionEntity) executionIterator.next();
+      String parentId = currentExecutionEntity.getParentId();
+      String superExecutionId = currentExecutionEntity.getSuperExecutionId();
+
+      String parentKey = parentId != null ? parentId : superExecutionId;
+      childToParentExecutionMapping.put(currentExecutionEntity.getId(), parentKey);
+      
+      if (!parentToChildrenMapping.containsKey(parentKey)) {
+        parentToChildrenMapping.put(parentKey, new ArrayList<ExecutionEntity>());
+      }
+      parentToChildrenMapping.get(parentKey).add(currentExecutionEntity);
+    }
+    
+    // Loop over all entities, and insert in the correct order
+    Set<String> handledExecutionIds = new HashSet<String>(executionEntities.size());
+    executionIterator = executionCollection.iterator();
+    while (executionIterator.hasNext()) {
+      ExecutionEntity currentExecutionEntity = (ExecutionEntity) executionIterator.next();
+      String executionId = currentExecutionEntity.getId();
+      
+      if (!handledExecutionIds.contains(executionId)) {
+        String parentId = childToParentExecutionMapping.get(executionId);
+        if (parentId != null) {
+          while (parentId != null) {
+            String newParentId = childToParentExecutionMapping.get(parentId);
+            if (newParentId == null) {
+              break;
+            }
+            parentId = newParentId;
+          }
+        }
+        
+        if (parentId == null) {
+          parentId = executionId;
+        }
+
+        if (executionEntities.containsKey(parentId) && !handledExecutionIds.contains(parentId)) {
+          handledExecutionIds.add(parentId);
+          if (parentBeforeChildExecution) {
+            result.add(executionEntities.get(parentId));
+          } else {
+            result.add(0, executionEntities.get(parentId));
+          }
+        }
+        
+        collectChildExecutionsForInsertion(result, parentToChildrenMapping, handledExecutionIds, parentId, parentBeforeChildExecution);
+        
+      }
+    }
+    
+    return result;
+	}
+
+  protected void collectChildExecutionsForInsertion(List<Entity> result, Map<String, List<ExecutionEntity>> parentToChildrenMapping, 
+      Set<String> handledExecutionIds, String parentId, boolean parentBeforeChildExecution) {
+    List<ExecutionEntity> childExecutionEntities = parentToChildrenMapping.get(parentId);
+    
+    if (childExecutionEntities == null) {
+      return;
+    }
+    
+    for (ExecutionEntity childExecutionEntity : childExecutionEntities) {
+      handledExecutionIds.add(childExecutionEntity.getId());
+      if (parentBeforeChildExecution) {
+        result.add(childExecutionEntity);
+      } else {
+        result.add(0, childExecutionEntity);
+      }
+      
+      collectChildExecutionsForInsertion(result, parentToChildrenMapping, handledExecutionIds, childExecutionEntity.getId(), parentBeforeChildExecution);
+    }
+  }
+	
   protected void flushRegularInsert(Entity entity, Class<? extends Entity> clazz) {
   	 String insertStatement = dbSqlSessionFactory.getInsertStatement(entity);
      insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
@@ -778,46 +606,54 @@ public class DbSqlSession implements Session {
      
      // See https://activiti.atlassian.net/browse/ACT-1290
      if (entity instanceof HasRevision) {
-       HasRevision revisionEntity = (HasRevision) entity;
-       if (revisionEntity.getRevision() == 0) {
-         revisionEntity.setRevision(revisionEntity.getRevisionNext());
-       }
+       incrementRevision(entity);
      }
   }
 
-  protected void flushBulkInsert(List<Entity> entityList, Class<? extends Entity> clazz) {
+  protected void flushBulkInsert(Collection<Entity> entities, Class<? extends Entity> clazz) {
     String insertStatement = dbSqlSessionFactory.getBulkInsertStatement(clazz);
     insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
     if (insertStatement==null) {
-      throw new ActivitiException("no insert statement for " + entityList.get(0).getClass() + " in the ibatis mapping files");
+      throw new ActivitiException("no insert statement for " + entities.iterator().next().getClass() + " in the ibatis mapping files");
     }
 
-    if (entityList.size() <= dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
-      sqlSession.insert(insertStatement, entityList);
-    } else {
-      
-      for (int start = 0; start < entityList.size(); start += dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
-        List<Entity> subList = entityList.subList(start, 
-            Math.min(start + dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert(), entityList.size()));
-        sqlSession.insert(insertStatement, subList);
+    Iterator<Entity> entityIterator = entities.iterator();
+    Boolean hasRevision = null;
+    
+    while (entityIterator.hasNext()) {
+      List<Entity> subList = new ArrayList<Entity>();
+      int index = 0;
+      while (entityIterator.hasNext() && index < dbSqlSessionFactory.getMaxNrOfStatementsInBulkInsert()) {
+        Entity entity = entityIterator.next();
+        subList.add(entity);
+        
+        if (hasRevision == null) {
+          hasRevision = entity instanceof HasRevision;
+        }
+        index++;
       }
-      
+      sqlSession.insert(insertStatement, subList);
     }
     
-    if (entityList.get(0) instanceof HasRevision) {
-      for (Entity insertedObject: entityList) {
-        HasRevision revisionEntity = (HasRevision) insertedObject;
-        if (revisionEntity.getRevision() == 0) {
-          revisionEntity.setRevision(revisionEntity.getRevisionNext());
-        }
+    if (hasRevision != null && hasRevision) {
+      entityIterator = entities.iterator();
+      while (entityIterator.hasNext()) {
+        incrementRevision(entityIterator.next());
       }
     }
-   
+    
+  }
+
+  protected void incrementRevision(Entity insertedObject) {
+    HasRevision revisionEntity = (HasRevision) insertedObject;
+    if (revisionEntity.getRevision() == 0) {
+      revisionEntity.setRevision(revisionEntity.getRevisionNext());
+    }
   }
 
 
-  protected void flushUpdates(List<Entity> updatedObjects) {
+  protected void flushUpdates() {
     for (Entity updatedObject : updatedObjects) {
       String updateStatement = dbSqlSessionFactory.getUpdateStatement(updatedObject);
       updateStatement = dbSqlSessionFactory.mapStatement(updateStatement);
@@ -841,17 +677,59 @@ public class DbSqlSession implements Session {
     updatedObjects.clear();
   }
 
-  protected void flushDeletes(List<DeleteOperation> removedOperations) {
-    boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled();
-    flushRegularDeletes(dispatchEvent);
-    deleteOperations.clear();
+  protected void flushDeletes() {
+    
+    if (deletedObjects.size() == 0 && bulkDeleteOperations.size() == 0) {
+      return;
+    }
+    
+    // Handle in entity dependency order
+    for (Class<? extends Entity> entityClass : EntityDependencyOrder.DELETE_ORDER) {
+      if (deletedObjects.containsKey(entityClass)) {
+        flushDeleteEntities(entityClass, deletedObjects.get(entityClass).values());
+        deletedObjects.remove(entityClass);
+      }
+      flushBulkDeletes(entityClass);
+    }
+    
+    // Next, in case of custom entities or we've screwed up and forgotten some entity
+    if (deletedObjects.size() > 0) {
+      for (Class<? extends Entity> entityClass : deletedObjects.keySet()) {
+        flushDeleteEntities(entityClass, deletedObjects.get(entityClass).values());
+        flushBulkDeletes(entityClass);
+      }
+    }
+    
+    deletedObjects.clear();
   }
 
-  protected void flushRegularDeletes(boolean dispatchEvent) {
-    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
-    for (DeleteOperation delete : optimizedDeleteOperations) {
-      log.debug("executing: {}", delete);
-      delete.execute();
+  protected void flushBulkDeletes(Class<? extends Entity> entityClass) {
+    // Bulk deletes
+    if (bulkDeleteOperations.containsKey(entityClass)) {
+      for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperations.get(entityClass)) {
+        bulkDeleteOperation.execute(sqlSession);
+      }
+    }
+  }
+
+  protected void flushDeleteEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToDelete) {
+    for (Entity entity : entitiesToDelete) {
+      String deleteStatement = dbSqlSessionFactory.getDeleteStatement(entity.getClass());
+      deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
+      if (deleteStatement == null) {
+        throw new ActivitiException("no delete statement for " + entity.getClass() + " in the ibatis mapping files");
+      }
+
+      // It only makes sense to check for optimistic locking exceptions
+      // for objects that actually have a revision
+      if (entity instanceof HasRevision) {
+        int nrOfRowsDeleted = sqlSession.delete(deleteStatement, entity);
+        if (nrOfRowsDeleted == 0) {
+          throw new ActivitiOptimisticLockingException(entity + " was updated by another transaction concurrently");
+        }
+      } else {
+        sqlSession.delete(deleteStatement, entity);
+      }
     }
   }
 

@@ -60,7 +60,7 @@ public class MybatisProcessDefinitionDataManager extends AbstractDataManager<Pro
 
   @Override
   public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
-    getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
+    getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId, ProcessDefinitionEntityImpl.class);
   }
 
   @Override

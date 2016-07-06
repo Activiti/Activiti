@@ -94,7 +94,7 @@ public class MybatisIdentityLinkDataManager extends AbstractDataManager<Identity
   
   @Override
   public void deleteIdentityLinksByProcDef(String processDefId) {
-    getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId);
+    getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId, IdentityLinkEntityImpl.class);
   }
   
 }

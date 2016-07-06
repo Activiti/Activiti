@@ -43,7 +43,7 @@ public class MybatisResourceDataManager extends AbstractDataManager<ResourceEnti
   
   @Override
   public void deleteResourcesByDeploymentId(String deploymentId) {
-    getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId);
+    getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId, ResourceEntityImpl.class);
   }
 
   @Override

@@ -21,6 +21,7 @@ import java.util.Date;
  */
 public class EventLogEntryEntityImpl implements EventLogEntryEntity {
 
+  protected String id; // not the real id, but it needs to be here as the internal DbSqlSession give it and id 
   protected long logNumber; // cant use id here, it would clash with entity
   protected String type;
   protected String processDefinitionId;
@@ -39,12 +40,12 @@ public class EventLogEntryEntityImpl implements EventLogEntryEntity {
 
   @Override
   public String getId() {
-    return "event-log-" + logNumber; // To avoid clashed, prefixing it (it shouldn't be used)
+    return id;
   }
 
   @Override
   public void setId(String id) {
-    // Set id doesn't do anything: auto incremented column
+    this.id = id;
   }
 
   @Override

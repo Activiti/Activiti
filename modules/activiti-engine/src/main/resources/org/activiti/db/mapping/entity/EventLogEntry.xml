@@ -84,6 +84,7 @@
   
   <resultMap id="eventLogEntryResultMap" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl">
     <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
+    <result property="id" column="LOG_NR_" jdbcType="BIGINT" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
