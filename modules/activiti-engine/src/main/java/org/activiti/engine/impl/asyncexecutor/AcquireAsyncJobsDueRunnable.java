@@ -43,6 +43,7 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
 
   public synchronized void run() {
     log.info("{} starting to acquire async jobs due");
+    Thread.currentThread().setName("activiti-acquire-async-jobs");
 
     final CommandExecutor commandExecutor = asyncExecutor.getCommandExecutor();
 

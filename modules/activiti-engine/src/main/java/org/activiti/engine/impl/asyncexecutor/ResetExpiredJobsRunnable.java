@@ -48,6 +48,7 @@ public class ResetExpiredJobsRunnable implements Runnable {
 
   public synchronized void run() {
     log.info("{} starting to reset expired jobs");
+    Thread.currentThread().setName("activiti-reset-expired-jobs");
 
     while (!isInterrupted) {
 
