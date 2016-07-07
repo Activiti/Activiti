@@ -13,10 +13,12 @@
 
 package org.activiti.engine.impl.db;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -29,7 +31,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
  * @author Joram Barrez
  */
 public class DbSqlSessionFactory implements SessionFactory {
-
+  
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String, String>>();
 
   /**
@@ -67,7 +69,22 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
 
   public Session openSession(CommandContext commandContext) {
-    return new DbSqlSession(this, commandContext.getEntityCache());
+    DbSqlSession dbSqlSession = new DbSqlSession(this, commandContext.getEntityCache());
+    if (getDatabaseSchema() != null) {
+      try {
+        dbSqlSession.getSqlSession().getConnection().setSchema(getDatabaseSchema());
+      } catch (SQLException e) {
+        throw new ActivitiException("Could not set database schema on connection", e);
+      }
+    }
+    if (getDatabaseCatalog() != null) {
+      try {
+        dbSqlSession.getSqlSession().getConnection().setCatalog(getDatabaseCatalog());
+      } catch (SQLException e) {
+        throw new ActivitiException("Could not set database catalog on connection", e);
+      }
+    }
+    return dbSqlSession;
   }
 
   // insert, update and delete statements
