@@ -13,10 +13,12 @@
 
 package org.activiti.engine.impl.db;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
@@ -240,7 +242,22 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
 
   public Session openSession() {
-    return new DbSqlSession(this);
+    DbSqlSession dbSqlSession = new DbSqlSession(this);
+    if (getDatabaseSchema() != null) {
+      try {
+        dbSqlSession.getSqlSession().getConnection().setSchema(getDatabaseSchema());
+      } catch (SQLException e) {
+        throw new ActivitiException("Could not set database schema on connection", e);
+      }
+    }
+    if (getDatabaseCatalog() != null) {
+      try {
+        dbSqlSession.getSqlSession().getConnection().setCatalog(getDatabaseCatalog());
+      } catch (SQLException e) {
+        throw new ActivitiException("Could not set database catalog on connection", e);
+      }
+    }
+    return dbSqlSession;
   }
   
   // insert, update and delete statements /////////////////////////////////////
