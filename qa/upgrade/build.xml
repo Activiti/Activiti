@@ -164,7 +164,7 @@
     </exec>
     <copy todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs">
       <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test">
-      	<include name="ojdbc5*.jar" />
+      	<include name="ojdbc6*.jar" />
       </fileset>
     </copy>
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
