@@ -13,13 +13,17 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -30,7 +34,11 @@ import org.joda.time.Period;
 /**
  * @author Frederik Heremans
  */
-public class TaskDueDateExtensionsTest extends PluggableActivitiTestCase {
+public class TaskDueDateExtensionsTest extends ResourceActivitiTestCase {
+
+  public TaskDueDateExtensionsTest() {
+    super("org/activiti/engine/test/bpmn/usertask/TaskDueDateExtensionsTest.activiti.cfg.xml");
+  }
 
   @Deployment
   public void testDueDateExtension() throws Exception {
@@ -83,4 +91,44 @@ public class TaskDueDateExtensionsTest extends PluggableActivitiTestCase {
     assertEquals(40, period.getMinutes());
     clock.reset();
   }
+
+  @Deployment
+  public void testRelativeDueDateStringWithCalendarNameExtension() throws Exception {
+
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("dateVariable", "P2DT5H40M");
+
+    // Start process-instance, passing ISO8601 duration formatted String that should be used to calculate dueDate
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dueDateExtension", variables);
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+
+    assertNotNull(task.getDueDate());
+    assertThat(task.getDueDate(), is(new Date(0)));
+  }
+
+  public static class CustomBusinessCalendar implements BusinessCalendar {
+
+    @Override
+    public Date resolveDuedate(String duedateDescription) {
+      return new Date(0);
+    }
+
+    @Override
+    public Date resolveDuedate(String duedateDescription, int maxIterations) {
+      return new Date(0);
+    }
+
+    @Override
+    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+      return true;
+    }
+
+    @Override
+    public Date resolveEndDate(String endDateString) {
+      return new Date(0);
+    }
+
+  }
+
 }

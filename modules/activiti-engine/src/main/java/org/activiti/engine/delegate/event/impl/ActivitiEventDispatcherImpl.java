@@ -66,8 +66,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
 		}
 
 		// Check if a process context is active. If so, we also call the
-		// process-definition
-		// specific listeners (if any).
+		// process-definition specific listeners (if any).
 		if (Context.isExecutionContextActive()) {
 			ProcessDefinitionEntity definition = Context.getExecutionContext().getProcessDefinition();
 			if (definition != null) {

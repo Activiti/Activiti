@@ -34,6 +34,91 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
+<h3>Release Notes - Activiti - Version 5.21.0</h3>
+
+<h4>Highlights</h4>
+<p>
+This release contains some quite important bugfixes, more specifically 
+<ul>
+<li>it fixes some cases where the end time was
+not set for activities in a process definition under certain conditions.
+</li>
+<li>
+A concurrency bug was discovered when using delegateExpressions together with field injection. 
+Make sure to read the updated documentation section on the use of 'delegateExpression'.
+</li> 
+</ul>
+</p>
+
+<p>
+Included in this release is the 'secure scripting' feature (for javascript), which allows to execute 
+scripts in a secure way. You can find the documentation in the 'advanced' section of the user guide.
+</p>
+    
+<p>    
+All changes:
+</p>    
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2081'>ACT-2081</a>] -         taskCandidateOrAssigned doesn&#39;t work with custom GroupEntityManager and UserEntityManager
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4090'>ACT-4090</a>] -         Boundary timer with fixed number of repeats fires all events at once when attached to nested activity
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4152'>ACT-4152</a>] -         Task Category not included in query result under MS SQL Server 2012
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4171'>ACT-4171</a>] -         End time incorrectly set on multi-instance subprocess historic activity
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4172'>ACT-4172</a>] -         DelegateExpression usage not thread-safe
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4176'>ACT-4176</a>] -         End time not correctly set on historic activity 
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4185'>ACT-4185</a>] -         NullpointerException occured on referring HistoricVariableUpdate(Serializable Type)
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4186'>ACT-4186</a>] -         ConcurrentModificationException when event listener removes itself 
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4189'>ACT-4189</a>] -         Process diagram generator: support multiple pools
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4190'>ACT-4190</a>] -         Job with null due date is never picked up again 
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4181'>ACT-4181</a>] -         fix or queries containing processDefinitionKey clause eliminated adhoc tasks from result set
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4184'>ACT-4184</a>] -         Fetching historic task with task local and process variables returns current task variables
+</li>
+</ul>
+        
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4166'>ACT-4166</a>] -         Support for multiple signal start events
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4167'>ACT-4167</a>] -         Support for multiple timer start events
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4177'>ACT-4177</a>] -         Secure scripting feature
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4179'>ACT-4179</a>] -         Allow to set business calendar on timer event definition
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4180'>ACT-4180</a>] -         Process diagram generator: allow to change font for annotations
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4182'>ACT-4182</a>] -         Query historic variables with a list of execution/task ids
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4183'>ACT-4183</a>] -         Explorer: omitting the protocol (scheme) in order to preserve the protocol of the current page
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4187'>ACT-4187</a>] -         Make variable limit configurable when fetching variables
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4188'>ACT-4188</a>] -         Add support for associations in auto layout and diagram generator
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-2146'>ACT-2146</a>] -         Consider switching around the firing of TaskListeners and ActivitiEventListeners
+</li>
+</ul>
+        
+
 <h3>Release Notes - Activiti - Version 5.20.0</h3>
 <h4>Highlights</h4>
 <p>

@@ -165,7 +165,8 @@ public class TableDataManager extends AbstractManager {
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = databaseTablePrefix+"ACT" + databaseMetaData.getSearchStringEscape() + "_%";
         }
-        tables = databaseMetaData.getTables(null, null, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(getProcessEngineConfiguration().getDatabaseCatalog(), getProcessEngineConfiguration().getDatabaseSchema(), 
+            tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
@@ -238,7 +239,7 @@ public class TableDataManager extends AbstractManager {
       
       String schema = getProcessEngineConfiguration().getDatabaseSchema();
 
-      ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
+      ResultSet resultSet = metaData.getColumns(getProcessEngineConfiguration().getDatabaseCatalog(), schema, tableName, null);
       while(resultSet.next()) {
         boolean wrongSchema = false;
         if (schema != null && schema.length() > 0) {

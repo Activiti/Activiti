@@ -43,7 +43,6 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     assertEquals(0, jobQuery.count());
     assertProcessEnded(pi.getProcessInstanceId());
-
   }
 
   @Deployment

@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * @author Tom Baeyens
  */
-class SpringConfigurationHelper {
+public class SpringConfigurationHelper {
 
     private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
 

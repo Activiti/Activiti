@@ -537,6 +537,11 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   T includeProcessVariables();
   
   /**
+   * Limit task variables
+   */
+  T limitTaskVariables(Integer taskVariablesLimit);
+  
+  /**
    * Localize task name and description to specified locale.
    */
   T locale(String locale);

@@ -374,6 +374,12 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("HistoricTaskQueryTest").endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("unexistingdefinitionkey").endOr().count());
     
+    // Process definition key and ad hoc task
+    Task adhocTask = taskService.newTask();
+    taskService.saveTask(adhocTask);
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskId(adhocTask.getId()).processDefinitionKey("unexistingdefinitionkey").endOr().count());
+    taskService.deleteTask(adhocTask.getId(), true);
+	
     // Process definition key in
     List<String> includeIds = new ArrayList<String>();
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().processDefinitionKey("unexistingdefinitionkey").processDefinitionKeyIn(includeIds).endOr().count());
