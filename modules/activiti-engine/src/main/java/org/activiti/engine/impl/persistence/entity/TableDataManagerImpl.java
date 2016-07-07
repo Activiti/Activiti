@@ -181,8 +181,18 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = databaseTablePrefix + "ACT" + databaseMetaData.getSearchStringEscape() + "_%";
         }
-        tables = databaseMetaData.getTables(getProcessEngineConfiguration().getDatabaseCatalog(), getProcessEngineConfiguration().getDatabaseSchema(), 
-            tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
+        
+        String catalog = null;
+        if (getProcessEngineConfiguration().getDatabaseCatalog() != null && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
+          catalog = getProcessEngineConfiguration().getDatabaseCatalog();
+        }
+        
+        String schema = null;
+        if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
+          schema = getProcessEngineConfiguration().getDatabaseSchema();
+        }
+        
+        tables = databaseMetaData.getTables(catalog, schema, tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
