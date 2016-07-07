@@ -236,7 +236,6 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
       formService.submitStartFormData(processDefinition.getId(), "someKey", new HashMap<String, String>());
       fail();
     } catch (ActivitiException e) {
-      e.printStackTrace();
       // This is expected
     }
 
@@ -248,10 +247,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     Date now = new Date();
     processEngineConfiguration.getClock().setCurrentTime(now);
 
-    // Suspending the process definition should not stop the execution of
-    // jobs
-    // Added this test because in previous implementations, this was the
-    // case.
+    // Suspending the process definition should not stop the execution of jobs
+    // Added this test because in previous implementations, this was the case.
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     runtimeService.startProcessInstanceById(processDefinition.getId());
     repositoryService.suspendProcessDefinitionById(processDefinition.getId());
@@ -413,21 +410,28 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     // Deploy three processes
     int nrOfProcessDefinitions = 3;
-    for (int i = 0; i < nrOfProcessDefinitions; i++) {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
-    }
+    repositoryService.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml")
+      .deploy();
+    
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
 
     // Suspend all process definitions with same key
     repositoryService.suspendProcessDefinitionByKey("oneTaskProcess");
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess2");
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess3");
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
 
     // Activate again
     repositoryService.activateProcessDefinitionByKey("oneTaskProcess");
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess2");
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess3");
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
@@ -437,6 +441,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     // And suspend again, cascading to process instances
     repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", true, null);
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess2", true, null);
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess3", true, null);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
@@ -457,23 +463,31 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     final long hourInMs = 60 * 60 * 1000;
 
     // Deploy five versions of the same process
-    int nrOfProcessDefinitions = 5;
-    for (int i = 0; i < nrOfProcessDefinitions; i++) {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
-    }
+    int nrOfProcessDefinitions = 3;
+    repositoryService.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml")
+      .deploy();
+    
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
 
     // Start process instance
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    runtimeService.startProcessInstanceByKey("oneTaskProcess2");
+    runtimeService.startProcessInstanceByKey("oneTaskProcess3");
 
     // Suspend all process definitions with same key in 2 hours from now
-    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", true, new Date(startTime.getTime() + (2 * hourInMs)));
+    Date suspendDate = new Date(startTime.getTime() + (2 * hourInMs));
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", true, suspendDate);
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess2", true, suspendDate);
+    repositoryService.suspendProcessDefinitionByKey("oneTaskProcess3", true, suspendDate);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
+    assertEquals(3, runtimeService.createProcessInstanceQuery().active().count());
 
     // Verify a job is created for each process definition
     assertEquals(nrOfProcessDefinitions, managementService.createTimerJobQuery().count());
@@ -483,26 +497,29 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     // Move time 3 hours and run job executor
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (3 * hourInMs)));
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000L, 200L);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(3, runtimeService.createProcessInstanceQuery().suspended().count());
 
     // Activate again in 5 hours from now
-    repositoryService.activateProcessDefinitionByKey("oneTaskProcess", true, new Date(startTime.getTime() + (5 * hourInMs)));
+    Date activateDate = new Date(startTime.getTime() + (5 * hourInMs));
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess", true, activateDate);
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess2", true, activateDate);
+    repositoryService.activateProcessDefinitionByKey("oneTaskProcess3", true, activateDate);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertEquals(3, runtimeService.createProcessInstanceQuery().suspended().count());
 
     // Move time 6 hours and run job executor
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * hourInMs)));
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000L, 100L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000L, 200L);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().active().count());
+    assertEquals(3, runtimeService.createProcessInstanceQuery().active().count());
 
     // Clean DB
     for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
