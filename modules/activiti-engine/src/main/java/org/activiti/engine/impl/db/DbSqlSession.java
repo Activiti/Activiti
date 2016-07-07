@@ -451,8 +451,8 @@ public class DbSqlSession implements Session {
         nrOfDeletes++;
       }
     }
-    for (Collection<BulkDeleteOperation> bulkDeleteOperations : bulkDeleteOperations.values()) {
-      for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperations) {
+    for (Collection<BulkDeleteOperation> bulkDeleteOperationList : bulkDeleteOperations.values()) {
+      for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperationList) {
         log.debug("  {}", bulkDeleteOperation);
         nrOfDeletes++;
       }
