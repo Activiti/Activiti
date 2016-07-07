@@ -18,7 +18,7 @@ import org.activiti.bpmn.model.Task;
 import java.util.Map;
 
 /**
- * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closed and closeFailure
+ * Callback interface to be notified of transaction events.
  *
  * @author Yvo Swillens
  */

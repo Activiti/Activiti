@@ -50,6 +50,4 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
 
-  void fireTaskListenerEvent(TaskEntity taskEntity, String taskEventName);
-
 }

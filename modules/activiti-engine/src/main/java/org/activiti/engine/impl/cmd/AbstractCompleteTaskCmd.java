@@ -45,7 +45,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
       throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
     }
 
-    commandContext.getTaskEntityManager().fireTaskListenerEvent(taskEntity, TaskListener.EVENTNAME_COMPLETE);
+    commandContext.getProcessEngineConfiguration().getListenerNotificationHelper().executeTaskListeners(taskEntity, TaskListener.EVENTNAME_COMPLETE);
     if (Authentication.getAuthenticatedUserId() != null && taskEntity.getProcessInstanceId() != null) {
       ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(taskEntity.getProcessInstanceId());
       commandContext.getIdentityLinkEntityManager().involveUser(processInstanceEntity, Authentication.getAuthenticatedUserId(),IdentityLinkType.PARTICIPANT);

@@ -31,6 +31,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -79,7 +80,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     List<String> activeTaskCandidateUsers = null;
     List<String> activeTaskCandidateGroups = null;
     
-    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
     
     if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
       ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(userTask.getId(), execution.getProcessDefinitionId());
@@ -199,7 +201,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     handleAssignments(taskEntityManager, activeTaskAssignee, activeTaskOwner, 
         activeTaskCandidateUsers, activeTaskCandidateGroups, task, expressionManager, execution);
     
-    taskEntityManager.fireTaskListenerEvent(task, TaskListener.EVENTNAME_CREATE);
+    processEngineConfiguration.getListenerNotificationHelper().executeTaskListeners(task, TaskListener.EVENTNAME_CREATE);
     
     // All properties set, now firing 'create' events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {

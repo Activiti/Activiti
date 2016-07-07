@@ -15,7 +15,6 @@ package org.activiti.engine.impl.agenda;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -75,8 +74,10 @@ public abstract class AbstractOperation implements Runnable {
    * Executes the execution listeners defined on the given element, with the given event type,
    * and passing the provided execution to the {@link ExecutionListener} instances.
    */
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, ExecutionEntity executionEntity, String eventType) {
-    ListenerUtil.executeExecutionListeners(elementWithExecutionListeners, executionEntity, eventType);
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, 
+      ExecutionEntity executionEntity, String eventType) {
+    commandContext.getProcessEngineConfiguration().getListenerNotificationHelper()
+      .executeExecutionListeners(elementWithExecutionListeners, executionEntity, eventType);
   }
   
   /**

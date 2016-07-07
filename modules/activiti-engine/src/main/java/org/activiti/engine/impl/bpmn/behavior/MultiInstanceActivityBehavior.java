@@ -30,7 +30,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
-import org.activiti.engine.impl.bpmn.listener.ListenerUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -223,7 +222,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     // If loopcounter == 0, then historic activity instance already created,
     // no need to pass through executeActivity again since it will create a new historic activity
     if (loopCounter == 0) {
-      ListenerUtil.executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_START);
+      Context.getCommandContext().getProcessEngineConfiguration().getListenerNotificationHelper()
+        .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_START);
       innerActivityBehavior.execute(execution);
     } else {
       execution.setCurrentFlowElement(activity);
@@ -292,7 +292,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(DelegateExecution execution) {
-    ListenerUtil.executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_END);
+    Context.getCommandContext().getProcessEngineConfiguration().getListenerNotificationHelper()
+      .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_END);
   }
 
   protected void logLoopDetails(DelegateExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {

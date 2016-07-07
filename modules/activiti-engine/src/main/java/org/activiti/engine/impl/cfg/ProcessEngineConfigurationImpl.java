@@ -79,6 +79,7 @@ import org.activiti.engine.impl.bpmn.deployer.EventSubscriptionManager;
 import org.activiti.engine.impl.bpmn.deployer.ParsedDeploymentBuilderFactory;
 import org.activiti.engine.impl.bpmn.deployer.ProcessDefinitionDiagramHelper;
 import org.activiti.engine.impl.bpmn.deployer.TimerManager;
+import org.activiti.engine.impl.bpmn.listener.ListenerNotificationHelper;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.factory.AbstractBehaviorFactory;
@@ -508,6 +509,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // HELPERS //////////////////////////////////////////////////////////////////
   protected ProcessInstanceHelper processInstanceHelper;
+  protected ListenerNotificationHelper listenerNotificationHelper;
   
   // ASYNC EXECUTOR ///////////////////////////////////////////////////////////
   
@@ -2017,6 +2019,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (processInstanceHelper == null) {
       processInstanceHelper = new ProcessInstanceHelper();
     }
+    if (listenerNotificationHelper == null) {
+      listenerNotificationHelper = new ListenerNotificationHelper();
+    }
   }
 
   public void initVariableTypes() {
@@ -2665,6 +2670,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setProcessInstanceHelper(ProcessInstanceHelper processInstanceHelper) {
     this.processInstanceHelper = processInstanceHelper;
+    return this;
+  }
+  
+  public ListenerNotificationHelper getListenerNotificationHelper() {
+    return listenerNotificationHelper;
+  }
+
+  public ProcessEngineConfigurationImpl setListenerNotificationHelper(ListenerNotificationHelper listenerNotificationHelper) {
+    this.listenerNotificationHelper = listenerNotificationHelper;
     return this;
   }
 
