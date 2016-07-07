@@ -14,8 +14,7 @@ package org.activiti.scripting.secure.listener;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.listener.ScriptExecutionListener;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.scripting.secure.behavior.SecureJavascriptCapableActivityBehaviorFactory;
+import org.activiti.scripting.secure.behavior.SecureJavascriptTaskParseHandler;
 import org.activiti.scripting.secure.impl.SecureJavascriptUtil;
 
 /**
@@ -26,8 +25,8 @@ public class SecureJavascriptExecutionListener extends ScriptExecutionListener {
   @Override
   public void notify(DelegateExecution execution) throws Exception {
     validateParameters();
-    if (SecureJavascriptCapableActivityBehaviorFactory.LANGUAGE_JAVASCRIPT.equalsIgnoreCase(language.getValue(execution).toString())) {
-      Object result = SecureJavascriptUtil.evaluateScript((ActivityExecution) execution, script.getExpressionText());
+    if (SecureJavascriptTaskParseHandler.LANGUAGE_JAVASCRIPT.equalsIgnoreCase(language.getValue(execution).toString())) {
+      Object result = SecureJavascriptUtil.evaluateScript(execution, script.getExpressionText());
       
       if (resultVariable != null) {
         execution.setVariable(resultVariable.getExpressionText(), result);

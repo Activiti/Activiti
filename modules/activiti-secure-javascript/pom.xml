@@ -5,13 +5,13 @@
 
 	<name>Activiti - Secure Scripting</name>
 	<artifactId>activiti-secure-javascript</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
-		<version>5.21.0-SNAPSHOT</version>
+		<version>5.22.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
