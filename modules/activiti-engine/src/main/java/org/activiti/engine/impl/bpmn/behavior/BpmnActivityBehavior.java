@@ -55,15 +55,15 @@ public class BpmnActivityBehavior implements Serializable {
    * @param activityExecution
    */
   protected void dispatchJobCanceledEvents(ExecutionEntity activityExecution) {
-    if (activityExecution instanceof ExecutionEntity) {
-      List<JobEntity> jobs = ((ExecutionEntity) activityExecution).getJobs();
+    if (activityExecution != null) {
+      List<JobEntity> jobs = activityExecution.getJobs();
       for (JobEntity job : jobs) {
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
         }
       }
       
-      List<TimerJobEntity> timerJobs = ((ExecutionEntity) activityExecution).getTimerJobs();
+      List<TimerJobEntity> timerJobs = activityExecution.getTimerJobs();
       for (TimerJobEntity job : timerJobs) {
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
@@ -73,7 +73,7 @@ public class BpmnActivityBehavior implements Serializable {
   }
 
   /**
-   * Performs the default outgoing BPMN 2.0 behavior (@see {@link #performDefaultOutgoingBehavior(ActivityExecution)}), but without checking the conditions on the outgoing sequence flow.
+   * Performs the default outgoing BPMN 2.0 behavior (@see {@link #performDefaultOutgoingBehavior(ExecutionEntity)}), but without checking the conditions on the outgoing sequence flow.
    * 
    * This means that every outgoing sequence flow is selected for continuing the process instance, regardless of having a condition or not. In case of multiple outgoing sequence flow, multiple
    * parallel paths of executions will be created.
