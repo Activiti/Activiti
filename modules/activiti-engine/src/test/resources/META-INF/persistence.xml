@@ -34,7 +34,7 @@
     
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000"/>
+      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000;MVCC=TRUE"/>
       <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
       <property name="openjpa.ConnectionUserName" value="sa"/>
       <property name="openjpa.ConnectionPassword" value=""/>
