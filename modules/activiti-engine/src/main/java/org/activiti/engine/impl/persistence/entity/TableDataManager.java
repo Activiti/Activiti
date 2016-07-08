@@ -165,8 +165,18 @@ public class TableDataManager extends AbstractManager {
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = databaseTablePrefix+"ACT" + databaseMetaData.getSearchStringEscape() + "_%";
         }
-        tables = databaseMetaData.getTables(getProcessEngineConfiguration().getDatabaseCatalog(), getProcessEngineConfiguration().getDatabaseSchema(), 
-            tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
+        
+        String catalog = null;
+        if (getProcessEngineConfiguration().getDatabaseCatalog() != null && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
+          catalog = getProcessEngineConfiguration().getDatabaseCatalog();
+        }
+        
+        String schema = null;
+        if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
+          schema = getProcessEngineConfiguration().getDatabaseSchema();
+        }
+        
+        tables = databaseMetaData.getTables(catalog, schema, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
@@ -237,9 +247,17 @@ public class TableDataManager extends AbstractManager {
         tableName = tableName.toLowerCase();
       }
       
-      String schema = getProcessEngineConfiguration().getDatabaseSchema();
+      String catalog = null;
+      if (getProcessEngineConfiguration().getDatabaseCatalog() != null && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
+        catalog = getProcessEngineConfiguration().getDatabaseCatalog();
+      }
+      
+      String schema = null;
+      if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
+        schema = getProcessEngineConfiguration().getDatabaseSchema();
+      }
 
-      ResultSet resultSet = metaData.getColumns(getProcessEngineConfiguration().getDatabaseCatalog(), schema, tableName, null);
+      ResultSet resultSet = metaData.getColumns(catalog, schema, tableName, null);
       while(resultSet.next()) {
         boolean wrongSchema = false;
         if (schema != null && schema.length() > 0) {
