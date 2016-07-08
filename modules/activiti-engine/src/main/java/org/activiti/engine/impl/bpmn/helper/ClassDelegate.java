@@ -44,8 +44,6 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
-import org.activiti.engine.impl.delegate.invocation.TransactionDependentExecutionListenerInvocation;
-import org.activiti.engine.impl.delegate.invocation.TransactionDependentTaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -117,9 +115,9 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     if (transactionDependentExecutionListenerInstance == null) {
       transactionDependentExecutionListenerInstance = getTransactionDependentExecutionListenerInstance();
     }
-    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
-            new TransactionDependentExecutionListenerInvocation(Context.getCommandContext(), transactionDependentExecutionListenerInstance,
-                    processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap));
+
+    // Note that we can't wrap it in the delegate interceptor like usual here due to being executed when the context is already removed.
+    transactionDependentExecutionListenerInstance.notify(processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap);
   }
 
   @Override
@@ -148,9 +146,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     if (transactionDependentTaskListenerInstance == null) {
       transactionDependentTaskListenerInstance = getTransactionDependentTaskListenerInstance();
     }
-    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
-            new TransactionDependentTaskListenerInvocation(Context.getCommandContext(), transactionDependentTaskListenerInstance,
-                    processInstanceId, executionId, task, executionVariables, customPropertiesMap));
+    transactionDependentTaskListenerInstance.notify(processInstanceId, executionId, task, executionVariables, customPropertiesMap);
   }
 
 

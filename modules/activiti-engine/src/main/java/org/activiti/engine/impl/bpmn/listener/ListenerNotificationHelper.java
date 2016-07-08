@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BaseExecutionListener;
@@ -30,9 +31,12 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
-import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
@@ -82,49 +86,16 @@ public class ListenerNotificationHelper {
   }
 
   protected void planTransactionDependentExecutionListener(ListenerFactory listenerFactory, DelegateExecution execution, TransactionDependentExecutionListener executionListener, ActivitiListener activitiListener) {
-    TransactionDependentListeners executionListenerContextCloseListener = null;
-
-    for (CommandContextCloseListener commandContextCloseListener : Context.getCommandContext().getCloseListeners()) {
-      if (commandContextCloseListener instanceof TransactionDependentListeners) {
-        executionListenerContextCloseListener = (TransactionDependentListeners) commandContextCloseListener;
-        break;
-      }
-    }
-
-    if (executionListenerContextCloseListener == null) {
-      executionListenerContextCloseListener = new TransactionDependentListeners();
-      Context.getCommandContext().addCloseListener(executionListenerContextCloseListener);
-    }
-
-    // current state of the execution variables will be stored
     Map<String, Object> executionVariablesToUse = execution.getVariables();
+    CustomPropertiesResolver customPropertiesResolver = createCustomPropertiesResolver(activitiListener);
+    Map<String, Object> customPropertiesMapToUse = invokeCustomPropertiesResolver(execution, customPropertiesResolver);
 
-    // create custom properties resolver
-    CustomPropertiesResolver customPropertiesResolver = null;
-    if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
-      customPropertiesResolver = listenerFactory.createClassDelegateCustomPropertiesResolver(activitiListener);
-    } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
-      customPropertiesResolver = listenerFactory.createExpressionCustomPropertiesResolver(activitiListener);
-    } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
-      customPropertiesResolver = listenerFactory.createDelegateExpressionCustomPropertiesResolver(activitiListener);
-    }
-
-    // invoke custom properties resolver
-    Map<String, Object> customPropertiesMapToUse = null;
-    if (customPropertiesResolver != null) {
-      customPropertiesMapToUse = customPropertiesResolver.getCustomPropertiesMap(execution);
-    }
-
-    // add to context close listener stack
-    if (TransactionDependentExecutionListener.ON_TRANSACTION_BEFORE_COMMIT.equals(activitiListener.getOnTransaction())) {
-      executionListenerContextCloseListener.addClosingExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_COMMITTED.equals(activitiListener.getOnTransaction())) {
-      executionListenerContextCloseListener.addClosedExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_ROLLED_BACK.equals(activitiListener.getOnTransaction())) {
-      executionListenerContextCloseListener.addCloseFailedExecutionListener(executionListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    }
+    TransactionDependentExecutionListenerExecutionScope scope = new TransactionDependentExecutionListenerExecutionScope(
+        execution.getProcessInstanceId(), execution.getId(), execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
+    
+    addTransactionListener(activitiListener, new ExecuteExecutionListenerTransactionListener(executionListener, scope));
   }
-  
+
   public void executeTaskListeners(TaskEntity taskEntity, String eventType) {
     if (taskEntity.getProcessDefinitionId() != null) {
       org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(taskEntity.getProcessDefinitionId());
@@ -182,24 +153,16 @@ public class ListenerNotificationHelper {
   }
   
   protected void planTransactionDependentTaskListener(DelegateExecution execution, TransactionDependentTaskListener taskListener, ActivitiListener activitiListener) {
-    TransactionDependentListeners taskListenerContextCloseListener = null;
-
-    for (CommandContextCloseListener commandContextCloseListener : Context.getCommandContext().getCloseListeners()) {
-      if (commandContextCloseListener instanceof TransactionDependentListeners) {
-        taskListenerContextCloseListener = (TransactionDependentListeners) commandContextCloseListener;
-        break;
-      }
-    }
-
-    if (taskListenerContextCloseListener == null) {
-      taskListenerContextCloseListener = new TransactionDependentListeners();
-      Context.getCommandContext().addCloseListener(taskListenerContextCloseListener);
-    }
-
-    // current state of the execution variables will be stored
     Map<String, Object> executionVariablesToUse = execution.getVariables();
-
-    // create custom properties resolver
+    CustomPropertiesResolver customPropertiesResolver = createCustomPropertiesResolver(activitiListener);
+    Map<String, Object> customPropertiesMapToUse = invokeCustomPropertiesResolver(execution, customPropertiesResolver);
+    
+    TransactionDependentTaskListenerExecutionScope scope = new TransactionDependentTaskListenerExecutionScope(
+        execution.getProcessInstanceId(), execution.getId(), (Task) execution.getCurrentFlowElement(), executionVariablesToUse, customPropertiesMapToUse);
+    addTransactionListener(activitiListener, new ExecuteTaskListenerTransactionListener(taskListener, scope));
+  }
+  
+  protected CustomPropertiesResolver createCustomPropertiesResolver(ActivitiListener activitiListener) {
     CustomPropertiesResolver customPropertiesResolver = null;
     ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
     if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
@@ -209,20 +172,28 @@ public class ListenerNotificationHelper {
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getCustomPropertiesResolverImplementationType())) {
       customPropertiesResolver = listenerFactory.createDelegateExpressionCustomPropertiesResolver(activitiListener);
     }
-
-    // invoke custom properties resolver
+    return customPropertiesResolver;
+  }
+  
+  protected Map<String, Object> invokeCustomPropertiesResolver(DelegateExecution execution, CustomPropertiesResolver customPropertiesResolver) {
     Map<String, Object> customPropertiesMapToUse = null;
     if (customPropertiesResolver != null) {
       customPropertiesMapToUse = customPropertiesResolver.getCustomPropertiesMap(execution);
     }
-
-    // add to context close listener stack
-    if (TransactionDependentTaskListener.ON_TRANSACTION_COMMITTING.equals(activitiListener.getOnTransaction())) {
-      taskListenerContextCloseListener.addClosingTaskListener(taskListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentTaskListener.ON_TRANSACTION_COMMITTED.equals(activitiListener.getOnTransaction())) {
-      taskListenerContextCloseListener.addClosedTaskListener(taskListener, execution, executionVariablesToUse, customPropertiesMapToUse);
-    } else if (TransactionDependentTaskListener.ON_TRANSACTION_ROLLED_BACK.equals(activitiListener.getOnTransaction())) {
-      taskListenerContextCloseListener.addCloseFailedTaskListener(taskListener, execution, executionVariablesToUse, customPropertiesMapToUse);
+    return customPropertiesMapToUse;
+  }
+  
+  protected void addTransactionListener(ActivitiListener activitiListener, TransactionListener transactionListener) {
+    TransactionContext transactionContext = Context.getTransactionContext();
+    if (TransactionDependentExecutionListener.ON_TRANSACTION_BEFORE_COMMIT.equals(activitiListener.getOnTransaction())) {
+      transactionContext.addTransactionListener(TransactionState.COMMITTING, transactionListener);
+      
+    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_COMMITTED.equals(activitiListener.getOnTransaction())) {
+      transactionContext.addTransactionListener(TransactionState.COMMITTED, transactionListener);
+      
+    } else if (TransactionDependentExecutionListener.ON_TRANSACTION_ROLLED_BACK.equals(activitiListener.getOnTransaction())) {
+      transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, transactionListener);
+      
     }
   }
 

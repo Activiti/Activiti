@@ -12,35 +12,29 @@
  */
 package org.activiti.engine.impl.bpmn.listener;
 
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.delegate.TransactionDependentExecutionListener;
-
 import java.util.Map;
+
+import org.activiti.bpmn.model.FlowElement;
 
 /**
  * @author Yvo Swillens
  */
 public class TransactionDependentExecutionListenerExecutionScope {
 
-  protected final TransactionDependentExecutionListener executionListener;
   protected final String processInstanceId;
   protected final String executionId;
   protected final FlowElement flowElement;
   protected final Map<String, Object> executionVariables;
   protected final Map<String, Object> customPropertiesMap;
 
-  public TransactionDependentExecutionListenerExecutionScope(TransactionDependentExecutionListener executionListener, String processInstanceId, String executionId,
-                                                             FlowElement flowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+  public TransactionDependentExecutionListenerExecutionScope(String processInstanceId, String executionId,
+                                                             FlowElement flowElement, Map<String, Object> executionVariables, 
+                                                             Map<String, Object> customPropertiesMap) {
     this.processInstanceId = processInstanceId;
     this.executionId = executionId;
-    this.executionListener = executionListener;
     this.flowElement = flowElement;
     this.executionVariables = executionVariables;
     this.customPropertiesMap = customPropertiesMap;
-  }
-
-  public TransactionDependentExecutionListener getExecutionListener() {
-    return executionListener;
   }
 
   public String getProcessInstanceId() {

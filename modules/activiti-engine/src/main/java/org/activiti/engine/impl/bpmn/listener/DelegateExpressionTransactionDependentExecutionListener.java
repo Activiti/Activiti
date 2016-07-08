@@ -12,15 +12,13 @@
  */
 package org.activiti.engine.impl.bpmn.listener;
 
+import java.util.Map;
+
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.invocation.TransactionDependentExecutionListenerInvocation;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
-
-import java.util.Map;
 
 /**
  * @author Yvo Swillens
@@ -40,10 +38,7 @@ public class DelegateExpressionTransactionDependentExecutionListener implements 
     Object delegate = expression.getValue(scope);
 
     if (delegate instanceof TransactionDependentExecutionListener) {
-      // Call the delegate
-      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
-              new TransactionDependentExecutionListenerInvocation(Context.getCommandContext(), (TransactionDependentExecutionListener) delegate,
-                      processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap));
+      ((TransactionDependentExecutionListener) delegate).notify(processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap);;
     } else {
       throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + TransactionDependentExecutionListener.class);
     }
