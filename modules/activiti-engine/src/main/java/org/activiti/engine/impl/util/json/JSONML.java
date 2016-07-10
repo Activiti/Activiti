@@ -155,7 +155,7 @@ public class JSONML {
             // attribute = value
 
             attribute = (String) token;
-            if (!arrayForm && (attribute == "tagName" || attribute == "childNode")) {
+            if (!arrayForm && (attribute.equals("tagName") || attribute.equals("childNode"))) {
               throw x.syntaxError("Reserved attribute.");
             }
             token = x.nextToken();
