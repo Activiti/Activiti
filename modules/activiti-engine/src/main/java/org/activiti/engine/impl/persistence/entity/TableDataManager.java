@@ -173,7 +173,11 @@ public class TableDataManager extends AbstractManager {
         
         String schema = null;
         if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
-          schema = getProcessEngineConfiguration().getDatabaseSchema();
+          if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
+            schema = getProcessEngineConfiguration().getDatabaseSchema().toUpperCase();
+          } else {
+            schema = getProcessEngineConfiguration().getDatabaseSchema();
+          }
         }
         
         tables = databaseMetaData.getTables(catalog, schema, tableNameFilter, getDbSqlSession().JDBC_METADATA_TABLE_TYPES);
@@ -254,7 +258,11 @@ public class TableDataManager extends AbstractManager {
       
       String schema = null;
       if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
-        schema = getProcessEngineConfiguration().getDatabaseSchema();
+        if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
+          schema = getProcessEngineConfiguration().getDatabaseSchema().toUpperCase();
+        } else {
+          schema = getProcessEngineConfiguration().getDatabaseSchema();
+        }
       }
 
       ResultSet resultSet = metaData.getColumns(catalog, schema, tableName, null);
