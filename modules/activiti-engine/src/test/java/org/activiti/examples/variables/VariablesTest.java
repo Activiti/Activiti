@@ -791,8 +791,21 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals("intVar 'default' description", dataObject.getDescription());
     assertEquals("stringVarId", dataObjects.get("stringVar").getDataObjectDefinitionKey());
     assertEquals("intVarId", dataObjects.get("intVar").getDataObjectDefinitionKey());
-    
+
     // getDataObjects
+    dataObjects = taskService.getDataObjects(task.getId());
+    assertEquals(2, dataObjects.size());
+    assertEquals("stringVar", dataObjects.get("stringVar").getName());
+    assertEquals("coca-cola", dataObjects.get("stringVar").getValue());
+    assertEquals("stringVar", dataObjects.get("stringVar").getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObjects.get("stringVar").getDescription());
+    assertEquals("intVar", dataObject.getName());
+    assertEquals(null, dataObject.getValue());
+    assertEquals("intVar", dataObject.getLocalizedName());
+    assertEquals("intVar 'default' description", dataObject.getDescription());
+    assertEquals("stringVarId", dataObjects.get("stringVar").getDataObjectDefinitionKey());
+    assertEquals("intVarId", dataObjects.get("intVar").getDataObjectDefinitionKey());
+
     dataObjects = taskService.getDataObjects(task.getId(), "en-US", false);
     assertEquals(2, dataObjects.size());
     assertEquals("stringVar", dataObjects.get("stringVar").getName());
@@ -872,7 +885,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals("stringVar 'en' Name", dataObjects.get("stringVar").getLocalizedName());
     assertEquals("stringVar 'en' Description", dataObjects.get("stringVar").getDescription());
     assertEquals("stringVarId", dataObjects.get("stringVar").getDataObjectDefinitionKey());
-    
+
     dataObjects = taskService.getDataObjects(task.getId(), variableNames, "en-GB", false);
     assertEquals(1, dataObjects.size());
     assertEquals("stringVar", dataObjects.get("stringVar").getName());
@@ -881,8 +894,16 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals("stringVar 'default' description", dataObjects.get("stringVar").getDescription());
     assertEquals("stringVarId", dataObjects.get("stringVar").getDataObjectDefinitionKey());
     assertEquals("stringVarId", dataObjects.get("stringVar").getDataObjectDefinitionKey());
-    
+
     // getDataObject
+    dataObject = taskService.getDataObject(task.getId(), "stringVar");
+    assertNotNull(dataObject);
+    assertEquals("stringVar", dataObject.getName());
+    assertEquals("coca-cola", dataObject.getValue());
+    assertEquals("stringVar", dataObject.getLocalizedName());
+    assertEquals("stringVar 'default' description", dataObject.getDescription());
+    assertEquals("stringVarId", dataObjects.get("stringVar").getDataObjectDefinitionKey());
+
     dataObject = taskService.getDataObject(task.getId(), "stringVar", "en-GB", false);
     assertNotNull(dataObject);
     assertEquals("stringVar", dataObject.getName());
