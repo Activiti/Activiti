@@ -26,7 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * @author Yvo Swillens
  */
-@ContextConfiguration("classpath:org/activiti/spring/test/executionListener/TransactionDependentExecutionListenerDelegateExpressionTest-context.xml")
+@ContextConfiguration("classpath:org/activiti/spring/test/executionListener/TransactionDependentListenerTest-context.xml")
 public class ExecutionListenerOnTransactionTest extends SpringActivitiTestCase {
 
   @Deployment
