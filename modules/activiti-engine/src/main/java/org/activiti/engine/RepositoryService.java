@@ -164,7 +164,7 @@ public interface RepositoryService {
   void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, Date suspensionDate);
 
   /**
-   * Suspends the <strong>all<strong> process definitions with the given key (= id in the bpmn20.xml file).
+   * Suspends the <strong>all</strong> process definitions with the given key (= id in the bpmn20.xml file).
    * 
    * If a process definition is in state suspended, it will not be possible to start new process instances based on the process definition.
    * 
@@ -178,7 +178,7 @@ public interface RepositoryService {
   void suspendProcessDefinitionByKey(String processDefinitionKey);
 
   /**
-   * Suspends the <strong>all<strong> process definitions with the given key (= id in the bpmn20.xml file).
+   * Suspends the <strong>all</strong> process definitions with the given key (= id in the bpmn20.xml file).
    * 
    * If a process definition is in state suspended, it will not be possible to start new process instances based on the process definition.
    * 
