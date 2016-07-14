@@ -28,18 +28,17 @@ angular.module('activitiApp')
             mode: 'process-list'
         };
 
+
         $scope.model.runtimeSorts = [
-            { 'id': 'created-desc', 'title': 'PROCESS.FILTER.CREATED-DESC'},
-            { 'id': 'created-asc', 'title': 'PROCESS.FILTER.CREATED-ASC' }
+                { 'id': 'created-desc', 'title': 'PROCESS.FILTER.CREATED-DESC' },
+                { 'id': 'created-asc', 'title': 'PROCESS.FILTER.CREATED-ASC' }
         ];
 
         $scope.model.completedSorts = [];
         $scope.model.completedSorts.push($scope.model.runtimeSorts[0]); // needs to be same reference!
         $scope.model.completedSorts.push($scope.model.runtimeSorts[1]); // needs to be same reference!
-        $scope.model.completedSorts.push({ 'id': 'ended-asc', 'title': 'PROCESS.FILTER.ENDED-DESC' });
-        $scope.model.completedSorts.push({ 'id': 'ended-desc', 'title': 'PROCESS.FILTER.ENDED-ASC' });
-
-        $scope.model.sorts = $scope.model.runtimeSorts;
+        $scope.model.completedSorts.push({ 'id': 'ended-asc', 'title': $translate.instant('PROCESS.FILTER.ENDED-DESC') });
+        $scope.model.completedSorts.push({ 'id': 'ended-desc', 'title': $translate.instant('PROCESS.FILTER.ENDED-ASC') });
 
         $scope.model.stateFilterOptions = [
             { 'id': 'running', 'title': 'PROCESS.FILTER.STATE-RUNNING' },
@@ -47,6 +46,8 @@ angular.module('activitiApp')
             { 'id': 'all', 'title': 'PROCESS.FILTER.STATE-ALL' }
         ];
 
+        $scope.model.sorts = $scope.model.runtimeSorts;
+            
         $scope.model.filter = {
             loading: false,
             expanded: false,
@@ -55,7 +56,7 @@ angular.module('activitiApp')
                 sort: $scope.model.sorts[0].id
             }
         };
-
+            
         $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
         $scope.missingAppdefinition = $scope.appDefinitionId === false;
 
@@ -298,6 +299,24 @@ angular.module('activitiApp')
                     }
                 });
         };
+            
+        // on successful applying translations by angular-translate
+        $rootScope.$on('$translateChangeSuccess', function (event, data) {
+            // had to reset all filters because moment.locale() is not updated otherwize 
+            $scope.model.runtimeSorts = [
+                { 'id': 'created-desc', 'title': $translate.instant('PROCESS.FILTER.CREATED-DESC') },
+                { 'id': 'created-asc', 'title': $translate.instant('PROCESS.FILTER.CREATED-ASC') }
+            ];
+            $scope.model.completedSorts = [];
+            $scope.model.completedSorts.push($scope.model.runtimeSorts[0]); // needs to be same reference!
+            $scope.model.completedSorts.push($scope.model.runtimeSorts[1]); // needs to be same reference!
+            $scope.model.completedSorts.push({ 'id': 'ended-asc', 'title': $translate.instant('PROCESS.FILTER.ENDED-DESC') });
+            $scope.model.completedSorts.push({ 'id': 'ended-desc', 'title': $translate.instant('PROCESS.FILTER.ENDED-ASC') });
+
+            $scope.model.sorts = $scope.model.runtimeSorts;
+
+            $scope.loadProcessInstances();            
+        });
 
         $rootScope.loadProcessDefinitions($scope.appDefinitionId);
 

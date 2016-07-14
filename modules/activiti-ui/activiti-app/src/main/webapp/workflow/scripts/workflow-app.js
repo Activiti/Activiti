@@ -34,11 +34,17 @@ var activitiApp = angular.module('activitiApp', [
 var activitiModule = activitiApp;
 
 activitiApp
-
+    .constant('LOCALES', {
+    'locales': {
+        'ru': {name: 'Русский', flag: '../images/flags/ru.png', locale: 'ru'},
+        'en': {name: 'English', flag: '../images/flags/us.png', locale: 'en-us'}
+      //  'kz': {name: 'Казахский', flag: '../images/flags/kz.png', locale: 'ru-kz'}
+    },
+    'preferredLocale': 'en'
+    })
   // Initialize routes
    .config(['$provide', '$routeProvider', '$selectProvider', '$datepickerProvider', '$translateProvider', 'cfpLoadingBarProvider',
    function ($provide, $routeProvider, $selectProvider, $datepickerProvider, $translateProvider, cfpLoadingBarProvider) {
-
    var appName = 'workflow';
    $provide.value('appName', appName);
    var appResourceRoot = ACTIVITI.CONFIG.webContextRoot + (ACTIVITI.CONFIG.webContextRoot ? '/' + appName + '/' : '');
@@ -160,14 +166,21 @@ activitiApp
             prefix: appResourceRoot + 'i18n/',
             suffix: '.json'
         });
+       
+        //$translateProvider.useMissingTranslationHandlerLog();
 
-       $translateProvider.registerAvailableLanguageKeys(['en'], {
+        $translateProvider.registerAvailableLanguageKeys(['ru'], {
            'en_*': 'en',
-           'en-*': 'en'
-       });
-
-       // turn loading bar spinner off (angular-loading-bar lib)
-       cfpLoadingBarProvider.includeSpinner = false;
+           'ru-*': 'ru'
+           //'kz-*': 'kz'
+        });
+       
+        $translateProvider.preferredLanguage('en');// is applied on first load
+        $translateProvider.useLocalStorage();// saves selected language to localStorage
+        $translateProvider.useSanitizeValueStrategy('escape');  // 'sanitize' is incorrect with Russian characters
+       
+        // turn loading bar spinner off (angular-loading-bar lib)
+        cfpLoadingBarProvider.includeSpinner = false;
     }])
     .run(['$rootScope', '$routeParams', '$timeout', '$translate', '$location', '$http', '$window', 'appResourceRoot', 'AppDefinitionService',
         function($rootScope, $routeParams, $timeout, $translate, $location, $http, $window, appResourceRoot, AppDefinitionService) {
@@ -182,9 +195,16 @@ activitiApp
 
         var proposedLanguage = $translate.proposedLanguage();
         if (proposedLanguage !== 'de' && proposedLanguage !== 'en' && proposedLanguage !== 'es' && proposedLanguage !== 'fr'
-            && proposedLanguage !== 'it' && proposedLanguage !== 'ja') {
+            && proposedLanguage !== 'it' && proposedLanguage !== 'ja' && proposedLanguage !== 'ru' && proposedLanguage !== 'kz') {
             
-            $translate.use('en');
+            $translate.use('en');        
+        }
+        
+        // init momentjs.locale from local storage
+        if (proposedLanguage == 'kz') {
+            moment.locale('kk'); // non-standard code
+        } else {
+            moment.locale(proposedLanguage);  
         }
         
         $rootScope.window = {};

@@ -270,6 +270,17 @@ activitiModule
         return directive;
     });
 
+activitiModule
+    .directive('groupName', function() {
+        var directive = {};
+        directive.template = '{{group.name || ""}} ';
+        directive.scope = {
+            group: "=groupName"
+        };
+        return directive;
+    });
+
+
 
 /**
  * Executes the method that is set on the directive attribute value when ANY OTHER element is clicked, which is not the element the

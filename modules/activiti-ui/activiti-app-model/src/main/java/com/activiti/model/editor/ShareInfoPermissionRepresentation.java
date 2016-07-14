@@ -20,6 +20,7 @@ public class ShareInfoPermissionRepresentation {
     protected Long id;
     protected Long userId;
     protected String email;
+    protected Long groupId;
     protected String permission;
     
     public void setId(Long id) {
@@ -44,6 +45,14 @@ public class ShareInfoPermissionRepresentation {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }    
 
     public String getPermission() {
         return permission;

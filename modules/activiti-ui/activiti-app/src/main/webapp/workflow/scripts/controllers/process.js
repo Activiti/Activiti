@@ -179,6 +179,17 @@ angular.module('activitiApp')
         }, $modal, $scope);
 
     };
+            
+    // on successful applying translations by angular-translate
+    $rootScope.$on('$translateChangeSuccess', function (event, data) {
+        $scope.model.processUpdating = true;
+        // reset model.processInstance and model.processTasks
+        $scope.model.processInstance.started = null;
+        $scope.model.processInstance.ended = null;
+        $scope.getProcessInstance($scope.model.processInstance.id);
+    });
+            
+            
 }]);
 
 angular.module('activitiApp')

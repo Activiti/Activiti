@@ -272,7 +272,20 @@ angular.module('activitiModeler')
                             } 
                         }
                     }
+                    // Get group ids. Used in the group picker to filter out groups
+                    $scope.currentlySharedGroupIds = [];
 
+                    if (data && data.data && data.data.length > 0) {
+                        for (var infoIndex = 0; infoIndex < data.data.length; infoIndex++) {
+
+                            if (data.data[infoIndex].group !== null && data.data[infoIndex].group !== undefined) {
+                                $scope.currentlySharedGroupIds.push(data.data[infoIndex].group.id);
+                            } 
+                        }
+                    }
+
+                
+                
                 }).
                 error(function (data, status, headers, config) {
                     $scope.$hide();
@@ -297,12 +310,14 @@ angular.module('activitiModeler')
                         }
 
                     } else {
-                        // Remove info from the added list as well
+                        // Remove info from the added and groupsAdded lists as well
                         if (info.person && info.person.id) {
                             delete $scope.popup.added[info.person.id];
 
                         } else if (info.person.email) {
                             delete $scope.popup.added[info.person.email];
+                        } else if (info.group.id) {
+                            delete $scope.popup.groupsAdded[info.group.id];
                         } 
                     }
 
@@ -310,6 +325,13 @@ angular.module('activitiModeler')
                         var personIndex = $scope.currentlySharedUserIds.indexOf(info.person.id);
                         if (personIndex >= 0) {
                             $scope.currentlySharedUserIds.splice(personIndex, 1);
+                        }
+                    }
+
+                    if (info.group) {
+                        var groupIndex = $scope.currentlySharedGroupIds.indexOf(info.group.id);
+                        if (groupIndex >= 0) {
+                            $scope.currentlySharedGroupIds.splice(groupIndex, 1);
                         }
                     }
 
@@ -383,13 +405,42 @@ angular.module('activitiModeler')
             };
 
             /**
+             * Add a Group (ie one from the same tenant)
+             */
+            $scope.addGroup = function (group) {
+                var groupsAdded = {group: group, permission: 'read'};
+                if ($scope.popup.shareInfo.data) {
+
+                    // Skip duplicate group
+                    for (var i = 0; i < $scope.popup.shareInfo.data.length; i++) {
+                        if ($scope.popup.shareInfo.data[i].group && $scope.popup.shareInfo.data[i].group.id == group.id) {
+                            return;
+                        }
+                    }
+
+                    $scope.popup.shareInfo.data.splice(0, 0, groupsAdded);
+                    $scope.popup.groupsAdded[group.id] = groupsAdded;
+
+                } else {
+                    $scope.popup.shareInfo.data = [groupsAdded];
+                    $scope.popup.groupsAdded[group.id] = groupsAdded;
+
+                }
+
+                // Add to list that is filtered when fetching users
+                $scope.currentlySharedGroupIds.push(group.id);
+
+                $scope.popup.newGroup = undefined;
+            };
+
+            /**
              * Saves the changes to the server
              */
             $scope.ok = function () {
                 $scope.popup.loading = true;
                 var shareData = {added: [], updated: [], removed: []};
 
-                // Add additions
+                // Add additions for person
                 for (var prop in $scope.popup.added) {
                     if ($scope.popup.added[prop].person) {
                         var person = $scope.popup.added[prop].person;
@@ -397,6 +448,16 @@ angular.module('activitiModeler')
                             userId: person.id,
                             email: person.email,
                             permission: $scope.popup.added[prop].permission
+                        });
+                    }
+                }
+                // Add additions for group
+                for (var prop in $scope.popup.groupsAdded) {
+                    if ($scope.popup.groupsAdded[prop].group) {
+                        var group = $scope.popup.groupsAdded[prop].group;
+                        shareData.added.push({
+                            groupId: group.id,
+                            permission: $scope.popup.groupsAdded[prop].permission
                         });
                     }
                 }

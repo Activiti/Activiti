@@ -11,3 +11,5 @@ target
 /userguide/src/en/index.html
 migration.html
 /modules/**/bin
+
+modules/activiti-ui/activiti-app/src/main/webapp/workflow/i18n/ru.json

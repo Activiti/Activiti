@@ -394,6 +394,17 @@ a.dropdown-toggle {
 	cursor: pointer;
 }
 
+/** Language */
+.dropdown-language {
+    font-size: 13px;
+    padding: 6px 2px 0px 0px;
+    margin: 0;
+}
+
+.dropdown-language > img {
+    padding-right: 6px;
+}
+
 /** Popovers */
 .popover {
     -moz-border-radius: 0;

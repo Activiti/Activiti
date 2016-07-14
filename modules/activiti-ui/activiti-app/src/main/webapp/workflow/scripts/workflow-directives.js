@@ -392,3 +392,43 @@ angular.module('activitiApp')
             }
         }
     }]);
+
+
+//headed language select element 
+angular.module('activitiApp')
+    .directive('ngTranslateLanguageSelect', ['LocaleService', function (LocaleService) { 'use strict';
+        return {
+            restrict: 'A',
+            replace: true,
+            template: ''+
+            '<div class="dropdown btn-group btn-group-sm">'+
+                    '<button ng-if="visibleLanguageSelectBar" type="button" class="btn btn-default dropdown-toggle dropdown-language"'+
+                        'data-toggle="dropdown">'+
+                        '<span class="dropdown-language">'+
+                        '<img alt="" ng-src="{{currentLocaleDisplayName.flag}}">'+
+                        '{{currentLocaleDisplayName.name}}</span>'+
+                        '<span class="glyphicon glyphicon-chevron-down" style="font-size: 10px" aria-hidden="true"></span>'+
+                    '</button>'+
+                    '<ul class="dropdown-menu pull-right">'+
+                        '<li ng-repeat="localesDisplayName in localesDisplayNames">'+
+                            '<a ng-click="changeLanguage(localesDisplayName)">'+
+                            '<img alt="" style="padding-right: 12px" ng-src="{{localesDisplayName.flag}}">&nbsp;'+
+                            '{{localesDisplayName.name}}</a>'+
+                        '</li>'+
+                    '</ul>'+
+                '</div>'+
+            '',
+            controller: function ($scope, $translate, $rootScope) {
+                $scope.currentLocaleDisplayName = LocaleService.getLocaleDisplayName();
+                $scope.localesDisplayNames = LocaleService.getLocalesDisplayNames();
+                $scope.visibleLanguageSelectBar = $scope.localesDisplayNames &&
+                $scope.localesDisplayNames.length > 1;
+    
+                $scope.changeLanguage = function (locale) {
+                    LocaleService.setLocaleByDisplayName(locale);
+                    $scope.currentLocaleDisplayName = LocaleService.getLocaleDisplayName();
+                };
+                
+            }
+        };
+    }]);
