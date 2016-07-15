@@ -27,8 +27,8 @@ import org.activiti.form.engine.impl.persistence.entity.data.ResourceDataManager
  */
 public class MybatisResourceDataManager extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
   
-  public MybatisResourceDataManager(FormEngineConfiguration dmnEngineConfiguration) {
-    super(dmnEngineConfiguration);
+  public MybatisResourceDataManager(FormEngineConfiguration formEngineConfiguration) {
+    super(formEngineConfiguration);
   }
 
   @Override

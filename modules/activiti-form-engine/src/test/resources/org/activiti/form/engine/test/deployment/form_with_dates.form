@@ -1,0 +1,25 @@
+{
+    "key": "dateform",
+    "name": "My date form",
+    "fields": [
+        {
+            "id": "input1",
+            "name": "Input1",
+            "type": "text",
+            "required": false,
+            "placeholder": "empty"
+        },
+        {
+            "id": "date1",
+            "name": "Date1",
+            "type": "date",
+            "required": true
+        },
+        {
+            "id": "date2",
+            "name": "Date2",
+            "type": "date",
+            "required": false
+        }
+    ]
+}

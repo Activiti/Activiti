@@ -19,7 +19,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RelatedContent;
 
 /**
@@ -55,5 +54,5 @@ public interface RelatedContentRepository extends JpaRepository<RelatedContent, 
     void deleteAllContentByProcessInstanceId(@Param("processInstanceId") String processInstanceId);
     
     @Query("select sum(r.contentSize) from RelatedContent r where r.createdBy = :user")
-    Long getTotalContentSizeForUser(@Param("user") User user);
+    Long getTotalContentSizeForUser(@Param("user") String user);
 }

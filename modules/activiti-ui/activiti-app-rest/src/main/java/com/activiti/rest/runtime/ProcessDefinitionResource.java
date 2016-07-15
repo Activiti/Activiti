@@ -14,17 +14,16 @@ package com.activiti.rest.runtime;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.form.model.FormDefinition;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.activiti.model.editor.form.FormDefinitionRepresentation;
 
 @RestController
 public class ProcessDefinitionResource extends AbstractProcessDefinitionResource {
     
     @RequestMapping(value = "/rest/process-definitions/{processDefinitionId}/start-form", method = RequestMethod.GET, produces = "application/json")
-    public FormDefinitionRepresentation getProcessDefinitionStartForm(HttpServletRequest request) {
+    public FormDefinition getProcessDefinitionStartForm(HttpServletRequest request) {
     	return super.getProcessDefinitionStartForm(request);
     }
 }

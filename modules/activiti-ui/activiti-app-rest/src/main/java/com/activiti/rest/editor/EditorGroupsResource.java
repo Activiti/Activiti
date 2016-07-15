@@ -27,7 +27,6 @@ public class EditorGroupsResource extends AbstractEditorGroupsResource {
 	
     @RequestMapping(value = "/rest/editor-groups", method = RequestMethod.GET)
     public ResultListDataRepresentation getGroups(@RequestParam(required=false, value="filter") String filter) {
-        
         return super.getGroups(filter);
     }
 }

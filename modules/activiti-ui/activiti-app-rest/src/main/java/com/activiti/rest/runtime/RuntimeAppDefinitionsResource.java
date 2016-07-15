@@ -17,11 +17,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.activiti.engine.identity.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RuntimeAppDefinition;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.security.SecurityUtils;

@@ -12,62 +12,58 @@
  */
 package com.activiti.model.runtime;
 
+import java.util.Date;
+
 import com.activiti.domain.runtime.Comment;
 import com.activiti.model.common.AbstractRepresentation;
-import com.activiti.model.idm.LightUserRepresentation;
-
-import java.util.Date;
 
 public class CommentRepresentation extends AbstractRepresentation {
 
-    private Long id;
-    private String message;
-    private Date created;
-    private LightUserRepresentation createdBy;
+  private Long id;
+  private String message;
+  private Date created;
+  private String createdBy;
 
-    public CommentRepresentation(Comment comment) {
-        this.id = comment.getId();
-        this.message = comment.getMessage();
-        this.created = comment.getCreated();
+  public CommentRepresentation(Comment comment) {
+    this.id = comment.getId();
+    this.message = comment.getMessage();
+    this.created = comment.getCreated();
+    this.createdBy = comment.getCreatedBy();
+  }
 
-        if (comment.getCreatedBy() != null) {
-            this.createdBy = new LightUserRepresentation(comment.getCreatedBy());
-        }
-    }
+  public CommentRepresentation() {
+  }
 
-    public CommentRepresentation() {
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Date getCreated() {
+    return created;
+  }
 
-    public Date getCreated() {
-        return created;
-    }
+  public void setCreated(Date created) {
+    this.created = created;
+  }
 
-    public void setCreated(Date created) {
-        this.created = created;
-    }
+  public String getCreatedBy() {
+    return createdBy;
+  }
 
-    public LightUserRepresentation getCreatedBy() {
-        return createdBy;
-    }
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 
-    public void setCreatedBy(LightUserRepresentation createdBy) {
-        this.createdBy = createdBy;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
 }

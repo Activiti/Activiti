@@ -14,13 +14,13 @@ package com.activiti.rest.runtime;
 
 import java.util.List;
 
+import org.activiti.form.model.FormDefinition;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.model.runtime.CompleteFormRepresentation;
 import com.activiti.model.runtime.ProcessInstanceVariableRepresentation;
 
@@ -32,7 +32,7 @@ import com.activiti.model.runtime.ProcessInstanceVariableRepresentation;
 public class TaskFormResource extends AbstractTaskFormResource {
     
 	@RequestMapping(value="/{taskId}", method = RequestMethod.GET, produces = "application/json")
-	public FormDefinitionRepresentation getTaskForm(@PathVariable String taskId) {
+	public FormDefinition getTaskForm(@PathVariable String taskId) {
 	    return super.getTaskForm(taskId);
 	}
 	

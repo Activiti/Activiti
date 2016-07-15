@@ -58,7 +58,7 @@
                             <span translate="PROCESS-LIST.FILTER.MY-PROCESSES-BPMN-HINT"></span>
                             <br>
                         </div>
-												<div class="help-entry" ng-click="importProcess()">
+						<div class="help-entry" ng-click="importProcess()">
                             <span class="glyphicon glyphicon-plus-sign"></span>
                             <span translate="PROCESS-LIST.FILTER.MY-PROCESSES-BPMN-IMPORT-HINT"></span>
                             <br>
@@ -74,7 +74,7 @@
 							<button id="detailsButton" type="button" ng-click="showProcessDetails(process); $event.stopPropagation();" class="btn btn-default" title="{{'PROCESS.ACTION.DETAILS' | translate}}">
 								<i class="glyphicon glyphicon-search"></i>
 							</button>
-							<button id="editButton" type="button" ng-disabled="process.permission != 'write'" ng-click="editProcessDetails(process); $event.stopPropagation();" class="btn btn-default" title="{{'PROCESS.ACTION.OPEN-IN-EDITOR' | translate}}">
+							<button id="editButton" type="button" ng-click="editProcessDetails(process); $event.stopPropagation();" class="btn btn-default" title="{{'PROCESS.ACTION.OPEN-IN-EDITOR' | translate}}">
 								<i class="glyphicon glyphicon-edit"></i>
 							</button>
 						</div>

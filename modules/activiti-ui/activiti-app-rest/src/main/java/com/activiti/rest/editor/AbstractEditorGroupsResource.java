@@ -12,57 +12,31 @@
  */
 package com.activiti.rest.editor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.activiti.domain.idm.Group;
-import com.activiti.domain.idm.User;
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.activiti.model.idm.LightGroupRepresentation;
-import com.activiti.model.idm.LightUserRepresentation;
-import com.activiti.service.api.GroupService;
-import com.activiti.service.exception.NotFoundException;
 
 public class AbstractEditorGroupsResource {
-	
-	private static final int MAX_GROUP_SIZE = 50;
 
-    @Inject
-    private GroupService groupService;
-    
-    public ResultListDataRepresentation getGroups(String filter) {
-        
-        int page = 0;
-        int pageSize = MAX_GROUP_SIZE;
-        
-        List<Group> matchingGroups = groupService.getGroups(filter, page, pageSize); // true => only want to show the active groups in the pickers
-        List<LightGroupRepresentation> resultList = new ArrayList<LightGroupRepresentation>();
-        for (Group group : matchingGroups) {
-            resultList.add(new LightGroupRepresentation(group));
-        }
-                
-        ResultListDataRepresentation result = new ResultListDataRepresentation(resultList);
-        // TODO: get total result count instead of page-count, in case the matching list's size is equal to the page size
-        return result;
-    }
-    
-    public ResultListDataRepresentation getUsersForGroup(Long groupId) {
-    	
-    	// Only works for functional groups
-    	// (regular users shouldn't be allowed to get info from system groups)
-    	Group group = groupService.getGroup(groupId);
-    	
-    	if (group == null) {
-    		throw new NotFoundException();
-    	}
+  @Autowired
+  private IdentityService identityService;
 
-    	List<LightUserRepresentation> groupUsers = new ArrayList<LightUserRepresentation>();
-    	for (User user : group.getUsers()) {
-    		groupUsers.add(new LightUserRepresentation(user));
-    	}
-    	return new ResultListDataRepresentation(groupUsers);
-    }
-    
+  public ResultListDataRepresentation getGroups(String filter) {
+    List<Group> matchingGroups = identityService.createGroupQuery().groupNameLike(filter).list();
+
+    ResultListDataRepresentation result = new ResultListDataRepresentation(matchingGroups);
+    // TODO: get total result count instead of page-count, in case the matching list's size is equal to the page size
+    return result;
+  }
+
+  public ResultListDataRepresentation getUsersForGroup(String groupId) {
+    List<User> groupUsers = identityService.createUserQuery().memberOfGroup(groupId).list();
+    return new ResultListDataRepresentation(groupUsers);
+  }
+
 }

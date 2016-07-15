@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityImpl">
+  
+  <!-- SUBMITTED FORM INSERT -->
+
+  <insert id="insertSubmittedForm" parameterType="org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityImpl">
+    insert into ${prefix}SUBMITTED_FORM(ID_, FORM_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_, SUBMITTED_DATE_, SUBMITTED_BY_, FORM_VALUES_ID_, TENANT_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            #{formId, jdbcType=VARCHAR},
+            #{taskId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR}, 
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{submittedDate, jdbcType=TIMESTAMP},
+            #{submittedBy, jdbcType=VARCHAR},
+            #{formValuesId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR})
+  </insert>
+
+  <!-- SUBMITTED FORM DELETE -->
+
+  <delete id="deleteSubmittedFormsByProcessDefinitionId" parameterType="string">
+    delete from ${prefix}SUBMITTED_FORM where PROC_DEF_ID_ = #{processDefinitionId} 
+  </delete>
+  
+  <!-- SUBMITTED FORM RESULTMAP -->
+
+  <resultMap id="submittedFormResultMap" type="org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="formId" column="FORM_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+    <result property="submittedDate" column="SUBMITTED_DATE_" jdbcType="TIMESTAMP"/>
+    <result property="submittedBy" column="SUBMITTED_BY_" jdbcType="VARCHAR"/>
+    <result property="formValuesId" column="FORM_VALUES_ID_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- SUBMITTED FORM DEFINITION SELECT -->
+
+  <select id="selectSubmittedForm" parameterType="string" resultMap="submittedFormResultMap">
+    select * from ${prefix}SUBMITTED_FORM where ID_ = #{submittedFormId, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectSubmittedFormById" parameterType="string" resultMap="submittedFormResultMap">
+    select * from ${prefix}SUBMITTED_FORM where ID_ = #{SUBMITTED_FORM}
+  </select>
+
+</mapper>

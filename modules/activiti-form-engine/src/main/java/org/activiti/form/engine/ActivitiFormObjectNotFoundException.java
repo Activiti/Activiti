@@ -15,6 +15,8 @@ package org.activiti.form.engine;
 public class ActivitiFormObjectNotFoundException extends ActivitiFormException {
 
   private static final long serialVersionUID = 1L;
+  
+  protected Class<?> objectClass;
 
   public ActivitiFormObjectNotFoundException(String message, Throwable cause) {
     super(message, cause);
@@ -22,5 +24,17 @@ public class ActivitiFormObjectNotFoundException extends ActivitiFormException {
 
   public ActivitiFormObjectNotFoundException(String message) {
     super(message);
+  }
+  
+  public ActivitiFormObjectNotFoundException(String message, Class<?> objectClass) {
+    this(message);
+    this.objectClass = objectClass;
+  }
+  
+  /**
+   * The class of the object that was not found. Contains the interface-class of the Activiti form object that was not found.
+   */
+  public Class<?> getObjectClass() {
+    return objectClass;
   }
 }

@@ -8,11 +8,11 @@
 			<a href="{{model.appExportUrl}}" class="btn btn-default" title="{{'APP.ACTION.EXPORT-ZIP' | translate}}" ng-if="model.app.latestVersion">
                 <i class="glyphicon glyphicon-save"></i>
             </a>
-            <button type="button" class="btn btn-default" ng-click="importAppDefinition()" ng-if="model.app.latestVersion" ng-disabled="model.app.permission != 'write'" translate>APPS-LIST.ACTION.IMPORT</button>
-			<button type="button" class="btn btn-default" ng-click="publish()" ng-if="model.app.latestVersion" ng-disabled="model.app.permission != 'write'">
+            <button type="button" class="btn btn-default" ng-click="importAppDefinition()" ng-if="model.app.latestVersion" translate>APPS-LIST.ACTION.IMPORT</button>
+			<button type="button" class="btn btn-default" ng-click="publish()" ng-if="model.app.latestVersion">
                 {{'APP.ACTION.PUBLISH' | translate}}
             </button>
-		    <button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.app.latestVersion" ng-disabled="model.app.permission != 'write'">
+		    <button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.app.latestVersion">
                 <i class="glyphicon glyphicon-edit icon-and-label"></i> {{'APP.ACTION.OPEN-IN-EDITOR' | translate}}
             </button>
 		</div>
@@ -23,7 +23,7 @@
 			</button>
 		</div>
 		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" ng-click="editApp()" ng-disabled="!model.app.latestVersion || model.app.permission != 'write'"
+			<button type="button" class="btn btn-default" ng-click="editApp()" ng-disabled="!model.app.latestVersion"
 				title="{{'APP.ACTION.EDIT' | translate}}">
 				<i class="glyphicon glyphicon-pencil"></i>
 			</button>
@@ -32,7 +32,7 @@
                 <i class="editor-icon editor-icon-copy"></i>
 			</button>
 			<button type="button" class="btn btn-default" ng-click="deleteApp()" title="{{'APP.ACTION.DELETE' | translate}}"
-				 title="{{'APP.ACTION.DELETE' | translate}}" ng-disabled="!model.app.latestVersion || model.app.permission != 'write'">
+				 title="{{'APP.ACTION.DELETE' | translate}}" ng-disabled="!model.app.latestVersion">
 				<i class="glyphicon glyphicon-trash"></i>
 			</button>
 		</div>		

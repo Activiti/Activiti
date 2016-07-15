@@ -28,6 +28,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
@@ -36,11 +37,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.component.SimpleContentTypeMapper;
-import com.activiti.model.idm.LightUserRepresentation;
 import com.activiti.model.runtime.ProcessInstanceRepresentation;
 import com.activiti.model.runtime.RelatedContentRepresentation;
 import com.activiti.security.SecurityUtils;
@@ -252,11 +251,11 @@ public abstract class AbstractRelatedContentResource {
         if (CollectionUtils.isNotEmpty(instances)) {
 
             for (HistoricProcessInstance processInstance : instances) {
-                LightUserRepresentation userRep = null;
+                User userRep = null;
                 if(processInstance.getStartUserId() != null) {
-                    UserCache.CachedUser user = userCache.getUser(Long.parseLong(processInstance.getStartUserId()));
+                    UserCache.CachedUser user = userCache.getUser(processInstance.getStartUserId());
                     if(user != null && user.getUser() != null) {
-                        userRep = new LightUserRepresentation(user.getUser());
+                        userRep = user.getUser();
                     }
                 }
 
@@ -316,7 +315,7 @@ public abstract class AbstractRelatedContentResource {
         }
         
         ResultListDataRepresentation result = new ResultListDataRepresentation(resultList);
-        result.setTotal((int) results.getTotalElements());
+        result.setTotal(results.getTotalElements());
         return result;
     }
     

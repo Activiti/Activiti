@@ -14,30 +14,65 @@ package org.activiti.form.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.form.engine.ActivitiFormIllegalArgumentException;
+import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
+import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
-import org.activiti.form.engine.impl.util.FormUtil;
+import org.activiti.form.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.form.engine.impl.persistence.entity.FormEntity;
 import org.activiti.form.model.FormDefinition;
 
 /**
- * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class GetFormDefinitionCmd implements Command<FormDefinition>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  protected String formDefinitionKey;
   protected String formId;
+  protected String tenantId;
 
-  public GetFormDefinitionCmd(String formId) {
+  public GetFormDefinitionCmd(String formDefinitionKey, String formId) {
+    this.formDefinitionKey = formDefinitionKey;
     this.formId = formId;
+  }
+  
+  public GetFormDefinitionCmd(String formDefinitionKey, String formId, String tenantId) {
+    this(formDefinitionKey, formId);
+    this.tenantId = tenantId;
   }
 
   public FormDefinition execute(CommandContext commandContext) {
-    if (formId == null) {
-      throw new ActivitiFormIllegalArgumentException("formId is null");
-    }
+    DeploymentManager deploymentManager = commandContext.getFormEngineConfiguration().getDeploymentManager();
 
-    return FormUtil.getFormDefinition(formId);
+    // Find the form definition
+    FormEntity formEntity = null;
+    if (formId != null) {
+
+      formEntity = deploymentManager.findDeployedFormById(formId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for id = '" + formId + "'", FormEntity.class);
+      }
+
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKey(formDefinitionKey);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "'", FormEntity.class);
+      }
+
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyAndTenantId(formDefinitionKey, tenantId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "' for tenant identifier " + tenantId, FormEntity.class);
+      }
+
+    } else {
+      throw new ActivitiFormObjectNotFoundException("formDefinitionKey and formDefinitionId are null");
+    }
+    
+    return deploymentManager.resolveForm(formEntity).getFormDefinition();
   }
 }

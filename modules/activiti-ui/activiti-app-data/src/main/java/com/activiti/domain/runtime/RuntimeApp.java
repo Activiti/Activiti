@@ -23,11 +23,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
+import org.activiti.engine.identity.User;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.activiti.domain.common.IdBlockSize;
-import com.activiti.domain.idm.User;
 
 /**
  * An entity connecting a {@link User} with a {@link RuntimeAppDefinition}. Indicates
@@ -50,10 +50,8 @@ public class RuntimeApp {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     protected RuntimeAppDefinition appDefinition;
     
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="app_user")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    protected User user;
+    @Column(name="app_user")
+    protected String user;
 
     public Long getId() {
         return id;
@@ -71,11 +69,11 @@ public class RuntimeApp {
         this.appDefinition = appDefinition;
     }
 
-    public User getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(String user) {
         this.user = user;
     }
     

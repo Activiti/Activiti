@@ -46,7 +46,6 @@
 		<module>activiti-app-data</module>	
 		<module>content-storage-api</module>
 		<module>content-storage-fs</module>
-		<module>activiti-cipher</module>
 		<module>editor-image-generator</module>
 		<module>activiti-app-model</module>
 		<module>activiti-app-logic</module>
@@ -63,11 +62,6 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>content-storage-fs</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-cipher</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -132,6 +126,21 @@
 			<artifactId>activiti-bpmn-layout</artifactId>
 			<version>${activiti.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-engine</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-model</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-json-converter</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-image-generator</artifactId>

@@ -55,8 +55,7 @@ public class QueryVariableValue implements Serializable {
       } else if (type instanceof JPAEntityListVariableType) {
         throw new ActivitiIllegalArgumentException("Variables containing a list of JPA entities cannot be used to query");
       } else {
-        // Type implementation determines which fields are set on the
-        // entity
+        // Type implementation determines which fields are set on the entity
         variableInstanceEntity = Context.getCommandContext().getVariableInstanceEntityManager().create(name, type, value);
       }
     }

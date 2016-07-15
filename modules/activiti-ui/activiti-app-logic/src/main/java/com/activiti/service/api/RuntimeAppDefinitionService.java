@@ -12,12 +12,13 @@
  */
 package com.activiti.service.api;
 
-import com.activiti.domain.idm.User;
+import java.util.List;
+
+import org.activiti.engine.identity.User;
+
 import com.activiti.domain.runtime.RuntimeApp;
 import com.activiti.domain.runtime.RuntimeAppDefinition;
 import com.activiti.domain.runtime.RuntimeAppDeployment;
-
-import java.util.List;
 
 public interface RuntimeAppDefinitionService {
 

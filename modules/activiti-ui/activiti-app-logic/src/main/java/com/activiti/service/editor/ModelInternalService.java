@@ -13,11 +13,11 @@
 package com.activiti.service.editor;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.identity.User;
 
 import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
-import com.activiti.domain.idm.User;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation;
 import com.activiti.service.api.ModelService;

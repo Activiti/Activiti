@@ -66,12 +66,16 @@ import org.activiti.form.engine.impl.persistence.entity.FormEntityManager;
 import org.activiti.form.engine.impl.persistence.entity.FormEntityManagerImpl;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntityManagerImpl;
+import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityManager;
+import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityManagerImpl;
 import org.activiti.form.engine.impl.persistence.entity.data.FormDataManager;
 import org.activiti.form.engine.impl.persistence.entity.data.FormDeploymentDataManager;
 import org.activiti.form.engine.impl.persistence.entity.data.ResourceDataManager;
+import org.activiti.form.engine.impl.persistence.entity.data.SubmittedFormDataManager;
 import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisFormDataManager;
 import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisFormDeploymentDataManager;
 import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisResourceDataManager;
+import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisSubmittedFormDataManager;
 import org.activiti.form.engine.impl.util.DefaultClockImpl;
 import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -92,6 +96,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import liquibase.Liquibase;
@@ -101,7 +106,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
-public abstract class FormEngineConfiguration {
+public class FormEngineConfiguration {
 
   protected static final Logger logger = LoggerFactory.getLogger(FormEngineConfiguration.class);
 
@@ -177,11 +182,13 @@ public abstract class FormEngineConfiguration {
   protected FormDeploymentDataManager deploymentDataManager;
   protected FormDataManager formDataManager;
   protected ResourceDataManager resourceDataManager;
+  protected SubmittedFormDataManager submittedFormDataManager;
 
   // ENTITY MANAGERS /////////////////////////////////////////////////
   protected FormDeploymentEntityManager deploymentEntityManager;
   protected FormEntityManager formEntityManager;
   protected ResourceEntityManager resourceEntityManager;
+  protected SubmittedFormEntityManager submittedFormEntityManager;
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
@@ -198,6 +205,8 @@ public abstract class FormEngineConfiguration {
   protected List<SessionFactory> customSessionFactories;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected Map<Class<?>, SessionFactory> sessionFactories;
+  
+  protected ObjectMapper objectMapper = new ObjectMapper();
 
   protected boolean transactionsExternallyManaged;
 
@@ -299,10 +308,6 @@ public abstract class FormEngineConfiguration {
   protected IdGenerator idGenerator;
 
   protected Clock clock;
-
-  /** use one of the static createXxxx methods instead */
-  protected FormEngineConfiguration() {
-  }
 
   public static FormEngineConfiguration createFormEngineConfigurationFromResourceDefault() {
     return createFormEngineConfigurationFromResource("activiti.form.cfg.xml", "formEngineConfiguration");
@@ -411,6 +416,9 @@ public abstract class FormEngineConfiguration {
     if (resourceDataManager == null) {
       resourceDataManager = new MybatisResourceDataManager(this);
     }
+    if (submittedFormDataManager == null) {
+      submittedFormDataManager = new MybatisSubmittedFormDataManager(this);
+    }
   }
 
   public void initEntityManagers() {
@@ -422,6 +430,9 @@ public abstract class FormEngineConfiguration {
     }
     if (resourceEntityManager == null) {
       resourceEntityManager = new ResourceEntityManagerImpl(this, resourceDataManager);
+    }
+    if (submittedFormEntityManager == null) {
+      submittedFormEntityManager = new SubmittedFormEntityManagerImpl(this, submittedFormDataManager);
     }
   }
 
@@ -649,7 +660,9 @@ public abstract class FormEngineConfiguration {
     return chain.get(0);
   }
 
-  public abstract CommandInterceptor createTransactionInterceptor();
+  public CommandInterceptor createTransactionInterceptor() {
+    return null;
+  }
 
   // deployers
   // ////////////////////////////////////////////////////////////////
@@ -1113,6 +1126,14 @@ public abstract class FormEngineConfiguration {
     this.resourceDataManager = resourceDataManager;
   }
 
+  public SubmittedFormDataManager getSubmittedFormDataManager() {
+    return submittedFormDataManager;
+  }
+
+  public void setSubmittedFormDataManager(SubmittedFormDataManager submittedFormDataManager) {
+    this.submittedFormDataManager = submittedFormDataManager;
+  }
+
   public FormDeploymentEntityManager getDeploymentEntityManager() {
     return deploymentEntityManager;
   }
@@ -1135,6 +1156,14 @@ public abstract class FormEngineConfiguration {
 
   public void setResourceEntityManager(ResourceEntityManager resourceEntityManager) {
     this.resourceEntityManager = resourceEntityManager;
+  }
+  
+  public SubmittedFormEntityManager getSubmittedFormEntityManager() {
+    return submittedFormEntityManager;
+  }
+
+  public void setSubmittedFormEntityManager(SubmittedFormEntityManager submittedFormEntityManager) {
+    this.submittedFormEntityManager = submittedFormEntityManager;
   }
 
   public CommandContextFactory getCommandContextFactory() {
@@ -1262,6 +1291,15 @@ public abstract class FormEngineConfiguration {
 
   public FormEngineConfiguration setClock(Clock clock) {
     this.clock = clock;
+    return this;
+  }
+  
+  public ObjectMapper getObjectMapper() {
+    return objectMapper;
+  }
+  
+  public FormEngineConfiguration setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
     return this;
   }
 }
