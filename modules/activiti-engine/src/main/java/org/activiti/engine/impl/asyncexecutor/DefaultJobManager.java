@@ -12,6 +12,7 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
@@ -46,21 +47,22 @@ public class DefaultJobManager implements JobManager {
   
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   
+  public DefaultJobManager() {
+  }
+  
   public DefaultJobManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
   }
   
   @Override
   public JobEntity createAsyncJob(ExecutionEntity execution, boolean exclusive) {
-    CommandContext commandContext = Context.getCommandContext();
-    
     JobEntity jobEntity = null;
     // When the async executor is activated, the job is directly passed on to the async executor thread
     if (isAsyncExecutorActive()) {
-      jobEntity = createLockedAsyncJob(execution, exclusive, commandContext);
+      jobEntity = internalCreateLockedAsyncJob(execution, exclusive);
       
     } else {
-      jobEntity = createAsyncJob(execution, exclusive, commandContext);
+      jobEntity = internalCreateAsyncJob(execution, exclusive);
     }
     
     return jobEntity;
@@ -68,9 +70,11 @@ public class DefaultJobManager implements JobManager {
 
   @Override
   public void scheduleAsyncJob(JobEntity jobEntity) {
-    CommandContext commandContext = Context.getCommandContext();
-    commandContext.getJobEntityManager().insert(jobEntity);
-    
+    processEngineConfiguration.getJobEntityManager().insert(jobEntity);
+    triggerExecutorIfNeeded(jobEntity);
+  }
+
+  protected void triggerExecutorIfNeeded(JobEntity jobEntity) {
     // When the async executor is activated, the job is directly passed on to the async executor thread
     if (isAsyncExecutorActive()) {
       hintAsyncExecutor(jobEntity); 
@@ -93,8 +97,7 @@ public class DefaultJobManager implements JobManager {
       throw new ActivitiException("Empty timer job can not be scheduled");
     }
     
-    CommandContext commandContext = Context.getCommandContext();
-    commandContext.getTimerJobEntityManager().insert(timerJob);
+    processEngineConfiguration.getTimerJobEntityManager().insert(timerJob);
   }
   
   @Override
@@ -103,17 +106,11 @@ public class DefaultJobManager implements JobManager {
       throw new ActivitiException("Empty timer job can not be scheduled");
     }
     
-    CommandContext commandContext = Context.getCommandContext();
-    JobEntity executableJob = createExecutableJobFromOtherJob(timerJob, commandContext);
-    boolean insertSuccesful = commandContext.getJobEntityManager().insertJobEntity(executableJob);
+    JobEntity executableJob = createExecutableJobFromOtherJob(timerJob);
+    boolean insertSuccesful = processEngineConfiguration.getJobEntityManager().insertJobEntity(executableJob);
     if (insertSuccesful) {
-      commandContext.getTimerJobEntityManager().delete(timerJob);
-      
-      // When the async executor is activated, the job is directly passed on to the async executor thread
-      if (isAsyncExecutorActive()) {
-        hintAsyncExecutor(executableJob); 
-      }
-    
+      processEngineConfiguration.getTimerJobEntityManager().delete(timerJob);
+      triggerExecutorIfNeeded(executableJob);
       return executableJob;
     }
     return null;
@@ -121,14 +118,13 @@ public class DefaultJobManager implements JobManager {
   
   @Override
   public TimerJobEntity moveJobToTimerJob(AbstractJobEntity job) {
-    CommandContext commandContext = Context.getCommandContext();
-    TimerJobEntity timerJob = createTimerJobFromOtherJob(job, commandContext);
-    boolean insertSuccesful = commandContext.getTimerJobEntityManager().insertTimerJobEntity(timerJob);
+    TimerJobEntity timerJob = createTimerJobFromOtherJob(job);
+    boolean insertSuccesful = processEngineConfiguration.getTimerJobEntityManager().insertTimerJobEntity(timerJob);
     if (insertSuccesful) {
       if (job instanceof JobEntity) {
-        commandContext.getJobEntityManager().delete((JobEntity) job);
+        processEngineConfiguration.getJobEntityManager().delete((JobEntity) job);
       } else if (job instanceof SuspendedJobEntity) {
-        commandContext.getSuspendedJobEntityManager().delete((SuspendedJobEntity) job);
+        processEngineConfiguration.getSuspendedJobEntityManager().delete((SuspendedJobEntity) job);
       }
       
       return timerJob;
@@ -138,14 +134,13 @@ public class DefaultJobManager implements JobManager {
   
   @Override
   public SuspendedJobEntity moveJobToSuspendedJob(AbstractJobEntity job) {
-    CommandContext commandContext = Context.getCommandContext();
-    SuspendedJobEntity suspendedJob = createSuspendedJobFromOtherJob(job, commandContext);
-    commandContext.getSuspendedJobEntityManager().insert(suspendedJob);
+    SuspendedJobEntity suspendedJob = createSuspendedJobFromOtherJob(job);
+    processEngineConfiguration.getSuspendedJobEntityManager().insert(suspendedJob);
     if (job instanceof TimerJobEntity) {
-      commandContext.getTimerJobEntityManager().delete((TimerJobEntity) job);
+      processEngineConfiguration.getTimerJobEntityManager().delete((TimerJobEntity) job);
       
     } else if (job instanceof JobEntity) {
-      commandContext.getJobEntityManager().delete((JobEntity) job);
+      processEngineConfiguration.getJobEntityManager().delete((JobEntity) job);
     }
     
     return suspendedJob;
@@ -153,36 +148,54 @@ public class DefaultJobManager implements JobManager {
   
   @Override
   public AbstractJobEntity activateSuspendedJob(SuspendedJobEntity job) {
-    CommandContext commandContext = Context.getCommandContext();
     AbstractJobEntity activatedJob = null;
     if (Job.JOB_TYPE_TIMER.equals(job.getJobType())) {
-      activatedJob = createTimerJobFromOtherJob(job, commandContext);
-      commandContext.getTimerJobEntityManager().insert((TimerJobEntity) activatedJob);
+      activatedJob = createTimerJobFromOtherJob(job);
+      processEngineConfiguration.getTimerJobEntityManager().insert((TimerJobEntity) activatedJob);
       
     } else {
-      activatedJob = createExecutableJobFromOtherJob(job, commandContext);
-      commandContext.getJobEntityManager().insert((JobEntity) activatedJob);
+      activatedJob = createExecutableJobFromOtherJob(job);
+      JobEntity jobEntity = (JobEntity) activatedJob;
+      processEngineConfiguration.getJobEntityManager().insert(jobEntity);
+      triggerExecutorIfNeeded(jobEntity);
     }
     
-    commandContext.getSuspendedJobEntityManager().delete(job);
+    processEngineConfiguration.getSuspendedJobEntityManager().delete(job);
     return activatedJob;
   }
   
   @Override
   public DeadLetterJobEntity moveJobToDeadLetterJob(AbstractJobEntity job) {
-    CommandContext commandContext = Context.getCommandContext();
-    DeadLetterJobEntity deadLetterJob = createDeadLetterJobFromOtherJob(job, commandContext);
-    commandContext.getDeadLetterJobEntityManager().insert(deadLetterJob);
+    DeadLetterJobEntity deadLetterJob = createDeadLetterJobFromOtherJob(job);
+    processEngineConfiguration.getDeadLetterJobEntityManager().insert(deadLetterJob);
     if (job instanceof TimerJobEntity) {
-      commandContext.getTimerJobEntityManager().delete((TimerJobEntity) job);
+      processEngineConfiguration.getTimerJobEntityManager().delete((TimerJobEntity) job);
       
     } else if (job instanceof JobEntity) {
-      commandContext.getJobEntityManager().delete((JobEntity) job);
+      processEngineConfiguration.getJobEntityManager().delete((JobEntity) job);
     }
     
     return deadLetterJob;
   }
   
+  @Override
+  public JobEntity moveDeadLetterJobToExecutableJob(DeadLetterJobEntity deadLetterJobEntity, int retries) {
+    if (deadLetterJobEntity == null) {
+      throw new ActivitiIllegalArgumentException("Null job provided");
+    }
+    
+    JobEntity executableJob = createExecutableJobFromOtherJob(deadLetterJobEntity);
+    executableJob.setRetries(retries);
+    boolean insertSuccesful = processEngineConfiguration.getJobEntityManager().insertJobEntity(executableJob);
+    if (insertSuccesful) {
+      processEngineConfiguration.getDeadLetterJobEntityManager().delete(deadLetterJobEntity);
+      triggerExecutorIfNeeded(executableJob);
+      return executableJob;
+    }
+    return null;
+  }
+  
+  @Override
   public void execute(Job job) {
     if (job instanceof JobEntity) {
       if (Job.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
@@ -195,6 +208,33 @@ public class DefaultJobManager implements JobManager {
       throw new ActivitiException("Only jobs with type JobEntity are supported to be executed");
     }
   }
+  
+  @Override
+  public void unacquire(Job job) {
+    
+    // Deleting the old job and inserting it again with another id,
+    // will avoid that the job is immediately is picked up again (for example
+    // when doing lots of exclusive jobs for the same process instance)
+    if (job instanceof JobEntity) {
+      JobEntity jobEntity = (JobEntity) job;
+      processEngineConfiguration.getJobEntityManager().delete(jobEntity.getId());
+      
+      JobEntity newJobEntity = processEngineConfiguration.getJobEntityManager().create();
+      copyJobInfo(newJobEntity, jobEntity);
+      newJobEntity.setId(null); // We want a new id to be assigned to this job
+      newJobEntity.setLockExpirationTime(null);
+      newJobEntity.setLockOwner(null);
+      processEngineConfiguration.getJobEntityManager().insert(newJobEntity);
+      
+      // We're not calling triggerExecutorIfNeeded here after the inser. The unacquire happened
+      // for a reason (eg queue full or exclusive lock failure). No need to try it immediately again,
+      // as the chance of failure will be high.
+      
+    } else {
+      throw new ActivitiException("Only JobEntity instances can be unacquired");
+    }
+    
+  }
    
   protected void executeMessageJob(JobEntity jobEntity) {
     executeJobHandler(jobEntity);
@@ -204,8 +244,7 @@ public class DefaultJobManager implements JobManager {
   }
    
   protected void executeTimerJob(JobEntity timerEntity) {
-    CommandContext commandContext = Context.getCommandContext();
-    TimerJobEntityManager timerJobEntityManager = commandContext.getTimerJobEntityManager();
+    TimerJobEntityManager timerJobEntityManager = processEngineConfiguration.getTimerJobEntityManager();
     
     VariableScope variableScope = null;
     if (timerEntity.getExecutionId() != null) {
@@ -223,12 +262,12 @@ public class DefaultJobManager implements JobManager {
       if (logger.isDebugEnabled()) {
         logger.debug("Timer {} fired. but the dueDate is after the endDate.  Deleting timer.", timerEntity.getId());
       }
-      commandContext.getJobEntityManager().delete(timerEntity);
+      processEngineConfiguration.getJobEntityManager().delete(timerEntity);
       return;
     }
 
     executeJobHandler(timerEntity);
-    commandContext.getJobEntityManager().delete(timerEntity);
+    processEngineConfiguration.getJobEntityManager().delete(timerEntity);
 
     if (logger.isDebugEnabled()) {
       logger.debug("Timer {} fired. Deleting timer.", timerEntity.getId());
@@ -356,14 +395,14 @@ public class DefaultJobManager implements JobManager {
     getCommandContext().addCloseListener(jobAddedNotification);
   }
   
-  protected JobEntity createAsyncJob(ExecutionEntity execution, boolean exclusive, CommandContext commandContext) {
-    JobEntity asyncJob = commandContext.getJobEntityManager().create();
+  protected JobEntity internalCreateAsyncJob(ExecutionEntity execution, boolean exclusive) {
+    JobEntity asyncJob = processEngineConfiguration.getJobEntityManager().create();
     fillDefaultAsyncJobInfo(asyncJob, execution, exclusive);
     return asyncJob;
   }
   
-  protected JobEntity createLockedAsyncJob(ExecutionEntity execution, boolean exclusive, CommandContext commandContext) {
-    JobEntity asyncJob = commandContext.getJobEntityManager().create();
+  protected JobEntity internalCreateLockedAsyncJob(ExecutionEntity execution, boolean exclusive) {
+    JobEntity asyncJob = processEngineConfiguration.getJobEntityManager().create();
     fillDefaultAsyncJobInfo(asyncJob, execution, exclusive);
     
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
@@ -391,8 +430,8 @@ public class DefaultJobManager implements JobManager {
     }
   }
   
-  protected JobEntity createExecutableJobFromOtherJob(AbstractJobEntity job, CommandContext commandContext) {
-    JobEntity executableJob = commandContext.getJobEntityManager().create();
+  protected JobEntity createExecutableJobFromOtherJob(AbstractJobEntity job) {
+    JobEntity executableJob = processEngineConfiguration.getJobEntityManager().create();
     copyJobInfo(executableJob, job);
     
     if (isAsyncExecutorActive()) {
@@ -406,20 +445,20 @@ public class DefaultJobManager implements JobManager {
     return executableJob;
   }
   
-  protected TimerJobEntity createTimerJobFromOtherJob(AbstractJobEntity otherJob, CommandContext commandContext) {
-    TimerJobEntity timerJob = commandContext.getTimerJobEntityManager().create();
+  protected TimerJobEntity createTimerJobFromOtherJob(AbstractJobEntity otherJob) {
+    TimerJobEntity timerJob = processEngineConfiguration.getTimerJobEntityManager().create();
     copyJobInfo(timerJob, otherJob);
     return timerJob;
   }
   
-  protected SuspendedJobEntity createSuspendedJobFromOtherJob(AbstractJobEntity otherJob, CommandContext commandContext) {
-    SuspendedJobEntity suspendedJob = commandContext.getSuspendedJobEntityManager().create();
+  protected SuspendedJobEntity createSuspendedJobFromOtherJob(AbstractJobEntity otherJob) {
+    SuspendedJobEntity suspendedJob = processEngineConfiguration.getSuspendedJobEntityManager().create();
     copyJobInfo(suspendedJob, otherJob);
     return suspendedJob;
   }
   
-  protected DeadLetterJobEntity createDeadLetterJobFromOtherJob(AbstractJobEntity otherJob, CommandContext commandContext) {
-    DeadLetterJobEntity deadLetterJob = commandContext.getDeadLetterJobEntityManager().create();
+  protected DeadLetterJobEntity createDeadLetterJobFromOtherJob(AbstractJobEntity otherJob) {
+    DeadLetterJobEntity deadLetterJob = processEngineConfiguration.getDeadLetterJobEntityManager().create();
     copyJobInfo(deadLetterJob, otherJob);
     return deadLetterJob;
   }
@@ -446,6 +485,14 @@ public class DefaultJobManager implements JobManager {
     return copyToJob;
   }
   
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
+
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
+
   protected boolean isAsyncExecutorActive() {
     return processEngineConfiguration.getAsyncExecutor().isActive();
   }

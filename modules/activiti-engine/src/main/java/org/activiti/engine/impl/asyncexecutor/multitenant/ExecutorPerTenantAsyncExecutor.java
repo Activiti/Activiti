@@ -20,6 +20,7 @@ import java.util.Set;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.runtime.Job;
@@ -41,8 +42,7 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   
   protected Map<String, AsyncExecutor> tenantExecutors = new HashMap<String, AsyncExecutor>();
   
-  protected CommandExecutor commandExecutor;
-  protected JobManager jobManager;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected boolean active;
   protected boolean autoActivate;
   
@@ -76,7 +76,7 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
       defaultAsyncJobExecutor.setExecuteAsyncRunnableFactory(new TenantAwareExecuteAsyncRunnableFactory(tenantInfoHolder, tenantId));
     }
     
-    tenantExecutor.setCommandExecutor(commandExecutor); // Needs to be done for job executors created after boot. Doesn't hurt on boot.
+    tenantExecutor.setProcessEngineConfiguration(processEngineConfiguration); // Needs to be done for job executors created after boot. Doesn't hurt on boot.
     
     tenantExecutors.put(tenantId, tenantExecutor);
     
@@ -99,28 +99,21 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     return determineAsyncExecutor().executeAsyncJob(job);
   }
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-    for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-      asyncExecutor.setCommandExecutor(commandExecutor);
-    }
-  }
-
   public JobManager getJobManager() {
     // Should never be accessed on this class, should be accessed on the actual AsyncExecutor
     throw new UnsupportedOperationException(); 
   }
   
-  public void setJobManager(JobManager jobManager) {
-    this.jobManager = jobManager;
+  @Override
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
     for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-      asyncExecutor.setJobManager(jobManager);
+      asyncExecutor.setProcessEngineConfiguration(processEngineConfiguration);
     }
   }
-
-  public CommandExecutor getCommandExecutor() {
-    // Should never be accessed on this class, should be accessed on the actual AsyncExecutor
-    throw new UnsupportedOperationException(); 
+  
+  @Override
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    throw new UnsupportedOperationException();
   }
 
   public boolean isAutoActivate() {

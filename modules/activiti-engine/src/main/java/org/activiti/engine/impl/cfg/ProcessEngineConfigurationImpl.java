@@ -699,6 +699,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * By default one minute.
    */
   protected int asyncExecutorResetExpiredJobsInterval = 60 * 1000;
+  
+  /**
+   * Experimental!
+   * 
+   * Set this to true when using the message queue based job executor.
+   */
+  protected boolean asyncExecutorMessageQueueMode;
  
  /**
   * Allows to define a custom factory for creating the {@link Runnable} that is executed by the async executor.
@@ -1917,6 +1924,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (asyncExecutor == null) {
       DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
       
+      // Message queue mode
+      defaultAsyncExecutor.setMessageQueueMode(asyncExecutorMessageQueueMode);
+      
       // Thread pool config
       defaultAsyncExecutor.setCorePoolSize(asyncExecutorCorePoolSize);
       defaultAsyncExecutor.setMaxPoolSize(asyncExecutorMaxPoolSize);
@@ -1955,8 +1965,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       asyncExecutor = defaultAsyncExecutor;
     }
     
-    asyncExecutor.setCommandExecutor(commandExecutor);
-    asyncExecutor.setJobManager(jobManager);
+    asyncExecutor.setProcessEngineConfiguration(this);
     asyncExecutor.setAutoActivate(asyncExecutorActivate);
   }
 
@@ -3928,5 +3937,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.asyncExecutorResetExpiredJobsPageSize = asyncExecutorResetExpiredJobsPageSize;
     return this;
   }
+
+  public boolean isAsyncExecutorIsMessageQueueMode() {
+    return asyncExecutorMessageQueueMode;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorMessageQueueMode(boolean asyncExecutorMessageQueueMode) {
+    this.asyncExecutorMessageQueueMode = asyncExecutorMessageQueueMode;
+    return this;
+  }
+  
+  
   
 }

@@ -21,7 +21,7 @@
         <property name="databaseSchemaUpdate" value="true"/>
         <property name="activiti5CompatibilityEnabled" value="true" />
         <property name="activiti5CompatibilityHandlerFactory" ref="activiti5CompabilityFactory" />
-        <property name="jobExecutorActivate" value="false"/>
+        <property name="asyncExecutorActivate" value="false"/>
         <property name="deploymentMode" value="single-resource"/>
         <property name="deploymentResources"
                   value="classpath*:/org/activiti5/spring/test/autodeployment/autodeploy.*.bpmn20.xml"/>

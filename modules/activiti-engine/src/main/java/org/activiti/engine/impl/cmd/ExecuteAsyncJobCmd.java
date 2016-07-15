@@ -33,16 +33,16 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteAsyncJobCmd.class);
 
-  protected Job job;
+  protected String jobId;
 
-  public ExecuteAsyncJobCmd(Job job) {
-    this.job = job;
+  public ExecuteAsyncJobCmd(String jobId) {
+    this.jobId = jobId;
   }
 
   public Object execute(CommandContext commandContext) {
 
-    if (job == null) {
-      throw new ActivitiIllegalArgumentException("job is null");
+    if (jobId == null) {
+      throw new ActivitiIllegalArgumentException("jobId is null");
     }
     
     // We need to refetch the job, as it could have been deleted by another concurrent job
@@ -51,22 +51,22 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
     // However, the async task jobs could already have been fetched and put in the queue.... while in reality they have been deleted. 
     // A refetch is thus needed here to be sure that it exists for this transaction.
     
-    Job refetchedJob = commandContext.getJobEntityManager().findById(job.getId());
-    if (refetchedJob == null) {
+    Job job = commandContext.getJobEntityManager().findById(jobId);
+    if (job == null) {
       log.debug("Job does not exist anymore and will not be executed. It has most likely been deleted "
           + "as part of another concurrent part of the process instance.");
       return null;
     }
 
     if (log.isDebugEnabled()) {
-      log.debug("Executing async job {}", refetchedJob.getId());
+      log.debug("Executing async job {}", job.getId());
     }
 
-    commandContext.getJobManager().execute(refetchedJob);
+    commandContext.getJobManager().execute(job);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, refetchedJob));
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
     }
 
     return null;

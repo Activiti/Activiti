@@ -45,7 +45,7 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
     log.info("{} starting to acquire async jobs due");
     Thread.currentThread().setName("activiti-acquire-async-jobs");
 
-    final CommandExecutor commandExecutor = asyncExecutor.getCommandExecutor();
+    final CommandExecutor commandExecutor = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor();
 
     while (!isInterrupted) {
 

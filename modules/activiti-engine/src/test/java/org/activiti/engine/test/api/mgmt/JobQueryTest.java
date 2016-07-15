@@ -199,6 +199,11 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(testStartTime);
     verifyQueryResults(query, 1);
     verifyQueryResults(timerQuery, 0);
+    
+    // Moving the job back to be executable
+    managementService.moveDeadLetterJobToExecutableJob(job.getId(), 5);
+    verifyQueryResults(query, 2);
+    verifyQueryResults(timerQuery, 0);
   }
 
   public void testQueryByOnlyTimers() {

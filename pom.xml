@@ -809,6 +809,7 @@
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
+   		<module>modules/activiti-jms-spring-executor</module>
         <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
       <build>
@@ -875,6 +876,7 @@
 		<module>modules/activiti-dmn-json-converter</module>
 		<module>modules/activiti-dmn-xml-converter</module>
 		<module>modules/activiti-dmn-rest</module>
+		<module>modules/activiti-jms-spring-executor</module>
       </modules>
     </profile>
     <profile>
@@ -970,6 +972,7 @@
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
+   		<module>modules/activiti-jms-spring-executor</module>
         <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
     </profile>

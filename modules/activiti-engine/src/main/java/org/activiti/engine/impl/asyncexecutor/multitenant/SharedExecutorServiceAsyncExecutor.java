@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutorService;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnableFactory;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +53,13 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     
     setExecuteAsyncRunnableFactory(new ExecuteAsyncRunnableFactory() {
       
-      public Runnable createExecuteAsyncRunnable(Job job, CommandExecutor commandExecutor) {
+      @Override
+      public Runnable createExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
         
         // Here, the runnable will be created by for example the acquire thread, which has already set the current id.
         // But it will be executed later on, by the executorService and thus we need to set it explicitely again then
         
-        return new TenantAwareExecuteAsyncRunnable(job, commandExecutor, 
+        return new TenantAwareExecuteAsyncRunnable(job, processEngineConfiguration, 
             SharedExecutorServiceAsyncExecutor.this.tenantInfoHolder, 
             SharedExecutorServiceAsyncExecutor.this.tenantInfoHolder.getCurrentTenantId());
       }
