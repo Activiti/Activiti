@@ -14,7 +14,8 @@ package com.activiti.service.runtime;
 
 import java.util.List;
 
-import com.activiti.domain.idm.User;
+import org.activiti.engine.identity.User;
+
 import com.activiti.domain.runtime.RuntimeApp;
 import com.activiti.domain.runtime.RuntimeAppDefinition;
 import com.activiti.domain.runtime.RuntimeAppDeployment;

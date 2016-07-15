@@ -12,15 +12,16 @@
  */
 package com.activiti.model.runtime;
 
-import com.activiti.model.common.AbstractRepresentation;
-import com.activiti.model.idm.LightUserRepresentation;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+
+import com.activiti.model.common.AbstractRepresentation;
 
 /**
  * REST representation of a process instance.
@@ -36,7 +37,7 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
     protected String tenantId;
     protected Date started;
     protected Date ended;
-    protected LightUserRepresentation startedBy;
+    protected User startedBy;
     protected String processDefinitionName;
     protected String processDefinitionDescription;
     protected String processDefinitionKey;
@@ -48,12 +49,12 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
     
     protected List<RestVariable> variables = new ArrayList<RestVariable>();
 
-    public ProcessInstanceRepresentation(ProcessInstance processInstance, ProcessDefinition processDefinition, boolean graphicalNotation, LightUserRepresentation startedBy) {
+    public ProcessInstanceRepresentation(ProcessInstance processInstance, ProcessDefinition processDefinition, boolean graphicalNotation, User startedBy) {
         this(processInstance, graphicalNotation, startedBy);
         mapProcessDefinition(processDefinition);
     }
 
-    public ProcessInstanceRepresentation(ProcessInstance processInstance, boolean graphicalNotation, LightUserRepresentation startedBy) {
+    public ProcessInstanceRepresentation(ProcessInstance processInstance, boolean graphicalNotation, User startedBy) {
         this.id = processInstance.getId();
         this.name = processInstance.getName();
         this.businessKey = processInstance.getBusinessKey();
@@ -63,12 +64,12 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
         this.startedBy = startedBy;
     }
 
-    public ProcessInstanceRepresentation(HistoricProcessInstance processInstance, ProcessDefinition processDefinition, boolean graphicalNotation, LightUserRepresentation startedBy) {
+    public ProcessInstanceRepresentation(HistoricProcessInstance processInstance, ProcessDefinition processDefinition, boolean graphicalNotation, User startedBy) {
         this(processInstance, graphicalNotation, startedBy);
         mapProcessDefinition(processDefinition);
     }
     
-    public ProcessInstanceRepresentation(HistoricProcessInstance processInstance, boolean graphicalNotation, LightUserRepresentation startedBy) {
+    public ProcessInstanceRepresentation(HistoricProcessInstance processInstance, boolean graphicalNotation, User startedBy) {
         this.id = processInstance.getId();
         this.name = processInstance.getName();
         this.businessKey = processInstance.getBusinessKey();
@@ -104,16 +105,16 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
         return name;
     }
 
-    public LightUserRepresentation getStartedBy() {
+    public User getStartedBy() {
         return startedBy;
     }
     
+    public void setStartedBy(User startedBy) {
+      this.startedBy = startedBy;
+  }
+    
     public String getBusinessKey() {
         return businessKey;
-    }
-
-    public void setStartedBy(LightUserRepresentation startedBy) {
-        this.startedBy = startedBy;
     }
     
     public void setBusinessKey(String businessKey) {

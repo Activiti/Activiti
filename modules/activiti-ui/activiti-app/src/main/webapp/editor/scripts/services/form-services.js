@@ -36,7 +36,7 @@ angular.module('activitiModeler').service('FormBuilderService', ['$http', '$q', 
         /**
          * Remove the given step from the given container.
          */
-        this.saveForm = function (data, name, description, saveCallback, errorCallback) {
+        this.saveForm = function (data, name, formKey, description, saveCallback, errorCallback) {
 
             var fieldIndex = 0;
             data.formRepresentation = $rootScope.currentForm;
@@ -55,7 +55,12 @@ angular.module('activitiModeler').service('FormBuilderService', ['$http', '$q', 
                 $rootScope.formBuilder.activeTab = 'design';
             }
 
-            data.formRepresentation.formDefinition = {fields: removePrivateFields(angular.copy($rootScope.formItems)), outcomes: $rootScope.currentOutcomes, gridsterForm: false};
+            data.formRepresentation.formDefinition = {
+            	name: name,
+            	key: formKey,
+            	fields: removePrivateFields(angular.copy($rootScope.formItems)), 
+            	outcomes: $rootScope.currentOutcomes
+            };
 
             html2canvas(jQuery('#canvasSection'), {
                 onrendered: function (canvas) {
@@ -100,16 +105,6 @@ angular.module('activitiModeler').service('FormBuilderService', ['$http', '$q', 
                 }
                 field.id = fieldId;
             }
-            if (!field.layout) {
-                field.layout = {};
-            }
-
-            field.layout.colspan = field.sizeX;
-            field.layout.row = field.row;
-            field.layout.column = field.col;
-
-            // temp remove validation error
-            delete field.hasValidationError;
         };
 
         /**

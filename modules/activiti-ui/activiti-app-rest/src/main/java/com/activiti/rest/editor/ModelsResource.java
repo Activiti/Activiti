@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.form.model.FormDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,6 @@ import com.activiti.domain.editor.Model;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.decisiontable.DecisionTableDefinitionRepresentation;
-import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -93,7 +93,7 @@ public class ModelsResource extends AbstractModelsResource {
         String json = null;
         if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_FORM)) {
             try {
-                json = objectMapper.writeValueAsString(new FormDefinitionRepresentation());
+                json = objectMapper.writeValueAsString(new FormDefinition());
             } catch (Exception e) {
                 logger.error("Error creating form model", e);
                 throw new InternalServerErrorException("Error creating form");

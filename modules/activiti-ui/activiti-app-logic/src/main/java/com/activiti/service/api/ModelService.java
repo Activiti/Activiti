@@ -12,11 +12,12 @@
  */
 package com.activiti.service.api;
 
-import com.activiti.domain.editor.AbstractModel;
-import com.activiti.domain.idm.User;
-import org.activiti.bpmn.model.BpmnModel;
-
 import java.util.List;
+
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.identity.User;
+
+import com.activiti.domain.editor.AbstractModel;
 
 
 public interface ModelService {

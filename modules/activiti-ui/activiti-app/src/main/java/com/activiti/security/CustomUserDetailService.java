@@ -15,15 +15,14 @@ package com.activiti.security;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Introduced new interface for our {@link UserDetailsService}, to fool the Spring proxy stuff, 
- * so we can inject it into the {@link CustomPersistentRememberMeServices}.
+ * Introduced new interface for our {@link UserDetailsService}, to fool the Spring proxy stuff, so we can inject it into the {@link CustomPersistentRememberMeServices}.
  * 
  * @author Joram Barrez
  */
 public interface CustomUserDetailService {
-	
-	UserDetails loadByUserId(final Long userId);
 
-    UserDetails loadUserByUsername(final String username);
+  UserDetails loadByUserId(final String userId);
+
+  UserDetails loadUserByUsername(final String username);
 
 }

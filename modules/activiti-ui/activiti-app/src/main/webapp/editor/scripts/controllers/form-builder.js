@@ -73,12 +73,13 @@ angular.module('activitiModeler')
             var lastDropArrayTarget = null;
 
             $scope.onFieldMoved = function (field, fieldArraySource) {
+            	
             };
 
 
             $scope.onFieldDrop = function (paletteElementOrField, dropArrayTarget, event, index) {
 
-                // Is it an existing object?
+				// Is it an existing object?
                 if (paletteElementOrField.hasOwnProperty('_guid')) {
 
                     lastDropArrayTarget = dropArrayTarget;
@@ -133,7 +134,7 @@ angular.module('activitiModeler')
                 if (field.type === 'readonly-text') {
                     field.value = $translate.instant('FORM-BUILDER.COMPONENT.DISPLAY-TEXT-DEFAULT');
                 }
-
+                
                 return field;
             };
 

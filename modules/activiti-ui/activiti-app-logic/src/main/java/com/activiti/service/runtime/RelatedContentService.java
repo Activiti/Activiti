@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.activiti.engine.identity.User;
 import org.activiti.engine.runtime.Clock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.activiti.content.storage.api.ContentObject;
 import com.activiti.content.storage.api.ContentStorage;
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.repository.runtime.RelatedContentRepository;
 
@@ -110,9 +110,9 @@ public class RelatedContentService {
         newContent.setSourceId(sourceId);
         newContent.setTaskId(taskId);
         newContent.setProcessInstanceId(processId);
-        newContent.setCreatedBy(user);
+        newContent.setCreatedBy(user.getId());
         newContent.setCreated(timestamp);
-        newContent.setLastModifiedBy(user);
+        newContent.setLastModifiedBy(user.getId());
         newContent.setLastModified(timestamp);
         newContent.setMimeType(mimeType);
         newContent.setRelatedContent(relatedContent);
@@ -177,7 +177,7 @@ public class RelatedContentService {
     public boolean lockContent(RelatedContent content, int timeOut, User user) {
         content.setLockDate(clock.getCurrentTime());
         content.setLocked(true);
-        content.setLockOwner(user);
+        content.setLockOwner(user.getId());
 
         // Set expiration date based on timeout
         Calendar expiration = Calendar.getInstance();
@@ -195,7 +195,7 @@ public class RelatedContentService {
         content.setCheckoutDate(clock.getCurrentTime());
         content.setCheckedOut(true);
         content.setCheckedOutToLocal(toLocal);
-        content.setCheckoutOwner(user);
+        content.setCheckoutOwner(user.getId());
 
         contentRepository.save(content);
         return true;
@@ -244,7 +244,7 @@ public class RelatedContentService {
         ContentObject updatedContent = contentStorage.updateContentObject(contentStoreId, contentStream, lengthHint);
         
         RelatedContent relatedContent = contentRepository.findOne(relatedContentId);
-        relatedContent.setLastModifiedBy(user);
+        relatedContent.setLastModifiedBy(user.getId());
         relatedContent.setLastModified(timestamp);
         relatedContent.setContentSize(lengthHint);
         

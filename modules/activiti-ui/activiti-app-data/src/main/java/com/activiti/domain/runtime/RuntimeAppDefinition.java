@@ -16,22 +16,15 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.activiti.domain.common.IdBlockSize;
-import com.activiti.domain.idm.User;
 
 /**
  * A definition of an app deployed in the activiti engine, based on an app definition model,
@@ -59,10 +52,8 @@ public class RuntimeAppDefinition {
     @Column(name="created")
     protected Date created;
 
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="created_by")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    protected User createdBy;
+    @Column(name="created_by")
+    protected String createdBy;
     
     @Column(name="deployment_id")
     protected String deploymentId;
@@ -108,11 +99,11 @@ public class RuntimeAppDefinition {
         this.created = created;
     }
 
-    public User getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
     

@@ -13,15 +13,15 @@
 package com.activiti.rest.idm;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activiti.model.idm.UserRepresentation;
+import com.activiti.security.ActivitiAppUser;
+import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.UnauthorizedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,33 +32,33 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Joram Barrez
  */
 @RestController
-public class AccountResource extends AbstractAccountResource {
+public class AccountResource {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
 
-    /**
-     * GET  /rest/authenticate -> check if the user is authenticated, and return its full name.
-     */
-    @RequestMapping(value = "/rest/authenticate", method = RequestMethod.GET, produces = {"application/json"})
-    public ObjectNode isAuthenticated(HttpServletRequest request) {
-        String user = request.getRemoteUser();
-        
-        if(user == null) {
-            throw new UnauthorizedException("Request did not contain valid authorization");
-        }
-        
-        ObjectNode result = objectMapper.createObjectNode();
-        result.put("login", user);
-        return result;
-    }
-
-    /**
-     * GET  /rest/account -> get the current user.
-     */
-    @RequestMapping(value = "/rest/account", method = RequestMethod.GET, produces = "application/json")
-    public UserRepresentation getAccount(HttpServletResponse response, @RequestParam(value="includeApps", required=false) Boolean includeApps) {
-    	return super.getAccount(response, includeApps);
+  /**
+   * GET  /rest/authenticate -> check if the user is authenticated, and return its full name.
+   */
+  @RequestMapping(value = "/rest/authenticate", method = RequestMethod.GET, produces = {"application/json"})
+  public ObjectNode isAuthenticated(HttpServletRequest request) {
+    String user = request.getRemoteUser();
+    
+    if(user == null) {
+        throw new UnauthorizedException("Request did not contain valid authorization");
     }
     
+    ObjectNode result = objectMapper.createObjectNode();
+    result.put("login", user);
+    return result;
+  }
+
+  /**
+   * GET  /rest/account -> get the current user.
+   */
+  @RequestMapping(value = "/rest/account", method = RequestMethod.GET, produces = "application/json")
+  public User getAccount() {
+    ActivitiAppUser user = SecurityUtils.getCurrentActivitiAppUser();
+    return user.getUserObject();
+  }
 }

@@ -433,7 +433,6 @@ angular.module('activitiApp')
 
                                     case 'radio-buttons':
                                         var selectOptions = field.options;
-                                        }
 
                                         if (field.value === undefined || field.value == '' || field.value == null) {
                                             formValid = false;

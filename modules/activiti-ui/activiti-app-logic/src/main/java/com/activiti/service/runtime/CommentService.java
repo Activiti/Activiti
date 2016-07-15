@@ -16,13 +16,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.activiti.engine.identity.User;
 import org.activiti.engine.runtime.Clock;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.Comment;
 import com.activiti.repository.runtime.CommentRepository;
 
@@ -61,7 +61,7 @@ public class CommentService {
     public Comment createComment(String message, User createdBy, String taskId, String processInstanceId) {
         Comment newComment = new Comment();
         newComment.setMessage(message);
-        newComment.setCreatedBy(createdBy);
+        newComment.setCreatedBy(createdBy.getId());
         newComment.setCreated(clock.getCurrentTime());
         newComment.setTaskId(taskId);
         newComment.setProcessInstanceId(processInstanceId);

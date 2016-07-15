@@ -62,7 +62,7 @@ public class FormUtil {
     return null;
   }
   
-  public static FormEntity getDecisionTableFromDatabase(String formId) {
+  public static FormEntity getFormDefinitionFromDatabase(String formId) {
     FormEntityManager formEntityManager = Context.getFormEngineConfiguration().getFormEntityManager();
     FormEntity form = formEntityManager.findById(formId);
     if (form == null) {

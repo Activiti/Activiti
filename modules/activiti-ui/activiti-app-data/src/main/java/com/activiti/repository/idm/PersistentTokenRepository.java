@@ -19,11 +19,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
 import com.activiti.domain.idm.PersistentToken;
-import com.activiti.domain.idm.User;
 
 public interface PersistentTokenRepository extends JpaRepository<PersistentToken, String> {
 
-    List<PersistentToken> findByUser(User user);
+    List<PersistentToken> findByUser(String user);
 
     List<PersistentToken> findByTokenDateBefore(Date date);
     

@@ -16,12 +16,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -32,7 +29,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Length;
 
 import com.activiti.domain.common.IdBlockSize;
-import com.activiti.domain.idm.User;
 
 
 /**
@@ -61,10 +57,8 @@ public class RelatedContent {
     @Column(name = "created")
     protected Date created;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "created_by")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private User createdBy;
+    @Column(name = "created_by")
+    private String createdBy;
 
     @Column(name = "task_id")
     private String taskId;
@@ -90,10 +84,8 @@ public class RelatedContent {
     @Column(name="lock_exp_date")
     private Date lockExpirationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lock_owner")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private User lockOwner;
+    @Column(name = "lock_owner")
+    private String lockOwner;
 
     @Column(name="checked_out")
     private boolean checkedOut;
@@ -107,19 +99,15 @@ public class RelatedContent {
     @Column(name="store_id")
     private String contentStoreId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checkout_owner")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private User checkoutOwner;
+    @Column(name = "checkout_owner")
+    private String checkoutOwner;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_modified")
     protected Date lastModified;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "last_modified_by")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private User lastModifiedBy;
+    @Column(name = "last_modified_by")
+    private String lastModifiedBy;
 
     @Column(name = "field")
     private String field;
@@ -161,11 +149,11 @@ public class RelatedContent {
         this.created = created;
     }
 
-    public User getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -219,11 +207,11 @@ public class RelatedContent {
         this.lastModified = lastModified;
     }
 
-    public User getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
-    public void setLastModifiedBy(User lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
     
@@ -239,7 +227,7 @@ public class RelatedContent {
     	return lockExpirationDate;
     }
     
-    public User getLockOwner() {
+    public String getLockOwner() {
     	return lockOwner;
     }
     
@@ -255,7 +243,7 @@ public class RelatedContent {
     	return checkoutDate;
     }
     
-    public User getCheckoutOwner() {
+    public String getCheckoutOwner() {
     	return checkoutOwner;
     }
     
@@ -275,7 +263,7 @@ public class RelatedContent {
         this.lockExpirationDate = lockExpirationDate;
     }
     
-    public void setLockOwner(User lockOwner) {
+    public void setLockOwner(String lockOwner) {
         this.lockOwner = lockOwner;
     }
     
@@ -291,7 +279,7 @@ public class RelatedContent {
         this.checkoutDate = checkoutDate;
     }
     
-    public void setCheckoutOwner(User checkoutOwner) {
+    public void setCheckoutOwner(String checkoutOwner) {
         this.checkoutOwner = checkoutOwner;
     }
     

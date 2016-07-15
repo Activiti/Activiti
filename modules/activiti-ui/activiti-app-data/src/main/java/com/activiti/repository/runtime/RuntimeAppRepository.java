@@ -19,16 +19,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RuntimeApp;
 import com.activiti.domain.runtime.RuntimeAppDefinition;
 
 public interface RuntimeAppRepository extends JpaRepository<RuntimeApp, Long>{
     
-    RuntimeApp findByUserAndAppDefinition(User user, RuntimeAppDefinition appDefinition);
+    RuntimeApp findByUserAndAppDefinition(String userId, RuntimeAppDefinition appDefinition);
     
     @Query(value="select app from RuntimeApp app where app.user = :user and app.appDefinition.id = :appId")
-    RuntimeApp findByUserAndAppDefinitionId(@Param("user") User user, @Param("appId") Long appId);
+    RuntimeApp findByUserAndAppDefinitionId(@Param("user") String user, @Param("appId") Long appId);
     
     List<RuntimeApp> findByAppDefinition(RuntimeAppDefinition appDefinition);
     
@@ -36,5 +35,5 @@ public interface RuntimeAppRepository extends JpaRepository<RuntimeApp, Long>{
     @Query(value="delete from RuntimeApp app where app.appDefinition.id = ?")
     void deleteInBatchByAppId(Long appId);
 
-    Long countByUser(User user);
+    Long countByUser(String user);
 }

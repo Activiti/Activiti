@@ -20,10 +20,10 @@ import java.util.Map;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.form.model.FormDefinition;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.activiti.domain.editor.AbstractModel;
-import com.activiti.domain.runtime.Form;
 import com.activiti.domain.runtime.RuntimeAppDeployment;
 
 /**
@@ -39,7 +39,7 @@ public class DeploymentResult {
 	
 	private Map<Long, Pair<BpmnModel, ArrayList<ProcessDefinition>>> processModelMapping = new HashMap<Long, Pair<BpmnModel,ArrayList<ProcessDefinition>>>(); 
 	
-	private Map<Long, Form> formModelMapping = new HashMap<Long, Form>();
+	private Map<Long, FormDefinition> formModelMapping = new HashMap<Long, FormDefinition>();
 	
 	public void addModelMapping(AbstractModel processModel, BpmnModel bpmnModel) {
 		processModels.add(processModel);
@@ -72,11 +72,11 @@ public class DeploymentResult {
 		return processDefinitionKeys;
 	}
 	
-	public Form getRuntimeFormForFormModel(Long formModelId) {
+	public FormDefinition getFormDefinitionForFormModel(Long formModelId) {
 		return formModelMapping.get(formModelId);
 	}
 	
-	public void addFormModelMapping(Long formModelId, Form form) {
+	public void addFormModelMapping(Long formModelId, FormDefinition form) {
 		formModelMapping.put(formModelId, form);
 	}
 	

@@ -36,6 +36,7 @@ public class CachingAndArtifactsManager {
 
     for (FormEntity form : parsedDeployment.getAllForms()) {
       FormDefinition formDefinition = parsedDeployment.getFormDefinitionForForm(form);
+      formDefinition.setId(form.getId());
       FormCacheEntry cacheEntry = new FormCacheEntry(form, formDefinition);
       formCache.add(form.getId(), cacheEntry);
     

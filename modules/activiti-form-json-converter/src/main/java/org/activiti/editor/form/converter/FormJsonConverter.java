@@ -23,7 +23,7 @@ public class FormJsonConverter {
 
   protected ObjectMapper objectMapper = new ObjectMapper();
 
-  public FormDefinition convertToForm(String modelJson, Long modelId, int modelVersion) {
+  public FormDefinition convertToForm(String modelJson, String modelId, int modelVersion) {
     try {
       FormDefinition definition = objectMapper.readValue(modelJson, FormDefinition.class);
       definition.setId(modelId);

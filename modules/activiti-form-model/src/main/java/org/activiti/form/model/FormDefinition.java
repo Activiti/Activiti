@@ -26,19 +26,20 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class FormDefinition {
 
-  protected Long id;
+  protected String id;
   protected String name;
   protected String description;
   protected String key;
   protected int version;
   protected List<FormField> fields;
   protected List<FormOutcome> outcomes;
+  protected String outcomeVariableName;
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -94,6 +95,14 @@ public class FormDefinition {
 
   public void setOutcomes(List<FormOutcome> outcomes) {
     this.outcomes = outcomes;
+  }
+
+  public String getOutcomeVariableName() {
+    return outcomeVariableName;
+  }
+
+  public void setOutcomeVariableName(String outcomeVariableName) {
+    this.outcomeVariableName = outcomeVariableName;
   }
 
   /*

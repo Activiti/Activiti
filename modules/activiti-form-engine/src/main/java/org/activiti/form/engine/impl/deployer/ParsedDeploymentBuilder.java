@@ -65,14 +65,14 @@ public class ParsedDeploymentBuilder {
     String resourceName = resource.getName();
     ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes());
 
-    FormParse dmnParse = formParseFactory.createParse()
+    FormParse formParse = formParseFactory.createParse()
         .sourceInputStream(inputStream)
         .setSourceSystemId(resourceName)
         .deployment(deployment)
         .name(resourceName);
     
-    dmnParse.execute(Context.getFormEngineConfiguration());
-    return dmnParse;
+    formParse.execute(Context.getFormEngineConfiguration());
+    return formParse;
   }
 
   protected boolean isFormResource(String resourceName) {

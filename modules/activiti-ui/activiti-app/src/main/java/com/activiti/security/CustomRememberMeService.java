@@ -12,8 +12,9 @@
  */
 package com.activiti.security;
 
+import org.activiti.engine.identity.User;
+
 import com.activiti.domain.idm.PersistentToken;
-import com.activiti.domain.idm.User;
 
 public interface CustomRememberMeService {
 

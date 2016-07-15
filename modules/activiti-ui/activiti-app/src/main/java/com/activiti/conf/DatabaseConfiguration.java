@@ -193,7 +193,7 @@ public class DatabaseConfiguration {
         log.info("Configuring Liquibase");
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource());
-        liquibase.setChangeLog("classpath:META-INF/liquibase/db-changelog-onpremise.xml");
+        liquibase.setChangeLog("classpath:META-INF/liquibase/activiti-app-db-changelog.xml");
         
         String dataSourceDriver = env.getProperty("datasource.driver", "com.mysql.jdbc.Driver");
         if (dataSourceDriver.contains("org.h2")) {

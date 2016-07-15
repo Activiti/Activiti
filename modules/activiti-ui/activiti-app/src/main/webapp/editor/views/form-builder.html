@@ -42,7 +42,7 @@
                 id="{{palletteElement.type}}"
                 title="{{palletteElement.title}}"
                 dnd-draggable="palletteElement"
-                dnd-type="width-1">
+                dnd-type="'width-1'">
                 <img width="32" height="32" ng-src="{{palletteElement.icon}}"/>
                 {{palletteElement.title}}
             </li>
@@ -71,12 +71,12 @@
                             class="form-canvas content-canvas"
                             dnd-list="formItems"
                             dnd-allowed-types="['width-1']"
-                            dnd-drop="onFieldDrop(item, formItems, event,index)"
+                            dnd-drop="onFieldDrop(item, formItems, event, index)"
                             dnd-after-drop="afterDropField(item,formItems,event)">
                             <li ng-repeat="field in formItems track by field._guid" class="form-field-wrapper"
                                 dnd-draggable="field"
                                 dnd-effect-allowed="move"
-                                dnd-type="width-1"
+                                dnd-type="'width-1'"
                                 dnd-moved="onFieldMoved(field, formItems)">
                                 <div id="{{field._guid}}" form-builder-element form-element="field" edit-state="editState"
                                      drop="onFieldDrop(item, list, event, index)" moved="onFieldMoved(item, list)">

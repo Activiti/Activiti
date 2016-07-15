@@ -313,6 +313,8 @@ import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.impl.variable.IntegerType;
 import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
+import org.activiti.engine.impl.variable.JodaDateTimeType;
+import org.activiti.engine.impl.variable.JodaDateType;
 import org.activiti.engine.impl.variable.JsonType;
 import org.activiti.engine.impl.variable.LongJsonType;
 import org.activiti.engine.impl.variable.LongStringType;
@@ -2040,6 +2042,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new IntegerType());
       variableTypes.addType(new LongType());
       variableTypes.addType(new DateType());
+      variableTypes.addType(new JodaDateType());
+      variableTypes.addType(new JodaDateTimeType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));

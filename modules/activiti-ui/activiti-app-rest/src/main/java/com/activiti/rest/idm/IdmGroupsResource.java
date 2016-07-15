@@ -14,6 +14,7 @@ package com.activiti.rest.idm;
 
 import java.util.List;
 
+import org.activiti.engine.identity.Group;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.activiti.model.idm.GroupRepresentation;
-import com.activiti.model.idm.LightGroupRepresentation;
 
 /**
  * @author Joram Barrez
@@ -33,44 +32,44 @@ import com.activiti.model.idm.LightGroupRepresentation;
 public class IdmGroupsResource extends AbstractIdmGroupsResource {
     
     @RequestMapping(method = RequestMethod.GET)
-    public List<LightGroupRepresentation> getGroups() {
+    public List<Group> getGroups() {
     	return super.getGroups();
     }
 
     @RequestMapping(value="/{groupId}", method = RequestMethod.GET)
-    public GroupRepresentation getGroup(@PathVariable Long groupId, @RequestParam(required=false) Boolean includeAllUsers) {
-        return super.getGroup(groupId, includeAllUsers);
+    public Group getGroup(@PathVariable String groupId) {
+        return super.getGroup(groupId);
     }
     
     @RequestMapping(value="/{groupId}/users", method = RequestMethod.GET)
-    public ResultListDataRepresentation  getGroupUsers(@PathVariable Long groupId, @RequestParam(required=false) String filter,
+    public ResultListDataRepresentation getGroupUsers(@PathVariable String groupId, @RequestParam(required=false) String filter,
     		@RequestParam(required=false) Integer page, @RequestParam(required=false) Integer pageSize) {
     	return super.getGroupUsers(groupId, filter, page, pageSize);
     }
     
     @RequestMapping(method = RequestMethod.POST)
-    public GroupRepresentation createNewGroup(@RequestBody GroupRepresentation groupRepresentation) {
+    public Group createNewGroup(@RequestBody Group groupRepresentation) {
     	return super.createNewGroup(groupRepresentation);
     }
     
     @RequestMapping(value="/{groupId}", method = RequestMethod.PUT)
-    public GroupRepresentation updateGroup(@PathVariable Long groupId, @RequestBody GroupRepresentation groupRepresentation) {
+    public Group updateGroup(@PathVariable String groupId, @RequestBody Group groupRepresentation) {
     	return super.updateGroup(groupId, groupRepresentation);
     }
     
     @RequestMapping(value="/{groupId}", method = RequestMethod.DELETE)
-    public void deleteGroup(@PathVariable Long groupId) {
+    public void deleteGroup(@PathVariable String groupId) {
     	super.deleteGroup(groupId);
     }
     
     @RequestMapping(value="/{groupId}/members/{userId}", method = RequestMethod.POST)
-    public void addGroupMember(@PathVariable Long groupId, @PathVariable Long userId) {
+    public void addGroupMember(@PathVariable String groupId, @PathVariable String userId) {
     	super.addGroupMember(groupId, userId);
     }
     
 
     @RequestMapping(value="/{groupId}/members/{userId}", method = RequestMethod.DELETE)
-    public void deleteGroupMember(@PathVariable Long groupId, @PathVariable Long userId) {
+    public void deleteGroupMember(@PathVariable String groupId, @PathVariable String userId) {
     	super.deleteGroupMember(groupId, userId);
     }
 }
