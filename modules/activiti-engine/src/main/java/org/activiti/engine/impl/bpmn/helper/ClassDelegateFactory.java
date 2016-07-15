@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 
 /** Constructs {@link ClassDelegate}s. */
