@@ -54,6 +54,8 @@ public class MessageBasedJobManager extends DefaultJobManager {
     
     if (job instanceof JobEntity) {
       JobEntity jobEntity = (JobEntity) job;
+      
+      // When unacquiring, we up the lock time again., so that it isn't cleared by the reset expired thread.
       jobEntity.setLockExpirationTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() 
           + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis()));
     }

@@ -38,6 +38,6 @@ public interface JobDataManager extends DataManager<JobEntity> {
 
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
   
-  void unacquireJob(String jobId);
+  void resetExpiredJob(String jobId);
   
 }
