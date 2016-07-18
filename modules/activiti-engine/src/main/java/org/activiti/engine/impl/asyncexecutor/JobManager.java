@@ -1,6 +1,8 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -97,5 +99,10 @@ public interface JobManager {
    * as the job got into the deadletter table because of it failed and retries became 0.
    */
   JobEntity moveDeadLetterJobToExecutableJob(DeadLetterJobEntity deadLetterJobEntity, int retries);
+  
+  /**
+   * The ProcessEngineCongiguration instance will be passed when the {@link ProcessEngine} is built.
+   */
+  void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration);
 
 }

@@ -1528,6 +1528,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
      if (jobManager == null) {
        jobManager = new DefaultJobManager(this);
      }
+     
+     jobManager.setProcessEngineConfiguration(this);
    }
 
   // session factories ////////////////////////////////////////////////////////
