@@ -42,25 +42,18 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>de.odysseus.juel</groupId>
 			<artifactId>juel-api</artifactId>
-			<version>2.2.7</version>
 		</dependency>
-
 		<dependency>
 			<groupId>de.odysseus.juel</groupId>
 			<artifactId>juel-impl</artifactId>
-			<version>2.2.7</version>
 		</dependency>
-
 		<dependency>
 			<groupId>de.odysseus.juel</groupId>
 			<artifactId>juel-spi</artifactId>
-			<version>2.2.7</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
