@@ -13,14 +13,21 @@
 
 package org.activiti.spring;
 
+import java.util.Map;
+
+import javax.el.ArrayELResolver;
+import javax.el.BeanELResolver;
+import javax.el.CompositeELResolver;
+import javax.el.ELResolver;
+import javax.el.ListELResolver;
+import javax.el.MapELResolver;
+
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.el.JsonNodeELResolver;
 import org.activiti.engine.impl.el.ReadOnlyMapELResolver;
 import org.activiti.engine.impl.el.VariableScopeElResolver;
-import org.activiti.engine.impl.javax.el.*;
 import org.springframework.context.ApplicationContext;
-
-import java.util.Map;
 
 /**
  * {@link ExpressionManager} that exposes the full application-context or a limited set of beans in expressions.
@@ -58,6 +65,7 @@ public class SpringExpressionManager extends ExpressionManager {
     compositeElResolver.add(new ArrayELResolver());
     compositeElResolver.add(new ListELResolver());
     compositeElResolver.add(new MapELResolver());
+    compositeElResolver.add(new JsonNodeELResolver());
     compositeElResolver.add(new BeanELResolver());
     return compositeElResolver;
   }

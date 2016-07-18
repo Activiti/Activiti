@@ -15,10 +15,11 @@ package org.activiti.engine.impl.el;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
+import javax.el.ELContext;
+import javax.el.ELResolver;
+
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -44,8 +45,7 @@ public class VariableScopeElResolver extends ELResolver {
   public Object getValue(ELContext context, Object base, Object property) {
 
     if (base == null) {
-      String variable = (String) property; // according to javadoc, can
-                                           // only be a String
+      String variable = (String) property; // according to javadoc, can only be a String
 
       if ((EXECUTION_KEY.equals(property) && variableScope instanceof ExecutionEntity) || (TASK_KEY.equals(property) && variableScope instanceof TaskEntity)) {
         context.setPropertyResolved(true);
@@ -58,10 +58,7 @@ public class VariableScopeElResolver extends ELResolver {
         return Authentication.getAuthenticatedUserId();
       } else {
         if (variableScope.hasVariable(variable)) {
-          context.setPropertyResolved(true); // if not set, the next
-                                             // elResolver in the
-                                             // CompositeElResolver
-                                             // will be called
+          context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
           return variableScope.getVariable(variable);
         }
       }

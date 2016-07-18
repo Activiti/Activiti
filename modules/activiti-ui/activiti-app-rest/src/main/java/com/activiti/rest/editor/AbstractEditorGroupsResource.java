@@ -17,6 +17,7 @@ import java.util.List;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.activiti.model.common.ResultListDataRepresentation;
@@ -27,6 +28,9 @@ public class AbstractEditorGroupsResource {
   private IdentityService identityService;
 
   public ResultListDataRepresentation getGroups(String filter) {
+    if (StringUtils.isEmpty(filter)) {
+      filter = "%";
+    }
     List<Group> matchingGroups = identityService.createGroupQuery().groupNameLike(filter).list();
 
     ResultListDataRepresentation result = new ResultListDataRepresentation(matchingGroups);

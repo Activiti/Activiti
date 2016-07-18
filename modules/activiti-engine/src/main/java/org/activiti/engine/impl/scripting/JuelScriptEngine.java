@@ -18,6 +18,19 @@ import java.io.Reader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import javax.el.ArrayELResolver;
+import javax.el.BeanELResolver;
+import javax.el.CompositeELResolver;
+import javax.el.ELContext;
+import javax.el.ELException;
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
+import javax.el.FunctionMapper;
+import javax.el.ListELResolver;
+import javax.el.MapELResolver;
+import javax.el.ResourceBundleELResolver;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -30,23 +43,12 @@ import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.engine.impl.el.DynamicBeanPropertyELResolver;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
-import org.activiti.engine.impl.javax.el.ArrayELResolver;
-import org.activiti.engine.impl.javax.el.BeanELResolver;
-import org.activiti.engine.impl.javax.el.CompositeELResolver;
-import org.activiti.engine.impl.javax.el.DynamicBeanPropertyELResolver;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELException;
-import org.activiti.engine.impl.javax.el.ELResolver;
-import org.activiti.engine.impl.javax.el.ExpressionFactory;
-import org.activiti.engine.impl.javax.el.FunctionMapper;
-import org.activiti.engine.impl.javax.el.ListELResolver;
-import org.activiti.engine.impl.javax.el.MapELResolver;
-import org.activiti.engine.impl.javax.el.ResourceBundleELResolver;
-import org.activiti.engine.impl.javax.el.ValueExpression;
-import org.activiti.engine.impl.javax.el.VariableMapper;
-import org.activiti.engine.impl.juel.SimpleResolver;
+import org.activiti.engine.impl.el.JsonNodeELResolver;
 import org.activiti.engine.impl.util.ReflectUtil;
+
+import de.odysseus.el.util.SimpleResolver;
 
 /**
  * ScriptEngine that used JUEL for script evaluation and compilation (JSR-223).
@@ -115,6 +117,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     compositeResolver.add(new ArrayELResolver());
     compositeResolver.add(new ListELResolver());
     compositeResolver.add(new MapELResolver());
+    compositeResolver.add(new JsonNodeELResolver());
     compositeResolver.add(new ResourceBundleELResolver());
     compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
     compositeResolver.add(new BeanELResolver());

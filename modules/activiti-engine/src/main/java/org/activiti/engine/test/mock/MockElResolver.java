@@ -16,8 +16,8 @@ package org.activiti.engine.test.mock;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
+import javax.el.ELContext;
+import javax.el.ELResolver;
 
 public class MockElResolver extends ELResolver {
 

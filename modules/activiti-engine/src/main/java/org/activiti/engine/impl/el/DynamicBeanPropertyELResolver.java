@@ -10,10 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.javax.el;
+package org.activiti.engine.impl.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+
+import javax.el.ELContext;
+import javax.el.ELException;
+import javax.el.ELResolver;
 
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -59,6 +63,11 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
 
   @Override
   public Class<?> getType(ELContext context, Object base, Object property) {
+    if (base == null || this.getCommonPropertyType(context, base) == null) {
+      return null;
+    }
+    
+    context.setPropertyResolved(true);
     return Object.class;
   }
 

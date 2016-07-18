@@ -15,7 +15,7 @@ package org.activiti.engine.impl.el;
 
 import java.lang.reflect.Method;
 
-import org.activiti.engine.impl.javax.el.FunctionMapper;
+import javax.el.FunctionMapper;
 
 /**
  * Default implementation of a {@link FunctionMapper}.

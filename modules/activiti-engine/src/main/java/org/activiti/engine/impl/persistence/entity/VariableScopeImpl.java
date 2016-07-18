@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.el.ELContext;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 

@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.el.ELContext;
+import javax.el.ELResolver;
+
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

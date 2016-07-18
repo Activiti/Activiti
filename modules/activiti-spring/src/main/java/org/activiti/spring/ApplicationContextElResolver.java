@@ -13,13 +13,14 @@
 
 package org.activiti.spring;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
-import org.springframework.context.ApplicationContext;
-
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+
+import javax.el.ELContext;
+import javax.el.ELResolver;
+
+import org.activiti.engine.ActivitiException;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Tom Baeyens

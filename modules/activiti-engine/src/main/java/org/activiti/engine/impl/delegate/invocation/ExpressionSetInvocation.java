@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.delegate.invocation;
 
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ValueExpression;
+import javax.el.ELContext;
+import javax.el.ValueExpression;
 
 /**
  * Class responsible for handling Expression.setValue() invocations.
