@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.asyncexecutor;
 
-import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
@@ -42,13 +42,9 @@ public interface AsyncExecutor {
   
   /* Getters and Setters */
   
-  void setCommandExecutor(CommandExecutor commandExecutor);
+  void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration);
   
-  CommandExecutor getCommandExecutor();
-  
-  void setJobManager(JobManager jobManager);
-  
-  JobManager getJobManager();
+  ProcessEngineConfigurationImpl getProcessEngineConfiguration();
   
   boolean isAutoActivate();
 

@@ -16,6 +16,7 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti.engine.impl.cmd.LockExclusiveJobCmd;
 import org.activiti.engine.impl.cmd.UnlockExclusiveJobCmd;
@@ -23,8 +24,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -38,15 +39,31 @@ public class ExecuteAsyncRunnable implements Runnable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteAsyncRunnable.class);
 
+  protected String jobId;
   protected Job job;
-  protected CommandExecutor commandExecutor;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  
+  public ExecuteAsyncRunnable(String jobId, ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.jobId = jobId;
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 
-  public ExecuteAsyncRunnable(Job job, CommandExecutor commandExecutor) {
+  public ExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.job = job;
-    this.commandExecutor = commandExecutor;
+    this.jobId = job.getId();
+    this.processEngineConfiguration = processEngineConfiguration;
   }
 
   public void run() {
+    
+    if (job == null) {
+      job = processEngineConfiguration.getCommandExecutor().execute(new Command<JobEntity>() {
+        @Override
+        public JobEntity execute(CommandContext commandContext) {
+          return commandContext.getJobEntityManager().findById(jobId);
+        }
+      });
+    }
     
     if (isHandledByActiviti5Engine()) {
       return;
@@ -62,24 +79,22 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   protected boolean isHandledByActiviti5Engine() {
-    Boolean isActiviti5ProcessDefinition = commandExecutor.execute(new Command<Boolean>() {
-
-      @Override
-      public Boolean execute(CommandContext commandContext) {
-        boolean isActiviti5 = Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId());
-        if (isActiviti5) {
+    boolean isActiviti5ProcessDefinition = Activiti5Util.isActiviti5ProcessDefinitionId(processEngineConfiguration, job.getProcessDefinitionId());
+    if (isActiviti5ProcessDefinition) {
+      return processEngineConfiguration.getCommandExecutor().execute(new Command<Boolean>() {
+        @Override
+        public Boolean execute(CommandContext commandContext) {
           commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().executeJobWithLockAndRetry(job);
+          return true;
         }
-        return isActiviti5;
-      }
-    });
-    
-    return isActiviti5ProcessDefinition;
+      });
+    }
+    return false;
   }
 
   protected void executeJob() {
     try {
-      commandExecutor.execute(new ExecuteAsyncJobCmd(job));
+      processEngineConfiguration.getCommandExecutor().execute(new ExecuteAsyncJobCmd(jobId));
 
     } catch (final ActivitiOptimisticLockingException e) {
 
@@ -96,7 +111,7 @@ public class ExecuteAsyncRunnable implements Runnable {
       handleFailedJob(exception);
 
       // Finally, Throw the exception to indicate the ExecuteAsyncJobCmd failed
-      String message = "Job " + job.getId() + " failed";
+      String message = "Job " + jobId + " failed";
       log.error(message, exception);
     }
   }
@@ -104,7 +119,7 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected void unlockJobIfNeeded() {
     try {
       if (job.isExclusive()) {
-        commandExecutor.execute(new UnlockExclusiveJobCmd(job));
+        processEngineConfiguration.getCommandExecutor().execute(new UnlockExclusiveJobCmd(job));
       }
 
     } catch (ActivitiOptimisticLockingException optimisticLockingException) {
@@ -127,7 +142,7 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected boolean lockJobIfNeeded() {
     try {
       if (job.isExclusive()) {
-        commandExecutor.execute(new LockExclusiveJobCmd(job));
+        processEngineConfiguration.getCommandExecutor().execute(new LockExclusiveJobCmd(job));
       }
 
     } catch (Throwable lockException) {
@@ -147,11 +162,11 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected void unacquireJob() {
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {
-      commandContext.getJobEntityManager().unacquireJob(job.getId());
+      commandContext.getJobManager().unacquire(job);
     } else {
-      commandExecutor.execute(new Command<Void>() {
+      processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
-          commandContext.getJobEntityManager().unacquireJob(job.getId());
+          commandContext.getJobManager().unacquire(job);
           return null;
         }
       });
@@ -159,7 +174,7 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   protected void handleFailedJob(final Throwable exception) {
-    commandExecutor.execute(new Command<Void>() {
+    processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
 
       @Override
       public Void execute(CommandContext commandContext) {
@@ -169,12 +184,12 @@ public class ExecuteAsyncRunnable implements Runnable {
           return null;
         }
         
-        CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
+        CommandConfig commandConfig = processEngineConfiguration.getCommandExecutor().getDefaultConfig().transactionRequiresNew();
         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
         Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
 
         log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-        commandExecutor.execute(commandConfig, cmd);
+        processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
 
         // Dispatch an event, indicating job execution failed in a
         // try-catch block, to prevent the original exception to be swallowed
@@ -191,4 +206,5 @@ public class ExecuteAsyncRunnable implements Runnable {
 
     });
   }
+  
 }

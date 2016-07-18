@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.asyncexecutor;
 
-import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -21,6 +21,6 @@ import org.activiti.engine.runtime.Job;
  */
 public interface ExecuteAsyncRunnableFactory {
   
-  Runnable createExecuteAsyncRunnable(Job job, CommandExecutor commandExecutor);
+  Runnable createExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration);
 
 }

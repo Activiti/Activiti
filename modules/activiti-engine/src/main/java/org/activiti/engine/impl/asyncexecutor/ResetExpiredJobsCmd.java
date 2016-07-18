@@ -16,6 +16,7 @@ import java.util.Collection;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Joram Barrez
@@ -31,7 +32,8 @@ public class ResetExpiredJobsCmd implements Command<Void> {
   @Override
   public Void execute(CommandContext commandContext) {
     for (String jobId : jobIds) {
-      commandContext.getJobEntityManager().resetExpiredJob(jobId);
+      JobEntity jobEntity = commandContext.getJobEntityManager().findById(jobId);
+      commandContext.getJobManager().unacquire(jobEntity);
     }
     return null;
   }

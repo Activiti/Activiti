@@ -34,6 +34,7 @@ import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.impl.cmd.GetTableNameCmd;
 import org.activiti.engine.impl.cmd.JobType;
+import org.activiti.engine.impl.cmd.MoveDeadLetterJobToExecutableJobCmd;
 import org.activiti.engine.impl.cmd.MoveJobToDeadLetterJobCmd;
 import org.activiti.engine.impl.cmd.MoveTimerToExecutableJobCmd;
 import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
@@ -94,6 +95,11 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   
   public Job moveJobToDeadLetterJob(String jobId) {
     return commandExecutor.execute(new MoveJobToDeadLetterJobCmd(jobId));
+  }
+  
+  @Override
+  public Job moveDeadLetterJobToExecutableJob(String jobId, int retries) {
+    return commandExecutor.execute(new MoveDeadLetterJobToExecutableJobCmd(jobId, retries));
   }
 
   public void deleteJob(String jobId) {
