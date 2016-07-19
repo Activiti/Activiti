@@ -21,19 +21,17 @@ import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.identity.User;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activiti.domain.idm.User;
 import com.activiti.model.common.ResultListDataRepresentation;
-import com.activiti.model.idm.LightUserRepresentation;
 import com.activiti.model.runtime.TaskRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.api.UserCache;
 import com.activiti.service.api.UserCache.CachedUser;
-import com.activiti.service.api.UserService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
@@ -43,70 +41,67 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 public class HistoricTaskQueryResource {
 
-    @Inject
-    protected HistoryService historyService;
-    
-    @Inject
-    protected UserService userService;
-    
-    @Inject
-    protected UserCache userCache;
-    
-    @Inject
-    protected PermissionService permissionService;
-    
-	@RequestMapping(value = "/rest/query/history/tasks", method = RequestMethod.POST, produces = "application/json")
-	public ResultListDataRepresentation listTasks(@RequestBody ObjectNode requestNode) {
-	    if (requestNode == null) {
-	        throw new BadRequestException("No request found");
-	    }
-	    
-	    HistoricTaskInstanceQuery taskQuery = historyService.createHistoricTaskInstanceQuery();
-	    
-	    User currentUser = SecurityUtils.getCurrentUserObject();
+  @Inject
+  protected HistoryService historyService;
 
-	    JsonNode processInstanceIdNode = requestNode.get("processInstanceId");
-	    if (processInstanceIdNode != null && processInstanceIdNode.isNull() == false) {
-            String processInstanceId = processInstanceIdNode.asText();
-            if (permissionService.hasReadPermissionOnProcessInstance(currentUser, processInstanceId)) {
-            	taskQuery.processInstanceId(processInstanceId);
-            } else {
-            	throw new NotPermittedException();
-            }
-	    }
-	    
-	    JsonNode finishedNode = requestNode.get("finished");
-	    if (finishedNode != null && finishedNode.isNull() == false) {
-	        boolean isFinished = finishedNode.asBoolean();
-	        if (isFinished) {
-	            taskQuery.finished();
-	        } else {
-	            taskQuery.unfinished();
-	        }
-	    }
-	    
-	    List<HistoricTaskInstance> tasks = taskQuery.list();
-	    
-	    // get all users to have the user object available in the task on the client side
-	    ResultListDataRepresentation result = new ResultListDataRepresentation(convertTaskInfoList(tasks));
-	    return result;
-	}
-	
-	protected List<TaskRepresentation> convertTaskInfoList(List<HistoricTaskInstance> tasks) {
-	    List<TaskRepresentation> result = new ArrayList<TaskRepresentation>();
-	    if (CollectionUtils.isNotEmpty(tasks)) {
-	        TaskRepresentation representation = null;
-	        for (HistoricTaskInstance task : tasks) {
-	            representation = new TaskRepresentation(task);
-	            
-	            CachedUser cachedUser = userCache.getUser(task.getAssignee());
-	        	if (cachedUser != null && cachedUser.getUser() != null) {
-	                representation.setAssignee(new LightUserRepresentation(cachedUser.getUser()));
-	        	}
-	            
-                result.add(representation);
-            }
-	    }
-	    return result;
-	}
+  @Inject
+  protected UserCache userCache;
+
+  @Inject
+  protected PermissionService permissionService;
+
+  @RequestMapping(value = "/rest/query/history/tasks", method = RequestMethod.POST, produces = "application/json")
+  public ResultListDataRepresentation listTasks(@RequestBody ObjectNode requestNode) {
+    if (requestNode == null) {
+      throw new BadRequestException("No request found");
+    }
+
+    HistoricTaskInstanceQuery taskQuery = historyService.createHistoricTaskInstanceQuery();
+
+    User currentUser = SecurityUtils.getCurrentUserObject();
+
+    JsonNode processInstanceIdNode = requestNode.get("processInstanceId");
+    if (processInstanceIdNode != null && processInstanceIdNode.isNull() == false) {
+      String processInstanceId = processInstanceIdNode.asText();
+      if (permissionService.hasReadPermissionOnProcessInstance(currentUser, processInstanceId)) {
+        taskQuery.processInstanceId(processInstanceId);
+      } else {
+        throw new NotPermittedException();
+      }
+    }
+
+    JsonNode finishedNode = requestNode.get("finished");
+    if (finishedNode != null && finishedNode.isNull() == false) {
+      boolean isFinished = finishedNode.asBoolean();
+      if (isFinished) {
+        taskQuery.finished();
+      } else {
+        taskQuery.unfinished();
+      }
+    }
+
+    List<HistoricTaskInstance> tasks = taskQuery.list();
+
+    // get all users to have the user object available in the task on the client side
+    ResultListDataRepresentation result = new ResultListDataRepresentation(convertTaskInfoList(tasks));
+    return result;
+  }
+
+  protected List<TaskRepresentation> convertTaskInfoList(List<HistoricTaskInstance> tasks) {
+    List<TaskRepresentation> result = new ArrayList<TaskRepresentation>();
+    if (CollectionUtils.isNotEmpty(tasks)) {
+      TaskRepresentation representation = null;
+      for (HistoricTaskInstance task : tasks) {
+        representation = new TaskRepresentation(task);
+
+        CachedUser cachedUser = userCache.getUser(task.getAssignee());
+        if (cachedUser != null && cachedUser.getUser() != null) {
+          representation.setAssignee(cachedUser.getUser());
+        }
+
+        result.add(representation);
+      }
+    }
+    return result;
+  }
 }

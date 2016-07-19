@@ -18,20 +18,24 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.form.engine.FormRepositoryService;
+import org.activiti.form.model.FormDefinition;
+import org.activiti.form.model.FormField;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.activiti.domain.runtime.Form;
-import com.activiti.model.editor.form.FormDefinitionRepresentation;
-import com.activiti.model.editor.form.FormFieldRepresentation;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.service.exception.NotFoundException;
-import com.activiti.service.runtime.FormProcessingService;
 import com.activiti.service.runtime.PermissionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,7 +47,7 @@ public abstract class AbstractProcessDefinitionResource {
     protected RepositoryService repositoryService;
 
     @Inject
-    protected FormProcessingService formProcessingSerice;
+    protected FormRepositoryService formRepositoryService;
 
     @Inject
     protected PermissionService permissionService;
@@ -51,7 +55,7 @@ public abstract class AbstractProcessDefinitionResource {
     @Inject
     protected ObjectMapper objectMapper;
 
-    public FormDefinitionRepresentation getProcessDefinitionStartForm(HttpServletRequest request) {
+    public FormDefinition getProcessDefinitionStartForm(HttpServletRequest request) {
 
         String[] requestInfoArray = parseRequest(request);
         String processDefinitionId = getProcessDefinitionId(requestInfoArray, requestInfoArray.length - 2);
@@ -67,23 +71,24 @@ public abstract class AbstractProcessDefinitionResource {
         }
     }
 
-    protected FormDefinitionRepresentation getStartForm(ProcessDefinition processDefinition) {
-        Form form = formProcessingSerice.getStartForm(processDefinition.getId());
-        if (form != null) {
-            FormDefinitionRepresentation formDefinitionRepresentation = null;
-            try {
-                formDefinitionRepresentation = objectMapper.readValue(form.getDefinition(), FormDefinitionRepresentation.class);
-                formDefinitionRepresentation.setProcessDefinitionId(processDefinition.getId());
-                formDefinitionRepresentation.setProcessDefinitionName(processDefinition.getName());
-                formDefinitionRepresentation.setProcessDefinitionKey(processDefinition.getKey());
-            } catch (Exception e) {
-                throw new InternalServerErrorException("Could not deserialize form definition");
-            }
-            return formDefinitionRepresentation;
-        } else {
-            // Definition found, but no form attached
-            throw new NotFoundException("Process definition does not have a form defined: " + processDefinition.getId());
+    protected FormDefinition getStartForm(ProcessDefinition processDefinition) {
+      FormDefinition formDefinition = null;
+      BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
+      Process process = bpmnModel.getProcessById(processDefinition.getKey());
+      FlowElement startElement = process.getInitialFlowElement();
+      if (startElement instanceof StartEvent) {
+        StartEvent startEvent = (StartEvent) startElement;
+        if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
+          formDefinition = formRepositoryService.getFormDefinitionByKey(startEvent.getFormKey());
         }
+      }
+      
+      if (formDefinition == null) {
+        // Definition found, but no form attached
+        throw new NotFoundException("Process definition does not have a form defined: " + processDefinition.getId());
+      }
+      
+      return formDefinition;
     }
 
     protected ProcessDefinition getProcessDefinitionFromRequest(String[] requestInfoArray, boolean isTableRequest) {
@@ -98,18 +103,18 @@ public abstract class AbstractProcessDefinitionResource {
         return processDefinition;
     }
 
-    protected FormFieldRepresentation getFormFieldFromRequest(String[] requestInfoArray, ProcessDefinition processDefinition, boolean isTableRequest) {
-        FormDefinitionRepresentation form = getStartForm(processDefinition);
+    protected FormField getFormFieldFromRequest(String[] requestInfoArray, ProcessDefinition processDefinition, boolean isTableRequest) {
+        FormDefinition form = getStartForm(processDefinition);
         int paramPosition = requestInfoArray.length - 1;
         if (isTableRequest) {
             paramPosition--;
         }
         String fieldVariable = requestInfoArray[paramPosition];
 
-        List<? extends FormFieldRepresentation> allFields = form.listAllFields();
-        FormFieldRepresentation selectedField = null;
+        List<? extends FormField> allFields = form.listAllFields();
+        FormField selectedField = null;
         if (CollectionUtils.isNotEmpty(allFields)) {
-            for (FormFieldRepresentation formFieldRepresentation : allFields) {
+            for (FormField formFieldRepresentation : allFields) {
                 if (formFieldRepresentation.getId().equalsIgnoreCase(fieldVariable)) {
                     selectedField = formFieldRepresentation;
                 }

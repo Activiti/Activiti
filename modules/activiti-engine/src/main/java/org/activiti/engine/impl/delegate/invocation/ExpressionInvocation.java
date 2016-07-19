@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.delegate.invocation;
 
-import org.activiti.engine.impl.javax.el.ValueExpression;
+import javax.el.ValueExpression;
 
 /**
  * Baseclass responsible for handling invocations of Expressions

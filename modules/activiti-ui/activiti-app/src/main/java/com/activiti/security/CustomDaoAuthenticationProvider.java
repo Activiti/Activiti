@@ -31,8 +31,7 @@ public class CustomDaoAuthenticationProvider extends DaoAuthenticationProvider {
 		// The default DaoAuthenticationProvider will choke on an empty password (an arrayIndexOutOfBoundsException 
 		// somewhere deep in the bowels of password encryption), hence this override
 		if (StringUtils.isEmpty(userDetails.getPassword())) {
-			  throw new BadCredentialsException(messages.getMessage(
-	                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+			  throw new BadCredentialsException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
 		}
 		
 		super.additionalAuthenticationChecks(userDetails, authentication);

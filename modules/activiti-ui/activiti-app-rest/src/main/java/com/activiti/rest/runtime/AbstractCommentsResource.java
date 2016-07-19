@@ -20,9 +20,9 @@ import javax.inject.Inject;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.identity.User;
 import org.apache.commons.lang3.StringUtils;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.Comment;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.runtime.CommentRepresentation;

@@ -19,7 +19,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RuntimeAppDefinition;
 
 public interface RuntimeAppDefinitionRepository extends JpaRepository<RuntimeAppDefinition, Long>{
@@ -31,9 +30,9 @@ public interface RuntimeAppDefinitionRepository extends JpaRepository<RuntimeApp
     List<RuntimeAppDefinition> findByNameIgnoreCase(String name, Pageable pageable);
     
     @Query("select app.appDefinition from RuntimeApp app where app.user = :user")
-    List<RuntimeAppDefinition> findByUser(@Param("user") User user);
+    List<RuntimeAppDefinition> findByUser(@Param("user") String user);
     
     @Query("from RuntimeAppDefinition def where def.modelId = :modelId and def.createdBy = :user")
-    RuntimeAppDefinition findByModelAndUser(@Param("modelId") Long modelId, @Param("user") User user);
+    RuntimeAppDefinition findByModelAndUser(@Param("modelId") Long modelId, @Param("user") String user);
     
 }

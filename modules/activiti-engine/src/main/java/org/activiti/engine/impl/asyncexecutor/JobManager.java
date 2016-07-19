@@ -1,6 +1,8 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -23,6 +25,12 @@ public interface JobManager {
    * is executed, typically by a background thread of an executor.
    */
   void execute(Job job);
+  
+  /**
+   * Unacquires a job, meaning that this job was previously locked, and 
+   * it is now freed to be acquired by other executor nodes. 
+   */
+  void unacquire(Job job);
 
   /**
    * Creates an async job for the provided {@link ExecutionEntity}, so that
@@ -84,5 +92,17 @@ public interface JobManager {
    * but kept failing.
    */
   DeadLetterJobEntity moveJobToDeadLetterJob(AbstractJobEntity job);
+  
+  /**
+   * Transforms a {@link DeadLetterJobEntity} to a {@link JobEntity}, thus
+   * making it executable again. Note that a 'retries' parameter needs to be passed,
+   * as the job got into the deadletter table because of it failed and retries became 0.
+   */
+  JobEntity moveDeadLetterJobToExecutableJob(DeadLetterJobEntity deadLetterJobEntity, int retries);
+  
+  /**
+   * The ProcessEngineCongiguration instance will be passed when the {@link ProcessEngine} is built.
+   */
+  void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration);
 
 }

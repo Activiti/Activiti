@@ -12,174 +12,171 @@
  */
 package com.activiti.model.runtime;
 
+import java.util.Date;
+
 import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.model.common.AbstractRepresentation;
 import com.activiti.model.component.SimpleContentTypeMapper;
-import com.activiti.model.idm.LightUserRepresentation;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import java.util.Date;
 
 /**
  * @author Frederik Heremans
  */
 public class RelatedContentRepresentation extends AbstractRepresentation {
 
-    protected Long id;
+  protected Long id;
 
-    protected String name;
+  protected String name;
 
-    protected Date created;
+  protected Date created;
 
-    protected LightUserRepresentation createdBy;
+  protected String createdBy;
 
-    protected boolean contentAvailable;
+  protected boolean contentAvailable;
 
-    protected boolean link;
+  protected boolean link;
 
-    protected String source;
+  protected String source;
 
-    protected String sourceId;
+  protected String sourceId;
 
-    protected String mimeType;
+  protected String mimeType;
 
-    protected String simpleType;
+  protected String simpleType;
 
-    protected String linkUrl;
+  protected String linkUrl;
 
-    public String previewStatus = "queued";
+  public String previewStatus = "queued";
 
-    public String thumbnailStatus = "queued";
+  public String thumbnailStatus = "queued";
 
-    public RelatedContentRepresentation() {
+  public RelatedContentRepresentation() {
 
+  }
+
+  public RelatedContentRepresentation(RelatedContent content, SimpleContentTypeMapper mapper) {
+    this.id = content.getId();
+    this.name = content.getName();
+    this.created = content.getCreated();
+    this.createdBy = content.getCreatedBy();
+    this.contentAvailable = content.isContentAvailable();
+    this.mimeType = content.getMimeType();
+    this.link = content.isLink();
+    this.linkUrl = content.getLinkUrl();
+    this.source = content.getSource();
+    this.sourceId = content.getSourceId();
+
+    if (mapper != null) {
+      this.simpleType = mapper.getSimpleType(content);
     }
+  }
 
-    public RelatedContentRepresentation(RelatedContent content, SimpleContentTypeMapper mapper) {
-        this.id = content.getId();
-        this.name = content.getName();
-        this.created = content.getCreated();
-        if (content.getCreatedBy() != null) {
-            this.createdBy = new LightUserRepresentation(content.getCreatedBy());
-        }
-        this.contentAvailable = content.isContentAvailable();
-        this.mimeType = content.getMimeType();
-        this.link = content.isLink();
-        this.linkUrl = content.getLinkUrl();
-        this.source = content.getSource();
-        this.sourceId = content.getSourceId();
+  public Long getId() {
+    return id;
+  }
 
-        if (mapper != null) {
-            this.simpleType = mapper.getSimpleType(content);
-        }
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public Date getCreated() {
+    return created;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setCreated(Date created) {
+    this.created = created;
+  }
 
-    public Date getCreated() {
-        return created;
-    }
+  public String getCreatedBy() {
+    return createdBy;
+  }
 
-    public void setCreated(Date created) {
-        this.created = created;
-    }
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 
-    public LightUserRepresentation getCreatedBy() {
-        return createdBy;
-    }
+  public boolean isContentAvailable() {
+    return contentAvailable;
+  }
 
-    public void setCreatedBy(LightUserRepresentation createdBy) {
-        this.createdBy = createdBy;
-    }
+  public void setContentAvailable(boolean contentAvailable) {
+    this.contentAvailable = contentAvailable;
+  }
 
-    public boolean isContentAvailable() {
-        return contentAvailable;
-    }
+  @JsonInclude(Include.NON_NULL)
+  public String getSource() {
+    return source;
+  }
 
-    public void setContentAvailable(boolean contentAvailable) {
-        this.contentAvailable = contentAvailable;
-    }
+  public void setSource(String source) {
+    this.source = source;
+  }
 
-    @JsonInclude(Include.NON_NULL)
-    public String getSource() {
-        return source;
-    }
+  @JsonInclude(Include.NON_NULL)
+  public String getSourceId() {
+    return sourceId;
+  }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
+  public void setSourceId(String sourceId) {
+    this.sourceId = sourceId;
+  }
 
-    @JsonInclude(Include.NON_NULL)
-    public String getSourceId() {
-        return sourceId;
-    }
+  public String getMimeType() {
+    return mimeType;
+  }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
+  public void setMimeType(String mimeType) {
+    this.mimeType = mimeType;
+  }
 
-    public String getMimeType() {
-        return mimeType;
-    }
+  @JsonInclude(Include.NON_NULL)
+  public String getSimpleType() {
+    return simpleType;
+  }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
+  public void setSimpleType(String simpleType) {
+    this.simpleType = simpleType;
+  }
 
-    @JsonInclude(Include.NON_NULL)
-    public String getSimpleType() {
-        return simpleType;
-    }
+  public void setLink(boolean link) {
+    this.link = link;
+  }
 
-    public void setSimpleType(String simpleType) {
-        this.simpleType = simpleType;
-    }
+  public boolean isLink() {
+    return link;
+  }
 
-    public void setLink(boolean link) {
-        this.link = link;
-    }
+  @JsonInclude(Include.NON_NULL)
+  public String getLinkUrl() {
+    return linkUrl;
+  }
 
-    public boolean isLink() {
-        return link;
-    }
+  public void setLinkUrl(String linkUrl) {
+    this.linkUrl = linkUrl;
+  }
 
-    @JsonInclude(Include.NON_NULL)
-    public String getLinkUrl() {
-        return linkUrl;
-    }
+  public String getThumbnailStatus() {
+    return thumbnailStatus;
+  }
 
-    public void setLinkUrl(String linkUrl) {
-        this.linkUrl = linkUrl;
-    }
+  public void setThumbnailStatus(String thumbnailStatus) {
+    this.thumbnailStatus = thumbnailStatus;
+  }
 
-    public String getThumbnailStatus() {
-        return thumbnailStatus;
-    }
+  public String getPreviewStatus() {
+    return previewStatus;
+  }
 
-    public void setThumbnailStatus(String thumbnailStatus) {
-        this.thumbnailStatus = thumbnailStatus;
-    }
-
-    public String getPreviewStatus() {
-        return previewStatus;
-    }
-
-    public void setPreviewStatus(String previewStatus) {
-        this.previewStatus = previewStatus;
-    }
+  public void setPreviewStatus(String previewStatus) {
+    this.previewStatus = previewStatus;
+  }
 }

@@ -15,8 +15,11 @@ package org.activiti.engine.impl.util;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -41,6 +44,38 @@ public class Activiti5Util {
       return false;
     }
   }
+  
+  /**
+   * Use this method when running outside a {@link CommandContext}. 
+   * It will check the cache first and only start a new {@link CommandContext} when no result is found in the cache. 
+   */
+  public static boolean isActiviti5ProcessDefinitionId(final ProcessEngineConfigurationImpl processEngineConfiguration, final String processDefinitionId) {
+    
+    if (processDefinitionId == null) {
+      return false;
+    }
+    
+    if (!processEngineConfiguration.isActiviti5CompatibilityEnabled()) {
+      return false;
+    }
+    
+    ProcessDefinitionCacheEntry cacheEntry = processEngineConfiguration.getProcessDefinitionCache().get(processDefinitionId);
+    if (cacheEntry != null) {
+      ProcessDefinition processDefinition = cacheEntry.getProcessDefinition();
+      return Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion());
+    } else {
+      return processEngineConfiguration.getCommandExecutor().execute(new Command<Boolean>() {
+        
+        @Override
+        public Boolean execute(CommandContext commandContext) {
+          return isActiviti5ProcessDefinitionId(commandContext, processDefinitionId);
+        }
+        
+      });
+      
+    }
+  }
+  
   
   public static boolean isActiviti5ProcessDefinition(CommandContext commandContext, ProcessDefinition processDefinition) {
     

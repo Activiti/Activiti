@@ -12,17 +12,14 @@
  */
 package com.activiti.rest.idm;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.identity.User;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.activiti.model.idm.UserActionRepresentation;
-import com.activiti.model.idm.UserRepresentation;
 
 /**
  * REST controller for managing users.
@@ -33,32 +30,15 @@ public class UserResource extends AbstractUserResource {
     @RequestMapping(value = "/rest/users/{userId}",
             method = RequestMethod.GET,
             produces = "application/json")
-    public UserRepresentation getUser(@PathVariable Long userId, HttpServletResponse response) {
+    public User getUser(@PathVariable String userId, HttpServletResponse response) {
        return super.getUser(userId, response);
     }
     
     @RequestMapping(value = "/rest/users/{userId}",
             method = RequestMethod.PUT,
             produces = "application/json")
-    public UserRepresentation updateUser(@PathVariable Long userId, @RequestBody UserRepresentation userRequest, HttpServletResponse response) {
+    public User updateUser(@PathVariable String userId, @RequestBody User userRequest, HttpServletResponse response) {
         return super.updateUser(userId, userRequest, response);
-    }
-
-    @RequestMapping(value = "/rest/users/{userId}",
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public void executeAction(@PathVariable Long userId, @RequestBody UserActionRepresentation actionRequest, HttpServletResponse response) {
-        super.executeAction(userId, actionRequest, response);
-    }
-    
-    @RequestMapping(value = "/rest/idm/signups", method = RequestMethod.POST)
-    public void registerUser(@RequestBody UserRepresentation signup, HttpServletRequest request) {
-    	super.registerUser(signup, request);
-    }
-    
-    @RequestMapping(value="/rest/users/{userId}/picture", method = RequestMethod.GET)
-    public void getProfilePicture(HttpServletResponse response, @PathVariable("userId") Long userId) {
-    	super.getProfilePicture(response, userId);
     }
     
 }

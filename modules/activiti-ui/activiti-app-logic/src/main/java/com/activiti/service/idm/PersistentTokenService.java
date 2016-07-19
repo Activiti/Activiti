@@ -12,22 +12,23 @@
  */
 package com.activiti.service.idm;
 
+import org.activiti.engine.identity.User;
+
 import com.activiti.domain.idm.PersistentToken;
-import com.activiti.domain.idm.User;
 
 /**
  * @author Joram Barrez
  */
 public interface PersistentTokenService {
-	
-	PersistentToken getPersistentToken(String tokenId);
-	
-	PersistentToken getPersistentToken(String tokenId, boolean invalidateCacheEntry);
-	
-	PersistentToken saveAndFlush(PersistentToken persistentToken);
-	
-	void delete(PersistentToken persistentToken);
-	
-    public PersistentToken createToken(User user, String remoteAddress, String userAgent);
-    
+
+  PersistentToken getPersistentToken(String tokenId);
+
+  PersistentToken getPersistentToken(String tokenId, boolean invalidateCacheEntry);
+
+  PersistentToken saveAndFlush(PersistentToken persistentToken);
+
+  void delete(PersistentToken persistentToken);
+
+  public PersistentToken createToken(User user, String remoteAddress, String userAgent);
+
 }

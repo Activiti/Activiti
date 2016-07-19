@@ -17,9 +17,7 @@ import java.util.Date;
 import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
-import com.activiti.domain.editor.SharePermission;
 import com.activiti.model.common.AbstractRepresentation;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Representation of process-models, both current and historic models.
@@ -31,17 +29,14 @@ public class ModelRepresentation extends AbstractRepresentation {
   protected Long id;
   protected String name;
   protected String description;
-  protected Long createdBy;
-  protected String createdByFullName;
-  protected Long lastUpdatedBy;
-  protected String lastUpdatedByFullName;
+  protected String createdBy;
+  protected String lastUpdatedBy;
   protected Date lastUpdated;
   protected boolean latestVersion;
   protected int version;
   protected String comment;
   protected Long referenceId;
   protected Integer modelType;
-  protected String permission;
 
   public ModelRepresentation(AbstractModel model) {
     initialize(model);
@@ -55,12 +50,10 @@ public class ModelRepresentation extends AbstractRepresentation {
     this.id = model.getId();
     this.name = model.getName();
     this.description = model.getDescription();
-    this.createdBy = model.getCreatedBy().getId();
-    this.createdByFullName = model.getCreatedBy().getFullName();
+    this.createdBy = model.getCreatedBy();
     this.lastUpdated = model.getLastUpdated();
     this.version = model.getVersion();
-    this.lastUpdatedBy = model.getLastUpdatedBy().getId();
-    this.lastUpdatedByFullName = model.getLastUpdatedBy().getFullName();
+    this.lastUpdatedBy = model.getLastUpdatedBy();
     this.comment = model.getComment();
     this.referenceId = model.getReferenceId();
     this.modelType = model.getModelType();
@@ -105,20 +98,12 @@ public class ModelRepresentation extends AbstractRepresentation {
     this.lastUpdated = lastUpdated;
   }
 
-  public Long getCreatedBy() {
+  public String getCreatedBy() {
     return createdBy;
   }
 
-  public void setCreatedBy(Long createdBy) {
+  public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
-  }
-
-  public String getCreatedByFullName() {
-    return createdByFullName;
-  }
-
-  public void setCreatedByFullName(String createdByFullName) {
-    this.createdByFullName = createdByFullName;
   }
 
   public void setLatestVersion(boolean latestVersion) {
@@ -137,20 +122,12 @@ public class ModelRepresentation extends AbstractRepresentation {
     this.version = version;
   }
 
-  public Long getLastUpdatedBy() {
+  public String getLastUpdatedBy() {
     return lastUpdatedBy;
   }
 
-  public void setLastUpdatedBy(Long lastUpdatedBy) {
+  public void setLastUpdatedBy(String lastUpdatedBy) {
     this.lastUpdatedBy = lastUpdatedBy;
-  }
-
-  public String getLastUpdatedByFullName() {
-    return lastUpdatedByFullName;
-  }
-
-  public void setLastUpdatedByFullName(String lastUpdatedByFullName) {
-    this.lastUpdatedByFullName = lastUpdatedByFullName;
   }
 
   public void setComment(String comment) {
@@ -175,21 +152,6 @@ public class ModelRepresentation extends AbstractRepresentation {
 
   public void setModelType(Integer modelType) {
     this.modelType = modelType;
-  }
-
-  public String getPermission() {
-    return permission;
-  }
-
-  public void setPermission(String permission) {
-    this.permission = permission;
-  }
-
-  @JsonIgnore
-  public void setSharePermission(SharePermission permission) {
-    if (permission != null) {
-      this.permission = permission.toString().toLowerCase();
-    }
   }
 
   public Model toModel() {

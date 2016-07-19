@@ -11,7 +11,7 @@ After downloading the Activiti UI WAR file from the link:$$http://www.activiti.o
 * Copy the downloaded activiti-app.war to the webapps directory of Tomcat.
 * Start Tomcat by running the startup.bat or startup.sh scripts in the bin folder of Tomcat
 * When Tomcat is started open your browser and go to  link:$$http://localhost:8080/activiti-app$$[http://localhost:8080/activiti-app].
-            Login with admin@app.activiti.com/test.
+            Login with admin and password test.
 
 
 
@@ -33,7 +33,7 @@ Demo user:
 [options="header"]
 |===============
 |UserId|Password|Security roles
-|admin@app.activiti.com|test|admin
+|admin|test|admin
 |===============
 
 

@@ -72,13 +72,6 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
   
   /**
-   * Unacquires a job. This means that the job before was 'acquired', meaning
-   * a lock owner and lock time was set. Calling this method for a {@link JobEntity}
-   * removes this lock owner and time, thus allowing other executors to pick it up. 
-   */
-  void unacquireJob(String jobId);
-
-  /**
    * Resets an expired job. These are jobs that were locked, but not completed.
    * Resetting these will make them available for being picked up by other executors.
    */

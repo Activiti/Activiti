@@ -88,13 +88,18 @@ angular.module('activitiModeler')
     .controller('SaveFormCtrl', [ '$rootScope', '$scope', '$http', '$route', '$location', '$translate', 'FormBuilderService',
                          function ($rootScope, $scope, $http, $route, $location, $translate, FormBuilderService) {
 
+	var formKey = '';
+    if ($rootScope.currentForm.key) {
+    	formKey = $rootScope.currentForm.key;
+    }
+	
     var description = '';
-    if ($rootScope.currentForm.description)
-    {
+    if ($rootScope.currentForm.description) {
     	description = $rootScope.currentForm.description;
     }
 
     var saveDialog = { name: $rootScope.currentForm.name,
+    		formKey: formKey,
             description: description,
             reusable: false,
             newVersion: false,
@@ -156,7 +161,8 @@ angular.module('activitiModeler')
             $rootScope.addAlert("Form '" + $scope.saveDialog.name, ' could not be saved');
         };
 
-        FormBuilderService.saveForm(data, $scope.saveDialog.name, $scope.saveDialog.description, saveCallback, errorCallback);
+        FormBuilderService.saveForm(data, $scope.saveDialog.name, $scope.saveDialog.formKey, 
+        	$scope.saveDialog.description, saveCallback, errorCallback);
     };
 
     $scope.isOkButtonDisabled = function() {

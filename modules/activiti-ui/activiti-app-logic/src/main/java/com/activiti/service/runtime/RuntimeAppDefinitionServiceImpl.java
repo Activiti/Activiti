@@ -17,12 +17,12 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.PostConstruct;
 
+import org.activiti.engine.identity.User;
 import org.activiti.engine.runtime.Clock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RuntimeApp;
 import com.activiti.domain.runtime.RuntimeAppDefinition;
 import com.activiti.domain.runtime.RuntimeAppDeployment;
@@ -108,7 +108,7 @@ public class RuntimeAppDefinitionServiceImpl implements RuntimeAppDefinitionServ
         // Create new definition
         RuntimeAppDefinition appDefinition = new RuntimeAppDefinition();
         appDefinition.setCreated(clock.getCurrentTime());
-        appDefinition.setCreatedBy(user);
+        appDefinition.setCreatedBy(user.getId());
         appDefinition.setDescription(description);
         appDefinition.setModelId(modelId);
         appDefinition.setName(name);
@@ -127,7 +127,7 @@ public class RuntimeAppDefinitionServiceImpl implements RuntimeAppDefinitionServ
         // Create new definition
         RuntimeAppDeployment appDeployment = new RuntimeAppDeployment();
         appDeployment.setCreated(clock.getCurrentTime());
-        appDeployment.setCreatedBy(user);
+        appDeployment.setCreatedBy(user.getId());
         appDeployment.setAppDefinition(appDefinition);
         appDeployment.setModelId(modelId);
         appDeployment.setDefinition(definition);
@@ -153,7 +153,7 @@ public class RuntimeAppDefinitionServiceImpl implements RuntimeAppDefinitionServ
      */
     @Override
     public List<RuntimeAppDefinition> getDefinitionsForUser(User user) {
-        return appDefinitionRepository.findByUser(user);
+        return appDefinitionRepository.findByUser(user.getId());
     }
     
     /**
@@ -161,13 +161,13 @@ public class RuntimeAppDefinitionServiceImpl implements RuntimeAppDefinitionServ
      */
     @Override
     public RuntimeAppDefinition getDefinitionForModelAndUser(Long modelId, User user) {
-        return appDefinitionRepository.findByModelAndUser(modelId, user);
+        return appDefinitionRepository.findByModelAndUser(modelId, user.getId());
     }
     
     @Override
     public Long getDefinitionIdForModelAndUser(Long modelId, User user) {
         Long appDefinitionId = null;
-        RuntimeAppDefinition appDefinition = appDefinitionRepository.findByModelAndUser(modelId, user);
+        RuntimeAppDefinition appDefinition = appDefinitionRepository.findByModelAndUser(modelId, user.getId());
         if (appDefinition != null) {
             appDefinitionId = appDefinition.getId();
         }
@@ -181,7 +181,7 @@ public class RuntimeAppDefinitionServiceImpl implements RuntimeAppDefinitionServ
     @Override
     public RuntimeApp addAppDefinitionForUser(User user, RuntimeAppDefinition rad) {
         RuntimeApp app = new RuntimeApp();
-        app.setUser(user);
+        app.setUser(user.getId());
         app.setAppDefinition(rad);
 
         return appRepository.save(app);
@@ -195,7 +195,7 @@ public class RuntimeAppDefinitionServiceImpl implements RuntimeAppDefinitionServ
     public boolean deleteAppDefinitionForUser(User user, RuntimeAppDefinition appDefinition) {
         boolean deleted = false;
         
-        RuntimeApp appDef = appRepository.findByUserAndAppDefinition(user, appDefinition);
+        RuntimeApp appDef = appRepository.findByUserAndAppDefinition(user.getId(), appDefinition);
         if(appDef != null) {
             appRepository.delete(appDef);
             deleted = true;

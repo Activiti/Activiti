@@ -44,10 +44,10 @@ public class FormJsonConverterTest {
     public void testSimpleJsonForm() throws Exception {
 
         String testJsonResource = readJsonToString(JSON_RESOURCE_1);
-        FormDefinition formDefinition = new FormJsonConverter().convertToForm(testJsonResource, 11l, 1);
+        FormDefinition formDefinition = new FormJsonConverter().convertToForm(testJsonResource, "11", 1);
 
         assertNotNull(formDefinition);
-        assertEquals(Long.valueOf(11), formDefinition.getId());
+        assertEquals("11", formDefinition.getId());
         assertEquals("form1", formDefinition.getKey());
         assertEquals("My first form", formDefinition.getName());
 

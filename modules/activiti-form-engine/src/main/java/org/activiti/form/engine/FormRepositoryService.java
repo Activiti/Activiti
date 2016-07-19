@@ -21,6 +21,7 @@ import org.activiti.form.engine.repository.FormDeploymentQuery;
 import org.activiti.form.engine.repository.FormQuery;
 import org.activiti.form.engine.repository.NativeFormDeploymentQuery;
 import org.activiti.form.engine.repository.NativeFormQuery;
+import org.activiti.form.model.FormDefinition;
 
 /**
  * Service providing access to the repository of process definitions and deployments.
@@ -49,8 +50,14 @@ public interface FormRepositoryService {
     FormDeploymentQuery createDeploymentQuery();
     
     NativeFormDeploymentQuery createNativeDeploymentQuery();
-
+    
     Form getForm(String formId);
+
+    FormDefinition getFormDefinitionById(String formId);
+    
+    FormDefinition getFormDefinitionByKey(String formDefinitionKey);
+    
+    FormDefinition getFormDefinitionByKey(String formDefinitionKey, String tenantId);
     
     InputStream getFormResource(String formId);
     

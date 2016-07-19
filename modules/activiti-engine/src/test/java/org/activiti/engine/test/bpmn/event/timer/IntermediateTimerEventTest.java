@@ -13,7 +13,9 @@
 package org.activiti.engine.test.bpmn.event.timer;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,8 +39,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertEquals(1, jobQuery.count());
 
-    // After setting the clock to time '50minutes and 5 seconds', the second
-    // timer should fire
+    // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
@@ -50,7 +51,8 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
   @Deployment
   public void testTimerEventWithStartAndDuration() throws Exception {
 
-    Date testStartTime = new Date();
+    Calendar testStartCal = new GregorianCalendar(2016, 0, 1, 10, 0, 0);
+    Date testStartTime = testStartCal.getTime();
     processEngineConfiguration.getClock().setCurrentTime(testStartTime);
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerEventWithStartAndDuration");
@@ -89,6 +91,8 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     assertProcessEnded(pi.getProcessInstanceId());
+    
+    processEngineConfiguration.getClock().reset();
   }
 
   @Deployment

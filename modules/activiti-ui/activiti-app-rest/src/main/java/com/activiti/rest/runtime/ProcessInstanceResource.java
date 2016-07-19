@@ -14,6 +14,7 @@ package com.activiti.rest.runtime;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.form.model.FormDefinition;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activiti.model.editor.form.FormDefinitionRepresentation;
 import com.activiti.model.runtime.ProcessInstanceRepresentation;
 
 /**
@@ -40,7 +40,7 @@ public class ProcessInstanceResource extends AbstractProcessInstanceResource {
     @RequestMapping(value = "/rest/process-instances/{processInstanceId}/start-form",
             method = RequestMethod.GET,
             produces = "application/json")
-    public FormDefinitionRepresentation getProcessInstanceStartForm(@PathVariable String processInstanceId, HttpServletResponse response) {
+    public FormDefinition getProcessInstanceStartForm(@PathVariable String processInstanceId, HttpServletResponse response) {
     	return super.getProcessInstanceStartForm(processInstanceId, response);
     }
     

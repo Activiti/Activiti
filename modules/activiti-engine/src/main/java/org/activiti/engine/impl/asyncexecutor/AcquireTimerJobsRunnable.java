@@ -49,7 +49,7 @@ public class AcquireTimerJobsRunnable implements Runnable {
     log.info("{} starting to acquire async jobs due");
     Thread.currentThread().setName("activiti-acquire-timer-jobs");
 
-    final CommandExecutor commandExecutor = asyncExecutor.getCommandExecutor();
+    final CommandExecutor commandExecutor = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor();
 
     while (!isInterrupted) {
 

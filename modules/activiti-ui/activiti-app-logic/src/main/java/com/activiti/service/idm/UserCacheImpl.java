@@ -1,177 +1,125 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * Copyright 2005-2015 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
  */
 package com.activiti.service.idm;
 
-import com.activiti.domain.idm.Group;
-import com.activiti.domain.idm.User;
-import com.activiti.service.api.UserCache;
-import com.activiti.service.api.UserService;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.activiti.service.api.UserCache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
+
 /**
- * Cache containing User objects to prevent too much DB-traffic (users exist seperatly from the
- * Activiti tables, they need to be fetched afterward one by one to join with those entities). 
- *
- * TODO: This could probably be made more efficient with bulk getting.
- * The Google cache impl allows this: override loadAll and use getAll() to fetch multiple entities.
- *
+ * Cache containing User objects to prevent too much DB-traffic (users exist seperatly from the Activiti tables, they need to be fetched afterward one by one to join with those entities).
+ * 
+ * TODO: This could probably be made more efficient with bulk getting. The Google cache impl allows this: override loadAll and use getAll() to fetch multiple entities.
+ * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
 @Service
 public class UserCacheImpl implements UserCache {
 
-	private final Logger logger = LoggerFactory.getLogger(UserCacheImpl.class);
+  private final Logger logger = LoggerFactory.getLogger(UserCacheImpl.class);
 
-	@Inject
-	private Environment environment;
+  @Autowired
+  protected Environment environment;
 
-	@Inject
-	private UserService userService;
+  @Autowired
+  protected IdentityService identityService;
 
-	@Inject
-	private Environment env;
+  protected LoadingCache<String, CachedUser> userCache;
 
-	private LoadingCache<Long, CachedUser> userCache;
+  @PostConstruct
+  protected void initCache() {
+    Long userCacheMaxSize = environment.getProperty("cache.users.max.size", Long.class);
+    Long userCacheMaxAge = environment.getProperty("cache.users.max.age", Long.class);
 
-	@PostConstruct
-	protected void initCache() {
-		Long userCacheMaxSize = environment.getProperty("cache.users.max.size", Long.class);
-		Long userCacheMaxAge = environment.getProperty("cache.users.max.age", Long.class);
-		userCache = CacheBuilder.newBuilder()
-				.maximumSize(userCacheMaxSize != null ? userCacheMaxSize : 2048)
-				.expireAfterAccess(userCacheMaxAge != null ? userCacheMaxAge : (24 * 60 * 60) , TimeUnit.SECONDS)
-				.recordStats()
-				.build(new CacheLoader<Long, CachedUser>() {
+    userCache = CacheBuilder.newBuilder().maximumSize(userCacheMaxSize != null ? userCacheMaxSize : 2048)
+        .expireAfterAccess(userCacheMaxAge != null ? userCacheMaxAge : (24 * 60 * 60), TimeUnit.SECONDS).recordStats().build(new CacheLoader<String, CachedUser>() {
 
-					public CachedUser load(final Long userId) throws Exception {
-						User userFromDatabase = userService.getUser(userId, true);
-						if (userFromDatabase == null) {
-							throw new UsernameNotFoundException("User " + userId + " was not found in the database");
-						}
+          public CachedUser load(final String userId) throws Exception {
+            User userFromDatabase = identityService.createUserQuery().userId(userId).singleResult();
+            if (userFromDatabase == null) {
+              throw new UsernameNotFoundException("User " + userId + " was not found in the database");
+            }
+            
+            Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+            
+            return new CachedUser(userFromDatabase, grantedAuthorities);
+          }
 
-						Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+        });
+  }
 
-						// add default authority
-						grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+  public void putUser(String userId, CachedUser cachedUser) {
+    userCache.put(userId, cachedUser);
+  }
 
-						// check if user is in super user group
-						String superUserGroupName = env.getRequiredProperty("admin.group");
-						for (Group group : userFromDatabase.getGroups()) {
-							if (StringUtils.equals(superUserGroupName, group.getName())) {
-								grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-							}
-						}
-						return new CachedUser(userFromDatabase, grantedAuthorities);
-					}
+  public CachedUser getUser(String userId) {
+    return getUser(userId, false, false, true); // always check validity by default
+  }
 
+  public CachedUser getUser(String userId, boolean throwExceptionOnNotFound, boolean throwExceptionOnInactive, boolean checkValidity) {
+    try {
+      // The cache is a LoadingCache and will fetch the value itself
+      CachedUser cachedUser = userCache.get(userId);
+      return cachedUser;
 
-				});
-	}
+    } catch (ExecutionException e) {
+      return null;
+    } catch (UncheckedExecutionException uee) {
 
-	public void putUser(Long userId, CachedUser cachedUser) {
-		userCache.put(userId, cachedUser);
-	}
+      // Some magic with the exceptions is needed:
+      // the exceptions like UserNameNotFound and Locked cannot
+      // bubble up, since Spring security will react on them otherwise
+      if (uee.getCause() instanceof RuntimeException) {
+        RuntimeException runtimeException = (RuntimeException) uee.getCause();
 
-	public CachedUser getUser(Long userId) {
-		return getUser(userId, false, false, true); // always check validity by default
-	}
+        if (runtimeException instanceof UsernameNotFoundException) {
+          if (throwExceptionOnNotFound) {
+            throw runtimeException;
+          } else {
+            return null;
+          }
+        }
 
-	public CachedUser getUser(Long userId, boolean throwExceptionOnNotFound, boolean throwExceptionOnInactive, boolean checkValidity) {
-		try {
-			// The cache is a LoadingCache and will fetch the value itself
-			CachedUser cachedUser = userCache.get(userId);
+        if (runtimeException instanceof LockedException) {
+          if (throwExceptionOnNotFound) {
+            throw runtimeException;
+          } else {
+            return null;
+          }
+        }
 
-			if (checkValidity) {
-				if (cachedUser != null && cachedUser.getUser() != null) {
-					Long count = userService.getUserCountByUserIdAndLastUpdateDate(cachedUser.getUser().getId(), cachedUser.getUser().getLastUpdate());
-					if (count == 0L) { // No such user was found -> cache version is invalid
-						userCache.invalidate(userId);
-						cachedUser = userCache.get(userId);
-					}
-				}
-			}
+      }
+      throw uee;
+    }
+  }
 
-			return cachedUser;
-
-		} catch (ExecutionException e) {
-			return null;
-		} catch (UncheckedExecutionException uee) {
-
-			// Some magic with the exceptions is needed:
-			// the exceptions like UserNameNotFound and Locked cannot
-			// bubble up, since Spring security will react on them otherwise
-			if (uee.getCause() instanceof RuntimeException) {
-				RuntimeException runtimeException = (RuntimeException) uee.getCause();
-
-				if (runtimeException instanceof UsernameNotFoundException) {
-					if (throwExceptionOnNotFound) {
-						throw runtimeException;
-					} else {
-						return null;
-					}
-				}
-
-				if (runtimeException instanceof LockedException) {
-					if (throwExceptionOnNotFound) {
-						throw runtimeException;
-					} else {
-						return null;
-					}
-				}
-
-			}
-			throw uee;
-		}
-	}
-
-
-	/**
-	 * @return the user for the given id. Returns null if no user exists with the given id
-	 * or if the id was not a valid user-id in the first place.
-	 */
-	public CachedUser getUser(String userId) {
-		try {
-			return getUser(Long.parseLong(userId));
-		} catch(NumberFormatException nfe) {
-			// Ignore exception
-			return null;
-		}
-	}
-
-
-	@Override
-	public void invalidate(Long userId) {
-		userCache.invalidate(userId);
-	}
-
+  @Override
+  public void invalidate(String userId) {
+    userCache.invalidate(userId);
+  }
 }

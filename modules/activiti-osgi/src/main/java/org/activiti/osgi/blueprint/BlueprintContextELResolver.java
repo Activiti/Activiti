@@ -22,8 +22,9 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
+import javax.el.ELContext;
+import javax.el.ELResolver;
+
 import org.osgi.service.blueprint.container.BlueprintContainer;
 
 /**

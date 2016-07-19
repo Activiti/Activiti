@@ -15,6 +15,7 @@ package org.activiti.spring;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnable;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class SpringCallerRunsRejectedJobsHandler implements SpringRejectedJobsHa
     try {
       // execute rejected work in caller thread (potentially blocking job
       // acquisition)
-      new ExecuteAsyncRunnable(job, asyncExecutor.getCommandExecutor()).run();
+      new ExecuteAsyncRunnable((JobEntity) job, asyncExecutor.getProcessEngineConfiguration()).run();
     } catch (Exception e) {
       log.error("Failed to execute rejected job " + job.getId(), e);
     }

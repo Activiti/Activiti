@@ -20,7 +20,7 @@ java.lang.System.out.println('  var2:'+jsonObj.get('var2'));
     <sequenceFlow sourceRef="script1" targetRef="haveVar2"/>
     <exclusiveGateway id="haveVar2" name="Have var2?"/>
     <sequenceFlow sourceRef="haveVar2" targetRef="userTaskFailure">
-      <conditionExpression><![CDATA[${myJsonObj.get('var3').asText() != 'myThirdValue'}]]></conditionExpression>
+      <conditionExpression><![CDATA[${myJsonObj.var3 != 'myThirdValue'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow sourceRef="haveVar2" targetRef="userTaskSuccess"/>
     <userTask id="userTaskFailure" />

@@ -25,6 +25,7 @@ import org.activiti.form.engine.impl.db.DbSqlSession;
 import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityManager;
 import org.activiti.form.engine.impl.persistence.entity.FormEntityManager;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,6 +214,10 @@ public class CommandContext {
 
   public ResourceEntityManager getResourceEntityManager() {
     return formEngineConfiguration.getResourceEntityManager();
+  }
+  
+  public SubmittedFormEntityManager getSubmittedFormEntityManager() {
+    return formEngineConfiguration.getSubmittedFormEntityManager();
   }
 
   // getters and setters

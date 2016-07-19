@@ -36,7 +36,7 @@ angular.module('activitiModeler').controller('KisBpmSequenceFlowOrderPopupCtrl',
     if (selectedShape) {
         var outgoingNodes = selectedShape.getOutgoingShapes();
         for (var i=0; i<outgoingNodes.length; i++) {
-            if (outgoingNodes[i].getStencil().title() === 'BPMN-EDITOR.ITEM.SEQUENCE-FLOW.TITLE') {
+            if (outgoingNodes[i].getStencil().idWithoutNs() === 'SequenceFlow') {
                 var targetActivity = outgoingNodes[i].getTarget();
                 // We need the resourceId of a sequence flow, not the id because that will change with every editor load
                 outgoingSequenceFlow.push({

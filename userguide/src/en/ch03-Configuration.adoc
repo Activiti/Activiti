@@ -128,8 +128,7 @@ Example database configuration:
 <property name="jdbcPassword" value="" />
 ----
 
-
-Alternatively, a +javax.sql.DataSource+ implementation can be used (e.g. DBCP from link:$$http://commons.apache.org/dbcp/$$[Apache Commons]):
+Our benchmarks have shown that the MyBatis connection pool is not the most efficient or resilient when dealing with a lot of concurrent requests. As such, it is advised to us a +javax.sql.DataSource+ implementation and inject it into the process engine configuration (For example DBCP, C3P0, Hikari, Tomcat Connection Pool, etc.):
 
 [source,xml,linenums]
 ----
@@ -149,11 +148,11 @@ Alternatively, a +javax.sql.DataSource+ implementation can be used (e.g. DBCP fr
 ----
 
 
-Note that Activiti does not ship with a library that allows to define such a data source. So you have to make sure that the libraries (e.g. from DBCP) are on your classpath.
+Note that Activiti does not ship with a library that allows to define such a data source. So you have to make sure that the libraries are on your classpath.
 
 The following properties can be set, regardless of whether you are using the JDBC or data source approach:
 
-* *databaseType*: it's normally not necessary to specify this property as it is automatically analyzed from the database connection metadata. Should only be specified in case automatic detection fails. Possible values: {h2, mysql, oracle, postgres, mssql, db2}. *This property is required when not using the default H2 database*. This setting will determine which create/drop scripts and queries will be used. See <<supporteddatabases,the 'supported databases' section>> for an overview of which types are supported.
+* *databaseType*: it's normally not necessary to specify this property as it is automatically analyzed from the database connection metadata. Should only be specified in case automatic detection fails. Possible values: {h2, mysql, oracle, postgres, mssql, db2}. This setting will determine which create/drop scripts and queries will be used. See <<supporteddatabases,the 'supported databases' section>> for an overview of which types are supported.
 * *databaseSchemaUpdate*: allows to set the strategy to handle the database schema on process engine boot and shutdown.
 ** +false+ (default): Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
 ** ++true++: Upon building the process engine, a check is performed and an update of the schema is performed if it is necessary. If the schema doesn't exist, it is created.
@@ -170,78 +169,13 @@ requires users to either modify the db.properties in the Activiti source and rec
 
 By using JNDI (Java Naming and Directory Interface) to obtain the database connection, the connection is fully managed by the Servlet Container and the configuration can be managed outside the war deployment. This also allows more control over the connection parameters than what is provided by the db.properties file.
 
-
-[[jndi_usage]]
-
-==== Usage
-
-
-To switch the Activiti Explorer and Activiti Rest web apps from db.properties configuration to JNDI datasource configuration, open the primary Spring configuration files (activiti-webapp-explorer2/src/main/webapp/WEB-INF/activiti-standalone-context.xml and activiti-webapp-rest2/src/main/resources/activiti-context.xml), and delete the beans named "dbProperties" and "dataSource". Then, add the following bean:
-
-[source,xml,linenums]
-----
-<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-    <property name="jndiName" value="java:comp/env/jdbc/activitiDB"/>
-</bean>
-
-----
-
-Next, we need to add context.xml files that contain the default H2 configuration. These will be overridden by your JNDI configuration, if it exists.  For the Activiti UI app, add activiti-app/src/main/webapp/META-INF/context.xml with the following:
-
-[source,xml,linenums]
-----
-<Context antiJARLocking="true" path="/activiti-app">
-    <Resource auth="Container"
-              name="jdbc/activitiDB"
-              type="javax.sql.DataSource"
-              scope="Shareable"
-              description="JDBC DataSource"
-              url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
-              driverClassName="org.h2.Driver"
-              username="sa"
-              password=""
-              defaultAutoCommit="false"
-              initialSize="5"
-              maxWait="5000"
-              maxActive="120"
-              maxIdle="5"/>
-</Context>
-----
-
-For the Activiti REST webapp, add activiti-webapp-rest2/src/main/webapp/META-INF/context.xml containing the following:
-
-[source,xml,linenums]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/activiti-rest">
-    <Resource auth="Container"
-              name="jdbc/activitiDB"
-              type="javax.sql.DataSource"
-              scope="Shareable"
-              description="JDBC DataSource"
-              url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=-1"
-              driverClassName="org.h2.Driver"
-              username="sa"
-              password=""
-              defaultAutoCommit="false"
-              initialSize="5"
-              maxWait="5000"
-              maxActive="120"
-              maxIdle="5"/>
-</Context>
-----
-
-As an optional step, you can now delete the unused db.properties files in the Activiti REST webapp project.
-
-
 [[jndi_configuration]]
 
 ==== Configuration
 
-
 Configuration of the JNDI datasource will differ depending on what servlet container application you are using. The instructions below will work for Tomcat, but for other container applications, please refer to the documentation for your container app.
 
-If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-app.xml). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
+If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for the Activiti UI this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-app.xml). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
 
 [source,xml,linenums]
 ----
@@ -262,6 +196,13 @@ If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[eng
             maxIdle="5"/>
         </Context>
 ----
+
+==== JNDI properties
+
+To configure a JNDI Datasource, use following properties in the properties file for the Activiti UI:
+
+* datasource.jndi.name: the JNDI name of the Datasource.
+* datasource.jndi.resourceRef: Set whether the lookup occurs in a J2EE container, i.e. if the prefix "java:comp/env/" needs to be added if the JNDI name doesn't already contain it. Default is "true".
 
 
 [[supporteddatabases]]
@@ -367,7 +308,7 @@ To upgrade, you have to start with putting the following configuration property 
 
 === Job Executor (since version 6.0.0)
 
-The async executor of Activiti 5 is the only available job executor in Activiti 6 as it was a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
+The async executor of Activiti 5 is the only available job executor in Activiti 6 as it is a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
 The old job executor of Activiti 5 is removed. More information can be found in the advanced section of the user guide.
 
 Moreover, if running under Java EE 7, JSR-236 compliant +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows:
@@ -389,7 +330,7 @@ The managed implementation fall back to their default counterparts if the thread
 
 === Job executor activation
 
-The +AsyncExecutor+ is a component that manages a thread pool to fire timers and other asynchronous tasks.
+The +AsyncExecutor+ is a component that manages a thread pool to fire timers and other asynchronous tasks. Other implementations are possible (for example using a message queue, see the advanced section of the user guide).
 
 By default, the +AsyncExecutor+ is not activated and not started. With the following configuration the async executor can be started together with the Activiti Engine.
 
@@ -398,7 +339,7 @@ By default, the +AsyncExecutor+ is not activated and not started. With the follo
 <property name="asyncExecutorActivate" value="true" />
 ----
 
-The property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup.
+The property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor at startup.
 
 [[mailServerConfiguration]]
 
@@ -462,7 +403,7 @@ There is a similar property called +knowledgeBaseCacheLimit+ and +knowledgeBaseC
 
 === Logging
 
-As of Activiti 5.12, SLF4J is used as logging framework, replacing the previous used java.util.logging. All logging (activiti, spring, mybatis, ...) is routed through SLF4J and allows for selecting the logging-implementation of your choice.
+All logging (activiti, spring, mybatis, ...) is routed through SLF4J and allows for selecting the logging-implementation of your choice.
 
 *By default no SFL4J-binding jar is present in the activiti-engine dependencies, this should be added in your project in order to use the logging framework of your choice.* If no implementation jar is added, SLF4J will use a NOP-logger, not logging anything at all, other than a warning that nothing will be logged. For more info on these bindings link:$$http://www.slf4j.org/codes.html#StaticLoggerBinder$$[http://www.slf4j.org/codes.html#StaticLoggerBinder].
 
@@ -477,7 +418,7 @@ With Maven, add for example a dependency like this (here using log4j), note that
 ----
 
 
-The activiti-explorer and activiti-rest webapps are configured to use Log4j-binding. Log4j is also used when running the tests for all the activiti-* modules.
+The activiti-ui and activiti-rest webapps are configured to use Log4j-binding. Log4j is also used when running the tests for all the activiti-* modules.
 
 
 *Important note when using a container with commons-logging in the classpath:* In order to route the spring-logging through SLF4J, a bridge is used (see link:$$http://www.slf4j.org/legacy.html#jclOverSLF4J$$[http://www.slf4j.org/legacy.html#jclOverSLF4J]). If your container provides a commons-logging implementation, please follow directions on this page: link:$$http://www.slf4j.org/codes.html#release$$[http://www.slf4j.org/codes.html#release] to ensure stability.
@@ -499,7 +440,7 @@ Example when using Maven (version omitted):
 === Mapped Diagnostic Contexts
 
 
-As of version 5.13, Activiti supports Mapped Diagnostic Contexts feature of SLF4j. These basic information are passed to the underlying logger along with what is going to be logged:
+Activiti supports Mapped Diagnostic Contexts feature of SLF4j. These basic information are passed to the underlying logger along with what is going to be logged:
 
 * processDefinition Id as mdcProcessDefinitionID
 * processInstance Id as mdcProcessInstanceID
@@ -521,7 +462,7 @@ This is useful when the logs contain information that needs to checked in real t
 
 === Event handlers
 
-An event mechanism has been introduced in Activiti 5.15. It allows you to get notified when various events occur within the engine. Take a look at <<eventDispatcherEventTypes,all supported event types>> for an overview of the events available.
+The event mechanism in the Activiti engine allows you to get notified when various events occur within the engine. Take a look at <<eventDispatcherEventTypes,all supported event types>> for an overview of the events available.
 
 It's possible to register a listener for certain types of events as opposed to getting notified when any type of event is dispatched. You can either add engine-wide event listeners <<eventDispatcherConfiguration,through the configuration>>, add engine-wide event listeners <<eventDispatcherConfigurationRuntime,at runtime using the API>> or add event-listeners to <<eventDispatcherConfigurationProcessDefinition,specific process definitions in the BPMN XML>>.
 

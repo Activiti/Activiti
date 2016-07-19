@@ -14,9 +14,8 @@ package com.activiti.service.api;
 
 import java.util.List;
 
+import org.activiti.engine.identity.User;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.activiti.domain.idm.User;
 
 public interface DeploymentService {
 

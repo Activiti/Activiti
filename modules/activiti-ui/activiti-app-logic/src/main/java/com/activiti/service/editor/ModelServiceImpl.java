@@ -40,8 +40,8 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
+import org.activiti.engine.identity.User;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +55,6 @@ import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.domain.editor.ModelRelation;
 import com.activiti.domain.editor.ModelRelationTypes;
-import com.activiti.domain.idm.Group;
-import com.activiti.domain.idm.User;
 import com.activiti.image.ImageGenerator;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation;
@@ -64,14 +62,11 @@ import com.activiti.model.editor.ReviveModelResultRepresentation.UnresolveModelR
 import com.activiti.repository.editor.ModelHistoryRepository;
 import com.activiti.repository.editor.ModelRelationRepository;
 import com.activiti.repository.editor.ModelRepository;
-import com.activiti.repository.editor.ModelShareInfoRepository;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.api.DeploymentService;
-import com.activiti.service.api.GroupHierarchyCache;
 import com.activiti.service.api.ModelService;
 import com.activiti.service.api.RuntimeAppDefinitionService;
 import com.activiti.service.api.UserCache;
-import com.activiti.service.api.UserCache.CachedUser;
 import com.activiti.service.exception.BaseModelerRestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -101,13 +96,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   protected ModelHistoryRepository modelHistoryRepository;
 
   @Autowired
-  protected ModelShareInfoRepository shareInfoRepository;
-
-  @Autowired
   protected ModelRelationRepository modelRelationRepository;
-
-  @Autowired
-  protected GroupHierarchyCache groupHierarchyCache;
 
   @Autowired
   protected ObjectMapper objectMapper;
@@ -158,11 +147,11 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     newModel.setName(model.getName());
     newModel.setModelType(model.getModelType());
     newModel.setCreated(Calendar.getInstance().getTime());
-    newModel.setCreatedBy(createdBy);
+    newModel.setCreatedBy(createdBy.getId());
     newModel.setDescription(model.getDescription());
     newModel.setModelEditorJson(editorJson);
     newModel.setLastUpdated(Calendar.getInstance().getTime());
-    newModel.setLastUpdatedBy(createdBy);
+    newModel.setLastUpdatedBy(createdBy.getId());
     newModel.setReferenceId(model.getReferenceId());
 
     persistModel(newModel);
@@ -183,7 +172,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
   protected AbstractModel internalCreateNewModelVersion(Model modelObject, String comment, User updatedBy, boolean returnModelHistory) {
     modelObject.setLastUpdated(new Date());
-    modelObject.setLastUpdatedBy(updatedBy);
+    modelObject.setLastUpdatedBy(updatedBy.getId());
     modelObject.setComment(comment);
 
     ModelHistory historyModel = createNewModelhistory(modelObject);
@@ -220,7 +209,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     if (newVersion == false) {
 
       modelObject.setLastUpdated(new Date());
-      modelObject.setLastUpdatedBy(updatedBy);
+      modelObject.setLastUpdatedBy(updatedBy.getId());
       modelObject.setName(name);
       modelObject.setDescription(description);
       modelObject.setModelEditorJson(editorJson);
@@ -236,7 +225,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
       modelObject.setVersion(modelObject.getVersion() + 1);
       modelObject.setLastUpdated(new Date());
-      modelObject.setLastUpdatedBy(updatedBy);
+      modelObject.setLastUpdatedBy(updatedBy.getId());
       modelObject.setName(name);
       modelObject.setDescription(description);
       modelObject.setModelEditorJson(editorJson);
@@ -316,7 +305,6 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     }
 
     // Delete all related data
-    shareInfoRepository.deleteInBatchByModelId(model.getId());
     modelRelationRepository.deleteModelRelationsForParentModel(model.getId());
 
     allModels.add(model);
@@ -337,7 +325,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     // Populate the actual latest version with the properties in the historic model
     latestModel.setVersion(latestModel.getVersion() + 1);
     latestModel.setLastUpdated(new Date());
-    latestModel.setLastUpdatedBy(user);
+    latestModel.setLastUpdatedBy(user.getId());
     latestModel.setName(modelHistory.getName());
     latestModel.setDescription(modelHistory.getDescription());
     latestModel.setModelEditorJson(modelHistory.getModelEditorJson());
@@ -355,7 +343,8 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
           AppDefinition appDefinition = objectMapper.readValue(latestModel.getModelEditorJson(), AppDefinition.class);
           for (AppModelDefinition appModelDefinition : appDefinition.getModels()) {
             if (!modelRepository.exists(appModelDefinition.getId())) {
-              result.getUnresolvedModels().add(new UnresolveModelRepresentation(appModelDefinition.getId(), appModelDefinition.getName(), appModelDefinition.getLastUpdatedByFullName()));
+              result.getUnresolvedModels().add(new UnresolveModelRepresentation(appModelDefinition.getId(), 
+                  appModelDefinition.getName(), appModelDefinition.getLastUpdatedBy()));
             }
           }
         } catch (Exception e) {
@@ -383,65 +372,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
       throw new InternalServerErrorException("Could not generate BPMN 2.0 xml");
     }
 
-    if (refreshReferences) {
-      for (Process process : bpmnModel.getProcesses()) {
-        refreshAssignmentsForUserTasks(process.getFlowElements());
-      }
-    }
-
     return bpmnModel;
-  }
-
-  public void refreshAssignmentsForUserTasks(Collection<FlowElement> flowElements) {
-    for (FlowElement nextFlowElement : flowElements) {
-      if (nextFlowElement instanceof UserTask) {
-        addOrReplaceAssignmentsExtraElements((UserTask) nextFlowElement);
-
-      } else if (nextFlowElement instanceof SubProcess) {
-        SubProcess subProcess = (SubProcess) nextFlowElement;
-        refreshAssignmentsForUserTasks(subProcess.getFlowElements());
-      }
-    }
-  }
-
-  protected void addOrReplaceAssignmentsExtraElements(UserTask userTask) {
-    if (StringUtils.isNotEmpty(userTask.getAssignee())) {
-      if (NumberUtils.isNumber(userTask.getAssignee())) {
-        CachedUser user = userCache.getUser(Long.valueOf(userTask.getAssignee()));
-        if (user != null && user.getUser() != null) {
-          String email = user.getUser().getEmail();
-          if (StringUtils.isNotEmpty(email)) {
-            addOrUpdateExtensionElement("assignee-info-email", email, userTask);
-          }
-        }
-      }
-    }
-
-    if (CollectionUtils.isNotEmpty(userTask.getCandidateUsers())) {
-      for (String candidateUserId : userTask.getCandidateUsers()) {
-        if (NumberUtils.isNumber(candidateUserId)) {
-          CachedUser user = userCache.getUser(Long.valueOf(candidateUserId));
-          if (user != null && user.getUser() != null) {
-            String email = user.getUser().getEmail();
-            if (StringUtils.isNotEmpty(email)) {
-              addOrUpdateExtensionElement("user-info-email-" + candidateUserId, email, userTask);
-            }
-          }
-        }
-      }
-    }
-
-    if (CollectionUtils.isNotEmpty(userTask.getCandidateGroups())) {
-      for (String candidateGroupId : userTask.getCandidateGroups()) {
-        if (NumberUtils.isNumber(candidateGroupId)) {
-          Group candidateGroup = groupHierarchyCache.getGroup(Long.parseLong(candidateGroupId));
-
-          if (candidateGroup != null) {
-            addOrUpdateExtensionElement("group-info-name-" + candidateGroupId, candidateGroup.getName(), userTask);
-          }
-        }
-      }
-    }
   }
 
   protected void addOrUpdateExtensionElement(String name, String value, UserTask userTask) {
@@ -465,7 +396,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   }
 
   public Long getModelCountForUser(User user, int modelType) {
-    return modelRepository.countByModelTypeAndUser(modelType, user);
+    return modelRepository.countByModelTypeAndUser(modelType, user.getId());
   }
 
   protected Model persistModel(Model model) {

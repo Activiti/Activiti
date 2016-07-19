@@ -2,7 +2,7 @@
 <div class="subheader" ng-if="model.process">
 	<div class="fixed-container">
 		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.process.latestVersion && !model.process.referenceId" ng-disabled="model.process.permission != 'write'">
+			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.process.latestVersion && !model.process.referenceId">
 				<i class="glyphicon glyphicon-edit icon-and-label"></i> {{'PROCESS.ACTION.OPEN-IN-EDITOR' | translate}}
 			</button>
 			<button type="button" class="btn btn-default" ng-click="useAsNewVersion()" ng-if="!model.process.latestVersion && !model.process.referenceId">
@@ -16,7 +16,7 @@
 	        </a>
 		</div>
 		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" ng-click="editProcess()" ng-disabled="!model.process.latestVersion || model.process.permission != 'write' || model.process.referenceId"
+			<button type="button" class="btn btn-default" ng-click="editProcess()" ng-disabled="!model.process.latestVersion || model.process.referenceId"
 				title="{{'PROCESS.ACTION.EDIT' | translate}}">
 				<i class="glyphicon glyphicon-pencil"></i>
 			</button>
@@ -25,7 +25,7 @@
                 <i class="editor-icon editor-icon-copy"></i>
             </button>
 			<button type="button" class="btn btn-default" ng-click="deleteProcess()" title="{{'PROCESS.ACTION.DELETE' | translate}}"
-				 title="{{'PROCESS.ACTION.DELETE' | translate}}" ng-disabled="!model.process.latestVersion || model.process.permission != 'write' || model.process.referenceId">
+				 title="{{'PROCESS.ACTION.DELETE' | translate}}" ng-disabled="!model.process.latestVersion || model.process.referenceId">
 				<i class="glyphicon glyphicon-trash"></i>
 			</button>
 		</div>		

@@ -313,6 +313,8 @@ import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.impl.variable.IntegerType;
 import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
+import org.activiti.engine.impl.variable.JodaDateTimeType;
+import org.activiti.engine.impl.variable.JodaDateType;
 import org.activiti.engine.impl.variable.JsonType;
 import org.activiti.engine.impl.variable.LongJsonType;
 import org.activiti.engine.impl.variable.LongStringType;
@@ -526,7 +528,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int asyncExecutorCorePoolSize = 2;
 
   /**
-   * The maximum number of threads that are kept alive in the threadpool for job
+   * The maximum number of threads that are created in the threadpool for job
    * execution. Default value = 10. (This property is only applicable when using
    * the {@link DefaultAsyncJobExecutor}).
    */
@@ -672,25 +674,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int asyncExecutorAsyncJobLockTimeInMillis = 5 * 60 * 1000;
 
   /**
-   * The amount of time (in milliseconds) that is waited before trying locking
-   * again, when an exclusive job is tried to be locked, but fails and the
-   * locking.
+   * The amount of time (in milliseconds) that is between two consecutive checks
+   * of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time
+   * was written by some executor, but the job was never completed).
    * 
-   * Default value = 500. If 0, this would stress database traffic a lot in case
-   * when a retry is needed, as exclusive jobs would be constantly tried to be
-   * locked.
-   * 
-   * (This property is only applicable when using the
-   * {@link DefaultAsyncJobExecutor}).
-   */
-  protected int asyncExecutorLockRetryWaitTimeInMillis = 500;
-  
-  /**
-   * The amount of time (in mulliseconds) that is between two consecutive checks
-   * of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time)
-   * was written by some executor, but the job was never completed.
-   * 
-   * During such a check, jobs that are expired are again made availabe,
+   * During such a check, jobs that are expired are again made available,
    * meaning the lock owner and lock time will be removed. Other executors
    * will now be able to pick it up.
    * 
@@ -699,13 +687,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * By default one minute.
    */
   protected int asyncExecutorResetExpiredJobsInterval = 60 * 1000;
- 
- /**
-  * Allows to define a custom factory for creating the {@link Runnable} that is executed by the async executor.
-  * 
-  * (This property is only applicable when using the {@link DefaultAsyncJobExecutor}).
-  */
-  protected ExecuteAsyncRunnableFactory asyncExecutorExecuteAsyncRunnableFactory;
   
   /**
    * The {@link AsyncExecutor} has a 'cleanup' thread that resets expired jobs
@@ -713,6 +694,20 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * of the page being used when fetching these expired jobs.
    */
   protected int asyncExecutorResetExpiredJobsPageSize = 3;
+  
+  /**
+   * Experimental!
+   * 
+   * Set this to true when using the message queue based job executor.
+   */
+  protected boolean asyncExecutorMessageQueueMode;
+ 
+ /**
+  * Allows to define a custom factory for creating the {@link Runnable} that is executed by the async executor.
+  * 
+  * (This property is only applicable when using the {@link DefaultAsyncJobExecutor}).
+  */
+  protected ExecuteAsyncRunnableFactory asyncExecutorExecuteAsyncRunnableFactory;
 
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
 
@@ -1519,6 +1514,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
      if (jobManager == null) {
        jobManager = new DefaultJobManager(this);
      }
+     
+     jobManager.setProcessEngineConfiguration(this);
    }
 
   // session factories ////////////////////////////////////////////////////////
@@ -1917,6 +1914,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (asyncExecutor == null) {
       DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
       
+      // Message queue mode
+      defaultAsyncExecutor.setMessageQueueMode(asyncExecutorMessageQueueMode);
+      
       // Thread pool config
       defaultAsyncExecutor.setCorePoolSize(asyncExecutorCorePoolSize);
       defaultAsyncExecutor.setMaxPoolSize(asyncExecutorMaxPoolSize);
@@ -1942,9 +1942,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         defaultAsyncExecutor.setLockOwner(asyncExecutorLockOwner);
       }
       
-      // Retry
-      defaultAsyncExecutor.setRetryWaitTimeInMillis(asyncExecutorLockRetryWaitTimeInMillis);
-      
       // Reset expired
       defaultAsyncExecutor.setResetExpiredJobsInterval(asyncExecutorResetExpiredJobsInterval);
       defaultAsyncExecutor.setResetExpiredJobsPageSize(asyncExecutorResetExpiredJobsPageSize);
@@ -1955,8 +1952,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       asyncExecutor = defaultAsyncExecutor;
     }
     
-    asyncExecutor.setCommandExecutor(commandExecutor);
-    asyncExecutor.setJobManager(jobManager);
+    asyncExecutor.setProcessEngineConfiguration(this);
     asyncExecutor.setAutoActivate(asyncExecutorActivate);
   }
 
@@ -2040,6 +2036,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new IntegerType());
       variableTypes.addType(new LongType());
       variableTypes.addType(new DateType());
+      variableTypes.addType(new JodaDateType());
+      variableTypes.addType(new JodaDateTimeType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));
@@ -3893,15 +3891,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public int getAsyncExecutorLockRetryWaitTimeInMillis() {
-    return asyncExecutorLockRetryWaitTimeInMillis;
-  }
-
-  public ProcessEngineConfigurationImpl setAsyncExecutorLockRetryWaitTimeInMillis(int asyncExecutorLockRetryWaitTimeInMillis) {
-    this.asyncExecutorLockRetryWaitTimeInMillis = asyncExecutorLockRetryWaitTimeInMillis;
-    return this;
-  }
-  
   public int getAsyncExecutorResetExpiredJobsInterval() {
     return asyncExecutorResetExpiredJobsInterval;
   }
@@ -3928,5 +3917,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.asyncExecutorResetExpiredJobsPageSize = asyncExecutorResetExpiredJobsPageSize;
     return this;
   }
+
+  public boolean isAsyncExecutorIsMessageQueueMode() {
+    return asyncExecutorMessageQueueMode;
+  }
+
+  public ProcessEngineConfigurationImpl setAsyncExecutorMessageQueueMode(boolean asyncExecutorMessageQueueMode) {
+    this.asyncExecutorMessageQueueMode = asyncExecutorMessageQueueMode;
+    return this;
+  }
+  
+  
   
 }

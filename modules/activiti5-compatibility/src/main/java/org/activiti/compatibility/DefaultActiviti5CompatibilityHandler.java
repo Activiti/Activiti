@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.el.PropertyNotFoundException;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.compatibility.wrapper.Activiti5AttachmentWrapper;
@@ -39,7 +41,6 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;

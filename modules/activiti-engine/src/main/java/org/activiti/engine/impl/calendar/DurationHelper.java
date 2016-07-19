@@ -14,9 +14,12 @@
 
 package org.activiti.engine.impl.calendar;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -32,6 +35,8 @@ import org.joda.time.format.ISODateTimeFormat;
  * helper class for parsing ISO8601 duration format (also recurring) and computing next timer date
  */
 public class DurationHelper {
+  
+  protected static DateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy");
 
   private Calendar start;
   private Calendar end;
@@ -177,7 +182,18 @@ public class DurationHelper {
   }
 
   protected Calendar parseDate(String date) throws Exception {
-    return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(date).toCalendar(null);
+    Calendar dateCalendar = null;
+    try {
+      dateCalendar = ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(
+          clockReader.getCurrentTimeZone())).parseDateTime(date).toCalendar(null);
+      
+    } catch (IllegalArgumentException e) {
+      // try to parse a java.util.date to string back to a java.util.date
+      dateCalendar = new GregorianCalendar();
+      dateCalendar.setTime(DATE_FORMAT.parse(date));
+    }
+    
+    return dateCalendar;
   }
 
   protected Duration parsePeriod(String period) throws Exception {

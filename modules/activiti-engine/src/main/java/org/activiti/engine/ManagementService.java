@@ -112,6 +112,19 @@ public interface ManagementService {
    *           when there is no job with the given id.
    */
   Job moveJobToDeadLetterJob(String jobId);
+  
+  /**
+   * Moves a job that is in the dead letter job table back to be an executable job, 
+   * and resetting the retries (as the retries was 0 when it was put into the dead letter job table).
+   * 
+   * @param jobId
+   *          id of the job to move, cannot be null.
+   * @param retries
+   *          the number of retries (value greater than 0) which will be set on the job.
+   * @throws ActivitiObjectNotFoundException
+   *           when there is no job with the given id.
+   */
+  Job moveDeadLetterJobToExecutableJob(String jobId, int retries);
 
   /**
    * Delete the job with the provided id.
@@ -243,15 +256,11 @@ public interface ManagementService {
   <T> T executeCommand(CommandConfig config, Command<T> command);
 
   /**
-   * [EXPERIMENTAL]
-   * 
    * Executes the sql contained in the {@link CustomSqlExecution} parameter.
    */
   <MapperType, ResultType> ResultType executeCustomSql(CustomSqlExecution<MapperType, ResultType> customSqlExecution);
 
   /**
-   * [EXPERIMENTAL]
-   * 
    * Returns a list of event log entries, describing everything the engine has processed. Note that the event logging must specifically must be enabled in the process engine configuration.
    * 
    * Passing null as arguments will effectively fetch ALL event log entries. Be careful, as this list might be huge!
@@ -259,8 +268,6 @@ public interface ManagementService {
   List<EventLogEntry> getEventLogEntries(Long startLogNr, Long pageSize);
 
   /**
-   * [EXPERIMENTAL]
-   * 
    * Returns a list of event log entries for a specific process instance id. Note that the event logging must specifically must be enabled in the process engine configuration.
    * 
    * Passing null as arguments will effectively fetch ALL event log entries. Be careful, as this list might be huge!

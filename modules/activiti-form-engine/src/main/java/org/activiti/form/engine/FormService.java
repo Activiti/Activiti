@@ -12,6 +12,9 @@
  */
 package org.activiti.form.engine;
 
+import java.util.Map;
+
+import org.activiti.form.engine.repository.SubmittedForm;
 import org.activiti.form.model.FormDefinition;
 
 /**
@@ -20,4 +23,24 @@ import org.activiti.form.model.FormDefinition;
 public interface FormService {
 
     void completeForm(FormDefinition formDefinition);
+    
+    /**
+     * @param definition form definition to use for type-conversion and validation
+     * @param values values submitted by the user
+     * @param outcome outcome selected by the user. If null, no outcome is used and any outcome definitions are ignored.
+     * 
+     * @return raw variables that can be used in the activiti engine, based on the filled in values and selected outcome.
+     * @throws FormValidationException when a submitted value is not valid or a required value is missing.
+     */
+    Map<String, Object> getVariablesFromFormSubmission(FormDefinition formDefinition, Map<String, Object> values, String outcome);
+    
+    /**
+     * Store the submitted form values.
+     * 
+       * @param form form instance of the submitted form
+       * @param taskId task instance id of the completed task
+       * @param processInstanceId process instance id of the completed task
+       * @param valuesNode json node with the values of the 
+       */
+    SubmittedForm storeSubmittedForm(Map<String, Object> values, FormDefinition formDefinition, String taskId, String processInstanceId);
 }

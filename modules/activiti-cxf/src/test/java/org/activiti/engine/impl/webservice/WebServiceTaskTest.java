@@ -76,8 +76,7 @@ public class WebServiceTaskTest extends PluggableActivitiTestCase {
         final Date expectedDate = calendar.getTime();
         final Map<String, Object> variables = new HashMap<String, Object>(1);
         variables.put("startDate", expectedDate);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocationDataStructure",
-                variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocationDataStructure", variables);
         waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
         assertEquals(expectedDate, webServiceMock.getDataStructure().eltDate);

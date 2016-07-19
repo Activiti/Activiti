@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class ResetExpiredJobsRunnable implements Runnable {
 
       try {
         
-        List<JobEntity> expiredJobs = asyncExecutor.getCommandExecutor().execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
+        List<JobEntity> expiredJobs = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor().execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
         
         List<String> expiredJobIds = new ArrayList<String>(expiredJobs.size());
         for (JobEntity expiredJob : expiredJobs) {
@@ -62,11 +63,15 @@ public class ResetExpiredJobsRunnable implements Runnable {
         }
         
         if (expiredJobIds.size() > 0) {
-          asyncExecutor.getCommandExecutor().execute(new ResetExpiredJobsCmd(expiredJobIds));
+          asyncExecutor.getProcessEngineConfiguration().getCommandExecutor().execute(new ResetExpiredJobsCmd(expiredJobIds));
         }
         
       } catch (Throwable e) {
-        log.error("exception during resetting expired jobs", e.getMessage(), e);
+        if (e instanceof ActivitiOptimisticLockingException) {
+          log.debug("Optmistic lock exception while resetting locked jobs", e);
+        } else {
+          log.error("exception during resetting expired jobs", e.getMessage(), e);
+        }
       }
 
       // Sleep

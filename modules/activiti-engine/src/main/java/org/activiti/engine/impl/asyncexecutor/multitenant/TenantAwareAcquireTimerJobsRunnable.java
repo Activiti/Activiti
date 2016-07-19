@@ -28,7 +28,7 @@ public class TenantAwareAcquireTimerJobsRunnable extends AcquireTimerJobsRunnabl
   
   public TenantAwareAcquireTimerJobsRunnable(AsyncExecutor asyncExecutor, TenantInfoHolder tenantInfoHolder, String tenantId) {
     
-    super(asyncExecutor, asyncExecutor.getJobManager());
+    super(asyncExecutor, asyncExecutor.getProcessEngineConfiguration().getJobManager());
     this.tenantInfoHolder = tenantInfoHolder;
     this.tenantId = tenantId;
   }

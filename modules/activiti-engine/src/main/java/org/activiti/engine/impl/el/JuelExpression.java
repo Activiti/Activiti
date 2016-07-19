@@ -13,17 +13,18 @@
 
 package org.activiti.engine.impl.el;
 
+import javax.el.ELContext;
+import javax.el.ELException;
+import javax.el.MethodNotFoundException;
+import javax.el.PropertyNotFoundException;
+import javax.el.ValueExpression;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.ExpressionGetInvocation;
 import org.activiti.engine.impl.delegate.invocation.ExpressionSetInvocation;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELException;
-import org.activiti.engine.impl.javax.el.MethodNotFoundException;
-import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
-import org.activiti.engine.impl.javax.el.ValueExpression;
 
 /**
  * Expression implementation backed by a JUEL {@link ValueExpression}.

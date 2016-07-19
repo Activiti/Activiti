@@ -14,94 +14,95 @@ package com.activiti.model.editor.form;
 
 import java.util.Date;
 
+import org.activiti.form.model.FormDefinition;
+
 import com.activiti.domain.editor.AbstractModel;
 import com.activiti.model.common.AbstractRepresentation;
 
-
 public class FormRepresentation extends AbstractRepresentation {
 
-    protected Long id;
-    protected String name;
-    protected String description;
-    protected Integer version;
-    protected Long lastUpdatedBy;
-	protected String lastUpdatedByFullName;
-	protected Date lastUpdated;
-    protected FormDefinitionRepresentation formDefinition;
-    
-    public FormRepresentation(AbstractModel model) {
-        this.id = model.getId();
-        this.name = model.getName();
-        this.description = model.getDescription();
-        this.version = model.getVersion();
-        this.lastUpdated = model.getLastUpdated();
-        this.lastUpdatedBy = model.getLastUpdatedBy().getId();
-        this.lastUpdatedByFullName = model.getLastUpdatedBy().getFullName();
-    }
-    
-    public FormRepresentation() {}
-    
-    public Long getId() {
-        return id;
-    }
+  protected Long id;
+  protected String name;
+  protected String key;
+  protected String description;
+  protected Integer version;
+  protected String lastUpdatedBy;
+  protected Date lastUpdated;
+  protected FormDefinition formDefinition;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public FormRepresentation(AbstractModel model) {
+    this.id = model.getId();
+    this.name = model.getName();
+    this.description = model.getDescription();
+    this.version = model.getVersion();
+    this.lastUpdated = model.getLastUpdated();
+    this.lastUpdatedBy = model.getLastUpdatedBy();
+  }
 
-    public String getName() {
-        return name;
-    }
+  public FormRepresentation() {
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Integer getVersion() {
-        return version;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
+  public String getKey() {
+    return key;
+  }
 
-    public Long getLastUpdatedBy() {
-		return lastUpdatedBy;
-	}
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-	public void setLastUpdatedBy(Long lastUpdatedBy) {
-		this.lastUpdatedBy = lastUpdatedBy;
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public String getLastUpdatedByFullName() {
-		return lastUpdatedByFullName;
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	public void setLastUpdatedByFullName(String lastUpdatedByFullName) {
-		this.lastUpdatedByFullName = lastUpdatedByFullName;
-	}
+  public Integer getVersion() {
+    return version;
+  }
 
-	public Date getLastUpdated() {
-		return lastUpdated;
-	}
+  public void setVersion(Integer version) {
+    this.version = version;
+  }
 
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
+  public String getLastUpdatedBy() {
+    return lastUpdatedBy;
+  }
 
-	public FormDefinitionRepresentation getFormDefinition() {
-        return formDefinition;
-    }
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    this.lastUpdatedBy = lastUpdatedBy;
+  }
 
-    public void setFormDefinition(FormDefinitionRepresentation formDefinition) {
-        this.formDefinition = formDefinition;
-    }
+  public Date getLastUpdated() {
+    return lastUpdated;
+  }
+
+  public void setLastUpdated(Date lastUpdated) {
+    this.lastUpdated = lastUpdated;
+  }
+
+  public FormDefinition getFormDefinition() {
+    return formDefinition;
+  }
+
+  public void setFormDefinition(FormDefinition formDefinition) {
+    this.formDefinition = formDefinition;
+  }
 }

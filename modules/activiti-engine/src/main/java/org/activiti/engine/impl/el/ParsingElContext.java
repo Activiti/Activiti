@@ -12,11 +12,11 @@
  */
 package org.activiti.engine.impl.el;
 
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
-import org.activiti.engine.impl.javax.el.ExpressionFactory;
-import org.activiti.engine.impl.javax.el.FunctionMapper;
-import org.activiti.engine.impl.javax.el.VariableMapper;
+import javax.el.ELContext;
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
+import javax.el.FunctionMapper;
+import javax.el.VariableMapper;
 
 /**
  * Simple implementation of the {@link ELContext} used during parsings.

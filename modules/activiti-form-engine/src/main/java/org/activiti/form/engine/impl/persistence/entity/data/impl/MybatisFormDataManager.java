@@ -31,8 +31,8 @@ import org.activiti.form.engine.repository.Form;
  */
 public class MybatisFormDataManager extends AbstractDataManager<FormEntity> implements FormDataManager {
   
-  public MybatisFormDataManager(FormEngineConfiguration dmnEngineConfiguration) {
-    super(dmnEngineConfiguration);
+  public MybatisFormDataManager(FormEngineConfiguration formEngineConfiguration) {
+    super(formEngineConfiguration);
   }
 
   @Override
