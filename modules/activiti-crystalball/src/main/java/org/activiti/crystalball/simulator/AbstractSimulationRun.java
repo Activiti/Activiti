@@ -3,9 +3,9 @@ package org.activiti.crystalball.simulator;
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,18 +13,18 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.delegate.VariableScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class implements all methods for Simulation run
- * 
+ *
  * @author martin.grofcik
  */
 public abstract class AbstractSimulationRun implements SimulationRun, SimulationDebugger {
@@ -90,7 +90,7 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
 
   @Override
   public void runTo(long simulationTime) {
-    SimulationEvent breakEvent = new SimulationEvent.Builder(SimulationEvent.TYPE_BREAK_SIMULATION).simulationTime(simulationTime).priority(SimulationEvent.PRIORITY_SYSTEM).build();
+    SimulationEvent breakEvent = new SimulationEvent.Builder(SimulationConstants.TYPE_BREAK_SIMULATION).simulationTime(simulationTime).priority(SimulationConstants.PRIORITY_SYSTEM).build();
     EventCalendar calendar = SimulationRunContext.getEventCalendar();
     calendar.addEvent(breakEvent);
     runContinue();

@@ -878,7 +878,7 @@
       </modules>
     </profile>
     <profile>
-      <!-- 
+      <!--
            A profile dedicated to JDK 6.
            SpringBoot module is disabled as it needs JDK7+.
       -->
@@ -970,6 +970,7 @@
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
+        <module>modules/activiti-crystalball</module>
         <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
     </profile>
@@ -1039,7 +1040,7 @@
                 <configuration>
                   <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
-              </plugin> 
+              </plugin>
             </plugins>
         </build>
     </profile>
