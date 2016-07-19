@@ -528,7 +528,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int asyncExecutorCorePoolSize = 2;
 
   /**
-   * The maximum number of threads that are kept alive in the threadpool for job
+   * The maximum number of threads that are created in the threadpool for job
    * execution. Default value = 10. (This property is only applicable when using
    * the {@link DefaultAsyncJobExecutor}).
    */
@@ -674,25 +674,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int asyncExecutorAsyncJobLockTimeInMillis = 5 * 60 * 1000;
 
   /**
-   * The amount of time (in milliseconds) that is waited before trying locking
-   * again, when an exclusive job is tried to be locked, but fails and the
-   * locking.
+   * The amount of time (in milliseconds) that is between two consecutive checks
+   * of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time
+   * was written by some executor, but the job was never completed).
    * 
-   * Default value = 500. If 0, this would stress database traffic a lot in case
-   * when a retry is needed, as exclusive jobs would be constantly tried to be
-   * locked.
-   * 
-   * (This property is only applicable when using the
-   * {@link DefaultAsyncJobExecutor}).
-   */
-  protected int asyncExecutorLockRetryWaitTimeInMillis = 500;
-  
-  /**
-   * The amount of time (in mulliseconds) that is between two consecutive checks
-   * of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time)
-   * was written by some executor, but the job was never completed.
-   * 
-   * During such a check, jobs that are expired are again made availabe,
+   * During such a check, jobs that are expired are again made available,
    * meaning the lock owner and lock time will be removed. Other executors
    * will now be able to pick it up.
    * 
@@ -701,6 +687,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * By default one minute.
    */
   protected int asyncExecutorResetExpiredJobsInterval = 60 * 1000;
+  
+  /**
+   * The {@link AsyncExecutor} has a 'cleanup' thread that resets expired jobs
+   * so they can be re-acquired by other executors. This setting defines the size
+   * of the page being used when fetching these expired jobs.
+   */
+  protected int asyncExecutorResetExpiredJobsPageSize = 3;
   
   /**
    * Experimental!
@@ -715,13 +708,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   * (This property is only applicable when using the {@link DefaultAsyncJobExecutor}).
   */
   protected ExecuteAsyncRunnableFactory asyncExecutorExecuteAsyncRunnableFactory;
-  
-  /**
-   * The {@link AsyncExecutor} has a 'cleanup' thread that resets expired jobs
-   * so they can be re-acquired by other executors. This setting defines the size
-   * of the page being used when fetching these expired jobs.
-   */
-  protected int asyncExecutorResetExpiredJobsPageSize = 3;
 
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
 
@@ -1955,9 +1941,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       if (asyncExecutorLockOwner != null) {
         defaultAsyncExecutor.setLockOwner(asyncExecutorLockOwner);
       }
-      
-      // Retry
-      defaultAsyncExecutor.setRetryWaitTimeInMillis(asyncExecutorLockRetryWaitTimeInMillis);
       
       // Reset expired
       defaultAsyncExecutor.setResetExpiredJobsInterval(asyncExecutorResetExpiredJobsInterval);
@@ -3908,15 +3891,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public int getAsyncExecutorLockRetryWaitTimeInMillis() {
-    return asyncExecutorLockRetryWaitTimeInMillis;
-  }
-
-  public ProcessEngineConfigurationImpl setAsyncExecutorLockRetryWaitTimeInMillis(int asyncExecutorLockRetryWaitTimeInMillis) {
-    this.asyncExecutorLockRetryWaitTimeInMillis = asyncExecutorLockRetryWaitTimeInMillis;
-    return this;
-  }
-  
   public int getAsyncExecutorResetExpiredJobsInterval() {
     return asyncExecutorResetExpiredJobsInterval;
   }

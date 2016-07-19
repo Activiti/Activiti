@@ -32,22 +32,6 @@ repositoryService.createDeployment()
 
 It's also possible to build a deployment from individual resources. See the javadocs for more details.
 
-[[deploymentWithExplorer]]
-
-
-==== Deploying with Activiti Explorer
-
-The Activiti Explorer webapp allows uploading bar files (and single +bpmn20.xml+ or +.bpmn+ files) through the webapp user interface. Choose the _Management tab_ and click on __Deployment__:
-
-image::images/deployment.explorer.png[align="center"]
-
-A popup window now allows you to select a file from your computer, or you can simply drag and drop
-to the designated area (if your browser supports it).
-
-image::images/deployment.explorer.2.png[align="center"]
-
-
-
 === External resources
 
 Process definitions live in the Activiti database. These process definitions can reference delegation classes when using Service Tasks or execution listeners or Spring beans from the Activiti configuration file. These classes and the Spring configuration file have to be available to all process engines that may execute the process definitions.

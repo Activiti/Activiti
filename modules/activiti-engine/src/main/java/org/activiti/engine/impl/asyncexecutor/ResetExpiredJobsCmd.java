@@ -16,6 +16,7 @@ import java.util.Collection;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Joram Barrez
@@ -30,8 +31,14 @@ public class ResetExpiredJobsCmd implements Command<Void> {
   
   @Override
   public Void execute(CommandContext commandContext) {
+    boolean messageQueueMode = commandContext.getProcessEngineConfiguration().isAsyncExecutorIsMessageQueueMode();
     for (String jobId : jobIds) {
-      commandContext.getJobEntityManager().resetExpiredJob(jobId);
+      if (!messageQueueMode) {
+        Job job = commandContext.getJobEntityManager().findById(jobId);
+        commandContext.getJobManager().unacquire(job);
+      } else {
+        commandContext.getJobEntityManager().resetExpiredJob(jobId);
+      }
     }
     return null;
   }

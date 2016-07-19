@@ -31,7 +31,6 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
@@ -118,9 +117,4 @@ public class SpringJmsConfig {
     return jobMessageListener;
   }
   
-  @Bean
-  public ObjectMapper objectMapper() {
-    return new ObjectMapper();
-  }
-
 }
