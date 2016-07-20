@@ -231,7 +231,8 @@ public class DefaultJobManager implements JobManager {
       // as the chance of failure will be high.
       
     } else {
-      throw new ActivitiException("Only JobEntity instances can be unacquired");
+      // It could be a v5 job, so simply unlock it.
+      processEngineConfiguration.getJobEntityManager().resetExpiredJob(job.getId());
     }
     
   }
