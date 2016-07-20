@@ -15,7 +15,6 @@ package org.activiti.validation.validator.impl;
 import java.util.List;
 
 import org.activiti.bpmn.model.FieldExtension;
-import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;

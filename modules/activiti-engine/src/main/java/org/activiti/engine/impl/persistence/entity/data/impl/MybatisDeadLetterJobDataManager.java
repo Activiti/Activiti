@@ -14,7 +14,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
 import org.activiti.engine.impl.Page;

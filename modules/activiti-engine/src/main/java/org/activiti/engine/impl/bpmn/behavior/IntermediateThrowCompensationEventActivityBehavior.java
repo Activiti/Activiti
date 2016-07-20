@@ -28,7 +28,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.lang3.StringUtils;
 
