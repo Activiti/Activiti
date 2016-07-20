@@ -45,7 +45,7 @@
 		<activiti.osgi.activator />
 		<activiti.osgi.failok>false</activiti.osgi.failok>
 		<activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
-		<!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg> 
+		<!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
 			<activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg> -->
 		<activiti.osgi.export.pkg>
 			${activiti.artifact}*,
@@ -749,7 +749,7 @@
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>2.3.2</version>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -895,7 +895,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<!-- A profile dedicated to JDK 6. SpringBoot module is disabled as it 
+			<!-- A profile dedicated to JDK 6. SpringBoot module is disabled as it
 				needs JDK7+. -->
 			<id>checkJdk6</id>
 			<modules>
@@ -939,7 +939,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<!-- this profile prevents that tests are executed while running the qa/build.xml 
+			<!-- this profile prevents that tests are executed while running the qa/build.xml
 				test.demo.setup target -->
 			<id>nodocs</id>
 			<activation>
@@ -986,6 +986,7 @@
 				<module>modules/activiti-ldap</module>
 				<module>modules/activiti-jmx</module>
 				<module>modules/activiti-jms-spring-executor</module>
+				<module>modules/activiti-crystalball</module>
 				<module>tooling/archetypes/activiti-archetype-unittest</module>
 			</modules>
 		</profile>
@@ -1001,7 +1002,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<!-- Profile used by the start-rest.sh script to build the Explorer webapp 
+			<!-- Profile used by the start-rest.sh script to build the Explorer webapp
 				and all its dependencies -->
 			<id>buildRestappDependencies</id>
 			<modules>

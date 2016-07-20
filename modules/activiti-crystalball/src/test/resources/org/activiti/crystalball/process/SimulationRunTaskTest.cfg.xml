@@ -13,9 +13,6 @@
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="true"/>
-
-    <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false"/>
   </bean>
 
   <bean id="simulationRun" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
@@ -37,8 +34,6 @@
         <!-- Database configurations -->
         <property name="databaseSchemaUpdate" value="true"/>
 
-        <!-- job executor configurations -->
-        <property name="jobExecutorActivate" value="false"/>
         <property name="clock" ref="clock"/>
       </bean>
     </constructor-arg>
