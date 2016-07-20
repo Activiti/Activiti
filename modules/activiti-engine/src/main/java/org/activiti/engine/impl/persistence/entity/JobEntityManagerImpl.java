@@ -97,13 +97,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   }
   
   @Override
-  public void unacquireJob(String jobId) {
-    jobDataManager.unacquireJob(jobId);
-  }
-  
-  @Override
   public void resetExpiredJob(String jobId) {
-    jobDataManager.unacquireJob(jobId);
+    jobDataManager.resetExpiredJob(jobId);
   }
 
   @Override

@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
 

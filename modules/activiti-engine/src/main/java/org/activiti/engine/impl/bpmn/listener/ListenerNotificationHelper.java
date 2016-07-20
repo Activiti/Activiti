@@ -31,7 +31,6 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;

@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.executor.jms;
 
 import java.util.Date;
@@ -17,6 +29,9 @@ import org.activiti.engine.runtime.Job;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
+/**
+ * @author Joram Barrez
+ */
 public class MessageBasedJobManager extends DefaultJobManager {
   
   protected JmsTemplate jmsTemplate;
@@ -39,6 +54,8 @@ public class MessageBasedJobManager extends DefaultJobManager {
     
     if (job instanceof JobEntity) {
       JobEntity jobEntity = (JobEntity) job;
+      
+      // When unacquiring, we up the lock time again., so that it isn't cleared by the reset expired thread.
       jobEntity.setLockExpirationTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() 
           + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis()));
     }

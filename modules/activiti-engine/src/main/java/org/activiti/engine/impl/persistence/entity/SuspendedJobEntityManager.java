@@ -17,7 +17,6 @@ import java.util.List;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
-import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.runtime.Job;
 
 /**

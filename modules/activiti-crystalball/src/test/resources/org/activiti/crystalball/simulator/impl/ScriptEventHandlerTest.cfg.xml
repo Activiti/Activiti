@@ -82,10 +82,6 @@
 
         <!-- Database configurations -->
         <property name="databaseSchemaUpdate" value="true"/>
-
-        <!-- job executor configurations -->
-        <property name="jobExecutorActivate" value="false"/>
-
       </bean>
     </constructor-arg>
   </bean>

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -66,7 +67,11 @@ public class ResetExpiredJobsRunnable implements Runnable {
         }
         
       } catch (Throwable e) {
-        log.error("exception during resetting expired jobs", e.getMessage(), e);
+        if (e instanceof ActivitiOptimisticLockingException) {
+          log.debug("Optmistic lock exception while resetting locked jobs", e);
+        } else {
+          log.error("exception during resetting expired jobs", e.getMessage(), e);
+        }
       }
 
       // Sleep

@@ -1,4 +1,4 @@
-﻿[[bpmnConstructs]]
+[[bpmnConstructs]]
 
 == BPMN 2.0 Constructs
 
@@ -2647,6 +2647,10 @@ The return value of a script task can be assigned to an already existing or to a
 ----
 
 In the above example, the result of the script execution (the value of the resolved expression __'#{echo}'__) is set to the process variable named __'myVar'__ after the script completes.
+
+===== Security
+
+It is also possible when using _javascript_ as scripting language to use '_secure scripting_'. See the <<advancedSecureScripting, secure scripting section>>.
 
 
 [[bpmnJavaServiceTask]]

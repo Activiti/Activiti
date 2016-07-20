@@ -3,9 +3,9 @@ package org.activiti.crystalball.simulator.impl.replay;
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -122,11 +122,10 @@ public class ReplayRunTest {
     ProcessEngineConfigurationImpl configuration = new org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration();
     configuration.
       setHistory("full").
-      setDatabaseSchemaUpdate("drop-create").
-      setJobExecutorActivate(false);
+      setDatabaseSchemaUpdate("drop-create");
     configuration.setCustomDefaultBpmnParseHandlers(
         Arrays.<BpmnParseHandler>asList(
-            new AddListenerUserTaskParseHandler(TaskListener.EVENTNAME_CREATE, 
+            new AddListenerUserTaskParseHandler(TaskListener.EVENTNAME_CREATE,
             new UserTaskExecutionListener(USER_TASK_COMPLETED_EVENT_TYPE, USER_TASK_COMPLETED_EVENT_TYPE, listener.getSimulationEvents()))
         ));
     configuration.setEventListeners(Arrays.<ActivitiEventListener>asList(listener));
