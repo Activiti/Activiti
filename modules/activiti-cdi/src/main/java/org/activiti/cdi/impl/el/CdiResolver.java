@@ -15,14 +15,14 @@ package org.activiti.cdi.impl.el;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
+import javax.el.ELContext;
+import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
 
 /**
  * Resolver wrapping an instance of javax.el.ELResolver obtained from the {@link BeanManager}. Allows activiti-engine to resolve Cdi-Beans.

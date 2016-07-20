@@ -12,9 +12,6 @@
  */
 package org.activiti.form.model;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author Joram Barrez
  */
@@ -38,17 +35,11 @@ public interface FormFieldTypes {
 
   String UPLOAD = "upload";
 
-  String GROUP = "group";
-
-  String READONLY = "readonly";
-
-  String READONLY_TEXT = "readonly-text";
+  String EXPRESSION = "expression";
 
   String PEOPLE = "people";
 
   String FUNCTIONAL_GROUP = "functional-group";
 
   String CONTAINER = "container";
-
-  List<String> DISPLAY_ONLY_TYPES = Arrays.asList(READONLY, READONLY_TEXT, GROUP, CONTAINER);
 }

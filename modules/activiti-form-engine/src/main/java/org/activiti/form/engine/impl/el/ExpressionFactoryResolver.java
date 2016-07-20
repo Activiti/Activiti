@@ -10,20 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.form.engine.impl.persistence.entity;
 
-import java.util.List;
+package org.activiti.form.engine.impl.el;
 
-import org.activiti.form.engine.impl.Page;
-import org.activiti.form.engine.impl.SubmittedFormQueryImpl;
-import org.activiti.form.engine.repository.SubmittedForm;
+import javax.el.ExpressionFactory;
+
+import de.odysseus.el.ExpressionFactoryImpl;
 
 /**
- * @author Joram Barrez
+ * Class used to get hold of a {@link ExpressionFactory}.
+ * 
+ * @author Tijs Rademakers
  */
-public interface SubmittedFormEntityManager extends EntityManager<SubmittedFormEntity> {
+public abstract class ExpressionFactoryResolver {
 
-  List<SubmittedForm> findSubmittedFormsByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery, Page page);
-
-  long findSubmittedFormCountByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery);
+  public static ExpressionFactory resolveExpressionFactory() {
+    // Return instance of custom JUEL implementation
+    return new ExpressionFactoryImpl();
+  }
 }

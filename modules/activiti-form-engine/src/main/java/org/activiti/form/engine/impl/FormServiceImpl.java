@@ -15,9 +15,13 @@ package org.activiti.form.engine.impl;
 import java.util.Map;
 
 import org.activiti.form.engine.FormService;
+import org.activiti.form.engine.impl.cmd.GetCompletedFormDefinitionCmd;
+import org.activiti.form.engine.impl.cmd.GetRuntimeFormDefinitionCmd;
 import org.activiti.form.engine.impl.cmd.GetVariablesFromFormSubmissionCmd;
 import org.activiti.form.engine.impl.cmd.StoreSubmittedFormCmd;
 import org.activiti.form.engine.repository.SubmittedForm;
+import org.activiti.form.engine.repository.SubmittedFormQuery;
+import org.activiti.form.model.CompletedFormDefinition;
 import org.activiti.form.model.FormDefinition;
 
 /**
@@ -39,5 +43,45 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   
   public SubmittedForm storeSubmittedForm(Map<String, Object> variables, FormDefinition formDefinition, String taskId, String processInstanceId) {
     return commandExecutor.execute(new StoreSubmittedFormCmd(formDefinition, variables, taskId, processInstanceId));
+  }
+  
+  public FormDefinition getTaskFormDefinitionById(String formId, String processInstanceId, Map<String, Object> variables) {
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(null, formId, processInstanceId, variables));
+  }
+  
+  public FormDefinition getTaskFormDefinitionById(String formId, String processInstanceId, 
+      Map<String, Object> variables, String tenantId) {
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(null, formId, processInstanceId, tenantId, variables));
+  }
+  
+  public FormDefinition getTaskFormDefinitionByKey(String formDefinitionKey, String processInstanceId, Map<String, Object> variables) {
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(formDefinitionKey, null, processInstanceId, variables));
+  }
+  
+  public FormDefinition getTaskFormDefinitionByKey(String formDefinitionKey, String processInstanceId, 
+      Map<String, Object> variables, String tenantId) {
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(formDefinitionKey, null, processInstanceId, tenantId, variables));
+  }
+  
+  public CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, Map<String, Object> variables) {
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(null, formId, taskId, processInstanceId, variables));
+  }
+  
+  public CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, 
+      Map<String, Object> variables, String tenantId) {
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(null, formId, taskId, processInstanceId, tenantId, variables));
+  }
+  
+  public CompletedFormDefinition getCompletedTaskFormDefinitionByKey(String formDefinitionKey, String taskId, String processInstanceId, Map<String, Object> variables) {
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(formDefinitionKey, null, taskId, processInstanceId, variables));
+  }
+  
+  public CompletedFormDefinition getCompletedTaskFormDefinitionByKey(String formDefinitionKey, String taskId, String processInstanceId, 
+      Map<String, Object> variables, String tenantId) {
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(formDefinitionKey, null, taskId, processInstanceId, tenantId, variables));
+  }
+  
+  public SubmittedFormQuery createSubmittedFormQuery() {
+    return new SubmittedFormQueryImpl(commandExecutor);
   }
 }

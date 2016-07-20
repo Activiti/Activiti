@@ -15,10 +15,12 @@ package com.activiti.rest.runtime;
 import java.util.List;
 
 import org.activiti.form.model.FormDefinition;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.runtime.CompleteFormRepresentation;
@@ -30,19 +32,20 @@ import com.activiti.model.runtime.ProcessInstanceVariableRepresentation;
 @RestController
 @RequestMapping("/rest/task-forms")
 public class TaskFormResource extends AbstractTaskFormResource {
-    
-	@RequestMapping(value="/{taskId}", method = RequestMethod.GET, produces = "application/json")
-	public FormDefinition getTaskForm(@PathVariable String taskId) {
-	    return super.getTaskForm(taskId);
-	}
-	
-	@RequestMapping(value="/{taskId}", method = RequestMethod.POST, produces = "application/json")
-	public void completeTaskForm(@PathVariable String taskId, @RequestBody CompleteFormRepresentation completeTaskFormRepresentation) {
-		super.completeTaskForm(taskId, completeTaskFormRepresentation);
-	}
-	
-    @RequestMapping(value="/{taskId}/variables", method = RequestMethod.GET, produces = "application/json")
-    public List<ProcessInstanceVariableRepresentation> getProcessInstanceVariables(@PathVariable String taskId) {
-        return super.getProcessInstanceVariables(taskId);
-    }
+
+  @RequestMapping(value = "/{taskId}", method = RequestMethod.GET, produces = "application/json")
+  public FormDefinition getTaskForm(@PathVariable String taskId) {
+    return super.getTaskForm(taskId);
+  }
+
+  @ResponseStatus(value = HttpStatus.OK)
+  @RequestMapping(value = "/{taskId}", method = RequestMethod.POST, produces = "application/json")
+  public void completeTaskForm(@PathVariable String taskId, @RequestBody CompleteFormRepresentation completeTaskFormRepresentation) {
+    super.completeTaskForm(taskId, completeTaskFormRepresentation);
+  }
+
+  @RequestMapping(value = "/{taskId}/variables", method = RequestMethod.GET, produces = "application/json")
+  public List<ProcessInstanceVariableRepresentation> getProcessInstanceVariables(@PathVariable String taskId) {
+    return super.getProcessInstanceVariables(taskId);
+  }
 }

@@ -64,7 +64,7 @@ public class StoreSubmittedFormCmd implements Command<SubmittedForm>, Serializab
     for (String fieldId : fieldMap.keySet()) {
       FormField formField = fieldMap.get(fieldId);
 
-      if (FormFieldTypes.READONLY_TEXT.equals(formField.getType()) || FormFieldTypes.CONTAINER.equals(formField.getType()) || FormFieldTypes.GROUP.equals(formField.getType())) {
+      if (FormFieldTypes.EXPRESSION.equals(formField.getType()) || FormFieldTypes.CONTAINER.equals(formField.getType())) {
         continue;
       }
 

@@ -71,7 +71,25 @@ public abstract class AbstractTaskFormResource {
 
   public FormDefinition getTaskForm(String taskId) {
     HistoricTaskInstance task = permissionService.validateReadPermissionOnTask(SecurityUtils.getCurrentUserObject(), taskId);
-    FormDefinition formDefinition = formRepositoryService.getFormDefinitionByKey(task.getFormKey());
+    
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (task.getProcessInstanceId() != null) {
+      List<HistoricVariableInstance> variableInstances = historyService.createHistoricVariableInstanceQuery()
+          .processInstanceId(task.getProcessInstanceId())
+          .list();
+      
+      for (HistoricVariableInstance historicVariableInstance : variableInstances) {
+        variables.put(historicVariableInstance.getVariableName(), historicVariableInstance.getValue());
+      }
+    }
+    
+    FormDefinition formDefinition = null;
+    if (task.getEndTime() != null) {
+      formDefinition = formService.getCompletedTaskFormDefinitionByKey(task.getFormKey(), taskId, task.getProcessInstanceId(), variables);
+      
+    } else {
+      formDefinition = formService.getTaskFormDefinitionByKey(task.getFormKey(), task.getProcessInstanceId(), variables);
+    }
 
     // If form does not exists, we don't want to leak out this info to just anyone
     if (formDefinition == null) {

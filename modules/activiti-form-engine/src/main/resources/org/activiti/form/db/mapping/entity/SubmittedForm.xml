@@ -15,7 +15,7 @@
             #{processDefinitionId, jdbcType=VARCHAR},
             #{submittedDate, jdbcType=TIMESTAMP},
             #{submittedBy, jdbcType=VARCHAR},
-            #{formValuesId, jdbcType=VARCHAR},
+            #{resourceRef, typeHandler=ResourceRefTypeHandler},
             #{tenantId, jdbcType=VARCHAR})
   </insert>
 
@@ -35,7 +35,7 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
     <result property="submittedDate" column="SUBMITTED_DATE_" jdbcType="TIMESTAMP"/>
     <result property="submittedBy" column="SUBMITTED_BY_" jdbcType="VARCHAR"/>
-    <result property="formValuesId" column="FORM_VALUES_ID_" jdbcType="VARCHAR" />
+    <result property="resourceRef" column="FORM_VALUES_ID_" typeHandler="ResourceRefTypeHandler" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
@@ -47,6 +47,97 @@
 
   <select id="selectSubmittedFormById" parameterType="string" resultMap="submittedFormResultMap">
     select * from ${prefix}SUBMITTED_FORM where ID_ = #{SUBMITTED_FORM}
+  </select>
+  
+  <select id="selectSubmittedFormsByQueryCriteria" parameterType="org.activiti.form.engine.impl.SubmittedFormQueryImpl" resultMap="submittedFormResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectSubmittedFormsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <select id="selectSubmittedFormCountByQueryCriteria" parameterType="org.activiti.form.engine.impl.SubmittedFormQueryImpl" resultType="long">
+    select count(RES.ID_)
+    <include refid="selectSubmittedFormsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectSubmittedFormsByQueryCriteriaSql">  
+    from ${prefix}SUBMITTED_FORM RES
+    <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
+      <if test="ids != null and ids">
+        and RES.ID_ in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="formId != null">
+        and RES.FORM_ID_ = #{formId}
+      </if>
+      <if test="formIdLike != null">
+        and RES.FORM_ID_ like #{formIdLike}
+      </if>
+      <if test="taskId != null">
+        and RES.TASK_ID_ = #{taskId}
+      </if>
+      <if test="taskIdLike != null">
+        and RES.TASK_ID_ like #{taskIdLike}
+      </if>
+      <if test="processInstanceId != null">
+        and RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceIdLike != null">
+        and RES.PROC_INST_ID_ like #{processInstanceIdLike}
+      </if>
+      <if test="processDefinitionId != null">
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionIdLike != null">
+        and RES.PROC_DEF_ID_ like #{processDefinitionIdLike}
+      </if>
+      <if test="submittedDate != null">
+        and RES.SUBMITTED_DATE_ = #{submittedDate}
+      </if>
+      <if test="submittedDateBefore != null">
+        and RES.SUBMITTED_DATE_ &lt; #{submittedDateBefore}
+      </if>
+      <if test="submittedDateAfter != null">
+        and RES.SUBMITTED_DATE_ &gt; #{submittedDateAfter}
+      </if>
+      <if test="submittedBy != null">
+        and RES.SUBMITTED_BY_ = #{submittedBy}
+      </if>
+      <if test="submittedByLike != null">
+        and RES.SUBMITTED_BY_ like #{submittedByLike}
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+    </where>
+  </sql>
+    
+  <!-- mysql specific sql -->
+  <select id="selectSubmittedFormsByQueryCriteria" databaseId="mysql" parameterType="org.activiti.form.engine.impl.SubmittedFormQueryImpl" resultMap="submittedFormResultMap">
+  	${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectSubmittedFormsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <!-- mysql specific sql -->
+  <select id="selectSubmittedFormCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.form.engine.impl.SubmittedFormQueryImpl" resultType="long">
+    select distinct count(RES.ID_)
+    <include refid="selectSubmittedFormsByQueryCriteriaSql"/>
   </select>
 
 </mapper>

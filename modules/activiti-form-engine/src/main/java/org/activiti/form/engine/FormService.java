@@ -15,6 +15,8 @@ package org.activiti.form.engine;
 import java.util.Map;
 
 import org.activiti.form.engine.repository.SubmittedForm;
+import org.activiti.form.engine.repository.SubmittedFormQuery;
+import org.activiti.form.model.CompletedFormDefinition;
 import org.activiti.form.model.FormDefinition;
 
 /**
@@ -43,4 +45,25 @@ public interface FormService {
        * @param valuesNode json node with the values of the 
        */
     SubmittedForm storeSubmittedForm(Map<String, Object> values, FormDefinition formDefinition, String taskId, String processInstanceId);
+    
+    FormDefinition getTaskFormDefinitionById(String formId, String processInstanceId, Map<String, Object> variables);
+    
+    FormDefinition getTaskFormDefinitionById(String formId, String processInstanceId, Map<String, Object> variables, String tenantId);
+    
+    FormDefinition getTaskFormDefinitionByKey(String formDefinitionKey, String processInstanceId, Map<String, Object> variables);
+    
+    FormDefinition getTaskFormDefinitionByKey(String formDefinitionKey, String processInstanceId, 
+        Map<String, Object> variables, String tenantId);
+    
+    CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, Map<String, Object> variables);
+    
+    CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, 
+        Map<String, Object> variables, String tenantId);
+    
+    CompletedFormDefinition getCompletedTaskFormDefinitionByKey(String formDefinitionKey, String taskId, String processInstanceId, Map<String, Object> variables);
+    
+    CompletedFormDefinition getCompletedTaskFormDefinitionByKey(String formDefinitionKey, String taskId, String processInstanceId, 
+        Map<String, Object> variables, String tenantId);
+    
+    SubmittedFormQuery createSubmittedFormQuery();
 }

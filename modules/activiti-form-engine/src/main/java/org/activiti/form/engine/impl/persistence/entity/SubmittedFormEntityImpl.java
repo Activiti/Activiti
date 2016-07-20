@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.form.engine.FormEngineConfiguration;
-import org.activiti.form.engine.impl.context.Context;
 
 /**
  * @author Joram Barrez
@@ -36,12 +35,14 @@ public class SubmittedFormEntityImpl implements SubmittedFormEntity, Serializabl
   protected Date submittedDate;
   protected String submittedBy;
   protected String formValuesId;
-  protected ResourceEntity resourceEntityRef;
+  protected ResourceRef resourceRef;
   protected String tenantId = FormEngineConfiguration.NO_TENANT_ID;
   
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("formValuesId", this.formValuesId);
+    if (resourceRef != null && resourceRef.getId() != null) {
+      persistentState.put("formValuesId", resourceRef.getId());
+    }
     return persistentState;
   }
 
@@ -122,31 +123,21 @@ public class SubmittedFormEntityImpl implements SubmittedFormEntity, Serializabl
   
   public byte[] getFormValueBytes() {
     ensureResourceRefInitialized();
-    return resourceEntityRef.getBytes();
+    return resourceRef.getBytes();
   }
 
   public void setFormValueBytes(byte[] bytes) {
     ensureResourceRefInitialized();
-    if (resourceEntityRef.getId() == null) {
-      if (bytes != null) {
-        ResourceEntityManager resourceEntityManager = Context.getCommandContext().getResourceEntityManager();
-        resourceEntityRef.setName("form-" + formId);
-        resourceEntityRef.setBytes(bytes);
-        resourceEntityManager.insert(resourceEntityRef);
-        formValuesId = resourceEntityRef.getId();
-      }
-    } else {
-      resourceEntityRef.setBytes(bytes);
-    }
+    resourceRef.setValue("form-" + formId, bytes);
   }
 
-  public ResourceEntity getFormValueResourceEntityRef() {
-    return resourceEntityRef;
+  public ResourceRef getResourceRef() {
+    return resourceRef;
   }
   
   protected void ensureResourceRefInitialized() {
-    if (resourceEntityRef == null) {
-      resourceEntityRef = Context.getCommandContext().getResourceEntityManager().create();
+    if (resourceRef == null) {
+      resourceRef = new ResourceRef();
     }
   }
   

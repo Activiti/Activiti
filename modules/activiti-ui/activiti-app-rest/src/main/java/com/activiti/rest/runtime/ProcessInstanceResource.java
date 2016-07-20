@@ -30,24 +30,20 @@ import com.activiti.model.runtime.ProcessInstanceRepresentation;
 @RestController
 public class ProcessInstanceResource extends AbstractProcessInstanceResource {
 
-    @RequestMapping(value = "/rest/process-instances/{processInstanceId}",
-            method = RequestMethod.GET,
-            produces = "application/json")
-    public ProcessInstanceRepresentation getProcessInstance(@PathVariable String processInstanceId, HttpServletResponse response) {
-    	return super.getProcessInstance(processInstanceId, response);
-    }
-    
-    @RequestMapping(value = "/rest/process-instances/{processInstanceId}/start-form",
-            method = RequestMethod.GET,
-            produces = "application/json")
-    public FormDefinition getProcessInstanceStartForm(@PathVariable String processInstanceId, HttpServletResponse response) {
-    	return super.getProcessInstanceStartForm(processInstanceId, response);
-    }
-    
-    @RequestMapping(value = "/rest/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void deleteProcessInstance(@PathVariable String processInstanceId) {
-    	super.deleteProcessInstance(processInstanceId);
-    }
+  @RequestMapping(value = "/rest/process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
+  public ProcessInstanceRepresentation getProcessInstance(@PathVariable String processInstanceId, HttpServletResponse response) {
+    return super.getProcessInstance(processInstanceId, response);
+  }
+
+  @RequestMapping(value = "/rest/process-instances/{processInstanceId}/start-form", method = RequestMethod.GET, produces = "application/json")
+  public FormDefinition getProcessInstanceStartForm(@PathVariable String processInstanceId, HttpServletResponse response) {
+    return super.getProcessInstanceStartForm(processInstanceId, response);
+  }
+
+  @RequestMapping(value = "/rest/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
+  @ResponseStatus(value = HttpStatus.OK)
+  public void deleteProcessInstance(@PathVariable String processInstanceId) {
+    super.deleteProcessInstance(processInstanceId);
+  }
 
 }

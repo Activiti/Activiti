@@ -1,5 +1,4 @@
-<div ng-if="field != null && field != undefined"
-     ng-switch="field.type">
+<div ng-if="field != null && field != undefined && !field.readOnly" ng-switch="field.type">
 
     <div ng-switch-when="text" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
         <label class="control-label">{{field.name}}</label>
@@ -115,73 +114,62 @@
         </ul>
         <div id="{{activitiFieldIdPrefix + field.id}}" external-content link-only="field.params.link" on-content-upload="contentUploaded(content, field)" on-upload-in-progress="uploadInProgress(status)" ng-show="field.params.multiple || (!field.params.multiple && model.uploads[field.id].length != 1)"></div>
     </div>
+</div>
 
+<div ng-if="field != null && field != undefined && field.readOnly" ng-switch="field.type">
+    <div ng-switch-when="boolean" ng-show="field.isVisible">
+        <label class="checkbox">
+            <input type="checkbox" class="checkbox" ng-checked="{{field.value}}" disabled />
+            {{field.name}}
+        </label>
+    </div>
 
-    <div ng-switch-when="readonly">
-        <div ng-switch="field.params.field.type">
-            <div ng-switch-when="boolean" ng-show="field.isVisible">
-                <label class="checkbox">
-                    <input type="checkbox" class="checkbox" ng-checked="{{field.value}}" disabled />
-                    {{field.name}}
-                </label>
-            </div>
+	<div ng-switch-when="people" ng-show="field.isVisible">
+        <label class="control-label">{{field.name}}</label>
+        <span ng-if="!field.value" translate="FORM.MESSAGE.EMPTY"></span>
+        <ul class="simple-list" ng-if="field.value">
+            <li>
+                <div user-picture="field.value"></div>
+                <div user-link="field.value"></div>
+            </li>
+        </ul>
+    </div>
+    <div ng-switch-when="functional-group" ng-show="field.isVisible">
+        <label class="control-label">{{field.name}}</label>
+        <span ng-if="!field.value" translate="FORM.MESSAGE.EMPTY"></span>
+        <ul class="simple-list" ng-if="field.value && field.value.name">
+            <li>
+                <div>{{field.value.name}}</div>
+            </li>
+        </ul>
+    </div>
+    <div ng-switch-when="upload" ng-show="field.isVisible">
+        <label class="control-label">{{field.name}}</label>
+        <span ng-if="!field.value || field.value.length == 0" translate="FORM.MESSAGE.EMPTY"></span>
+        <ul class="simple-list selectable content-list">
+            <li ng-repeat="content in field.value" title="{{content.name}}">
+                <document-preview content="content" editable="field.params.documentsEditable" read-only="true"></document-preview>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
 
-			<div ng-switch-when="people" ng-show="field.isVisible">
-                <label class="control-label">{{field.name}}</label>
-                <span ng-if="!field.value" translate="FORM.MESSAGE.EMPTY"></span>
-                <ul class="simple-list" ng-if="field.value">
-                    <li>
-                        <div user-picture="field.value"></div>
-                        <div user-link="field.value"></div>
-                    </li>
-                </ul>
-            </div>
-            <div ng-switch-when="functional-group" ng-show="field.isVisible">
-                <label class="control-label">{{field.name}}</label>
-                <span ng-if="!field.value" translate="FORM.MESSAGE.EMPTY"></span>
-                <ul class="simple-list" ng-if="field.value && field.value.name">
-                    <li>
-                        <div>{{field.value.name}}</div>
-                    </li>
-                </ul>
-            </div>
-            <div ng-switch-when="upload" ng-show="field.isVisible">
-                <label class="control-label">{{field.name}}</label>
-                <span ng-if="!field.value || field.value.length == 0" translate="FORM.MESSAGE.EMPTY"></span>
-                <ul class="simple-list selectable content-list">
-                    <li ng-repeat="content in field.value" title="{{content.name}}">
-                        <document-preview content="content" editable="field.params.documentsEditable" read-only="true"></document-preview>
-                    </li>
-                </ul>
-                <div class="clearfix"></div>
-            </div>
-
-            <div ng-switch-when="radio-buttons" class="form-group" ng-show="field.isVisible">
-                <label class="control-label">{{field.name}}</label>
-                <div class="well well-sm">
-                    {{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}
-                </div>
-            </div>
-
-            <div ng-switch-when="multi-line-text" class="form-group" ng-show="field.isVisible">
-                <label class="control-label">{{field.name}}</label>
-                <textarea class="form-control" readonly>{{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}</textarea>
-            </div>
-
-            <div ng-switch-default ng-show="field.isVisible">
-                <label class="control-label">{{field.name}}</label>
-                <div class="well well-sm">
-                    {{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}
-                </div>
-            </div>
+    <div ng-switch-when="radio-buttons" class="form-group" ng-show="field.isVisible">
+        <label class="control-label">{{field.name}}</label>
+        <div class="well well-sm">
+            {{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}
         </div>
     </div>
 
-    <div ng-switch-when="readonly-text" class="form-group" ng-show="field.isVisible">
-        <p ng-bind-html="field.value" ng-click="handleReadonlyClick($event, field)"></p>
+    <div ng-switch-when="multi-line-text" class="form-group" ng-show="field.isVisible">
+        <label class="control-label">{{field.name}}</label>
+        <textarea class="form-control" readonly>{{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}</textarea>
     </div>
 
-    <div ng-switch-default>
-        Unknown field type: {{field.type}}
+    <div ng-switch-default ng-show="field.isVisible">
+        <label class="control-label">{{field.name}}</label>
+        <div class="well well-sm">
+            {{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}
+        </div>
     </div>
 </div>

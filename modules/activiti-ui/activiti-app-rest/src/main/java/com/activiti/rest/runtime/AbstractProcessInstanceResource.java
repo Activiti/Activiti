@@ -25,6 +25,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.form.engine.FormRepositoryService;
+import org.activiti.form.engine.FormService;
 import org.activiti.form.model.FormDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -54,6 +55,9 @@ public abstract class AbstractProcessInstanceResource {
   
   @Autowired
   protected FormRepositoryService formRepositoryService;
+  
+  @Autowired
+  protected FormService formService;
 
   @Autowired
   protected PermissionService permissionService;
@@ -84,7 +88,7 @@ public abstract class AbstractProcessInstanceResource {
 
     ProcessInstanceRepresentation processInstanceResult = new ProcessInstanceRepresentation(processInstance, processDefinition, processDefinition.isGraphicalNotationDefined(), userRep);
 
-    FormDefinition formDefinition = getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition.getKey());
+    FormDefinition formDefinition = getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition.getKey(), processInstance.getId());
     if (formDefinition != null) {
       processInstanceResult.setStartFormDefined(true);
     }
@@ -102,7 +106,7 @@ public abstract class AbstractProcessInstanceResource {
     
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
-    return getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition.getKey());
+    return getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition.getKey(), processInstance.getId());
   }
 
   public void deleteProcessInstance(String processInstanceId) {
@@ -132,7 +136,7 @@ public abstract class AbstractProcessInstanceResource {
     }
   }
   
-  protected FormDefinition getStartFormDefinition(String processDefinitionId, String processDefinitionKey) {
+  protected FormDefinition getStartFormDefinition(String processDefinitionId, String processDefinitionKey, String processInstanceId) {
     FormDefinition formDefinition = null;
     BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
     Process process = bpmnModel.getProcessById(processDefinitionKey);
@@ -140,7 +144,7 @@ public abstract class AbstractProcessInstanceResource {
     if (startElement instanceof StartEvent) {
       StartEvent startEvent = (StartEvent) startElement;
       if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
-        formDefinition = formRepositoryService.getFormDefinitionByKey(startEvent.getFormKey());
+        formDefinition = formService.getCompletedTaskFormDefinitionByKey(startEvent.getFormKey(), null, processInstanceId, null);
       }
     }
     

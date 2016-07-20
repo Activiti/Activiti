@@ -12,6 +12,7 @@
  */
 package org.activiti.form.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,113 +28,109 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  * @author Joram Barrez
  */
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "fieldType", defaultImpl = FormField.class)
-@JsonSubTypes({ @Type(FormContainer.class), @Type(OptionFormField.class) })
-public class FormField {
+@JsonSubTypes({ @Type(FormContainer.class), @Type(OptionFormField.class), @Type(ExpressionFormField.class) })
+public class FormField implements Serializable {
 
-    protected String id;
-    protected String name;
-    protected String type;
-    protected Object value;
-    protected boolean required;
-    protected boolean readOnly;
-    protected boolean overrideId;
-    protected String placeholder;
-    protected Map<String, Object> params;
+  private static final long serialVersionUID = 1L;
+  
+  protected String id;
+  protected String name;
+  protected String type;
+  protected Object value;
+  protected boolean required;
+  protected boolean readOnly;
+  protected boolean overrideId;
+  protected String placeholder;
+  protected Map<String, Object> params;
 
-    protected LayoutDefinition layout;
+  protected LayoutDefinition layout;
 
-    public String getId() {
-        return id;
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public Object getValue() {
+    return value;
+  }
+
+  public void setValue(Object value) {
+    this.value = value;
+  }
+
+  public boolean isRequired() {
+    return required;
+  }
+
+  public void setRequired(boolean required) {
+    this.required = required;
+  }
+
+  public boolean isReadOnly() {
+    return readOnly;
+  }
+
+  public void setReadOnly(boolean readOnly) {
+    this.readOnly = readOnly;
+  }
+
+  public boolean isOverrideId() {
+    return overrideId;
+  }
+
+  public void setOverrideId(boolean overrideId) {
+    this.overrideId = overrideId;
+  }
+
+  public String getPlaceholder() {
+    return placeholder;
+  }
+
+  public void setPlaceholder(String placeholder) {
+    this.placeholder = placeholder;
+  }
+
+  public LayoutDefinition getLayout() {
+    return layout;
+  }
+
+  public void setLayout(LayoutDefinition layout) {
+    this.layout = layout;
+  }
+
+  @JsonInclude(Include.NON_EMPTY)
+  public Map<String, Object> getParams() {
+    return params;
+  }
+
+  public void setParams(Map<String, Object> params) {
+    this.params = params;
+  }
+
+  @JsonIgnore
+  public Object getParam(String name) {
+    if (params != null) {
+      return params.get(name);
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public boolean isRequired() {
-        return required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
-    }
-
-    public boolean isOverrideId() {
-        return overrideId;
-    }
-
-    public void setOverrideId(boolean overrideId) {
-        this.overrideId = overrideId;
-    }
-
-    public String getPlaceholder() {
-        return placeholder;
-    }
-
-    public void setPlaceholder(String placeholder) {
-        this.placeholder = placeholder;
-    }
-
-    public LayoutDefinition getLayout() {
-        return layout;
-    }
-
-    public void setLayout(LayoutDefinition layout) {
-        this.layout = layout;
-    }
-
-    @JsonInclude(Include.NON_EMPTY)
-    public Map<String, Object> getParams() {
-        return params;
-    }
-
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
-    }
-
-    @JsonIgnore
-    public Object getParam(String name) {
-        if (params != null) {
-            return params.get(name);
-        }
-        return null;
-    }
-    
-    @JsonIgnore
-    public boolean isDisplayOnly(){
-    	return FormFieldTypes.DISPLAY_ONLY_TYPES.contains(type);
-    }
-
+    return null;
+  }
 }

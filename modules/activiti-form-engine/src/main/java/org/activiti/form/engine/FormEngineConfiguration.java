@@ -45,6 +45,7 @@ import org.activiti.form.engine.impl.deployer.CachingAndArtifactsManager;
 import org.activiti.form.engine.impl.deployer.FormDeployer;
 import org.activiti.form.engine.impl.deployer.FormDeploymentHelper;
 import org.activiti.form.engine.impl.deployer.ParsedDeploymentBuilderFactory;
+import org.activiti.form.engine.impl.el.ExpressionManager;
 import org.activiti.form.engine.impl.interceptor.CommandConfig;
 import org.activiti.form.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.form.engine.impl.interceptor.CommandContextInterceptor;
@@ -192,6 +193,8 @@ public class FormEngineConfiguration {
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
+  
+  protected ExpressionManager expressionManager;
 
   // MYBATIS SQL SESSION FACTORY /////////////////////////////////////
 
@@ -369,6 +372,7 @@ public class FormEngineConfiguration {
   // /////////////////////////////////////////////////////////////////////
 
   protected void init() {
+    initExpressionManager();
     initCommandContextFactory();
     initTransactionContextFactory();
     initCommandExecutors();
@@ -400,6 +404,12 @@ public class FormEngineConfiguration {
   protected void initService(ServiceImpl service) {
     if (service instanceof ServiceImpl) {
       ((ServiceImpl) service).setCommandExecutor(commandExecutor);
+    }
+  }
+  
+  public void initExpressionManager() {
+    if (expressionManager == null) {
+      expressionManager = new ExpressionManager();
     }
   }
 
@@ -543,7 +553,7 @@ public class FormEngineConfiguration {
         liquibase.validate();
       }
     } catch (Exception e) {
-      throw new ActivitiFormException("Error initialising form data schema");
+      throw new ActivitiFormException("Error initialising form data schema", e);
     }
   }
 
@@ -1106,160 +1116,189 @@ public class FormEngineConfiguration {
     return deploymentDataManager;
   }
 
-  public void setDeploymentDataManager(FormDeploymentDataManager deploymentDataManager) {
+  public FormEngineConfiguration setDeploymentDataManager(FormDeploymentDataManager deploymentDataManager) {
     this.deploymentDataManager = deploymentDataManager;
+    return this;
   }
 
   public FormDataManager getFormDataManager() {
     return formDataManager;
   }
 
-  public void setFormDataManager(FormDataManager formDataManager) {
+  public FormEngineConfiguration setFormDataManager(FormDataManager formDataManager) {
     this.formDataManager = formDataManager;
+    return this;
   }
 
   public ResourceDataManager getResourceDataManager() {
     return resourceDataManager;
   }
 
-  public void setResourceDataManager(ResourceDataManager resourceDataManager) {
+  public FormEngineConfiguration setResourceDataManager(ResourceDataManager resourceDataManager) {
     this.resourceDataManager = resourceDataManager;
+    return this;
   }
 
   public SubmittedFormDataManager getSubmittedFormDataManager() {
     return submittedFormDataManager;
   }
 
-  public void setSubmittedFormDataManager(SubmittedFormDataManager submittedFormDataManager) {
+  public FormEngineConfiguration setSubmittedFormDataManager(SubmittedFormDataManager submittedFormDataManager) {
     this.submittedFormDataManager = submittedFormDataManager;
+    return this;
   }
 
   public FormDeploymentEntityManager getDeploymentEntityManager() {
     return deploymentEntityManager;
   }
 
-  public void setDeploymentEntityManager(FormDeploymentEntityManager deploymentEntityManager) {
+  public FormEngineConfiguration setDeploymentEntityManager(FormDeploymentEntityManager deploymentEntityManager) {
     this.deploymentEntityManager = deploymentEntityManager;
+    return this;
   }
 
   public FormEntityManager getFormEntityManager() {
     return formEntityManager;
   }
 
-  public void setFormEntityManager(FormEntityManager formEntityManager) {
+  public FormEngineConfiguration setFormEntityManager(FormEntityManager formEntityManager) {
     this.formEntityManager = formEntityManager;
+    return this;
   }
 
   public ResourceEntityManager getResourceEntityManager() {
     return resourceEntityManager;
   }
 
-  public void setResourceEntityManager(ResourceEntityManager resourceEntityManager) {
+  public FormEngineConfiguration setResourceEntityManager(ResourceEntityManager resourceEntityManager) {
     this.resourceEntityManager = resourceEntityManager;
+    return this;
   }
   
   public SubmittedFormEntityManager getSubmittedFormEntityManager() {
     return submittedFormEntityManager;
   }
 
-  public void setSubmittedFormEntityManager(SubmittedFormEntityManager submittedFormEntityManager) {
+  public FormEngineConfiguration setSubmittedFormEntityManager(SubmittedFormEntityManager submittedFormEntityManager) {
     this.submittedFormEntityManager = submittedFormEntityManager;
+    return this;
   }
 
   public CommandContextFactory getCommandContextFactory() {
     return commandContextFactory;
   }
 
-  public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
+  public FormEngineConfiguration setCommandContextFactory(CommandContextFactory commandContextFactory) {
     this.commandContextFactory = commandContextFactory;
+    return this;
   }
 
   public SqlSessionFactory getSqlSessionFactory() {
     return sqlSessionFactory;
   }
 
-  public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+  public FormEngineConfiguration setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
     this.sqlSessionFactory = sqlSessionFactory;
+    return this;
   }
 
   public TransactionFactory getTransactionFactory() {
     return transactionFactory;
   }
 
-  public void setTransactionFactory(TransactionFactory transactionFactory) {
+  public FormEngineConfiguration setTransactionFactory(TransactionFactory transactionFactory) {
     this.transactionFactory = transactionFactory;
+    return this;
+  }
+  
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
+
+  public FormEngineConfiguration setExpressionManager(ExpressionManager expressionManager) {
+    this.expressionManager = expressionManager;
+    return this;
   }
 
   public Set<Class<?>> getCustomMybatisMappers() {
     return customMybatisMappers;
   }
 
-  public void setCustomMybatisMappers(Set<Class<?>> customMybatisMappers) {
+  public FormEngineConfiguration setCustomMybatisMappers(Set<Class<?>> customMybatisMappers) {
     this.customMybatisMappers = customMybatisMappers;
+    return this;
   }
 
   public Set<String> getCustomMybatisXMLMappers() {
     return customMybatisXMLMappers;
   }
 
-  public void setCustomMybatisXMLMappers(Set<String> customMybatisXMLMappers) {
+  public FormEngineConfiguration setCustomMybatisXMLMappers(Set<String> customMybatisXMLMappers) {
     this.customMybatisXMLMappers = customMybatisXMLMappers;
+    return this;
   }
 
   public List<SessionFactory> getCustomSessionFactories() {
     return customSessionFactories;
   }
 
-  public void setCustomSessionFactories(List<SessionFactory> customSessionFactories) {
+  public FormEngineConfiguration setCustomSessionFactories(List<SessionFactory> customSessionFactories) {
     this.customSessionFactories = customSessionFactories;
+    return this;
   }
 
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
   }
 
-  public void setDbSqlSessionFactory(DbSqlSessionFactory dbSqlSessionFactory) {
+  public FormEngineConfiguration setDbSqlSessionFactory(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
+    return this;
   }
 
   public boolean isUsingRelationalDatabase() {
     return usingRelationalDatabase;
   }
 
-  public void setUsingRelationalDatabase(boolean usingRelationalDatabase) {
+  public FormEngineConfiguration setUsingRelationalDatabase(boolean usingRelationalDatabase) {
     this.usingRelationalDatabase = usingRelationalDatabase;
+    return this;
   }
 
   public String getDatabaseTablePrefix() {
     return databaseTablePrefix;
   }
 
-  public void setDatabaseTablePrefix(String databaseTablePrefix) {
+  public FormEngineConfiguration setDatabaseTablePrefix(String databaseTablePrefix) {
     this.databaseTablePrefix = databaseTablePrefix;
+    return this;
   }
 
   public String getDatabaseCatalog() {
     return databaseCatalog;
   }
 
-  public void setDatabaseCatalog(String databaseCatalog) {
+  public FormEngineConfiguration setDatabaseCatalog(String databaseCatalog) {
     this.databaseCatalog = databaseCatalog;
+    return this;
   }
 
   public String getDatabaseSchema() {
     return databaseSchema;
   }
 
-  public void setDatabaseSchema(String databaseSchema) {
+  public FormEngineConfiguration setDatabaseSchema(String databaseSchema) {
     this.databaseSchema = databaseSchema;
+    return this;
   }
 
   public boolean isTablePrefixIsSchema() {
     return tablePrefixIsSchema;
   }
 
-  public void setTablePrefixIsSchema(boolean tablePrefixIsSchema) {
+  public FormEngineConfiguration setTablePrefixIsSchema(boolean tablePrefixIsSchema) {
     this.tablePrefixIsSchema = tablePrefixIsSchema;
+    return this;
   }
 
   public Map<Class<?>, SessionFactory> getSessionFactories() {

@@ -7,12 +7,12 @@
   <!-- RESOURCE INSERT -->
 
   <insert id="insertResource" parameterType="org.activiti.form.engine.impl.persistence.entity.ResourceEntityImpl">
-    insert into ${prefix}FORM_DEPLOYMENT_RESOURCE(ID_, NAME_, RESOURCE_BYTES_, DEPLOYMENT_ID_)
+    insert into ${prefix}FORM_RESOURCE(ID_, NAME_, RESOURCE_BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=${blobType}}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
 
   <insert id="bulkInsertResource" parameterType="java.util.List">
-    INSERT INTO ${prefix}FORM_DEPLOYMENT_RESOURCE(ID_, NAME_, RESOURCE_BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES 
+    INSERT INTO ${prefix}FORM_RESOURCE(ID_, NAME_, RESOURCE_BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES 
       <foreach collection="list" item="byteArr" index="index" separator=","> 
         (#{byteArr.id, jdbcType=VARCHAR},
          #{byteArr.name, jdbcType=VARCHAR},
@@ -25,7 +25,7 @@
   <insert id="bulkInsertResource" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL
       <foreach collection="list" item="resource" index="index"> 
-        INTO ${prefix}FORM_DEPLOYMENT_RESOURCE(ID_, NAME_, RESOURCE_BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES 
+        INTO ${prefix}FORM_RESOURCE(ID_, NAME_, RESOURCE_BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES 
         (#{resource.id, jdbcType=VARCHAR},
          #{resource.name, jdbcType=VARCHAR},
          #{resource.bytes, jdbcType=${blobType}},
@@ -40,7 +40,7 @@
   <!-- RESOURCE DELETE -->
 
   <delete id="deleteResourcesByDeploymentId" parameterType="string">
-    delete from ${prefix}FORM_DEPLOYMENT_RESOURCE where DEPLOYMENT_ID_ = #{id}
+    delete from ${prefix}FORM_RESOURCE where DEPLOYMENT_ID_ = #{id}
   </delete>
   
   <!-- RESOURCE RESULTMAP -->
@@ -54,17 +54,21 @@
   <!-- RESOURCE SELECT -->
 
   <select id="selectResourceNamesByDeploymentId" parameterType="org.activiti.form.engine.impl.db.ListQueryParameterObject" resultType="string">
-    select NAME_ from ${prefix}FORM_DEPLOYMENT_RESOURCE where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
+    select NAME_ from ${prefix}FORM_RESOURCE where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>
   
   <select id="selectResourceByDeploymentIdAndResourceName" parameterType="map" resultMap="resourceResultMap">
-    select * from ${prefix}FORM_DEPLOYMENT_RESOURCE 
+    select * from ${prefix}FORM_RESOURCE 
     where DEPLOYMENT_ID_ = #{deploymentId}
           AND NAME_ = #{resourceName}
   </select>
 
   <select id="selectResourcesByDeploymentId" parameterType="org.activiti.form.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap">
-    select * from ${prefix}FORM_DEPLOYMENT_RESOURCE where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
-  </select>  
+    select * from ${prefix}FORM_RESOURCE where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
+  </select>
+  
+  <select id="selectResource" parameterType="string" resultMap="resourceResultMap">
+    select * from ${prefix}FORM_RESOURCE where ID_ = #{id, jdbcType=VARCHAR}
+  </select>
   
 </mapper>

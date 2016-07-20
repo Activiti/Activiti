@@ -6,6 +6,14 @@
   <settings>
     <setting name="lazyLoadingEnabled" value="false" />
   </settings>
+  <typeAliases>
+    <typeAlias type="org.activiti.form.engine.impl.persistence.ResourceRefTypeHandler" alias="ResourceRefTypeHandler"/>
+  </typeAliases>
+  <typeHandlers>
+    <typeHandler handler="ResourceRefTypeHandler" 
+                 javaType="org.activiti.form.engine.impl.persistence.entity.ResourceRef"
+                 jdbcType="VARCHAR"/>
+  </typeHandlers>
   <mappers>
     <mapper resource="org/activiti/form/db/mapping/common.xml" />
     <mapper resource="org/activiti/form/db/mapping/entity/Deployment.xml" />

@@ -22,7 +22,7 @@
             </column>
         </createTable>
         
-        <createTable tableName="FORM_DEPLOYMENT_RESOURCE">
+        <createTable tableName="FORM_RESOURCE">
             <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>

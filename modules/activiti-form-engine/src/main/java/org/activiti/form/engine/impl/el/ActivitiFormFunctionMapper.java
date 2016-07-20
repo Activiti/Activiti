@@ -10,20 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.form.engine.impl.persistence.entity;
 
-import java.util.List;
+package org.activiti.form.engine.impl.el;
 
-import org.activiti.form.engine.impl.Page;
-import org.activiti.form.engine.impl.SubmittedFormQueryImpl;
-import org.activiti.form.engine.repository.SubmittedForm;
+import java.lang.reflect.Method;
+
+import javax.el.FunctionMapper;
 
 /**
+ * Default implementation of a {@link FunctionMapper}.
+ * 
+ * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
+ * 
  * @author Joram Barrez
  */
-public interface SubmittedFormEntityManager extends EntityManager<SubmittedFormEntity> {
+public class ActivitiFormFunctionMapper extends FunctionMapper {
 
-  List<SubmittedForm> findSubmittedFormsByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery, Page page);
+  public Method resolveFunction(String prefix, String localName) {
+    return null;
+  }
 
-  long findSubmittedFormCountByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery);
 }

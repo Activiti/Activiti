@@ -1,29 +1,30 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.form.engine.impl.persistence.entity;
-
-import java.util.List;
-
-import org.activiti.form.engine.impl.Page;
-import org.activiti.form.engine.impl.SubmittedFormQueryImpl;
-import org.activiti.form.engine.repository.SubmittedForm;
+package org.activiti.form.model;
 
 /**
- * @author Joram Barrez
+ * @author Tijs Rademakers
+ *
  */
-public interface SubmittedFormEntityManager extends EntityManager<SubmittedFormEntity> {
+public class ExpressionFormField extends FormField {
 
-  List<SubmittedForm> findSubmittedFormsByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery, Page page);
+    protected String expression;
 
-  long findSubmittedFormCountByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery);
+    public String getExpression() {
+      return expression;
+    }
+
+    public void setExpression(String expression) {
+      this.expression = expression;
+    }
 }

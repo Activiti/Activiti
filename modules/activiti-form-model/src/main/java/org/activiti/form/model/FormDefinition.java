@@ -12,6 +12,7 @@
  */
 package org.activiti.form.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +23,12 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 @JsonInclude(Include.NON_NULL)
-public class FormDefinition {
+public class FormDefinition implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   protected String id;
   protected String name;

@@ -10,20 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.form.engine.impl.persistence.entity;
 
-import java.util.List;
+package org.activiti.form.engine;
 
-import org.activiti.form.engine.impl.Page;
-import org.activiti.form.engine.impl.SubmittedFormQueryImpl;
-import org.activiti.form.engine.repository.SubmittedForm;
+import java.io.Serializable;
+import java.util.Map;
 
 /**
- * @author Joram Barrez
+ * @author Tijs Rademakers
  */
-public interface SubmittedFormEntityManager extends EntityManager<SubmittedFormEntity> {
+public interface FormExpression extends Serializable {
 
-  List<SubmittedForm> findSubmittedFormsByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery, Page page);
+  Object getValue(Map<String, Object> variables);
 
-  long findSubmittedFormCountByQueryCriteria(SubmittedFormQueryImpl submittedFormQuery);
+  void setValue(Object value, Map<String, Object> variables);
+
+  String getExpressionText();
+
 }
