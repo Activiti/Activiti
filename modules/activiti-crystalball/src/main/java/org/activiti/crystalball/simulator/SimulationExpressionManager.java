@@ -13,16 +13,17 @@
 
 package org.activiti.crystalball.simulator;
 
-import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.javax.el.CompositeELResolver;
-import org.activiti.engine.impl.javax.el.ELContext;
-import org.activiti.engine.impl.javax.el.ELResolver;
-import org.activiti.engine.impl.javax.el.PropertyNotWritableException;
-
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.el.CompositeELResolver;
+import javax.el.ELContext;
+import javax.el.ELResolver;
+import javax.el.PropertyNotWritableException;
+
+import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.el.ExpressionManager;
 
 /**
  * {@link org.activiti.engine.impl.el.ExpressionManager} that exposes the simulation event in expressions
