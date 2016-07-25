@@ -66,13 +66,18 @@ create table ACT_RU_EXECUTION (
     IS_SCOPE_ smallint check(IS_SCOPE_ in (1,0)),
     IS_EVENT_SCOPE_ smallint check(IS_EVENT_SCOPE_ in (1,0)),
     IS_MI_ROOT_ smallint check(IS_MI_ROOT_ in (1,0)),
-	SUSPENSION_STATE_ integer,
-	CACHED_ENT_STATE_ integer,
-	TENANT_ID_ varchar(255) default '',
-	NAME_ varchar(255),
+	  SUSPENSION_STATE_ integer,
+	  CACHED_ENT_STATE_ integer,
+	  TENANT_ID_ varchar(255) default '',
+	  NAME_ varchar(255),
     START_TIME_ timestamp,
     START_USER_ID_ varchar(255),
     LOCK_TIME_ timestamp,
+    EVT_SUBSCR_COUNT integer, 
+    TASK_COUNT integer, 
+    JOB_COUNT integer, 
+    VAR_COUNT integer, 
+    ID_LINK_COUNT integer,
     primary key (ID_)
 );
 

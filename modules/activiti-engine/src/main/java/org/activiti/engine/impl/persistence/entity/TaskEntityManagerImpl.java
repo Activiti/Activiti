@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -38,9 +39,12 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   
   protected TaskDataManager taskDataManager;
   
+  protected boolean enableExecutionRelationshipCounts;
+  
   public TaskEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, TaskDataManager taskDataManager) {
     super(processEngineConfiguration);
     this.taskDataManager = taskDataManager;
+    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
   }
   
   @Override
@@ -87,6 +91,11 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     }
     
     insert(taskEntity, true);
+    
+    if (enableExecutionRelationshipCounts && execution != null) {
+      CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
+      countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() + 1);
+    }
     
     if (getEventDispatcher().isEnabled()) {
       if (taskEntity.getAssignee() != null) {
@@ -212,6 +221,16 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }
+    }
+  }
+  
+  @Override
+  public void delete(TaskEntity entity, boolean fireDeleteEvent) {
+    super.delete(entity, fireDeleteEvent);
+    
+    if (entity.getExecutionId() != null && enableExecutionRelationshipCounts) {
+      CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) entity.getExecution();
+      countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() - 1);
     }
   }
 

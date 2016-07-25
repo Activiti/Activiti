@@ -73,6 +73,11 @@ create table ACT_RU_EXECUTION (
     START_TIME_ datetime,
     START_USER_ID_ nvarchar(255),
     LOCK_TIME_ datetime,
+    EVT_SUBSCR_COUNT int, 
+    TASK_COUNT int, 
+    JOB_COUNT int, 
+    VAR_COUNT int, 
+    ID_LINK_COUNT int,
     primary key (ID_)
 );
 

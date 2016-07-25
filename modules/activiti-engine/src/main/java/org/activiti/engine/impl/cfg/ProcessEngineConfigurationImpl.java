@@ -866,6 +866,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * Most useful for core engine developers or people fiddling aorund with the execution tree.
    */
   protected boolean enableVerboseExecutionTreeLogging;
+  
+  protected boolean enableEagerExecutionTreeFetching;
+  
+  protected boolean enableExecutionRelationshipCounts;
 
   // Backwards compatibility //////////////////////////////////////////////////////////////
   
@@ -3068,6 +3072,24 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setEnableVerboseExecutionTreeLogging(boolean enableVerboseExecutionTreeLogging) {
     this.enableVerboseExecutionTreeLogging = enableVerboseExecutionTreeLogging;
+    return this;
+  }
+  
+  public boolean isEnableEagerExecutionTreeFetching() {
+    return enableEagerExecutionTreeFetching;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableEagerExecutionTreeFetching(boolean enableEagerExecutionTreeFetching) {
+    this.enableEagerExecutionTreeFetching = enableEagerExecutionTreeFetching;
+    return this;
+  }
+
+  public boolean isEnableExecutionRelationshipCounts() {
+    return enableExecutionRelationshipCounts;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
+    this.enableExecutionRelationshipCounts = enableExecutionRelationshipCounts;
     return this;
   }
 

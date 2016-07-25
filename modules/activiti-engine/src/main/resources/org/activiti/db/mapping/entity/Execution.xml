@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_, START_TIME_,START_USER_ID_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, EVT_SUBSCR_COUNT, TASK_COUNT, JOB_COUNT, VAR_COUNT, ID_LINK_COUNT)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -28,12 +28,17 @@
       #{tenantId, jdbcType=VARCHAR},
       #{name, jdbcType=VARCHAR},
       #{startTime, jdbcType=TIMESTAMP},
-      #{startUserId, jdbcType=VARCHAR}
+      #{startUserId, jdbcType=VARCHAR},
+      #{eventSubscriptionCount, jdbcType=INTEGER},
+      #{taskCount, jdbcType=INTEGER},
+      #{jobCount, jdbcType=INTEGER},
+      #{variableCount, jdbcType=INTEGER},
+      #{identityLinkCount, jdbcType=INTEGER}
     )
   </insert>
 
   <insert id="bulkInsertExecution" parameterType="java.util.List">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_, START_TIME_,START_USER_ID_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, EVT_SUBSCR_COUNT, TASK_COUNT, JOB_COUNT, VAR_COUNT, ID_LINK_COUNT)
     values 
       <foreach collection="list" item="execution" index="index" separator=",">
         (#{execution.id ,jdbcType=VARCHAR},
@@ -55,7 +60,12 @@
          #{execution.tenantId, jdbcType=VARCHAR},
          #{execution.name, jdbcType=VARCHAR},
          #{execution.startTime, jdbcType=TIMESTAMP},
-         #{execution.startUserId, jdbcType=VARCHAR})
+         #{execution.startUserId, jdbcType=VARCHAR},
+         #{execution.eventSubscriptionCount, jdbcType=INTEGER},
+         #{execution.taskCount, jdbcType=INTEGER},
+         #{execution.jobCount, jdbcType=INTEGER},
+         #{execution.variableCount, jdbcType=INTEGER},
+         #{execution.identityLinkCount, jdbcType=INTEGER})
       </foreach>
   </insert>
 
@@ -63,7 +73,7 @@
     INSERT ALL 
       <foreach collection="list" item="execution" index="index">
         into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_,
-        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_, START_TIME_,START_USER_ID_) VALUES
+        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, EVT_SUBSCR_COUNT, TASK_COUNT, JOB_COUNT, VAR_COUNT, ID_LINK_COUNT) VALUES
             (#{execution.id ,jdbcType=VARCHAR},
              1,
              #{execution.processInstanceId, jdbcType=VARCHAR},
@@ -83,7 +93,12 @@
              #{execution.tenantId, jdbcType=VARCHAR},
              #{execution.name, jdbcType=VARCHAR},
              #{execution.startTime, jdbcType=TIMESTAMP},
-             #{execution.startUserId, jdbcType=VARCHAR})
+             #{execution.startUserId, jdbcType=VARCHAR},
+             #{execution.eventSubscriptionCount, jdbcType=INTEGER},
+             #{execution.taskCount, jdbcType=INTEGER},
+             #{execution.jobCount, jdbcType=INTEGER},
+             #{execution.variableCount, jdbcType=INTEGER},
+             #{execution.identityLinkCount, jdbcType=INTEGER})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -106,7 +121,12 @@
       ROOT_PROC_INST_ID_ = #{rootProcessInstanceId, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER},
-      NAME_ = #{name, jdbcType=VARCHAR}
+      NAME_ = #{name, jdbcType=VARCHAR},
+      EVT_SUBSCR_COUNT = #{eventSubscriptionCount, jdbcType=INTEGER}, 
+      TASK_COUNT = #{taskCount, jdbcType=INTEGER}, 
+      JOB_COUNT = #{jobCount, jdbcType=INTEGER},
+      VAR_COUNT = #{variableCount, jdbcType=INTEGER},
+      ID_LINK_COUNT = #{identityLinkCount, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -195,6 +215,11 @@
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT" jdbcType="INTEGER" />
+    <result property="taskCount" column="TASK_COUNT" jdbcType="INTEGER" />
+    <result property="jobCount" column="JOB_COUNT" jdbcType="INTEGER" />
+    <result property="variableCount" column="VAR_COUNT" jdbcType="INTEGER" />
+    <result property="identityLinkCount" column="ID_LINK_COUNT" jdbcType="INTEGER" />
   </resultMap>
   
   <resultMap id="processInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
@@ -226,6 +251,11 @@
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT" jdbcType="INTEGER" />
+    <result property="taskCount" column="TASK_COUNT" jdbcType="INTEGER" />
+    <result property="jobCount" column="JOB_COUNT" jdbcType="INTEGER" />
+    <result property="variableCount" column="VAR_COUNT" jdbcType="INTEGER" />
+    <result property="identityLinkCount" column="ID_LINK_COUNT" jdbcType="INTEGER" />
   </resultMap>
   
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
@@ -249,6 +279,11 @@
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT" jdbcType="INTEGER" />
+    <result property="taskCount" column="TASK_COUNT" jdbcType="INTEGER" />
+    <result property="jobCount" column="JOB_COUNT" jdbcType="INTEGER" />
+    <result property="variableCount" column="VAR_COUNT" jdbcType="INTEGER" />
+    <result property="identityLinkCount" column="ID_LINK_COUNT" jdbcType="INTEGER" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -291,6 +326,11 @@
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT" jdbcType="INTEGER" />
+    <result property="taskCount" column="TASK_COUNT" jdbcType="INTEGER" />
+    <result property="jobCount" column="JOB_COUNT" jdbcType="INTEGER" />
+    <result property="variableCount" column="VAR_COUNT" jdbcType="INTEGER" />
+    <result property="identityLinkCount" column="ID_LINK_COUNT" jdbcType="INTEGER" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -308,6 +348,11 @@
   </resultMap>
   
   <!-- EXECUTION SELECT -->
+  
+  <select id="selectExecutionsWithSameRootProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
+    select * from ${prefix}ACT_RU_EXECUTION
+    where ROOT_PROC_INST_ID_ = (select ROOT_PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{parameter})
+  </select>
   
   <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
     select * from ${prefix}ACT_RU_EXECUTION where ID_ = #{id, jdbcType=VARCHAR}

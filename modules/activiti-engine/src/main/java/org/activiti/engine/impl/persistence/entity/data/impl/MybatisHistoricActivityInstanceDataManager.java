@@ -25,11 +25,14 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.UnfinishedHistoricActivityInstanceMatcher;
 
 /**
  * @author Joram Barrez
  */
 public class MybatisHistoricActivityInstanceDataManager extends AbstractDataManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceDataManager {
+  
+  protected CachedEntityMatcher<HistoricActivityInstanceEntity> unfinishedHistoricActivityInstanceMatcher = new UnfinishedHistoricActivityInstanceMatcher();
 
   public MybatisHistoricActivityInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -50,28 +53,14 @@ public class MybatisHistoricActivityInstanceDataManager extends AbstractDataMana
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("executionId", executionId);
     params.put("activityId", activityId);
-    return getList("selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId", params, new CachedEntityMatcher<HistoricActivityInstanceEntity>() {
-      @Override
-      public boolean isRetained(HistoricActivityInstanceEntity entity) {
-        return entity.getExecutionId() != null && entity.getExecutionId().equals(executionId)
-            && entity.getActivityId() != null && entity.getActivityId().equals(activityId)
-            && entity.getEndTime() == null;
-      }
-    }, true);
+    return getList("selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId", params, unfinishedHistoricActivityInstanceMatcher, true);
   }
   
   @Override
   public List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(final String processInstanceId) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("processInstanceId", processInstanceId);
-    return getList("selectUnfinishedHistoricActivityInstanceByProcessInstanceId", params, new CachedEntityMatcher<HistoricActivityInstanceEntity>() {
-      @Override
-      public boolean isRetained(HistoricActivityInstanceEntity entity) {
-        return entity.getProcessInstanceId() != null 
-            && entity.getProcessInstanceId().equals(processInstanceId)
-            && entity.getEndTime() == null;
-      }
-    }, true);
+    return getList("selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId", params, unfinishedHistoricActivityInstanceMatcher, true);
   }
   
   @Override

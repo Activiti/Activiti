@@ -23,12 +23,15 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeadLetterJobDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.DeadLetterJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tijs Rademakers
  */
 public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLetterJobEntity> implements DeadLetterJobDataManager {
+  
+  protected CachedEntityMatcher<DeadLetterJobEntity> deadLetterByExecutionIdMatcher = new DeadLetterJobsByExecutionIdMatcher();
 
   public MybatisDeadLetterJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -62,14 +65,8 @@ public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLet
   }
   
   @Override
-  public List<DeadLetterJobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectDeadLetterJobsByExecutionId", executionId, new CachedEntityMatcher<DeadLetterJobEntity>() {
-
-      @Override
-      public boolean isRetained(DeadLetterJobEntity jobEntity) {
-        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
-      }
-    }, true);
+  public List<DeadLetterJobEntity> findJobsByExecutionId(String executionId) {
+    return getList("selectDeadLetterJobsByExecutionId", executionId, deadLetterByExecutionIdMatcher, true);
   }
 
   @Override

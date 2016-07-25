@@ -23,6 +23,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.persistence.SingleCachedEntityMatcher;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 
@@ -87,16 +88,20 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
   }
   
   @SuppressWarnings("unchecked")
-  protected EntityImpl findByQuery(String selectQuery, Object parameter, CachedEntityMatcher<EntityImpl> cachedEntityMatcher) {
+  protected EntityImpl getEntity(String selectQuery, Object parameter, SingleCachedEntityMatcher<EntityImpl> cachedEntityMatcher, boolean checkDatabase) {
     // Cache
     for (EntityImpl cachedEntity : getEntityCache().findInCache(getManagedEntityClass())) {
-      if (cachedEntityMatcher.isRetained(cachedEntity)) {
+      if (cachedEntityMatcher.isRetained(cachedEntity, parameter)) {
         return cachedEntity;
       }
     }
 
     // Database
-    return (EntityImpl) getDbSqlSession().selectOne(selectQuery, parameter);
+    if (checkDatabase) {
+      return (EntityImpl) getDbSqlSession().selectOne(selectQuery, parameter);
+    }
+    
+    return null;
   }
   
   /**
@@ -111,7 +116,8 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
    * @param checkCache If false, no cache check will be done, and the returned list will simply be the list from the database.
    */
   @SuppressWarnings("unchecked")
-  protected List<EntityImpl> getList(String dbQueryName, Object parameter, CachedEntityMatcher<EntityImpl> retainEntityCondition, boolean checkCache) {
+  protected List<EntityImpl> getList(String dbQueryName, Object parameter, 
+      CachedEntityMatcher<EntityImpl> cachedEntityMatcher, boolean checkCache) {
 
     Collection<EntityImpl> result = getDbSqlSession().selectList(dbQueryName, parameter);
     
@@ -129,22 +135,22 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
         }
 
         // Cache entities
-        if (cachedObjects != null) {
+        if (cachedObjects != null && cachedEntityMatcher != null) {
           for (CachedEntity cachedObject : cachedObjects) {
             EntityImpl cachedEntity = (EntityImpl) cachedObject.getEntity();
-            if (retainEntityCondition.isRetained(cachedEntity)) {
+            if (cachedEntityMatcher.isRetained(result, cachedObjects, cachedEntity, parameter)) {
               entityMap.put(cachedEntity.getId(), cachedEntity); // will overwite db version with newer version
             }
           }
         }
         
-        if (getManagedEntitySubClasses() != null) {
+        if (getManagedEntitySubClasses() != null && cachedEntityMatcher != null) {
           for (Class<? extends EntityImpl> entitySubClass : getManagedEntitySubClasses()) {
             Collection<CachedEntity> subclassCachedObjects = getEntityCache().findInCacheAsCachedObjects(entitySubClass);
             if (subclassCachedObjects != null) {
               for (CachedEntity subclassCachedObject : subclassCachedObjects) {
                 EntityImpl cachedSubclassEntity = (EntityImpl) subclassCachedObject.getEntity();
-                if (retainEntityCondition.isRetained(cachedSubclassEntity)) {
+                if (cachedEntityMatcher.isRetained(result, cachedObjects, cachedSubclassEntity, parameter)) {
                   entityMap.put(cachedSubclassEntity.getId(), cachedSubclassEntity); // will overwite db version with newer version
                 }
               }
@@ -170,5 +176,38 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
 
     return new ArrayList<EntityImpl>(result);
   }
+  
+  protected List<EntityImpl> getListFromCache(CachedEntityMatcher<EntityImpl> entityMatcher, Object parameter) {
+    Collection<CachedEntity> cachedObjects = getEntityCache().findInCacheAsCachedObjects(getManagedEntityClass());
+    
+    DbSqlSession dbSqlSession = getDbSqlSession();
+    
+    List<EntityImpl> result = new ArrayList<EntityImpl>(cachedObjects.size());
+    if (cachedObjects != null && entityMatcher != null) {
+      for (CachedEntity cachedObject : cachedObjects) {
+        EntityImpl cachedEntity = (EntityImpl) cachedObject.getEntity();
+        if (entityMatcher.isRetained(null, cachedObjects, cachedEntity, parameter) && !dbSqlSession.isEntityToBeDeleted(cachedEntity)) {
+          result.add(cachedEntity);
+        }
+      }
+    }
+    
+    if (getManagedEntitySubClasses() != null && entityMatcher != null) {
+      for (Class<? extends EntityImpl> entitySubClass : getManagedEntitySubClasses()) {
+        Collection<CachedEntity> subclassCachedObjects = getEntityCache().findInCacheAsCachedObjects(entitySubClass);
+        if (subclassCachedObjects != null) {
+          for (CachedEntity subclassCachedObject : subclassCachedObjects) {
+            EntityImpl cachedSubclassEntity = (EntityImpl) subclassCachedObject.getEntity();
+            if (entityMatcher.isRetained(null, cachedObjects, cachedSubclassEntity, parameter) && !dbSqlSession.isEntityToBeDeleted(cachedSubclassEntity)) {
+              result.add(cachedSubclassEntity);
+            }
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
+
 
 }

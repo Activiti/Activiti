@@ -30,10 +30,16 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
-import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByExecutionAndTypeMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByProcInstTypeAndActivityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.MessageEventSubscriptionsByProcInstAndEventNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.SignalEventSubscriptionByEventNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.SignalEventSubscriptionByNameAndExecutionMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.SignalEventSubscriptionByProcInstAndEventNameMatcher;
 
 /**
  * @author Joram Barrez
@@ -47,6 +53,30 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     ENTITY_SUBCLASSES.add(SignalEventSubscriptionEntityImpl.class);
     ENTITY_SUBCLASSES.add(CompensateEventSubscriptionEntityImpl.class);
   }
+  
+  protected CachedEntityMatcher<EventSubscriptionEntity> eventSubscriptionsByNameMatcher 
+    = new EventSubscriptionsByNameMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> eventSubscritionsByExecutionIdMatcher
+    = new EventSubscriptionsByExecutionIdMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> eventSubscriptionsByProcInstTypeAndActivityMatcher 
+    = new EventSubscriptionsByProcInstTypeAndActivityMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> eventSubscriptionsByExecutionAndTypeMatcher
+    = new EventSubscriptionsByExecutionAndTypeMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> signalEventSubscriptionByNameAndExecutionMatcher
+    = new SignalEventSubscriptionByNameAndExecutionMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> signalEventSubscriptionByProcInstAndEventNameMatcher
+    = new SignalEventSubscriptionByProcInstAndEventNameMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> signalEventSubscriptionByEventNameMatcher
+    = new SignalEventSubscriptionByEventNameMatcher();
+
+  protected CachedEntityMatcher<EventSubscriptionEntity> messageEventSubscriptionsByProcInstAndEventNameMatcher
+    = new MessageEventSubscriptionsByProcInstAndEventNameMatcher();
   
   public MybatisEventSubscriptionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -101,17 +131,8 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
     params.put("eventName", eventName);
-    return toMessageEventSubscriptionEntityList(getList("selectMessageEventSubscriptionsByProcessInstanceAndEventName", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
-      }
-      
-    }, true));
-    
+    return toMessageEventSubscriptionEntityList(getList("selectMessageEventSubscriptionsByProcessInstanceAndEventName", 
+          params, messageEventSubscriptionsByProcInstAndEventNameMatcher, true));
   }
 
   @Override
@@ -124,17 +145,7 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
       params.put("tenantId", tenantId);
     }
     
-    List<EventSubscriptionEntity> result = getList(query, params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-            && (eventSubscriptionEntity.getExecutionId() == null || (eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecution() != null && eventSubscriptionEntity.getExecution().getSuspensionState() == SuspensionState.ACTIVE.getStateCode()) )
-            && ( (params.containsKey("tenantId") && tenantId.equals(eventSubscriptionEntity.getTenantId())) || (!params.containsKey("tenantId") && StringUtils.isEmpty(eventSubscriptionEntity.getTenantId())) );
-      }
-    }, true);
-    
+    List<EventSubscriptionEntity> result = getList(query, params, signalEventSubscriptionByEventNameMatcher, true);
     return toSignalEventSubscriptionEntityList(result);
   }
 
@@ -144,18 +155,7 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     Map<String, String> params = new HashMap<String, String>();
     params.put("processInstanceId", processInstanceId);
     params.put("eventName", eventName);
-    
-    return toSignalEventSubscriptionEntityList(getList(query, params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
-      }
-      
-    }, true));
-    
+    return toSignalEventSubscriptionEntityList(getList(query, params, signalEventSubscriptionByProcInstAndEventNameMatcher, true));
   }
 
   @Override
@@ -163,17 +163,7 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventName", name);
-    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByNameAndExecution", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-            && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(name);
-      }
-      
-    }, true));
-    
+    return toSignalEventSubscriptionEntityList(getList("selectSignalEventSubscriptionsByNameAndExecution", params, signalEventSubscriptionByNameAndExecutionMatcher, true));
   }
 
   @Override
@@ -181,16 +171,7 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventType", type);
-    
-    return getList("selectEventSubscriptionsByExecutionAndType", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-            && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
-      }
-      
-    }, true);
+    return getList("selectEventSubscriptionsByExecutionAndType", params, eventSubscriptionsByExecutionAndTypeMatcher, true);
   }
   
   @Override
@@ -199,29 +180,12 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
     params.put("processInstanceId", processInstanceId);
     params.put("eventType", type);
     params.put("activityId", activityId);
-    
-    return getList("selectEventSubscriptionsByProcessInstanceTypeAndActivity", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-            && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId)
-            && eventSubscriptionEntity.getActivityId() != null && eventSubscriptionEntity.getActivityId().equals(activityId);
-      }
-      
-    }, true);
+    return getList("selectEventSubscriptionsByProcessInstanceTypeAndActivity", params, eventSubscriptionsByProcInstTypeAndActivityMatcher, true);
   }
 
   @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId) {
-    return getList("selectEventSubscriptionsByExecution", executionId, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        return eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
-      }
-      
-    }, true);
+    return getList("selectEventSubscriptionsByExecution", executionId, eventSubscritionsByExecutionIdMatcher, true);
   }
 
   @Override
@@ -249,23 +213,7 @@ public class MybatisEventSubscriptionDataManager extends AbstractDataManager<Eve
       params.put("tenantId", tenantId);
     }
     
-    return getList("selectEventSubscriptionsByName", params, new CachedEntityMatcher<EventSubscriptionEntity>() {
-      
-      @Override
-      public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity) {
-        if (eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-            && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)) {
-          if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
-            return eventSubscriptionEntity.getTenantId() != null && eventSubscriptionEntity.getTenantId().equals(tenantId);
-          } else {
-            return ProcessEngineConfiguration.NO_TENANT_ID.equals(eventSubscriptionEntity.getTenantId()) || eventSubscriptionEntity.getTenantId() == null;
-          }
-        }
-        return false;
-      }
-      
-    }, true);
-    
+    return getList("selectEventSubscriptionsByName", params, eventSubscriptionsByNameMatcher, true);
   }
 
   @Override

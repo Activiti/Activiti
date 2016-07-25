@@ -23,12 +23,15 @@ import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.SuspendedJobDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.cache.SuspendedJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tijs Rademakers
  */
 public class MybatisSuspendedJobDataManager extends AbstractDataManager<SuspendedJobEntity> implements SuspendedJobDataManager {
+  
+  protected CachedEntityMatcher<SuspendedJobEntity> suspendedJobsByExecutionIdMatcher = new SuspendedJobsByExecutionIdMatcher();
 
   public MybatisSuspendedJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -58,13 +61,7 @@ public class MybatisSuspendedJobDataManager extends AbstractDataManager<Suspende
   
   @Override
   public List<SuspendedJobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectSuspendedJobsByExecutionId", executionId, new CachedEntityMatcher<SuspendedJobEntity>() {
-
-      @Override
-      public boolean isRetained(SuspendedJobEntity jobEntity) {
-        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
-      }
-    }, true);
+    return getList("selectSuspendedJobsByExecutionId", executionId, suspendedJobsByExecutionIdMatcher, true);
   }
   
   @Override
