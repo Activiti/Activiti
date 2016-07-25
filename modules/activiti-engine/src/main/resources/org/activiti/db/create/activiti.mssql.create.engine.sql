@@ -76,6 +76,9 @@ create table ACT_RU_EXECUTION (
     EVT_SUBSCR_COUNT int, 
     TASK_COUNT int, 
     JOB_COUNT int, 
+    TIMER_JOB_COUNT_ int,
+    SUSP_JOB_COUNT_ int,
+    DEADLETTER_JOB_COUNT_ int,
     VAR_COUNT int, 
     ID_LINK_COUNT int,
     primary key (ID_)

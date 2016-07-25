@@ -113,6 +113,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected int eventSubscriptionCount;
   protected int taskCount;
   protected int jobCount;
+  protected int timerJobCount;
+  protected int suspendedJobCount;
+  protected int deadLetterJobCount;
   protected int variableCount;
   protected int identityLinkCount;
 
@@ -894,6 +897,30 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   public void setJobCount(int jobCount) {
     this.jobCount = jobCount;
+  }
+  
+  public int getTimerJobCount() {
+    return timerJobCount;
+  }
+
+  public void setTimerJobCount(int timerJobCount) {
+    this.timerJobCount = timerJobCount;
+  }
+
+  public int getSuspendedJobCount() {
+    return suspendedJobCount;
+  }
+
+  public void setSuspendedJobCount(int suspendedJobCount) {
+    this.suspendedJobCount = suspendedJobCount;
+  }
+
+  public int getDeadLetterJobCount() {
+    return deadLetterJobCount;
+  }
+
+  public void setDeadLetterJobCount(int deadLetterJobCount) {
+    this.deadLetterJobCount = deadLetterJobCount;
   }
 
   public int getVariableCount() {

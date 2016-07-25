@@ -26,6 +26,15 @@ public interface CountingExecutionEntity {
   void setJobCount(int jobCount);
   int getJobCount();
   
+  void setTimerJobCount(int timerJobCount);
+  int getTimerJobCount();
+  
+  void setSuspendedJobCount(int suspendedJobCount);
+  int getSuspendedJobCount();
+  
+  void setDeadLetterJobCount(int deadLetterJobCount);
+  int getDeadLetterJobCount();
+  
   void setVariableCount(int variableCount);
   int getVariableCount();
   
