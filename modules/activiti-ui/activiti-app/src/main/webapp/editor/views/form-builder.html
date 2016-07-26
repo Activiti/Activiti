@@ -78,8 +78,8 @@
                                 dnd-effect-allowed="move"
                                 dnd-type="'width-1'"
                                 dnd-moved="onFieldMoved(field, formItems)">
-                                <div id="{{field._guid}}" form-builder-element form-element="field" edit-state="editState"
-                                     drop="onFieldDrop(item, list, event, index)" moved="onFieldMoved(item, list)">
+                                <div draggable="true" id="{{field._guid}}" form-builder-element form-element="field" edit-state="editState"
+                                     drop="onFieldDrop(item, list, event, index)" moved="onFieldMoved(item, list)" class="canvas-element">
                                 </div>
                             </li>
                         </ul>
