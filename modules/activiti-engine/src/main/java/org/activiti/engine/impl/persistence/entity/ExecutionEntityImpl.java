@@ -247,6 +247,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
    persistentState.put("eventSubscriptionCount", eventSubscriptionCount);
    persistentState.put("taskCount", taskCount);
    persistentState.put("jobCount", jobCount);
+   persistentState.put("timerJobCount", timerJobCount);
+   persistentState.put("suspendedJobCount", suspendedJobCount);
+   persistentState.put("deadLetterJobCount", deadLetterJobCount);
    persistentState.put("variableCount", variableCount);
    persistentState.put("identityLinkCount", identityLinkCount);
    return persistentState;

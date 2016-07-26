@@ -54,7 +54,7 @@ public class MoveJobToDeadLetterJobCmd implements Command<DeadLetterJobEntity>, 
     }
 
     if (log.isDebugEnabled()) {
-      log.debug("Movving job to deadletter job table {}", job.getId());
+      log.debug("Moving job to deadletter job table {}", job.getId());
     }
     
     DeadLetterJobEntity deadLetterJob = commandContext.getJobManager().moveJobToDeadLetterJob(job);

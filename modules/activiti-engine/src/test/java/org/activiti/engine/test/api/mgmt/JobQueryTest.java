@@ -98,6 +98,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       public String execute(CommandContext commandContext) {
         JobEntity message = commandContext.getJobEntityManager().create();
         message.setJobType(Job.JOB_TYPE_MESSAGE);
+        message.setRetries(3);
         commandContext.getJobManager().scheduleAsyncJob(message);
         return message.getId();
       }
