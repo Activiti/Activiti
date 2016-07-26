@@ -13,7 +13,7 @@
 
 package org.activiti.rest.dmn.service.api;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -53,7 +53,7 @@ public class DmnRestUrlBuilder {
   /** Uses baseUrl as the base URL */
   public static DmnRestUrlBuilder usingBaseUrl(String baseUrl) {
     if (baseUrl == null)
-      throw new ActivitiIllegalArgumentException("baseUrl can not be null");
+      throw new ActivitiDmnIllegalArgumentException("baseUrl can not be null");
     if (baseUrl.endsWith("/"))
       baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
     return new DmnRestUrlBuilder(baseUrl);

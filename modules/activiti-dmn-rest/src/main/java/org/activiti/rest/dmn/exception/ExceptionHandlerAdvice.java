@@ -2,9 +2,7 @@ package org.activiti.rest.dmn.exception;
 
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,17 +23,17 @@ public class ExceptionHandlerAdvice {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);
 
   @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE) // 415
-  @ExceptionHandler(ActivitiContentNotSupportedException.class)
+  @ExceptionHandler(ActivitiDmnContentNotSupportedException.class)
   @ResponseBody
-  public ErrorInfo handleNotSupported(ActivitiContentNotSupportedException e) {
+  public ErrorInfo handleNotSupported(ActivitiDmnContentNotSupportedException e) {
     return new ErrorInfo("Content is not supported", e);
   }
 
   @ResponseStatus(HttpStatus.CONFLICT)
   // 409
-  @ExceptionHandler(ActivitiConflictException.class)
+  @ExceptionHandler(ActivitiDmnConflictException.class)
   @ResponseBody
-  public ErrorInfo handleConflict(ActivitiConflictException e) {
+  public ErrorInfo handleConflict(ActivitiDmnConflictException e) {
     return new ErrorInfo("Conflict", e);
   }
 
@@ -49,9 +47,9 @@ public class ExceptionHandlerAdvice {
 
   @ResponseStatus(HttpStatus.FORBIDDEN)
   // 403
-  @ExceptionHandler(ActivitiForbiddenException.class)
+  @ExceptionHandler(ActivitiDmnForbiddenException.class)
   @ResponseBody
-  public ErrorInfo handleForbidden(ActivitiForbiddenException e) {
+  public ErrorInfo handleForbidden(ActivitiDmnForbiddenException e) {
     return new ErrorInfo("Forbidden", e);
   }
 

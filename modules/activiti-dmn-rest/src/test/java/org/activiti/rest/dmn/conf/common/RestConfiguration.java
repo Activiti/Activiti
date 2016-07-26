@@ -1,7 +1,7 @@
 package org.activiti.rest.dmn.conf.common;
 
-import org.activiti.rest.common.application.ContentTypeResolver;
-import org.activiti.rest.common.application.DefaultContentTypeResolver;
+import org.activiti.rest.dmn.common.ContentTypeResolver;
+import org.activiti.rest.dmn.common.DefaultContentTypeResolver;
 import org.activiti.rest.dmn.service.api.DmnRestResponseFactory;
 
 import org.springframework.context.annotation.Bean;

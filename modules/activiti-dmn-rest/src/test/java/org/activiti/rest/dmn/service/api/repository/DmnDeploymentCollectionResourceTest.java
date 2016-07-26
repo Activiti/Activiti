@@ -16,7 +16,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.activiti.dmn.api.DmnDeployment;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.rest.dmn.service.api.BaseSpringDmnRestTestCase;
 import org.activiti.rest.dmn.service.api.DmnRestUrls;
 import org.activiti.rest.dmn.service.api.HttpMultipartHelper;
@@ -40,7 +39,7 @@ public class DmnDeploymentCollectionResourceTest extends BaseSpringDmnRestTestCa
     try {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + DmnRestUrls.createRelativeResourceUrl(DmnRestUrls.URL_DEPLOYMENT_COLLECTION));
 
-      httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("simple.dmn", "application/xml", ReflectUtil.getResourceAsStream("org/activiti/rest/dmn/service/api/repository/simple.dmn"), null));
+      httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("simple.dmn", "application/xml", this.getClass().getClassLoader().getResourceAsStream("org/activiti/rest/dmn/service/api/repository/simple.dmn"), null));
       CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
 
       // Check deployment

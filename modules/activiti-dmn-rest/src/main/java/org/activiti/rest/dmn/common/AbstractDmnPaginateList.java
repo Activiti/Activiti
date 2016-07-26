@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.dmn.service.api;
+package org.activiti.rest.dmn.common;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +20,6 @@ import org.activiti.dmn.api.Query;
 import org.activiti.dmn.api.QueryProperty;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.impl.AbstractQuery;
-import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.PaginateRequest;
-import org.activiti.rest.common.api.RequestUtil;
 
 /**
  * @author Yvo Swillens

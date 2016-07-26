@@ -12,12 +12,13 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
-import java.util.Date;
-
 import org.activiti.dmn.api.DmnDeployment;
-import org.activiti.rest.common.util.DateToStringSerializer;
+import org.activiti.rest.dmn.common.DateToStringSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.util.Date;
+
 
 /**
  * @author Yvo Swillens

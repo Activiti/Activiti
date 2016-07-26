@@ -13,7 +13,7 @@
 
 package org.activiti.rest.dmn.service.api.repository;
 
-import org.activiti.rest.common.api.AbstractPaginateList;
+import org.activiti.rest.dmn.common.AbstractDmnPaginateList;
 import org.activiti.rest.dmn.service.api.DmnRestResponseFactory;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author Yvo Swillens
  */
-public class DmnDeploymentsPaginateList extends AbstractPaginateList {
+public class DmnDeploymentsPaginateList extends AbstractDmnPaginateList {
 
   protected DmnRestResponseFactory restResponseFactory;
 

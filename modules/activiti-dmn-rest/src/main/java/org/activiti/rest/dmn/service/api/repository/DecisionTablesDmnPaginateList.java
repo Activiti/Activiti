@@ -14,7 +14,7 @@ package org.activiti.rest.dmn.service.api.repository;
 
 import java.util.List;
 
-import org.activiti.rest.dmn.service.api.AbstractDmnPaginateList;
+import org.activiti.rest.dmn.common.AbstractDmnPaginateList;
 import org.activiti.rest.dmn.service.api.DmnRestResponseFactory;
 
 /**
