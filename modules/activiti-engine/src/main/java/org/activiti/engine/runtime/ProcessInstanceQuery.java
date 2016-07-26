@@ -272,6 +272,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery includeProcessVariables();
   
   /**
+   * Limit process instance variables
+   */
+  ProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
+  
+  /**
    * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
    * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
    */

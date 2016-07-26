@@ -64,6 +64,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Set<String> processInstanceIds;
   protected String involvedUser;
   protected boolean includeProcessVariables;
+  protected Integer processInstanceVariablesLimit;
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
@@ -290,6 +291,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public HistoricProcessInstanceQuery includeProcessVariables() {
     this.includeProcessVariables = true;
     return this;
+  }
+  
+  public HistoricProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit) {
+    this.processInstanceVariablesLimit = processInstanceVariablesLimit;
+    return this;
+  }
+
+  public Integer getProcessInstanceVariablesLimit() {
+    return processInstanceVariablesLimit;
   }
   
   public HistoricProcessInstanceQuery processInstanceTenantId(String tenantId) {

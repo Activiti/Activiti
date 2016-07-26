@@ -240,6 +240,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
   
   /**
+   * Limit process instance variables
+   */
+  HistoricProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
+  
+  /**
    * Include process variables in the process query result
    */
   HistoricProcessInstanceQuery includeProcessVariables();

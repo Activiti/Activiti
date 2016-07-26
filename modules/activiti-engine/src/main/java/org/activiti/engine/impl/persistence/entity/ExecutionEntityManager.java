@@ -138,7 +138,11 @@ public class ExecutionEntityManager extends AbstractManager {
     int maxResults = executionQuery.getMaxResults();
     
     // setting max results, limit to 20000 results for performance reasons
-    executionQuery.setMaxResults(20000);
+    if (executionQuery.getProcessInstanceVariablesLimit() != null) {
+      executionQuery.setMaxResults(executionQuery.getProcessInstanceVariablesLimit());
+    } else {
+      executionQuery.setMaxResults(Context.getProcessEngineConfiguration().getExecutionQueryLimit());
+    }
     executionQuery.setFirstResult(0);
     
     List<ProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectProcessInstanceWithVariablesByQueryCriteria", 

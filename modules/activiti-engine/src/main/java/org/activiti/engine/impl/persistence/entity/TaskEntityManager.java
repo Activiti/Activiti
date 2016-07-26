@@ -147,7 +147,11 @@ public class TaskEntityManager extends AbstractManager {
     int maxResults = taskQuery.getMaxResults();
     
     // setting max results, limit to 20000 results for performance reasons
-    taskQuery.setMaxResults(20000);
+    if (taskQuery.getTaskVariablesLimit() != null) {
+      taskQuery.setMaxResults(taskQuery.getTaskVariablesLimit());
+    } else {
+      taskQuery.setMaxResults(Context.getProcessEngineConfiguration().getTaskQueryLimit());
+    }
     taskQuery.setFirstResult(0);
     
     List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());

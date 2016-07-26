@@ -61,6 +61,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
+  protected Integer processInstanceVariablesLimit;
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
@@ -329,6 +330,15 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public ProcessInstanceQuery includeProcessVariables() {
     this.includeProcessVariables = true;
     return this;
+  }
+  
+  public ProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit) {
+    this.processInstanceVariablesLimit = processInstanceVariablesLimit;
+    return this;
+  }
+
+  public Integer getProcessInstanceVariablesLimit() {
+    return processInstanceVariablesLimit;
   }
   
   @Override
