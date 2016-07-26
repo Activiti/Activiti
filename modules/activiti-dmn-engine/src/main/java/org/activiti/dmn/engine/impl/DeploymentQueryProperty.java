@@ -29,8 +29,8 @@ package org.activiti.dmn.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.dmn.engine.query.QueryProperty;
-import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
+import org.activiti.dmn.api.DmnDeploymentQuery;
+import org.activiti.dmn.api.QueryProperty;
 
 /**
  * Contains the possible properties that can be used in a {@link DmnDeploymentQuery}.

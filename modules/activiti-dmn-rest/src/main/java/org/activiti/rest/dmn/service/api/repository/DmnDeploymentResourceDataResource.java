@@ -26,10 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class DmnDeploymentResourceDataResource extends BaseDmnDeploymentResourceDataResource {
 
-    @RequestMapping(value = "/dmn-repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
-    public @ResponseBody
-    byte[] getDmnDeploymentResource(@PathVariable("deploymentId") String deploymentId, @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
+  @RequestMapping(value = "/dmn-repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
+  public @ResponseBody byte[] getDmnDeploymentResource(@PathVariable("deploymentId") String deploymentId, @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
 
-        return getDmnDeploymentResourceData(deploymentId, resourceId, response);
-    }
+    return getDmnDeploymentResourceData(deploymentId, resourceId, response);
+  }
 }

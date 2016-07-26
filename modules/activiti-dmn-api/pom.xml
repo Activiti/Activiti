@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - DMN Engine</name>
-	<artifactId>activiti-dmn-engine</artifactId>
+	<name>Activiti - DMN API</name>
+	<artifactId>activiti-dmn-api</artifactId>
 
 	<parent>
 		<groupId>org.activiti</groupId>
@@ -15,92 +16,22 @@
 
 	<properties>
 		<activiti.artifact>
-			org.activiti.dmn.engine
+			org.activiti.dmn.api
 		</activiti.artifact>
 	</properties>
-
-    <dependencies>
-        <dependency>
+	
+	<dependencies>
+		<dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-dmn-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-dmn-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-dmn-xml-converter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-      		<groupId>org.mybatis</groupId>
-      		<artifactId>mybatis</artifactId>
-    	</dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mvel</groupId>
-            <artifactId>mvel2</artifactId>
-            <version>2.2.6.Final</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
-        <dependency>
-        	<groupId>com.fasterxml.uuid</groupId>
-        	<artifactId>java-uuid-generator</artifactId>
-      	</dependency>
+	</dependencies>
 
-        <!-- DATABASE -->
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>3.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-    </dependencies>
-
-    <build>
+	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -190,5 +121,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

@@ -10,17 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.dmn.engine;
+package org.activiti.dmn.api;
 
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.DecisionTableQuery;
-import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
-import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
-import org.activiti.dmn.engine.repository.NativeDecisionTableQuery;
-import org.activiti.dmn.engine.repository.NativeDmnDeploymentQuery;
 import org.activiti.dmn.model.DmnDefinition;
 
 /**

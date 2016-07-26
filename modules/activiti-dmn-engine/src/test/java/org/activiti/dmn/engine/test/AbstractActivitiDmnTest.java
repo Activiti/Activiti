@@ -12,11 +12,10 @@
  */
 package org.activiti.dmn.engine.test;
 
+import org.activiti.dmn.api.DmnRepositoryService;
+import org.activiti.dmn.api.DmnRuleService;
 import org.activiti.dmn.engine.DmnEngine;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.DmnRepositoryService;
-import org.activiti.dmn.engine.DmnRuleService;
-import org.activiti.dmn.engine.test.ActivitiDmnRule;
 import org.junit.Before;
 import org.junit.Rule;
 

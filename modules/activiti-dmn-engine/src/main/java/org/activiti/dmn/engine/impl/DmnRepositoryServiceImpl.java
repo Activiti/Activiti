@@ -15,7 +15,14 @@ package org.activiti.dmn.engine.impl;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.dmn.engine.DmnRepositoryService;
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DecisionTableQuery;
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.DmnDeploymentBuilder;
+import org.activiti.dmn.api.DmnDeploymentQuery;
+import org.activiti.dmn.api.DmnRepositoryService;
+import org.activiti.dmn.api.NativeDecisionTableQuery;
+import org.activiti.dmn.api.NativeDmnDeploymentQuery;
 import org.activiti.dmn.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.dmn.engine.impl.cmd.DeployCmd;
 import org.activiti.dmn.engine.impl.cmd.GetDeploymentDecisionTableCmd;
@@ -29,13 +36,6 @@ import org.activiti.dmn.engine.impl.cmd.SetDeploymentTenantIdCmd;
 import org.activiti.dmn.engine.impl.interceptor.Command;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.repository.DmnDeploymentBuilderImpl;
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.DecisionTableQuery;
-import org.activiti.dmn.engine.repository.DmnDeployment;
-import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
-import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
-import org.activiti.dmn.engine.repository.NativeDecisionTableQuery;
-import org.activiti.dmn.engine.repository.NativeDmnDeploymentQuery;
 import org.activiti.dmn.model.DmnDefinition;
 
 /**

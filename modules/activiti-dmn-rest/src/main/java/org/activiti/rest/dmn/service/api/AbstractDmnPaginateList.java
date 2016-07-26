@@ -13,16 +13,16 @@
 
 package org.activiti.rest.dmn.service.api;
 
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.dmn.api.Query;
+import org.activiti.dmn.api.QueryProperty;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.impl.AbstractQuery;
-import org.activiti.dmn.engine.query.Query;
-import org.activiti.dmn.engine.query.QueryProperty;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.common.api.PaginateRequest;
 import org.activiti.rest.common.api.RequestUtil;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yvo Swillens
@@ -135,7 +135,7 @@ public abstract class AbstractDmnPaginateList {
   public DataResponse paginateList(Map<String, String> requestParams, Query query, String defaultSort, Map<String, QueryProperty> properties) {
     return paginateList(requestParams, null, query, defaultSort, properties);
   }
-  
+
   @SuppressWarnings("rawtypes")
   protected abstract List processList(List list);
 }

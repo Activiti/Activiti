@@ -14,6 +14,7 @@ package org.activiti.dmn.engine;
 
 import java.util.Map;
 
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.dmn.model.DmnDefinition;
 
 /**

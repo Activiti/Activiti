@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
-	
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);
-  
+
   @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE) // 415
   @ExceptionHandler(ActivitiContentNotSupportedException.class)
   @ResponseBody
@@ -62,22 +62,22 @@ public class ExceptionHandlerAdvice {
   public ErrorInfo handleIllegal(ActivitiDmnIllegalArgumentException e) {
     return new ErrorInfo("Bad request", e);
   }
-  
+
   @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
   @ExceptionHandler(HttpMessageConversionException.class)
   @ResponseBody
   public ErrorInfo handleBadMessageConversion(HttpMessageConversionException e) {
     return new ErrorInfo("Bad request", e);
   }
-  
+
   // Fall back
-  
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
   @ExceptionHandler(Exception.class)
   @ResponseBody
   public ErrorInfo handleOtherException(Exception e) {
-  	LOGGER.error("Unhandled exception", e);
-  	return new ErrorInfo("Internal server error", e);
+    LOGGER.error("Unhandled exception", e);
+    return new ErrorInfo("Internal server error", e);
   }
-  
+
 }

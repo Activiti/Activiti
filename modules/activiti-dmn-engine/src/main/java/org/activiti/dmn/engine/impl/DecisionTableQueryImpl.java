@@ -16,11 +16,11 @@ package org.activiti.dmn.engine.impl;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DecisionTableQuery;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.DecisionTableQuery;
 
 /**
  * @author Tijs Rademakers

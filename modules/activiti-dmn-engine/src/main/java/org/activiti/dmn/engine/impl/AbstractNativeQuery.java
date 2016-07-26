@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.NativeQuery;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.impl.context.Context;
 import org.activiti.dmn.engine.impl.interceptor.Command;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
-import org.activiti.dmn.engine.query.NativeQuery;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 

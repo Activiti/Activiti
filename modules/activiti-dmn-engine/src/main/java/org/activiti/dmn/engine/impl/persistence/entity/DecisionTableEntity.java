@@ -12,8 +12,8 @@
  */
 package org.activiti.dmn.engine.impl.persistence.entity;
 
+import org.activiti.dmn.api.DecisionTable;
 import org.activiti.dmn.engine.impl.db.Entity;
-import org.activiti.dmn.engine.repository.DecisionTable;
 
 /**
  * @author Joram Barrez

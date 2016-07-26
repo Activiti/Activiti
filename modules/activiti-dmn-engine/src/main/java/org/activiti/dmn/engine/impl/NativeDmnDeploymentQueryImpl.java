@@ -15,10 +15,10 @@ package org.activiti.dmn.engine.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.NativeDmnDeploymentQuery;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
-import org.activiti.dmn.engine.repository.DmnDeployment;
-import org.activiti.dmn.engine.repository.NativeDmnDeploymentQuery;
 
 public class NativeDmnDeploymentQueryImpl extends AbstractNativeQuery<NativeDmnDeploymentQuery, DmnDeployment> implements NativeDmnDeploymentQuery {
 

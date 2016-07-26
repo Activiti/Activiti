@@ -11,11 +11,9 @@
  * limitations under the License.
  */
 
-package org.activiti.dmn.engine.repository;
+package org.activiti.dmn.api;
 
 import java.util.Set;
-
-import org.activiti.dmn.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link DecisionTable}s.

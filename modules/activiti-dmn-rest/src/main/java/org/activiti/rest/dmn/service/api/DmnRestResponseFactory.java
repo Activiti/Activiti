@@ -12,15 +12,15 @@
  */
 package org.activiti.rest.dmn.service.api;
 
-import org.activiti.dmn.engine.RuleEngineExecutionResult;
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.DmnDeployment;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.rest.dmn.service.api.decision.ExecuteDecisionResponse;
 import org.activiti.rest.dmn.service.api.repository.DecisionTableResponse;
 import org.activiti.rest.dmn.service.api.repository.DmnDeploymentResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -29,56 +29,56 @@ import java.util.List;
  * @author Yvo Swillens
  */
 public class DmnRestResponseFactory {
-    
-    public DecisionTableResponse createDecisionTableResponse(DecisionTable decisionTable) {
-        return createDecisionTableResponse(decisionTable, createUrlBuilder());
+
+  public DecisionTableResponse createDecisionTableResponse(DecisionTable decisionTable) {
+    return createDecisionTableResponse(decisionTable, createUrlBuilder());
+  }
+
+  public DecisionTableResponse createDecisionTableResponse(DecisionTable decisionTable, DmnRestUrlBuilder urlBuilder) {
+    DecisionTableResponse response = new DecisionTableResponse(decisionTable);
+    response.setUrl(urlBuilder.buildUrl(DmnRestUrls.URL_DECISION_TABLE, decisionTable.getId()));
+
+    return response;
+  }
+
+  public List<DecisionTableResponse> createDecisionTableResponseList(List<DecisionTable> decisionTables) {
+    DmnRestUrlBuilder urlBuilder = createUrlBuilder();
+    List<DecisionTableResponse> responseList = new ArrayList<>();
+    for (DecisionTable instance : decisionTables) {
+      responseList.add(createDecisionTableResponse(instance, urlBuilder));
     }
+    return responseList;
+  }
 
-    public DecisionTableResponse createDecisionTableResponse(DecisionTable decisionTable, DmnRestUrlBuilder urlBuilder) {
-        DecisionTableResponse response = new DecisionTableResponse(decisionTable);
-        response.setUrl(urlBuilder.buildUrl(DmnRestUrls.URL_DECISION_TABLE, decisionTable.getId()));
-
-        return response;
+  public List<DmnDeploymentResponse> createDmnDeploymentResponseList(List<DmnDeployment> deployments) {
+    DmnRestUrlBuilder urlBuilder = createUrlBuilder();
+    List<DmnDeploymentResponse> responseList = new ArrayList<>();
+    for (DmnDeployment instance : deployments) {
+      responseList.add(createDmnDeploymentResponse(instance, urlBuilder));
     }
+    return responseList;
+  }
 
-    public List<DecisionTableResponse> createDecisionTableResponseList(List<DecisionTable> decisionTables) {
-        DmnRestUrlBuilder urlBuilder = createUrlBuilder();
-        List<DecisionTableResponse> responseList = new ArrayList<>();
-        for (DecisionTable instance : decisionTables) {
-            responseList.add(createDecisionTableResponse(instance, urlBuilder));
-        }
-        return responseList;
-    }
+  public DmnDeploymentResponse createDmnDeploymentResponse(DmnDeployment deployment) {
+    return createDmnDeploymentResponse(deployment, createUrlBuilder());
+  }
 
-    public List<DmnDeploymentResponse> createDmnDeploymentResponseList(List<DmnDeployment> deployments) {
-        DmnRestUrlBuilder urlBuilder = createUrlBuilder();
-        List<DmnDeploymentResponse> responseList = new ArrayList<>();
-        for (DmnDeployment instance : deployments) {
-            responseList.add(createDmnDeploymentResponse(instance, urlBuilder));
-        }
-        return responseList;
-    }
+  public DmnDeploymentResponse createDmnDeploymentResponse(DmnDeployment deployment, DmnRestUrlBuilder urlBuilder) {
+    return new DmnDeploymentResponse(deployment, urlBuilder.buildUrl(DmnRestUrls.URL_DEPLOYMENT, deployment.getId()));
+  }
 
-    public DmnDeploymentResponse createDmnDeploymentResponse(DmnDeployment deployment) {
-        return createDmnDeploymentResponse(deployment, createUrlBuilder());
-    }
+  public ExecuteDecisionResponse createExecuteDecisionResponse(RuleEngineExecutionResult executionResult) {
+    return createExecuteDecisionResponse(executionResult, createUrlBuilder());
+  }
 
-    public DmnDeploymentResponse createDmnDeploymentResponse(DmnDeployment deployment, DmnRestUrlBuilder urlBuilder) {
-        return new DmnDeploymentResponse(deployment, urlBuilder.buildUrl(DmnRestUrls.URL_DEPLOYMENT, deployment.getId()));
-    }
+  public ExecuteDecisionResponse createExecuteDecisionResponse(RuleEngineExecutionResult executionResult, DmnRestUrlBuilder urlBuilder) {
+    ExecuteDecisionResponse response = new ExecuteDecisionResponse(executionResult);
+    response.setUrl(urlBuilder.buildUrl(DmnRestUrls.URL_DECISION_EXECUTOR));
 
-    public ExecuteDecisionResponse createExecuteDecisionResponse(RuleEngineExecutionResult executionResult) {
-        return createExecuteDecisionResponse(executionResult, createUrlBuilder());
-    }
+    return response;
+  }
 
-    public ExecuteDecisionResponse createExecuteDecisionResponse(RuleEngineExecutionResult executionResult, DmnRestUrlBuilder urlBuilder) {
-        ExecuteDecisionResponse response = new ExecuteDecisionResponse(executionResult);
-        response.setUrl(urlBuilder.buildUrl(DmnRestUrls.URL_DECISION_EXECUTOR));
-
-        return response;
-    }
-
-    protected DmnRestUrlBuilder createUrlBuilder() {
-        return DmnRestUrlBuilder.fromCurrentRequest();
-    }
+  protected DmnRestUrlBuilder createUrlBuilder() {
+    return DmnRestUrlBuilder.fromCurrentRequest();
+  }
 }

@@ -11,9 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.dmn.engine.repository;
-
-import org.activiti.dmn.engine.query.Query;
+package org.activiti.dmn.api;
 
 /**
  * Allows programmatic querying of {@link DmnDeployment}s.

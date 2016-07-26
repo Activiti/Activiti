@@ -20,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.DmnDeployment;
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDeployment;
 import org.junit.Test;
 
 public class DeploymentTest extends AbstractActivitiDmnTest {

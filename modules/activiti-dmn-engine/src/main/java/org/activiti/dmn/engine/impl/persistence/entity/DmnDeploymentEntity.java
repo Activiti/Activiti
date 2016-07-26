@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.dmn.engine.impl.db.Entity;
-import org.activiti.dmn.engine.repository.DmnDeployment;
 
 /**
  * @author Tijs Rademakers

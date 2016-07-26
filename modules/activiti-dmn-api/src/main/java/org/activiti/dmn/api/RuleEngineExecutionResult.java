@@ -10,30 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.dmn.engine;
+package org.activiti.dmn.api;
 
 import java.util.Map;
-
-import org.activiti.dmn.engine.impl.audit.DecisionExecutionAuditContainer;
 
 /**
  * @author Yvo Swillens
  */
 public class RuleEngineExecutionResult {
 
-    protected Map<String, Object> resultVariables;
-    protected DecisionExecutionAuditContainer auditTrail;
+  protected Map<String, Object> resultVariables;
+  protected DecisionExecutionAuditContainer auditTrail;
 
-    public RuleEngineExecutionResult(Map<String, Object> resultVariables, DecisionExecutionAuditContainer auditTrail) {
-        this.resultVariables = resultVariables;
-        this.auditTrail = auditTrail;
-    }
+  public RuleEngineExecutionResult(Map<String, Object> resultVariables, DecisionExecutionAuditContainer auditTrail) {
+    this.resultVariables = resultVariables;
+    this.auditTrail = auditTrail;
+  }
 
-    public Map<String, Object> getResultVariables() {
-        return resultVariables;
-    }
+  public Map<String, Object> getResultVariables() {
+    return resultVariables;
+  }
 
-    public DecisionExecutionAuditContainer getAuditTrail() {
-        return auditTrail;
-    }
+  public DecisionExecutionAuditContainer getAuditTrail() {
+    return auditTrail;
+  }
 }

@@ -244,6 +244,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.activiti</groupId>
+				<artifactId>activiti-dmn-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
 				<artifactId>activiti-dmn-engine</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -698,6 +703,8 @@
 		<module>modules/activiti-bpmn-converter</module>
 		<module>modules/activiti-form-model</module>
 		<module>modules/activiti-form-api</module>
+		<module>modules/activiti-dmn-model</module>
+		<module>modules/activiti-dmn-api</module>
 		<module>modules/activiti-engine</module>
 	</modules>
 

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
@@ -24,7 +25,6 @@ import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntityImpl;
 import org.activiti.dmn.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.dmn.engine.impl.persistence.entity.data.DecisionTableDataManager;
-import org.activiti.dmn.engine.repository.DecisionTable;
 
 /**
  * @author Joram Barrez

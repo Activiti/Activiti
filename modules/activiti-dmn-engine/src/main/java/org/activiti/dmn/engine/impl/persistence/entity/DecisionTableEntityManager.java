@@ -15,9 +15,9 @@ package org.activiti.dmn.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionTable;
 import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.Page;
-import org.activiti.dmn.engine.repository.DecisionTable;
 
 /**
  * @author Joram Barrez

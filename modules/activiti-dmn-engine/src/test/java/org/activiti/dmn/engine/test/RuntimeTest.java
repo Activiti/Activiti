@@ -15,7 +15,7 @@ package org.activiti.dmn.engine.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.dmn.engine.RuleEngineExecutionResult;
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

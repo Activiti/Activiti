@@ -15,6 +15,8 @@ package org.activiti.dmn.engine.impl;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.dmn.api.Query;
+import org.activiti.dmn.api.QueryProperty;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
@@ -23,8 +25,6 @@ import org.activiti.dmn.engine.impl.db.ListQueryParameterObject;
 import org.activiti.dmn.engine.impl.interceptor.Command;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
-import org.activiti.dmn.engine.query.Query;
-import org.activiti.dmn.engine.query.QueryProperty;
 
 /**
  * Abstract superclass for all query types.

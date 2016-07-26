@@ -10,16 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.dmn.engine;
 
-import java.util.Map;
+package org.activiti.dmn.api;
+
+import java.io.Serializable;
 
 /**
- * @author Yvo Swillens
+ * Describes a property that can be used in a Query.
+ * 
+ * @author Tijs Rademakers
  */
-public interface DmnRuleService {
+public interface QueryProperty extends Serializable {
 
-    RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> processVariables);
-
-    RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> processVariables, String tenantId);
+  String getName();
 }

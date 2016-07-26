@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnExpressionException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.RuleEngineExecutor;
 import org.activiti.dmn.engine.impl.mvel.ExecutionVariableFactory;
 import org.activiti.dmn.engine.impl.mvel.MvelExecutionContext;
