@@ -910,6 +910,7 @@
 				<module>modules/activiti-webapp-rest2</module>
 				<module>modules/activiti-cxf</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-form-json-converter</module>
 				<module>modules/activiti-form-engine</module>
 				<module>modules/activiti-form-engine-configurator</module>
 				<module>modules/activiti-dmn-engine</module>
