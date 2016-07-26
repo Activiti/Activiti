@@ -12,6 +12,9 @@
  */
 package org.activiti.form.engine;
 
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.api.FormService;
+
 public interface FormEngine {
 
     /**

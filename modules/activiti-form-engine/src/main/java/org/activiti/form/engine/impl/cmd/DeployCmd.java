@@ -18,13 +18,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.form.api.FormDeployment;
 import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntity;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.form.engine.impl.repository.FormDeploymentBuilderImpl;
-import org.activiti.form.engine.repository.FormDeployment;
 
 /**
  * @author Tijs Rademakers

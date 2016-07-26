@@ -62,10 +62,8 @@ import com.activiti.model.editor.ReviveModelResultRepresentation.UnresolveModelR
 import com.activiti.repository.editor.ModelHistoryRepository;
 import com.activiti.repository.editor.ModelRelationRepository;
 import com.activiti.repository.editor.ModelRepository;
-import com.activiti.security.SecurityUtils;
 import com.activiti.service.api.DeploymentService;
 import com.activiti.service.api.ModelService;
-import com.activiti.service.api.RuntimeAppDefinitionService;
 import com.activiti.service.api.UserCache;
 import com.activiti.service.exception.BaseModelerRestException;
 import com.activiti.service.exception.InternalServerErrorException;
@@ -85,9 +83,6 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
   @Autowired
   protected DeploymentService deploymentService;
-
-  @Autowired
-  protected RuntimeAppDefinitionService runtimeAppDefinitionService;
 
   @Autowired
   protected ModelRepository modelRepository;
@@ -119,8 +114,8 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   }
 
   @Override
-  public byte[] getBpmnXML(AbstractModel model, User user) {
-    BpmnModel bpmnModel = getBpmnModel(model, user, false);
+  public byte[] getBpmnXML(AbstractModel model) {
+    BpmnModel bpmnModel = getBpmnModel(model, false);
     return getBpmnXML(bpmnModel);
   }
 
@@ -145,6 +140,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     Model newModel = new Model();
     newModel.setVersion(1);
     newModel.setName(model.getName());
+    newModel.setKey(model.getKey());
     newModel.setModelType(model.getModelType());
     newModel.setCreated(Calendar.getInstance().getTime());
     newModel.setCreatedBy(createdBy.getId());
@@ -193,24 +189,28 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   @Transactional
   public Model saveModel(Model modelObject, String editorJson, byte[] imageBytes, boolean newVersion, String newVersionComment, User updatedBy) {
 
-    return internalSave(modelObject.getName(), modelObject.getDescription(), editorJson, newVersion, newVersionComment, imageBytes, updatedBy, modelObject);
+    return internalSave(modelObject.getName(), modelObject.getKey(), modelObject.getDescription(), editorJson, newVersion, 
+        newVersionComment, imageBytes, updatedBy, modelObject);
   }
 
   @Override
   @Transactional
-  public Model saveModel(long modelId, String name, String description, String editorJson, boolean newVersion, String newVersionComment, User updatedBy) {
+  public Model saveModel(long modelId, String name, String key, String description, String editorJson, 
+      boolean newVersion, String newVersionComment, User updatedBy) {
 
     Model modelObject = modelRepository.findOne(modelId);
-    return internalSave(name, description, editorJson, newVersion, newVersionComment, null, updatedBy, modelObject);
+    return internalSave(name, key, description, editorJson, newVersion, newVersionComment, null, updatedBy, modelObject);
   }
 
-  protected Model internalSave(String name, String description, String editorJson, boolean newVersion, String newVersionComment, byte[] imageBytes, User updatedBy, Model modelObject) {
+  protected Model internalSave(String name, String key, String description, String editorJson, boolean newVersion, 
+      String newVersionComment, byte[] imageBytes, User updatedBy, Model modelObject) {
 
     if (newVersion == false) {
 
       modelObject.setLastUpdated(new Date());
       modelObject.setLastUpdatedBy(updatedBy.getId());
       modelObject.setName(name);
+      modelObject.setKey(key);
       modelObject.setDescription(description);
       modelObject.setModelEditorJson(editorJson);
 
@@ -227,6 +227,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
       modelObject.setLastUpdated(new Date());
       modelObject.setLastUpdatedBy(updatedBy.getId());
       modelObject.setName(name);
+      modelObject.setKey(key);
       modelObject.setDescription(description);
       modelObject.setModelEditorJson(editorJson);
       modelObject.setComment(newVersionComment);
@@ -254,10 +255,10 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
     // if the model is an app definition and the runtime app needs to be deleted, remove it now
     if (deleteRuntimeApp && model.getModelType() == Model.MODEL_TYPE_APP) {
-      Long appDefinitionId = runtimeAppDefinitionService.getDefinitionIdForModelAndUser(model.getId(), SecurityUtils.getCurrentUserObject());
+      /*Long appDefinitionId = runtimeAppDefinitionService.getDefinitionIdForModelAndUser(model.getId(), SecurityUtils.getCurrentUserObject());
       if (appDefinitionId != null) {
         deploymentService.deleteAppDefinition(appDefinitionId);
-      }
+      }*/
 
     } else {
       // Move model to history and mark removed
@@ -327,6 +328,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     latestModel.setLastUpdated(new Date());
     latestModel.setLastUpdatedBy(user.getId());
     latestModel.setName(modelHistory.getName());
+    latestModel.setKey(modelHistory.getKey());
     latestModel.setDescription(modelHistory.getDescription());
     latestModel.setModelEditorJson(modelHistory.getModelEditorJson());
     latestModel.setModelType(modelHistory.getModelType());
@@ -357,7 +359,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   }
 
   @Override
-  public BpmnModel getBpmnModel(AbstractModel model, User user, boolean refreshReferences) {
+  public BpmnModel getBpmnModel(AbstractModel model, boolean refreshReferences) {
     BpmnModel bpmnModel = null;
     try {
       ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(model.getModelEditorJson());
@@ -426,9 +428,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
       } else if (model.getModelType().intValue() == Model.MODEL_TYPE_APP) {
 
         handleAppModelProcessRelations(model, jsonNode);
-
       }
-
     }
 
     return model;
@@ -513,6 +513,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   protected ModelHistory createNewModelhistory(Model model) {
     ModelHistory historyModel = new ModelHistory();
     historyModel.setName(model.getName());
+    historyModel.setKey(model.getKey());
     historyModel.setDescription(model.getDescription());
     historyModel.setCreated(model.getCreated());
     historyModel.setLastUpdated(model.getLastUpdated());
@@ -531,6 +532,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
   protected void populateModelBasedOnHistory(Model model, ModelHistory basedOn) {
     model.setName(basedOn.getName());
+    model.setKey(basedOn.getKey());
     model.setDescription(basedOn.getDescription());
     model.setCreated(basedOn.getCreated());
     model.setLastUpdated(basedOn.getLastUpdated());

@@ -15,6 +15,8 @@ package org.activiti.form.engine.impl;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.form.api.Query;
+import org.activiti.form.api.QueryProperty;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.ActivitiFormIllegalArgumentException;
 import org.activiti.form.engine.FormEngineConfiguration;
@@ -23,8 +25,6 @@ import org.activiti.form.engine.impl.db.ListQueryParameterObject;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.interceptor.CommandExecutor;
-import org.activiti.form.engine.query.Query;
-import org.activiti.form.engine.query.QueryProperty;
 
 /**
  * Abstract superclass for all query types.

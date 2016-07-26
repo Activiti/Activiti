@@ -207,21 +207,10 @@ public class AbstractAppDefinitionResource extends BaseModelResource {
 
     // Create pojo representation of the model and the json
     AppDefinitionRepresentation appDefinitionRepresentation = createAppDefinitionRepresentation(appModel);
-    AppDefinition appDefinition = appDefinitionRepresentation.getDefinition();
-
     AppDefinitionUpdateResultRepresentation result = new AppDefinitionUpdateResultRepresentation();
 
-    String editorJson = null;
-    try {
-      editorJson = objectMapper.writeValueAsString(appDefinition);
-    } catch (Exception e) {
-      logger.error("Error while processing app definition json " + modelId, e);
-      throw new InternalServerErrorException("App definition could not be saved " + modelId);
-    }
-
     // Actual publication
-    appDefinitionPublishService.publishAppDefinition(modelId, publishModel.getComment(), appModel, appDefinitionRepresentation.getId(), appDefinitionRepresentation.getName(),
-        appDefinitionRepresentation.getDescription(), editorJson, user, publishModel.getForce());
+    appDefinitionPublishService.publishAppDefinition(publishModel.getComment(), appModel, user);
 
     result.setAppDefinition(appDefinitionRepresentation);
     return result;
@@ -263,7 +252,7 @@ public class AbstractAppDefinitionResource extends BaseModelResource {
           Model model = getModel(modelDef.getId(), true, false);
           String modelName = modelDef.getName();
 
-          BpmnModel bpmnModel = modelService.getBpmnModel(model, user, true);
+          BpmnModel bpmnModel = modelService.getBpmnModel(model, true);
           String bpmnModelJson = bpmnJsonConverter.convertToJson(bpmnModel).toString();
 
           createZipEntry(zipOutputStream, "bpmn-models/" + createZipEntryFileName(modelName, model.getId()) + ".json", bpmnModelJson);
@@ -695,6 +684,7 @@ public class AbstractAppDefinitionResource extends BaseModelResource {
   protected ModelRepresentation createModelRepresentation(String name, int type) {
     ModelRepresentation modelRepresentation = new ModelRepresentation();
     modelRepresentation.setName(name);
+    modelRepresentation.setKey(name.replaceAll(" ", ""));
     modelRepresentation.setModelType(type);
     return modelRepresentation;
   }

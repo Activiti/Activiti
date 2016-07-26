@@ -45,13 +45,13 @@ angular.module('activitiModeler').controller('SaveAppDefinitionCtrl',
     function ($rootScope, $scope, $http, $route, $location, $translate) {
 	
     var description = '';
-    if ($rootScope.currentAppDefinition.description)
-    {
+    if ($rootScope.currentAppDefinition.description) {
     	description = $rootScope.currentAppDefinition.description;
     }
     
     var saveDialog = { 
         name: $rootScope.currentAppDefinition.name,
+        key: $rootScope.currentAppDefinition.key,
         description: description,
         publish: false
     };
@@ -74,7 +74,9 @@ angular.module('activitiModeler').controller('SaveAppDefinitionCtrl',
     
     $scope.save = function (saveCallback, force) {
 
-        if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0) {
+        if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0 ||
+        	!$scope.saveDialog.key || $scope.saveDialog.key.length == 0) {
+        	
             return;
         }
 

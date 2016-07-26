@@ -38,9 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.activiti.domain.runtime.RelatedContent;
-import com.activiti.domain.runtime.RuntimeAppDeployment;
-import com.activiti.repository.runtime.RuntimeAppDeploymentRepository;
-import com.activiti.repository.runtime.RuntimeAppRepository;
 import com.activiti.service.exception.NotFoundException;
 import com.activiti.service.exception.NotPermittedException;
 
@@ -66,12 +63,6 @@ public class PermissionService {
   
   @Autowired
   protected IdentityService identityService;
-
-  @Autowired
-  protected RuntimeAppRepository runtimeAppRepository;
-
-  @Autowired
-  protected RuntimeAppDeploymentRepository runtimeAppDeploymentRepository;
 
   /**
    * Check if the given user is allowed to read the task.
@@ -235,21 +226,6 @@ public class PermissionService {
         return false;
       }
     }
-  }
-
-  public boolean hasReadPermissionOnRuntimeApp(User user, Long appId) {
-    return runtimeAppRepository.findByUserAndAppDefinitionId(user.getId(), appId) != null;
-  }
-
-  public boolean hasReadPermissionOnProcessDefinition(User user, String processDefinitionId) {
-
-    // Get deployment id for process definition
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
-    String deploymentId = processDefinition.getDeploymentId();
-
-    // Get runtime app for deployment
-    RuntimeAppDeployment runtimeAppDeployment = runtimeAppDeploymentRepository.findByDeploymentId(deploymentId);
-    return hasReadPermissionOnRuntimeApp(user, runtimeAppDeployment.getAppDefinition().getId());
   }
 
   public ProcessDefinition getProcessDefinitionById(String processDefinitionId) {

@@ -14,30 +14,23 @@ package com.activiti.rest.runtime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.form.engine.FormRepositoryService;
+import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.model.FormDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.activiti.domain.runtime.RuntimeAppDefinition;
-import com.activiti.domain.runtime.RuntimeAppDeployment;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.runtime.ProcessDefinitionRepresentation;
-import com.activiti.security.SecurityUtils;
-import com.activiti.service.api.RuntimeAppDefinitionService;
-import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
 
 public abstract class AbstractProcessDefinitionsResource {
@@ -49,53 +42,22 @@ public abstract class AbstractProcessDefinitionsResource {
   protected FormRepositoryService formRepositoryService;
 
   @Autowired
-  protected RuntimeAppDefinitionService runtimeAppDefinitionService;
-
-  @Autowired
   protected PermissionService permissionService;
 
-  public ResultListDataRepresentation getProcessDefinitions(Boolean latest, Long appDefinitionId) {
+  public ResultListDataRepresentation getProcessDefinitions(Boolean latest, String deploymentKey) {
 
     ProcessDefinitionQuery definitionQuery = repositoryService.createProcessDefinitionQuery();
 
-    User currentUser = SecurityUtils.getCurrentUserObject();
-
-    if (appDefinitionId != null) {
-      List<RuntimeAppDeployment> appDeployments = runtimeAppDefinitionService.getRuntimeAppDeploymentsForAppId(appDefinitionId);
-      if (CollectionUtils.isNotEmpty(appDeployments)) {
-        RuntimeAppDeployment latestAppDeployment = null;
-        for (RuntimeAppDeployment runtimeAppDeployment : appDeployments) {
-          if (latestAppDeployment == null || runtimeAppDeployment.getCreated().after(latestAppDeployment.getCreated())) {
-            latestAppDeployment = runtimeAppDeployment;
-          }
-        }
-
-        if (permissionService.hasReadPermissionOnRuntimeApp(currentUser, appDefinitionId)) {
-          if (StringUtils.isNotEmpty(latestAppDeployment.getDeploymentId())) {
-            definitionQuery.deploymentId(latestAppDeployment.getDeploymentId());
-          } else {
-            return new ResultListDataRepresentation();
-          }
-        } else {
-          throw new NotPermittedException();
-        }
+    if (deploymentKey != null) {
+      Deployment deployment = repositoryService.createDeploymentQuery().deploymentKey(deploymentKey).latest().singleResult();
+      
+      if (deployment != null) {
+        definitionQuery.deploymentId(deployment.getId());
       } else {
         return new ResultListDataRepresentation(new ArrayList<ProcessDefinitionRepresentation>());
       }
 
     } else {
-      List<RuntimeAppDefinition> appDefinitions = runtimeAppDefinitionService.getDefinitionsForUser(currentUser);
-      if (CollectionUtils.isNotEmpty(appDefinitions)) {
-        Set<String> deploymentIds = new HashSet<String>();
-        for (RuntimeAppDefinition runtimeAppDefinition : appDefinitions) {
-          deploymentIds.add(runtimeAppDefinition.getDeploymentId());
-        }
-        // TODO: UI6 REFACTOR
-        // definitionQuery.deploymentIds(deploymentIds);
-      } else {
-        // When the user doesn't have any apps, don't execute the query and simply return an empty list
-        return new ResultListDataRepresentation(new ArrayList<ProcessDefinitionRepresentation>());
-      }
 
       if (latest != null && latest) {
         definitionQuery.latestVersion();

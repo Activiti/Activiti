@@ -298,15 +298,17 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
     var modelMetaData = $scope.editor.getModelMetaData();
 
     var description = '';
-    if (modelMetaData.description)
-    {
+    if (modelMetaData.description) {
     	description = modelMetaData.description;
     }
     
-    var saveDialog = { 'name' : modelMetaData.name,
-            'description' : description,
-            'newVersion' : false,
-            'comment' : ''};
+    var saveDialog = { 
+    	'name' : modelMetaData.name,
+    	'key' : modelMetaData.key,
+        'description' : description,
+        'newVersion' : false,
+        'comment' : ''
+    };
     
     $scope.saveDialog = saveDialog;
     
@@ -334,7 +336,9 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
     };
     $scope.save = function (successCallback) {
 
-        if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0) {
+        if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0 ||
+        	!$scope.saveDialog.key || $scope.saveDialog.key.length == 0) {
+        	
             return;
         }
 
@@ -344,6 +348,7 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
         };
         
         modelMetaData.name = $scope.saveDialog.name;
+        modelMetaData.key = $scope.saveDialog.key;
         modelMetaData.description = $scope.saveDialog.description;
 
         var json = $scope.editor.getJSON();
@@ -353,6 +358,7 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
             modeltype: modelMetaData.model.modelType,
             json_xml: json,
             name: $scope.saveDialog.name,
+            key: $scope.saveDialog.key,
             description: $scope.saveDialog.description,
             newversion: $scope.saveDialog.newVersion,
             comment: $scope.saveDialog.comment,
@@ -386,6 +392,7 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
                     type: ORYX.CONFIG.EVENT_SAVED
                 });
                 $scope.modelData.name = $scope.saveDialog.name;
+                $scope.modelData.key = $scope.saveDialog.key;
                 $scope.modelData.lastUpdated = data.lastUpdated;
                 
                 $scope.status.loading = false;

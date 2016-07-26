@@ -33,6 +33,7 @@ public class FormRepresentation extends AbstractRepresentation {
   public FormRepresentation(AbstractModel model) {
     this.id = model.getId();
     this.name = model.getName();
+    this.key = model.getKey();
     this.description = model.getDescription();
     this.version = model.getVersion();
     this.lastUpdated = model.getLastUpdated();

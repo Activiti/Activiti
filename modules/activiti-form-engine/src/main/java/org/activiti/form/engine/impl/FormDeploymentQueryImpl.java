@@ -16,11 +16,11 @@ package org.activiti.form.engine.impl;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.form.api.FormDeployment;
+import org.activiti.form.api.FormDeploymentQuery;
 import org.activiti.form.engine.ActivitiFormIllegalArgumentException;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.interceptor.CommandExecutor;
-import org.activiti.form.engine.repository.FormDeployment;
-import org.activiti.form.engine.repository.FormDeploymentQuery;
 
 /**
  * @author Tijs Rademakers

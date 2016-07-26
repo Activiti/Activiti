@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.form.api.NativeQuery;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.impl.context.Context;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.interceptor.CommandExecutor;
-import org.activiti.form.engine.query.NativeQuery;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 

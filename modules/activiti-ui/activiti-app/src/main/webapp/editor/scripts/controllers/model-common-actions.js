@@ -32,19 +32,23 @@ angular.module('activitiModeler')
     	$scope.popup = {
     		loading: false,
     		popupType: popupType,
-        modelName: model.name,
-        modelDescription: model.description,
+        	modelName: model.name,
+        	modelKey: model.key,
+        	modelDescription: model.description,
     		id: model.id
     	};
 
     	$scope.ok = function () {
 
-    		if (!$scope.popup.modelName || $scope.popup.modelName.length == 0) {
+    		if (!$scope.popup.modelName || $scope.popup.modelName.length == 0 ||
+    			!$scope.popup.modelKey || $scope.popup.modelKey.length == 0) {
+    			
     			return;
     		}
 
-        $scope.model.name = $scope.popup.modelName;
-        $scope.model.description = $scope.popup.modelDescription;
+        	$scope.model.name = $scope.popup.modelName;
+        	$scope.model.key = $scope.popup.modelKey;
+        	$scope.model.description = $scope.popup.modelDescription;
 
     		$scope.popup.loading = true;
     		var updateData = {name: $scope.model.name, description: $scope.model.description};

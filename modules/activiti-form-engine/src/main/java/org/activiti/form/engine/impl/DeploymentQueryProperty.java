@@ -29,8 +29,8 @@ package org.activiti.form.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.form.engine.query.QueryProperty;
-import org.activiti.form.engine.repository.FormDeploymentQuery;
+import org.activiti.form.api.FormDeploymentQuery;
+import org.activiti.form.api.QueryProperty;
 
 /**
  * Contains the possible properties that can be used in a {@link FormDeploymentQuery}.

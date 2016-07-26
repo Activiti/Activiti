@@ -14,8 +14,15 @@
                        id="nameField"
                        class="form-control"
                        ng-model="saveDialog.name"
-                       ui-keypress="{13:'save()'}"
                        auto-focus />
+        	</div>
+        	<div class="form-group">
+           		<label for="keyField">{{'MODEL.KEY' | translate}}</label>
+        		<input type="text"
+                       ng-disabled="status.loading || (error && error.conflictResolveAction == 'saveAs')"
+                       id="keyField"
+                       class="form-control"
+                       ng-model="saveDialog.key" />
         	</div>
         	<div class="form-group">
            		<label for="docTextArea">{{'MODEL.DESCRIPTION' | translate}}</label>

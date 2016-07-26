@@ -46,6 +46,11 @@ public class Activiti5DeploymentWrapper implements Deployment {
   public String getCategory() {
     return activiti5Deployment.getCategory();
   }
+  
+  @Override
+  public String getKey() {
+    return null;
+  }
 
   @Override
   public String getTenantId() {

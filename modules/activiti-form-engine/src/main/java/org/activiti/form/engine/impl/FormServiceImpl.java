@@ -14,13 +14,13 @@ package org.activiti.form.engine.impl;
 
 import java.util.Map;
 
-import org.activiti.form.engine.FormService;
+import org.activiti.form.api.FormService;
+import org.activiti.form.api.SubmittedForm;
+import org.activiti.form.api.SubmittedFormQuery;
 import org.activiti.form.engine.impl.cmd.GetCompletedFormDefinitionCmd;
 import org.activiti.form.engine.impl.cmd.GetRuntimeFormDefinitionCmd;
 import org.activiti.form.engine.impl.cmd.GetVariablesFromFormSubmissionCmd;
 import org.activiti.form.engine.impl.cmd.StoreSubmittedFormCmd;
-import org.activiti.form.engine.repository.SubmittedForm;
-import org.activiti.form.engine.repository.SubmittedFormQuery;
 import org.activiti.form.model.CompletedFormDefinition;
 import org.activiti.form.model.FormDefinition;
 

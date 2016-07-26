@@ -240,6 +240,7 @@
 
     "PROCESS": {
       "NAME": "Model name",
+      "KEY": "Model key",
       "DESCRIPTION": "Description",
       "VERSION-COMMENT": "Version comment",
       "EDITOR-TYPE": "Editor type",

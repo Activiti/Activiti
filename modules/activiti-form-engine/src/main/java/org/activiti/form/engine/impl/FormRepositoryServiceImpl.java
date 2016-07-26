@@ -15,7 +15,14 @@ package org.activiti.form.engine.impl;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.form.engine.FormRepositoryService;
+import org.activiti.form.api.Form;
+import org.activiti.form.api.FormDeployment;
+import org.activiti.form.api.FormDeploymentBuilder;
+import org.activiti.form.api.FormDeploymentQuery;
+import org.activiti.form.api.FormQuery;
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.api.NativeFormDeploymentQuery;
+import org.activiti.form.api.NativeFormQuery;
 import org.activiti.form.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.form.engine.impl.cmd.DeployCmd;
 import org.activiti.form.engine.impl.cmd.GetDeploymentFormCmd;
@@ -29,13 +36,6 @@ import org.activiti.form.engine.impl.cmd.SetFormCategoryCmd;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.repository.FormDeploymentBuilderImpl;
-import org.activiti.form.engine.repository.Form;
-import org.activiti.form.engine.repository.FormDeployment;
-import org.activiti.form.engine.repository.FormDeploymentBuilder;
-import org.activiti.form.engine.repository.FormDeploymentQuery;
-import org.activiti.form.engine.repository.FormQuery;
-import org.activiti.form.engine.repository.NativeFormDeploymentQuery;
-import org.activiti.form.engine.repository.NativeFormQuery;
 import org.activiti.form.model.FormDefinition;
 
 /**

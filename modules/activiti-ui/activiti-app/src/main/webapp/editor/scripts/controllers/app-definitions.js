@@ -145,6 +145,7 @@ angular.module('activitiModeler')
             loading: false,
             app: {
                 name: '',
+                key: '',
                 description: '',
                 modelType: 3
             }
@@ -152,7 +153,9 @@ angular.module('activitiModeler')
 
         $scope.ok = function () {
 
-            if (!$scope.model.app.name || $scope.model.app.name.length == 0) {
+            if (!$scope.model.app.name || $scope.model.app.name.length == 0 ||
+            	!$scope.model.app.key || $scope.model.app.key.length == 0) {
+            	
                 return;
             }
 
@@ -192,6 +195,7 @@ angular.module('activitiModeler')
             app: {
                 id: '',
                 name: '',
+                key: '',
                 description: '',
                 modelType: 3
             }
@@ -200,6 +204,7 @@ angular.module('activitiModeler')
         if ($scope.originalModel) {
             //clone the model
             $scope.model.app.name = $scope.originalModel.app.name;
+            $scope.model.app.key = $scope.originalModel.app.key;
             $scope.model.app.description = $scope.originalModel.app.description;
             $scope.model.app.modelType = $scope.originalModel.app.modelType;
             $scope.model.app.id = $scope.originalModel.app.id;

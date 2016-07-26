@@ -65,6 +65,7 @@ public class AppDefinitionResource extends AbstractAppDefinitionResource {
     Model model = getModel(modelId, true, true);
 
     model.setName(updatedModel.getAppDefinition().getName());
+    model.setKey(updatedModel.getAppDefinition().getKey());
     model.setDescription(updatedModel.getAppDefinition().getDescription());
     String editorJson = null;
     try {

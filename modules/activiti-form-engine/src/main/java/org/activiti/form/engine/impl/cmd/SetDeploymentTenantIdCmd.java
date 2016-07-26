@@ -15,13 +15,13 @@ package org.activiti.form.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.form.api.Form;
 import org.activiti.form.engine.ActivitiFormIllegalArgumentException;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
 import org.activiti.form.engine.impl.FormQueryImpl;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntity;
-import org.activiti.form.engine.repository.Form;
 
 /**
  * @author Joram Barrez

@@ -18,11 +18,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.form.api.SubmittedForm;
+import org.activiti.form.api.SubmittedFormQuery;
 import org.activiti.form.engine.ActivitiFormIllegalArgumentException;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.interceptor.CommandExecutor;
-import org.activiti.form.engine.repository.SubmittedForm;
-import org.activiti.form.engine.repository.SubmittedFormQuery;
 
 /**
  * @author Tijs Rademakers

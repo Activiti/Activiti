@@ -28,6 +28,7 @@ public class ModelRepresentation extends AbstractRepresentation {
 
   protected Long id;
   protected String name;
+  protected String key;
   protected String description;
   protected String createdBy;
   protected String lastUpdatedBy;
@@ -49,6 +50,7 @@ public class ModelRepresentation extends AbstractRepresentation {
   public void initialize(AbstractModel model) {
     this.id = model.getId();
     this.name = model.getName();
+    this.key = model.getKey();
     this.description = model.getDescription();
     this.createdBy = model.getCreatedBy();
     this.lastUpdated = model.getLastUpdated();
@@ -80,6 +82,14 @@ public class ModelRepresentation extends AbstractRepresentation {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public String getDescription() {

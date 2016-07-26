@@ -31,6 +31,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.form.api.FormRepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,8 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected FormService formService;
   protected ManagementService managementService;
   protected DynamicBpmnService dynamicBpmnService;
+  protected FormRepositoryService formEngineRepositoryService;
+  protected org.activiti.form.api.FormService formEngineFormService;
   protected AsyncExecutor asyncExecutor;
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
@@ -71,6 +74,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
+    this.formEngineRepositoryService = processEngineConfiguration.getFormEngineRepositoryService();
+    this.formEngineFormService = processEngineConfiguration.getFormEngineFormService();
 
     if (processEngineConfiguration.isUsingRelationalDatabase() && processEngineConfiguration.getDatabaseSchemaUpdate() != null) {
       commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
@@ -151,5 +156,13 @@ public class ProcessEngineImpl implements ProcessEngine {
 
   public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return processEngineConfiguration;
+  }
+  
+  public FormRepositoryService getFormEngineRepositoryService() {
+    return formEngineRepositoryService;
+  }
+  
+  public org.activiti.form.api.FormService getFormEngineFormService() {
+    return formEngineFormService;
   }
 }

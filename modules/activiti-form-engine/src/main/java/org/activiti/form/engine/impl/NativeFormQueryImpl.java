@@ -15,10 +15,10 @@ package org.activiti.form.engine.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.form.api.Form;
+import org.activiti.form.api.NativeFormQuery;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.interceptor.CommandExecutor;
-import org.activiti.form.engine.repository.Form;
-import org.activiti.form.engine.repository.NativeFormQuery;
 
 public class NativeFormQueryImpl extends AbstractNativeQuery<NativeFormQuery, Form> implements NativeFormQuery {
 

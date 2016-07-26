@@ -12,6 +12,15 @@
  */
 package org.activiti.engine.impl.repository;
 
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
@@ -25,15 +34,6 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * @author Tom Baeyens
@@ -133,6 +133,11 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   public DeploymentBuilder category(String category) {
     deployment.setCategory(category);
+    return this;
+  }
+  
+  public DeploymentBuilder key(String key) {
+    deployment.setKey(key);
     return this;
   }
 

@@ -12,108 +12,95 @@
  */
 package com.activiti.model.runtime;
 
-import com.activiti.domain.runtime.RuntimeAppDefinition;
 import com.activiti.model.common.AbstractRepresentation;
 
 public class AppDefinitionRepresentation extends AbstractRepresentation {
 
-    private Long id;
-    private String defaultAppId; // Set for default apps (kickstart, tasks, idm, analytics,...)
-    private String name;
-    private String description;
-    private Long modelId;
-    private String theme;
-    private String icon;
-    private String deploymentId;
-    private Long tenantId;
-    
-    public AppDefinitionRepresentation() {
-    }
+  private String defaultAppId; // Set for default apps (kickstart, tasks, idm, analytics,...)
+  private String name;
+  private String description;
+  private Long modelId;
+  private String theme;
+  private String icon;
+  private String deploymentId;
+  private String deploymentKey;
+  private Long tenantId;
 
-    public AppDefinitionRepresentation(RuntimeAppDefinition appDefinition) {
-        this.id = appDefinition.getId();
-        this.name = appDefinition.getName();
-        this.description = appDefinition.getDescription();
-        this.modelId = appDefinition.getModelId();
-        this.deploymentId = appDefinition.getDeploymentId();
-        this.tenantId = appDefinition.getTenantId();
-    }
-    
-    public static AppDefinitionRepresentation createDefaultAppDefinitionRepresentation(String id) {
-    	AppDefinitionRepresentation appDefinitionRepresentation = new AppDefinitionRepresentation();
-    	appDefinitionRepresentation.setDefaultAppId(id);
-    	return appDefinitionRepresentation;
-    }
+  public static AppDefinitionRepresentation createDefaultAppDefinitionRepresentation(String id) {
+    AppDefinitionRepresentation appDefinitionRepresentation = new AppDefinitionRepresentation();
+    appDefinitionRepresentation.setDefaultAppId(id);
+    return appDefinitionRepresentation;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public String getDefaultAppId() {
+    return defaultAppId;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-	public String getDefaultAppId() {
-		return defaultAppId;
-	}
+  public void setDefaultAppId(String defaultAppId) {
+    this.defaultAppId = defaultAppId;
+  }
 
-	public void setDefaultAppId(String defaultAppId) {
-		this.defaultAppId = defaultAppId;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getName() {
-        return name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public Long getModelId() {
+    return modelId;
+  }
 
-    public Long getModelId() {
-        return modelId;
-    }
+  public void setModelId(Long modelId) {
+    this.modelId = modelId;
+  }
 
-    public void setModelId(Long modelId) {
-        this.modelId = modelId;
-    }
+  public String getTheme() {
+    return theme;
+  }
 
-    public String getTheme() {
-        return theme;
-    }
+  public void setTheme(String theme) {
+    this.theme = theme;
+  }
 
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
+  public String getIcon() {
+    return icon;
+  }
 
-    public String getIcon() {
-        return icon;
-    }
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-    
-    public String getDeploymentId() {
-        return deploymentId;
-    }
+  public String getDeploymentId() {
+    return deploymentId;
+  }
 
-    public void setDeploymentId(String deploymentId) {
-        this.deploymentId = deploymentId;
-    }
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
+  
+  public String getDeploymentKey() {
+    return deploymentKey;
+  }
 
-    public Long getTenantId() {
-        return tenantId;
-    }
+  public void setDeploymentKey(String deploymentKey) {
+    this.deploymentKey = deploymentKey;
+  }
 
-    public void setTenantId(Long tenantId) {
-        this.tenantId = tenantId;
-    }
+  public Long getTenantId() {
+    return tenantId;
+  }
+
+  public void setTenantId(Long tenantId) {
+    this.tenantId = tenantId;
+  }
 }

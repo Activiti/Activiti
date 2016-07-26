@@ -15,12 +15,12 @@ package org.activiti.form.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntity;
 import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityManager;
-import org.activiti.form.engine.repository.SubmittedForm;
 import org.activiti.form.model.FormDefinition;
 import org.activiti.form.model.FormField;
 import org.activiti.form.model.FormFieldTypes;

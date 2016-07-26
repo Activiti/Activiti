@@ -53,7 +53,11 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
     // Saving the selected value
     $scope.save = function() {
    	 	if ($scope.selectedForm) {
-   	 		$scope.property.value = {'id' : $scope.selectedForm.id, 'name' : $scope.selectedForm.name};
+   	 		$scope.property.value = {
+   	 			'id' : $scope.selectedForm.id, 
+   	 			'name' : $scope.selectedForm.name
+   	 		};
+   	 		
    	 	} else {
    	 		$scope.property.value = null; 
    	 	}
@@ -64,7 +68,11 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
     // Open the selected value
     $scope.open = function() {
         if ($scope.selectedForm) {
-            $scope.property.value = {'id' : $scope.selectedForm.id, 'name' : $scope.selectedForm.name};
+            $scope.property.value = {
+            	'id' : $scope.selectedForm.id, 
+            	'name' : $scope.selectedForm.name
+            };
+            
             $scope.updatePropertyInModel($scope.property);
             
             var modelMetaData = $scope.editor.getModelMetaData();
@@ -75,6 +83,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
                 modeltype: modelMetaData.model.modelType,
                 json_xml: json,
                 name: modelMetaData.name,
+                key: modelMetaData.key,
                 description: modelMetaData.description,
                 newversion: false,
                 lastUpdated: modelMetaData.lastUpdated
@@ -105,6 +114,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
                     $rootScope.editorHistory.push({
                         id: modelMetaData.modelId, 
                         name: modelMetaData.name,
+                        key: modelMetaData.key,
                         stepId: $scope.selectedShape.resourceId,
                         allSteps: allSteps,
                         type: 'bpmnmodel'
@@ -129,6 +139,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
             loading: false,
             form: {
                  name: '',
+                 key: '',
                  description: '',
                  modelType: 2,
                  referenceId:  modelMetaData.modelId    
@@ -138,7 +149,9 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
     
     $scope.createForm = function() {
         
-        if (!$scope.model.form.name || $scope.model.form.name.length == 0) {
+        if (!$scope.model.form.name || $scope.model.form.name.length == 0 ||
+        	!$scope.model.form.key || $scope.model.form.key.length == 0) {
+        	
             return;
         }
 
@@ -148,7 +161,10 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
             success(function(data, status, headers, config) {
                 
                 var newFormId = data.id;
-                $scope.property.value = {'id' : newFormId, 'name' : data.name};
+                $scope.property.value = {
+                	'id' : newFormId, 
+                	'name' : data.name
+               	};
                 $scope.updatePropertyInModel($scope.property);
                 
                 var modelMetaData = $scope.editor.getModelMetaData();
@@ -159,6 +175,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
                     modeltype: modelMetaData.model.modelType,
                     json_xml: json,
                     name: modelMetaData.name,
+                    key: modelMetaData.key,
                     description: modelMetaData.description,
                     newversion: false,
                     lastUpdated: modelMetaData.lastUpdated
@@ -192,6 +209,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
                         $rootScope.editorHistory.push({
                             id: modelMetaData.modelId, 
                             name: modelMetaData.name, 
+                            key: modelMetaData.key, 
                             type: 'bpmnmodel',
                             stepId: $scope.selectedShape.resourceId,
                             allSteps: allSteps,

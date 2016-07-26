@@ -14,6 +14,11 @@
                            custom-keys enter-pressed="ok()" auto-focus>
 				</div>
 				<div class="form-group">
+				    <label for="newAppKey">{{'APP.KEY' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control"
+			               id="newAppKey" ng-model="model.app.key">
+				</div>
+				<div class="form-group">
 				    <label for="newAppDescription">{{'APP.DESCRIPTION' | translate}}</label>
 					<textarea ng-disabled="model.loading" class="form-control" id="newAppDescription" rows="5" ng-model="model.app.description"></textarea>
 				</div>
@@ -24,7 +29,7 @@
 					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading">
 						{{'GENERAL.ACTION.CANCEL' | translate}}
 					</button>
-					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.app.name">
+					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.app.name || !model.app.key">
 						{{originalModel?'APP.ACTION.DUPLICATE-CONFIRM':'APP.ACTION.CREATE-CONFIRM' | translate}}
 					</button>
 				</div>

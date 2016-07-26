@@ -86,7 +86,8 @@ public class AbstractModelResource extends BaseModelResource {
 
         ObjectNode modelNode = bpmnJsonConverter.convertToJson(bpmnModel);
 
-        AbstractModel savedModel = modelService.saveModel(modelId, processModel.getName(), processModel.getDescription(), modelNode.toString(), true, "Version import via REST service", currentUser);
+        AbstractModel savedModel = modelService.saveModel(modelId, processModel.getName(), processModel.getKey(),
+            processModel.getDescription(), modelNode.toString(), true, "Version import via REST service", currentUser);
         return new ModelRepresentation(savedModel);
 
       } catch (BadRequestException e) {

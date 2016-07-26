@@ -69,6 +69,14 @@ public interface RepositoryService {
    *           if no deployment with the provided id can be found.
    */
   void setDeploymentCategory(String deploymentId, String category);
+  
+  /**
+   * Sets the key of the deployment. Deployments can be queried by key: see {@link DeploymentQuery#deploymentKey(String)}.
+   * 
+   * @throws ActivitiObjectNotFoundException
+   *           if no deployment with the provided id can be found.
+   */
+  void setDeploymentKey(String deploymentId, String key);
 
   /**
    * Retrieves a list of deployment resources for the given deployment, ordered alphabetically.

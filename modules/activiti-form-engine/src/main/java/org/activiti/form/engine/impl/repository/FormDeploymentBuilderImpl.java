@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
 import org.activiti.editor.form.converter.FormJsonConverter;
+import org.activiti.form.api.FormDeployment;
+import org.activiti.form.api.FormDeploymentBuilder;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.impl.FormRepositoryServiceImpl;
@@ -24,8 +26,6 @@ import org.activiti.form.engine.impl.context.Context;
 import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntity;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntityManager;
-import org.activiti.form.engine.repository.FormDeployment;
-import org.activiti.form.engine.repository.FormDeploymentBuilder;
 import org.activiti.form.model.FormDefinition;
 import org.apache.commons.io.IOUtils;
 
@@ -96,11 +96,23 @@ public class FormDeploymentBuilderImpl implements FormDeploymentBuilder, Seriali
     deployment.addResource(resource);
     return this;
   }
+  
+  public FormDeploymentBuilder addFormBytes(String resourceName, byte[] formBytes) {
+    if (formBytes == null) {
+      throw new ActivitiFormException("form bytes is null");
+    }
 
-  public FormDeploymentBuilder addFormModel(String resourceName, FormDefinition formDefinition) {
-    FormJsonConverter formLConverter = new FormJsonConverter();
-    String dmn20Xml = formLConverter.convertToJson(formDefinition);
-    addString(resourceName, dmn20Xml);
+    ResourceEntity resource = resourceEntityManager.create();
+    resource.setName(resourceName);
+    resource.setBytes(formBytes);
+    deployment.addResource(resource);
+    return this;
+  }
+
+  public FormDeploymentBuilder addFormDefinition(String resourceName, FormDefinition formDefinition) {
+    FormJsonConverter formConverter = new FormJsonConverter();
+    String formJson = formConverter.convertToJson(formDefinition);
+    addString(resourceName, formJson);
     
     return this;
   }

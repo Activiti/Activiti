@@ -11,6 +11,11 @@
 			               id="appName" ng-model="saveDialog.name" ui-keypress="{13:'ok()'}" auto-focus>
 				</div>
 				<div class="form-group">
+				    <label for="appKey">{{'APP.KEY' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control"
+			               id="appKey" ng-model="saveDialog.key">
+				</div>
+				<div class="form-group">
 				    <label for="appDescription">{{'APP.DESCRIPTION' | translate}}</label>
 					<textarea ng-disabled="model.loading" class="form-control" id="appDescription" rows="5" ng-model="saveDialog.description"></textarea>
 				</div>

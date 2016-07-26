@@ -12,19 +12,16 @@
  */
 package com.activiti.service.api;
 
-import java.util.List;
-
 import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.Deployment;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.activiti.domain.editor.Model;
 
 public interface DeploymentService {
 
     @Transactional
-    void deployAppDefinitions(List<Long> appDefinitions, User user);
-    
-    @Transactional
-    DeploymentResult updateAppDefinition(Long appDefinitionId, String appDefinitionName, 
-            String appDefinitionDescription, String appDefinitionJson, User user);
+    Deployment updateAppDefinition(Model appDefinition, User user);
 
     @Transactional
     void deleteAppDefinition(Long appDefinitionId);

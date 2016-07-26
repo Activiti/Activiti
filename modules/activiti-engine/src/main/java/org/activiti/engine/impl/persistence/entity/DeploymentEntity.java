@@ -37,6 +37,8 @@ public interface DeploymentEntity extends Deployment, Entity {
   void setName(String name);
 
   void setCategory(String category);
+  
+  void setKey(String key);
 
   void setTenantId(String tenantId);
 

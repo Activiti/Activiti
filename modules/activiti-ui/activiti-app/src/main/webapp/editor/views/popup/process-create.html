@@ -8,7 +8,12 @@
 				<div class="form-group">
 				    <label for="newProcessName">{{'PROCESS.NAME' | translate}}</label>
 				    <input ng-disabled="model.loading" type="text" class="form-control"
-			               id="newProcessName" ng-model="model.process.name" ui-keypress="{13:'ok()'}" auto-focus editor-input-check>
+			               id="newProcessName" ng-model="model.process.name" auto-focus editor-input-check>
+				</div>
+				<div class="form-group">
+				    <label for="newProcessKey">{{'PROCESS.KEY' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control"
+			               id="newProcessKey" ng-model="model.process.key" editor-input-check>
 				</div>
 				<div class="form-group">
 				    <label for="newProcessDescription">{{'PROCESS.DESCRIPTION' | translate}}</label>
@@ -21,7 +26,7 @@
 					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading">
 						{{'GENERAL.ACTION.CANCEL' | translate}}
 					</button>
-					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.process.name">
+					<button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="model.loading || !model.process.name || !model.process.key">
 						{{'PROCESS.ACTION.CREATE-CONFIRM' | translate}}
 					</button>
 				</div>
