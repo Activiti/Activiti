@@ -19,9 +19,8 @@ import java.util.Date;
  * 
  * @author Joram Barrez
  */
-public class EventLogEntryEntityImpl implements EventLogEntryEntity {
+public class EventLogEntryEntityImpl extends AbstractEntityNoRevision implements EventLogEntryEntity {
 
-  protected String id; // not the real id, but it needs to be here as the internal DbSqlSession give it and id 
   protected long logNumber; // cant use id here, it would clash with entity
   protected String type;
   protected String processDefinitionId;
@@ -36,16 +35,6 @@ public class EventLogEntryEntityImpl implements EventLogEntryEntity {
   protected int isProcessed;
 
   public EventLogEntryEntityImpl() {
-  }
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  @Override
-  public void setId(String id) {
-    this.id = id;
   }
 
   @Override

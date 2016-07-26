@@ -16,7 +16,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens

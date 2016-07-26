@@ -23,28 +23,18 @@ import org.activiti.engine.impl.db.BulkDeleteable;
 /**
  * @author Joram Barrez
  */
-public class IdentityLinkEntityImpl implements IdentityLinkEntity, Serializable, BulkDeleteable {
+public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements IdentityLinkEntity, Serializable, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-
   protected String type;
-
   protected String userId;
-
   protected String groupId;
-
   protected String taskId;
-
   protected String processInstanceId;
-
   protected String processDefId;
-
   protected TaskEntity task;
-
   protected ExecutionEntity processInstance;
-
   protected ProcessDefinitionEntity processDef;
   
   public IdentityLinkEntityImpl() {
@@ -85,14 +75,6 @@ public class IdentityLinkEntityImpl implements IdentityLinkEntity, Serializable,
 
   public boolean isGroup() {
     return groupId != null;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public String getType() {

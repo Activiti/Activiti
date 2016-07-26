@@ -2,8 +2,8 @@ package org.activiti.engine.impl.persistence;
 
 import java.util.Collection;
 
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
+import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
  * @author Joram Barrez

@@ -23,13 +23,11 @@ import org.activiti.engine.impl.context.Context;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public abstract class EventSubscriptionEntityImpl implements EventSubscriptionEntity, Serializable {
+public abstract class EventSubscriptionEntityImpl extends AbstractEntity implements EventSubscriptionEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // persistent state ///////////////////////////
-  protected String id;
-  protected int revision = 1;
   protected String eventType;
   protected String eventName;
   protected String executionId;
@@ -55,26 +53,6 @@ public abstract class EventSubscriptionEntityImpl implements EventSubscriptionEn
   }
 
   // getters & setters ////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
 
   public String getEventType() {
     return eventType;

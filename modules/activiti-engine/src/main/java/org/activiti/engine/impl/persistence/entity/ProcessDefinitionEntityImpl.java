@@ -26,15 +26,13 @@ import org.activiti.engine.impl.context.Context;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Serializable {
+public class ProcessDefinitionEntityImpl extends AbstractEntity implements ProcessDefinitionEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
   protected String name;
   protected String description;
   protected String key;
-  protected int revision = 1;
   protected int version;
   protected String category;
   protected String deploymentId;
@@ -112,14 +110,6 @@ public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Ser
     this.version = version;
   }
 
-  public String getId() {
-    return id;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public String getResourceName() {
     return resourceName;
   }
@@ -194,18 +184,6 @@ public class ProcessDefinitionEntityImpl implements ProcessDefinitionEntity, Ser
 
   public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
     this.isGraphicalNotationDefined = isGraphicalNotationDefined;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
   }
 
   public int getSuspensionState() {

@@ -22,11 +22,9 @@ import java.util.regex.Pattern;
 /**
  * @author Tom Baeyens
  */
-public class CommentEntityImpl implements CommentEntity, Serializable {
+public class CommentEntityImpl extends AbstractEntityNoRevision implements CommentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
-
-  protected String id;
 
   // If comments would be removable, revision needs to be added!
 
@@ -94,14 +92,6 @@ public class CommentEntityImpl implements CommentEntity, Serializable {
 
   // getters and setters
   // //////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getUserId() {
     return userId;

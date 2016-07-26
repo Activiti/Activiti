@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;

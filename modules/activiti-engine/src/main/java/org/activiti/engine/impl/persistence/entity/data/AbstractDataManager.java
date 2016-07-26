@@ -20,12 +20,12 @@ import java.util.List;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.SingleCachedEntityMatcher;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
+import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
  * @author Joram Barrez

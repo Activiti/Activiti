@@ -2,8 +2,8 @@ package org.activiti.engine.impl.persistence;
 
 import java.util.Collection;
 
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
+import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
  * Interface to express a condition whether or not a cached entity should be used in the return result of a query.

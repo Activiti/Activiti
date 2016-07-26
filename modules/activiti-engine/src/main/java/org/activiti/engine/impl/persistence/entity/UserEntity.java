@@ -14,7 +14,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**

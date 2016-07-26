@@ -21,13 +21,11 @@ import java.util.Map;
 /**
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionInfoEntityImpl implements ProcessDefinitionInfoEntity, Serializable {
+public class ProcessDefinitionInfoEntityImpl extends AbstractEntity implements ProcessDefinitionInfoEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
   
-  protected String id;
   protected String processDefinitionId;
-  protected int revision = 1;
   protected String infoJsonId;
   
   public ProcessDefinitionInfoEntityImpl() {
@@ -43,32 +41,12 @@ public class ProcessDefinitionInfoEntityImpl implements ProcessDefinitionInfoEnt
 
   // getters and setters //////////////////////////////////////////////////////
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-  
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
 
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-  
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-  
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public String getInfoJsonId() {

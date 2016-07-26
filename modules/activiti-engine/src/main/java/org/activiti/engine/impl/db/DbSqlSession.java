@@ -61,6 +61,7 @@ import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
+import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.util.IoUtil;
@@ -185,6 +186,7 @@ public class DbSqlSession implements Session {
     
     insertedObjects.get(clazz).put(entity.getId(), entity);
     entityCache.put(entity, false); // False -> entity is inserted, so always changed
+    entity.setInserted(true);
   }
 
   // update
@@ -192,6 +194,7 @@ public class DbSqlSession implements Session {
 
   public void update(Entity entity) {
     entityCache.put(entity, false); // false -> we don't store state, meaning it will always be seen as changed 
+    entity.setUpdated(true);
   }
 
   public int update(String statement, Object parameters) {
@@ -214,12 +217,13 @@ public class DbSqlSession implements Session {
     bulkDeleteOperations.get(entityClass).add(new BulkDeleteOperation(dbSqlSessionFactory.mapStatement(statement), parameter));
   }
 
-  public void delete(Entity entityToDelete) {
-    Class<? extends Entity> clazz = entityToDelete.getClass();
+  public void delete(Entity entity) {
+    Class<? extends Entity> clazz = entity.getClass();
     if (!deletedObjects.containsKey(clazz)) {
       deletedObjects.put(clazz, new LinkedHashMap<String, Entity>()); // order of insert is important, hence LinkedHashMap
     }
-    deletedObjects.get(clazz).put(entityToDelete.getId(), entityToDelete);
+    deletedObjects.get(clazz).put(entity.getId(), entity);
+    entity.setDeleted(true); 
   }
 
   // select
@@ -291,7 +295,7 @@ public class DbSqlSession implements Session {
     return selectListWithRawParameter(statement, parameter, parameter.getFirstResult(), parameter.getMaxResults(), useCache);
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @SuppressWarnings("rawtypes")
   public List selectListWithRawParameter(String statement, Object parameter, int firstResult, int maxResults) {
     return selectListWithRawParameter(statement, parameter, firstResult, maxResults, true);
   }

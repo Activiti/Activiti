@@ -21,12 +21,10 @@ import java.util.Map;
 /**
  * @author Tom Baeyens
  */
-public class AttachmentEntityImpl implements AttachmentEntity, Serializable {
+public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision;
   protected String name;
   protected String description;
   protected String type;
@@ -47,26 +45,6 @@ public class AttachmentEntityImpl implements AttachmentEntity, Serializable {
     persistentState.put("name", name);
     persistentState.put("description", description);
     return persistentState;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public String getName() {

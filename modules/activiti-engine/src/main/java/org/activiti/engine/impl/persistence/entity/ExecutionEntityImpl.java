@@ -103,7 +103,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected String deleteReason;
   
-  protected int revision = 1;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   
   protected String startUserId;
@@ -493,10 +492,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     this.isScope = isScope;
   }
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
   public void forceUpdate() {
     this.forcedUpdate = true;
   }
@@ -663,22 +658,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   public void setParentId(String parentId) {
     this.parentId = parentId;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public String getActivityId() {

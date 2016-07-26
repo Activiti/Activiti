@@ -48,6 +48,7 @@ public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> i
   public Group createNewGroup(String groupId) {
     GroupEntity groupEntity = groupDataManager.create();
     groupEntity.setId(groupId);
+    groupEntity.setRevision(0); // Needed as groups can be transient and not save when they are returned 
     return groupEntity;
   }
 

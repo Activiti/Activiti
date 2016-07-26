@@ -131,14 +131,14 @@
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
-      EVT_SUBSCR_COUNT = #{eventSubscriptionCount, jdbcType=INTEGER}, 
-      TASK_COUNT = #{taskCount, jdbcType=INTEGER}, 
-      JOB_COUNT = #{jobCount, jdbcType=INTEGER},
+      EVT_SUBSCR_COUNT_ = #{eventSubscriptionCount, jdbcType=INTEGER}, 
+      TASK_COUNT_ = #{taskCount, jdbcType=INTEGER}, 
+      JOB_COUNT_ = #{jobCount, jdbcType=INTEGER},
       TIMER_JOB_COUNT_ = #{timerJobCount, jdbcType=INTEGER},
       SUSP_JOB_COUNT_ = #{suspendedJobCount, jdbcType=INTEGER},
       DEADLETTER_JOB_COUNT_ = #{deadLetterJobCount, jdbcType=INTEGER},
-      VAR_COUNT = #{variableCount, jdbcType=INTEGER},
-      ID_LINK_COUNT = #{identityLinkCount, jdbcType=INTEGER}
+      VAR_COUNT_ = #{variableCount, jdbcType=INTEGER},
+      ID_LINK_COUNT_ = #{identityLinkCount, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>

@@ -44,7 +44,9 @@ public class MybatisVariableInstanceDataManager extends AbstractDataManager<Vari
   
   @Override
   public VariableInstanceEntity create() {
-    return new VariableInstanceEntityImpl();
+    VariableInstanceEntityImpl variableInstanceEntity = new VariableInstanceEntityImpl();
+    variableInstanceEntity.setRevision(0); // For backwards compatibility, variables / HistoricVariableUpdate assumes revision 0 for the first time
+    return variableInstanceEntity;
   }
   
   @Override

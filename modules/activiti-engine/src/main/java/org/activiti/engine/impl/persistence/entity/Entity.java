@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.db;
+package org.activiti.engine.impl.persistence.entity;
 
 /**
  * @author Tom Baeyens
@@ -21,7 +21,19 @@ public interface Entity {
   String getId();
 
   void setId(String id);
-
+  
+  boolean isInserted();
+  
+  void setInserted(boolean inserted);
+  
+  boolean isUpdated();
+  
+  void setUpdated(boolean updated);
+  
+  boolean isDeleted();
+  
+  void setDeleted(boolean deleted);
+  
   /**
    * Returns a representation of the object, as would be stored in the database. 
    * Used when deciding if updates have occurred to the object or not since it was last loaded.

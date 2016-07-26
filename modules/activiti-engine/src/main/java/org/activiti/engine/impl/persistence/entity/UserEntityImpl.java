@@ -22,13 +22,12 @@ import org.activiti.engine.impl.db.HasRevision;
 /**
  * @author Tom Baeyens
  * @author Arkadiy Gornovoy
+ * @author Joram Barrez
  */
-public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
+public class UserEntityImpl extends AbstractEntity implements UserEntity, Serializable, HasRevision {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision;
   protected String firstName;
   protected String lastName;
   protected String email;
@@ -85,14 +84,6 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
     }
   }
   
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public String getFirstName() {
     return firstName;
   }
@@ -123,14 +114,6 @@ public class UserEntityImpl implements UserEntity, Serializable, HasRevision {
 
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public boolean isPictureSet() {
