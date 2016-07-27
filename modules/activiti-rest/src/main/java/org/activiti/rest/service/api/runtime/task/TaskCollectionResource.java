@@ -83,6 +83,10 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setOwner(requestParams.get("owner"));
     }
     
+    if (requestParams.containsKey("ownerLike")) {
+      request.setOwnerLike(requestParams.get("ownerLike"));
+    }
+    
     if (requestParams.containsKey("unassigned")) {
       request.setUnassigned(Boolean.valueOf(requestParams.get("unassigned")));
     }
