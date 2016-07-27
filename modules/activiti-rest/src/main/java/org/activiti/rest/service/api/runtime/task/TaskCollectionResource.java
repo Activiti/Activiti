@@ -140,6 +140,10 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setProcessInstanceBusinessKey(requestParams.get("processInstanceBusinessKey"));
     }
     
+    if (requestParams.containsKey("processInstanceBusinessKeyLike")) {
+      request.setProcessInstanceBusinessKeyLike(requestParams.get("processInstanceBusinessKeyLike"));
+    }
+    
     if (requestParams.containsKey("executionId")) {
       request.setExecutionId(requestParams.get("executionId"));
     }
