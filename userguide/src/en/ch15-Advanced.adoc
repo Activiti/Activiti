@@ -68,7 +68,7 @@ Benchmarks have shown that using a message queue is superior, throughput-wise, v
 
 Currently, the only supported option out-of-the-box is JMS and Spring. The reason for doing Spring before anything else is because Spring has some very nice features that remove a lot of the pains when it comes to threading and dealing with multiple message consumers. However, the integration is so simple, it can easily be ported to any message queue implementations and/or protocols (Stomp, AMPQ, etc.). Feedback is appreciated for what should be the next implementation.
 
-Basically, when a new async job is created by the engine, a message is put on a message queue (in a transaction committed transaction listener, so we're sure the job entry is in the database) containing the job identifier. A message consumer then takes this job identifier to fetch the job, and execute the job. The async executor will not create a threadpool anymore. It will insert and query for timers with a separate thread. When a timer fires, it is moved to the async job table, which now means a message is sent to the message queue too. The 'reset expired' thread will also unlock jobs as usual, as message queues can fail to. Instead of 'unlocking' a job, a message will now be resent. The async executor will not poll for async jobs anymore.
+Basically, when a new async job is created by the engine, a message is put on a message queue (in a transaction committed transaction listener, so we're sure the job entry is in the database) containing the job identifier. A message consumer then takes this job identifier to fetch the job, and execute the job. The async executor will not create a threadpool anymore, nor will it poll for new async jobs. It will still insert and query for timers with a separate thread. When a timer fires, it is moved to the async job table, which now means a message is sent to the message queue too. The 'reset expired' thread will also unlock jobs as usual, as message queues can fail to. Instead of 'unlocking' a job, a message will now be resent.
 
 The implementation consists of two classes:
 
@@ -88,9 +88,9 @@ First of all, add the _activiti-jms-spring-executor_ dependency to your project:
 
 To enable the message queue based async executor, on the process engine configuration, the following needs to be done:
 
-* asyncExecutorActivate must be set to true, as usual
-* asyncExecutorMessageQueueMode needs to be set to true
-* The org.activiti.spring.executor.jms.MessageBasedJobManager must be injected as JobManager
+* asyncExecutorActivate must be set to _true_, as usual
+* asyncExecutorMessageQueueMode needs to be set to _true_
+* The _org.activiti.spring.executor.jms.MessageBasedJobManager_ must be injected as JobManager, and an instance of _org.springframework.jms.core.JMSTemplate_ must be set to this instance.
 
 Following is an example full java-config configuration, using _ActiveMQ_ as message queue broker.
 
