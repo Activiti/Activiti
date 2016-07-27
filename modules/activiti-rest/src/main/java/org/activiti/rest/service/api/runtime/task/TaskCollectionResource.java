@@ -83,6 +83,10 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setOwner(requestParams.get("owner"));
     }
     
+    if (requestParams.containsKey("ownerLike")) {
+      request.setOwnerLike(requestParams.get("ownerLike"));
+    }
+    
     if (requestParams.containsKey("unassigned")) {
       request.setUnassigned(Boolean.valueOf(requestParams.get("unassigned")));
     }
@@ -134,6 +138,10 @@ public class TaskCollectionResource extends TaskBaseResource {
     
     if (requestParams.containsKey("processInstanceBusinessKey")) {
       request.setProcessInstanceBusinessKey(requestParams.get("processInstanceBusinessKey"));
+    }
+    
+    if (requestParams.containsKey("processInstanceBusinessKeyLike")) {
+      request.setProcessInstanceBusinessKeyLike(requestParams.get("processInstanceBusinessKeyLike"));
     }
     
     if (requestParams.containsKey("executionId")) {
