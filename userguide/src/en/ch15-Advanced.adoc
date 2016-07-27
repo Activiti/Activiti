@@ -1,74 +1,74 @@
 
 == Advanced
 
-The following sections cover advanced use cases of using Activiti, that go beyond typical execution of BPMN 2.0 processes. As such, a certain proficiency and experience with Activiti is advisable to understand the material here.
+The following sections cover advanced use cases of Activiti, that go beyond typical execution of BPMN 2.0 processes. As such, a certain proficiency and experience with Activiti is advised to understand the topics described here.
 
 === Async Executor
 
-In Activiti version 5 (starting from version 5.17.0), the Async executor was added in addition to the existing job executor. The Async Executor has been proven to be more performant than the old job executor by many users of Activiti and our benchmarks.
+In Activiti version 5 (starting from version 5.17.0), the Async executor was added in addition to the existing job executor. The Async Executor has proved to be more performant than the old job executor by many users of Activiti and our benchmarks.
 
-In Activiti 6 (and later), the async executor is the only one available. For version 6, the async executor was completely refactored for optimal performance and pluggability  (while still being compatible with existing API's).
+In Activiti 6 (and later), the async executor is the only one available. For version 6, the async executor was completely refactored for optimal performance and pluggability (while still being compatible with existing API's).
 
 [[async_executor_design]]
 
 ==== Async Executor design
 
-There are two types of jobs possible: timers (like a boundary event on a user task) and async continuations (like a service task with the _activiti:async="true"_ attribute).
+Two types of jobs exist: timers (like those belonging to a boundary event on a user task) and async continuations (belonging to a service task with the _activiti:async="true"_ attribute).
 
-*Timers* are the easiest to explain: they are persisted in the ACT_RU_TIMER_JOB table with a certain due date. There is a thread in the async executor that periodically checks if there are new timers that fire (i.e. the due date is past the current time). When that happens, the timer is removed and an async job is created and inserted.
+*Timers* are the easiest to explain: they are persisted in the ACT_RU_TIMER_JOB table with a certain due date. There is a thread in the async executor that periodically checks if there are new timers that fire (i.e. the due date is 'before' the current time). When that happens, the timer is removed and an async job is created and inserted.
 
-An *async job* is inserted in the database during the execution of process instance steps (which means 'during some API call was made'). If the async executor is active for the current Activiti engine, the async job is actually already _locked_. This means that the job entry is inserted in the ACT_RU_JOB table and will have a _lock owner_ and a _lock expiration time_ set. A transaction listener that fires on a succesful commit of the API call triggers the async executor of the same engine to execute the job (so the data is for sure in the database). To do this, the async executor has a (configurable) thread pool from which a thread will execute the job and continue the process asynchronously. If the Activiti engine does not have the async executor enabled, the async job is inserted in the ACT_RU_JOB table without being locked.
+An *async job* is inserted in the database during the execution of process instance steps (which means 'during some API call that was made'). If the async executor is active for the current Activiti engine, the async job is actually already _locked_. This means that the job entry is inserted in the ACT_RU_JOB table and will have a _lock owner_ and a _lock expiration time_ set. A transaction listener that fires on a successful commit of the API call triggers the async executor of the same engine to execute the job (so the data is guaranteed to be in the database). To do this, the async executor has a (configurable) thread pool from which a thread will execute the job and continue the process asynchronously. If the Activiti engine does not have the async executor enabled, the async job is inserted in the ACT_RU_JOB table without being locked.
 
-Similar to the thread that checks for new timers, the async executor has a thread the 'acquires' new async jobs. These are jobs that are present in the table and are not locked. This thread will lock these jobs for the current Activiti engine and pass it to the async executor.
+Similar to the thread that checks for new timers, the async executor has a thread that 'acquires' new async jobs. These are jobs that are present in the table and are not locked. This thread will lock these jobs for the current Activiti engine and pass it to the async executor.
 
-The threadpool executing the jobs uses an in-memory queue to take jobs. When this queue is full (this is configurable), the job will be unlocked and re-inserted into its table. This way, other async executors can pick it up.
+The thread pool executing the jobs uses an in-memory queue to take jobs from. When this queue is full (this is configurable), the job will be unlocked and re-inserted into its table. This way, other async executors can pick it up instead.
 
-In case an exception happens during job execution, the async job will be transformed to a timer job with a due date. It will be picked up like a regular timer job and become an async job again soon to be retried. When jobs are retries for a few times (configurable amount) and keep failing, the job is assumed to be 'dead' and moved to the ACT_RU_DEADLETTER_JOB. The 'deadletter' concept is widely used in various other systems. An admin will now need to inspect the exception for the failed job and decided what the best course of action is.
+In case an exception happens during job execution, the async job will be transformed to a timer job with a due date. It will be picked up like a regular timer job and become an async job again, to be retried soon. When a job has been retried for a (configurable) number of times and continues to fail, the job is assumed to be 'dead' and moved to the ACT_RU_DEADLETTER_JOB. The 'deadletter' concept is widely used in various other systems. An admin will now need to inspect the exception for the failed job and decide what the best course of action is.
 
-Process definitions and process instances can be suspended. Suspended jobs related to these are put in the ACT_RU_SUSPENDED_JOB table, to make sure the query to acquire jobs has a little as possible conditions in its where clause.
+Process definitions and process instances can be suspended. Suspended jobs related to these definitions or instances are put in the ACT_RU_SUSPENDED_JOB table, to make sure the query to acquire jobs has a few as possible conditions in its where clause.
 
-One thing that is clear from the above, for people familiar with the old implementations of the job/async exeutor: the main goal is to have the 'acquire queries' as simple as possible. In the past (before version 6), one table was used for all job types/states, which made the where condition large as it catered for all the use cases. This problem is now solved and our benchmarks have proved that this new design is more performant and scalable.
+One thing that is clear from the above, for people familiar with the old implementations of the job/async executor: the main goal is to allow the 'acquire queries' to be as simple as possible. In the past (before version 6), one table was used for all job types/states, which made the 'where' condition large as it catered for all the use cases. This problem is now solved and our benchmarks have proved that this new design delivers better performance and is more scalable.
 
 
 ==== Async executor configuration
 
-The async executor is a highly configurable component. It's always advised to look into the default settings of the async executor and validate if they match the requirements of your processes.
+The async executor is a highly configurable component. It's always recommended to look into the default settings of the async executor and validate if they match the requirements of your processes.
 
 Alternatively, it's possible to extend the default implementation or implement the _org.activiti.engine.impl.asyncexecutor.AsyncExecutor_ interface with your own implementation.
 
-Following properties are available on the process engine configuration via setters:
+The following properties are available on the process engine configuration via setters:
 
 .Async executor configuration options
 [options="header"]
 |===============
 |Name|Default value|Description
 
-|asyncExecutorThreadPoolQueueSize|100|The size of the queue on which jobs to be executed are placed after being acquired, before they are actually executed by a thread from the threadpool
-|asyncExecutorCorePoolSize|2|The minimal number of threads that are kept alive in the threadpool for job execution.
-|asyncExecutorMaxPoolSize|10|The maximum number of threads that are created in the threadpool for job execution.
+|asyncExecutorThreadPoolQueueSize|100|The size of the queue on which jobs to be executed are placed after being acquired, before they are actually executed by a thread from the thread pool
+|asyncExecutorCorePoolSize|2|The minimal number of threads that are kept alive in the thread pool for job execution.
+|asyncExecutorMaxPoolSize|10|The maximum number of threads that are created in the thread pool for job execution.
 |asyncExecutorThreadKeepAliveTime|5000|The time (in milliseconds) a thread used for job execution must be kept alive before it is destroyed. Having a setting > 0 takes resources, but in the case of many job executions it avoids creating new threads all the time. If 0, threads will be destroyed after they've been used for job execution.
 |asyncExecutorNumberOfRetries|3|The number of times a job will be retried before it is moved to the 'deadletter' table.
-|asyncExecutorMaxTimerJobsPerAcquisition|1|The number of timer jobs that are acquired during one acquirement query. Default value is 1, as this lowers the potential on optimistic locking exceptions. Larger values can be more performant, but the chance on optimistic locking exceptions between different engines becomes larger too.
-|asyncExecutorMaxAsyncJobsDuePerAcquisition|1|The number of async jobs that are acquired during one acquirement query. Default value is 1, as this lowers the potential on optimistic locking exceptions. Larger values can be more performant, but the chance on optimistic locking exceptions between different engines becomes larger too.
+|asyncExecutorMaxTimerJobsPerAcquisition|1|The number of timer jobs that are acquired during one acquirement query. Default value is 1, as this lowers the potential for optimistic locking exceptions. Larger values can perform better, but the chance of optimistic locking exceptions occurring between different engines becomes larger too.
+|asyncExecutorMaxAsyncJobsDuePerAcquisition|1|The number of async jobs that are acquired during one acquirement query. Default value is 1, as this lowers the potential for optimistic locking exceptions. Larger values can perform better, but the chance of optimistic locking exceptions occurring between different engines becomes larger too.
 |asyncExecutorDefaultTimerJobAcquireWaitTime|10000|The time (in milliseconds) the timer acquisition thread will wait to execute the next acquirement query. This happens when no new timer jobs were found or when less timer jobs have been fetched than set in _asyncExecutorMaxTimerJobsPerAcquisition_.
 |asyncExecutorDefaultAsyncJobAcquireWaitTime|10000|The time (in milliseconds) the async job acquisition thread will wait to execute the next acquirement query. This happens when no new async jobs were found or when less async jobs have been fetched than set in _asyncExecutorMaxAsyncJobsDuePerAcquisition_.
 |asyncExecutorDefaultQueueSizeFullWaitTime|0|The time (in milliseconds) the async job (both timer and async continuations) acquisition thread will wait when the internal job queue is full to execute the next query. By default set to 0 (for backwards compatibility). Setting this property to a higher value allows the async executor to hopefully clear its queue a bit.
 |asyncExecutorTimerLockTimeInMillis|5 minutes|The amount of time (in milliseconds) a timer job is locked when acquired by the async executor. During this period of time, no other async executor will try to acquire and lock this job.
 |asyncExecutorAsyncJobLockTimeInMillis|5 minutes|The amount of time (in milliseconds) an async job is locked when acquired by the async executor. During this period of time, no other async executor will try to acquire and lock this job.
-|asyncExecutorSecondsToWaitOnShutdown|60|The time (in seconds) that is waited to gracefully shut down the threadpool used for job execution when the a shutdown on the executor (or process engine) is requested.
-|asyncExecutorResetExpiredJobsInterval|60 seconds|The amount of time (in milliseconds) that is between two consecutive checks of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time was written by some executor, but the job was never completed). During such a check, jobs that are expired are again made available, meaning the lock owner and lock time will be removed. Other executors will now be able to pick it up. A job is deemed expired if the lock time is before the current date.
-|asyncExecutorResetExpiredJobsPageSize|3|The amount of jobs that are fetched in one go by the 'reset expired' thread of the async executor.
+|asyncExecutorSecondsToWaitOnShutdown|60|The time (in seconds) that is waited to gracefully shut down the thread pool used for job execution when the a shutdown on the executor (or process engine) is requested.
+|asyncExecutorResetExpiredJobsInterval|60 seconds|The amount of time (in milliseconds) that is between two consecutive checks of 'expired jobs'. Expired jobs are jobs that were locked (a lock owner + time was written by some executor, but the job was never completed). During such a check, jobs that are expired are made available again, meaning the lock owner and lock time will be removed. Other executors will now be able to pick it up. A job is deemed expired if the lock time is before the current date.
+|asyncExecutorResetExpiredJobsPageSize|3|The amount of jobs that are fetched at once by the 'reset expired' thread of the async executor.
 |===============
 
 ==== Message Queue based Async Executor
 
-When reading the <<async_executor_design,async executor design section>>, it's clear that the architecture is inspired by message queues. The async executor is designed in such a way that a message queue easily can be used to take over the job of the thread pool and the handling of async jobs.
+When reading the <<async_executor_design,async executor design section>>, it becomes clear that the architecture is inspired by message queues. The async executor is designed in such a way that a message queue can easily be used to take over the job of the thread pool and the handling of async jobs.
 
-Benchmarks have shown that using a message queue is superior, throughput-wise, versus the threadpool-backed async executor. However, it does come with an extra architectural component, which of course makes setup/maintenance/monitoring more complex. For many users, the performance of the threadpool-backed async executor is more than sufficient. It is nice to know however, that there is an alternative if the needs grow.
+Benchmarks have shown that using a message queue is superior, throughput-wise, to the thread pool-backed async executor. However, it does come with an extra architectural component, which of course makes setup, maintenance and monitoring more complex. For many users, the performance of the thread pool-backed async executor is more than sufficient. It is nice to know however, that there is an alternative if the required performance grows.
 
-Currently, the only supported option out-of-the-box is JMS and Spring. The reason for doing Spring before anything else is because Spring has some very nice features that remove a lot of the pains when it comes to threading and dealing with multiple message consumers. However, the integration is so simple, it can easily be ported to any message queue implementations and/or protocols (Stomp, AMPQ, etc.). Feedback is appreciated for what should be the next implementation.
+Currently, the only option that is supported out-of-the-box is JMS and Spring. The reason for supporting Spring before anything else is because Spring has some very nice features that ease a lot of the pain when it comes to threading and dealing with multiple message consumers. However, the integration is so simple, that it can easily be ported to any message queue implementation and/or protocol (Stomp, AMPQ, etc.). Feedback is appreciated for what should be the next implementation.
 
-Basically, when a new async job is created by the engine, a message is put on a message queue (in a transaction committed transaction listener, so we're sure the job entry is in the database) containing the job identifier. A message consumer then takes this job identifier to fetch the job, and execute the job. The async executor will not create a threadpool anymore. It will insert and query for timers with a separate thread. When a timer fires, it is moved to the async job table, which now means a message is sent to the message queue too. The 'reset expired' thread will also unlock jobs as usual, as message queues can fail to. Instead of 'unlocking' a job, a message will now be resent. The async executor will not poll for async jobs anymore.
+When a new async job is created by the engine, a message is put on a message queue (in a transaction committed transaction listener, so we're sure the job entry is in the database) containing the job identifier. A message consumer then takes this job identifier to fetch the job, and execute the job. The async executor will not create a thread pool anymore. It will insert and query for timers from a separate thread. When a timer fires, it is moved to the async job table, which now means a message is sent to the message queue too. The 'reset expired' thread will also unlock jobs as usual, as message queues can fail too. Instead of 'unlocking' a job, a message will now be resent. The async executor will not poll for async jobs anymore.
 
 The implementation consists of two classes:
 
@@ -86,17 +86,17 @@ First of all, add the _activiti-jms-spring-executor_ dependency to your project:
 </dependency>
 ----
 
-To enable the message queue based async executor, on the process engine configuration, the following needs to be done:
+To enable the message queue based async executor, in the process engine configuration, the following needs to be done:
 
-* asyncExecutorActivate must be set to true, as usual
-* asyncExecutorMessageQueueMode needs to be set to true
-* The org.activiti.spring.executor.jms.MessageBasedJobManager must be injected as JobManager
+* _asyncExecutorActivate_ must be set to _true_, as usual
+* _asyncExecutorMessageQueueMode_ needs to be set to _true_
+* The _org.activiti.spring.executor.jms.MessageBasedJobManager_ must be injected as _JobManager_
 
-Following is an example full java-config configuration, using _ActiveMQ_ as message queue broker.
+Below is a complete example of a Java based configuration, using _ActiveMQ_ as message queue broker.
 
 Some things to note:
 
-* The MessageBasedJobManager expects a JMSTemplate to be injected that is configured with a correct _connectionFactory_.
+* The _MessageBasedJobManager_ expects a _JMSTemplate_ to be injected that is configured with a correct _connectionFactory_.
 * We're using the _MessageListenerContainer_ concept from Spring, as this simplifies threading and multiple consumers a lot.
 
 [source,java,linenums]
