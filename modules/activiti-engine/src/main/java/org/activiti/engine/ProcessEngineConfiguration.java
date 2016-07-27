@@ -206,6 +206,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   protected String activityFontName = "Arial";
   protected String labelFontName = "Arial";
+  protected String annotationFontName = "Arial";
   
   protected ClassLoader classLoader;
   /**
@@ -688,6 +689,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public ProcessEngineConfiguration setLabelFontName(String labelFontName) {
     this.labelFontName = labelFontName;
     return this;
+  }
+  
+  public String getAnnotationFontName() {
+	  return annotationFontName;
+  }
+  
+  public ProcessEngineConfiguration setAnnotationFontName(String annotationFontName) {
+	  this.annotationFontName = annotationFontName;
+	  return this;
   }
     
   public String getDatabaseTablePrefix() {

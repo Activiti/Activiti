@@ -135,7 +135,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     Job timerJob = managementService.createJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
-    
+
+    Date duedate = timerJob.getDuedate();
+
     assertNotNull("No job found for process instance", timerJob);
     assertEquals(JobEntity.DEFAULT_RETRIES, timerJob.getRetries());
 
@@ -145,6 +147,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       .processInstanceId(processInstance.getId())
       .singleResult();
     assertEquals(5, timerJob.getRetries());
+    assertEquals(duedate, timerJob.getDuedate());
   }
   
   public void testSetJobRetriesUnexistingJobId() {

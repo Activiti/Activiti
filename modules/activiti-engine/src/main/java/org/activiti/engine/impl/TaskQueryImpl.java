@@ -101,6 +101,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean excludeSubtasks = false;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
+  protected Integer taskVariablesLimit;
   protected String userIdForCandidateAndAssignee;
   protected boolean bothCandidateAndAssigned = false;
   protected String locale;
@@ -1092,6 +1093,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     this.includeProcessVariables = true;
     return this;
   }
+  
+  public TaskQuery limitTaskVariables(Integer taskVariablesLimit) {
+    this.taskVariablesLimit = taskVariablesLimit;
+    return this;
+  }
+
+  public Integer getTaskVariablesLimit() {
+    return taskVariablesLimit;
+  }
 
   public List<String> getCandidateGroups() {
     if (candidateGroup != null) {
@@ -1104,6 +1114,9 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
+
+    } else if (userIdForCandidateAndAssignee != null) {
+      return getGroupsForCandidateUser(userIdForCandidateAndAssignee);
     } 
     return null;
   }

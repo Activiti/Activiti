@@ -12,10 +12,12 @@
  */
 package org.activiti.engine.impl.cfg.multitenant;
 
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -27,7 +29,9 @@ import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.engine.impl.persistence.deploy.MultiSchemaMultiTenantProcessDefinitionCache;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +57,6 @@ import org.slf4j.LoggerFactory;
  *     - The {@link SharedExecutorServiceAsyncExecutor}: created acquisition threads for each tenant, but the 
  *       job execution is done using a process engine shared {@link ExecutorService}.
  *   The {@link AsyncExecutor} needs to be injected using the {@link #setAsyncExecutor(AsyncExecutor)} method on this class.    
- * 
- * databasetype
  * 
  * @author Joram Barrez
  */
@@ -117,10 +119,17 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
   @Override
   public ProcessEngine buildProcessEngine() {
     
+    if (databaseType == null) {
+      throw new ActivitiException("Setting the databaseType is mandatory when using MultiSchemaMultiTenantProcessEngineConfiguration");
+    }
+    
     // Disable schema creation/validation by setting it to null.
     // We'll do it manually, see buildProcessEngine() method (hence why it's copied first)
     String originalDatabaseSchemaUpdate = this.databaseSchemaUpdate;
     this.databaseSchemaUpdate = null; 
+    
+    // Using a cache / tenant to avoid process definition id conflicts
+    this.processDefinitionCache = new MultiSchemaMultiTenantProcessDefinitionCache(tenantInfoHolder, this.processDefinitionCacheLimit);
     
     // Also, we shouldn't start the async executor until *after* the schema's have been created
     boolean originalIsAutoActivateAsyncExecutor = this.asyncExecutorActivate;

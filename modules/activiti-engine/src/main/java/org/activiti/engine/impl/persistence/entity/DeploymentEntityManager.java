@@ -93,7 +93,6 @@ public class DeploymentEntityManager extends AbstractManager {
       getProcessDefinitionInfoManager().deleteProcessDefinitionInfo(processDefinitionId);
       
     }
-     
     
     // delete process definitions from db
     getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);

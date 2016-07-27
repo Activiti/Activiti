@@ -10,7 +10,7 @@
     
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
 
-    <userTask id="theTask" name="my task" activiti:dueDate="${dateVariable}" />
+    <userTask id="theTask" name="my task" activiti:dueDate="${dateVariable}"/>
     
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     

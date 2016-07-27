@@ -207,5 +207,146 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 		
 	}
 
+  @Deployment
+  public void testRepeatTimerDuration() throws Exception {
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
+    Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
+
+    runtimeService.startProcessInstanceByKey("repeattimertest");
+
+    long twentyFourHours = 24L * 60L * 60L * 1000L; 
+
+    Date previousDueDate = null;
+
+    // Move clock, job should fire
+    for (int i = 0; i < 3; i++) {
+      Job job = managementService.createJobQuery().singleResult();
+
+      // Verify due date
+      if (previousDueDate != null) {
+        assertTrue(job.getDuedate().getTime() - previousDueDate.getTime() >= twentyFourHours);
+      }
+      previousDueDate = job.getDuedate();
+
+      currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
+      processEngineConfiguration.getClock().setCurrentTime(currentTime);
+      managementService.executeJob(job.getId());
+    }
+
+  }
+  
+  @Deployment
+  public void testBoundaryTimerEvent() throws Exception {
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
+    Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
+
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("patient","kermit");
+    runtimeService.startProcessInstanceByKey("process1", vars);
+
+    // just wait for 2 seconds to run any job if it's the case
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 200);
+    } catch (Exception ex) {
+      //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
+    }
+
+    // there should be a userTask waiting for user input
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(1,tasks.size());
+    assertEquals("First Task",tasks.get(0).getName());
+    List<Job> jobList = managementService.createJobQuery().list();
+    assertEquals(1,jobList.size());
+
+
+    // let's see what's happening after 2 minutes
+    // nothing should change since the timer have to executed after 10 minutes
+    long twoMinutes = 2L * 60L * 1000L;
+
+    currentTime = new Date(currentTime.getTime() + twoMinutes +  1000L);
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
+
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 200);
+    } catch (Exception ex) {
+      //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
+    }
+
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(1,tasks.size());
+    assertEquals("First Task",tasks.get(0).getName());
+    jobList = managementService.createJobQuery().list();
+    assertEquals(1,jobList.size());
+
+
+    // after another 8 minutes (the timer will have to execute because it wasa set to be executed @ 10 minutes after process start)
+    long tenMinutes = 8L * 60L * 1000L;
+    currentTime = new Date(currentTime.getTime() + tenMinutes);
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
+
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 200);
+    } catch (Exception ex) {
+      ex.getCause();
+      //expected exception because a new job is prepared
+    }
+
+    // there should be only one userTask and it should be the one triggered by the boundary timer event.
+    // after the boundary event is triggered there should be no active job.
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(1,tasks.size());
+    assertEquals("Second Task",tasks.get(0).getName());
+    jobList = managementService.createJobQuery().list();
+    assertEquals(0,jobList.size());
+  }
+
+
+  @Deployment
+  public void testBoundaryTimerEvent2() throws Exception {
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
+    Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
+
+
+    runtimeService.startProcessInstanceByKey("timerprocess");
+
+    // just wait for 2 seconds to run any job if it's the case
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 200);
+    } catch (Exception ex) {
+      //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
+    }
+
+    // there should be a userTask waiting for user input
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(1,tasks.size());
+    assertEquals("Start",tasks.get(0).getName());
+    List<Job> jobList = managementService.createJobQuery().list();
+    assertEquals(1,jobList.size());
+
+
+    // after another 2 minutes
+    long tenMinutes = 2L * 60L * 1000L;
+    currentTime = new Date(currentTime.getTime() + tenMinutes);
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
+
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 200);
+    } catch (Exception ex) {
+      ex.getCause();
+      //expected exception because a new job is prepared
+    }
+
+    // there should be no userTask
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0,tasks.size());
+    jobList = managementService.createJobQuery().list();
+    assertEquals(0,jobList.size());
+  }
 
 }

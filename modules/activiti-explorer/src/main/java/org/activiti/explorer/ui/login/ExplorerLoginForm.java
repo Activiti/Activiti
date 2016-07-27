@@ -51,6 +51,11 @@ public class ExplorerLoginForm extends LoginForm {
     String appUri = getApplication().getURL().toString()
             + getWindow().getName() + "/";
 
+    // omitting the protocol (scheme) in order to preserve the one of the current page
+    // getURL() returns "http" scheme when SSL is provided by e.g. load-balancer
+    // http://stackoverflow.com/questions/4978235/absolute-urls-omitting-the-protocol-scheme-in-order-to-preserve-the-one-of-the
+    appUri = appUri.replaceFirst("^(http://|https://)","//");
+
     String x, h, b; // XML header, HTML head and body
     
     x = "<!DOCTYPE html PUBLIC \"-//W3C//DTD "

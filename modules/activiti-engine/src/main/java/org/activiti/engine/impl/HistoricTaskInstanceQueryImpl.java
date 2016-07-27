@@ -104,6 +104,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected boolean withLocalizationFallback;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
+  protected Integer taskVariablesLimit;
   protected List<HistoricTaskInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricTaskInstanceQueryImpl>();
   protected HistoricTaskInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
@@ -1097,6 +1098,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public HistoricTaskInstanceQuery includeProcessVariables() {
     this.includeProcessVariables = true;
     return this;
+  }
+  
+  public HistoricTaskInstanceQuery limitTaskVariables(Integer taskVariablesLimit) {
+    this.taskVariablesLimit = taskVariablesLimit;
+    return this;
+  }
+
+  public Integer getTaskVariablesLimit() {
+    return taskVariablesLimit;
   }
   
   public HistoricTaskInstanceQuery or() {

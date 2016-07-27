@@ -227,7 +227,7 @@ public class CxfWSDLImporter implements XMLImporter {
       _importFields((JDefinedClass)parentClass, index, structure);
     }
     for (Entry<String, JFieldVar> entry : theClass.fields().entrySet()) {
-      Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
+      Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().erasure().fullName());
 
       String fieldName = entry.getKey();
       if (fieldName.startsWith("_")) {
