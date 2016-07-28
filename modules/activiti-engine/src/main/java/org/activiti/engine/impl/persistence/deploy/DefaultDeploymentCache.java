@@ -54,7 +54,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
         
       });
     } else {
-      this.cache = new HashMap<String, T>();
+      this.cache = Collections.synchronizedMap(new HashMap<String, T>());
     }
   }
   
