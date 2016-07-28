@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.UnfinishedHistoricActivityInstanceMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.UnfinishedHistoricActivityInstanceMatcher;
 
 /**
  * @author Joram Barrez

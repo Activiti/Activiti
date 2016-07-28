@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.JobsByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.JobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**

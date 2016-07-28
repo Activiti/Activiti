@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.SuspendedJobDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.SuspendedJobsByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SuspendedJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**

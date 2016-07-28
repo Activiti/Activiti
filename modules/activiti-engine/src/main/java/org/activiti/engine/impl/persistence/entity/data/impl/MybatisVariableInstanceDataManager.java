@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.VariableByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.VariableByExecutionIdMatcher;
 
 /**
  * @author Joram Barrez

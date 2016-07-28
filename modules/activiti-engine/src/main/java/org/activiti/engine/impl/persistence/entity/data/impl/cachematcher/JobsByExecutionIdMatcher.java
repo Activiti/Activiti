@@ -10,20 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Joram Barrez
  */
-public class HistoricIdentityLinksByProcInstMatcher extends CachedEntityMatcherAdapter<HistoricIdentityLinkEntity> {
+public class JobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<JobEntity> {
  
   @Override
-  public boolean isRetained(HistoricIdentityLinkEntity historicIdentityLinkEntity, Object parameter) {
-    return historicIdentityLinkEntity.getProcessInstanceId() != null 
-        && historicIdentityLinkEntity.getProcessInstanceId().equals((String) parameter);
+  public boolean isRetained(JobEntity jobEntity, Object parameter) {
+    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals((String) parameter);
   }
   
 }

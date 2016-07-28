@@ -10,19 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
  * @author Joram Barrez
  */
-public class TasksByExecutionIdMatcher extends CachedEntityMatcherAdapter<TaskEntity> {
- 
+public class TimerJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<TimerJobEntity> {
+  
   @Override
-  public boolean isRetained(TaskEntity taskEntity, Object parameter) {
-    return taskEntity.getExecutionId() != null && parameter.equals(taskEntity.getExecutionId());
+  public boolean isRetained(TimerJobEntity jobEntity, Object param) {
+    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param); // param = executionId
   }
+  
   
 }

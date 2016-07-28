@@ -10,9 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
-
-import java.util.Map;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -20,13 +18,12 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Joram Barrez
  */
-public class InactiveExecutionsInActivityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class ExecutionsByParentExecutionIdEntityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
   
   @Override
   public boolean isRetained(ExecutionEntity entity, Object parameter) {
-    Map<String, Object> paramMap = (Map<String, Object>) parameter;
-    String activityId = (String) paramMap.get("activityId");
-    return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
+    // parameter = parent execution id
+    return entity.getParentId() != null && entity.getParentId().equals((String) parameter);
   }
-  
+
 }

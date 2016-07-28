@@ -16,7 +16,7 @@ public interface CachedEntityMatcher<EntityImpl extends Entity> {
    * Returns true if an entity from the cache should be retained (i.e. used as return result for a query).
    * 
    * Most implementations of this interface probably don't need this method,
-   * and should extend the {@link CachedEntityMatcherAdapter}, which hides this method.
+   * and should extend the simpler {@link CachedEntityMatcherAdapter}, which hides this method.
    * 
    * Note that the databaseEntities collection can be null, in case only the cache is checked.
    */

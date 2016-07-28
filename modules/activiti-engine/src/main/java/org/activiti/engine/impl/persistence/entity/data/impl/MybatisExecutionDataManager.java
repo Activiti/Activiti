@@ -30,16 +30,17 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.ExecutionByProcInstMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.ExecutionsByParentExecutionIdAndActivityIdEntityMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.ExecutionsByParentExecutionIdEntityMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.ExecutionsByProcessInstanceIdEntityMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.ExecutionsByRootProcInstMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.ExecutionsWithSameRootProcessInstanceIdMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.InactiveExecutionsByProcInstMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.InactiveExecutionsInActivityAndProcInstMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.InactiveExecutionsInActivityMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.SubProcessInstanceExecutionBySuperExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ExecutionByProcessInstanceMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ExecutionsByParentExecutionIdAndActivityIdEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ExecutionsByParentExecutionIdEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ExecutionsByProcessInstanceIdEntityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ExecutionsByRootProcessInstanceMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ExecutionsWithSameRootProcessInstanceIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.InactiveExecutionsByProcInstMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.InactiveExecutionsInActivityAndProcInstMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.InactiveExecutionsInActivityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.ProcessInstancesByProcessDefinitionMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SubProcessInstanceExecutionBySuperExecutionIdMatcher;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -71,14 +72,17 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   protected CachedEntityMatcher<ExecutionEntity> inactiveExecutionsInActivityMatcher
       = new InactiveExecutionsInActivityMatcher();
   
-  protected CachedEntityMatcher<ExecutionEntity> executionByProcInstMatcher
-      = new ExecutionByProcInstMatcher();
+  protected CachedEntityMatcher<ExecutionEntity> executionByProcessInstanceMatcher
+      = new ExecutionByProcessInstanceMatcher();
   
-  protected CachedEntityMatcher<ExecutionEntity> executionsByRootProcInstMatcher
-      = new ExecutionsByRootProcInstMatcher();
+  protected CachedEntityMatcher<ExecutionEntity> executionsByRootProcessInstanceMatcher
+      = new ExecutionsByRootProcessInstanceMatcher();
   
   protected CachedEntityMatcher<ExecutionEntity> executionsByParentExecutionIdAndActivityIdEntityMatcher
       = new ExecutionsByParentExecutionIdAndActivityIdEntityMatcher();
+  
+  protected CachedEntityMatcher<ExecutionEntity> processInstancesByProcessDefinitionMatcher
+    = new ProcessInstancesByProcessDefinitionMatcher();
 
   public MybatisExecutionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -158,14 +162,72 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
 
   @Override
   public List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds) {
-    
     Map<String, Object> parameters = new HashMap<String, Object>(2);
     parameters.put("parentExecutionId", parentExecutionId);
     parameters.put("activityIds", activityIds);
     
-    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, executionsByParentExecutionIdAndActivityIdEntityMatcher, true);
+    if (eagerlyFetchExecutionTree) {
+      findByIdAndFetchExecutionTree(parentExecutionId);
+      return getListFromCache(executionsByParentExecutionIdAndActivityIdEntityMatcher, parameters);
+    } else {
+      return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, executionsByParentExecutionIdAndActivityIdEntityMatcher, true);
+    }
   }
 
+  @Override
+  public List<ExecutionEntity> findExecutionsByRootProcessInstanceId(final String rootProcessInstanceId) {
+    if (eagerlyFetchExecutionTree) {
+      findByIdAndFetchExecutionTree(rootProcessInstanceId);
+      return getListFromCache(executionsByRootProcessInstanceMatcher, rootProcessInstanceId);
+    } else {
+      return getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, executionsByRootProcessInstanceMatcher, true);
+    }
+  }
+  
+  @Override
+  public List<ExecutionEntity> findExecutionsByProcessInstanceId(final String processInstanceId) {
+    if (eagerlyFetchExecutionTree) {
+      findByIdAndFetchExecutionTree(processInstanceId);
+      return getListFromCache(executionByProcessInstanceMatcher, processInstanceId);
+    } else {
+      return getList("selectExecutionsByProcessInstanceId", processInstanceId, executionByProcessInstanceMatcher, true);
+    }
+  }
+  
+  @Override
+  public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
+    HashMap<String, Object> params = new HashMap<String, Object>(2);
+    params.put("processInstanceId", processInstanceId);
+    params.put("isActive", false);
+    
+    if (eagerlyFetchExecutionTree) {
+      findByIdAndFetchExecutionTree(processInstanceId);
+      return getListFromCache(inactiveExecutionsByProcInstMatcher, params);
+    } else {
+      return getList("selectInactiveExecutionsForProcessInstance", params, inactiveExecutionsByProcInstMatcher, true);
+    }
+  }
+  
+  @Override
+  public Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId) {
+    HashMap<String, Object> params = new HashMap<String, Object>(3);
+    params.put("activityId", activityId);
+    params.put("processInstanceId", processInstanceId);
+    params.put("isActive", false);
+    
+    if (eagerlyFetchExecutionTree) {
+      findByIdAndFetchExecutionTree(processInstanceId);
+      return getListFromCache(inactiveExecutionsInActivityAndProcInstMatcher, params);
+    } else {
+      return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, inactiveExecutionsInActivityAndProcInstMatcher, true);
+    }
+  }
+  
+  @Override
+  public List<ExecutionEntity> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId) {
+    return getList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId, processInstancesByProcessDefinitionMatcher, true);
+  }
+  
   @Override
   public long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
@@ -186,16 +248,6 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
     return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, !eagerlyFetchExecutionTree); // False -> executions should not be cached if using executionTreeFetching
-  }
-  
-  @Override
-  public List<ExecutionEntity> findExecutionsByRootProcessInstanceId(final String rootProcessInstanceId) {
-    return getList("selectExecutionsByRootProcessInstanceId", rootProcessInstanceId, executionsByRootProcInstMatcher, true); 
-  }
-  
-  @Override
-  public List<ExecutionEntity> findExecutionsByProcessInstanceId(final String processInstanceId) {
-    return getList("selectExecutionsByProcessInstanceId", processInstanceId, executionByProcInstMatcher, true); 
   }
   
   @Override
@@ -237,45 +289,6 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     return Collections.EMPTY_LIST;
   }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("activityId", activityRef);
-    parameters.put("parentExecutionId", parentExecutionId);
-
-    return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
-  }
-
-  @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(2);
-    params.put("processInstanceId", processInstanceId);
-    params.put("isActive", false);
-    return getList("selectInactiveExecutionsForProcessInstance", params, inactiveExecutionsByProcInstMatcher, true);
-  }
-  
-  @Override
-  public Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId) {
-    HashMap<String, Object> params = new HashMap<String, Object>(3);
-    params.put("activityId", activityId);
-    params.put("processInstanceId", processInstanceId);
-    params.put("isActive", false);
-    
-    if (eagerlyFetchExecutionTree) {
-      findByIdAndFetchExecutionTree(processInstanceId);
-      return getListFromCache(inactiveExecutionsInActivityAndProcInstMatcher, params);
-    } else {
-      return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, inactiveExecutionsInActivityAndProcInstMatcher, true);
-    }
-  }
-  
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId) {
-    return getDbSqlSession().selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
-  }
-  
   @Override
   @SuppressWarnings("unchecked")
   public List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {

@@ -10,28 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
  * @author Joram Barrez
  */
-public class SignalEventSubscriptionByProcInstAndEventNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+public class EventSubscriptionsByProcInstTypeAndActivityMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
   
   @Override
   public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
-    Map<String, String> params = (Map<String, String>) parameter;
-    String processInstanceId = params.get("processInstanceId");
-    String eventName = params.get("eventName");
     
-    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-        && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-        && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
+    Map<String, String> params = (Map<String, String>) parameter;
+    String type = params.get("eventType");
+    String processInstanceId = params.get("processInstanceId");
+    String activityId = params.get("activityId");
+    
+    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
+        && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId)
+        && eventSubscriptionEntity.getActivityId() != null && eventSubscriptionEntity.getActivityId().equals(activityId);
   }
   
 }

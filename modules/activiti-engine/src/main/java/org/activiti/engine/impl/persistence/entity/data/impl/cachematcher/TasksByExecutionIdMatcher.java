@@ -10,20 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
  * @author Joram Barrez
  */
-public class VariableByExecutionIdMatcher extends CachedEntityMatcherAdapter<VariableInstanceEntity> {
+public class TasksByExecutionIdMatcher extends CachedEntityMatcherAdapter<TaskEntity> {
  
   @Override
-  public boolean isRetained(VariableInstanceEntity variableInstanceEntity, Object parameter) {
-    return variableInstanceEntity.getExecutionId() != null 
-        && variableInstanceEntity.getExecutionId().equals((String) parameter);
+  public boolean isRetained(TaskEntity taskEntity, Object parameter) {
+    return taskEntity.getExecutionId() != null && parameter.equals(taskEntity.getExecutionId());
   }
   
 }

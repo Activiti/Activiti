@@ -10,20 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
+
+import java.util.Map;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Joram Barrez
  */
-public class TimerJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<TimerJobEntity> {
+public class InactiveExecutionsInActivityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
   
   @Override
-  public boolean isRetained(TimerJobEntity jobEntity, Object param) {
-    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param); // param = executionId
+  public boolean isRetained(ExecutionEntity entity, Object parameter) {
+    Map<String, Object> paramMap = (Map<String, Object>) parameter;
+    String activityId = (String) paramMap.get("activityId");
+    return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
   }
-  
   
 }

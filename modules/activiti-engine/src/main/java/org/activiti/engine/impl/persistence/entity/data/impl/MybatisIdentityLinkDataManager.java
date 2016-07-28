@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.IdentityLinksByProcInstMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.IdentityLinksByProcInstMatcher;
 
 /**
  * @author Joram Barrez

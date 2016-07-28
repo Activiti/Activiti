@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.TimerJobsByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.TimerJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**

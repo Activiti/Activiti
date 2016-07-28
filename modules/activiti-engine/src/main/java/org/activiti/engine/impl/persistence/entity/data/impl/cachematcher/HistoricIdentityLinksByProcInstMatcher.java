@@ -10,20 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 
 /**
  * @author Joram Barrez
  */
-public class HistoricVariableInstanceByProcInstMatcher extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
+public class HistoricIdentityLinksByProcInstMatcher extends CachedEntityMatcherAdapter<HistoricIdentityLinkEntity> {
  
   @Override
-  public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {
-    return historicVariableInstanceEntity.getProcessInstanceId() != null 
-        && historicVariableInstanceEntity.getProcessInstanceId().equals((String) parameter);
+  public boolean isRetained(HistoricIdentityLinkEntity historicIdentityLinkEntity, Object parameter) {
+    return historicIdentityLinkEntity.getProcessInstanceId() != null 
+        && historicIdentityLinkEntity.getProcessInstanceId().equals((String) parameter);
   }
   
 }

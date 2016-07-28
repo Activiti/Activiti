@@ -32,14 +32,14 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByExecutionAndTypeMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByExecutionIdMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByNameMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.EventSubscriptionsByProcInstTypeAndActivityMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.MessageEventSubscriptionsByProcInstAndEventNameMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.SignalEventSubscriptionByEventNameMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.SignalEventSubscriptionByNameAndExecutionMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.SignalEventSubscriptionByProcInstAndEventNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.EventSubscriptionsByExecutionAndTypeMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.EventSubscriptionsByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.EventSubscriptionsByNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.EventSubscriptionsByProcInstTypeAndActivityMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.MessageEventSubscriptionsByProcInstAndEventNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SignalEventSubscriptionByEventNameMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SignalEventSubscriptionByNameAndExecutionMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SignalEventSubscriptionByProcInstAndEventNameMatcher;
 
 /**
  * @author Joram Barrez

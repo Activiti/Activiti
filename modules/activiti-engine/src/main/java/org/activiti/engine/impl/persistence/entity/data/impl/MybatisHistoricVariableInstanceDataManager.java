@@ -24,8 +24,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstanceDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.HistoricVariableInstanceByProcInstMatcher;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.HistoricVariableInstanceByTaskIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.HistoricVariableInstanceByProcInstMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.HistoricVariableInstanceByTaskIdMatcher;
 
 /**
  * @author Joram Barrez

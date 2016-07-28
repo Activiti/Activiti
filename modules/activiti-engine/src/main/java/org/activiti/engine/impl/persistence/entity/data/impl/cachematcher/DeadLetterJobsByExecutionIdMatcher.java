@@ -10,19 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 
 /**
  * @author Joram Barrez
  */
-public class EventSubscriptionsByExecutionIdMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+public class DeadLetterJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<DeadLetterJobEntity> {
   
   @Override
-  public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
-    return eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals((String) parameter);
+  public boolean isRetained(DeadLetterJobEntity jobEntity, Object param) {
+    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param); // param = executionId
   }
+  
   
 }

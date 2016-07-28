@@ -10,19 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 
 /**
  * @author Joram Barrez
  */
-public class ExecutionByProcInstMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class SuspendedJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<SuspendedJobEntity> {
   
   @Override
-  public boolean isRetained(ExecutionEntity entity, Object parameter) {
-    return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals((String) parameter);
+  public boolean isRetained(SuspendedJobEntity jobEntity, Object param) {
+    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param);
   }
+  
   
 }

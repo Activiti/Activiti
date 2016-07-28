@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.HistoricIdentityLinksByProcInstMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.HistoricIdentityLinksByProcInstMatcher;
 
 /**
  * @author Joram Barrez

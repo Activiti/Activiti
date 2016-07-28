@@ -181,11 +181,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId) {
-    return executionDataManager.findEventScopeExecutionsByActivityId(activityRef, parentExecutionId);
-  }
-
-  @Override
   public Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId) {
     return executionDataManager.findInactiveExecutionsByProcessInstanceId(processInstanceId);
   }
@@ -303,10 +298,10 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
-    List<String> processInstanceIds = executionDataManager.findProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
+    List<ExecutionEntity> processInstances = executionDataManager.findProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
 
-    for (String processInstanceId : processInstanceIds) {
-      deleteProcessInstance(processInstanceId, deleteReason, cascade);
+    for (ExecutionEntity processInstance : processInstances) {
+      deleteProcessInstanceCascade(processInstance, deleteReason, cascade);
     }
 
     if (cascade) {

@@ -97,7 +97,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected List<TimerJobEntity> timerJobs;
   protected List<TaskEntity> tasks;
   protected List<IdentityLinkEntity> identityLinks;
-  protected int cachedEntityState;
 
   // cascade deletion ////////////////////////////////////////////////////////
 
@@ -241,7 +240,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
      persistentState.put("forcedUpdate", Boolean.TRUE);
    }
    persistentState.put("suspensionState", this.suspensionState);
-   persistentState.put("cachedEntityState", this.cachedEntityState);
    persistentState.put("startTime", this.startTime);
    persistentState.put("startUserId", this.startUserId);
    persistentState.put("eventSubscriptionCount", eventSubscriptionCount);
@@ -833,10 +831,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     this.isDeleted = isDeleted;
   }
   
-  public int getCachedEntityState() {
-    return cachedEntityState;
-  }
-
   public String getActivityName() {
     return activityName;
   }

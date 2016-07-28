@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeadLetterJobDataManager;
-import org.activiti.engine.impl.persistence.entity.data.impl.cache.DeadLetterJobsByExecutionIdMatcher;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.DeadLetterJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**

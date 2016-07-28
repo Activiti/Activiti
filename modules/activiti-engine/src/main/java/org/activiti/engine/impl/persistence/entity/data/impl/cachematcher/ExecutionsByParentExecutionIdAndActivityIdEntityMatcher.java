@@ -10,8 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.impl.cache;
+package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
@@ -20,19 +21,16 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Joram Barrez
  */
-public class InactiveExecutionsInActivityAndProcInstMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class ExecutionsByParentExecutionIdAndActivityIdEntityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
   
   @Override
   public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {
     Map<String, Object> paramMap = (Map<String, Object>) parameter;
-    String activityId = (String) paramMap.get("activityId");
-    String processInstanceId = (String) paramMap.get("processInstanceId");
+    String parentExecutionId = (String) paramMap.get("parentExecutionId");
+    Collection<String> activityIds = (Collection<String>) paramMap.get("activityIds");
     
-    return executionEntity.getProcessInstanceId() != null 
-        && executionEntity.getProcessInstanceId().equals(processInstanceId) 
-        && !executionEntity.isActive() 
-        && executionEntity.getActivityId() != null 
-        && executionEntity.getActivityId().equals(activityId);
+    return executionEntity.getParentId() != null && executionEntity.getParentId().equals(parentExecutionId)
+        && executionEntity.getActivityId() != null && activityIds.contains(executionEntity.getActivityId());
   }
-
+  
 }
