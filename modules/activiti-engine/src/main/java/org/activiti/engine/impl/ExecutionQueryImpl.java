@@ -378,22 +378,24 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     ensureVariablesInitialized();
     List<?> executions = commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
     
-    for (ExecutionEntity execution : (List<ExecutionEntity>) executions) {
-      String activityId = null;
-      if (execution.getId().equals(execution.getProcessInstanceId())) {
-        if (execution.getProcessDefinitionId() != null) {
-          ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
-              .getDeploymentManager()
-              .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
-          activityId = processDefinition.getKey();
+    if (Context.getProcessEngineConfiguration().isEnableLocalization()) {
+      for (ExecutionEntity execution : (List<ExecutionEntity>) executions) {
+        String activityId = null;
+        if (execution.getId().equals(execution.getProcessInstanceId())) {
+          if (execution.getProcessDefinitionId() != null) {
+            ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
+                .getDeploymentManager()
+                .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
+            activityId = processDefinition.getKey();
+          }
+          
+        } else {
+          activityId = execution.getActivityId();
         }
-        
-      } else {
-        activityId = execution.getActivityId();
-      }
-
-      if (activityId != null) {
-        localize(execution, activityId);
+  
+        if (activityId != null) {
+          localize(execution, activityId);
+        }
       }
     }
 

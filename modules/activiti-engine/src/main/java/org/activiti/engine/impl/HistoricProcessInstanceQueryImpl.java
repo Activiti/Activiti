@@ -595,8 +595,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesByQueryCriteria(this);
     }
     
-    for (HistoricProcessInstance processInstance : results) {
-      localize(processInstance, commandContext);
+    if (Context.getProcessEngineConfiguration().isEnableLocalization()) {
+      for (HistoricProcessInstance processInstance : results) {
+        localize(processInstance, commandContext);
+      }
     }
     
     return results;

@@ -631,8 +631,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       processInstances = commandContext.getExecutionEntityManager().findProcessInstanceByQueryCriteria(this);
     }
     
-    for (ProcessInstance processInstance : processInstances) {
-      localize(processInstance);
+    if (Context.getProcessEngineConfiguration().isEnableLocalization()) {
+      for (ProcessInstance processInstance : processInstances) {
+        localize(processInstance);
+      }
     }
     
     return processInstances;
