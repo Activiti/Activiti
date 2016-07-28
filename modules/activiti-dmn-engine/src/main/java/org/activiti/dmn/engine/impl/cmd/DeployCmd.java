@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.impl.DeploymentSettings;
 import org.activiti.dmn.engine.impl.interceptor.Command;
@@ -26,7 +27,6 @@ import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.dmn.engine.impl.repository.DmnDeploymentBuilderImpl;
-import org.activiti.dmn.engine.repository.DmnDeployment;
 
 /**
  * @author Tijs Rademakers

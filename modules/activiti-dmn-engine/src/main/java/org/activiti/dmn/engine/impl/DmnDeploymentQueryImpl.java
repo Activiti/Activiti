@@ -16,11 +16,11 @@ package org.activiti.dmn.engine.impl;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.DmnDeploymentQuery;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
-import org.activiti.dmn.engine.repository.DmnDeployment;
-import org.activiti.dmn.engine.repository.DmnDeploymentQuery;
 
 /**
  * @author Tijs Rademakers

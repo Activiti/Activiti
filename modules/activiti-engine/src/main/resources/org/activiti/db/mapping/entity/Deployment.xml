@@ -7,8 +7,8 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
-    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR})
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR})
   </insert>
 
   <insert id="bulkInsertDeployment" parameterType="java.util.List">
@@ -18,6 +18,7 @@
         (#{deployment.id, jdbcType=VARCHAR},
          #{deployment.name, jdbcType=VARCHAR},
          #{deployment.category, jdbcType=VARCHAR},
+         #{deployment.key, jdbcType=VARCHAR},
          #{deployment.tenantId, jdbcType=VARCHAR},
          #{deployment.deploymentTime, jdbcType=TIMESTAMP})
       </foreach>
@@ -30,6 +31,7 @@
           (#{deployment.id, jdbcType=VARCHAR},
            #{deployment.name, jdbcType=VARCHAR},
            #{deployment.category, jdbcType=VARCHAR},
+           #{deployment.key, jdbcType=VARCHAR},
            #{deployment.tenantId, jdbcType=VARCHAR},
            #{deployment.deploymentTime, jdbcType=TIMESTAMP})
       </foreach>
@@ -41,6 +43,7 @@
   <update id="updateDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
     update ${prefix}ACT_RE_DEPLOYMENT set
       CATEGORY_ = #{category, jdbcType=VARCHAR},
+      KEY_ = #{key, jdbcType=VARCHAR},
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
   </update>
@@ -57,6 +60,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
     <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
@@ -95,8 +99,17 @@
       <if test="category != null">
         and RES.CATEGORY_ = #{category}
       </if>
+      <if test="categoryLike != null">
+        and RES.CATEGORY_ like #{categoryLike}
+      </if>
       <if test="categoryNotEquals != null">
         and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+      </if>
+      <if test="key != null">
+        and RES.KEY_ = #{key}
+      </if>
+      <if test="keyLike != null">
+        and RES.KEY_ like #{keyLike}
       </if>
       <if test="tenantId != null">
         and RES.TENANT_ID_ = #{tenantId}
@@ -112,6 +125,22 @@
       </if>
       <if test="processDefinitionKeyLike != null">
         and PROCDEF.KEY_ like #{processDefinitionKeyLike}
+      </if>
+      <if test="latest">
+        and RES.DEPLOY_TIME_ = (select max(DEPLOY_TIME_) from ${prefix}ACT_RE_DEPLOYMENT where KEY_ = RES.KEY_ 
+             <if test="tenantId != null">
+	           and TENANT_ID_ = #{tenantId}
+	         </if>
+	         <if test="tenantIdLike != null">
+	           and TENANT_ID_ like #{tenantIdLike}
+	         </if>
+	         <if test="withoutTenantId">
+	           and (TENANT_ID_ = '' or TENANT_ID_ is null)
+	         </if>
+	         <if test="tenantId == null and tenantIdLike == null and !withoutTenantId">
+	           and ( (TENANT_ID_ IS NOT NULL and TENANT_ID_ = RES.TENANT_ID_) or (TENANT_ID_ IS NULL and RES.TENANT_ID_ IS NULL) )
+	         </if>
+        )
       </if>
     </where>
   </sql>

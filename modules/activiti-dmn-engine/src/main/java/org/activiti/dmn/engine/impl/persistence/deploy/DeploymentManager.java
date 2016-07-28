@@ -15,6 +15,7 @@ package org.activiti.dmn.engine.impl.persistence.deploy;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
@@ -24,7 +25,6 @@ import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntityManage
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntityManager;
 import org.activiti.dmn.engine.impl.persistence.entity.ResourceEntity;
-import org.activiti.dmn.engine.repository.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 
 /**

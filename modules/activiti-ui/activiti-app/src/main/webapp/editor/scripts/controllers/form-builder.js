@@ -51,7 +51,12 @@ angular.module('activitiModeler')
                 }
             ];
 
-            $scope.form = {name: '', description: '', version: 1};
+            $scope.form = {
+            	name: '', 
+            	key: '',
+            	description: '', 
+            	version: 1
+           	};
 
             $scope.formElements = [];
             $rootScope.currentOutcomes = [];
@@ -183,6 +188,7 @@ angular.module('activitiModeler')
                             // after next digest cycle, to prevent first false-positive
                             $scope.formLoaded = true;
                         }, 200);
+                        
                     }).
                     error(function (response, status, headers, config) {
                         $scope.model.loading = false;

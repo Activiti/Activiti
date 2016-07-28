@@ -132,13 +132,14 @@ activitiApp.service('RuntimeAppDefinitionService', ['$http', '$q', '$location', 
                     } else {
 
                         // Custom app
-                        app.icon = 'glyphicon ' + app.icon;
-                        app.fixedBaseUrl = baseUrl + '/workflow/#/apps/' + app.id + '/';
+                        //app.icon = 'glyphicon ' + app.icon;
+                        app.icon = 'icon icon-choice';
+                        app.theme = 'theme-1';
+                        app.fixedBaseUrl = baseUrl + '/workflow/#/apps/' + app.deploymentKey + '/';
                         app.fixedUrl = app.fixedBaseUrl + 'tasks';
                         app.pages = [ 'tasks', 'processes' ];
                         app.deletable = true;
                         customApps.push(app);
-
                     }
 
                 }

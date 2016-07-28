@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
+            <artifactId>activiti-dmn-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
             <artifactId>activiti-dmn-xml-converter</artifactId>
         </dependency>
         <dependency>
@@ -77,21 +81,6 @@
             <version>3.4.1</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.2.16.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.2.16.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.0.2.Final</version>
-        </dependency>
-        <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.5.1</version>
@@ -100,7 +89,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.176</version>
             <scope>test</scope>
         </dependency>
 

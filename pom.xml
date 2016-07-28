@@ -244,6 +244,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.activiti</groupId>
+				<artifactId>activiti-dmn-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
 				<artifactId>activiti-dmn-engine</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -274,7 +279,22 @@
 			</dependency>
 			<dependency>
 				<groupId>org.activiti</groupId>
+				<artifactId>activiti-form-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
 				<artifactId>activiti-form-json-converter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-form-engine</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-form-engine-configurator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -681,6 +701,10 @@
 		<module>modules/activiti-bpmn-layout</module>
 		<module>modules/activiti-image-generator</module>
 		<module>modules/activiti-bpmn-converter</module>
+		<module>modules/activiti-form-model</module>
+		<module>modules/activiti-form-api</module>
+		<module>modules/activiti-dmn-model</module>
+		<module>modules/activiti-dmn-api</module>
 		<module>modules/activiti-engine</module>
 	</modules>
 
@@ -886,6 +910,9 @@
 				<module>modules/activiti-webapp-rest2</module>
 				<module>modules/activiti-cxf</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-form-json-converter</module>
+				<module>modules/activiti-form-engine</module>
+				<module>modules/activiti-form-engine-configurator</module>
 				<module>modules/activiti-dmn-engine</module>
 				<module>modules/activiti-dmn-model</module>
 				<module>modules/activiti-dmn-json-converter</module>
@@ -968,6 +995,7 @@
 				<module>modules/activiti-form-model</module>
 				<module>modules/activiti-form-json-converter</module>
 				<module>modules/activiti-form-engine</module>
+				<module>modules/activiti-form-engine-configurator</module>
 				<module>modules/activiti-spring</module>
 				<module>modules/activiti5-engine</module>
 				<module>modules/activiti5-compatibility</module>

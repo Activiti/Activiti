@@ -148,6 +148,7 @@ angular.module('activitiModeler')
        loading: false,
        form: {
             name: '',
+            key: '',
             description: '',
             modelType: 2
        }
@@ -159,7 +160,9 @@ angular.module('activitiModeler')
 
     $scope.ok = function () {
 
-        if (!$scope.model.form.name || $scope.model.form.name.length == 0) {
+        if (!$scope.model.form.name || $scope.model.form.name.length == 0 ||
+        	!$scope.model.form.key || $scope.model.form.key.length == 0) {
+        	
             return;
         }
 
@@ -198,6 +201,7 @@ angular.module('activitiModeler')
 				form: {
 					id: '',
 					name: '',
+					key: '',
 					description: '',
 					modelType: 2
 				}
@@ -206,6 +210,7 @@ angular.module('activitiModeler')
 			if ($scope.originalModel) {
 				//clone the model
 				$scope.model.form.name = $scope.originalModel.form.name;
+				$scope.model.form.key = $scope.originalModel.form.key;
 				$scope.model.form.description = $scope.originalModel.form.description;
 				$scope.model.form.modelType = $scope.originalModel.form.modelType;
 				$scope.model.form.id = $scope.originalModel.form.id;
@@ -213,7 +218,9 @@ angular.module('activitiModeler')
 
 			$scope.ok = function () {
 
-				if (!$scope.model.form.name || $scope.model.form.name.length == 0) {
+				if (!$scope.model.form.name || $scope.model.form.name.length == 0 ||
+					!$scope.model.form.key || $scope.model.form.key.length == 0) {
+					
 					return;
 				}
 

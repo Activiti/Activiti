@@ -12,10 +12,10 @@
  */
 package org.activiti.dmn.engine.test;
 
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.api.FormService;
 import org.activiti.form.engine.FormEngine;
 import org.activiti.form.engine.FormEngineConfiguration;
-import org.activiti.form.engine.FormRepositoryService;
-import org.activiti.form.engine.FormService;
 import org.activiti.form.engine.test.ActivitiFormRule;
 import org.junit.Before;
 import org.junit.Rule;

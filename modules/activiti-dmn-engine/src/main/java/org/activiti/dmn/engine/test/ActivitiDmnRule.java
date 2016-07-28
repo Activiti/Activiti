@@ -16,25 +16,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseConnection;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-
+import org.activiti.dmn.api.DmnRepositoryService;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.DmnEngine;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.DmnRepositoryService;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * Convenience for DmnEngine and services initialization in the form of a JUnit

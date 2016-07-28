@@ -34,87 +34,86 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TestServerUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(TestServerUtil.class);
+  private static final Logger log = LoggerFactory.getLogger(TestServerUtil.class);
 
-    protected static final int START_PORT = 9797;
-    private static AtomicInteger NEXT_PORT = new AtomicInteger(9797);
+  protected static final int START_PORT = 9797;
+  private static AtomicInteger NEXT_PORT = new AtomicInteger(9797);
 
-    public static TestServer createAndStartServer(Class<?>... configClasses) {
-        int port = NEXT_PORT.incrementAndGet();
-        Server server = new Server(port);
+  public static TestServer createAndStartServer(Class<?>... configClasses) {
+    int port = NEXT_PORT.incrementAndGet();
+    Server server = new Server(port);
 
-        HashSessionIdManager idmanager = new HashSessionIdManager();
-        server.setSessionIdManager(idmanager);
+    HashSessionIdManager idmanager = new HashSessionIdManager();
+    server.setSessionIdManager(idmanager);
 
-        AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
-        applicationContext.register(configClasses);
-        applicationContext.refresh();
+    AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+    applicationContext.register(configClasses);
+    applicationContext.refresh();
 
-        try {
-            server.setHandler(getServletContextHandler(applicationContext));
-            server.start();
-        } catch (Exception e) {
-            log.error("Error starting server", e);
-        }
-
-        return new TestServer(server, applicationContext, port);
+    try {
+      server.setHandler(getServletContextHandler(applicationContext));
+      server.start();
+    } catch (Exception e) {
+      log.error("Error starting server", e);
     }
 
-    private static ServletContextHandler getServletContextHandler(AnnotationConfigWebApplicationContext context) throws IOException {
-        ServletContextHandler contextHandler = new ServletContextHandler();
-        WebConfigurer configurer = new WebConfigurer();
-        configurer.setContext(context);
-        contextHandler.addEventListener(configurer);
+    return new TestServer(server, applicationContext, port);
+  }
 
-        // Create the SessionHandler (wrapper) to handle the sessions
-        HashSessionManager manager = new HashSessionManager();
-        SessionHandler sessions = new SessionHandler(manager);
-        contextHandler.setHandler(sessions);
+  private static ServletContextHandler getServletContextHandler(AnnotationConfigWebApplicationContext context) throws IOException {
+    ServletContextHandler contextHandler = new ServletContextHandler();
+    WebConfigurer configurer = new WebConfigurer();
+    configurer.setContext(context);
+    contextHandler.addEventListener(configurer);
 
-        return contextHandler;
+    // Create the SessionHandler (wrapper) to handle the sessions
+    HashSessionManager manager = new HashSessionManager();
+    SessionHandler sessions = new SessionHandler(manager);
+    contextHandler.setHandler(sessions);
+
+    return contextHandler;
+  }
+
+  public static class TestServer {
+
+    private Server server;
+    private ApplicationContext applicationContext;
+    private int port;
+
+    public TestServer(Server server, ApplicationContext applicationContext, int port) {
+      this.server = server;
+      this.applicationContext = applicationContext;
+      this.port = port;
     }
 
-
-    public static class TestServer {
-
-        private Server server;
-        private ApplicationContext applicationContext;
-        private int port;
-
-        public TestServer(Server server, ApplicationContext applicationContext, int port) {
-            this.server = server;
-            this.applicationContext = applicationContext;
-            this.port = port;
-        }
-
-        public Server getServer() {
-            return server;
-        }
-
-        public void setServer(Server server) {
-            this.server = server;
-        }
-
-        public ApplicationContext getApplicationContext() {
-            return applicationContext;
-        }
-
-        public void setApplicationContext(ApplicationContext applicationContext) {
-            this.applicationContext = applicationContext;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public void setPort(int port) {
-            this.port = port;
-        }
-
-        public String getServerUrlPrefix() {
-            return "http://localhost:" + getPort() + "/service/";
-        }
-
+    public Server getServer() {
+      return server;
     }
+
+    public void setServer(Server server) {
+      this.server = server;
+    }
+
+    public ApplicationContext getApplicationContext() {
+      return applicationContext;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+      this.applicationContext = applicationContext;
+    }
+
+    public int getPort() {
+      return port;
+    }
+
+    public void setPort(int port) {
+      this.port = port;
+    }
+
+    public String getServerUrlPrefix() {
+      return "http://localhost:" + getPort() + "/service/";
+    }
+
+  }
 
 }

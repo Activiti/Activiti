@@ -14,8 +14,8 @@ package org.activiti.form.engine.impl.persistence.entity;
 
 import java.util.Date;
 
+import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.engine.impl.db.Entity;
-import org.activiti.form.engine.repository.SubmittedForm;
 
 /**
  * @author Joram Barrez

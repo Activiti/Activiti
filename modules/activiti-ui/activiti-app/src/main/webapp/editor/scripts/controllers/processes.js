@@ -147,8 +147,9 @@ angular.module('activitiModeler')
        loading: false,
        process: {
             name: '',
+            key: '',
             description: '',
-           modelType: 0
+           	modelType: 0
        }
     };
 
@@ -158,7 +159,9 @@ angular.module('activitiModeler')
 
     $scope.ok = function () {
 
-        if (!$scope.model.process.name || $scope.model.process.name.length == 0) {
+        if (!$scope.model.process.name || $scope.model.process.name.length == 0 ||
+        	!$scope.model.process.key || $scope.model.process.key.length == 0) {
+        	
             return;
         }
 
@@ -193,6 +196,7 @@ angular.module('activitiModeler')
        loading: false,
        process: {
             name: '',
+            key: '',
             description: ''
        }
     };
@@ -200,13 +204,16 @@ angular.module('activitiModeler')
     if ($scope.originalModel) {
         //clone the model
         $scope.model.process.name = $scope.originalModel.process.name;
+        $scope.model.process.key = $scope.originalModel.process.key;
         $scope.model.process.description = $scope.originalModel.process.description;
         $scope.model.process.id = $scope.originalModel.process.id;
     }
 
     $scope.ok = function () {
 
-        if (!$scope.model.process.name || $scope.model.process.name.length == 0) {
+        if (!$scope.model.process.name || $scope.model.process.name.length == 0 || 
+        	!$scope.model.process.key || $scope.model.process.key.length == 0) {
+        	
             return;
         }
 

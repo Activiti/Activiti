@@ -15,8 +15,6 @@ package com.activiti.rest.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -24,17 +22,15 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.engine.repository.Deployment;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.activiti.domain.runtime.RuntimeAppDeployment;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.runtime.ProcessInstanceRepresentation;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.api.RuntimeAppDefinitionService;
 import com.activiti.service.api.UserCache;
 import com.activiti.service.api.UserCache.CachedUser;
 import com.activiti.service.exception.BadRequestException;
-import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -43,20 +39,17 @@ public abstract class AbstractProcessInstanceQueryResource {
 
   private static final int DEFAULT_PAGE_SIZE = 25;
 
-  @Inject
+  @Autowired
   protected RepositoryService repositoryService;
 
-  @Inject
+  @Autowired
   protected HistoryService historyService;
 
-  @Inject
+  @Autowired
   protected PermissionService permissionService;
 
-  @Inject
+  @Autowired
   protected UserCache userCache;
-
-  @Inject
-  protected RuntimeAppDefinitionService runtimeAppDefinitionService;
 
   public ResultListDataRepresentation getProcessInstances(ObjectNode requestNode) {
 
@@ -71,24 +64,14 @@ public abstract class AbstractProcessInstanceQueryResource {
       instanceQuery.processDefinitionId(processDefinitionIdNode.asText());
     }
 
-    JsonNode appDefinitionIdNode = requestNode.get("appDefinitionId");
-    if (appDefinitionIdNode != null && appDefinitionIdNode.isNull() == false) {
+    JsonNode deploymentKeyNode = requestNode.get("deploymentKey");
+    if (deploymentKeyNode != null && deploymentKeyNode.isNull() == false) {
       // Results need to be filtered in an app-context. We need to fetch the deployment id for this app and use that in the query
-      Long id = appDefinitionIdNode.asLong();
-      List<RuntimeAppDeployment> appDeployments = runtimeAppDefinitionService.getRuntimeAppDeploymentsForAppId(id);
-      if (CollectionUtils.isEmpty(appDeployments)) {
-        throw new BadRequestException("No app deployments exists with id: " + id);
-      }
-
-      if (!permissionService.hasReadPermissionOnRuntimeApp(SecurityUtils.getCurrentUserObject(), id)) {
-        throw new NotPermittedException("You are not allowed to use app definition with id: " + id);
-      }
+      List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentKey(deploymentKeyNode.asText()).list();
 
       List<String> deploymentIds = new ArrayList<String>();
-      for (RuntimeAppDeployment appDeployment : appDeployments) {
-        if (StringUtils.isNotEmpty(appDeployment.getDeploymentId())) {
-          deploymentIds.add(appDeployment.getDeploymentId());
-        }
+      for (Deployment deployment : deployments) {
+        deploymentIds.add(deployment.getId());
       }
 
       instanceQuery.deploymentIdIn(deploymentIds);

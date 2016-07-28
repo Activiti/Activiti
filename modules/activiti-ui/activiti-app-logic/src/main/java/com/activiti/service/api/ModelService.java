@@ -26,7 +26,7 @@ public interface ModelService {
     
     List<AbstractModel> getModelsByModelTypeAndReferenceId(Integer modelType, Long referenceId);
     
-    BpmnModel getBpmnModel(AbstractModel model, User user, boolean refreshReferences);
+    BpmnModel getBpmnModel(AbstractModel model, boolean refreshReferences);
     
     byte[] getBpmnXML(BpmnModel bpmnMode);
 

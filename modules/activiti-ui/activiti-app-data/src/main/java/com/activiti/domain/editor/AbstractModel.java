@@ -41,6 +41,9 @@ public class AbstractModel {
 
   @Column(name = "name")
   protected String name;
+  
+  @Column(name = "model_key")
+  protected String key;
 
   @Column(name = "description")
   protected String description;
@@ -95,6 +98,14 @@ public class AbstractModel {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public String getDescription() {

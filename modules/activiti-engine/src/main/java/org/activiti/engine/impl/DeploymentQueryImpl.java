@@ -33,12 +33,16 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String name;
   protected String nameLike;
   protected String category;
+  protected String categoryLike;
   protected String categoryNotEquals;
+  protected String key;
+  protected String keyLike;
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
+  protected boolean latest;
 
   public DeploymentQueryImpl() {
   }
@@ -82,12 +86,36 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     this.category = deploymentCategory;
     return this;
   }
+  
+  public DeploymentQueryImpl deploymentCategoryLike(String categoryLike) {
+    if (categoryLike == null) {
+      throw new ActivitiIllegalArgumentException("deploymentCategoryLike is null");
+    }
+    this.categoryLike = categoryLike;
+    return this;
+  }
 
   public DeploymentQueryImpl deploymentCategoryNotEquals(String deploymentCategoryNotEquals) {
     if (deploymentCategoryNotEquals == null) {
       throw new ActivitiIllegalArgumentException("deploymentCategoryExclude is null");
     }
     this.categoryNotEquals = deploymentCategoryNotEquals;
+    return this;
+  }
+  
+  public DeploymentQueryImpl deploymentKey(String deploymentKey) {
+    if (deploymentKey == null) {
+      throw new ActivitiIllegalArgumentException("deploymentKey is null");
+    }
+    this.key = deploymentKey;
+    return this;
+  }
+  
+  public DeploymentQueryImpl deploymentKeyLike(String deploymentKeyLike) {
+    if (deploymentKeyLike == null) {
+      throw new ActivitiIllegalArgumentException("deploymentKeyLike is null");
+    }
+    this.keyLike = deploymentKeyLike;
     return this;
   }
 
@@ -125,6 +153,15 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
       throw new ActivitiIllegalArgumentException("keyLike is null");
     }
     this.processDefinitionKeyLike = keyLike;
+    return this;
+  }
+  
+  public DeploymentQueryImpl latest() {
+    if (key == null) {
+      throw new ActivitiIllegalArgumentException("latest can only be used together with a deployment key");
+    }
+    
+    this.latest = true;
     return this;
   }
 

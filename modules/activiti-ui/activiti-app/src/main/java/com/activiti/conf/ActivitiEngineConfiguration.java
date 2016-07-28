@@ -32,6 +32,9 @@ import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.engine.FormEngineConfiguration;
+import org.activiti.form.engine.configurator.FormEngineConfigurator;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +113,13 @@ public class ActivitiEngineConfiguration {
     	List<BpmnParseHandler> preParseHandlers = new ArrayList<BpmnParseHandler>();
     	processEngineConfiguration.setPreBpmnParseHandlers(preParseHandlers);
     	
+    	FormEngineConfiguration formEngineConfiguration = new FormEngineConfiguration();
+    	formEngineConfiguration.setDataSource(dataSource);
+    	
+    	FormEngineConfigurator formEngineConfigurator = new FormEngineConfigurator();
+    	formEngineConfigurator.setFormEngineConfiguration(formEngineConfiguration);
+    	processEngineConfiguration.addConfigurator(formEngineConfigurator);
+    	
     	return processEngineConfiguration;
     }
     
@@ -160,5 +170,15 @@ public class ActivitiEngineConfiguration {
     @Bean
     public ManagementService managementService() {
     	return processEngine().getManagementService();
+    }
+    
+    @Bean
+    public FormRepositoryService formEngineRepositoryService() {
+      return processEngine().getFormEngineRepositoryService();
+    }
+    
+    @Bean
+    public org.activiti.form.api.FormService formEngineFormService() {
+      return processEngine().getFormEngineFormService();
     }
 }

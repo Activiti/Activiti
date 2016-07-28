@@ -12,11 +12,11 @@
  */
 package org.activiti.dmn.engine.impl;
 
+import org.activiti.dmn.api.DmnRepositoryService;
+import org.activiti.dmn.api.DmnRuleService;
 import org.activiti.dmn.engine.DmnEngine;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.DmnEngines;
-import org.activiti.dmn.engine.DmnRepositoryService;
-import org.activiti.dmn.engine.DmnRuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

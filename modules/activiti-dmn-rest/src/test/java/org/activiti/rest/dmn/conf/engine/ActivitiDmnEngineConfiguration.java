@@ -12,10 +12,10 @@
  */
 package org.activiti.rest.dmn.conf.engine;
 
+import org.activiti.dmn.api.DmnRepositoryService;
+import org.activiti.dmn.api.DmnRuleService;
 import org.activiti.dmn.engine.DmnEngine;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.DmnRepositoryService;
-import org.activiti.dmn.engine.DmnRuleService;
 import org.activiti.dmn.engine.impl.cfg.StandaloneInMemDmnEngineConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,19 +26,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ActivitiDmnEngineConfiguration {
 
-    @Bean
-    public DmnEngine ruleEngine() {
-        DmnEngineConfiguration dmnEngineConfiguration = new StandaloneInMemDmnEngineConfiguration();
-        return dmnEngineConfiguration.buildDmnEngine();
-    }
+  @Bean
+  public DmnEngine ruleEngine() {
+    DmnEngineConfiguration dmnEngineConfiguration = new StandaloneInMemDmnEngineConfiguration();
+    return dmnEngineConfiguration.buildDmnEngine();
+  }
 
-    @Bean
-    public DmnRepositoryService dmnRepositoryService() {
-        return ruleEngine().getDmnRepositoryService();
-    }
+  @Bean
+  public DmnRepositoryService dmnRepositoryService() {
+    return ruleEngine().getDmnRepositoryService();
+  }
 
-    @Bean
-    public DmnRuleService dmnRuleService() {
-        return ruleEngine().getDmnRuleService();
-    }
+  @Bean
+  public DmnRuleService dmnRuleService() {
+    return ruleEngine().getDmnRuleService();
+  }
 }

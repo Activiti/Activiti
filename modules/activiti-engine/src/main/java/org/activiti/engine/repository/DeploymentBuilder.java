@@ -65,6 +65,11 @@ public interface DeploymentBuilder {
    * Gives the deployment the given category.
    */
   DeploymentBuilder category(String category);
+  
+  /**
+   * Gives the deployment the given key.
+   */
+  DeploymentBuilder key(String key);
 
   /**
    * Gives the deployment the given tenant id.

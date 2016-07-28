@@ -8,8 +8,13 @@
             	<p>{{'PROCESS.POPUP.EDIT-DESCRIPTION' | translate}}</p>
             	<div class="form-group">
             	    <label for="editProcessName">{{'PROCESS.NAME' | translate}}</label>
-            	    <input ng-disabled="popup.loading" type="name" class="form-control"
-                           id="editProcessName" ng-model="popup.modelName" ui-keypress="{13:'ok()'}" editor-input-check>
+            	    <input ng-disabled="popup.loading" type="text" class="form-control"
+                           id="editProcessName" ng-model="popup.modelName" autofocus editor-input-check>
+            	</div>
+            	<div class="form-group">
+            	    <label for="editProcessKey">{{'PROCESS.KEY' | translate}}</label>
+            	    <input ng-disabled="popup.loading" type="text" class="form-control"
+                           id="editProcessKey" ng-model="popup.modelKey" editor-input-check>
             	</div>
             	<div class="form-group">
             	    <label for="editPocessDescription">{{'PROCESS.DESCRIPTION' | translate}}</label>
@@ -22,7 +27,7 @@
             		<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="popup.loading" auto-focus>
             			{{'GENERAL.ACTION.CANCEL' | translate}}
             		</button>
-            		<button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="popup.loading || !popup.modelName">
+            		<button type="button" class="btn btn-sm btn-default" ng-click="ok()" ng-disabled="popup.loading || !popup.modelName || !popup.modelKey">
             			{{'PROCESS.ACTION.EDIT-CONFIRM' | translate}}
             		</button>
             	</div>

@@ -33,6 +33,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
   protected String name;
   protected String category;
+  protected String key;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
@@ -73,6 +74,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("category", this.category);
+    persistentState.put("key", this.key);
     persistentState.put("tenantId", tenantId);
     return persistentState;
   }
@@ -120,6 +122,14 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
   public void setCategory(String category) {
     this.category = category;
+  }
+  
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public String getTenantId() {

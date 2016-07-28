@@ -18,13 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.form.api.FormDeployment;
+import org.activiti.form.api.FormDeploymentBuilder;
+import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
 import org.activiti.form.engine.FormEngine;
 import org.activiti.form.engine.FormEngineConfiguration;
-import org.activiti.form.engine.FormRepositoryService;
 import org.activiti.form.engine.impl.deployer.ParsedDeploymentBuilder;
-import org.activiti.form.engine.repository.FormDeployment;
-import org.activiti.form.engine.repository.FormDeploymentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,8 +15,8 @@ package org.activiti.dmn.engine.impl.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionExecutionAuditContainer;
 import org.activiti.dmn.engine.ActivitiDmnException;
-import org.activiti.dmn.engine.impl.audit.DecisionExecutionAuditContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.mvel2.ParserContext;
 import org.mvel2.integration.PropertyHandler;

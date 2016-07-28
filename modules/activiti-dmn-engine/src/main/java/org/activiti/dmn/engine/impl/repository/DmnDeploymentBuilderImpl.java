@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.DmnDeploymentBuilder;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.impl.DmnRepositoryServiceImpl;
@@ -23,8 +25,6 @@ import org.activiti.dmn.engine.impl.context.Context;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.ResourceEntityManager;
-import org.activiti.dmn.engine.repository.DmnDeployment;
-import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.xml.converter.DmnXMLConverter;
 import org.apache.commons.io.IOUtils;

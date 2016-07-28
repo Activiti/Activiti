@@ -37,6 +37,8 @@ public interface Deployment {
   Date getDeploymentTime();
 
   String getCategory();
+  
+  String getKey();
 
   String getTenantId();
 

@@ -50,6 +50,11 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
    * @see DeploymentBuilder#category(String)
    */
   DeploymentQuery deploymentCategory(String category);
+  
+  /**
+   * Only select deployments with a category like the given string.
+   */
+  DeploymentQuery deploymentCategoryLike(String categoryLike);
 
   /**
    * Only select deployments that have a different category then the given one.
@@ -57,6 +62,16 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
    * @see DeploymentBuilder#category(String)
    */
   DeploymentQuery deploymentCategoryNotEquals(String categoryNotEquals);
+  
+  /**
+   * Only select deployments with the given key.
+   */
+  DeploymentQuery deploymentKey(String key);
+  
+  /**
+   * Only select deployments with a key like the given string.
+   */
+  DeploymentQuery deploymentKeyLike(String keyLike);
 
   /**
    * Only select deployment that have the given tenant id.
@@ -80,6 +95,12 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
    * Only select deployments with a process definition key like the given string.
    */
   DeploymentQuery processDefinitionKeyLike(String keyLike);
+  
+  /**
+   * Only select deployments where the deployment time is the latest value.
+   * Can only be used together with the deployment key.
+   */
+  DeploymentQuery latest();
 
   // sorting ////////////////////////////////////////////////////////
 

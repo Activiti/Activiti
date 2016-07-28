@@ -328,6 +328,7 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.form.api.FormRepositoryService;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
@@ -375,6 +376,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
   protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
+  
+  // FORM ENGINE SERVICES /////////////////////////////////////////////////////
+  protected boolean formEngineInitialized;
+  protected FormRepositoryService formEngineRepositoryService;
+  protected org.activiti.form.api.FormService formEngineFormService;
 
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
 
@@ -2389,7 +2395,34 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return this;
+  }
+
+  public boolean isFormEngineInitialized() {
+    return formEngineInitialized;
+  }
+
+  public ProcessEngineConfigurationImpl setFormEngineInitialized(boolean formEngineInitialized) {
+    this.formEngineInitialized = formEngineInitialized;
+    return this;
+  }
+
+  public FormRepositoryService getFormEngineRepositoryService() {
+    return formEngineRepositoryService;
+  }
+
+  public ProcessEngineConfigurationImpl setFormEngineRepositoryService(FormRepositoryService formEngineRepositoryService) {
+    this.formEngineRepositoryService = formEngineRepositoryService;
+    return this;
+  }
+
+  public org.activiti.form.api.FormService getFormEngineFormService() {
+    return formEngineFormService;
+  }
+
+  public ProcessEngineConfigurationImpl setFormEngineFormService(org.activiti.form.api.FormService formEngineFormService) {
+    this.formEngineFormService = formEngineFormService;
     return this;
   }
 

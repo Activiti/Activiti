@@ -12,8 +12,8 @@
  */
 package org.activiti.form.engine.impl.persistence.entity;
 
+import org.activiti.form.api.Form;
 import org.activiti.form.engine.impl.db.Entity;
-import org.activiti.form.engine.repository.Form;
 
 /**
  * @author Joram Barrez

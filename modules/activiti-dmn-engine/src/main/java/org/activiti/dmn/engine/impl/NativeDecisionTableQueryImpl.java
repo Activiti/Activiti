@@ -15,10 +15,10 @@ package org.activiti.dmn.engine.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.NativeDecisionTableQuery;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.NativeDecisionTableQuery;
 
 public class NativeDecisionTableQueryImpl extends AbstractNativeQuery<NativeDecisionTableQuery, DecisionTable> implements NativeDecisionTableQuery {
 

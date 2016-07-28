@@ -130,6 +130,7 @@ public class ModelResource extends AbstractModelResource {
     ObjectNode modelNode = objectMapper.createObjectNode();
     modelNode.put("modelId", model.getId());
     modelNode.put("name", model.getName());
+    modelNode.put("key", model.getKey());
     modelNode.put("description", model.getDescription());
     modelNode.putPOJO("lastUpdated", model.getLastUpdated());
     modelNode.put("lastUpdatedBy", model.getLastUpdatedBy());
@@ -226,6 +227,7 @@ public class ModelResource extends AbstractModelResource {
   protected ModelRepresentation updateModel(Long modelId, MultiValueMap<String, String> values, boolean forceNewVersion) {
 
     String name = values.getFirst("name");
+    String key = values.getFirst("key");
     String description = values.getFirst("description");
     String isNewVersionString = values.getFirst("newversion");
     String newVersionComment = null;
@@ -244,8 +246,10 @@ public class ModelResource extends AbstractModelResource {
     String json = values.getFirst("json_xml");
 
     try {
-      AbstractModel model = modelService.saveModel(modelId, name, description, json, newVersion, newVersionComment, SecurityUtils.getCurrentUserObject());
+      AbstractModel model = modelService.saveModel(modelId, name, key, description, json, newVersion, 
+          newVersionComment, SecurityUtils.getCurrentUserObject());
       return new ModelRepresentation(model);
+      
     } catch (Exception e) {
       log.error("Error saving model " + modelId, e);
       throw new BadRequestException("Process model could not be saved " + modelId);

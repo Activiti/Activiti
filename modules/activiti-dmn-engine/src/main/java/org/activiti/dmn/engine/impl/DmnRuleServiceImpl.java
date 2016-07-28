@@ -14,13 +14,13 @@ package org.activiti.dmn.engine.impl;
 
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnRuleService;
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
-import org.activiti.dmn.engine.DmnRuleService;
-import org.activiti.dmn.engine.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.RuleEngineExecutor;
 import org.activiti.dmn.engine.impl.persistence.deploy.DecisionTableCacheEntry;
 import org.activiti.dmn.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti.dmn.engine.repository.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.apache.commons.lang3.StringUtils;
 

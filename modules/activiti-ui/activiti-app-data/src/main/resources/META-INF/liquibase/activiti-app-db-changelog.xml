@@ -31,6 +31,9 @@
 			<column name="name" type="varchar(400)">
 				<constraints nullable="false" />
 			</column>
+			<column name="model_key" type="varchar(400)">
+				<constraints nullable="false" />
+			</column>
 			<column name="description" type="varchar(4000)">
 				<constraints nullable="true" />
 			</column>
@@ -82,6 +85,9 @@
             <column name="name" type="varchar(400)">
                 <constraints nullable="false" />
             </column>
+            <column name="model_key" type="varchar(400)">
+				<constraints nullable="false" />
+			</column>
             <column name="description" type="varchar(4000)">
                 <constraints nullable="true" />
             </column>
@@ -301,92 +307,6 @@
         <createIndex tableName="RELATED_CONTENT" indexName="idx_relcont_procid">
             <column name="process_id" />
         </createIndex>
-            
-        <createTable tableName="RUNTIME_APP_DEF">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="name" type="varchar(400)">
-                <constraints nullable="false" />
-            </column>
-            <column name="description" type="varchar(4000)">
-                <constraints nullable="true" />
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="true" />
-            </column>
-            <column name="created_by" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="model_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="deployment_id" type="varchar(400)">
-                <constraints nullable="true" />
-            </column>
-            <column name="app_definition" type="longtext">
-                <constraints nullable="true" />
-            </column>
-            <column name="tenant_id" type="bigint" />
-        </createTable>
-        
-        <!-- Added to prevent duplicate deployment of a single model by multiple users at the same time -->
-        <addUniqueConstraint columnNames="model_id"
-            constraintName="uniq_runtime_app_def_model"
-            tableName="RUNTIME_APP_DEF" />
-            
-         <createTable tableName="RUNTIME_APP">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="app_definition" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="app_user" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        
-        <createIndex indexName="idx_runtime_app_user"
-            tableName="RUNTIME_APP" unique="false">
-            <column name="app_user" />
-        </createIndex>
-        <createIndex indexName="idx_runtime_app_def"
-            tableName="RUNTIME_APP" unique="false">
-            <column name="app_definition" />
-        </createIndex>
-        
-        <createTable tableName="RUNTIME_APP_DEPLOYMENT">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="app_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="true" />
-            </column>
-            <column name="created_by" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="model_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="deployment_id" type="varchar(400)">
-                <constraints nullable="true" />
-            </column>
-            <column name="app_definition" type="longtext">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-            
-        <addForeignKeyConstraint baseColumnNames="model_id"
-            baseTableName="RUNTIME_APP_DEF" constraintName="fk_runtime_app_def_model"
-            referencedColumnNames="id" referencedTableName="MODEL" />
-            
-        <addForeignKeyConstraint baseColumnNames="app_definition"
-            baseTableName="RUNTIME_APP" constraintName="fk_runtime_app_def"
-            referencedColumnNames="id" referencedTableName="RUNTIME_APP_DEF" />
 	
 		<!-- MODEL RELATION -->
 		
@@ -406,26 +326,6 @@
 		<addForeignKeyConstraint baseColumnNames="model_id"
 			baseTableName="MODEL_RELATION" constraintName="fk_relation_child"
 			referencedColumnNames="id" referencedTableName="MODEL" />
-			
-       	<!-- APP MODEL RELATION -->
-   		
-   		<createTable tableName="APP_RELATION">
-		 	<column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="runtime_app_id" type="bigint" />
-            <column name="model_id" type="bigint" />
-            <column name="relation_type" type="varchar(255)" />
-            <column name="metadata" type="longtext" />
-        </createTable>
-        
-        <addForeignKeyConstraint baseColumnNames="runtime_app_id"
-			baseTableName="APP_RELATION" constraintName="fk_app_relation_app"
-			referencedColumnNames="id" referencedTableName="RUNTIME_APP_DEPLOYMENT" />
-			
-		<addForeignKeyConstraint baseColumnNames="model_id"
-			baseTableName="APP_RELATION" constraintName="fk_app_relation_model"
-			referencedColumnNames="id" referencedTableName="MODEL_HISTORY" />					
 			
 	</changeSet>
 

@@ -12,11 +12,11 @@
  */
 package org.activiti.form.engine.impl;
 
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.api.FormService;
 import org.activiti.form.engine.FormEngine;
 import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.FormEngines;
-import org.activiti.form.engine.FormRepositoryService;
-import org.activiti.form.engine.FormService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class FormEngineImpl implements FormEngine {
     if (name == null) {
       log.info("default activiti FormEngine created");
     } else {
-      log.info("DmnEngine {} created", name);
+      log.info("FormEngine {} created", name);
     }
 
     FormEngines.registerDmnEngine(this);

@@ -15,13 +15,13 @@ package org.activiti.dmn.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.dmn.api.DecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.interceptor.Command;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
-import org.activiti.dmn.engine.repository.DecisionTable;
 
 /**
  * @author Joram Barrez

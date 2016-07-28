@@ -12,87 +12,88 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
-import org.activiti.dmn.engine.repository.DecisionTable;
-import org.activiti.dmn.engine.repository.DmnDeployment;
+import java.util.List;
+
+import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.rest.dmn.service.api.BaseSpringDmnRestTestCase;
 import org.activiti.rest.dmn.service.api.DmnRestUrls;
-
-import java.util.List;
 
 /**
  * @author Yvo Swillens
  */
 public class DecisionTableCollectionResourceTest extends BaseSpringDmnRestTestCase {
 
-    /**
-     * Test getting deployments. GET dmn-repository/deployments
-     */
-    public void testGetDecisionTables() throws Exception {
+  /**
+   * Test getting deployments. GET dmn-repository/deployments
+   */
+  public void testGetDecisionTables() throws Exception {
 
-        try {
-            DmnDeployment firstDeployment = dmnRepositoryService.createDeployment().name("Deployment 1").addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple.dmn").category("cat one").deploy();
+    try {
+      DmnDeployment firstDeployment = dmnRepositoryService.createDeployment().name("Deployment 1").addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple.dmn").category("cat one")
+          .deploy();
 
-            DmnDeployment secondDeployment = dmnRepositoryService.createDeployment().name("Deployment 2").addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple.dmn").category("cat two").addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple-2.dmn").deploy();
+      DmnDeployment secondDeployment = dmnRepositoryService.createDeployment().name("Deployment 2").addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple.dmn").category("cat two")
+          .addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple-2.dmn").deploy();
 
-            DecisionTable firstDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(firstDeployment.getId()).singleResult();
+      DecisionTable firstDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(firstDeployment.getId()).singleResult();
 
-            DecisionTable latestDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(secondDeployment.getId()).singleResult();
+      DecisionTable latestDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(secondDeployment.getId()).singleResult();
 
-            DecisionTable decisionTwo = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decisionTwo").deploymentId(secondDeployment.getId()).singleResult();
+      DecisionTable decisionTwo = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decisionTwo").deploymentId(secondDeployment.getId()).singleResult();
 
+      String baseUrl = DmnRestUrls.createRelativeResourceUrl(DmnRestUrls.URL_DECISION_TABLE_COLLETION);
+      assertResultsPresentInDataResponse(baseUrl, firstDecision.getId(), decisionTwo.getId(), latestDecision.getId());
 
-            String baseUrl = DmnRestUrls.createRelativeResourceUrl(DmnRestUrls.URL_DECISION_TABLE_COLLETION);
-            assertResultsPresentInDataResponse(baseUrl, firstDecision.getId(), decisionTwo.getId(), latestDecision.getId());
+      // Verify
 
-            // Verify
+      // Test name filtering
+      String url = baseUrl + "?name=" + encode("Full Decision Two");
+      assertResultsPresentInDataResponse(url, decisionTwo.getId());
 
-            // Test name filtering
-            String url = baseUrl + "?name=" + encode("Full Decision Two");
-            assertResultsPresentInDataResponse(url, decisionTwo.getId());
+      // Test nameLike filtering
+      url = baseUrl + "?nameLike=" + encode("Full Decision Tw%");
+      assertResultsPresentInDataResponse(url, decisionTwo.getId());
 
-            // Test nameLike filtering
-            url = baseUrl + "?nameLike=" + encode("Full Decision Tw%");
-            assertResultsPresentInDataResponse(url, decisionTwo.getId());
+      // Test key filtering
+      url = baseUrl + "?key=decisionTwo";
+      assertResultsPresentInDataResponse(url, decisionTwo.getId());
 
-            // Test key filtering
-            url = baseUrl + "?key=decisionTwo";
-            assertResultsPresentInDataResponse(url, decisionTwo.getId());
+      // Test returning multiple versions for the same key
+      url = baseUrl + "?key=decision";
+      assertResultsPresentInDataResponse(url, firstDecision.getId(), latestDecision.getId());
 
-            // Test returning multiple versions for the same key
-            url = baseUrl + "?key=decision";
-            assertResultsPresentInDataResponse(url, firstDecision.getId(), latestDecision.getId());
+      // Test keyLike filtering
+      url = baseUrl + "?keyLike=" + encode("%Two");
+      assertResultsPresentInDataResponse(url, decisionTwo.getId());
 
-            // Test keyLike filtering
-            url = baseUrl + "?keyLike=" + encode("%Two");
-            assertResultsPresentInDataResponse(url, decisionTwo.getId());
+      // Test resourceName filtering
+      url = baseUrl + "?resourceName=org/activiti/rest/dmn/service/api/repository/simple-2.dmn";
+      assertResultsPresentInDataResponse(url, decisionTwo.getId());
 
-            // Test resourceName filtering
-            url = baseUrl + "?resourceName=org/activiti/rest/dmn/service/api/repository/simple-2.dmn";
-            assertResultsPresentInDataResponse(url, decisionTwo.getId());
+      // Test resourceNameLike filtering
+      url = baseUrl + "?resourceNameLike=" + encode("%simple-2%");
+      assertResultsPresentInDataResponse(url, decisionTwo.getId());
 
-            // Test resourceNameLike filtering
-            url = baseUrl + "?resourceNameLike=" + encode("%simple-2%");
-            assertResultsPresentInDataResponse(url, decisionTwo.getId());
+      // Test version filtering
+      url = baseUrl + "?version=2";
+      assertResultsPresentInDataResponse(url, latestDecision.getId());
 
-            // Test version filtering
-            url = baseUrl + "?version=2";
-            assertResultsPresentInDataResponse(url, latestDecision.getId());
+      // Test latest filtering
+      url = baseUrl + "?latest=true";
+      assertResultsPresentInDataResponse(url, latestDecision.getId(), decisionTwo.getId());
+      url = baseUrl + "?latest=false";
+      assertResultsPresentInDataResponse(baseUrl, firstDecision.getId(), latestDecision.getId(), decisionTwo.getId());
 
-            // Test latest filtering
-            url = baseUrl + "?latest=true";
-            assertResultsPresentInDataResponse(url, latestDecision.getId(), decisionTwo.getId());
-            url = baseUrl + "?latest=false";
-            assertResultsPresentInDataResponse(baseUrl, firstDecision.getId(), latestDecision.getId(), decisionTwo.getId());
-
-            // Test deploymentId
-            url = baseUrl + "?deploymentId=" + secondDeployment.getId();
-            assertResultsPresentInDataResponse(url, latestDecision.getId(), decisionTwo.getId());
-        } finally {
-            // Always cleanup any created deployments, even if the test failed
-            List<DmnDeployment> deployments = dmnRepositoryService.createDeploymentQuery().list();
-            for (DmnDeployment deployment : deployments) {
-                dmnRepositoryService.deleteDeployment(deployment.getId());
-            }
-        }
+      // Test deploymentId
+      url = baseUrl + "?deploymentId=" + secondDeployment.getId();
+      assertResultsPresentInDataResponse(url, latestDecision.getId(), decisionTwo.getId());
+    } finally {
+      // Always cleanup any created deployments, even if the test failed
+      List<DmnDeployment> deployments = dmnRepositoryService.createDeploymentQuery().list();
+      for (DmnDeployment deployment : deployments) {
+        dmnRepositoryService.deleteDeployment(deployment.getId());
+      }
     }
+  }
 }

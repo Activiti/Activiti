@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
             <artifactId>activiti-form-json-converter</artifactId>
         </dependency>
         <dependency>

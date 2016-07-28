@@ -44,6 +44,7 @@ import org.activiti.engine.impl.cmd.IsActiviti5ProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.IsProcessDefinitionSuspendedCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
+import org.activiti.engine.impl.cmd.SetDeploymentKeyCmd;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.ValidateBpmnModelCmd;
@@ -99,6 +100,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public void setDeploymentCategory(String deploymentId, String category) {
     commandExecutor.execute(new SetDeploymentCategoryCmd(deploymentId, category));
+  }
+  
+  public void setDeploymentKey(String deploymentId, String key) {
+    commandExecutor.execute(new SetDeploymentKeyCmd(deploymentId, key));
   }
 
   public ProcessDefinitionQuery createProcessDefinitionQuery() {

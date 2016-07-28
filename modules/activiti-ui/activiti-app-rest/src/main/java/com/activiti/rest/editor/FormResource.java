@@ -96,6 +96,7 @@ public class FormResource extends BaseModelResource {
     Model model = getFormModel(formId, true, true);
 
     model.setName(saveRepresentation.getFormRepresentation().getName());
+    model.setKey(saveRepresentation.getFormRepresentation().getKey());
     model.setDescription(saveRepresentation.getFormRepresentation().getDescription());
 
     String editorJson = null;
@@ -110,7 +111,6 @@ public class FormResource extends BaseModelResource {
     byte[] imageBytes = Base64.decodeBase64(filteredImageString);
     model = modelService.saveModel(model, editorJson, imageBytes, saveRepresentation.isNewVersion(), saveRepresentation.getComment(), user);
     FormRepresentation result = new FormRepresentation(model);
-    result.setKey(saveRepresentation.getFormRepresentation().getFormDefinition().getKey());
     result.setFormDefinition(saveRepresentation.getFormRepresentation().getFormDefinition());
     return result;
   }
@@ -125,7 +125,6 @@ public class FormResource extends BaseModelResource {
     }
     
     FormRepresentation result = new FormRepresentation(model);
-    result.setKey(formDefinition.getKey());
     result.setFormDefinition(formDefinition);
     return result;
   }
@@ -143,8 +142,7 @@ public class FormResource extends BaseModelResource {
   }
 
   protected ModelHistory getFormModelHistory(Long modelId, Long modelHistoryId, boolean checkRead, boolean checkEdit) {
-    // Check if the user has read-rights on the process-model in order to
-    // fetch history
+    // Check if the user has read-rights on the process-model in order to fetch history
     Model model = getFormModel(modelId, checkRead, checkEdit);
     ModelHistory modelHistory = historyRepository.findOne(modelHistoryId);
 

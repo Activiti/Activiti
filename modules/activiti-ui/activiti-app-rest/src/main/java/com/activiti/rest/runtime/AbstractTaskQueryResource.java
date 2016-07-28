@@ -36,15 +36,12 @@ import org.activiti.engine.task.TaskInfo;
 import org.activiti.engine.task.TaskInfoQueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 
-import com.activiti.domain.runtime.RuntimeAppDeployment;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.runtime.TaskRepresentation;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.api.RuntimeAppDefinitionService;
 import com.activiti.service.api.UserCache;
 import com.activiti.service.api.UserCache.CachedUser;
 import com.activiti.service.exception.BadRequestException;
-import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -76,10 +73,7 @@ public abstract class AbstractTaskQueryResource {
 
   @Inject
   protected PermissionService permissionService;
-
-  @Inject
-  protected RuntimeAppDefinitionService runtimeAppDefinitionService;
-
+  
   public ResultListDataRepresentation listTasks(ObjectNode requestNode) {
 
     if (requestNode == null) {
@@ -97,13 +91,9 @@ public abstract class AbstractTaskQueryResource {
       taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
     }
 
-    // [Joram] Disabled task tenant restriction in query -
-    // it is not needed since we query now on current user as assignee or involved
-    // taskQuery.taskTenantId(TenantHelper.getTenantIdForUser(currentUser));
-
-    JsonNode appDefinitionIdNode = requestNode.get("appDefinitionId");
-    if (appDefinitionIdNode != null && appDefinitionIdNode.isNull() == false) {
-      handleAppDefinitionFiltering(taskInfoQueryWrapper, appDefinitionIdNode);
+    JsonNode deploymentIdNode = requestNode.get("deploymentId");
+    if (deploymentIdNode != null && deploymentIdNode.isNull() == false) {
+      taskInfoQueryWrapper.getTaskInfoQuery().deploymentId(deploymentIdNode.asText());
     }
 
     JsonNode processInstanceIdNode = requestNode.get("processInstanceId");
@@ -172,29 +162,6 @@ public abstract class AbstractTaskQueryResource {
     }
 
     return result;
-  }
-
-  private void handleAppDefinitionFiltering(TaskInfoQueryWrapper taskInfoQueryWrapper, JsonNode appDefinitionIdNode) {
-    // Results need to be filtered in an app-context. We need to fetch the deployment id for this
-    // app and use that in the query
-    Long id = appDefinitionIdNode.asLong();
-    List<RuntimeAppDeployment> appDeployments = runtimeAppDefinitionService.getRuntimeAppDeploymentsForAppId(id);
-    if (CollectionUtils.isEmpty(appDeployments)) {
-      throw new BadRequestException("No app deployments exists with id: " + id);
-    }
-
-    if (!permissionService.hasReadPermissionOnRuntimeApp(SecurityUtils.getCurrentUserObject(), id)) {
-      throw new NotPermittedException("You are not allowed to use app definition with id: " + id);
-    }
-
-    List<String> deploymentIds = new ArrayList<String>();
-    for (RuntimeAppDeployment appDeployment : appDeployments) {
-      if (StringUtils.isNotEmpty(appDeployment.getDeploymentId())) {
-        deploymentIds.add(appDeployment.getDeploymentId());
-      }
-    }
-
-    taskInfoQueryWrapper.getTaskInfoQuery().or().deploymentIdIn(deploymentIds).taskCategory(String.valueOf(id)).endOr();
   }
 
   private void handleProcessInstanceFiltering(User currentUser, TaskInfoQueryWrapper taskInfoQueryWrapper, JsonNode processInstanceIdNode) {

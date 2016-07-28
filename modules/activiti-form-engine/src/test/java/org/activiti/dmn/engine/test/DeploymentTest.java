@@ -15,7 +15,7 @@ package org.activiti.dmn.engine.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.activiti.form.engine.repository.Form;
+import org.activiti.form.api.Form;
 import org.activiti.form.engine.test.FormDeploymentAnnotation;
 import org.junit.Test;
 

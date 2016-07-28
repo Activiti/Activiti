@@ -18,13 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.DmnDeploymentBuilder;
+import org.activiti.dmn.api.DmnRepositoryService;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.DmnEngine;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.DmnRepositoryService;
 import org.activiti.dmn.engine.impl.deployer.ParsedDeploymentBuilder;
-import org.activiti.dmn.engine.repository.DmnDeployment;
-import org.activiti.dmn.engine.repository.DmnDeploymentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

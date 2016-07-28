@@ -14,6 +14,7 @@ package org.activiti.dmn.engine.impl.audit;
 
 import java.util.Map;
 
+import org.activiti.dmn.api.DecisionExecutionAuditContainer;
 import org.activiti.dmn.model.DmnDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

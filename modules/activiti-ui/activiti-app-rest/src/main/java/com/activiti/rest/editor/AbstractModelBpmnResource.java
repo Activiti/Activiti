@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
-import com.activiti.security.SecurityUtils;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.BaseModelerRestException;
@@ -71,7 +70,7 @@ public class AbstractModelBpmnResource extends BaseModelResource {
     	    	ServletOutputStream servletOutputStream = response.getOutputStream();
     	    	response.setContentType("application/xml");
 
-                BpmnModel bpmnModel = modelService.getBpmnModel(model, SecurityUtils.getCurrentUserObject(), true);
+                BpmnModel bpmnModel = modelService.getBpmnModel(model, true);
                 byte[] xmlBytes = modelService.getBpmnXML(bpmnModel);
                 BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(xmlBytes));
 

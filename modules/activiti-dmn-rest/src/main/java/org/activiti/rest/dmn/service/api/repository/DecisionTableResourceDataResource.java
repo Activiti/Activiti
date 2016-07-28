@@ -12,13 +12,13 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
-import org.activiti.dmn.engine.repository.DecisionTable;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.dmn.api.DecisionTable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Yvo Swillens
@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class DecisionTableResourceDataResource extends BaseDecisionTableResource {
 
-    @RequestMapping(value = "/dmn-repository/decision-tables/{decisionTableId}/resourcedata", method = RequestMethod.GET, produces = "application/json")
-    public byte[] getDecisionTableResource(@PathVariable String decisionTableId, HttpServletResponse response) {
-        DecisionTable decisionTable = geDecisionTableFromRequest(decisionTableId);
-        return getDeploymentResourceData(decisionTable.getDeploymentId(), decisionTable.getResourceName(), response);
-    }
+  @RequestMapping(value = "/dmn-repository/decision-tables/{decisionTableId}/resourcedata", method = RequestMethod.GET, produces = "application/json")
+  public byte[] getDecisionTableResource(@PathVariable String decisionTableId, HttpServletResponse response) {
+    DecisionTable decisionTable = geDecisionTableFromRequest(decisionTableId);
+    return getDeploymentResourceData(decisionTable.getDeploymentId(), decisionTable.getResourceName(), response);
+  }
 }

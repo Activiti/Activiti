@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
 import org.activiti.form.engine.FormEngineConfiguration;
@@ -27,7 +28,6 @@ import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.form.engine.impl.persistence.deploy.FormCacheEntry;
 import org.activiti.form.engine.impl.persistence.entity.FormEntity;
-import org.activiti.form.engine.repository.SubmittedForm;
 import org.activiti.form.model.ExpressionFormField;
 import org.activiti.form.model.FormDefinition;
 import org.activiti.form.model.FormField;

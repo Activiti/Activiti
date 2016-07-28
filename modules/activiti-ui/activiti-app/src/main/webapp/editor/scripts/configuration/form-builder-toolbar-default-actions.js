@@ -129,7 +129,9 @@ angular.module('activitiModeler')
 
     $scope.save = function (additionalSaveCallback) {
 
-        if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0) {
+        if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0 ||
+        	!$scope.saveDialog.formKey || $scope.saveDialog.formKey.length == 0) {
+        	
             return;
         }
 

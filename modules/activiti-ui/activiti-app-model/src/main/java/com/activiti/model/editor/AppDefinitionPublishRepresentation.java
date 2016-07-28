@@ -14,36 +14,34 @@ package com.activiti.model.editor;
 
 import com.activiti.model.common.AbstractRepresentation;
 
-
 public class AppDefinitionPublishRepresentation extends AbstractRepresentation {
 
-    protected String comment;
-    protected Boolean force;
-    
-    public AppDefinitionPublishRepresentation() {
-    	
-    }
-    
-    public AppDefinitionPublishRepresentation(String comment, Boolean force) {
-    	this.comment = comment;
-    	this.force = force;
-    }
+  protected String comment;
+  protected Boolean force;
 
-    public String getComment() {
-        return comment;
-    }
+  public AppDefinitionPublishRepresentation() {
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+  }
 
-	public Boolean getForce() {
-		return force;
-	}
+  public AppDefinitionPublishRepresentation(String comment, Boolean force) {
+    this.comment = comment;
+    this.force = force;
+  }
 
-	public void setForce(Boolean force) {
-		this.force = force;
-	}
-    
-    
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
+  public Boolean getForce() {
+    return force;
+  }
+
+  public void setForce(Boolean force) {
+    this.force = force;
+  }
+
 }

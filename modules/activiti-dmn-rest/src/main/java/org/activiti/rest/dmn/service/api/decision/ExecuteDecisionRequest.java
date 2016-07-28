@@ -19,31 +19,31 @@ import java.util.Map;
  */
 public class ExecuteDecisionRequest {
 
-    protected String decisionKey;
-    protected String tenantId;
-    protected Map<String, Object> inputVariables;
+  protected String decisionKey;
+  protected String tenantId;
+  protected Map<String, Object> inputVariables;
 
-    public String getDecisionKey() {
-        return decisionKey;
-    }
+  public String getDecisionKey() {
+    return decisionKey;
+  }
 
-    public void setDecisionKey(String decisionKey) {
-        this.decisionKey = decisionKey;
-    }
+  public void setDecisionKey(String decisionKey) {
+    this.decisionKey = decisionKey;
+  }
 
-    public String getTenantId() {
-        return tenantId;
-    }
+  public String getTenantId() {
+    return tenantId;
+  }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-    public Map<String, Object> getInputVariables() {
-        return inputVariables;
-    }
+  public Map<String, Object> getInputVariables() {
+    return inputVariables;
+  }
 
-    public void setInputVariables(Map<String, Object> variables) {
-        this.inputVariables = variables;
-    }
+  public void setInputVariables(Map<String, Object> variables) {
+    this.inputVariables = variables;
+  }
 }

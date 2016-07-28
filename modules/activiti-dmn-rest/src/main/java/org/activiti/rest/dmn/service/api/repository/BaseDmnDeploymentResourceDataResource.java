@@ -12,60 +12,62 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
+import java.io.InputStream;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.dmn.api.DmnDeployment;
+import org.activiti.dmn.api.DmnRepositoryService;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
-import org.activiti.dmn.engine.DmnRepositoryService;
-import org.activiti.dmn.engine.repository.DmnDeployment;
-import org.activiti.rest.common.application.ContentTypeResolver;
+
+import org.activiti.rest.dmn.common.ContentTypeResolver;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * @author Yvo Swillens
  */
 public class BaseDmnDeploymentResourceDataResource {
 
-    @Autowired
-    protected ContentTypeResolver contentTypeResolver;
+  @Autowired
+  protected ContentTypeResolver contentTypeResolver;
 
-    @Autowired
-    protected DmnRepositoryService dmnRepositoryService;
+  @Autowired
+  protected DmnRepositoryService dmnRepositoryService;
 
-    protected byte[] getDmnDeploymentResourceData(String deploymentId, String resourceId, HttpServletResponse response) {
+  protected byte[] getDmnDeploymentResourceData(String deploymentId, String resourceId, HttpServletResponse response) {
 
-        if (deploymentId == null) {
-            throw new ActivitiDmnIllegalArgumentException("No deployment id provided");
-        }
-        if (resourceId == null) {
-            throw new ActivitiDmnIllegalArgumentException("No resource id provided");
-        }
-
-        // Check if deployment exists
-        DmnDeployment deployment = dmnRepositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-        if (deployment == null) {
-            throw new ActivitiDmnObjectNotFoundException("Could not find a DMN deployment with id '" + deploymentId);
-        }
-
-        List<String> resourceList = dmnRepositoryService.getDeploymentResourceNames(deploymentId);
-
-        if (resourceList.contains(resourceId)) {
-            final InputStream resourceStream = dmnRepositoryService.getResourceAsStream(deploymentId, resourceId);
-
-            String contentType = contentTypeResolver.resolveContentType(resourceId);
-            response.setContentType(contentType);
-            try {
-                return IOUtils.toByteArray(resourceStream);
-            } catch (Exception e) {
-                throw new ActivitiDmnException("Error converting resource stream", e);
-            }
-        } else {
-            // Resource not found in deployment
-            throw new ActivitiDmnObjectNotFoundException("Could not find a resource with id '" + resourceId + "' in deployment '" + deploymentId);
-        }
+    if (deploymentId == null) {
+      throw new ActivitiDmnIllegalArgumentException("No deployment id provided");
     }
+    if (resourceId == null) {
+      throw new ActivitiDmnIllegalArgumentException("No resource id provided");
+    }
+
+    // Check if deployment exists
+    DmnDeployment deployment = dmnRepositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+    if (deployment == null) {
+      throw new ActivitiDmnObjectNotFoundException("Could not find a DMN deployment with id '" + deploymentId);
+    }
+
+    List<String> resourceList = dmnRepositoryService.getDeploymentResourceNames(deploymentId);
+
+    if (resourceList.contains(resourceId)) {
+      final InputStream resourceStream = dmnRepositoryService.getResourceAsStream(deploymentId, resourceId);
+
+      String contentType = contentTypeResolver.resolveContentType(resourceId);
+      response.setContentType(contentType);
+      try {
+        return IOUtils.toByteArray(resourceStream);
+      } catch (Exception e) {
+        throw new ActivitiDmnException("Error converting resource stream", e);
+      }
+    } else {
+      // Resource not found in deployment
+      throw new ActivitiDmnObjectNotFoundException("Could not find a resource with id '" + resourceId + "' in deployment '" + deploymentId);
+    }
+  }
 }

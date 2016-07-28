@@ -24,11 +24,11 @@ import com.activiti.service.api.ModelService;
 
 public interface ModelInternalService extends ModelService {
 
-	byte[] getBpmnXML(AbstractModel model, User user);
+	byte[] getBpmnXML(AbstractModel model);
 
 	byte[] getBpmnXML(BpmnModel bpmnModel);
 
-	BpmnModel getBpmnModel(AbstractModel model, User user, boolean refreshReferences);
+	BpmnModel getBpmnModel(AbstractModel model, boolean refreshReferences);
 
 	Model createModel(ModelRepresentation model, String editorJson, User createdBy);
 
@@ -36,7 +36,8 @@ public interface ModelInternalService extends ModelService {
 	
 	Model saveModel(Model modelObject, String editorJson, byte[] imageBytes, boolean newVersion, String newVersionComment, User updatedBy);
 
-	Model saveModel(long modelId, String name, String description, String editorJson, boolean newVersion, String newVersionComment, User updatedBy);
+	Model saveModel(long modelId, String name, String key, String description, String editorJson, 
+	    boolean newVersion, String newVersionComment, User updatedBy);
 
 	Model createNewModelVersion(Model modelObject, String comment, User updatedBy);
 	

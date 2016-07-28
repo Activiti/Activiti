@@ -14,6 +14,7 @@ package org.activiti.form.engine.impl.persistence.deploy;
 
 import java.util.List;
 
+import org.activiti.form.api.Form;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
 import org.activiti.form.engine.FormEngineConfiguration;
@@ -23,7 +24,6 @@ import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityMana
 import org.activiti.form.engine.impl.persistence.entity.FormEntity;
 import org.activiti.form.engine.impl.persistence.entity.FormEntityManager;
 import org.activiti.form.engine.impl.persistence.entity.ResourceEntity;
-import org.activiti.form.engine.repository.Form;
 
 /**
  * @author Tijs Rademakers

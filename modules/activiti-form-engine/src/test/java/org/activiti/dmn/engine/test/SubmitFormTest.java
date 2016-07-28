@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.form.engine.repository.SubmittedForm;
+import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.engine.test.FormDeploymentAnnotation;
 import org.activiti.form.model.FormDefinition;
 import org.joda.time.LocalDate;

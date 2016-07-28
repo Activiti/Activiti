@@ -12,35 +12,35 @@
  */
 package org.activiti.rest.dmn.service.api.decision;
 
-import org.activiti.dmn.engine.RuleEngineExecutionResult;
-
 import java.util.Map;
+
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 
 /**
  * @author Yvo Swillens
  */
 public class ExecuteDecisionResponse {
 
-    protected Map<String, Object> resultVariables;
-    protected String url;
+  protected Map<String, Object> resultVariables;
+  protected String url;
 
-    public ExecuteDecisionResponse(RuleEngineExecutionResult executionResult) {
-        setResultVariables(executionResult.getResultVariables());
-    }
+  public ExecuteDecisionResponse(RuleEngineExecutionResult executionResult) {
+    setResultVariables(executionResult.getResultVariables());
+  }
 
-    public Map<String, Object> getResultVariables() {
-        return resultVariables;
-    }
+  public Map<String, Object> getResultVariables() {
+    return resultVariables;
+  }
 
-    public void setResultVariables(Map<String, Object> resultVariables) {
-        this.resultVariables = resultVariables;
-    }
+  public void setResultVariables(Map<String, Object> resultVariables) {
+    this.resultVariables = resultVariables;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 }

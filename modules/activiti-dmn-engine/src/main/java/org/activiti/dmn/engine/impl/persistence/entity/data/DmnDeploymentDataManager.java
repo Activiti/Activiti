@@ -15,10 +15,10 @@ package org.activiti.dmn.engine.impl.persistence.entity.data;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.dmn.engine.impl.DmnDeploymentQueryImpl;
 import org.activiti.dmn.engine.impl.Page;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
-import org.activiti.dmn.engine.repository.DmnDeployment;
 
 /**
  * @author Joram Barrez

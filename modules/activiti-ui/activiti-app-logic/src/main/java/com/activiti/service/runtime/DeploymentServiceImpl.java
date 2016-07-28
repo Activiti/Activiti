@@ -30,13 +30,10 @@ import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.form.engine.FormRepositoryService;
-import org.activiti.form.engine.repository.FormDeploymentBuilder;
+import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.model.FormDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -47,15 +44,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.activiti.domain.editor.AbstractModel;
-import com.activiti.domain.runtime.RuntimeAppDefinition;
-import com.activiti.domain.runtime.RuntimeAppDeployment;
+import com.activiti.domain.editor.AppDefinition;
+import com.activiti.domain.editor.AppModelDefinition;
+import com.activiti.domain.editor.Model;
 import com.activiti.service.api.AppDefinitionService;
-import com.activiti.service.api.AppDefinitionServiceRepresentation;
-import com.activiti.service.api.DeploymentResult;
 import com.activiti.service.api.DeploymentService;
 import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
-import com.activiti.service.exception.NotPermittedException;
+import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -66,9 +62,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DeploymentServiceImpl implements DeploymentService {
 
   private static final Logger logger = LoggerFactory.getLogger(DeploymentServiceImpl.class);
-
-  @Autowired
-  protected RuntimeAppDefinitionInternalService runtimeAppDefinitionService;
 
   @Autowired
   protected AppDefinitionService appDefinitionService;
@@ -95,151 +88,54 @@ public class DeploymentServiceImpl implements DeploymentService {
 
   @Override
   @Transactional
-  public void deployAppDefinitions(List<Long> appDefinitions, User user) {
+  public Deployment updateAppDefinition(Model appDefinitionModel, User user) {
+    Deployment deployment = null;
+    AppDefinition appDefinition = resolveAppDefinition(appDefinitionModel);
 
-    // Check if user is allowed to use app definition
-    List<AppDefinitionServiceRepresentation> availableAppDefinitions = appDefinitionService.getDeployableAppDefinitions(user);
-    Map<Long, AppDefinitionServiceRepresentation> availableIdMap = new HashMap<Long, AppDefinitionServiceRepresentation>();
-    for (AppDefinitionServiceRepresentation appDef : availableAppDefinitions) {
-      availableIdMap.put(appDef.getId(), appDef);
-    }
+    if (CollectionUtils.isNotEmpty(appDefinition.getModels())) {
+      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment()
+          .name(appDefinitionModel.getName())
+          .key(appDefinitionModel.getKey());
 
-    for (Long appDefId : appDefinitions) {
-      if (availableIdMap.containsKey(appDefId) == false) {
-        logger.error("App definition " + appDefId + " is not allowed for user " + user.getId());
-        throw new NotPermittedException("One of the app definitions is not allowed");
+      for (AppModelDefinition appModelDef : appDefinition.getModels()) {
+
+        AbstractModel processModel = modelService.getModel(appModelDef.getId());
+        if (processModel == null) {
+          logger.error("Model " + appModelDef.getId() + " for app definition " + appDefinitionModel.getId() + " could not be found");
+          throw new BadRequestException("Model for app definition could not be found");
+        }
+
+        BpmnModel bpmnModel = modelService.getBpmnModel(processModel, false);
+        Map<String, StartEvent> startEventMap = processNoneStartEvents(bpmnModel);
+        Map<Long, FormInfoContainer> formMap = overrideBpmnForms(bpmnModel, startEventMap, processModel);
+
+        if (formMap.size() > 0) {
+          for (Long formId : formMap.keySet()) {
+            FormInfoContainer formInfo = formMap.get(formId);
+            deploymentBuilder.addString("form-" + formId + ".form", formInfo.getJson());
+          }
+        }
+        
+        byte[] modelXML = modelService.getBpmnXML(bpmnModel);
+        deploymentBuilder.addInputStream(processModel.getName().toLowerCase().replaceAll(" ", "") + ".bpmn", new ByteArrayInputStream(modelXML));
       }
+
+      deployment = deploymentBuilder.deploy();
     }
 
-    // Deploy each app definition
-    for (Long appDefId : appDefinitions) {
-      AppDefinitionServiceRepresentation appDefinition = availableIdMap.get(appDefId);
-      RuntimeAppDefinition runtimeAppDefinition = runtimeAppDefinitionService.getRuntimeAppDefinitionForModel(appDefinition.getId());
-      if (runtimeAppDefinition == null) {
-
-        runtimeAppDefinition = runtimeAppDefinitionService.createRuntimeAppDefinition(user, appDefinition.getName(), appDefinition.getDescription(), appDefinition.getId(),
-            appDefinition.getDefinition());
-
-        deployAppDefinitionToActiviti(appDefinition, runtimeAppDefinition, user);
-      }
-
-      // Regardless if we created the definition or not, create a RuntimeApp to connect the user
-      runtimeAppDefinitionService.addAppDefinitionForUser(user, runtimeAppDefinition);
-    }
-  }
-
-  @Override
-  @Transactional
-  public DeploymentResult updateAppDefinition(Long appDefinitionId, String appDefinitionName, String appDefinitionDescription, String appDefinitionJson, User user) {
-
-    // Get all app models that the user can deploy
-    List<AppDefinitionServiceRepresentation> availableAppDefinitions = appDefinitionService.getDeployableAppDefinitions(user);
-
-    // Create a map {id, appModel} of the above list
-    Map<Long, AppDefinitionServiceRepresentation> availableIdMap = new HashMap<Long, AppDefinitionServiceRepresentation>();
-    for (AppDefinitionServiceRepresentation appDef : availableAppDefinitions) {
-      availableIdMap.put(appDef.getId(), appDef);
-    }
-
-    // Check if the id provided in the method is part of this map, if not the app is not deployable by the user
-    if (availableIdMap.containsKey(appDefinitionId) == false) {
-      logger.error("App definition " + appDefinitionId + " is not allowed for user " + user.getId());
-      throw new NotPermittedException("App definition update is not allowed for this user");
-    }
-
-    RuntimeAppDefinition runtimeAppDefinition = runtimeAppDefinitionService.getRuntimeAppDefinitionForModel(appDefinitionId);
-    if (runtimeAppDefinition != null) {
-
-      // App definition is already deployed. Update the values and deploy the related processes
-      runtimeAppDefinition.setName(appDefinitionName);
-      runtimeAppDefinition.setDescription(appDefinitionDescription);
-      runtimeAppDefinition.setDefinition(appDefinitionJson);
-
-    } else {
-
-      // No app definition deployed yet. Create the first one
-      runtimeAppDefinition = runtimeAppDefinitionService.createRuntimeAppDefinition(user, appDefinitionName, appDefinitionDescription, appDefinitionId, appDefinitionJson);
-
-    }
-
-    // Now we can deploy the processes related to the app
-    return deployAppDefinitionToActiviti(availableIdMap.get(appDefinitionId), runtimeAppDefinition, user);
+    return deployment;
   }
 
   @Override
   @Transactional
   public void deleteAppDefinition(Long appDefinitionId) {
-    RuntimeAppDefinition appDefinition = runtimeAppDefinitionService.getRuntimeAppDefinition(appDefinitionId);
-    if (appDefinition != null) {
-      List<RuntimeAppDeployment> appDeployments = runtimeAppDefinitionService.getRuntimeAppDeploymentsForApp(appDefinition);
-      if (CollectionUtils.isNotEmpty(appDeployments)) {
-        for (RuntimeAppDeployment runtimeAppDeployment : appDeployments) {
-          String deploymentId = runtimeAppDeployment.getDeploymentId();
-          if (deploymentId != null) {
-            // First test if deployment is still there, otherwhise the transaction will be rolled back
-            Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-            if (deployment != null) {
-              repositoryService.deleteDeployment(deploymentId, true);
-            }
-          }
-        }
+    // First test if deployment is still there, otherwhise the transaction will be rolled back
+    List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentKey(String.valueOf(appDefinitionId)).list();
+    if (deployments != null) {
+      for (Deployment deployment : deployments) {
+        repositoryService.deleteDeployment(deployment.getId(), true);
       }
-      runtimeAppDefinitionService.deleteAppDefinition(appDefinition);
     }
-  }
-
-  protected DeploymentResult deployAppDefinitionToActiviti(AppDefinitionServiceRepresentation appDefinition, RuntimeAppDefinition runtimeAppDefinition, User user) {
-
-    DeploymentResult deploymentResult = new DeploymentResult();
-
-    RuntimeAppDeployment appDeployment = runtimeAppDefinitionService.createRuntimeAppDeployment(user, runtimeAppDefinition, appDefinition.getId(), appDefinition.getDefinition());
-
-    if (CollectionUtils.isNotEmpty(appDefinition.getModels())) {
-      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(appDefinition.getName());
-
-      for (Long modelId : appDefinition.getModels()) {
-
-        AbstractModel processModel = modelService.getModel(modelId);
-        if (processModel == null) {
-          logger.error("Model " + modelId + " for app definition " + appDefinition.getId() + " could not be found");
-          throw new BadRequestException("Model for app definition could not be found");
-        }
-
-        BpmnModel bpmnModel = modelService.getBpmnModel(processModel, user, false);
-        Map<String, StartEvent> startEventMap = processNoneStartEvents(bpmnModel);
-        Map<Long, FormDefinition> formMap = overrideBpmnForms(bpmnModel, startEventMap, processModel);
-
-        if (formMap != null) {
-          for (Long formModelId : formMap.keySet()) {
-            deploymentResult.addFormModelMapping(formModelId, formMap.get(formModelId));
-          }
-        }
-
-        byte[] modelXML = modelService.getBpmnXML(bpmnModel);
-        deploymentBuilder.addInputStream(processModel.getName().toLowerCase().replaceAll(" ", "") + ".bpmn", new ByteArrayInputStream(modelXML));
-
-        deploymentResult.addModelMapping(processModel, bpmnModel);
-      }
-
-      Deployment deployment = deploymentBuilder.deploy();
-      deploymentResult.setDeployment(deployment);
-      if (deployment instanceof DeploymentEntity) {
-        List<ProcessDefinitionEntity> processDefinitions = ((DeploymentEntity) deployment).getDeployedArtifacts(ProcessDefinitionEntity.class);
-        for (ProcessDefinitionEntity processDefinitionEntity : processDefinitions) {
-          deploymentResult.addProcessDefinition(processDefinitionEntity);
-        }
-      }
-
-      runtimeAppDefinition.setDeploymentId(deployment.getId());
-      appDeployment.setDeploymentId(deployment.getId());
-
-      runtimeAppDefinitionService.updateRuntimeAppDeployment(appDeployment);
-    }
-
-    runtimeAppDefinitionService.updateRuntimeAppDefinition(runtimeAppDefinition);
-
-    deploymentResult.setRuntimeAppDeployment(appDeployment);
-    return deploymentResult;
   }
 
   protected Map<String, StartEvent> processNoneStartEvents(BpmnModel bpmnModel) {
@@ -261,26 +157,17 @@ public class DeploymentServiceImpl implements DeploymentService {
     return startEventMap;
   }
 
-  protected Map<Long, FormDefinition> overrideBpmnForms(BpmnModel bpmnModel, Map<String, StartEvent> startEventMap, AbstractModel model) {
-    Map<Long, FormDefinition> formMap = new HashMap<Long, FormDefinition>();
+  protected Map<Long, FormInfoContainer> overrideBpmnForms(BpmnModel bpmnModel, Map<String, StartEvent> startEventMap, AbstractModel model) {
+    Map<Long, FormInfoContainer> formMap = new HashMap<Long, FormInfoContainer>();
     for (Process process : bpmnModel.getProcesses()) {
       processBpmnForms(process.getFlowElements(), process, startEventMap, formMap, model);
-    }
-    
-    if (formMap.size() > 0) {
-      FormDeploymentBuilder formDeploymentBuilder = formRepositoryService.createDeployment();
-      for (Long formId : formMap.keySet()) {
-        FormDefinition formDefinition = formMap.get(formId);
-        formDeploymentBuilder.addFormModel("form-" + formId + ".form", formDefinition);
-      }
-      formDeploymentBuilder.deploy();
     }
     
     return formMap;
   }
 
   protected void processBpmnForms(Collection<FlowElement> flowElements, Process process, Map<String, StartEvent> startEventMap, 
-      Map<Long, FormDefinition> formIdMap, AbstractModel model) {
+      Map<Long, FormInfoContainer> formIdMap, AbstractModel model) {
 
     for (FlowElement flowElement : flowElements) {
       if (flowElement instanceof UserTask) {
@@ -304,7 +191,7 @@ public class DeploymentServiceImpl implements DeploymentService {
     }
   }
 
-  protected String retrieveFinalFormKey(String formKey, FlowElement flowElement, Map<Long, FormDefinition> formIdMap, AbstractModel model) {
+  protected String retrieveFinalFormKey(String formKey, FlowElement flowElement, Map<Long, FormInfoContainer> formIdMap, AbstractModel model) {
     String finalFormKey = null;
     List<ExtensionElement> formIdExtensions = flowElement.getExtensionElements().get("form-reference-id");
     List<ExtensionElement> formNameExtensions = flowElement.getExtensionElements().get("form-reference-name");
@@ -327,7 +214,7 @@ public class DeploymentServiceImpl implements DeploymentService {
     return finalFormKey;
   }
 
-  protected String getFormKeyWithFormId(Long formId, Map<Long, FormDefinition> formIdMap, AbstractModel model) {
+  protected String getFormKeyWithFormId(Long formId, Map<Long, FormInfoContainer> formIdMap, AbstractModel model) {
     String formKey = null;
     if (formIdMap.containsKey(formId) == false) {
       AbstractModel formModel = modelService.getModel(formId);
@@ -335,23 +222,33 @@ public class DeploymentServiceImpl implements DeploymentService {
       if (formModel != null) {
         formModelMap.put(formModel.getId(), formModel);
       }
-      FormDefinition formDefinition = createFormDefinition(formId, formModelMap, model);
-      formDefinition.setName(formModel.getName());
-      formDefinition.setDescription(formModel.getDescription());
-      formIdMap.put(formId, formDefinition);
-      formKey = formDefinition.getKey();
+      FormInfoContainer formInfoContainer = createFormInfoContainer(formId, formModelMap, model);
+      formIdMap.put(formId, formInfoContainer);
+      formKey = formInfoContainer.getKey();
 
     } else {
       formKey = formIdMap.get(formId).getKey();
     }
     return formKey;
   }
-
-  protected FormDefinition createFormDefinition(Long formId, Map<Long, AbstractModel> formMap, AbstractModel model) {
+  
+  protected AppDefinition resolveAppDefinition(Model appDefinitionModel) {
+    try {
+      AppDefinition appDefinition = objectMapper.readValue(appDefinitionModel.getModelEditorJson(), AppDefinition.class);
+      return appDefinition;
+      
+    } catch (Exception e) {
+      logger.error("Error deserializing app " + appDefinitionModel.getId(), e);
+      throw new InternalServerErrorException("Could not deserialize app definition");
+    }
+  }
+  
+  protected FormInfoContainer createFormInfoContainer(Long formId, Map<Long, AbstractModel> formMap, AbstractModel model) {
     if (formMap.containsKey(formId)) {
       AbstractModel form = formMap.get(formId);
       FormDefinition formDefinition = formJsonConverter.convertToForm(form.getModelEditorJson(), null, form.getVersion());
-      return formDefinition;
+      FormInfoContainer infoContainer = new FormInfoContainer(form.getName(), form.getDescription(), formDefinition.getKey(), form.getModelEditorJson());
+      return infoContainer;
 
     } else {
       logger.error("Form " + formId + " for model " + model.getId() + " could not be found");
@@ -367,5 +264,45 @@ public class DeploymentServiceImpl implements DeploymentService {
       name = process.getId();
     }
     return name;
+  }
+  
+  protected class FormInfoContainer {
+    
+    protected String name;
+    protected String description;
+    protected String key;
+    protected String json;
+    
+    public FormInfoContainer(String name, String description, String key, String json) {
+      this.name = name;
+      this.description = description;
+      this.key = key;
+      this.json = json;
+    }
+    
+    public String getName() {
+      return name;
+    }
+    public void setName(String name) {
+      this.name = name;
+    }
+    public String getDescription() {
+      return description;
+    }
+    public void setDescription(String description) {
+      this.description = description;
+    }
+    public String getKey() {
+      return key;
+    }
+    public void setKey(String key) {
+      this.key = key;
+    }
+    public String getJson() {
+      return json;
+    }
+    public void setJson(String json) {
+      this.json = json;
+    }
   }
 }

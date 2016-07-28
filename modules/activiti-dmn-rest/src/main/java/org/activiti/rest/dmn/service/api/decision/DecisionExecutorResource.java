@@ -12,20 +12,20 @@
  */
 package org.activiti.rest.dmn.service.api.decision;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
-import org.activiti.dmn.engine.RuleEngineExecutionResult;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Yvo Swillens
@@ -33,34 +33,34 @@ import java.util.Map;
 @RestController
 public class DecisionExecutorResource extends BaseDecisionExecutorResource {
 
-    @RequestMapping(value = "/rules/decision-executor", method = RequestMethod.POST, produces = "application/json")
-    public ExecuteDecisionResponse executeDecision(@RequestBody ExecuteDecisionRequest request, HttpServletRequest httpRequest, HttpServletResponse response) {
+  @RequestMapping(value = "/rules/decision-executor", method = RequestMethod.POST, produces = "application/json")
+  public ExecuteDecisionResponse executeDecision(@RequestBody ExecuteDecisionRequest request, HttpServletRequest httpRequest, HttpServletResponse response) {
 
-        if (request.getDecisionKey() == null) {
-            throw new ActivitiDmnIllegalArgumentException("Decision key is required.");
-        }
-
-        Map<String, Object> inputVariables = null;
-        if (request.getInputVariables() != null) {
-            inputVariables = new HashMap<String, Object>();
-            for (Map.Entry<String, Object> variable : request.getInputVariables().entrySet()) {
-                if (variable.getKey() == null) {
-                    throw new ActivitiDmnIllegalArgumentException("Variable name is required.");
-                }
-                inputVariables.put(variable.getKey(), variable.getValue());
-            }
-        }
-
-        try {
-            RuleEngineExecutionResult executionResult = executeDecisionByKeyAndTenantId(request.getDecisionKey(), request.getTenantId(), request.getInputVariables());
-
-            response.setStatus(HttpStatus.CREATED.value());
-
-             return dmnRestResponseFactory.createExecuteDecisionResponse(executionResult);
-
-            //TODO: add audit trail info
-        } catch (ActivitiDmnObjectNotFoundException aonfe) {
-            throw new ActivitiDmnIllegalArgumentException(aonfe.getMessage(), aonfe);
-        }
+    if (request.getDecisionKey() == null) {
+      throw new ActivitiDmnIllegalArgumentException("Decision key is required.");
     }
+
+    Map<String, Object> inputVariables = null;
+    if (request.getInputVariables() != null) {
+      inputVariables = new HashMap<String, Object>();
+      for (Map.Entry<String, Object> variable : request.getInputVariables().entrySet()) {
+        if (variable.getKey() == null) {
+          throw new ActivitiDmnIllegalArgumentException("Variable name is required.");
+        }
+        inputVariables.put(variable.getKey(), variable.getValue());
+      }
+    }
+
+    try {
+      RuleEngineExecutionResult executionResult = executeDecisionByKeyAndTenantId(request.getDecisionKey(), request.getTenantId(), request.getInputVariables());
+
+      response.setStatus(HttpStatus.CREATED.value());
+
+      return dmnRestResponseFactory.createExecuteDecisionResponse(executionResult);
+
+      // TODO: add audit trail info
+    } catch (ActivitiDmnObjectNotFoundException aonfe) {
+      throw new ActivitiDmnIllegalArgumentException(aonfe.getMessage(), aonfe);
+    }
+  }
 }

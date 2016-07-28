@@ -26,7 +26,7 @@ import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.form.engine.FormRepositoryService;
+import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.model.FormDefinition;
 import org.activiti.form.model.FormField;
 import org.apache.commons.lang3.StringUtils;

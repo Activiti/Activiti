@@ -197,11 +197,6 @@ public class RuntimeDisplayJsonClientResource {
   @RequestMapping(value = "/rest/process-definitions/{processDefinitionId}/model-json", method = RequestMethod.GET, produces = "application/json")
   public JsonNode getModelJSONForProcessDefinition(@PathVariable String processDefinitionId) {
 
-    User currentUser = SecurityUtils.getCurrentUserObject();
-    if (!permissionService.hasReadPermissionOnProcessDefinition(currentUser, processDefinitionId)) {
-      throw new NotPermittedException();
-    }
-
     BpmnModel pojoModel = repositoryService.getBpmnModel(processDefinitionId);
 
     if (pojoModel == null || pojoModel.getLocationMap().isEmpty()) {
