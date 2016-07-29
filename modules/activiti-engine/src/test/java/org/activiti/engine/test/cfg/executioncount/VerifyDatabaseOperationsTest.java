@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.cfg.CommandExecutorImpl;
-import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -18,15 +17,12 @@ import org.activiti.engine.test.profiler.ConsoleLogger;
 import org.activiti.engine.test.profiler.ProfileSession;
 import org.activiti.engine.test.profiler.ProfilingDbSqlSessionFactory;
 import org.activiti.engine.test.profiler.TotalExecutionTimeCommandInterceptor;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class VerifyDatabaseSelectsTest extends PluggableActivitiTestCase {
+public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
   
   protected boolean oldExecutionTreeFetchValue;
   protected boolean oldExecutionRelationshipCountValue;

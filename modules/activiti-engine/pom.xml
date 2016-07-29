@@ -890,6 +890,7 @@
 								<exclude>**/NonCascadeDeleteTest.java</exclude>
 								<exclude>**/HistoricProcessInstanceQueryAndWithExceptionTest.java</exclude>
 								<exclude>**/HistoricJPAVariableTest.java</exclude>
+								<exclude>**/VerifyDatabaseOperationsTest.java</exclude>
 							</excludes>
 							<runOrder>alphabetical</runOrder>
 						</configuration>
