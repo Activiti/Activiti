@@ -19,6 +19,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.SuspendedJobDataManager;
@@ -35,12 +36,12 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
 
   protected SuspendedJobDataManager jobDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
 
   public SuspendedJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, SuspendedJobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
@@ -81,7 +82,7 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
       }
       
 
-      if (enableExecutionRelationshipCounts) {
+      if (performanceSettings.isEnableExecutionRelationshipCounts()) {
         CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
         countingExecutionEntity.setSuspendedJobCount(countingExecutionEntity.getSuspendedJobCount() + 1);
       }
@@ -101,7 +102,7 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
 
     deleteExceptionByteArrayRef(jobEntity);
     
-    if (jobEntity.getExecutionId() != null && enableExecutionRelationshipCounts) {
+    if (jobEntity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
       executionEntity.setSuspendedJobCount(executionEntity.getSuspendedJobCount() - 1);
     }

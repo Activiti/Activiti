@@ -378,7 +378,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     ensureVariablesInitialized();
     List<?> executions = commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
     
-    if (Context.getProcessEngineConfiguration().isEnableLocalization()) {
+    if (Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (ExecutionEntity execution : (List<ExecutionEntity>) executions) {
         String activityId = null;
         if (execution.getId().equals(execution.getProcessInstanceId())) {

@@ -19,6 +19,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -38,12 +39,12 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   protected JobDataManager jobDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
   
   public JobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, JobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -73,7 +74,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
           jobEntity.setTenantId(execution.getTenantId());
         }
         
-        if (enableExecutionRelationshipCounts) {
+        if (performanceSettings.isEnableExecutionRelationshipCounts()) {
           CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
           countingExecutionEntity.setJobCount(countingExecutionEntity.getJobCount() + 1);
         }
@@ -142,7 +143,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   
   @Override
   public void delete(JobEntity entity, boolean fireDeleteEvent) {
-    if (entity.getExecutionId() != null && enableExecutionRelationshipCounts) {
+    if (entity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
       executionEntity.setJobCount(executionEntity.getJobCount() - 1);
     }

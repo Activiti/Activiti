@@ -198,5 +198,14 @@ alter table ACT_RE_DEPLOYMENT add KEY_ NVARCHAR2(255);
 -- Upgrade added in upgradestep.52001.to.52002.engine, which is not applied when already on beta2 
 update ACT_RU_EVENT_SUBSCR set PROC_DEF_ID_ = CONFIGURATION_ where EVENT_TYPE_ = 'message' and PROC_INST_ID_ is null and EXECUTION_ID_ is null and PROC_DEF_ID_ is null;
 
+-- Adding count columns for execution relationship count feature
+alter table ACT_RU_EXECUTION add column EVT_SUBSCR_COUNT_ INTEGER; 
+alter table ACT_RU_EXECUTION add column TASK_COUNT_ INTEGER; 
+alter table ACT_RU_EXECUTION add column JOB_COUNT_ INTEGER; 
+alter table ACT_RU_EXECUTION add column TIMER_JOB_COUNT_ INTEGER;
+alter table ACT_RU_EXECUTION add column SUSP_JOB_COUNT_ INTEGER;
+alter table ACT_RU_EXECUTION add column DEADLETTER_JOB_COUNT_ INTEGER;
+alter table ACT_RU_EXECUTION add column VAR_COUNT_ INTEGER;
+alter table ACT_RU_EXECUTION add column ID_LINK_COUNT_ INTEGER;
 
 update ACT_GE_PROPERTY set VALUE_ = '6.0.0.2' where NAME_ = 'schema.version';

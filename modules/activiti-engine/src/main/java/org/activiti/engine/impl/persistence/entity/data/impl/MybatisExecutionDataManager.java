@@ -23,6 +23,7 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.SingleCachedEntityMatcher;
@@ -49,7 +50,7 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEntity> implements ExecutionDataManager {
   
-  protected boolean eagerlyFetchExecutionTree;
+  protected PerformanceSettings performanceSettings;
   
   protected CachedEntityMatcher<ExecutionEntity> executionsByParentIdMatcher 
       = new ExecutionsByParentExecutionIdEntityMatcher();
@@ -86,7 +87,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
 
   public MybatisExecutionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
-    this.eagerlyFetchExecutionTree = processEngineConfiguration.isEnableEagerExecutionTreeFetching();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
@@ -101,7 +102,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   
   @Override
   public ExecutionEntity findById(String entityId) {
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       return findByIdAndFetchExecutionTree(entityId);
     } else {
       return super.findById(entityId);
@@ -130,19 +131,19 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   
   @Override
   public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(superExecutionId);
     }
     
     return getEntity("selectSubProcessInstanceBySuperExecutionId", 
         superExecutionId, 
         subProcessInstanceBySuperExecutionIdMatcher,
-        !eagerlyFetchExecutionTree);
+        !performanceSettings.isEnableEagerExecutionTreeFetching());
   }
   
   @Override
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(parentExecutionId);
       return getListFromCache(executionsByParentIdMatcher, parentExecutionId);
     } else {
@@ -152,7 +153,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
 
   @Override
   public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(processInstanceId);
       return getListFromCache(executionsByProcessInstanceIdMatcher, processInstanceId);
     } else {
@@ -166,7 +167,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     parameters.put("parentExecutionId", parentExecutionId);
     parameters.put("activityIds", activityIds);
     
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(parentExecutionId);
       return getListFromCache(executionsByParentExecutionIdAndActivityIdEntityMatcher, parameters);
     } else {
@@ -176,7 +177,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
 
   @Override
   public List<ExecutionEntity> findExecutionsByRootProcessInstanceId(final String rootProcessInstanceId) {
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(rootProcessInstanceId);
       return getListFromCache(executionsByRootProcessInstanceMatcher, rootProcessInstanceId);
     } else {
@@ -186,7 +187,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   
   @Override
   public List<ExecutionEntity> findExecutionsByProcessInstanceId(final String processInstanceId) {
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(processInstanceId);
       return getListFromCache(executionByProcessInstanceMatcher, processInstanceId);
     } else {
@@ -200,7 +201,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     params.put("processInstanceId", processInstanceId);
     params.put("isActive", false);
     
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(processInstanceId);
       return getListFromCache(inactiveExecutionsByProcInstMatcher, params);
     } else {
@@ -215,7 +216,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     params.put("processInstanceId", processInstanceId);
     params.put("isActive", false);
     
-    if (eagerlyFetchExecutionTree) {
+    if (performanceSettings.isEnableEagerExecutionTreeFetching()) {
       findByIdAndFetchExecutionTree(processInstanceId);
       return getListFromCache(inactiveExecutionsInActivityAndProcInstMatcher, params);
     } else {
@@ -236,7 +237,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   @Override
   @SuppressWarnings("unchecked")
   public List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page) {
-    return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page, !eagerlyFetchExecutionTree); // False -> executions should not be cached if using executionTreeFetching
+    return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page, !performanceSettings.isEnableEagerExecutionTreeFetching()); // False -> executions should not be cached if using executionTreeFetching
   }
   
   @Override
@@ -247,7 +248,7 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
   @Override
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
-    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, !eagerlyFetchExecutionTree); // False -> executions should not be cached if using executionTreeFetching
+    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, !performanceSettings.isEnableEagerExecutionTreeFetching()); // False -> executions should not be cached if using executionTreeFetching
   }
   
   @Override

@@ -869,38 +869,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   /**
    * Enabled a very verbose debug output of the execution tree whilst executing operations.
-   * Most useful for core engine developers or people fiddling aorund with the execution tree.
+   * Most useful for core engine developers or people fiddling around with the execution tree.
    */
   protected boolean enableVerboseExecutionTreeLogging;
   
-  /**
-   * Experimental setting: if true, whenever an execution is fetched from the data store,
-   * the whole execution tree is fetched in the same roundtrip.
-   *  
-   * Less roundtrips to the database outweighs doing many, smaller fetches and often
-   * multiple executions from the same tree are needed anyway when executing process instances.
-   */
-  protected boolean enableEagerExecutionTreeFetching;
+  protected PerformanceSettings performanceSettings = new PerformanceSettings();
   
-  /**
-   * Experimental setting: keeps a count on each execution that holds
-   * how many variables, jobs, tasks, event subscriptions, etc. the execution has.
-   * 
-   * This makes the delete more performant as a query is not needed anymore
-   * to check if there is related data. However, maintaining the count
-   * does mean more updates to the execution and potentially more optimistic locking opportunities. 
-   * Typically keeping the counts lead to better performance as deletes are a large part of the
-   * execution tree maintenance.  
-   */
-  protected boolean enableExecutionRelationshipCounts;
-  
-  /**
-   * Experimental setting: in certain places in the engine (execution/process instance/historic process instance/
-   * tasks/data objects) localization is supported. When this setting is false,
-   * localization is completely disabled, which gives a small performance gain.
-   */
-  protected boolean enableLocalization = true;
-
   // Backwards compatibility //////////////////////////////////////////////////////////////
   
   protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
@@ -3132,30 +3106,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public boolean isEnableEagerExecutionTreeFetching() {
-    return enableEagerExecutionTreeFetching;
-  }
-
   public ProcessEngineConfigurationImpl setEnableEagerExecutionTreeFetching(boolean enableEagerExecutionTreeFetching) {
-    this.enableEagerExecutionTreeFetching = enableEagerExecutionTreeFetching;
+    this.performanceSettings.setEnableEagerExecutionTreeFetching(enableEagerExecutionTreeFetching);
     return this;
-  }
-
-  public boolean isEnableExecutionRelationshipCounts() {
-    return enableExecutionRelationshipCounts;
   }
 
   public ProcessEngineConfigurationImpl setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
-    this.enableExecutionRelationshipCounts = enableExecutionRelationshipCounts;
+    this.performanceSettings.setEnableExecutionRelationshipCounts(enableExecutionRelationshipCounts);
     return this;
   }
   
-  public boolean isEnableLocalization() {
-    return enableLocalization;
+  public PerformanceSettings getPerformanceSettings() {
+    return performanceSettings;
+  }
+
+  public void setPerformanceSettings(PerformanceSettings performanceSettings) {
+    this.performanceSettings = performanceSettings;
   }
 
   public ProcessEngineConfigurationImpl setEnableLocalization(boolean enableLocalization) {
-    this.enableLocalization = enableLocalization;
+    this.performanceSettings.setEnableLocalization(enableLocalization);
     return this;
   }
 

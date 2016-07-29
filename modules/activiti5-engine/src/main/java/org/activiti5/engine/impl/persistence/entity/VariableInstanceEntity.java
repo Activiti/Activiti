@@ -60,6 +60,7 @@ public class VariableInstanceEntity extends AbstractEntity implements VariableIn
   
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
+    variableInstance.setRevision(0);
 
     Context.getCommandContext()
       .getDbSqlSession()

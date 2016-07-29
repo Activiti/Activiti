@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -37,12 +38,12 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
 
   protected VariableInstanceDataManager variableInstanceDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
   
   public VariableInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, VariableInstanceDataManager variableInstanceDataManager) {
     super(processEngineConfiguration);
     this.variableInstanceDataManager = variableInstanceDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
@@ -64,7 +65,7 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
   public void insert(VariableInstanceEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
     
-    if (enableExecutionRelationshipCounts && entity.getExecutionId() != null) {
+    if (performanceSettings.isEnableExecutionRelationshipCounts() && entity.getExecutionId() != null) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
       executionEntity.setVariableCount(executionEntity.getVariableCount() + 1);
     }
@@ -119,7 +120,7 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     }
     entity.setDeleted(true);
     
-    if (enableExecutionRelationshipCounts && entity.getExecutionId() != null) {
+    if (performanceSettings.isEnableExecutionRelationshipCounts() && entity.getExecutionId() != null) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
       executionEntity.setVariableCount(executionEntity.getVariableCount() - 1);
     }

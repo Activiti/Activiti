@@ -277,7 +277,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     
     // If the execution was freshly created, there is no need to check the database, 
     // there can never be an entry for a historic activity instance with this execution id.
-    if (!execution.isInserted()) {
+    if (!execution.isInserted() && !execution.isProcessInstanceType()) {
 
       // Check the database
       List<HistoricActivityInstanceEntity> historicActivityInstances = getHistoricActivityInstanceEntityManager()
@@ -883,4 +883,13 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   protected EntityCache getEntityCache() {
     return getSession(EntityCache.class);
   }
+
+  public HistoryLevel getHistoryLevel() {
+    return historyLevel;
+  }
+
+  public void setHistoryLevel(HistoryLevel historyLevel) {
+    this.historyLevel = historyLevel;
+  }
+  
 }

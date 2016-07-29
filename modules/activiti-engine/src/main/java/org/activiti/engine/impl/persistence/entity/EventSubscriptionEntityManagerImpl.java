@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
@@ -37,12 +38,12 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   
   protected EventSubscriptionDataManager eventSubscriptionDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
   
   public EventSubscriptionEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, EventSubscriptionDataManager eventSubscriptionDataManager) {
     super(processEngineConfiguration);
     this.eventSubscriptionDataManager = eventSubscriptionDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -120,7 +121,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   public void insert(EventSubscriptionEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
     
-    if (entity.getExecutionId() != null && enableExecutionRelationshipCounts) {
+    if (entity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) entity.getExecution();
       executionEntity.setEventSubscriptionCount(executionEntity.getEventSubscriptionCount() + 1);
     }
@@ -128,7 +129,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   
   @Override
   public void delete(EventSubscriptionEntity entity, boolean fireDeleteEvent) {
-    if (entity.getExecutionId() != null && enableExecutionRelationshipCounts) {
+    if (entity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) entity.getExecution();
       executionEntity.setEventSubscriptionCount(executionEntity.getEventSubscriptionCount() - 1);
     }

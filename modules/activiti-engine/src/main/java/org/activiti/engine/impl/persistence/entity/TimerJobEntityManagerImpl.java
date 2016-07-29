@@ -24,6 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
@@ -43,12 +44,12 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
 
   protected TimerJobDataManager jobDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
 
   public TimerJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, TimerJobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -140,7 +141,7 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
           jobEntity.setTenantId(execution.getTenantId());
         }
         
-        if (enableExecutionRelationshipCounts) {
+        if (performanceSettings.isEnableExecutionRelationshipCounts()) {
           CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
           countingExecutionEntity.setTimerJobCount(countingExecutionEntity.getTimerJobCount() + 1);
         }
@@ -164,7 +165,7 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
     deleteExceptionByteArrayRef(jobEntity);
     removeExecutionLink(jobEntity);
     
-    if (jobEntity.getExecutionId() != null && enableExecutionRelationshipCounts) {
+    if (jobEntity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
       executionEntity.setTimerJobCount(executionEntity.getTimerJobCount() - 1);
     }

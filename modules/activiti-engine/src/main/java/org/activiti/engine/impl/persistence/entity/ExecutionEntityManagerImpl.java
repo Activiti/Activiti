@@ -29,6 +29,7 @@ import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
@@ -51,12 +52,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   protected ExecutionDataManager executionDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
   
   public ExecutionEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ExecutionDataManager executionDataManager) {
     super(processEngineConfiguration);
     this.executionDataManager = executionDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
@@ -498,6 +499,8 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
+    
+    boolean enableExecutionRelationshipCounts = performanceSettings.isEnableExecutionRelationshipCounts();
     
     if (executionEntity.getId().equals(executionEntity.getProcessInstanceId())
         && (!enableExecutionRelationshipCounts 

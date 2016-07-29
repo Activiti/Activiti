@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -34,12 +35,12 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   protected IdentityLinkDataManager identityLinkDataManager;
   
-  protected boolean enableExecutionRelationshipCounts;
+  protected PerformanceSettings performanceSettings;
   
   public IdentityLinkEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, IdentityLinkDataManager identityLinkDataManager) {
     super(processEngineConfiguration);
     this.identityLinkDataManager = identityLinkDataManager;
-    this.enableExecutionRelationshipCounts = processEngineConfiguration.isEnableExecutionRelationshipCounts();
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -52,7 +53,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
     super.insert(entity, fireCreateEvent);
     getHistoryManager().recordIdentityLinkCreated(entity);
     
-    if (enableExecutionRelationshipCounts && entity.getProcessInstanceId() != null) {
+    if (performanceSettings.isEnableExecutionRelationshipCounts() && entity.getProcessInstanceId() != null) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getProcessInstanceId());
       executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
     }
@@ -65,7 +66,7 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
       getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
     }
     
-    if (enableExecutionRelationshipCounts && identityLink.getProcessInstanceId() != null) {
+    if (performanceSettings.isEnableExecutionRelationshipCounts() && identityLink.getProcessInstanceId() != null) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(identityLink.getProcessInstanceId());
       executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() -1);
     }

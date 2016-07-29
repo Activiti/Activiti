@@ -139,7 +139,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(this);
     }
     
-    if (tasks != null && Context.getProcessEngineConfiguration().isEnableLocalization()) {
+    if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (HistoricTaskInstance task : tasks) {
         localize(task);
       }

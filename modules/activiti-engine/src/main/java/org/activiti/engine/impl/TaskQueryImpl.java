@@ -1256,7 +1256,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       tasks = commandContext.getTaskEntityManager().findTasksByQueryCriteria(this);
     }
     
-    if (tasks != null && Context.getProcessEngineConfiguration().isEnableLocalization()) {
+    if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (Task task : tasks) {
         localize(task);
       }
