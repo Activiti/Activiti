@@ -274,13 +274,19 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (historicActivityInstanceEntityFromCache != null) {
       return historicActivityInstanceEntityFromCache;
     }
+    
+    // If the execution was freshly created, there is no need to check the database, 
+    // there can never be an entry for a historic activity instance with this execution id.
+    if (!execution.isInserted() && !execution.isProcessInstanceType()) {
 
-    // Check the database
-    List<HistoricActivityInstanceEntity> historicActivityInstances = getHistoricActivityInstanceEntityManager()
-        .findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(executionId, activityId); 
-
-    if (historicActivityInstances.size() > 0) {
-      return historicActivityInstances.get(0);
+      // Check the database
+      List<HistoricActivityInstanceEntity> historicActivityInstances = getHistoricActivityInstanceEntityManager()
+          .findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(executionId, activityId); 
+  
+      if (historicActivityInstances.size() > 0) {
+        return historicActivityInstances.get(0);
+      }
+      
     }
     
     if (execution.getParentId() != null) {
@@ -877,4 +883,13 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   protected EntityCache getEntityCache() {
     return getSession(EntityCache.class);
   }
+
+  public HistoryLevel getHistoryLevel() {
+    return historyLevel;
+  }
+
+  public void setHistoryLevel(HistoryLevel historyLevel) {
+    this.historyLevel = historyLevel;
+  }
+  
 }

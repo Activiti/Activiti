@@ -51,13 +51,11 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
   
   List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-  List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId);
-
   Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId);
   
   Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId);
   
-  List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
+  List<ExecutionEntity> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
   
   List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
   

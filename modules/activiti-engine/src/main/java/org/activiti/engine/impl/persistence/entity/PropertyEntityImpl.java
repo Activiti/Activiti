@@ -20,12 +20,11 @@ import org.activiti.engine.ActivitiException;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class PropertyEntityImpl implements PropertyEntity, Serializable {
+public class PropertyEntityImpl extends AbstractEntity implements PropertyEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
   protected String name;
-  protected  int revision;
   protected  String value;
 
   public PropertyEntityImpl() {
@@ -37,14 +36,6 @@ public class PropertyEntityImpl implements PropertyEntity, Serializable {
   
   public void setName(String name) {
     this.name = name;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public String getValue() {
@@ -65,10 +56,6 @@ public class PropertyEntityImpl implements PropertyEntity, Serializable {
 
   public void setId(String id) {
     throw new ActivitiException("only provided id generation allowed for properties");
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
   }
 
   // common methods //////////////////////////////////////////////////////////

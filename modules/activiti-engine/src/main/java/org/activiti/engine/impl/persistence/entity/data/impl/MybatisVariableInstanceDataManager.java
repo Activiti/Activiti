@@ -24,11 +24,14 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.VariableByExecutionIdMatcher;
 
 /**
  * @author Joram Barrez
  */
 public class MybatisVariableInstanceDataManager extends AbstractDataManager<VariableInstanceEntity> implements VariableInstanceDataManager {
+  
+  protected CachedEntityMatcher<VariableInstanceEntity> variableInstanceEntity = new VariableByExecutionIdMatcher();
 
   public MybatisVariableInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -41,7 +44,9 @@ public class MybatisVariableInstanceDataManager extends AbstractDataManager<Vari
   
   @Override
   public VariableInstanceEntity create() {
-    return new VariableInstanceEntityImpl();
+    VariableInstanceEntityImpl variableInstanceEntity = new VariableInstanceEntityImpl();
+    variableInstanceEntity.setRevision(0); // For backwards compatibility, variables / HistoricVariableUpdate assumes revision 0 for the first time
+    return variableInstanceEntity;
   }
   
   @Override
@@ -58,11 +63,7 @@ public class MybatisVariableInstanceDataManager extends AbstractDataManager<Vari
   
   @Override
   public List<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
-    return getList("selectVariablesByExecutionId", executionId, new CachedEntityMatcher<VariableInstanceEntity>() {
-      public boolean isRetained(VariableInstanceEntity variableInstanceEntity) {
-        return variableInstanceEntity.getExecutionId() != null && variableInstanceEntity.getExecutionId().equals(executionId);
-      }
-    }, true);
+    return getList("selectVariablesByExecutionId", executionId, variableInstanceEntity, true);
   }
   
   @Override

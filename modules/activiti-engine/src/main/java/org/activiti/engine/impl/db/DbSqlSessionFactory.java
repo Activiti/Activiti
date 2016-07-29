@@ -23,6 +23,7 @@ import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -54,12 +55,15 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
+  
+  // Caches, filled while executing processes 
   protected Map<Class<?>,String> insertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> bulkInsertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> updateStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> deleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> selectStatements = new ConcurrentHashMap<Class<?>, String>();
+  
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected int maxNrOfStatementsInBulkInsert = 100;

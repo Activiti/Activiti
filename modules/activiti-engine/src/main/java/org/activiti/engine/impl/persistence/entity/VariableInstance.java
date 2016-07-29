@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 

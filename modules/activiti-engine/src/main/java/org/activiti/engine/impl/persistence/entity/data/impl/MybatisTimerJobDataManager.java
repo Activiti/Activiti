@@ -25,6 +25,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.TimerJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -32,6 +33,8 @@ import org.activiti.engine.runtime.Job;
  * @author Vasile Dirla
  */
 public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEntity> implements TimerJobDataManager {
+  
+  protected CachedEntityMatcher<TimerJobEntity> timerJobsByExecutionIdMatcher = new TimerJobsByExecutionIdMatcher();
 
   public MybatisTimerJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -78,13 +81,7 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
 
   @Override
   public List<TimerJobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectTimerJobsByExecutionId", executionId, new CachedEntityMatcher<TimerJobEntity>() {
-
-      @Override
-      public boolean isRetained(TimerJobEntity jobEntity) {
-        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
-      }
-    }, true);
+    return getList("selectTimerJobsByExecutionId", executionId, timerJobsByExecutionIdMatcher, true);
   }
   
   @Override

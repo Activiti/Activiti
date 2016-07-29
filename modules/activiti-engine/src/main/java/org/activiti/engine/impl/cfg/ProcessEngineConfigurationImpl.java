@@ -869,10 +869,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   /**
    * Enabled a very verbose debug output of the execution tree whilst executing operations.
-   * Most useful for core engine developers or people fiddling aorund with the execution tree.
+   * Most useful for core engine developers or people fiddling around with the execution tree.
    */
   protected boolean enableVerboseExecutionTreeLogging;
-
+  
+  protected PerformanceSettings performanceSettings = new PerformanceSettings();
+  
   // Backwards compatibility //////////////////////////////////////////////////////////////
   
   protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
@@ -3101,6 +3103,29 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setEnableVerboseExecutionTreeLogging(boolean enableVerboseExecutionTreeLogging) {
     this.enableVerboseExecutionTreeLogging = enableVerboseExecutionTreeLogging;
+    return this;
+  }
+  
+  public ProcessEngineConfigurationImpl setEnableEagerExecutionTreeFetching(boolean enableEagerExecutionTreeFetching) {
+    this.performanceSettings.setEnableEagerExecutionTreeFetching(enableEagerExecutionTreeFetching);
+    return this;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
+    this.performanceSettings.setEnableExecutionRelationshipCounts(enableExecutionRelationshipCounts);
+    return this;
+  }
+  
+  public PerformanceSettings getPerformanceSettings() {
+    return performanceSettings;
+  }
+
+  public void setPerformanceSettings(PerformanceSettings performanceSettings) {
+    this.performanceSettings = performanceSettings;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableLocalization(boolean enableLocalization) {
+    this.performanceSettings.setEnableLocalization(enableLocalization);
     return this;
   }
 

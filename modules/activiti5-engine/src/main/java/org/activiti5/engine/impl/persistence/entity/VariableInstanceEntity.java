@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.persistence.entity.AbstractEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
@@ -29,12 +30,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
  */
-public class VariableInstanceEntity implements VariableInstance, ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
+public class VariableInstanceEntity extends AbstractEntity implements VariableInstance, ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
-
-  protected String id;
-  protected int revision;
 
   protected String name;
   protected String localizedName;
@@ -62,6 +60,7 @@ public class VariableInstanceEntity implements VariableInstance, ValueFields, Pe
   
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
+    variableInstance.setRevision(0);
 
     Context.getCommandContext()
       .getDbSqlSession()
@@ -123,15 +122,6 @@ public class VariableInstanceEntity implements VariableInstance, ValueFields, Pe
     return persistentState;
   }
   
-  public int getRevisionNext() {
-    return revision+1;
-  }
-  
-  
-  public boolean isDeleted() {
-    return deleted;
-  }
-
   // lazy initialized relations ///////////////////////////////////////////////
 
   public void setProcessInstanceId(String processInstanceId) {
@@ -170,20 +160,6 @@ public class VariableInstanceEntity implements VariableInstance, ValueFields, Pe
   }
 
   // getters and setters //////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public int getRevision() {
-    return revision;
-  }
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
 
   public String getName() {
     return name;

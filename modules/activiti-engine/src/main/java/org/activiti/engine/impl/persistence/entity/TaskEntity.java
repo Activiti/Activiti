@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.task.Task;
 

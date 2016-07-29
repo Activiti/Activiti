@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -103,14 +104,20 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     
     if (subProcess.getLoopCharacteristics() != null) {
       List<? extends ExecutionEntity> multiInstanceExecutions = parentScopeExecution.getExecutions();
+      List<ExecutionEntity> executionsToDelete = new ArrayList<ExecutionEntity>();
       for (ExecutionEntity multiInstanceExecution : multiInstanceExecutions) {
         if (multiInstanceExecution.getId().equals(parentScopeExecution.getId()) == false) {
           ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution);
           
           // end all executions in the scope of the transaction
+          executionsToDelete.add(multiInstanceExecution);
           deleteChildExecutions(multiInstanceExecution, executionEntity, commandContext, DeleteReason.TRANSACTION_CANCELED);
           
         }
+      }
+      
+      for (ExecutionEntity executionEntityToDelete : executionsToDelete) {
+        deleteChildExecutions(executionEntityToDelete, executionEntity, commandContext, DeleteReason.TRANSACTION_CANCELED);
       }
     }
     

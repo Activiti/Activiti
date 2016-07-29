@@ -22,7 +22,9 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
 import org.activiti.engine.impl.variable.VariableType;
@@ -36,9 +38,12 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
 
   protected VariableInstanceDataManager variableInstanceDataManager;
   
+  protected PerformanceSettings performanceSettings;
+  
   public VariableInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, VariableInstanceDataManager variableInstanceDataManager) {
     super(processEngineConfiguration);
     this.variableInstanceDataManager = variableInstanceDataManager;
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
@@ -54,6 +59,16 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     variableInstance.setTypeName(type.getTypeName());
     variableInstance.setValue(value);
     return variableInstance;
+  }
+  
+  @Override
+  public void insert(VariableInstanceEntity entity, boolean fireCreateEvent) {
+    super.insert(entity, fireCreateEvent);
+    
+    if (performanceSettings.isEnableExecutionRelationshipCounts() && entity.getExecutionId() != null) {
+      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
+      executionEntity.setVariableCount(executionEntity.getVariableCount() + 1);
+    }
   }
   
   @Override
@@ -104,6 +119,11 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
       byteArrayRef.delete();
     }
     entity.setDeleted(true);
+    
+    if (performanceSettings.isEnableExecutionRelationshipCounts() && entity.getExecutionId() != null) {
+      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
+      executionEntity.setVariableCount(executionEntity.getVariableCount() - 1);
+    }
 
     ActivitiEventDispatcher eventDispatcher =  getEventDispatcher();
     if (fireDeleteEvent && eventDispatcher.isEnabled()) {

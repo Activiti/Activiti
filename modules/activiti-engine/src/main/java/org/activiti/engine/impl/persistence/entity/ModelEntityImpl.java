@@ -24,12 +24,10 @@ import org.activiti.engine.ProcessEngineConfiguration;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class ModelEntityImpl implements ModelEntity, Serializable {
+public class ModelEntityImpl extends AbstractEntity implements ModelEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision = 1;
   protected String name;
   protected String key;
   protected String category;
@@ -62,14 +60,6 @@ public class ModelEntityImpl implements ModelEntity, Serializable {
   }
 
   // getters and setters ////////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getName() {
     return name;
@@ -149,18 +139,6 @@ public class ModelEntityImpl implements ModelEntity, Serializable {
 
   public void setEditorSourceExtraValueId(String editorSourceExtraValueId) {
     this.editorSourceExtraValueId = editorSourceExtraValueId;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public String getTenantId() {

@@ -22,12 +22,10 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marcus Klimstra (CGI)
  * @author Joram Barrez
  */
-public class ByteArrayEntityImpl implements ByteArrayEntity, Serializable {
+public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision;
   protected String name;
   protected byte[] bytes;
   protected String deploymentId;
@@ -44,19 +42,7 @@ public class ByteArrayEntityImpl implements ByteArrayEntity, Serializable {
     return new PersistentState(name, bytes);
   }
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
   // getters and setters ////////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getName() {
     return name;
@@ -76,14 +62,6 @@ public class ByteArrayEntityImpl implements ByteArrayEntity, Serializable {
 
   public void setBytes(byte[] bytes) {
     this.bytes = bytes;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   @Override

@@ -20,11 +20,10 @@ import java.util.Date;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public abstract class HistoricDetailEntityImpl implements HistoricDetailEntity, Serializable {
+public abstract class HistoricDetailEntityImpl extends AbstractEntityNoRevision implements HistoricDetailEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
   protected String processInstanceId;
   protected String activityInstanceId;
   protected String taskId;
@@ -38,14 +37,6 @@ public abstract class HistoricDetailEntityImpl implements HistoricDetailEntity, 
   }
 
   // getters and setters //////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getProcessInstanceId() {
     return processInstanceId;

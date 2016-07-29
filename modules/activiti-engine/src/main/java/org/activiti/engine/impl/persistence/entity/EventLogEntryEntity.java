@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.db.Entity;
 
 /**
  * An event log entry can only be inserted (and maybe deleted).

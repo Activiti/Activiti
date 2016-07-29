@@ -22,20 +22,14 @@ import org.activiti.engine.impl.db.BulkDeleteable;
 /**
  * @author Frederik Heremans
  */
-public class HistoricIdentityLinkEntityImpl implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable {
+public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-
   protected String type;
-
   protected String userId;
-
   protected String groupId;
-
   protected String taskId;
-
   protected String processInstanceId;
 
   public HistoricIdentityLinkEntityImpl() {
@@ -72,14 +66,6 @@ public class HistoricIdentityLinkEntityImpl implements HistoricIdentityLinkEntit
 
   public boolean isGroup() {
     return groupId != null;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public String getType() {

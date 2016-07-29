@@ -27,11 +27,10 @@ import org.activiti.engine.impl.context.Context;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentEntityImpl implements DeploymentEntity, Serializable {
+public class DeploymentEntityImpl extends AbstractEntityNoRevision implements DeploymentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
   protected String name;
   protected String category;
   protected String key;
@@ -108,14 +107,6 @@ public class DeploymentEntityImpl implements DeploymentEntity, Serializable {
   }
 
   // getters and setters ////////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getName() {
     return name;

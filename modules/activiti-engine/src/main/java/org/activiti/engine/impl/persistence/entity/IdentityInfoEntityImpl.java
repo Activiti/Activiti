@@ -20,12 +20,10 @@ import java.util.Map;
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoEntityImpl implements IdentityInfoEntity, Serializable {
+public class IdentityInfoEntityImpl extends AbstractEntity implements IdentityInfoEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision;
   protected String type;
   protected String userId;
   protected String key;
@@ -44,26 +42,6 @@ public class IdentityInfoEntityImpl implements IdentityInfoEntity, Serializable 
     persistentState.put("value", value);
     persistentState.put("password", passwordBytes);
     return persistentState;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public String getType() {

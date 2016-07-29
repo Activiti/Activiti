@@ -19,12 +19,10 @@ import java.util.Map;
 /**
  * @author Tom Baeyens
  */
-public class GroupEntityImpl implements GroupEntity, Serializable {
+public class GroupEntityImpl extends AbstractEntity implements GroupEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision;
   protected String name;
   protected String type;
 
@@ -36,18 +34,6 @@ public class GroupEntityImpl implements GroupEntity, Serializable {
     persistentState.put("name", name);
     persistentState.put("type", type);
     return persistentState;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public String getName() {
@@ -66,11 +52,4 @@ public class GroupEntityImpl implements GroupEntity, Serializable {
     this.type = type;
   }
 
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
 }

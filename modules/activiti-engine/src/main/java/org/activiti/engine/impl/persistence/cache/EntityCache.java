@@ -16,9 +16,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
  * This is a cache for {@link Entity} instances during the execution of one {@link Command}.
@@ -39,6 +39,7 @@ public interface EntityCache extends Session {
    * @param entity The {@link Entity} instance
    * @param storeState If true, the current state {@link Entity#getPersistentState()} will be stored for future diffing.
    *                   Note that, if false, the {@link Entity} will always be seen as changed.
+   * @return Returns a {@link CachedEntity} instance, which can be enriched later on.                   
    */
   CachedEntity put(Entity entity, boolean storeState);
   

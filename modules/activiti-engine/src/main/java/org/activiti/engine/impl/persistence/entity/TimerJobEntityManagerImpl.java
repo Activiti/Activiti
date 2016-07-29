@@ -24,9 +24,11 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
+import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
@@ -41,10 +43,13 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
   private static final Logger logger = LoggerFactory.getLogger(TimerJobEntityManagerImpl.class);
 
   protected TimerJobDataManager jobDataManager;
+  
+  protected PerformanceSettings performanceSettings;
 
   public TimerJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, TimerJobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
+    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -135,6 +140,12 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
         if (execution.getTenantId() != null) {
           jobEntity.setTenantId(execution.getTenantId());
         }
+        
+        if (performanceSettings.isEnableExecutionRelationshipCounts()) {
+          CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
+          countingExecutionEntity.setTimerJobCount(countingExecutionEntity.getTimerJobCount() + 1);
+        }
+        
       } else {
         // In case the job has an executionId, but the Execution is not found,
         // it means that for example for a boundary timer event on a user task,
@@ -152,8 +163,12 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
     super.delete(jobEntity);
 
     deleteExceptionByteArrayRef(jobEntity);
-
     removeExecutionLink(jobEntity);
+    
+    if (jobEntity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
+      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
+      executionEntity.setTimerJobCount(executionEntity.getTimerJobCount() - 1);
+    }
     
     // Send event
     if (getEventDispatcher().isEnabled()) {

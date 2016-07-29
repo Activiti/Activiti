@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -61,6 +60,10 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   void setSubProcessInstance(ExecutionEntity subProcessInstance);
 
   void setRootProcessInstanceId(String rootProcessInstanceId);
+  
+  ExecutionEntity getRootProcessInstance();
+  
+  void setRootProcessInstance(ExecutionEntity rootProcessInstance);
   
   List<? extends ExecutionEntity> getExecutions();
   
