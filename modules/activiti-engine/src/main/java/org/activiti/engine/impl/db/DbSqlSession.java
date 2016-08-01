@@ -240,6 +240,11 @@ public class DbSqlSession implements Session {
   }
   
   @SuppressWarnings("rawtypes")
+  public List selectList(String statement, Object parameter, boolean useCache) {
+    return selectList(statement, parameter, 0, Integer.MAX_VALUE, useCache);
+  }
+  
+  @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter, Page page) {
     return selectList(statement, parameter, page, true);
   }

@@ -93,7 +93,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
 
-    ExecutionEntity subProcessInstance = createSubProcessInstance(processDefinition, executionEntity, initialFlowElement);
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().createSubprocessInstance(processDefinition.getId(), executionEntity);
+    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(executionEntity, subProcessInstance, initialFlowElement);
+//    ExecutionEntity subProcessInstance = createSubProcessInstance(processDefinition, executionEntity, initialFlowElement);
+
 
     // process template-defined data objects
     Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
@@ -125,33 +128,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     Context.getProcessEngineConfiguration().getEventDispatcher()
       .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));
   }
-
-  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-    // only data. no control flow available on this execution.
-
-    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
-
-    // copy process variables
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
-    for (IOParameter ioParameter : callActivity.getOutParameters()) {
-      Object value = null;
-      if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-        Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-        value = expression.getValue(subProcessInstance);
-
-      } else {
-        value = subProcessInstance.getVariable(ioParameter.getSource());
-      }
-      execution.setVariable(ioParameter.getTarget(), value);
-    }
-  }
-
-  public void completed(DelegateExecution execution) throws Exception {
-    // only control flow. no sub process instance data available
-    leave(execution);
-  }
-
+  
   protected ExecutionEntity createSubProcessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
 
     ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().create(); 
@@ -181,6 +158,33 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     return subProcessInstance;
+  }
+
+
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    // only data. no control flow available on this execution.
+
+    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+
+    // copy process variables
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
+    for (IOParameter ioParameter : callActivity.getOutParameters()) {
+      Object value = null;
+      if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
+        Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
+        value = expression.getValue(subProcessInstance);
+
+      } else {
+        value = subProcessInstance.getVariable(ioParameter.getSource());
+      }
+      execution.setVariable(ioParameter.getTarget(), value);
+    }
+  }
+
+  public void completed(DelegateExecution execution) throws Exception {
+    // only control flow. no sub process instance data available
+    leave(execution);
   }
 
   public void setProcessDefinitonKey(String processDefinitonKey) {

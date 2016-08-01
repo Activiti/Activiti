@@ -31,6 +31,8 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
   ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity);
   
+  ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity);
+  
   /**
    * Finds the {@link ExecutionEntity} for the given root process instance id.
    * All children will have been fetched and initialized. 

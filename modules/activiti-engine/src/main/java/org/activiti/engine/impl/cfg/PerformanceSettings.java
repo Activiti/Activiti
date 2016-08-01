@@ -39,6 +39,11 @@ public class PerformanceSettings {
   protected boolean enableExecutionRelationshipCounts;
   
   /**
+   * If false, no check will be done on boot.
+   */
+  protected boolean validateExecutionRelationshipCountConfigOnBoot = true;
+  
+  /**
    * Experimental setting: in certain places in the engine (execution/process instance/historic process instance/
    * tasks/data objects) localization is supported. When this setting is false,
    * localization is completely disabled, which gives a small performance gain.
@@ -59,6 +64,14 @@ public class PerformanceSettings {
 
   public void setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
     this.enableExecutionRelationshipCounts = enableExecutionRelationshipCounts;
+  }
+  
+  public boolean isValidateExecutionRelationshipCountConfigOnBoot() {
+    return validateExecutionRelationshipCountConfigOnBoot;
+  }
+
+  public void setValidateExecutionRelationshipCountConfigOnBoot(boolean validateExecutionRelationshipCountConfigOnBoot) {
+    this.validateExecutionRelationshipCountConfigOnBoot = validateExecutionRelationshipCountConfigOnBoot;
   }
 
   public boolean isEnableLocalization() {

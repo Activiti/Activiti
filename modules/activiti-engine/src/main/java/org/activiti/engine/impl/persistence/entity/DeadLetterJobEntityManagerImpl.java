@@ -19,7 +19,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DeadLetterJobDataManager;
@@ -36,12 +35,9 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
 
   protected DeadLetterJobDataManager jobDataManager;
   
-  protected PerformanceSettings performanceSettings;
-
   public DeadLetterJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, DeadLetterJobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
-    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
@@ -76,9 +72,11 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
         jobEntity.setTenantId(execution.getTenantId());
       }
       
-      if (performanceSettings.isEnableExecutionRelationshipCounts()) {
+      if (isExecutionRelatedEntityCountEnabledGlobally()) {
         CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
-        countingExecutionEntity.setDeadLetterJobCount(countingExecutionEntity.getDeadLetterJobCount() + 1);
+        if (isExecutionRelatedEntityCountEnabled(countingExecutionEntity)) {
+          countingExecutionEntity.setDeadLetterJobCount(countingExecutionEntity.getDeadLetterJobCount() + 1);
+        }
       }
     }
 
@@ -96,9 +94,11 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
 
     deleteExceptionByteArrayRef(jobEntity);
     
-    if (jobEntity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
+    if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
-      executionEntity.setDeadLetterJobCount(executionEntity.getDeadLetterJobCount() - 1);
+      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+        executionEntity.setDeadLetterJobCount(executionEntity.getDeadLetterJobCount() - 1);
+      }
     }
     
     // Send event

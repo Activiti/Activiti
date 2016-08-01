@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, EVT_SUBSCR_COUNT_, TASK_COUNT_, JOB_COUNT_, TIMER_JOB_COUNT_, SUSP_JOB_COUNT_, DEADLETTER_JOB_COUNT_, VAR_COUNT_, ID_LINK_COUNT_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, IS_COUNT_ENABLED_, EVT_SUBSCR_COUNT_, TASK_COUNT_, JOB_COUNT_, TIMER_JOB_COUNT_, SUSP_JOB_COUNT_, DEADLETTER_JOB_COUNT_, VAR_COUNT_, ID_LINK_COUNT_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -28,6 +28,7 @@
       #{name, jdbcType=VARCHAR},
       #{startTime, jdbcType=TIMESTAMP},
       #{startUserId, jdbcType=VARCHAR},
+      #{isCountEnabled, jdbcType=BOOLEAN},
       #{eventSubscriptionCount, jdbcType=INTEGER},
       #{taskCount, jdbcType=INTEGER},
       #{jobCount, jdbcType=INTEGER},
@@ -40,7 +41,7 @@
   </insert>
 
   <insert id="bulkInsertExecution" parameterType="java.util.List">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, EVT_SUBSCR_COUNT_, TASK_COUNT_, JOB_COUNT_, TIMER_JOB_COUNT_, SUSP_JOB_COUNT_, DEADLETTER_JOB_COUNT_, VAR_COUNT_, ID_LINK_COUNT_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, IS_COUNT_ENABLED_, EVT_SUBSCR_COUNT_, TASK_COUNT_, JOB_COUNT_, TIMER_JOB_COUNT_, SUSP_JOB_COUNT_, DEADLETTER_JOB_COUNT_, VAR_COUNT_, ID_LINK_COUNT_)
     values 
       <foreach collection="list" item="execution" index="index" separator=",">
         (#{execution.id ,jdbcType=VARCHAR},
@@ -62,6 +63,7 @@
          #{execution.name, jdbcType=VARCHAR},
          #{execution.startTime, jdbcType=TIMESTAMP},
          #{execution.startUserId, jdbcType=VARCHAR},
+         #{execution.isCountEnabled, jdbcType=BOOLEAN},
          #{execution.eventSubscriptionCount, jdbcType=INTEGER},
          #{execution.taskCount, jdbcType=INTEGER},
          #{execution.jobCount, jdbcType=INTEGER},
@@ -77,7 +79,7 @@
     INSERT ALL 
       <foreach collection="list" item="execution" index="index">
         into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_,
-        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, EVT_SUBSCR_COUNT_, TASK_COUNT_, JOB_COUNT_, TIMER_JOB_COUNT_, SUSP_JOB_COUNT_, DEADLETTER_JOB_COUNT_, VAR_COUNT_, ID_LINK_COUNT_) VALUES
+        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, IS_MI_ROOT_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, TENANT_ID_, NAME_, START_TIME_, START_USER_ID_, IS_COUNT_ENABLED_, EVT_SUBSCR_COUNT_, TASK_COUNT_, JOB_COUNT_, TIMER_JOB_COUNT_, SUSP_JOB_COUNT_, DEADLETTER_JOB_COUNT_, VAR_COUNT_, ID_LINK_COUNT_) VALUES
             (#{execution.id ,jdbcType=VARCHAR},
              1,
              #{execution.processInstanceId, jdbcType=VARCHAR},
@@ -97,6 +99,7 @@
              #{execution.name, jdbcType=VARCHAR},
              #{execution.startTime, jdbcType=TIMESTAMP},
              #{execution.startUserId, jdbcType=VARCHAR},
+             #{execution.isCountEnabled, jdbcType=BOOLEAN},
              #{execution.eventSubscriptionCount, jdbcType=INTEGER},
              #{execution.taskCount, jdbcType=INTEGER},
              #{execution.jobCount, jdbcType=INTEGER},
@@ -127,6 +130,7 @@
       ROOT_PROC_INST_ID_ = #{rootProcessInstanceId, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
+      IS_COUNT_ENABLED_ = #{isCountEnabled, jdbcType=BOOLEAN},
       EVT_SUBSCR_COUNT_ = #{eventSubscriptionCount, jdbcType=INTEGER}, 
       TASK_COUNT_ = #{taskCount, jdbcType=INTEGER}, 
       JOB_COUNT_ = #{jobCount, jdbcType=INTEGER},
@@ -187,6 +191,11 @@
     where ID_ = #{id}
   </update>
   
+  <update id="updateExecutionRelatedEntityCountEnabled" parameterType="boolean">
+    update ${prefix}ACT_RU_EXECUTION 
+    set IS_COUNT_ENABLED_ = #{parameter, jdbcType=BOOLEAN}
+  </update>
+  
   <!-- EXECUTION DELETE -->
   
   <delete id="deleteExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
@@ -222,6 +231,7 @@
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
     <result property="jobCount" column="JOB_COUNT_" jdbcType="INTEGER" />
@@ -260,6 +270,7 @@
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
     <result property="jobCount" column="JOB_COUNT_" jdbcType="INTEGER" />
@@ -290,6 +301,7 @@
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
     <result property="jobCount" column="JOB_COUNT_" jdbcType="INTEGER" />
@@ -339,6 +351,7 @@
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
     <result property="jobCount" column="JOB_COUNT_" jdbcType="INTEGER" />
@@ -394,8 +407,8 @@
     where PROC_INST_ID_ = #{parameter}
   </select>
   
-  <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select *
+  <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
+    select ID_
     from ${prefix}ACT_RU_EXECUTION
     where PROC_DEF_ID_ = #{parameter} and PARENT_ID_ is null
   </select>
@@ -486,6 +499,7 @@
     TEMPRES_NAME_ as NAME_, TEMPRES_TENANT_ID_ as TENANT_ID_,
     TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_,
     TEMPRES_START_TIME_ as START_TIME_, TEMPRES_START_USER_ID_ as START_USER_ID_,
+    TEMPRES_IS_COUNT_ENABLED_ as IS_COUNT_ENABLED_,
     TEMPRES_EVT_SUBSCR_COUNT_ as EVT_SUBSCR_COUNT_, 
     TEMPRES_TASK_COUNT_ as TASK_COUNT_, 
     TEMPRES_JOB_COUNT_ as JOB_COUNT_, 
@@ -518,6 +532,7 @@
     RES.START_TIME_ as TEMPRES_START_TIME_, 
     RES.START_USER_ID_ as TEMPRES_START_USER_ID_,
     
+    RES.IS_COUNT_ENABLED_ as TEMPRES_IS_COUNT_ENABLED_,
     RES.EVT_SUBSCR_COUNT_ as TEMPRES_EVT_SUBSCR_COUNT_,
     RES.TASK_COUNT_ as TEMPRES_TASK_COUNT_,
     RES.JOB_COUNT_ as TEMPRES_JOB_COUNT_,

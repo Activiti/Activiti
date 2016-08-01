@@ -82,6 +82,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected boolean isEnded;
   protected boolean isEventScope;
   protected boolean isMultiInstanceRoot;
+  protected boolean isCountEnabled;
 
   // events ///////////////////////////////////////////////////////////////////
   
@@ -737,6 +738,16 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   @Override
   public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
     this.isMultiInstanceRoot = isMultiInstanceRoot;
+  }
+  
+  @Override
+  public boolean isCountEnabled() {
+    return isCountEnabled;
+  }
+
+  @Override
+  public void setCountEnabled(boolean isCountEnabled) {
+    this.isCountEnabled = isCountEnabled;
   }
 
   public String getCurrentActivityId() {

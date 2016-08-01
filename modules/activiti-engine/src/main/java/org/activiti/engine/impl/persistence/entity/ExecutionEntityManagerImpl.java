@@ -29,7 +29,6 @@ import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
-import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
@@ -52,19 +51,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   protected ExecutionDataManager executionDataManager;
   
-  protected PerformanceSettings performanceSettings;
-  
   public ExecutionEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ExecutionDataManager executionDataManager) {
     super(processEngineConfiguration);
     this.executionDataManager = executionDataManager;
-    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
 
   @Override
   protected DataManager<ExecutionEntity> getDataManager() {
     return executionDataManager;
   }
-
+  
   // Overriding the default delete methods to set the 'isDeleted' flag
   
   @Override
@@ -210,8 +206,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId, String initiatorVariableName) {
-
     ExecutionEntity processInstanceExecution = executionDataManager.create();
+    
+    if (isExecutionRelatedEntityCountEnabledGlobally()) {
+      ((CountingExecutionEntity) processInstanceExecution).setCountEnabled(true);
+    }
+    
     processInstanceExecution.setProcessDefinitionId(processDefinitionId);
     processInstanceExecution.setBusinessKey(businessKey);
     processInstanceExecution.setScope(true); // process instance is always a scope for all child executions
@@ -239,8 +239,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     if (authenticatedUserId != null) {
       getIdentityLinkEntityManager().addIdentityLink(processInstanceExecution, authenticatedUserId, null, IdentityLinkType.STARTER);
     }
-
-
+    
     // Fire events
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstanceExecution));
@@ -254,21 +253,13 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
    */
   @Override
   public ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity) {
-    
-    // create the new child execution
     ExecutionEntity childExecution = executionDataManager.create();
-
-    // Inherit parent attributes.
-    if (parentExecutionEntity.getTenantId() != null) {
-      childExecution.setTenantId(parentExecutionEntity.getTenantId());
-    }
+    inheritCommonProperties(parentExecutionEntity, childExecution);
     childExecution.setParent(parentExecutionEntity);
     childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
     childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
         ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
-    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
     childExecution.setScope(false);
-    childExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
 
     // manage the bidirectional parent-child relation
     parentExecutionEntity.addChildExecution(childExecution);
@@ -287,6 +278,52 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     return childExecution;
   }
+  
+  @Override
+  public ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity) {
+    ExecutionEntity subProcessInstance = executionDataManager.create(); 
+    inheritCommonProperties(superExecutionEntity, subProcessInstance);
+    subProcessInstance.setProcessDefinitionId(processDefinitionId);
+    subProcessInstance.setSuperExecution(superExecutionEntity);
+    subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
+    subProcessInstance.setScope(true); // process instance is always a scope for all child executions
+    subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
+
+    // Store in database
+    insert(subProcessInstance, false);
+    
+    if (logger.isDebugEnabled()) {
+      logger.debug("Child execution {} created with super execution {}", subProcessInstance, superExecutionEntity.getId());
+    }
+
+    subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
+    superExecutionEntity.setSubProcessInstance(subProcessInstance);
+
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
+    }
+
+    return subProcessInstance;
+  }
+  
+  protected void inheritCommonProperties(ExecutionEntity parentExecutionEntity, ExecutionEntity childExecution) {
+    
+    // Inherits the 'count' feature from the parent. 
+    // If the parent was not 'counting', we can't make the child 'counting' again.
+    if (parentExecutionEntity instanceof CountingExecutionEntity) {
+      CountingExecutionEntity countingParentExecutionEntity = (CountingExecutionEntity) parentExecutionEntity; 
+      ((CountingExecutionEntity) childExecution).setCountEnabled(countingParentExecutionEntity.isCountEnabled());
+    }
+    
+    childExecution.setRootProcessInstanceId(parentExecutionEntity.getRootProcessInstanceId());
+    childExecution.setActive(true);
+    childExecution.setStartTime(processEngineConfiguration.getClock().getCurrentTime());
+    
+    if (parentExecutionEntity.getTenantId() != null) {
+      childExecution.setTenantId(parentExecutionEntity.getTenantId());
+    }
+    
+  }
 
   // UPDATE METHODS
 
@@ -299,10 +336,10 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   @Override
   public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
-    List<ExecutionEntity> processInstances = executionDataManager.findProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
+    List<String> processInstanceIds = executionDataManager.findProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
 
-    for (ExecutionEntity processInstance : processInstances) {
-      deleteProcessInstanceCascade(processInstance, deleteReason, cascade);
+    for (String processInstanceId : processInstanceIds) {
+      deleteProcessInstance(processInstanceId, deleteReason, cascade);
     }
 
     if (cascade) {
@@ -500,7 +537,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
     
-    boolean enableExecutionRelationshipCounts = performanceSettings.isEnableExecutionRelationshipCounts();
+    boolean enableExecutionRelationshipCounts = isExecutionRelatedEntityCountEnabled(executionEntity); 
     
     if (executionEntity.getId().equals(executionEntity.getProcessInstanceId())
         && (!enableExecutionRelationshipCounts 

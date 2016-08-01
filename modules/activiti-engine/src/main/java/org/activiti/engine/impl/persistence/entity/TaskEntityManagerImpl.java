@@ -40,12 +40,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   
   protected TaskDataManager taskDataManager;
   
-  protected PerformanceSettings performanceSettings;
-  
   public TaskEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, TaskDataManager taskDataManager) {
     super(processEngineConfiguration);
     this.taskDataManager = taskDataManager;
-    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -93,7 +90,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     
     insert(taskEntity, true);
     
-    if (performanceSettings.isEnableExecutionRelationshipCounts() && execution != null) {
+    if (execution != null && isExecutionRelatedEntityCountEnabled(execution)) {
       CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
       countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() + 1);
     }
@@ -229,9 +226,11 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   public void delete(TaskEntity entity, boolean fireDeleteEvent) {
     super.delete(entity, fireDeleteEvent);
     
-    if (entity.getExecutionId() != null && performanceSettings.isEnableExecutionRelationshipCounts()) {
+    if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
       CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) entity.getExecution();
-      countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() - 1);
+      if (isExecutionRelatedEntityCountEnabled(countingExecutionEntity)) {
+        countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() - 1);
+      }
     }
   }
 

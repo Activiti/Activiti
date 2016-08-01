@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -35,12 +34,9 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   
   protected IdentityLinkDataManager identityLinkDataManager;
   
-  protected PerformanceSettings performanceSettings;
-  
   public IdentityLinkEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, IdentityLinkDataManager identityLinkDataManager) {
     super(processEngineConfiguration);
     this.identityLinkDataManager = identityLinkDataManager;
-    this.performanceSettings = processEngineConfiguration.getPerformanceSettings();
   }
   
   @Override
@@ -53,9 +49,11 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
     super.insert(entity, fireCreateEvent);
     getHistoryManager().recordIdentityLinkCreated(entity);
     
-    if (performanceSettings.isEnableExecutionRelationshipCounts() && entity.getProcessInstanceId() != null) {
+    if (entity.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getProcessInstanceId());
-      executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
+      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+        executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
+      }
     }
   }
 
@@ -66,9 +64,11 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
       getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
     }
     
-    if (performanceSettings.isEnableExecutionRelationshipCounts() && identityLink.getProcessInstanceId() != null) {
+    if (identityLink.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
       CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(identityLink.getProcessInstanceId());
-      executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() -1);
+      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+        executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() -1);
+      }
     }
 
     if (getEventDispatcher().isEnabled()) {

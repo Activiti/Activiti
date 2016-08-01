@@ -124,6 +124,7 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
+import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -897,11 +898,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngine buildProcessEngine() {
     init();
     ProcessEngineImpl processEngine = new ProcessEngineImpl(this);
+    
+    // trigger build of Activiti 5 Engine
     if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
-      // trigger build of Activiti 5 Engine
       Context.setProcessEngineConfiguration(processEngine.getProcessEngineConfiguration());
       activiti5CompatibilityHandler.getRawProcessEngine();
     }
+    
+    postProcessEngineInitialisation();
+    
     return processEngine;
   }
 
@@ -2256,6 +2261,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
 
+  }
+  
+  /**
+   * Called when the {@link ProcessEngine} is initialized, but before it is returned
+   */
+  protected void postProcessEngineInitialisation() {
+    if (performanceSettings.isValidateExecutionRelationshipCountConfigOnBoot()) {
+      commandExecutor.execute(new ValidateExecutionRelatedEntityCountConfiguration());
+    }
   }
 
   // getters and setters

@@ -92,6 +92,10 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
       createTenantSchema(tenantId);
       
       createTenantAsyncJobExecutor(tenantId);
+      
+      tenantInfoHolder.setCurrentTenantId(tenantId);
+      super.postProcessEngineInitialisation();
+      tenantInfoHolder.clearCurrentTenantId();
     }
   }
   
@@ -157,6 +161,11 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
   @Override
   public CommandInterceptor createTransactionInterceptor() {
     return null;
+  }
+  
+  @Override
+  protected void postProcessEngineInitialisation() {
+    // empty here. will be done in registerTenant
   }
 
 }

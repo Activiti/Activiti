@@ -55,7 +55,7 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
   
   Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId);
   
-  List<ExecutionEntity> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
+  List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
   
   List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
   
@@ -66,6 +66,8 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
   void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId);
   
   void updateProcessInstanceLockTime(String processInstanceId, Date lockDate, Date expirationTime);
+  
+  void updateAllExecutionRelatedEntityCountFlags(boolean newValue);
   
   void clearProcessInstanceLockTime(String processInstanceId);
   

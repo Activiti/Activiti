@@ -178,21 +178,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       // Executions for all the other one
       if (outgoingSequenceFlows.size() > 1) {
         for (int i = 1; i < outgoingSequenceFlows.size(); i++) {
-  
-          ExecutionEntity outgoingExecutionEntity = commandContext.getExecutionEntityManager().create(); 
-          outgoingExecutionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
-          outgoingExecutionEntity.setProcessInstanceId(execution.getProcessInstanceId());
-          outgoingExecutionEntity.setRootProcessInstanceId(execution.getRootProcessInstanceId());
-          outgoingExecutionEntity.setTenantId(execution.getTenantId());
-  
-          outgoingExecutionEntity.setScope(false);
-          outgoingExecutionEntity.setActive(true);
-
-          outgoingExecutionEntity.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-
+          
           ExecutionEntity parent = execution.getParentId() != null ? execution.getParent() : execution;
-          outgoingExecutionEntity.setParent(parent);
-          parent.addChildExecution(outgoingExecutionEntity);
+          ExecutionEntity outgoingExecutionEntity = commandContext.getExecutionEntityManager().createChildExecution(parent);
           
           SequenceFlow outgoingSequenceFlow = outgoingSequenceFlows.get(i);
           outgoingExecutionEntity.setCurrentFlowElement(outgoingSequenceFlow);

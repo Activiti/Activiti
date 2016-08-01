@@ -17,6 +17,9 @@ package org.activiti.engine.impl.persistence;
  */
 public interface CountingExecutionEntity {
   
+  boolean isCountEnabled();
+  void setCountEnabled(boolean isCountEnabled);
+  
   void setEventSubscriptionCount(int eventSubscriptionCount);
   int getEventSubscriptionCount();
   

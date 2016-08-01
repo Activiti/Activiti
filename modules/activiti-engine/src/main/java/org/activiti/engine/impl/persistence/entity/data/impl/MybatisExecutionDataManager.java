@@ -224,9 +224,10 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     }
   }
   
+  @SuppressWarnings("unchecked")
   @Override
-  public List<ExecutionEntity> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId) {
-    return getList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId, processInstancesByProcessDefinitionMatcher, true);
+  public List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId) {
+    return getDbSqlSession().selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId, false);
   }
   
   @Override
@@ -326,6 +327,11 @@ public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEn
     if (result == 0) {
       throw new ActivitiOptimisticLockingException("Could not lock process instance");
     }
+  }
+  
+  @Override
+  public void updateAllExecutionRelatedEntityCountFlags(boolean newValue) {
+    getDbSqlSession().update("updateExecutionRelatedEntityCountEnabled", newValue);
   }
   
   @Override
