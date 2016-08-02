@@ -97,6 +97,18 @@ public class DmnDeploymentBuilderImpl implements DmnDeploymentBuilder, Serializa
     deployment.addResource(resource);
     return this;
   }
+  
+  public DmnDeploymentBuilder addDmnBytes(String resourceName, byte[] dmnBytes) {
+    if (dmnBytes == null) {
+      throw new ActivitiDmnException("dmn bytes is null");
+    }
+
+    ResourceEntity resource = resourceEntityManager.create();
+    resource.setName(resourceName);
+    resource.setBytes(dmnBytes);
+    deployment.addResource(resource);
+    return this;
+  }
 
   public DmnDeploymentBuilder addDmnModel(String resourceName, DmnDefinition dmnDefinition) {
     DmnXMLConverter dmnXMLConverter = new DmnXMLConverter();

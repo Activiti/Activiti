@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +28,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
+public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableKeyAwareConverter {
+  
+  protected Map<String, ModelInfo> decisionTableKeyMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
 
@@ -68,6 +71,21 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
       setPropertyFieldValue(PROPERTY_MULETASK_LANGUAGE, "language", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_MULETASK_PAYLOAD_EXPRESSION, "payloadExpression", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_MULETASK_RESULT_VARIABLE, "resultVariable", serviceTask, propertiesNode);
+      
+    } else if ("dmn".equalsIgnoreCase(serviceTask.getType())) {
+      for (FieldExtension fieldExtension : serviceTask.getFieldExtensions()) {
+        if (PROPERTY_DECISIONTABLE_REFERENCE_KEY.equals(fieldExtension.getFieldName()) &&
+            decisionTableKeyMap != null && decisionTableKeyMap.containsKey(fieldExtension.getStringValue())) {
+          
+          ObjectNode decisionReferenceNode = objectMapper.createObjectNode();
+          propertiesNode.set(PROPERTY_DECISIONTABLE_REFERENCE, decisionReferenceNode);
+          
+          ModelInfo modelInfo = decisionTableKeyMap.get(fieldExtension.getStringValue());
+          decisionReferenceNode.put("id", modelInfo.getId());
+          decisionReferenceNode.put("name", modelInfo.getName());
+          decisionReferenceNode.put("key", modelInfo.getKey());
+        }
+      }
 
     } else {
 
@@ -154,5 +172,10 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
         }
       }
     }
+  }
+  
+  @Override
+  public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableKeyMap) {
+    this.decisionTableKeyMap = decisionTableKeyMap;
   }
 }

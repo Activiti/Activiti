@@ -162,7 +162,7 @@ public class ModelsResource extends AbstractModelsResource {
     String json = null;
     Model model = null;
     if (modelId != null) {
-      model = getModel(modelId, true, false);
+      model = modelService.getModel(modelId);
       json = model.getModelEditorJson();
     }
 

@@ -18,17 +18,20 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.identity.User;
 
 import com.activiti.domain.editor.AbstractModel;
-
+import com.activiti.domain.editor.Model;
+import com.activiti.domain.editor.ModelHistory;
 
 public interface ModelService {
 
-    AbstractModel getModel(Long modelId);
-    
-    List<AbstractModel> getModelsByModelTypeAndReferenceId(Integer modelType, Long referenceId);
-    
-    BpmnModel getBpmnModel(AbstractModel model, boolean refreshReferences);
-    
-    byte[] getBpmnXML(BpmnModel bpmnMode);
+  Model getModel(Long modelId);
 
-    Long getModelCountForUser(User user, int modelTypeApp);
+  List<AbstractModel> getModelsByModelTypeAndReferenceId(Integer modelType, Long referenceId);
+  
+  ModelHistory getModelHistory(Long modelId, Long modelHistoryId);
+
+  BpmnModel getBpmnModel(AbstractModel model);
+
+  byte[] getBpmnXML(BpmnModel bpmnMode);
+
+  Long getModelCountForUser(User user, int modelTypeApp);
 }

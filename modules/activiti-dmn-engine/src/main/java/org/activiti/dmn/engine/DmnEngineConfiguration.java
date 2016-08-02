@@ -31,12 +31,6 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseConnection;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import org.activiti.dmn.engine.impl.DmnEngineImpl;
 import org.activiti.dmn.engine.impl.DmnRepositoryServiceImpl;
 import org.activiti.dmn.engine.impl.DmnRuleServiceImpl;
@@ -103,7 +97,14 @@ import org.springframework.core.io.Resource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public abstract class DmnEngineConfiguration {
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
+
+public class DmnEngineConfiguration {
     
     protected static final Logger logger = LoggerFactory.getLogger(DmnEngineConfiguration.class);
 
@@ -112,7 +113,7 @@ public abstract class DmnEngineConfiguration {
     
     public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/dmn/db/mapping/mappings.xml";
 
-    public static final String LIQUIBASE_CHANGELOG_PREFIX = "DMN_";
+    public static final String LIQUIBASE_CHANGELOG_PREFIX = "ACT_DMN_";
 
     /**
      * Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
@@ -350,10 +351,6 @@ public abstract class DmnEngineConfiguration {
      */
     protected boolean enableSafeDmnXml;
 
-    /** use one of the static createXxxx methods instead */
-    protected DmnEngineConfiguration() {
-    }
-
     public static DmnEngineConfiguration createDmnEngineConfigurationFromResourceDefault() {
         return createDmnEngineConfigurationFromResource("activiti.dmn.cfg.xml", "dmnEngineConfiguration");
     }
@@ -539,7 +536,7 @@ public abstract class DmnEngineConfiguration {
             database.setDatabaseChangeLogTableName(LIQUIBASE_CHANGELOG_PREFIX+database.getDatabaseChangeLogTableName());
             database.setDatabaseChangeLogLockTableName(LIQUIBASE_CHANGELOG_PREFIX+database.getDatabaseChangeLogLockTableName());
 
-            Liquibase liquibase = new Liquibase("liquibase/db-changelog.xml", new ClassLoaderResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase("org/activiti/dmn/db/liquibase/activiti-dmn-db-changelog.xml", new ClassLoaderResourceAccessor(), database);
 
             if (DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
                 logger.debug("Dropping and creating schema DMN");
@@ -670,7 +667,9 @@ public abstract class DmnEngineConfiguration {
       return chain.get(0);
     }
 
-    public abstract CommandInterceptor createTransactionInterceptor();
+    public CommandInterceptor createTransactionInterceptor() {
+      return null;
+    }
 
     // deployers
     // ////////////////////////////////////////////////////////////////

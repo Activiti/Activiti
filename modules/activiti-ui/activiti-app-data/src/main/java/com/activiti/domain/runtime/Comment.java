@@ -35,7 +35,7 @@ import com.activiti.domain.common.IdBlockSize;
  * @author Frederik Heremans
  */
 @Entity
-@Table(name = "COMMENTS")
+@Table(name = "ACT_WO_COMMENTS")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Comment implements Serializable {
 

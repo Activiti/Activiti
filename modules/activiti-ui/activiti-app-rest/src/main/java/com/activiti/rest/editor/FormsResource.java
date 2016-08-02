@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
@@ -27,6 +26,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +38,8 @@ import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.form.FormRepresentation;
+import com.activiti.repository.editor.ModelRepository;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.editor.ModelInternalService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -47,16 +47,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @RequestMapping("/rest/form-models")
-public class FormsResource extends BaseModelResource {
+public class FormsResource {
 
   private static final Logger logger = LoggerFactory.getLogger(FormsResource.class);
 
   private static final int MIN_FILTER_LENGTH = 2;
   
-  @Inject
-  protected ModelInternalService modelService;
+  @Autowired
+  protected ModelRepository modelRepository;
 
-  protected ObjectMapper objectMapper = new ObjectMapper();
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   public ResultListDataRepresentation getForms(@RequestParam(required = true) Long referenceId, HttpServletRequest request) {

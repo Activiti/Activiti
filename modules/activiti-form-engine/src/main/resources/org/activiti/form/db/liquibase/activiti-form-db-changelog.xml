@@ -6,7 +6,7 @@
 
     <changeSet id="1" author="activiti">
 
-        <createTable tableName="FORM_DEPLOYMENT">
+        <createTable tableName="ACT_FO_FORM_DEPLOYMENT">
             <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -22,7 +22,7 @@
             </column>
         </createTable>
         
-        <createTable tableName="FORM_RESOURCE">
+        <createTable tableName="ACT_FO_FORM_RESOURCE">
             <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -33,7 +33,7 @@
             </column>
         </createTable>
         
-        <createTable tableName="FORM_DEFINITION">
+        <createTable tableName="ACT_FO_FORM_DEFINITION">
             <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -53,7 +53,7 @@
             </column>
         </createTable>
         
-        <createTable tableName="SUBMITTED_FORM">
+        <createTable tableName="ACT_FO_SUBMITTED_FORM">
             <column name="id_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>

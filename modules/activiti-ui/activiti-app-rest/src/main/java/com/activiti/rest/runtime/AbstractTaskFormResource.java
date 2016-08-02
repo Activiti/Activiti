@@ -30,11 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.activiti.exception.FormValidationException;
 import com.activiti.model.runtime.CompleteFormRepresentation;
 import com.activiti.model.runtime.ProcessInstanceVariableRepresentation;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.NotFoundException;
 import com.activiti.service.exception.NotPermittedException;
 import com.activiti.service.runtime.PermissionService;
@@ -118,18 +116,13 @@ public abstract class AbstractTaskFormResource {
       }
     }
 
-    try {
-      // Extract raw variables and complete the task
-      Map<String, Object> variables = formService.getVariablesFromFormSubmission(formDefinition, completeTaskFormRepresentation.getValues(),
-          completeTaskFormRepresentation.getOutcome());
+    // Extract raw variables and complete the task
+    Map<String, Object> variables = formService.getVariablesFromFormSubmission(formDefinition, completeTaskFormRepresentation.getValues(),
+        completeTaskFormRepresentation.getOutcome());
 
-      formService.storeSubmittedForm(variables, formDefinition, task.getId(), task.getProcessInstanceId());
-      
-      taskService.complete(taskId, variables);
-
-    } catch (FormValidationException fve) {
-      throw new BadRequestException("Validation of form failed: " + fve.getMessage());
-    }
+    formService.storeSubmittedForm(variables, formDefinition, task.getId(), task.getProcessInstanceId());
+    
+    taskService.complete(taskId, variables);
   }
 
   public List<ProcessInstanceVariableRepresentation> getProcessInstanceVariables(String taskId) {

@@ -7,7 +7,7 @@
   <!-- SUBMITTED FORM INSERT -->
 
   <insert id="insertSubmittedForm" parameterType="org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityImpl">
-    insert into ${prefix}SUBMITTED_FORM(ID_, FORM_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_, SUBMITTED_DATE_, SUBMITTED_BY_, FORM_VALUES_ID_, TENANT_ID_)
+    insert into ${prefix}ACT_FO_SUBMITTED_FORM(ID_, FORM_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_, SUBMITTED_DATE_, SUBMITTED_BY_, FORM_VALUES_ID_, TENANT_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{formId, jdbcType=VARCHAR},
             #{taskId, jdbcType=VARCHAR},
@@ -22,7 +22,7 @@
   <!-- SUBMITTED FORM DELETE -->
 
   <delete id="deleteSubmittedFormsByProcessDefinitionId" parameterType="string">
-    delete from ${prefix}SUBMITTED_FORM where PROC_DEF_ID_ = #{processDefinitionId} 
+    delete from ${prefix}ACT_FO_SUBMITTED_FORM where PROC_DEF_ID_ = #{processDefinitionId} 
   </delete>
   
   <!-- SUBMITTED FORM RESULTMAP -->
@@ -42,11 +42,11 @@
   <!-- SUBMITTED FORM DEFINITION SELECT -->
 
   <select id="selectSubmittedForm" parameterType="string" resultMap="submittedFormResultMap">
-    select * from ${prefix}SUBMITTED_FORM where ID_ = #{submittedFormId, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_FO_SUBMITTED_FORM where ID_ = #{submittedFormId, jdbcType=VARCHAR}
   </select>
 
   <select id="selectSubmittedFormById" parameterType="string" resultMap="submittedFormResultMap">
-    select * from ${prefix}SUBMITTED_FORM where ID_ = #{SUBMITTED_FORM}
+    select * from ${prefix}ACT_FO_SUBMITTED_FORM where ID_ = #{SUBMITTED_FORM}
   </select>
   
   <select id="selectSubmittedFormsByQueryCriteria" parameterType="org.activiti.form.engine.impl.SubmittedFormQueryImpl" resultMap="submittedFormResultMap">
@@ -63,7 +63,7 @@
   </select>
   
   <sql id="selectSubmittedFormsByQueryCriteriaSql">  
-    from ${prefix}SUBMITTED_FORM RES
+    from ${prefix}ACT_FO_SUBMITTED_FORM RES
     <where>
       <if test="id != null">
         RES.ID_ = #{id}

@@ -36,26 +36,27 @@ import com.activiti.util.XmlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class AbstractModelResource extends BaseModelResource {
+public class AbstractModelResource {
 
   @Autowired
   protected ModelInternalService modelService;
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
   protected BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 
-  protected ObjectMapper objectMapper = new ObjectMapper();
-
   public ModelRepresentation getModel(Long modelId) {
-    Model model = getModel(modelId, true, false);
+    Model model = modelService.getModel(modelId);
     ModelRepresentation result = new ModelRepresentation(model);
 
     return result;
   }
 
   public byte[] getModelThumbnail(Long modelId) {
-    Model model = modelRepository.findOne(modelId);
+    Model model = modelService.getModel(modelId);
 
     if (model == null) {
       throw new NonJsonResourceNotFoundException();
@@ -66,7 +67,7 @@ public class AbstractModelResource extends BaseModelResource {
 
   public ModelRepresentation importNewVersion(Long modelId, MultipartFile file) {
 
-    Model processModel = getModel(modelId, true, true);
+    Model processModel = modelService.getModel(modelId);
     User currentUser = SecurityUtils.getCurrentUserObject();
 
     String fileName = file.getOriginalFilename();

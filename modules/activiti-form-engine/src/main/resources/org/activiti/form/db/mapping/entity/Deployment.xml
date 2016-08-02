@@ -7,14 +7,14 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertFormDeployment" parameterType="org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityImpl">
-    insert into ${prefix}FORM_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
+    insert into ${prefix}ACT_FO_FORM_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
 
   <!-- DEPLOYMENT UPDATE -->
   
   <update id="updateFormDeployment" parameterType="org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityImpl">
-    update ${prefix}FORM_DEPLOYMENT set
+    update ${prefix}ACT_FO_FORM_DEPLOYMENT set
       CATEGORY_ = #{category, jdbcType=VARCHAR},
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
@@ -23,7 +23,7 @@
   <!-- DEPLOYMENT DELETE -->
   
   <delete id="deleteFormDeployment" parameterType="string">
-    delete from ${prefix}FORM_DEPLOYMENT where ID_ = #{id}
+    delete from ${prefix}ACT_FO_FORM_DEPLOYMENT where ID_ = #{id}
   </delete>
 
   <!-- DEPLOYMENT RESULTMAP -->
@@ -52,9 +52,9 @@
   </select>
   
   <sql id="selectDeploymentsByQueryCriteriaSql">  
-    from ${prefix}DMN_DEPLOYMENT RES
+    from ${prefix}ACT_FO_FORM_DEPLOYMENT RES
     <if test="formDefinitionKey != null or formDefinitionKeyLike != null">
-    	inner join ${prefix}FORM_DEFINITION FORM on RES.ID_ = FORM.DEPLOYMENT_ID_
+    	inner join ${prefix}ACT_FO_FORM_DEFINITION FORM on RES.ID_ = FORM.DEPLOYMENT_ID_
     </if>
     <where>
       <if test="deploymentId != null">
@@ -91,11 +91,11 @@
   </sql>
     
   <select id="selectDeploymentsByName" parameterType="org.activiti.form.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
-    select * from ${prefix}FORM_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
+    select * from ${prefix}ACT_FO_FORM_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
   </select>
   
   <select id="selectFormDeployment" parameterType="string" resultMap="deploymentResultMap">
-    select * from ${prefix}FORM_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_FO_FORM_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
   <!-- mysql specific -->

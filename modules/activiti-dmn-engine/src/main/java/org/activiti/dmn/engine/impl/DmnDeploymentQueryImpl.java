@@ -37,8 +37,8 @@ public class DmnDeploymentQueryImpl extends AbstractQuery<DmnDeploymentQuery, Dm
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
-  protected String processDefinitionKey;
-  protected String processDefinitionKeyLike;
+  protected String decisionTableKey;
+  protected String decisionTableKeyLike;
 
   public DmnDeploymentQueryImpl() {
   }
@@ -112,19 +112,19 @@ public class DmnDeploymentQueryImpl extends AbstractQuery<DmnDeploymentQuery, Dm
     return this;
   }
 
-  public DmnDeploymentQueryImpl processDefinitionKey(String key) {
+  public DmnDeploymentQueryImpl decisionTableKey(String key) {
     if (key == null) {
       throw new ActivitiDmnIllegalArgumentException("key is null");
     }
-    this.processDefinitionKey = key;
+    this.decisionTableKey = key;
     return this;
   }
 
-  public DmnDeploymentQueryImpl processDefinitionKeyLike(String keyLike) {
+  public DmnDeploymentQueryImpl decisionTableKeyLike(String keyLike) {
     if (keyLike == null) {
       throw new ActivitiDmnIllegalArgumentException("keyLike is null");
     }
-    this.processDefinitionKeyLike = keyLike;
+    this.decisionTableKeyLike = keyLike;
     return this;
   }
 
@@ -194,11 +194,11 @@ public class DmnDeploymentQueryImpl extends AbstractQuery<DmnDeploymentQuery, Dm
     return withoutTenantId;
   }
 
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
+  public String getDecisionTableKey() {
+    return decisionTableKey;
   }
 
-  public String getProcessDefinitionKeyLike() {
-    return processDefinitionKeyLike;
+  public String getDecisionTableKeyLike() {
+    return decisionTableKeyLike;
   }
 }

@@ -14,38 +14,23 @@ package org.activiti.editor.language.json.converter;
 
 import java.util.Map;
 
-import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Erik Winlof
+ * @author Tijs Rademakers
  * @author Yvo Swillens
  */
 public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
 
-  protected static final String EXECUTE_DECISION_DELEGATE_EXPRESSION = "${activiti_executeDecisionDelegate}";
-
-  protected Map<Long, JsonNode> decisionTableMap;
-
-  public static boolean isExecuteDecisionServiceTask(Activity activity) {
-
-    if (activity instanceof ServiceTask == false) {
-      return false;
-    }
-
-    ServiceTask serviceTask = (ServiceTask) activity;
-    return ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType())
-        && EXECUTE_DECISION_DELEGATE_EXPRESSION.equals(serviceTask.getImplementation());
-  }
+  protected Map<Long, String> decisionTableMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -68,42 +53,20 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
 
     ServiceTask serviceTask = new ServiceTask();
-    serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
-    serviceTask.setImplementation(EXECUTE_DECISION_DELEGATE_EXPRESSION);
+    serviceTask.setType(ServiceTask.DMN_TASK);
     
     JsonNode decisionTableReferenceNode = getProperty(PROPERTY_DECISIONTABLE_REFERENCE, elementNode);
-    if (decisionTableReferenceNode != null && decisionTableReferenceNode.isNull() == false) {
+    if (decisionTableReferenceNode != null && decisionTableReferenceNode.has("id") && decisionTableReferenceNode.get("id").isNull() == false) {
 
-      ExtensionElement extensionElement = new ExtensionElement();
-      extensionElement.setNamespace(NAMESPACE);
-      extensionElement.setNamespacePrefix("modeler");
-      extensionElement.setName("decisiontable-reference");
+      Long decisionTableId = decisionTableReferenceNode.get("id").asLong();
+      if (decisionTableMap != null) {
+        String decisionTableKey = decisionTableMap.get(decisionTableId);
 
-      if (decisionTableReferenceNode.has("id") && decisionTableReferenceNode.isNull() == false) {
-
-        addExtensionAttributeToExtension(extensionElement, PROPERTY_DECISIONTABLE_REFERENCE_ID,
-            decisionTableReferenceNode.get("id").asText());
-
-        Long decisionTableId = decisionTableReferenceNode.get("id").asLong();
-        if (decisionTableMap != null) {
-          JsonNode decisionTableJsonNode = decisionTableMap.get(decisionTableId);
-
-          if (decisionTableJsonNode != null && decisionTableJsonNode.has("key") && decisionTableJsonNode.get("key").isNull() == false) {
-
-            FieldExtension decisionTableKeyField = new FieldExtension();
-            decisionTableKeyField.setFieldName(PROPERTY_DECISIONTABLE_REFERENCE_KEY);
-            decisionTableKeyField.setStringValue(decisionTableJsonNode.get("key").asText());
-            serviceTask.getFieldExtensions().add(decisionTableKeyField);
-          }
-        }
+        FieldExtension decisionTableKeyField = new FieldExtension();
+        decisionTableKeyField.setFieldName(PROPERTY_DECISIONTABLE_REFERENCE_KEY);
+        decisionTableKeyField.setStringValue(decisionTableKey);
+        serviceTask.getFieldExtensions().add(decisionTableKeyField);
       }
-
-      if (decisionTableReferenceNode.has("name") && decisionTableReferenceNode.get("name").isNull() == false) {
-        addExtensionAttributeToExtension(extensionElement, PROPERTY_DECISIONTABLE_REFERENCE_NAME,
-            decisionTableReferenceNode.get("name").asText());
-      }
-
-      serviceTask.addExtensionElement(extensionElement);
     }
 
     return serviceTask;
@@ -115,7 +78,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
   }
   
   @Override
-  public void setDecisionTableMap(Map<Long, JsonNode> decisionTableMap) {
+  public void setDecisionTableMap(Map<Long, String> decisionTableMap) {
     this.decisionTableMap = decisionTableMap;
   }
 

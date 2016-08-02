@@ -163,10 +163,16 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       // Description filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?description=" + encode("Description one");
       assertResultsPresentInDataResponse(url, adhocTask.getId());
+      
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?description=" + encode("Description two");
+      assertEmptyResultsPresentInDataResponse(url);
 
       // Description like filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?descriptionLike=" + encode("%one");
       assertResultsPresentInDataResponse(url, adhocTask.getId());
+      
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?descriptionLike=" + encode("%two");
+      assertEmptyResultsPresentInDataResponse(url);
 
       // Priority filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?priority=100";
@@ -183,10 +189,28 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       // Owner filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?owner=owner";
       assertResultsPresentInDataResponse(url, adhocTask.getId());
+      
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?owner=kermit";
+      assertEmptyResultsPresentInDataResponse(url);
+
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?ownerLike=" + encode("%ner");
+      assertResultsPresentInDataResponse(url, adhocTask.getId());
+
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?ownerLike=" + encode("kerm%");
+      assertEmptyResultsPresentInDataResponse(url);
 
       // Assignee filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?assignee=gonzo";
       assertResultsPresentInDataResponse(url, adhocTask.getId());
+      
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?assignee=kermit";
+      assertEmptyResultsPresentInDataResponse(url);
+
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?assigneeLike=" + encode("gon%");
+      assertResultsPresentInDataResponse(url, adhocTask.getId());
+
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?assigneeLike=" + encode("kerm%");
+      assertEmptyResultsPresentInDataResponse(url);
 
       // Unassigned filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?unassigned=true";

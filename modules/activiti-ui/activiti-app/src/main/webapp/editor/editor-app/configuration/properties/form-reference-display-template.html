@@ -1,3 +1,4 @@
-
-<span ng-if="property.value.name">{{property.value.name}}</span>
-<span ng-if="!property.value || !property.value.name" translate>PROPERTY.FORMREFERENCE.EMPTY</span>
+<div ng-controller="KisBpmFormReferenceDisplayCtrl">
+	<span ng-if="property.value && property.value.id">{{form.name}}</span>
+	<span ng-if="!property.value || !property.value.id" translate>PROPERTY.FORMREFERENCE.EMPTY</span>
+</div>

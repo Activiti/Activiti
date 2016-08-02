@@ -41,6 +41,7 @@ angular.module('activitiModeler').service('FormBuilderService', ['$http', '$q', 
             var fieldIndex = 0;
             data.formRepresentation = $rootScope.currentForm;
             data.formRepresentation.name = name;
+            data.formRepresentation.key = formKey;
 
             if (description && description.length > 0) {
                 data.formRepresentation.description = description;

@@ -116,7 +116,7 @@ public class FormEngineConfiguration {
 
   public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/form/db/mapping/mappings.xml";
   
-  public static final String LIQUIBASE_CHANGELOG_PREFIX = "FORM_";
+  public static final String LIQUIBASE_CHANGELOG_PREFIX = "ACT_FO_";
 
   /**
    * Checks the version of the DB schema against the library when the form engine is being created and throws an exception if the versions don't match.

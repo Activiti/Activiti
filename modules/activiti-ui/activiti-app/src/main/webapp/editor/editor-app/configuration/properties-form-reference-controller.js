@@ -10,6 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+angular.module('activitiModeler').controller('KisBpmFormReferenceDisplayCtrl',
+    [ '$scope', '$modal', '$http', function($scope, $modal, $http) {
+    
+    if ($scope.property && $scope.property.value && $scope.property.value.id) {
+   		$http.get(ACTIVITI.CONFIG.contextRoot + '/app/rest/models/' + $scope.property.value.id)
+            .success(
+                function(response) {
+                    $scope.form = {
+                    	id: response.id,
+                    	name: response.name
+                    };
+                });
+    }
+	
+}]);
 
 angular.module('activitiModeler').controller('KisBpmFormReferenceCrtl',
     [ '$scope', '$modal', '$http', function($scope, $modal, $http) {
@@ -21,7 +37,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferenceCrtl',
      };
 
      // Open the dialog
-        _internalCreateModal(opts, $modal, $scope);
+     _internalCreateModal(opts, $modal, $scope);
 }]);
 
 angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
@@ -55,7 +71,8 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
    	 	if ($scope.selectedForm) {
    	 		$scope.property.value = {
    	 			'id' : $scope.selectedForm.id, 
-   	 			'name' : $scope.selectedForm.name
+   	 			'name' : $scope.selectedForm.name,
+   	 			'key' : $scope.selectedForm.key
    	 		};
    	 		
    	 	} else {
@@ -70,7 +87,8 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
         if ($scope.selectedForm) {
             $scope.property.value = {
             	'id' : $scope.selectedForm.id, 
-            	'name' : $scope.selectedForm.name
+            	'name' : $scope.selectedForm.name,
+            	'key' : $scope.selectedForm.key
             };
             
             $scope.updatePropertyInModel($scope.property);
@@ -163,7 +181,8 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
                 var newFormId = data.id;
                 $scope.property.value = {
                 	'id' : newFormId, 
-                	'name' : data.name
+                	'name' : data.name,
+                	'key' : data.key
                	};
                 $scope.updatePropertyInModel($scope.property);
                 

@@ -39,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @see com.mycompany.myapp.security.CustomPersistentRememberMeServices
  */
 @Entity
-@Table(name = "PERSISTENT_TOKEN")
+@Table(name = "ACT_IDM_PERSISTENT_TOKEN")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class PersistentToken implements Serializable {
 

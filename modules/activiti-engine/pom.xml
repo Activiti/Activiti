@@ -28,6 +28,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
+			<artifactId>activiti-dmn-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
 			<artifactId>activiti-form-model</artifactId>
 		</dependency>
 		<dependency>

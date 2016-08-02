@@ -56,8 +56,12 @@ public class DeployCmd<T> implements Command<DmnDeployment>, Serializable {
           existingDeployments.add(existingDeployment);
         }
       } else {
-        List<DmnDeployment> deploymentList = commandContext.getDmnEngineConfiguration().getDmnRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
-            .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
+        List<DmnDeployment> deploymentList = commandContext.getDmnEngineConfiguration().getDmnRepositoryService().createDeploymentQuery()
+            .deploymentName(deployment.getName())
+            .deploymentTenantId(deployment.getTenantId())
+            .orderByDeploymentId()
+            .desc()
+            .list();
 
         if (!deploymentList.isEmpty()) {
           existingDeployments.addAll(deploymentList);

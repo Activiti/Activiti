@@ -59,10 +59,6 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.selectedDecisionTable = null;
             } else {
                 $scope.selectedDecisionTable = decisionTable;
-                if ($scope.selectedDecisionTable) {
-                    $scope.selectedDecisionTable.variablesmapping = [];
-                    $scope.property.newVariablesMapping = undefined;
-                }
             }
         };
 
@@ -79,6 +75,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': $scope.selectedDecisionTable.id,
                     'name': $scope.selectedDecisionTable.name,
+                    'key': $scope.selectedDecisionTable.key,
                     'referenceId': $scope.selectedDecisionTable.referenceId
                 };
                 
@@ -95,6 +92,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': $scope.selectedDecisionTable.id,
                     'name': $scope.selectedDecisionTable.name,
+                    'key': $scope.selectedDecisionTable.key,
                     'referenceId': $scope.selectedDecisionTable.referenceId
                 };
                 $scope.updatePropertyInModel($scope.property);
@@ -175,7 +173,9 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
 
         $scope.createDecisionTable = function() {
 
-            if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0) {
+            if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0 ||
+            	!$scope.model.decisionTable.key || $scope.model.decisionTable.key.length == 0) {
+            	
                 return;
             }
 
@@ -193,6 +193,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': newDecisionTableId,
                     'name': data.name,
+                    'key': data.key,
                     'referenceId': data.referenceId
                 };
                 $scope.updatePropertyInModel($scope.property);

@@ -52,7 +52,7 @@ import com.activiti.util.XmlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class AbstractModelsResource extends BaseModelResource {
+public class AbstractModelsResource {
 
   protected static final String FILTER_SHARED_WITH_ME = "sharedWithMe";
   protected static final String FILTER_SHARED_WITH_OTHERS = "sharedWithOthers";

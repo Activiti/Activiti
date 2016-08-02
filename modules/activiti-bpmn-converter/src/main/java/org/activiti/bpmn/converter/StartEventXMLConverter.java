@@ -68,7 +68,10 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     StartEvent startEvent = (StartEvent) element;
     writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INITIATOR, startEvent.getInitiator(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_FORM_FORMKEY, startEvent.getFormKey(), xtw);
-    writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INTERRUPTING, String.valueOf(startEvent.isInterrupting()), xtw);
+    
+    if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
+      writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INTERRUPTING, String.valueOf(startEvent.isInterrupting()), xtw);
+    }
   }
 
   @Override

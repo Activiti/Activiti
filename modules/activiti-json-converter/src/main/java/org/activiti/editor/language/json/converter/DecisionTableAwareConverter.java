@@ -12,14 +12,12 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.Map;
 
 /**
- * @author Yvo Swillens
+ * @author Tijs Rademakers
  */
 public interface DecisionTableAwareConverter {
 
-    public void setDecisionTableMap(Map<Long, JsonNode> decisionTableMap);
+    public void setDecisionTableMap(Map<Long, String> decisionTableMap);
 }

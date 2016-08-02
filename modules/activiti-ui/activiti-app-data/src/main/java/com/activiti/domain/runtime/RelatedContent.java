@@ -35,7 +35,7 @@ import com.activiti.domain.common.IdBlockSize;
  * @author Frederik Heremans
  */
 @Entity
-@Table(name = "RELATED_CONTENT")
+@Table(name = "ACT_WO_RELATED_CONTENT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class RelatedContent {
 

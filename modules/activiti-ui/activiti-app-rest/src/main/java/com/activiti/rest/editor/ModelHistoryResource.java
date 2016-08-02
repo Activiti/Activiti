@@ -30,36 +30,28 @@ import com.activiti.service.exception.BadRequestException;
 @RestController
 public class ModelHistoryResource extends AbstractModelHistoryResource {
 
-    @RequestMapping(value = "/rest/models/{modelId}/history",
-            method = RequestMethod.GET,
-            produces = "application/json")
-    public ResultListDataRepresentation getModelHistoryCollection(@PathVariable Long modelId, 
-            @RequestParam(value="includeLatestVersion", required=false) Boolean includeLatestVersion) {
+  @RequestMapping(value = "/rest/models/{modelId}/history", method = RequestMethod.GET, produces = "application/json")
+  public ResultListDataRepresentation getModelHistoryCollection(@PathVariable Long modelId, @RequestParam(value = "includeLatestVersion", required = false) Boolean includeLatestVersion) {
 
-    	return super.getModelHistoryCollection(modelId, includeLatestVersion);
-      
+    return super.getModelHistoryCollection(modelId, includeLatestVersion);
+  }
+
+  @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}", method = RequestMethod.GET, produces = "application/json")
+  public ModelRepresentation getProcessModelHistory(@PathVariable Long modelId, @PathVariable Long modelHistoryId) {
+    return super.getProcessModelHistory(modelId, modelHistoryId);
+  }
+
+  @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}", method = RequestMethod.POST, produces = "application/json")
+  public ReviveModelResultRepresentation executeProcessModelHistoryAction(@PathVariable Long modelId, @PathVariable Long modelHistoryId,
+      @RequestBody(required = true) BaseRestActionRepresentation action) {
+
+    // In order to execute actions on a historic process model, write permission is needed
+    ModelHistory modelHistory = modelService.getModelHistory(modelId, modelHistoryId);
+
+    if ("useAsNewVersion".equals(action.getAction())) {
+      return modelService.reviveProcessModelHistory(modelHistory, SecurityUtils.getCurrentUserObject(), action.getComment());
+    } else {
+      throw new BadRequestException("Invalid action to execute on model history " + modelHistoryId + ": " + action.getAction());
     }
-    
-    @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}",
-            method = RequestMethod.GET,
-            produces = "application/json")
-    public ModelRepresentation getProcessModelHistory(@PathVariable Long modelId, @PathVariable Long modelHistoryId) {
-       return super.getProcessModelHistory(modelId, modelHistoryId);
-    }
-    
-    @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}",
-            method = RequestMethod.POST,
-            produces = "application/json")
-    public ReviveModelResultRepresentation executeProcessModelHistoryAction(@PathVariable Long modelId, 
-            @PathVariable Long modelHistoryId, @RequestBody(required=true) BaseRestActionRepresentation action) {
-        
-        // In order to execute actions on a historic process model, write permission is needed
-        ModelHistory modelHistory = getModelHistory(modelId, modelHistoryId, true, true);
-        
-        if("useAsNewVersion".equals(action.getAction())) {
-            return modelService.reviveProcessModelHistory(modelHistory, SecurityUtils.getCurrentUserObject(), action.getComment());
-        } else {
-            throw new BadRequestException("Invalid action to execute on model history " + modelHistoryId + ": " + action.getAction());
-        }
-    }
+  }
 }
