@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
@@ -37,7 +39,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  * @author Joram Barrez
  */
 
-public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionEntity {
+public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionEntity, CountingExecutionEntity {
 
   private static final long serialVersionUID = 1L;
 
@@ -80,6 +82,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected boolean isEnded;
   protected boolean isEventScope;
   protected boolean isMultiInstanceRoot;
+  protected boolean isCountEnabled;
 
   // events ///////////////////////////////////////////////////////////////////
   
@@ -95,17 +98,25 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected List<TimerJobEntity> timerJobs;
   protected List<TaskEntity> tasks;
   protected List<IdentityLinkEntity> identityLinks;
-  protected int cachedEntityState;
 
   // cascade deletion ////////////////////////////////////////////////////////
 
   protected String deleteReason;
   
-  protected int revision = 1;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
-
+  
   protected String startUserId;
   protected Date startTime;
+  
+  // CountingExecutionEntity 
+  protected int eventSubscriptionCount;
+  protected int taskCount;
+  protected int jobCount;
+  protected int timerJobCount;
+  protected int suspendedJobCount;
+  protected int deadLetterJobCount;
+  protected int variableCount;
+  protected int identityLinkCount;
 
   /**
    * persisted reference to the processDefinition.
@@ -179,6 +190,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected String superExecutionId;
   
   protected String rootProcessInstanceId;
+  protected ExecutionEntityImpl rootProcessInstance;
 
   protected boolean forcedUpdate;
 
@@ -189,6 +201,25 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public ExecutionEntityImpl() {
     
   }
+  
+  /**
+   * Static factory method: to be used when a new execution is created for the very first time/
+   * Calling this will make sure no extra db fetches are needed later on, as all collections
+   * will be populated with empty collections. If they would be null, it would trigger
+   * a database fetch for those relationship entities.
+   */
+  public static ExecutionEntityImpl createWithEmptyRelationshipCollections() {
+    ExecutionEntityImpl execution = new ExecutionEntityImpl();
+    execution.executions = new ArrayList<ExecutionEntityImpl>(1);
+    execution.tasks = new ArrayList<TaskEntity>(1);
+    execution.variableInstances = new HashMap<String, VariableInstanceEntity>(1);
+    execution.jobs = new ArrayList<JobEntity>(1);
+    execution.timerJobs = new ArrayList<TimerJobEntity>(1);
+    execution.eventSubscriptions = new ArrayList<EventSubscriptionEntity>(1);
+    execution.identityLinks = new ArrayList<IdentityLinkEntity>(1);
+    return execution;
+  }
+  
   
   //persistent state /////////////////////////////////////////////////////////
 
@@ -210,9 +241,16 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
      persistentState.put("forcedUpdate", Boolean.TRUE);
    }
    persistentState.put("suspensionState", this.suspensionState);
-   persistentState.put("cachedEntityState", this.cachedEntityState);
    persistentState.put("startTime", this.startTime);
    persistentState.put("startUserId", this.startUserId);
+   persistentState.put("eventSubscriptionCount", eventSubscriptionCount);
+   persistentState.put("taskCount", taskCount);
+   persistentState.put("jobCount", jobCount);
+   persistentState.put("timerJobCount", timerJobCount);
+   persistentState.put("suspendedJobCount", suspendedJobCount);
+   persistentState.put("deadLetterJobCount", deadLetterJobCount);
+   persistentState.put("variableCount", variableCount);
+   persistentState.put("identityLinkCount", identityLinkCount);
    return persistentState;
  }
   
@@ -417,10 +455,31 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     }
   }
   
+  public ExecutionEntity getRootProcessInstance() {
+    ensureRootProcessInstanceInitialized();
+    return rootProcessInstance;
+  }
+  
+  protected void ensureRootProcessInstanceInitialized() {
+    if (rootProcessInstanceId == null) {
+      rootProcessInstance = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findById(rootProcessInstanceId);
+    }
+  }
+  
+  public void setRootProcessInstance(ExecutionEntity rootProcessInstance) {
+    this.rootProcessInstance = (ExecutionEntityImpl) rootProcessInstance;
+
+    if (rootProcessInstance != null) {
+      this.rootProcessInstanceId = rootProcessInstance.getId();
+    } else {
+      this.rootProcessInstanceId = null;
+    }
+  }
+  
   public String getRootProcessInstanceId() {
     return rootProcessInstanceId;
   }
-
+  
   public void setRootProcessInstanceId(String rootProcessInstanceId) {
     this.rootProcessInstanceId = rootProcessInstanceId;
   }
@@ -433,10 +492,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   public void setScope(boolean isScope) {
     this.isScope = isScope;
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
   }
 
   public void forceUpdate() {
@@ -607,22 +662,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     this.parentId = parentId;
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
   public String getActivityId() {
     return activityId;
   }
@@ -699,6 +738,16 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   @Override
   public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
     this.isMultiInstanceRoot = isMultiInstanceRoot;
+  }
+  
+  @Override
+  public boolean isCountEnabled() {
+    return isCountEnabled;
+  }
+
+  @Override
+  public void setCountEnabled(boolean isCountEnabled) {
+    this.isCountEnabled = isCountEnabled;
   }
 
   public String getCurrentActivityId() {
@@ -793,10 +842,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     this.isDeleted = isDeleted;
   }
   
-  public int getCachedEntityState() {
-    return cachedEntityState;
-  }
-
   public String getActivityName() {
     return activityName;
   }
@@ -816,6 +861,71 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setStartTime(Date startTime) {
     this.startTime = startTime;
   }
+  
+  public int getEventSubscriptionCount() {
+    return eventSubscriptionCount;
+  }
+
+  public void setEventSubscriptionCount(int eventSubscriptionCount) {
+    this.eventSubscriptionCount = eventSubscriptionCount;
+  }
+
+  public int getTaskCount() {
+    return taskCount;
+  }
+
+  public void setTaskCount(int taskCount) {
+    this.taskCount = taskCount;
+  }
+
+  public int getJobCount() {
+    return jobCount;
+  }
+
+  public void setJobCount(int jobCount) {
+    this.jobCount = jobCount;
+  }
+  
+  public int getTimerJobCount() {
+    return timerJobCount;
+  }
+
+  public void setTimerJobCount(int timerJobCount) {
+    this.timerJobCount = timerJobCount;
+  }
+
+  public int getSuspendedJobCount() {
+    return suspendedJobCount;
+  }
+
+  public void setSuspendedJobCount(int suspendedJobCount) {
+    this.suspendedJobCount = suspendedJobCount;
+  }
+
+  public int getDeadLetterJobCount() {
+    return deadLetterJobCount;
+  }
+
+  public void setDeadLetterJobCount(int deadLetterJobCount) {
+    this.deadLetterJobCount = deadLetterJobCount;
+  }
+
+  public int getVariableCount() {
+    return variableCount;
+  }
+
+  public void setVariableCount(int variableCount) {
+    this.variableCount = variableCount;
+  }
+  
+  public int getIdentityLinkCount() {
+    return identityLinkCount;
+  }
+  
+  public void setIdentityLinkCount(int identityLinkCount) {
+    this.identityLinkCount = identityLinkCount;
+  }  
+
 
   //toString /////////////////////////////////////////////////////////////////
 

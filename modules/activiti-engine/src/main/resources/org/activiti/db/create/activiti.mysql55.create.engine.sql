@@ -74,6 +74,15 @@ create table ACT_RU_EXECUTION (
     START_TIME_ datetime,
     START_USER_ID_ varchar(255),
     LOCK_TIME_ timestamp NULL,
+    IS_COUNT_ENABLED_ TINYINT,
+    EVT_SUBSCR_COUNT_ integer, 
+    TASK_COUNT_ integer, 
+    JOB_COUNT_ integer, 
+    TIMER_JOB_COUNT_ integer,
+    SUSP_JOB_COUNT_ integer,
+    DEADLETTER_JOB_COUNT_ integer,
+    VAR_COUNT_ integer, 
+    ID_LINK_COUNT_ integer,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

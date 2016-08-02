@@ -261,9 +261,11 @@ image::images/bpmn.signal.event.catch.png[align="center"]
 image::images/bpmn.signal.event.warning.1.png[align="center"]
 
 
-The pattern described in the process above is not supported by Activiti. The idea is that the error thrown while performing the "do something" task  is caught by the boundary error event and would be propagated to the parallel path of execution using the signal throw event and then interrupt the "do something in parallel" task. So far Activiti would perform as expected. The signal would be propagated to the catching boundary event and interrupt the task. *However, due to the broadcast semantics of the signal, it would also be propagated to all other process instances which have subscribed to the signal event.* In this case, this might not be what we want.
+The pattern described in the process above is not supported by BPMN. The idea is that the error thrown while performing the "do something" task  is caught by the boundary error event and would be propagated to the parallel path of execution using the signal throw event and then interrupt the "do something in parallel" task. So far Activiti would perform as expected. The signal would be propagated to the catching boundary event and interrupt the task. *However, due to the broadcast semantics of the signal, it would also be propagated to all other process instances which have subscribed to the signal event.* In this case, this might not be what we want.
 
 *Note:* the signal event does not perform any kind of correlation to a specific process instance. On the contrary, it is broadcast to all process instances. If you need to deliver a signal to a specific process instance only, perform correlation manually and use  +signalEventReceived(String signalName, String executionId)+ and the appropriate <<bpmnSignalEventDefinitionQuery,query mechanisms>>.
+
+Activiti does have a way to fix this, by adding the _scope_ attribute to the signal event and set it to _processInstance_.
 
 
 [[bpmnMessageEventDefinition]]

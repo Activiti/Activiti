@@ -14,7 +14,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Job;
 

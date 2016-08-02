@@ -29,12 +29,9 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Tijs Rademakers
  */
-public abstract class AbstractJobEntityImpl implements AbstractJobEntity, BulkDeleteable, Serializable {
+public abstract class AbstractJobEntityImpl extends AbstractEntity implements AbstractJobEntity, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
-
-  protected String id;
-  protected int revision;
 
   protected Date duedate;
 
@@ -78,26 +75,6 @@ public abstract class AbstractJobEntityImpl implements AbstractJobEntity, BulkDe
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
     processDefinitionId = execution.getProcessDefinitionId();
-  }
-
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
   }
 
   public Date getDuedate() {

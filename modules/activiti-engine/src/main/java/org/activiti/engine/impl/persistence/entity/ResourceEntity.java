@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens

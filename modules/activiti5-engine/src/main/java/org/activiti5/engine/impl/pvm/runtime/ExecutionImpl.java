@@ -513,7 +513,7 @@ public class ExecutionImpl implements
     if (isConcurrent()) {
       List< ? extends ActivityExecution> concurrentExecutions = getParent().getExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
-        if (concurrentExecution.getActivity()==activity) {
+        if (concurrentExecution.getActivity() != null && concurrentExecution.getActivity().getId().equals(activity.getId())) {
           if (concurrentExecution.isActive()) {
             throw new PvmException("didn't expect active execution in "+activity+". bug?");
           }

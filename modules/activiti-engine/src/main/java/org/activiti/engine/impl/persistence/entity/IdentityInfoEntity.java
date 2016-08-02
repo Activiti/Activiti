@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Map;
 
-import org.activiti.engine.impl.db.Entity;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**

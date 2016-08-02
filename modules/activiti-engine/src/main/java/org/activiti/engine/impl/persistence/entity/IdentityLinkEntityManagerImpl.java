@@ -20,6 +20,7 @@ import java.util.List;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.task.IdentityLinkType;
@@ -47,6 +48,13 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   public void insert(IdentityLinkEntity entity, boolean fireCreateEvent) {
     super.insert(entity, fireCreateEvent);
     getHistoryManager().recordIdentityLinkCreated(entity);
+    
+    if (entity.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
+      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getProcessInstanceId());
+      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+        executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
+      }
+    }
   }
 
   @Override
@@ -54,6 +62,13 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
     delete(identityLink, false);
     if (cascadeHistory) {
       getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
+    }
+    
+    if (identityLink.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
+      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(identityLink.getProcessInstanceId());
+      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+        executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() -1);
+      }
     }
 
     if (getEventDispatcher().isEnabled()) {

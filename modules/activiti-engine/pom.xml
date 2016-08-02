@@ -894,6 +894,7 @@
 								<exclude>**/NonCascadeDeleteTest.java</exclude>
 								<exclude>**/HistoricProcessInstanceQueryAndWithExceptionTest.java</exclude>
 								<exclude>**/HistoricJPAVariableTest.java</exclude>
+								<exclude>**/VerifyDatabaseOperationsTest.java</exclude>
 							</excludes>
 							<runOrder>alphabetical</runOrder>
 						</configuration>
@@ -967,6 +968,34 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<!--  check with optimization flags set -->
+    <profile>
+      <id>cfgOptimizations</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to qa/cfg/optimizations.activiti.cfg.xml" />
+                    <copy file="${basedir}/../../qa/cfg/optimizations.activiti.cfg.xml" tofile="target/test-classes/activiti.cfg.xml" overwrite="true" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
 		<profile>
 			<id>oracle</id>

@@ -31,6 +31,8 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
   ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity);
   
+  ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity);
+  
   /**
    * Finds the {@link ExecutionEntity} for the given root process instance id.
    * All children will have been fetched and initialized. 
@@ -55,8 +57,6 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
   
   List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-  List<ExecutionEntity> findEventScopeExecutionsByActivityId(String activityRef, String parentExecutionId);
-  
   Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(String processInstanceId);
 
   Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(String activityId, String processInstanceId);

@@ -26,12 +26,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marcus Klimstra (CGI)
  * @author Joram Barrez
  */
-public class VariableInstanceEntityImpl implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
+public class VariableInstanceEntityImpl extends AbstractEntity implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
-
-  protected String id;
-  protected int revision;
 
   protected String name;
   protected VariableType type;
@@ -88,18 +85,6 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
     forcedUpdate = true;
   }
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
-  public void setDeleted(boolean isDeleted) {
-    this.deleted = isDeleted;
-  }
-
-  public boolean isDeleted() {
-    return deleted;
-  }
-
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
@@ -149,22 +134,6 @@ public class VariableInstanceEntityImpl implements VariableInstanceEntity, Value
 
   // getters and setters ////////////////////////////////////////////////////////
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-  
   public void setName(String name) {
     this.name = name;
   }

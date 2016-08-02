@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class MembershipEntityImpl implements MembershipEntity, Serializable {
+public class MembershipEntityImpl extends AbstractEntityNoRevision implements MembershipEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class MembershipEntityImpl implements MembershipEntity, Serializable {
   public void setId(String id) {
     // membership doesn't have an id
   }
-
+  
   public String getUserId() {
     return userId;
   }

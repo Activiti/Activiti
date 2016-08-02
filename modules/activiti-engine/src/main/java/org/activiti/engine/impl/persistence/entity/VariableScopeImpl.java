@@ -37,7 +37,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * @author Tijs Rademakers
  * @author Saeid Mirzaei
  */
-public abstract class VariableScopeImpl implements Serializable, VariableScope {
+public abstract class VariableScopeImpl extends AbstractEntity implements Serializable, VariableScope {
 
   private static final long serialVersionUID = 1L;
 
@@ -48,8 +48,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected Map<String, VariableInstanceEntity> usedVariablesCache = new HashMap<String, VariableInstanceEntity>();
 
   protected ELContext cachedElContext;
-
-  protected String id;
 
   protected abstract Collection<VariableInstanceEntity> loadVariableInstances();
 
@@ -865,14 +863,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   public void setCachedElContext(ELContext cachedElContext) {
     this.cachedElContext = cachedElContext;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public <T> T getVariable(String variableName, Class<T> variableClass) {

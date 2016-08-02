@@ -22,11 +22,10 @@ import org.activiti.engine.impl.context.Context;
 /**
  * @author Christian Stettler
  */
-public abstract class HistoricScopeInstanceEntityImpl implements HistoricScopeInstanceEntity, Serializable {
+public abstract class HistoricScopeInstanceEntityImpl extends AbstractEntityNoRevision implements HistoricScopeInstanceEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id;
   protected String processInstanceId;
   protected String processDefinitionId;
   protected Date startTime;
@@ -62,14 +61,6 @@ public abstract class HistoricScopeInstanceEntityImpl implements HistoricScopeIn
 
   public Long getDurationInMillis() {
     return durationInMillis;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public void setProcessInstanceId(String processInstanceId) {

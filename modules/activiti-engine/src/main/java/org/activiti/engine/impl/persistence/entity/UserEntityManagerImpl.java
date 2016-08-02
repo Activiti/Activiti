@@ -54,6 +54,7 @@ public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> imp
   public User createNewUser(String userId) {
     UserEntity userEntity = create();
     userEntity.setId(userId);
+    userEntity.setRevision(0); // needed as users can be transient
     return userEntity;
   }
 

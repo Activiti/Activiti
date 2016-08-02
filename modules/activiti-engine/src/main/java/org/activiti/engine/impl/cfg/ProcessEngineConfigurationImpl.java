@@ -126,6 +126,7 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
+import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -876,10 +877,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   /**
    * Enabled a very verbose debug output of the execution tree whilst executing operations.
-   * Most useful for core engine developers or people fiddling aorund with the execution tree.
+   * Most useful for core engine developers or people fiddling around with the execution tree.
    */
   protected boolean enableVerboseExecutionTreeLogging;
-
+  
+  protected PerformanceSettings performanceSettings = new PerformanceSettings();
+  
   // Backwards compatibility //////////////////////////////////////////////////////////////
   
   protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
@@ -902,11 +905,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngine buildProcessEngine() {
     init();
     ProcessEngineImpl processEngine = new ProcessEngineImpl(this);
+    
+    // trigger build of Activiti 5 Engine
     if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
-      // trigger build of Activiti 5 Engine
       Context.setProcessEngineConfiguration(processEngine.getProcessEngineConfiguration());
       activiti5CompatibilityHandler.getRawProcessEngine();
     }
+    
+    postProcessEngineInitialisation();
+    
     return processEngine;
   }
 
@@ -2262,6 +2269,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
 
   }
+  
+  /**
+   * Called when the {@link ProcessEngine} is initialized, but before it is returned
+   */
+  protected void postProcessEngineInitialisation() {
+    if (performanceSettings.isValidateExecutionRelationshipCountConfigOnBoot()) {
+      commandExecutor.execute(new ValidateExecutionRelatedEntityCountConfiguration());
+    }
+  }
 
   // getters and setters
   // //////////////////////////////////////////////////////
@@ -3135,6 +3151,29 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setEnableVerboseExecutionTreeLogging(boolean enableVerboseExecutionTreeLogging) {
     this.enableVerboseExecutionTreeLogging = enableVerboseExecutionTreeLogging;
+    return this;
+  }
+  
+  public ProcessEngineConfigurationImpl setEnableEagerExecutionTreeFetching(boolean enableEagerExecutionTreeFetching) {
+    this.performanceSettings.setEnableEagerExecutionTreeFetching(enableEagerExecutionTreeFetching);
+    return this;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
+    this.performanceSettings.setEnableExecutionRelationshipCounts(enableExecutionRelationshipCounts);
+    return this;
+  }
+  
+  public PerformanceSettings getPerformanceSettings() {
+    return performanceSettings;
+  }
+
+  public void setPerformanceSettings(PerformanceSettings performanceSettings) {
+    this.performanceSettings = performanceSettings;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableLocalization(boolean enableLocalization) {
+    this.performanceSettings.setEnableLocalization(enableLocalization);
     return this;
   }
 

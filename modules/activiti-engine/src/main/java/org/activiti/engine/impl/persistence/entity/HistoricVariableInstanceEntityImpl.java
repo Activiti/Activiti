@@ -25,12 +25,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
  */
-public class HistoricVariableInstanceEntityImpl implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable {
+public class HistoricVariableInstanceEntityImpl extends AbstractEntity implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
-
-  protected String id;
-  protected int revision;
 
   protected String name;
   protected VariableType variableType;
@@ -72,10 +69,6 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
     return persistentState;
   }
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
   public Object getValue() {
     if (!variableType.isCachable() || cachedValue == null) {
       cachedValue = variableType.getValue(this);
@@ -102,14 +95,6 @@ public class HistoricVariableInstanceEntityImpl implements HistoricVariableInsta
   }
 
   // getters and setters //////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public String getVariableTypeName() {
     return (variableType != null ? variableType.getTypeName() : null);

@@ -33,7 +33,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
 
     /** Cache with no limit */
     public DefaultDeploymentCache() {
-        this.cache = new HashMap<String, T>();
+        this.cache = Collections.synchronizedMap(new HashMap<String, T>());
     }
 
     /**

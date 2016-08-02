@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.SuspendedJobDataManager;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
   private static final Logger logger = LoggerFactory.getLogger(SuspendedJobEntityManagerImpl.class);
 
   protected SuspendedJobDataManager jobDataManager;
-
+  
   public SuspendedJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, SuspendedJobDataManager jobDataManager) {
     super(processEngineConfiguration);
     this.jobDataManager = jobDataManager;
@@ -75,6 +76,12 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
       if (execution.getTenantId() != null) {
         jobEntity.setTenantId(execution.getTenantId());
       }
+      
+
+      if (isExecutionRelatedEntityCountEnabled(execution)) {
+        CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
+        countingExecutionEntity.setSuspendedJobCount(countingExecutionEntity.getSuspendedJobCount() + 1);
+      }
     }
 
     super.insert(jobEntity, fireCreateEvent);
@@ -90,6 +97,13 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
     super.delete(jobEntity);
 
     deleteExceptionByteArrayRef(jobEntity);
+    
+    if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
+      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
+      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+        executionEntity.setSuspendedJobCount(executionEntity.getSuspendedJobCount() - 1);
+      }
+    }
     
     // Send event
     if (getEventDispatcher().isEnabled()) {

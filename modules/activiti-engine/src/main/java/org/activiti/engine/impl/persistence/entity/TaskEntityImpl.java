@@ -25,7 +25,6 @@ import java.util.Set;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -210,23 +209,6 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return execution;
   }
 
-  public void setExecution(DelegateExecution execution) {
-    if (execution != null) {
-      this.execution = (ExecutionEntity) execution;
-      this.executionId = this.execution.getId();
-      this.processInstanceId = this.execution.getProcessInstanceId();
-      this.processDefinitionId = this.execution.getProcessDefinitionId();
-
-      Context.getCommandContext().getHistoryManager().recordTaskExecutionIdChange(this.id, executionId);
-
-    } else {
-      this.execution = null;
-      this.executionId = null;
-      this.processInstanceId = null;
-      this.processDefinitionId = null;
-    }
-  }
-  
   // task assignment ////////////////////////////////////////////////////////////
 
   @Override

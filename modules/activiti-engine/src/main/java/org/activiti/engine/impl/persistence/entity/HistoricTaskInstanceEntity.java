@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.db.Entity;
 
 /**
  * @author Tom Baeyens

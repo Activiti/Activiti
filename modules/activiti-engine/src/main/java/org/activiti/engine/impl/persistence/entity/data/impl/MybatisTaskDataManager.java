@@ -24,12 +24,15 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
+import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.TasksByExecutionIdMatcher;
 import org.activiti.engine.task.Task;
 
 /**
  * @author Joram Barrez
  */
 public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> implements TaskDataManager {
+  
+  protected CachedEntityMatcher<TaskEntity> tasksByExecutionIdMatcher = new TasksByExecutionIdMatcher();
   
   public MybatisTaskDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -47,12 +50,7 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
   
   @Override
   public List<TaskEntity> findTasksByExecutionId(final String executionId) {
-    return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
-      @Override
-      public boolean isRetained(TaskEntity taskEntity) {
-        return taskEntity.getExecutionId() != null && executionId.equals(taskEntity.getExecutionId());
-      }
-    }, true);
+    return getList("selectTasksByExecutionId", executionId, tasksByExecutionIdMatcher, true);
   }
 
   @Override
