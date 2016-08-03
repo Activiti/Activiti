@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,8 +12,6 @@
  */
 
 package org.activiti.engine.impl.cmd;
-
-import java.io.Serializable;
 
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.FlowElement;
@@ -25,6 +23,10 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
+
+import java.io.Serializable;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
 
 /**
  * @author Tijs Rademakers
@@ -45,21 +47,21 @@ public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>,
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("No execution found for id '" + executionId + "'", ExecutionEntity.class);
     }
-    
+
     if (execution.getCurrentFlowElement() instanceof AdhocSubProcess == false) {
       throw new ActivitiException("The current flow element of the requested execution is not an ad-hoc sub process");
     }
 
     FlowNode foundNode = null;
     AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
-    
+
     // if sequential ordering, only one child execution can be active
     if (adhocSubProcess.hasSequentialOrdering()) {
       if (execution.getExecutions().size() > 0) {
         throw new ActivitiException("Sequential ad-hoc sub process already has an active execution");
       }
     }
-    
+
     for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
       if (activityId.equals(flowElement.getId()) && flowElement instanceof FlowNode) {
         FlowNode flowNode = (FlowNode) flowElement;
@@ -68,16 +70,16 @@ public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>,
         }
       }
     }
-    
+
     if (foundNode == null) {
       throw new ActivitiException("The requested activity with id " + activityId + " can not be enabled");
     }
-    
-    ExecutionEntity activityExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(execution); 
+
+    ExecutionEntity activityExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(execution);
     activityExecution.setCurrentFlowElement(foundNode);
-    Context.getAgenda().planContinueProcessOperation(activityExecution);
-    
+    planContinueProcessOperation(Context.getAgenda(), Context.getCommandContext(), activityExecution);
+
     return activityExecution;
   }
-  
+
 }

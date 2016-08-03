@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,9 +11,6 @@
  * limitations under the License.
  */
 package org.activiti.engine.impl.bpmn.behavior;
-
-import java.util.Collection;
-import java.util.Iterator;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
@@ -25,9 +22,14 @@ import org.activiti.engine.impl.util.ExecutionGraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
+
 /**
  * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based gateway as defined in the BPMN specification.
- * 
+ *
  * @author Tijs Rademakers
  * @author Tom Van Buskirk
  * @author Joram Barrez
@@ -60,9 +62,9 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
   protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    
+
     lockFirstParentScope(execution);
-    
+
     Collection<ExecutionEntity> allExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
     Iterator<ExecutionEntity> executionIterator = allExecutions.iterator();
     boolean oneExecutionCanReachGateway = false;
@@ -95,7 +97,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
       }
 
       // Leave
-      commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
+      planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, execution, true);
     }
   }
 }

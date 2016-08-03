@@ -16,8 +16,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessSynchronousOperation;
+
 /**
- * 
+ *
  * @author Tijs Rademakers
  */
 public class AsyncContinuationJobHandler implements JobHandler {
@@ -29,7 +31,7 @@ public class AsyncContinuationJobHandler implements JobHandler {
   }
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    commandContext.getAgenda().planContinueProcessSynchronousOperation(execution);
+    planContinueProcessSynchronousOperation(commandContext.getAgenda(), commandContext, execution);
   }
 
 }

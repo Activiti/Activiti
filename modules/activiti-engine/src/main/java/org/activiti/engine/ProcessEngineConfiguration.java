@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,65 +13,66 @@
 
 package org.activiti.engine;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.runtime.Agenda;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
+import org.springframework.beans.factory.FactoryBean;
+
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Configuration information from which a process engine can be build.
- * 
+ *
  * <p>
  * Most common is to create a process engine based on the default configuration file:
- * 
+ *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault().buildProcessEngine();
  * </pre>
- * 
+ *
  * </p>
- * 
+ *
  * <p>
  * To create a process engine programmatic, without a configuration file, the first option is {@link #createStandaloneProcessEngineConfiguration()}
- * 
+ *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration().buildProcessEngine();
  * </pre>
- * 
+ *
  * This creates a new process engine with all the defaults to connect to a remote h2 database (jdbc:h2:tcp://localhost/activiti) in standalone mode. Standalone mode means that Activiti will manage the
  * transactions on the JDBC connections that it creates. One transaction per service method. For a description of how to write the configuration files, see the userguide.
  * </p>
- * 
+ *
  * <p>
  * The second option is great for testing: {@link #createStandalonInMemeProcessEngineConfiguration()}
- * 
+ *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration().buildProcessEngine();
  * </pre>
- * 
+ *
  * This creates a new process engine with all the defaults to connect to an memory h2 database (jdbc:h2:tcp://localhost/activiti) in standalone mode. The DB schema strategy default is in this case
  * <code>create-drop</code>. Standalone mode means that Activiti will manage the transactions on the JDBC connections that it creates. One transaction per service method.
  * </p>
- * 
+ *
  * <p>
  * On all forms of creating a process engine, you can first customize the configuration before calling the {@link #buildProcessEngine()} method by calling any of the setters like this:
- * 
+ *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault().setMailServerHost(&quot;gmail.com&quot;).setJdbcUsername(&quot;mickey&quot;).setJdbcPassword(&quot;mouse&quot;)
  *     .buildProcessEngine();
  * </pre>
- * 
+ *
  * </p>
- * 
+ *
  * @see ProcessEngines
  * @author Tom Baeyens
  */
@@ -157,11 +158,11 @@ public abstract class ProcessEngineConfiguration {
   /**
    * Allows configuring a database table prefix which is used for all runtime operations of the process engine. For example, if you specify a prefix named 'PRE1.', activiti will query for executions
    * in a table named 'PRE1.ACT_RU_EXECUTION_'.
-   * 
+   *
    * <p />
    * <strong>NOTE: the prefix is not respected by automatic database schema management. If you use {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_CREATE_DROP} or
    * {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_TRUE}, activiti will create the database tables using the default names, regardless of the prefix configured here.</strong>
-   * 
+   *
    * @since 5.9
    */
   protected String databaseTablePrefix = "";
@@ -180,7 +181,7 @@ public abstract class ProcessEngineConfiguration {
   /**
    * Set to true in case the defined databaseTablePrefix is a schema-name, instead of an actual table name prefix. This is relevant for checking if Activiti-tables exist, the databaseTablePrefix will
    * not be used here - since the schema is taken into account already, adding a prefix for the table-check will result in wrong table-names.
-   * 
+   *
    * @since 5.15
    */
   protected boolean tablePrefixIsSchema;
@@ -201,8 +202,9 @@ public abstract class ProcessEngineConfiguration {
    */
   protected boolean useClassForNameClassLoading = true;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
-  
+
   protected boolean enableProcessDefinitionInfoCache = false;
+  protected FactoryBean<Agenda> agendaFactory;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -243,7 +245,7 @@ public abstract class ProcessEngineConfiguration {
   // createJtaProcessEngineConfiguration() {
   // return new JtaProcessEngineConfiguration();
   // }
-  
+
   public abstract RepositoryService getRepositoryService();
 
   public abstract RuntimeService getRuntimeService();
@@ -675,7 +677,7 @@ public abstract class ProcessEngineConfiguration {
     this.labelFontName = labelFontName;
     return this;
   }
-  
+
   public String getAnnotationFontName() {
     return annotationFontName;
   }
@@ -783,7 +785,7 @@ public abstract class ProcessEngineConfiguration {
     this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
     return this;
   }
-  
+
   public boolean isEnableProcessDefinitionInfoCache() {
     return enableProcessDefinitionInfoCache;
   }
@@ -791,5 +793,15 @@ public abstract class ProcessEngineConfiguration {
   public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(boolean enableProcessDefinitionInfoCache) {
     this.enableProcessDefinitionInfoCache = enableProcessDefinitionInfoCache;
     return this;
+  }
+
+  public Agenda getAgendaFactory() {
+    try {
+      return agendaFactory.getObject();
+    } catch (Exception e) {
+// todo (etst) proper logging
+      e.printStackTrace();
+    }
+    return null;
   }
 }

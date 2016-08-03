@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,8 +11,6 @@
  * limitations under the License.
  */
 package org.activiti.engine.impl.cmd;
-
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.TaskListener;
@@ -27,11 +25,15 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLinkType;
 
+import java.util.Map;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
+
 /**
  * @author Joram Barrez
  */
 public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
-  
+
   private static final long serialVersionUID = 1L;
 
   public AbstractCompleteTaskCmd(String taskId) {
@@ -40,7 +42,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 
   protected void executeTaskComplete(CommandContext commandContext, TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
     // Task complete logic
-    
+
     if (taskEntity.getDelegationState() != null && taskEntity.getDelegationState().equals(DelegationState.PENDING)) {
       throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
     }
@@ -65,8 +67,8 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     // Continue process (if not a standalone task)
     if (taskEntity.getExecutionId() != null) {
       ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(taskEntity.getExecutionId());
-      commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
+      planTriggerExecutionOperation(commandContext.getAgenda(), commandContext, executionEntity);
     }
   }
-  
+
 }

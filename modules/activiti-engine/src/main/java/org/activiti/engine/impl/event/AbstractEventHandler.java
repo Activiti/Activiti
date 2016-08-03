@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,20 +13,18 @@
 
 package org.activiti.engine.impl.event;
 
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.EventSubProcess;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
 
 /**
  * @author Tijs Rademakers
@@ -58,7 +56,7 @@ public abstract class AbstractEventHandler implements EventHandler {
       }
     }
 
-    Context.getAgenda().planTriggerExecutionOperation(execution);
+    planTriggerExecutionOperation(Context.getAgenda(), commandContext, execution);
   }
 
   protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, FlowElement currentFlowElement, CommandContext commandContext) {
@@ -93,12 +91,12 @@ public abstract class AbstractEventHandler implements EventHandler {
   }
 
   protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity boundaryEventExecution, FlowNode flowNode, CommandContext commandContext) {
-    
+
     // Scope
     commandContext.getEventDispatcher().dispatchEvent(
         ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), boundaryEventExecution.getId(), boundaryEventExecution.getProcessInstanceId(), boundaryEventExecution.getProcessDefinitionId(),
             parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
-    
+
     if (flowNode instanceof SubProcess) {
       // The parent of the boundary event execution will be the one on which the boundary event is set
       ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager().findById(boundaryEventExecution.getParentId());
@@ -108,29 +106,29 @@ public abstract class AbstractEventHandler implements EventHandler {
     }
   }
 
-  protected void dispatchActivityCancelledForChildExecution(EventSubscriptionEntity eventSubscription, 
+  protected void dispatchActivityCancelledForChildExecution(EventSubscriptionEntity eventSubscription,
       ExecutionEntity parentExecutionEntity, ExecutionEntity boundaryEventExecution, CommandContext commandContext) {
-    
+
     List<ExecutionEntity> executionEntities = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(parentExecutionEntity.getId());
     for (ExecutionEntity childExecution : executionEntities) {
-      
+
       if (!boundaryEventExecution.getId().equals(childExecution.getId())
-          && childExecution.getCurrentFlowElement() != null 
+          && childExecution.getCurrentFlowElement() != null
           && childExecution.getCurrentFlowElement() instanceof FlowNode) {
-        
+
         FlowNode flowNode = (FlowNode) childExecution.getCurrentFlowElement();
         commandContext.getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), childExecution.getId(), childExecution.getProcessInstanceId(), childExecution.getProcessDefinitionId(),
                 parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
-        
+
         if (childExecution.isScope()) {
           dispatchActivityCancelledForChildExecution(eventSubscription, childExecution, boundaryEventExecution, commandContext);
         }
-        
+
       }
-      
+
     }
-    
+
   }
 
   protected String parseActivityType(FlowNode flowNode) {

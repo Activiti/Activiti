@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,19 +12,17 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.CallActivity;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
 
 /**
  * @author Joram Barrez
@@ -39,18 +37,18 @@ public class TriggerTimerEventJobHandler implements JobHandler {
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
 
-    commandContext.getAgenda().planTriggerExecutionOperation(execution);
+    planTriggerExecutionOperation(commandContext.getAgenda(), commandContext, execution);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
     }
-    
+
     if (execution.getCurrentFlowElement() instanceof BoundaryEvent) {
       List<String> processedElements = new ArrayList<String>();
       dispatchExecutionTimeOut(job, execution, processedElements, commandContext);
     }
   }
-  
+
   protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, List<String> processedElements, CommandContext commandContext) {
     FlowElement currentElement = execution.getCurrentFlowElement();
     if (currentElement instanceof BoundaryEvent) {
@@ -63,15 +61,15 @@ public class TriggerTimerEventJobHandler implements JobHandler {
           dispatchExecutionTimeOut(timerEntity, parentExecution, processedElements, commandContext);
         }
       }
-    
+
     } else {
-      
+
       // flow nodes
       if (execution.getCurrentFlowElement() instanceof FlowNode) {
         processedElements.add(execution.getCurrentActivityId());
         dispatchActivityTimeOut(timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
       }
-      
+
       // subprocesses
       if (execution.getCurrentFlowElement() instanceof SubProcess) {
         for (ExecutionEntity subExecution : execution.getExecutions()) {
@@ -79,8 +77,8 @@ public class TriggerTimerEventJobHandler implements JobHandler {
             dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
           }
         }
-        
-      // call activities  
+
+      // call activities
       } else if (execution.getCurrentFlowElement() instanceof CallActivity) {
         ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
         if (subProcessInstance != null) {
@@ -100,7 +98,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
         ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), execution.getProcessInstanceId(),
             execution.getProcessDefinitionId(), parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), timerEntity));
   }
-  
+
   protected String parseActivityType(FlowNode flowNode) {
     String elementType = flowNode.getClass().getSimpleName();
     elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
