@@ -94,6 +94,18 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     deployment.addResource(resource);
     return this;
   }
+  
+  public DeploymentBuilder addBytes(String resourceName, byte[] bytes) {
+    if (bytes == null) {
+      throw new ActivitiIllegalArgumentException("bytes is null");
+    }
+    ResourceEntity resource = resourceEntityManager.create();
+    resource.setName(resourceName);
+    resource.setBytes(bytes);
+    
+    deployment.addResource(resource);
+    return this;
+  }
 
   public DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream) {
     try {

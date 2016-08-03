@@ -112,6 +112,13 @@ angular.module('activitiModeler')
 
                 var fieldId = paletteElementOrField.type;
                 var fieldType;
+                
+                if (fieldId === 'radio-buttons' || fieldId === 'dropdown') {
+                    fieldType = 'OptionFormField';
+                    
+                } else if (fieldId === 'expression') {
+                    fieldType = 'ExpressionFormField';
+                }
 
                 var field = {
                     type: fieldId,
@@ -123,9 +130,9 @@ angular.module('activitiModeler')
                 setFieldDragDropAttributes(field, 'newField');
 
                 if (fieldId === 'radio-buttons') {
-                    field.options = [
-                        {name: $translate.instant('FORM-BUILDER.COMPONENT.RADIO-BUTTON-DEFAULT')}
-                    ];
+                    field.options = [{ 
+                    	name: $translate.instant('FORM-BUILDER.COMPONENT.RADIO-BUTTON-DEFAULT')
+                    }];
                 }
 
                 if (fieldId === 'dropdown') {
@@ -134,10 +141,6 @@ angular.module('activitiModeler')
                     ];
                     field.value = field.options[0];
                     field.hasEmptyValue = true;
-                }
-
-                if (field.type === 'readonly-text') {
-                    field.value = $translate.instant('FORM-BUILDER.COMPONENT.DISPLAY-TEXT-DEFAULT');
                 }
                 
                 return field;
@@ -208,8 +211,7 @@ angular.module('activitiModeler')
                 {'type': 'people', 'title': $translate.instant('FORM-BUILDER.PALLETTE.PEOPLE'), 'icon': 'images/form-builder/peoplefield-icon.png', 'width': 1},
                 {'type': 'functional-group', 'title': $translate.instant('FORM-BUILDER.PALLETTE.GROUP-OF-PEOPLE'), 'icon': 'images/form-builder/peoplefield-icon.png', 'width': 1},
                 {'type': 'upload', 'title': $translate.instant('FORM-BUILDER.PALLETTE.UPLOAD'), 'icon': 'images/form-builder/uploadfield-icon.png', 'width': 1},
-                {'type': 'readonly', 'title': $translate.instant('FORM-BUILDER.PALLETTE.DISPLAY-VALUE'), 'icon': 'images/form-builder/readonly-icon.png', 'width': 1},
-                {'type': 'readonly-text', 'title': $translate.instant('FORM-BUILDER.PALLETTE.DISPLAY-TEXT'), 'icon': 'images/form-builder/readonly-text-icon.png', 'width': 1}
+                {'type': 'expression', 'title': $translate.instant('FORM-BUILDER.PALLETTE.EXPRESSION'), 'icon': 'images/form-builder/readonly-icon.png', 'width': 1}
             ];
 
             $scope.$watch('formItems', function () {

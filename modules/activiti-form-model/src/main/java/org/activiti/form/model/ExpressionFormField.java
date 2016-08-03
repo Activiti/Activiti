@@ -18,13 +18,15 @@ package org.activiti.form.model;
  */
 public class ExpressionFormField extends FormField {
 
-    protected String expression;
+  private static final long serialVersionUID = 1L;
+  
+  protected String expression;
 
-    public String getExpression() {
-      return expression;
-    }
+  public String getExpression() {
+    return expression;
+  }
 
-    public void setExpression(String expression) {
-      this.expression = expression;
-    }
+  public void setExpression(String expression) {
+    this.expression = expression;
+  }
 }

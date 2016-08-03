@@ -117,7 +117,9 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
       }
       
       if (locale != null && foundDataObject != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), execution.getProcessDefinitionId(), withLocalizationFallback);
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), 
+            execution.getProcessDefinitionId(), withLocalizationFallback);
+        
         if (variableEntity != null && languageNode != null) {
           JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (nameNode != null) {
@@ -131,7 +133,8 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
       }
       
       if (foundDataObject != null) {
-        dataObject = new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId());
+        dataObject = new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), 
+            foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId());
       }
     }
     

@@ -359,6 +359,7 @@
 
     "FORM": {
       "NAME": "Form name",
+      "KEY": "Form key",
       "DESCRIPTION": "Description",
       "REUSABLE": "Reusable form",
       "VERSION-COMMENT": "Version comment",

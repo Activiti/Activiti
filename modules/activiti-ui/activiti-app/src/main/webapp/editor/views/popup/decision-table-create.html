@@ -6,13 +6,18 @@
 			<div class="modal-body">
 				<p>{{'DECISION-TABLE.POPUP.CREATE-DESCRIPTION' | translate}}</p>
 				<div class="form-group">
-				    <label for="newFormName">{{'DECISION-TABLE.NAME' | translate}}</label>
+				    <label for="newDecisionTableName">{{'DECISION-TABLE.NAME' | translate}}</label>
 				    <input ng-disabled="model.loading" type="text" class="form-control" maxlength="400"
-			               id="newFormName" ng-model="model.decisionTable.name" custom-keys enter-pressed="ok()" auto-focus editor-input-check>
+			               id="newDecisionTableName" ng-model="model.decisionTable.name" custom-keys enter-pressed="ok()" auto-focus editor-input-check>
 				</div>
 				<div class="form-group">
-				    <label for="newFormDescription">{{'DECISION-TABLE.DESCRIPTION' | translate}}</label>
-					<textarea ng-disabled="model.loading" class="form-control" id="newFormDescription" rows="5" ng-model="model.decisionTable.description"></textarea>
+				    <label for="newDecisionTableKey">{{'DECISION-TABLE.KEY' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control" maxlength="255"
+			               id="newDecisionTableKey" ng-model="model.decisionTable.key" editor-input-check>
+				</div>
+				<div class="form-group">
+				    <label for="newDecisionTableDescription">{{'DECISION-TABLE.DESCRIPTION' | translate}}</label>
+					<textarea ng-disabled="model.loading" class="form-control" id="newDecisionTableDescription" rows="5" ng-model="model.decisionTable.description"></textarea>
 				</div>
 			</div>
 			

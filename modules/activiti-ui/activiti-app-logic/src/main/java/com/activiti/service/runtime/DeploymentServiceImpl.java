@@ -24,13 +24,14 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.editor.form.converter.FormJsonConverter;
+import org.activiti.dmn.model.DmnDefinition;
+import org.activiti.dmn.xml.converter.DmnXMLConverter;
+import org.activiti.editor.dmn.converter.DmnJsonConverter;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.engine.runtime.Clock;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ import com.activiti.service.api.DeploymentService;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -72,12 +74,10 @@ public class DeploymentServiceImpl implements DeploymentService {
   protected ModelRepository modelRepository;
 
   @Autowired
-  protected Clock clock;
-
-  @Autowired
   protected ObjectMapper objectMapper;
   
-  protected FormJsonConverter formJsonConverter = new FormJsonConverter();
+  protected DmnJsonConverter dmnJsonConverter = new DmnJsonConverter();
+  protected DmnXMLConverter dmnXMLConverter = new DmnXMLConverter();
 
   @Override
   @Transactional
@@ -125,7 +125,24 @@ public class DeploymentServiceImpl implements DeploymentService {
       if (formMap.size() > 0) {
         for (Long formId : formMap.keySet()) {
           Model formInfo = formMap.get(formId);
-          deploymentBuilder.addString("form-" + formId + ".form", formInfo.getModelEditorJson());
+          deploymentBuilder.addString("form-" + formInfo.getKey() + ".form", formInfo.getModelEditorJson());
+        }
+      }
+      
+      if (decisionTableMap.size() > 0) {
+        for (Long decisionTableId : decisionTableMap.keySet()) {
+          Model decisionTableInfo = decisionTableMap.get(decisionTableId);
+          try {
+            JsonNode decisionTableNode = objectMapper.readTree(decisionTableInfo.getModelEditorJson());
+            DmnDefinition dmnDefinition = dmnJsonConverter.convertToDmn(decisionTableNode, decisionTableInfo.getId(), 
+                decisionTableInfo.getVersion(), decisionTableInfo.getLastUpdated());
+            byte[] dmnXMLBytes = dmnXMLConverter.convertToXML(dmnDefinition);
+            deploymentBuilder.addBytes("dmn-" + decisionTableInfo.getKey() + ".dmn", dmnXMLBytes);
+            
+          } catch (Exception e) {
+            logger.error("Error converting decision table to XML " + decisionTableInfo.getName(), e);
+            throw new InternalServerErrorException("Error converting decision table to XML " + decisionTableInfo.getName());
+          }
         }
       }
 

@@ -150,6 +150,7 @@ angular.module('activitiModeler')
        loading: false,
         decisionTable: {
             name: '',
+            key: '',
             description: '',
             modelType: 4
        }
@@ -161,7 +162,9 @@ angular.module('activitiModeler')
 
     $scope.ok = function () {
 
-        if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0) {
+        if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0 ||
+        	!$scope.model.decisionTable.key || $scope.model.decisionTable.key.length == 0) {
+        	
             return;
         }
 

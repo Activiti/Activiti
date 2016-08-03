@@ -71,7 +71,7 @@
     </div>
   </div>
 
-  <div ng-switch-when="upload" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+  <div ng-switch-when="upload" class="form-group">
     <label class="control-label form-field-label">{{formElement.name}} <span class="marker" ng-if="formElement.required">*</span></label>
     <div class="input-group clearfix">
       <span class="input-group-addon"><i class="icon icon-folder"></i></span>
@@ -79,16 +79,7 @@
     </div>
   </div>
 
-  <div ng-switch-when="readonly" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
-    <div>
-      <div class="message">
-        {{formElement.params.field && ('FORM-BUILDER.MESSAGE.FIELD-VALUE' | translate:formElement.params) || ('FORM-BUILDER.MESSAGE.SELECT-FIELD' | translate)}}
-      </div>
-    </div>
-    <div class="clearfix"></div>
-  </div>
-
-  <div ng-switch-when="readonly-text" ng-class="{'has-error' : formElement.hasValidationError}" class="form-group">
+  <div ng-switch-when="expression" class="form-group">
     <div class="message">
       <pre>{{formElement.value}}</pre>
     </div>

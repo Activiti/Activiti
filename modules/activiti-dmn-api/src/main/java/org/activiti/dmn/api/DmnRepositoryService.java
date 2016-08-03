@@ -26,7 +26,7 @@ import org.activiti.dmn.model.DmnDefinition;
 public interface DmnRepositoryService {
 
     DmnDeploymentBuilder createDeployment();
-
+    
     void deleteDeployment(String deploymentId);
     
     DecisionTableQuery createDecisionTableQuery();

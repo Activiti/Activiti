@@ -24,7 +24,9 @@ public class DataObjectImpl implements DataObject {
 
   private String type;
   
-  public DataObjectImpl(String name, Object value, String description, String type, String localizedName, String localizedDescription, String dataObjectDefinitionKey) {
+  public DataObjectImpl(String name, Object value, String description, String type, String localizedName, 
+      String localizedDescription, String dataObjectDefinitionKey) {
+    
     this.name = name;
     this.value = value;
     this.type = type;

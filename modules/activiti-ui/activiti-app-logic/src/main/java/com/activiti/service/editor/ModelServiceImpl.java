@@ -478,7 +478,9 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
         handleBpmnProcessFormModelRelations(model, jsonNode);
         handleBpmnProcessDecisionTaskModelRelations(model, jsonNode);
         
-      } else if (model.getModelType().intValue() == Model.MODEL_TYPE_FORM) {
+      } else if (model.getModelType().intValue() == Model.MODEL_TYPE_FORM || 
+          model.getModelType().intValue() == Model.MODEL_TYPE_DECISION_TABLE) {
+        
         jsonNode.put("name", model.getName());
         jsonNode.put("key", model.getKey());
 

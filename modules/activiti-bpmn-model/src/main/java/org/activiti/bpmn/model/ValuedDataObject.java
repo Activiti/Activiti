@@ -23,8 +23,8 @@ public abstract class ValuedDataObject extends DataObject {
   }
 
   public String getType() {
-	  String structureRef = itemSubjectRef.getStructureRef();
-	  return structureRef.substring(structureRef.indexOf(':') + 1);
+    String structureRef = itemSubjectRef.getStructureRef();
+    return structureRef.substring(structureRef.indexOf(':') + 1);
   }
 
   @Override
