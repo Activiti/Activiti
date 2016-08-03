@@ -151,7 +151,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
         }
         
         if (foundDataObject != null) {
-          dataObjects.put(name, new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
+          dataObjects.put(name, new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }
