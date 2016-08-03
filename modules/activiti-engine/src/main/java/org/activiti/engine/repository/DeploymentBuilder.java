@@ -37,6 +37,8 @@ public interface DeploymentBuilder {
   DeploymentBuilder addClasspathResource(String resource);
 
   DeploymentBuilder addString(String resourceName, String text);
+  
+  DeploymentBuilder addBytes(String resourceName, byte[] bytes);
 
   DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
 

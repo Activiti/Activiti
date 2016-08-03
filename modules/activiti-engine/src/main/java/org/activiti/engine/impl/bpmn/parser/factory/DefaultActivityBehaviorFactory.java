@@ -193,15 +193,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
   
   public DmnActivityBehavior createDmnActivityBehavior(ServiceTask serviceTask) {
-    return createDmnActivityBehavior(serviceTask);
+    return new DmnActivityBehavior(serviceTask);
   }
 
   public DmnActivityBehavior createDmnActivityBehavior(SendTask sendTask) {
-    return createDmnActivityBehavior(sendTask);
-  }
-  
-  protected DmnActivityBehavior createDmnActivityBehavior(Task task) {
-    return new DmnActivityBehavior(task);
+    return new DmnActivityBehavior(sendTask);
   }
 
   // We do not want a hard dependency on Mule, hence we return

@@ -55,7 +55,8 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
     if (StringUtils.isNotEmpty(serviceTask.getType())) {
 
       if (!serviceTask.getType().equalsIgnoreCase("mail") && !serviceTask.getType().equalsIgnoreCase("mule") && !serviceTask.getType().equalsIgnoreCase("camel")
-          && !(serviceTask.getType().equalsIgnoreCase("shell"))) {
+          && !serviceTask.getType().equalsIgnoreCase("shell") && !serviceTask.getType().equalsIgnoreCase("dmn")) {
+        
         addError(errors, Problems.SERVICE_TASK_INVALID_TYPE, process, serviceTask, "Invalid or unsupported service task type");
       }
 
@@ -63,6 +64,8 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
         validateFieldDeclarationsForEmail(process, serviceTask, serviceTask.getFieldExtensions(), errors);
       } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
         validateFieldDeclarationsForShell(process, serviceTask, serviceTask.getFieldExtensions(), errors);
+      } else if (serviceTask.getType().equalsIgnoreCase("dmn")) {
+        validateFieldDeclarationsForDmn(process, serviceTask, serviceTask.getFieldExtensions(), errors);
       }
 
     }

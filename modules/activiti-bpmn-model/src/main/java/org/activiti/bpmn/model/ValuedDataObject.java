@@ -22,6 +22,11 @@ public abstract class ValuedDataObject extends DataObject {
     }
   }
 
+  public String getType() {
+    String structureRef = itemSubjectRef.getStructureRef();
+    return structureRef.substring(structureRef.indexOf(':') + 1);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

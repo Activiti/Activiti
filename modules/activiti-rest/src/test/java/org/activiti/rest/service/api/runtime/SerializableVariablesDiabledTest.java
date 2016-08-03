@@ -23,10 +23,12 @@ import java.util.Map;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.rest.conf.ObjectVariableSerializationDisabledApplicationConfiguration;
 import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
@@ -57,6 +59,7 @@ public class SerializableVariablesDiabledTest {
 	private RepositoryService repositoryService;
 	private RuntimeService runtimeService;
 	private IdentityService identityService;
+	private TaskService taskService;
 	
 	private String serverUrlPrefix;
 	
@@ -72,6 +75,7 @@ public class SerializableVariablesDiabledTest {
 			this.repositoryService = testServer.getApplicationContext().getBean(RepositoryService.class);
 			this.runtimeService = testServer.getApplicationContext().getBean(RuntimeService.class);
 			this.identityService = testServer.getApplicationContext().getBean(IdentityService.class);
+			this.taskService = testServer.getApplicationContext().getBean(TaskService.class);
 			
 	    User user = identityService.newUser("kermit");
 	    user.setFirstName("Kermit");
@@ -132,10 +136,44 @@ public class SerializableVariablesDiabledTest {
     httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/x-java-serialized-object", binaryContent, additionalFields));
     
     // We have serializeable object disabled, we should get a 415.
-    assertResposeStatus(httpPost, HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+    assertResponseStatus(httpPost, HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
   }
 	
-  public void assertResposeStatus(HttpUriRequest request, int expectedStatusCode) {
+	@Test
+  public void testCreateSingleSerializableTaskVariable() throws Exception {
+    repositoryService.createDeployment()
+      .addClasspathResource("org/activiti/rest/service/api/runtime/ProcessInstanceVariablesCollectionResourceTest.testProcess.bpmn20.xml")
+      .deploy();
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+
+    TestSerializableVariable serializable = new TestSerializableVariable();
+    serializable.setSomeField("some value");
+
+    // Serialize object to readable stream for representation
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    ObjectOutputStream output = new ObjectOutputStream(buffer);
+    output.writeObject(serializable);
+    output.close();
+
+    InputStream binaryContent = new ByteArrayInputStream(buffer.toByteArray());
+
+    // Add name, type and scope
+    Map<String, String> additionalFields = new HashMap<String, String>();
+    additionalFields.put("name", "serializableVariable");
+    additionalFields.put("type", "serializable");
+
+    HttpPost httpPost = new HttpPost(serverUrlPrefix +
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/x-java-serialized-object", binaryContent, additionalFields));
+
+    // We have serializeable object disabled, we should get a 415.
+    assertResponseStatus(httpPost, HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+  }
+	
+  public void assertResponseStatus(HttpUriRequest request, int expectedStatusCode) {
 	  CloseableHttpResponse response = null;
     try {
       
@@ -162,5 +200,4 @@ public class SerializableVariablesDiabledTest {
     
   }
   
-
 }

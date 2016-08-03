@@ -68,7 +68,7 @@ public class DmnActivityBehavior extends TaskActivityBehavior {
     DmnRuleService ruleService = Context.getCommandContext().getProcessEngineConfiguration().getDmnEngineRuleService();
     RuleEngineExecutionResult executionResult = ruleService.executeDecisionByKeyAndTenantId(finaldecisionTableKeyValue, 
         execution.getVariables(), execution.getTenantId());
-
+    
     execution.setVariables(executionResult.getResultVariables());
     
     leave(execution);

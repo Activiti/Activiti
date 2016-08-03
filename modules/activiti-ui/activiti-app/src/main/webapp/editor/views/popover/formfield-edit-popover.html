@@ -19,13 +19,13 @@
                 </div>
 
                 <div class="form-group" ng-if="activeTab.id == 'general'">
-                    <label translate="FORM-BUILDER.COMPONENT.LABEL" ng-show="formElement.type != 'readonly-text'"></label>
-                    <label translate="FORM-BUILDER.COMPONENT.NAME" ng-show="formElement.type == 'readonly-text'"></label>
+                    <label translate="FORM-BUILDER.COMPONENT.LABEL"></label>
+                    <label translate="FORM-BUILDER.COMPONENT.NAME" ng-show="formElement.type == 'expression'"></label>
                     <input type="text" class="form-control" ng-model="formElement.name"
                            ng-change="formElementNameChanged(formElement)" auto-focus>
                 </div>
 
-                <div class="clearfix" ng-if="activeTab.id == 'general' && formElement.type != 'readonly'">
+                <div class="clearfix" ng-if="activeTab.id == 'general' && formElement.type != 'expression'">
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
@@ -40,7 +40,7 @@
                         <input type="text" class="form-control" ng-model="formElement.id" ng-disabled="!formElement.overrideId" editor-input-check>
                     </div>
 
-                    <div ng-show="formElement.type !== 'readonly' && formElement.type !== 'readonly-text'">
+                    <div ng-show="formElement.type !== 'expression'">
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
@@ -98,24 +98,10 @@
                     </div>
                 </div>
 
-                <div ng-if="activeTab.id == 'general' && formElement.type === 'readonly'">
-                    <!--div class="form-group clearfix" ng-show="model.urlFieldType === 'formField'">
-                            <div field-select="formElement.params.field" include-type="true" expand-relative="true" select-title="'FORM-BUILDER.MESSAGE.READONLY-TEXT-SELECT-FIELD'"
-                                 all-steps="allSteps" step-id="stepId"
-                                 field-type-filter="['text', 'integer', 'date', 'boolean', 'dropdown', 'radio-buttons', 'multi-line-text', 'people', 'functional-group', 'upload']">
-                            </div
-                    </div-->
-                    <div class="form-group clearfix">
-                        <label translate="FORM-BUILDER.MESSAGE.VARIABLE-NAME"></label>
-                        <input type="text" class="form-control" ng-model="formElement.params.field">
-                    </div>
-                </div>
-
-                <div ng-if="activeTab.id == 'general' && formElement.type === 'readonly-text'">
+                <div ng-if="activeTab.id == 'general' && formElement.type === 'expression'">
                     <div class="form-group">
                         <label translate="FORM-BUILDER.COMPONENT.READONLY-TEXT"></label>
-                        <textarea rows="3" ng-model="formElement.value" class="form-control" id="readonly-text-value" ng-trim="false"
-                                  store-cursor-position="insertFormField.position"></textarea>
+                        <textarea rows="3" ng-model="formElement.value" class="form-control" id="readonly-text-value"></textarea>
                         <div class="subtle" translate="FORM-BUILDER.MESSAGE.READONLY-TEXT-HELP" style="padding: 5px 0 5px 1px;"></div>
                     </div>
                 </div>

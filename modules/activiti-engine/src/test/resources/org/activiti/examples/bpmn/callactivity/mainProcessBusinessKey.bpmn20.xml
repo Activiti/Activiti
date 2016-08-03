@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="mainProcessBusinessKey" name="Main process with call activity">
+	  <startEvent id="theStart" />
+	  <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theChildProcess" />
+
+	  <callActivity id="theChildProcess" name="Child Process" calledElement="childProcess" activiti:businessKey="${busKey}"/>
+	  <sequenceFlow id="flow3" sourceRef="theChildProcess" targetRef="theEnd" />
+
+      <endEvent id="theEnd" />
+	</process>
+
+</definitions>

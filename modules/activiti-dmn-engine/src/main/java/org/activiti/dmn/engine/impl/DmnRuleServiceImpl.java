@@ -14,63 +14,25 @@ package org.activiti.dmn.engine.impl;
 
 import java.util.Map;
 
-import org.activiti.dmn.api.DecisionTable;
 import org.activiti.dmn.api.DmnRuleService;
 import org.activiti.dmn.api.RuleEngineExecutionResult;
-import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.RuleEngineExecutor;
-import org.activiti.dmn.engine.impl.persistence.deploy.DecisionTableCacheEntry;
-import org.activiti.dmn.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti.dmn.model.DmnDefinition;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.dmn.engine.impl.cmd.ExecuteDecisionCmd;
 
 /**
  * @author Yvo Swillens
  */
 public class DmnRuleServiceImpl extends ServiceImpl implements DmnRuleService {
 
-    protected RuleEngineExecutor ruleEngineExecutor;
+  protected RuleEngineExecutor ruleEngineExecutor;
 
-    @Override
-    public RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> processVariables) {
-        return executeDecisionByKeyAndTenantId(decisionKey, processVariables, null);
-    }
+  @Override
+  public RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> variables) {
+    return commandExecutor.execute(new ExecuteDecisionCmd(decisionKey, variables));
+  }
 
-    @Override
-    public RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> processVariables, String tenantId) {
-
-        DeploymentManager deploymentManager = engineConfig.getDeploymentManager();
-        DecisionTable decisionTable = null;
-
-        if (StringUtils.isNotEmpty(decisionKey) && StringUtils.isNotEmpty(tenantId)) {
-            decisionTable = deploymentManager.findDeployedLatestDecisionByKeyAndTenantId(decisionKey, tenantId);
-            if (decisionTable == null) {
-                throw new ActivitiDmnObjectNotFoundException("No decision found for key: " + decisionKey + " and tenant ID: " + tenantId);
-            }
-        } else if (StringUtils.isNotEmpty(decisionKey)) {
-            decisionTable = deploymentManager.findDeployedLatestDecisionByKey(decisionKey);
-            if (decisionTable == null) {
-                throw new ActivitiDmnObjectNotFoundException("No decision found for key: " + decisionKey);
-            }
-        } else {
-            throw new IllegalArgumentException("decisionKey is null");
-        }
-
-        DecisionTableCacheEntry decisionTableCacheEntry = deploymentManager.resolveDecisionTable(decisionTable);
-        DmnDefinition dmnDefinition = decisionTableCacheEntry.getDmnDefinition();
-
-        RuleEngineExecutionResult executionResult = getRuleEngineExecutor().execute(dmnDefinition, processVariables);
-        if (executionResult != null && executionResult.getAuditTrail() != null) {
-            executionResult.getAuditTrail().setDmnDeploymentId(decisionTable.getDeploymentId());
-        }
-
-        return executionResult;
-    }
-
-    protected RuleEngineExecutor getRuleEngineExecutor() {
-        if (ruleEngineExecutor == null) {
-            ruleEngineExecutor = new RuleEngineExecutorImpl(engineConfig);
-        }
-        return ruleEngineExecutor;
-    }
+  @Override
+  public RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> variables, String tenantId) {
+    return commandExecutor.execute(new ExecuteDecisionCmd(decisionKey, variables, tenantId));
+  }
 }

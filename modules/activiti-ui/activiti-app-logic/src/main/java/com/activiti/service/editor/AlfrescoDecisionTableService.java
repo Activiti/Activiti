@@ -260,6 +260,7 @@ public class AlfrescoDecisionTableService extends BaseAlfrescoModelService {
     Model model = getModel(decisionTableId, false, false);
 
     model.setName(saveRepresentation.getDecisionTableRepresentation().getName());
+    model.setKey(saveRepresentation.getDecisionTableRepresentation().getKey());
     model.setDescription(saveRepresentation.getDecisionTableRepresentation().getDescription());
 
     String editorJson = null;

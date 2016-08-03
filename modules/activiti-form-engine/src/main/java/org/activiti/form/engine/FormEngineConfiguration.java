@@ -30,6 +30,8 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.api.FormService;
 import org.activiti.form.engine.impl.FormEngineImpl;
 import org.activiti.form.engine.impl.FormRepositoryServiceImpl;
 import org.activiti.form.engine.impl.FormServiceImpl;
@@ -175,8 +177,8 @@ public class FormEngineConfiguration {
   // SERVICES
   // /////////////////////////////////////////////////////////////////
 
-  protected FormRepositoryServiceImpl repositoryService = new FormRepositoryServiceImpl();
-  protected FormServiceImpl formService = new FormServiceImpl();
+  protected FormRepositoryService repositoryService = new FormRepositoryServiceImpl();
+  protected FormService formService = new FormServiceImpl();
 
   // DATA MANAGERS ///////////////////////////////////////////////////
 
@@ -401,7 +403,7 @@ public class FormEngineConfiguration {
     initService(formService);
   }
 
-  protected void initService(ServiceImpl service) {
+  protected void initService(Object service) {
     if (service instanceof ServiceImpl) {
       ((ServiceImpl) service).setCommandExecutor(commandExecutor);
     }
@@ -1060,11 +1062,11 @@ public class FormEngineConfiguration {
     return this;
   }
 
-  public FormRepositoryServiceImpl getFormRepositoryService() {
+  public FormRepositoryService getFormRepositoryService() {
     return repositoryService;
   }
 
-  public FormServiceImpl getFormService() {
+  public FormService getFormService() {
     return formService;
   }
 

@@ -59,7 +59,9 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
       String fieldName = fieldExtension.getFieldName();
       String fieldValue = fieldExtension.getStringValue();
 
-      shellCommandDefined |= fieldName.equals("command");
+      if (fieldName.equals("command")) {
+        shellCommandDefined = true;
+      }
 
       if ((fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) && !fieldValue.toLowerCase().equals("true") && !fieldValue.toLowerCase().equals("false")) {
         addError(errors, Problems.SHELL_TASK_INVALID_PARAM, process, task, "Undefined parameter value for shell field");
@@ -69,6 +71,23 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
 
     if (!shellCommandDefined) {
       addError(errors, Problems.SHELL_TASK_NO_COMMAND, process, task, "No shell command is defined on the shell activity");
+    }
+  }
+  
+  protected void validateFieldDeclarationsForDmn(org.activiti.bpmn.model.Process process, TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+    boolean keyDefined = false;
+
+    for (FieldExtension fieldExtension : fieldExtensions) {
+      String fieldName = fieldExtension.getFieldName();
+      String fieldValue = fieldExtension.getStringValue();
+
+      if (fieldName.equals("decisionTableReferenceKey") && fieldValue != null && fieldValue.length() > 0) {
+        keyDefined = true;
+      }
+    }
+
+    if (!keyDefined) {
+      addError(errors, Problems.DMN_TASK_NO_KEY, process, task, "No decision table reference key is defined on the dmn activity");
     }
   }
 

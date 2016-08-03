@@ -24,6 +24,7 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
 
   protected Long id;
   protected String name;
+  protected String key;
   protected String description;
   protected Integer version;
   protected String lastUpdatedBy;
@@ -34,6 +35,7 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
   public DecisionTableRepresentation(AbstractModel model) {
     this.id = model.getId();
     this.name = model.getName();
+    this.key = model.getKey();
     this.description = model.getDescription();
     this.version = model.getVersion();
     this.lastUpdated = model.getLastUpdated();
@@ -58,6 +60,14 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
 
   public void setName(String name) {
     this.name = name;
+  }
+  
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public String getDescription() {

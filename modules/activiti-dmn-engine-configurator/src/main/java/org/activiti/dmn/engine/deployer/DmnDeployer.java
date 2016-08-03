@@ -32,6 +32,8 @@ public class DmnDeployer implements Deployer {
 
   @Override
   public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
+    if (deployment.isNew() == false) return;
+    
     log.debug("DmnDeployer: processing deployment {}", deployment.getName());
 
     DmnDeploymentBuilder dmnDeploymentBuilder = null;

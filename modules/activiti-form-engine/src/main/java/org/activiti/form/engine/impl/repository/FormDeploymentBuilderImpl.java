@@ -45,7 +45,7 @@ public class FormDeploymentBuilderImpl implements FormDeploymentBuilder, Seriali
 
   public FormDeploymentBuilderImpl() {
     FormEngineConfiguration formEngineConfiguration = Context.getFormEngineConfiguration();
-    this.repositoryService = formEngineConfiguration.getFormRepositoryService();
+    this.repositoryService = (FormRepositoryServiceImpl) formEngineConfiguration.getFormRepositoryService();
     this.deployment = formEngineConfiguration.getDeploymentEntityManager().create();
     this.resourceEntityManager = formEngineConfiguration.getResourceEntityManager();
   }

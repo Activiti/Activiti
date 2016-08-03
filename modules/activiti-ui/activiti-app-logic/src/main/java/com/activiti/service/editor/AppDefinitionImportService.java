@@ -294,7 +294,7 @@ public class AppDefinitionImportService {
       } else {
         decisionTableModel.setId(null);
         updatedDecisionTableModel = modelService.createModel(decisionTableModel, SecurityUtils.getCurrentUserObject());
-
+        
         if (thumbnailMap.containsKey(decisionTableKey)) {
           updatedDecisionTableModel.setThumbnail(thumbnailMap.get(decisionTableKey));
           modelRepository.save(updatedDecisionTableModel);
@@ -320,6 +320,7 @@ public class AppDefinitionImportService {
 
       String bpmnModelJson = bpmnModelMap.get(bpmnModelKey);
       Model bpmnModelObject = createModelObject(bpmnModelJson, Model.MODEL_TYPE_BPMN);
+      Long oldBpmnModelId = bpmnModelObject.getId();
       
       JsonNode bpmnModelNode = null;
       try {
@@ -361,17 +362,17 @@ public class AppDefinitionImportService {
         updatedProcessModel = modelService.saveModel(existingModel, existingModel.getModelEditorJson(), imageBytes, true, "App definition import", SecurityUtils.getCurrentUserObject());
 
       } else {
+        bpmnModelObject.setId(null);
         bpmnModelObject.setModelEditorJson(updatedBpmnJson);
         updatedProcessModel = modelService.createModel(bpmnModelObject, SecurityUtils.getCurrentUserObject());
-
+        
         if (thumbnailMap.containsKey(bpmnModelKey)) {
           updatedProcessModel.setThumbnail(thumbnailMap.get(bpmnModelKey));
+          modelService.saveModel(updatedProcessModel);
         }
-
-        modelService.saveModel(updatedProcessModel);
       }
 
-      bpmnModelIdAndModelMap.put(bpmnModelObject.getId(), updatedProcessModel);
+      bpmnModelIdAndModelMap.put(oldBpmnModelId, updatedProcessModel);
     }
 
     return bpmnModelIdAndModelMap;
@@ -405,6 +406,7 @@ public class AppDefinitionImportService {
       if (existingAppModel != null) {
         appDefinitionModel = modelService.saveModel(existingAppModel, updatedAppDefinitionJson, null, true, "App definition import", SecurityUtils.getCurrentUserObject());
       } else {
+        appDefinitionModel.setId(null);
         appDefinitionModel.setModelEditorJson(updatedAppDefinitionJson);
         appDefinitionModel = modelService.createModel(appDefinitionModel, SecurityUtils.getCurrentUserObject());
       }

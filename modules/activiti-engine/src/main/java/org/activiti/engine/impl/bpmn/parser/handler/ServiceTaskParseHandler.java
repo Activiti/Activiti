@@ -48,6 +48,9 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
 
       } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
         serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));
+        
+      } else if (serviceTask.getType().equalsIgnoreCase("dmn")) {
+        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createDmnActivityBehavior(serviceTask));
 
       } else {
         logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());

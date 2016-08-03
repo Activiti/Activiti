@@ -137,7 +137,9 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
         String localizedDescription = null;
         
         if (locale != null && foundDataObject != null) {          
-          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), execution.getProcessDefinitionId(), withLocalizationFallback);
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), 
+              execution.getProcessDefinitionId(), withLocalizationFallback);
+          
           if (languageNode != null) {
             JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
             if (nameNode != null) {
@@ -151,7 +153,8 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
         }
         
         if (foundDataObject != null) {
-          dataObjects.put(name, new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
+          dataObjects.put(name, new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), 
+              foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }

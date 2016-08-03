@@ -12,6 +12,7 @@
  */
 package org.activiti.dmn.engine.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.Map;
 import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnExpressionException;
-import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.RuleEngineExecutor;
 import org.activiti.dmn.engine.impl.mvel.ExecutionVariableFactory;
 import org.activiti.dmn.engine.impl.mvel.MvelExecutionContext;
@@ -34,6 +34,7 @@ import org.activiti.dmn.model.LiteralExpression;
 import org.activiti.dmn.model.RuleInputClauseContainer;
 import org.activiti.dmn.model.RuleOutputClauseContainer;
 import org.apache.commons.lang3.StringUtils;
+import org.mvel2.integration.PropertyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,251 +43,243 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleEngineExecutorImpl implements RuleEngineExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(RuleEngineExecutorImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(RuleEngineExecutorImpl.class);
 
-    protected DmnEngineConfiguration engineConfiguration;
+  /**
+   * Executes the given decision table and creates the outcome results
+   *
+   * @param decisionDefinition
+   *          the DMN decision definition
+   * @param executionVariables
+   *          map with execution variables
+   * @return updated execution variables map
+   */
+  @Override
+  public RuleEngineExecutionResult execute(DmnDefinition decisionDefinition, Map<String, Object> executionVariables,
+      Map<String, Method> customExpressionFunctions, Map<Class<?>, PropertyHandler> propertyHandlers) {
 
-    private RuleEngineExecutorImpl() {
+    if (decisionDefinition == null) {
+      throw new IllegalArgumentException("no decision provided");
     }
 
-    public RuleEngineExecutorImpl(DmnEngineConfiguration engineConfiguration) {
-        this.engineConfiguration = engineConfiguration;
+    if (decisionDefinition.getCurrentDecisionTable() == null) {
+      throw new IllegalArgumentException("no decision table present in definition");
     }
 
-    /**
-     * Executes the given decision table and creates the outcome results
-     *
-     * @param decisionDefinition the DMN decision definition
-     * @param executionVariables map with execution variables
-     * @return updated execution variables map
-     */
-    @Override
-    public RuleEngineExecutionResult execute(DmnDefinition decisionDefinition, Map<String, Object> executionVariables) {
+    // create execution context and audit trail
+    MvelExecutionContext executionContext = MvelExecutionContextBuilder.build(decisionDefinition, executionVariables, 
+        customExpressionFunctions, propertyHandlers);
 
-        if (decisionDefinition == null) {
-            throw new IllegalArgumentException("no decision provided");
-        }
+    // evaluate decision table
+    Map<String, Object> resultVariables = evaluateDecisionTable(decisionDefinition.getCurrentDecisionTable(), executionContext);
 
-        if (decisionDefinition.getCurrentDecisionTable() == null) {
-            throw new IllegalArgumentException("no decision table present in definition");
-        }
+    // end audit trail
+    executionContext.getAuditContainer().stopAudit(resultVariables);
 
-        // create execution context and audit trail
-        MvelExecutionContext executionContext = MvelExecutionContextBuilder.build(decisionDefinition, executionVariables, engineConfiguration);
+    // create result container
+    RuleEngineExecutionResult executionResult = new RuleEngineExecutionResult(resultVariables, executionContext.getAuditContainer());
 
-        // evaluate decision table
-        Map<String, Object> resultVariables = evaluateDecisionTable(decisionDefinition.getCurrentDecisionTable(), executionContext);
+    return executionResult;
+  }
 
-        // end audit trail
-        executionContext.getAuditContainer().stopAudit(resultVariables);
+  protected Map<String, Object> evaluateDecisionTable(DecisionTable decisionTable, MvelExecutionContext executionContext) {
 
-        // create result container
-        RuleEngineExecutionResult executionResult = new RuleEngineExecutionResult(resultVariables, executionContext.getAuditContainer());
-
-        return executionResult;
+    if (decisionTable == null || decisionTable.getRules().isEmpty()) {
+      throw new IllegalArgumentException("no rules present in table");
     }
 
-    protected Map<String, Object> evaluateDecisionTable(DecisionTable decisionTable, MvelExecutionContext executionContext) {
-
-        if (decisionTable == null || decisionTable.getRules().isEmpty()) {
-            throw new IllegalArgumentException("no rules present in table");
-        }
-
-        if (executionContext == null) {
-            throw new ActivitiDmnException("no execution context available");
-        }
-
-        logger.debug("Start table evaluation: "+decisionTable.getId());
-
-        Map<String, Object> ruleResults = new HashMap<String, Object>();
-        List<ValidRuleOutputEntries> validConclusionsStack = new ArrayList<ValidRuleOutputEntries>();
-
-        // initialize rule counter
-        // currently this is the only way to identify the rules
-        int ruleRowCounter = 0;
-
-        try {
-            // evaluate rule conditions
-            for (DecisionRule rule : decisionTable.getRules()) {
-
-                Boolean ruleResult = executeRule(ruleRowCounter, rule, executionContext, validConclusionsStack);
-
-                if (shouldContinueEvaluating(decisionTable.getHitPolicy(), ruleResult) == false) {
-                    break;
-                }
-
-                ruleRowCounter++;
-            }
-
-        } catch(ActivitiDmnException ade) {
-            logger.error("decision table execution failed", ade);
-            executionContext.getAuditContainer().setFailed();
-            executionContext.getAuditContainer().setExceptionMessage(getExceptionMessage(ade));
-        }
-
-        logger.debug("End table evaluation: "+decisionTable.getId());
-
-        return executionContext.getResultVariables();
+    if (executionContext == null) {
+      throw new ActivitiDmnException("no execution context available");
     }
 
-    protected Boolean shouldContinueEvaluating(HitPolicy hitPolicy, Boolean ruleResult) {
+    logger.debug("Start table evaluation: " + decisionTable.getId());
 
-        Boolean shouldContinue = Boolean.TRUE;
+    Map<String, Object> ruleResults = new HashMap<String, Object>();
+    List<ValidRuleOutputEntries> validConclusionsStack = new ArrayList<ValidRuleOutputEntries>();
 
-        if (hitPolicy == HitPolicy.FIRST && ruleResult) {
-            logger.debug("Stopping execution: rule is valid and Hit Policy is FIRST");
-            shouldContinue = Boolean.FALSE;
+    // initialize rule counter
+    // currently this is the only way to identify the rules
+    int ruleRowCounter = 0;
+
+    try {
+      // evaluate rule conditions
+      for (DecisionRule rule : decisionTable.getRules()) {
+
+        Boolean ruleResult = executeRule(ruleRowCounter, rule, executionContext, validConclusionsStack);
+
+        if (shouldContinueEvaluating(decisionTable.getHitPolicy(), ruleResult) == false) {
+          break;
         }
 
-        return shouldContinue;
+        ruleRowCounter++;
+      }
+
+    } catch (ActivitiDmnException ade) {
+      logger.error("decision table execution failed", ade);
+      executionContext.getAuditContainer().setFailed();
+      executionContext.getAuditContainer().setExceptionMessage(getExceptionMessage(ade));
     }
 
-    protected Boolean executeRule(int ruleRowIndex, DecisionRule rule, MvelExecutionContext executionContext,
-                                  List<ValidRuleOutputEntries> validOutputEntriesStack) {
+    logger.debug("End table evaluation: " + decisionTable.getId());
 
-        if (rule == null) {
-            throw new ActivitiDmnException("rule cannot be null");
+    return executionContext.getResultVariables();
+  }
+
+  protected Boolean shouldContinueEvaluating(HitPolicy hitPolicy, Boolean ruleResult) {
+
+    Boolean shouldContinue = Boolean.TRUE;
+
+    if (hitPolicy == HitPolicy.FIRST && ruleResult) {
+      logger.debug("Stopping execution: rule is valid and Hit Policy is FIRST");
+      shouldContinue = Boolean.FALSE;
+    }
+
+    return shouldContinue;
+  }
+
+  protected Boolean executeRule(int ruleRowIndex, DecisionRule rule, MvelExecutionContext executionContext, 
+      List<ValidRuleOutputEntries> validOutputEntriesStack) {
+
+    if (rule == null) {
+      throw new ActivitiDmnException("rule cannot be null");
+    }
+
+    logger.debug("Start rule evaluation");
+
+    // add audit entry
+    executionContext.getAuditContainer().addRuleEntry();
+
+    Boolean conditionResult = Boolean.FALSE;
+
+    // go through conditions
+    for (RuleInputClauseContainer conditionContainer : rule.getInputEntries()) {
+
+      // resetting value
+      conditionResult = Boolean.FALSE;
+
+      try {
+
+        // if condition is empty condition result is TRUE
+        if (StringUtils.isEmpty(conditionContainer.getInputEntry().getText())) {
+          conditionResult = Boolean.TRUE;
+        } else {
+          conditionResult = executeInputExpressionEvaluation(conditionContainer, executionContext);
         }
-
-        logger.debug("Start rule evaluation");
 
         // add audit entry
-        executionContext.getAuditContainer().addRuleEntry();
+        executionContext.getAuditContainer().addInputEntry(ruleRowIndex, conditionContainer.getInputEntry().getId(), conditionResult);
 
-        Boolean conditionResult = Boolean.FALSE;
+        logger.debug("input entry {} ( {} {} ): {} ", conditionContainer.getInputEntry().getId(), 
+            conditionContainer.getInputClause().getInputExpression().getText(),
+            conditionContainer.getInputEntry().getText(), conditionResult);
 
-        // go through conditions
-        for (RuleInputClauseContainer conditionContainer : rule.getInputEntries()) {
+      } catch (ActivitiDmnExpressionException adee) {
 
-            // resetting value
-            conditionResult = Boolean.FALSE;
+        // add failed audit entry
+        executionContext.getAuditContainer().addInputEntry(ruleRowIndex, conditionContainer.getInputEntry().getId(), 
+            getExceptionMessage(adee), conditionResult);
+        
+      } catch (ActivitiDmnException ade) {
 
-            try {
+        // add failed audit entry and rethrow
+        executionContext.getAuditContainer().addInputEntry(ruleRowIndex, conditionContainer.getInputEntry().getId(), 
+            getExceptionMessage(ade), null);
+        throw ade;
+        
+      } catch (Exception e) {
 
-                // if condition is empty condition result is TRUE
-                if (StringUtils.isEmpty(conditionContainer.getInputEntry().getText())) {
-                    conditionResult = Boolean.TRUE;
-                } else {
-                    conditionResult = executeInputExpressionEvaluation(conditionContainer, executionContext);
-                }
+        // add failed audit entry and rethrow
+        executionContext.getAuditContainer().addInputEntry(ruleRowIndex, conditionContainer.getInputEntry().getId(), 
+            getExceptionMessage(e), null);
+        throw new ActivitiDmnException(getExceptionMessage(e), e);
+      }
 
-                // add audit entry
-                executionContext.getAuditContainer().addInputEntry(ruleRowIndex,
-                        conditionContainer.getInputEntry().getId(), conditionResult);
-
-                logger.debug("input entry {} ( {} {} ): {} ", conditionContainer.getInputEntry().getId(),
-                        conditionContainer.getInputClause().getInputExpression().getText(),
-                        conditionContainer.getInputEntry().getText(), conditionResult);
-
-
-            } catch (ActivitiDmnExpressionException adee) {
-
-                // add failed audit entry
-                executionContext.getAuditContainer().addInputEntry(ruleRowIndex,
-                        conditionContainer.getInputEntry().getId(),
-                        getExceptionMessage(adee), conditionResult);
-            } catch (ActivitiDmnException ade) {
-
-                // add failed audit entry and rethrow
-                executionContext.getAuditContainer().addInputEntry(ruleRowIndex,
-                        conditionContainer.getInputEntry().getId(),
-                        getExceptionMessage(ade), null);
-                throw ade;
-            } catch (Exception e) {
-
-                // add failed audit entry and rethrow
-                executionContext.getAuditContainer().addInputEntry(ruleRowIndex,
-                        conditionContainer.getInputEntry().getId(),
-                        getExceptionMessage(e), null);
-                throw new ActivitiDmnException(getExceptionMessage(e), e);
-            }
-
-            // exit evaluation loop if a condition is evaluated false
-            if (conditionResult == false) {
-                break;
-            }
-        }
-
-        // execute conclusion if condition was evaluated true
-        if (conditionResult) {
-            executeOutputEntryAction(ruleRowIndex, rule.getOutputEntries(), executionContext);
-        }
-
-        // mark rule end
-        executionContext.getAuditContainer().markRuleEnd(ruleRowIndex);
-
-        logger.debug("End rule evaluation");
-        return conditionResult;
+      // exit evaluation loop if a condition is evaluated false
+      if (conditionResult == false) {
+        break;
+      }
     }
 
-    protected Boolean executeInputExpressionEvaluation(RuleInputClauseContainer ruleContainer, MvelExecutionContext executionContext) {
-
-        return MvelExpressionExecutor.executeInputExpression(ruleContainer.getInputClause(), ruleContainer.getInputEntry(), executionContext);
+    // execute conclusion if condition was evaluated true
+    if (conditionResult) {
+      executeOutputEntryAction(ruleRowIndex, rule.getOutputEntries(), executionContext);
     }
 
-    protected void executeOutputEntryAction(int ruleRowIndex, List<RuleOutputClauseContainer> ruleOutputContainers, MvelExecutionContext executionContext) {
+    // mark rule end
+    executionContext.getAuditContainer().markRuleEnd(ruleRowIndex);
 
-        logger.debug("Start conclusion processing");
+    logger.debug("End rule evaluation");
+    return conditionResult;
+  }
 
-        for (RuleOutputClauseContainer clauseContainer : ruleOutputContainers) {
+  protected Boolean executeInputExpressionEvaluation(RuleInputClauseContainer ruleContainer, MvelExecutionContext executionContext) {
 
-            // skip empty output entries
-            if (StringUtils.isNotEmpty(clauseContainer.getOutputEntry().getText())) {
-                composeOutputEntryResult(ruleRowIndex, clauseContainer, executionContext);
-            }
-        }
+    return MvelExpressionExecutor.executeInputExpression(ruleContainer.getInputClause(), ruleContainer.getInputEntry(), executionContext);
+  }
 
-        logger.debug("End conclusion processing");
+  protected void executeOutputEntryAction(int ruleRowIndex, List<RuleOutputClauseContainer> ruleOutputContainers, MvelExecutionContext executionContext) {
+
+    logger.debug("Start conclusion processing");
+
+    for (RuleOutputClauseContainer clauseContainer : ruleOutputContainers) {
+
+      // skip empty output entries
+      if (StringUtils.isNotEmpty(clauseContainer.getOutputEntry().getText())) {
+        composeOutputEntryResult(ruleRowIndex, clauseContainer, executionContext);
+      }
     }
 
-    protected void composeOutputEntryResult(int ruleRowIndex, RuleOutputClauseContainer ruleClauseContainer, MvelExecutionContext executionContext) {
+    logger.debug("End conclusion processing");
+  }
 
-        String outputVariableId = ruleClauseContainer.getOutputClause().getName();
-        String outputVariableType = ruleClauseContainer.getOutputClause().getTypeRef();
+  protected void composeOutputEntryResult(int ruleRowIndex, RuleOutputClauseContainer ruleClauseContainer, MvelExecutionContext executionContext) {
 
-        LiteralExpression outputEntryExpression = ruleClauseContainer.getOutputEntry();
+    String outputVariableId = ruleClauseContainer.getOutputClause().getName();
+    String outputVariableType = ruleClauseContainer.getOutputClause().getTypeRef();
 
-        Object executionVariable = null;
-        try {
-            Object resultVariable = MvelExpressionExecutor.executeOutputExpression(ruleClauseContainer.getOutputClause(), outputEntryExpression, executionContext);
-            executionVariable = ExecutionVariableFactory.getExecutionVariable(outputVariableType, resultVariable);
+    LiteralExpression outputEntryExpression = ruleClauseContainer.getOutputEntry();
 
-            // update execution context
-            // stack
-            executionContext.getStackVariables().put(outputVariableId, executionVariable);
+    Object executionVariable = null;
+    try {
+      Object resultVariable = MvelExpressionExecutor.executeOutputExpression(ruleClauseContainer.getOutputClause(), outputEntryExpression, executionContext);
+      executionVariable = ExecutionVariableFactory.getExecutionVariable(outputVariableType, resultVariable);
 
-            // result variables
-            executionContext.getResultVariables().put(outputVariableId, executionVariable);
+      // update execution context
+      // stack
+      executionContext.getStackVariables().put(outputVariableId, executionVariable);
 
-            // add audit entry
-            executionContext.getAuditContainer().addOutputEntry(ruleRowIndex, outputEntryExpression.getId(), executionVariable);
+      // result variables
+      executionContext.getResultVariables().put(outputVariableId, executionVariable);
 
-            if (executionVariable != null) {
-                logger.debug("Created conclusion result: {} of type: {} with value {} ", outputVariableId,
-                        resultVariable.getClass(), resultVariable.toString());
-            } else {
-                logger.warn("Could not create conclusion result");
-            }
-        } catch (ActivitiDmnException ade) {
+      // add audit entry
+      executionContext.getAuditContainer().addOutputEntry(ruleRowIndex, outputEntryExpression.getId(), executionVariable);
 
-            // add failed audit entry and rethrow
-            executionContext.getAuditContainer().addOutputEntry(ruleRowIndex, outputEntryExpression.getId(), getExceptionMessage(ade), executionVariable);
-            throw ade;
-        } catch (Exception e) {
+      if (executionVariable != null) {
+        logger.debug("Created conclusion result: {} of type: {} with value {} ", outputVariableId, resultVariable.getClass(), resultVariable.toString());
+      } else {
+        logger.warn("Could not create conclusion result");
+      }
+    } catch (ActivitiDmnException ade) {
 
-            // add failed audit entry and rethrow
-            executionContext.getAuditContainer().addOutputEntry(ruleRowIndex, outputEntryExpression.getId(), getExceptionMessage(e), executionVariable);
-            throw new ActivitiDmnException(getExceptionMessage(e), e);
-        }
+      // add failed audit entry and rethrow
+      executionContext.getAuditContainer().addOutputEntry(ruleRowIndex, outputEntryExpression.getId(), getExceptionMessage(ade), executionVariable);
+      throw ade;
+      
+    } catch (Exception e) {
+
+      // add failed audit entry and rethrow
+      executionContext.getAuditContainer().addOutputEntry(ruleRowIndex, outputEntryExpression.getId(), getExceptionMessage(e), executionVariable);
+      throw new ActivitiDmnException(getExceptionMessage(e), e);
     }
+  }
 
-    protected String getExceptionMessage(Exception exception) {
-        String exceptionMessage = null;
-        if (exception.getCause() != null && exception.getCause().getMessage() != null) {
-            exceptionMessage = exception.getCause().getMessage();
-        } else {
-            exceptionMessage = exception.getMessage();
-        }
-        return exceptionMessage;
+  protected String getExceptionMessage(Exception exception) {
+    String exceptionMessage = null;
+    if (exception.getCause() != null && exception.getCause().getMessage() != null) {
+      exceptionMessage = exception.getCause().getMessage();
+    } else {
+      exceptionMessage = exception.getMessage();
     }
+    return exceptionMessage;
+  }
 }

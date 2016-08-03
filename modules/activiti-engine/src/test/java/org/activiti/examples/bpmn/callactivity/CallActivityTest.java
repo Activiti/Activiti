@@ -13,6 +13,9 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -60,5 +63,28 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
 
     assertEquals("Batman", runtimeService.getVariable(subProcessInstance.getId(), "Name"));
+  }
+
+  @Deployment(resources = { "org/activiti/examples/bpmn/callactivity/mainProcess.bpmn20.xml",
+                            "org/activiti/examples/bpmn/callactivity/childProcess.bpmn20.xml",
+                            "org/activiti/examples/bpmn/callactivity/mainProcessBusinessKey.bpmn20.xml",
+                            "org/activiti/examples/bpmn/callactivity/mainProcessInheritBusinessKey.bpmn20.xml"})
+  public void testCallActivityWithBusinessKey() {
+    // No use of business key attributes
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("mainProcess");
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertNull(subProcessInstance.getBusinessKey());
+
+    // Modeled using expression: businessKey="${busKey}"
+    Map<String,Object> variables = new HashMap<>();
+    variables.put("busKey", "123");
+    pi = runtimeService.startProcessInstanceByKey("mainProcessBusinessKey", variables);
+    subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", subProcessInstance.getBusinessKey());
+
+    // Inherit business key
+    pi = runtimeService.startProcessInstanceByKey("mainProcessInheritBusinessKey", "123");
+    subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", subProcessInstance.getBusinessKey());
   }
 }

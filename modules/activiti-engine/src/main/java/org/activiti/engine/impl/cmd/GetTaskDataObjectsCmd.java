@@ -114,7 +114,9 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, 
         }
         
         if(locale != null && foundDataObject != null) {
-          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), task.getProcessDefinitionId(), withLocalizationFallback);
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), 
+              task.getProcessDefinitionId(), withLocalizationFallback);
+          
           if (languageNode != null) {
             JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
             if (nameNode != null) {
@@ -128,7 +130,8 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, 
         }
         
         if (foundDataObject != null) {
-          dataObjects.put(variableEntity.getName(), new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId()));
+          dataObjects.put(variableEntity.getName(), new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), 
+              foundDataObject.getDocumentation(), foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }

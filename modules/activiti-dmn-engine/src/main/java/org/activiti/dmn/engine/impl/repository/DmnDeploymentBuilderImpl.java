@@ -46,7 +46,7 @@ public class DmnDeploymentBuilderImpl implements DmnDeploymentBuilder, Serializa
 
   public DmnDeploymentBuilderImpl() {
     DmnEngineConfiguration dmnEngineConfiguration = Context.getDmnEngineConfiguration();
-    this.repositoryService = dmnEngineConfiguration.getDmnRepositoryService();
+    this.repositoryService = (DmnRepositoryServiceImpl) dmnEngineConfiguration.getDmnRepositoryService();
     this.deployment = dmnEngineConfiguration.getDeploymentEntityManager().create();
     this.resourceEntityManager = dmnEngineConfiguration.getResourceEntityManager();
   }

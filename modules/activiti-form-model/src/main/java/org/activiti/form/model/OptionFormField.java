@@ -18,6 +18,8 @@ import java.util.List;
  * @author Tijs Rademakers
  */
 public class OptionFormField extends FormField {
+  
+  private static final long serialVersionUID = 1L;
 
   protected String optionType;
   protected Boolean hasEmptyValue;
