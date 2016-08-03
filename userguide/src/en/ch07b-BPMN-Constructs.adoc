@@ -4914,6 +4914,21 @@ It is possible to use expressions here as well:
 
 So in the end z = y+5 = x+5+5
 
+The callActivity element also supports setting the business key on the started subprocess instance using a custom activiti attribute extension. The 'businessKey' attribute can be used to set a custom business key value on the subprocess instance.
+----
+<callActivity id="callSubProcess" calledElement="checkCreditProcess" activiti:businessKey="${myVariable}">
+...
+</callActivity>
+----
+
+Defining the 'inheritBusinessKey' attribute with a value of true will set the business key value on the subprocess to the value of the business key as defined in the calling process. 
+
+----
+<callActivity id="callSubProcess" calledElement="checkCreditProcess" activiti:inheritBusinessKey="true">
+...
+</callActivity>
+----
+
 
 [[bpmnCallActivityExample]]
 

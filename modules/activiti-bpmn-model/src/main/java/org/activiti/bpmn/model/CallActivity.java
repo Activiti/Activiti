@@ -23,6 +23,8 @@ public class CallActivity extends Activity {
   protected String calledElement;
   protected List<IOParameter> inParameters = new ArrayList<IOParameter>();
   protected List<IOParameter> outParameters = new ArrayList<IOParameter>();
+  private String businessKey;
+  private boolean inheritBusinessKey;
 
   public String getCalledElement() {
     return calledElement;
@@ -46,6 +48,22 @@ public class CallActivity extends Activity {
 
   public void setOutParameters(List<IOParameter> outParameters) {
     this.outParameters = outParameters;
+  }
+
+  public String getBusinessKey() {
+    return businessKey;
+  }
+
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
+  }
+
+  public boolean isInheritBusinessKey() {
+    return inheritBusinessKey;
+  }
+
+  public void setInheritBusinessKey(boolean inheritBusinessKey) {
+    this.inheritBusinessKey = inheritBusinessKey;
   }
 
   public CallActivity clone() {

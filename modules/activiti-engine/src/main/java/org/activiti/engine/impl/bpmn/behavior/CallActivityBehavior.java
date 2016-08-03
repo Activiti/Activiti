@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
@@ -35,6 +36,7 @@ import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
@@ -93,10 +95,22 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
 
-    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().createSubprocessInstance(processDefinition.getId(), executionEntity);
-    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(executionEntity, subProcessInstance, initialFlowElement);
-//    ExecutionEntity subProcessInstance = createSubProcessInstance(processDefinition, executionEntity, initialFlowElement);
+    String businessKey;
 
+    if (!StringUtils.isEmpty(callActivity.getBusinessKey())) {
+      Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(callActivity.getBusinessKey());
+      businessKey = Objects.toString(expression.getValue(execution), null);
+    } else if (callActivity.isInheritBusinessKey()) {
+      ExecutionEntityManager manager = Context.getProcessEngineConfiguration().getExecutionEntityManager();
+      ExecutionEntity processInstance = manager.findById(execution.getProcessInstanceId());
+      businessKey = processInstance.getBusinessKey();
+    } else {
+      businessKey = null;
+    }
+
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().createSubprocessInstance(processDefinition.getId(),
+            executionEntity, businessKey);
+    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(executionEntity, subProcessInstance, initialFlowElement);
 
     // process template-defined data objects
     Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
