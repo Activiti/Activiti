@@ -795,13 +795,16 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public Agenda getAgendaFactory() {
+  public Agenda createAgenda() {
     try {
       return agendaFactory.getObject();
     } catch (Exception e) {
-// todo (etst) proper logging
-      e.printStackTrace();
+      throw new ActivitiException("Unable to create agenda.", e);
     }
-    return null;
   }
+
+  public void setAgendaFactory(FactoryBean<Agenda> agendaFactory) {
+    this.agendaFactory = agendaFactory;
+  }
+
 }

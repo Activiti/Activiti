@@ -59,7 +59,7 @@ public class CommandContext {
     this.processEngineConfiguration = processEngineConfiguration;
     this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
-    this.agenda = processEngineConfiguration.getAgendaFactory();
+    this.agenda = processEngineConfiguration.createAgenda();
   }
 
   public void close() {
