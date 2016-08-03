@@ -57,7 +57,7 @@ public class WSOperation implements OperationImplementation {
   /**
    * {@inheritDoc}
    */
-  public MessageInstance sendFor(MessageInstance message, Operation operation) {
+    public MessageInstance sendFor(MessageInstance message, Operation operation) throws Exception {
     Object[] arguments = this.getArguments(message);
     Object[] results = this.safeSend(arguments);
     return this.createResponseMessage(results, operation);
@@ -67,13 +67,13 @@ public class WSOperation implements OperationImplementation {
     return message.getStructureInstance().toArray();
   }
   
-  private Object[] safeSend(Object[] arguments) {
+    private Object[] safeSend(Object[] arguments) throws Exception {
     Object[] results = null;
     
     try {
       results = this.service.getClient().send(this.name, arguments);
     } catch (Exception e) {
-      LOGGER.warn("Error calling WS {}", this.service.getName(), e);
+      throw e;
     }
     
     if (results == null) {

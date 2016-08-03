@@ -29,7 +29,7 @@ public interface WebServiceMock {
   /**
    * Increase the counter in 1
    */
-  void inc();
+    void inc() throws MaxValueReachedFault;
 
   /**
    * Returns the current count
