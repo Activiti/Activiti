@@ -29,17 +29,30 @@ import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.annotation.PostConstruct;
 
 
 /**
  * @author Frederik Heremans
  */
 public class TaskVariableBaseResource extends TaskBaseResource {
-  
+
+  @Autowired
+  protected Environment env;
+
   @Autowired
   protected RuntimeService runtimeService;
+
+  protected boolean isSerializableVariableAllowed;
+
+  @PostConstruct
+  protected void postConstruct() {
+    isSerializableVariableAllowed = env.getProperty("rest.variables.allow.serializable", Boolean.class, true);
+  }
   
   public RestVariable getVariableFromRequest(String taskId, String variableName, 
       String scope, boolean includeBinary) {
@@ -161,12 +174,14 @@ public class TaskVariableBaseResource extends TaskBaseResource {
         byte[] variableBytes = IOUtils.toByteArray(file.getInputStream());
         setVariable(task, variableName, variableBytes, scope, isNew);
         
-      } else {
+      } else if (isSerializableVariableAllowed) {
         // Try deserializing the object
         ObjectInputStream stream = new ObjectInputStream(file.getInputStream());
         Object value = stream.readObject();
         setVariable(task, variableName, value, scope, isNew);
         stream.close();
+      } else {
+        throw new ActivitiContentNotSupportedException("Serialized objects are not allowed");
       }
       
       return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, task.getId(), null, null);
