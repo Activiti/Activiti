@@ -69,7 +69,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
       } else {
         // Revert to execution-variable when not present local on the task
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+        if (task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
           value = runtimeService.getVariable(task.getExecutionId(), variableName);
           variableScope = RestVariableScope.GLOBAL;
           variableFound = true;
@@ -78,7 +78,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
       
     } else if(variableScope == RestVariableScope.GLOBAL) {
       Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-      if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+      if (task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
         value = runtimeService.getVariable(task.getExecutionId(), variableName);
         variableFound = true;
       }
@@ -102,7 +102,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     boolean variableFound = false;
       
     if (scope == RestVariableScope.GLOBAL) {
-      if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+      if (task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
         variableFound = true;
       }
       
