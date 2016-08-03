@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.DataObject;
 
 public class DataObjectImpl implements DataObject {
@@ -25,9 +24,10 @@ public class DataObjectImpl implements DataObject {
 
   private String type;
   
-  public DataObjectImpl(VariableInstance variable, String description, String localizedName, String localizedDescription, String dataObjectDefinitionKey) {
-    this.name = variable.getName();
-    this.value = variable.getValue();
+  public DataObjectImpl(String name, Object value, String description, String type, String localizedName, String localizedDescription, String dataObjectDefinitionKey) {
+    this.name = name;
+    this.value = value;
+    this.type = type;
     this.description = description;
     this.localizedName = localizedName;
     this.localizedDescription = localizedDescription;
