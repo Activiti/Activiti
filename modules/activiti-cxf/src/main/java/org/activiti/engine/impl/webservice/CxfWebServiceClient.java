@@ -18,8 +18,12 @@ import java.util.Arrays;
 import java.util.Enumeration;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A CXF's synchronous web service client
@@ -28,6 +32,8 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
  */
 public class CxfWebServiceClient implements SyncWebServiceClient {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(CxfWebServiceClient.class);
+    
   protected Client client;
 
   public CxfWebServiceClient(String wsdl) {
@@ -57,6 +63,15 @@ public class CxfWebServiceClient implements SyncWebServiceClient {
    * {@inheritDoc}
    */
   public Object[] send(String methodName, Object[] arguments) throws Exception {
-    return client.invoke(methodName, arguments);
+    try {
+       return client.invoke(methodName, arguments);
+    } catch (Fault e) {
+       LOGGER.debug("Technical error calling WS", e);
+       throw new ActivitiException(e.getMessage(), e);
+    } catch (Exception e) {
+       // Other exceptions should be associated to business fault defined in the service WSDL
+       LOGGER.debug("Business error calling WS", e);
+       throw new BpmnError(e.getClass().getName(), e.getMessage());
+    }
   }
 }

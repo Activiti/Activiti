@@ -38,5 +38,5 @@ public interface OperationImplementation {
    *          the operation that is interested on sending the message
    * @return the resulting message
    */
-  MessageInstance sendFor(MessageInstance message, Operation operation);
+  MessageInstance sendFor(MessageInstance message, Operation operation) throws Exception;
 }

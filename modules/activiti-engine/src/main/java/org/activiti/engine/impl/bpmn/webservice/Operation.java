@@ -44,8 +44,8 @@ public class Operation {
     setInterface(bpmnInterface);
     setInMessage(inMessage);
   }
-
-  public MessageInstance sendMessage(MessageInstance message) {
+  
+  public MessageInstance sendMessage(MessageInstance message) throws Exception {
     return this.implementation.sendFor(message, this);
   }
 
