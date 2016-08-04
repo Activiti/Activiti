@@ -13,6 +13,7 @@
 package org.activiti.form.engine.impl.util;
 
 import org.activiti.form.engine.ActivitiFormException;
+import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.impl.context.Context;
 import org.activiti.form.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.form.engine.impl.persistence.deploy.FormCacheEntry;
@@ -28,7 +29,7 @@ import org.activiti.form.model.FormDefinition;
  * @author Tijs Rademakers
  */
 public class FormUtil {
-
+  
   public static FormEntity getFormEntity(String formId) {
     return getFormEntity(formId, false);
   }
@@ -47,17 +48,22 @@ public class FormUtil {
   }
 
   public static FormDefinition getFormDefinition(String formId) {
-    DeploymentManager deploymentManager = Context.getFormEngineConfiguration().getDeploymentManager();
+    FormEngineConfiguration formEngineConfiguration = Context.getFormEngineConfiguration();
+    DeploymentManager deploymentManager = formEngineConfiguration.getDeploymentManager();
       
     // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
     FormEntity formEntity = deploymentManager.findDeployedFormById(formId);
-    return deploymentManager.resolveForm(formEntity).getFormDefinition();
+    FormCacheEntry cacheEntry = deploymentManager.resolveForm(formEntity);
+    return formEngineConfiguration.getFormJsonConverter().convertToForm(cacheEntry.getFormJson(), 
+        cacheEntry.getFormEntity().getId(), cacheEntry.getFormEntity().getVersion());
   }
   
   public static FormDefinition getFormDefinitionFromCache(String formId) {
-    FormCacheEntry cacheEntry = Context.getFormEngineConfiguration().getFormCache().get(formId);
+    FormEngineConfiguration formEngineConfiguration = Context.getFormEngineConfiguration();
+    FormCacheEntry cacheEntry = formEngineConfiguration.getFormCache().get(formId);
     if (cacheEntry != null) {
-      return cacheEntry.getFormDefinition();
+      return formEngineConfiguration.getFormJsonConverter().convertToForm(cacheEntry.getFormJson(), 
+          cacheEntry.getFormEntity().getId(), cacheEntry.getFormEntity().getVersion());
     }
     return null;
   }

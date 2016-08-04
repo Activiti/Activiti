@@ -2,7 +2,8 @@
     <div class="modal-dialog modal-wide">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>{{'FORM-BUILDER.POPUP.EDIT-TITLE' | translate: formElement}}</h2>
+                <h2 ng-if="formElement.type != 'expression'">{{'FORM-BUILDER.POPUP.EDIT-TITLE' | translate: formElement}}</h2>
+                <h2 ng-if="formElement.type == 'expression'">{{'FORM-BUILDER.POPUP.EXPRESSION-TITLE' | translate}}</h2>
             </div>
             <div class="modal-body">
                 <div class="center-pane">
@@ -18,9 +19,8 @@
                     </div>
                 </div>
 
-                <div class="form-group" ng-if="activeTab.id == 'general'">
+                <div class="form-group" ng-if="activeTab.id == 'general' && formElement.type != 'expression'">
                     <label translate="FORM-BUILDER.COMPONENT.LABEL"></label>
-                    <label translate="FORM-BUILDER.COMPONENT.NAME" ng-show="formElement.type == 'expression'"></label>
                     <input type="text" class="form-control" ng-model="formElement.name"
                            ng-change="formElementNameChanged(formElement)" auto-focus>
                 </div>
@@ -100,9 +100,9 @@
 
                 <div ng-if="activeTab.id == 'general' && formElement.type === 'expression'">
                     <div class="form-group">
-                        <label translate="FORM-BUILDER.COMPONENT.READONLY-TEXT"></label>
-                        <textarea rows="3" ng-model="formElement.value" class="form-control" id="readonly-text-value"></textarea>
-                        <div class="subtle" translate="FORM-BUILDER.MESSAGE.READONLY-TEXT-HELP" style="padding: 5px 0 5px 1px;"></div>
+                        <label translate="FORM-BUILDER.COMPONENT.EXPRESSION"></label>
+                        <textarea rows="3" ng-model="formElement.expression" class="form-control" id="readonly-text-value"></textarea>
+                        <div class="subtle" translate="FORM-BUILDER.MESSAGE.EXPRESSION-HELP" style="padding: 5px 0 5px 1px;"></div>
                     </div>
                 </div>
             </div>

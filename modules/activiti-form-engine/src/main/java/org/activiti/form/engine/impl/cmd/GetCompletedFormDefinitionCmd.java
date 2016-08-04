@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
 import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.api.SubmittedFormQuery;
 import org.activiti.form.engine.ActivitiFormException;
@@ -80,7 +81,7 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
     
     FormCacheEntry formCacheEntry = resolveForm(commandContext);
     SubmittedForm submittedForm = resolveSubmittedForm(commandContext);
-    CompletedFormDefinition formDefinition = resolveRuntimeFormDefinition(formCacheEntry, submittedForm);
+    CompletedFormDefinition formDefinition = resolveRuntimeFormDefinition(formCacheEntry, submittedForm, commandContext);
     fillFormFieldValues(submittedForm, formDefinition, commandContext);
     return formDefinition;
   }
@@ -295,9 +296,12 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
     }
   }
   
-  protected CompletedFormDefinition resolveRuntimeFormDefinition(FormCacheEntry formCacheEntry, SubmittedForm submittedForm) {
+  protected CompletedFormDefinition resolveRuntimeFormDefinition(FormCacheEntry formCacheEntry, 
+      SubmittedForm submittedForm, CommandContext commandContext) {
+    
     FormEntity formEntity = formCacheEntry.getFormEntity();
-    FormDefinition formDefinition = formCacheEntry.getFormDefinition();
+    FormJsonConverter formJsonConverter = commandContext.getFormEngineConfiguration().getFormJsonConverter();
+    FormDefinition formDefinition = formJsonConverter.convertToForm(formCacheEntry.getFormJson(), formEntity.getId(), formEntity.getVersion());
     CompletedFormDefinition runtimeFormDefinition = new CompletedFormDefinition(formDefinition);
     runtimeFormDefinition.setId(formEntity.getId());
     runtimeFormDefinition.setName(formEntity.getName());

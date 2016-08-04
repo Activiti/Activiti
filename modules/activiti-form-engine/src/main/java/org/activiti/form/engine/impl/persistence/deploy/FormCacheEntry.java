@@ -15,7 +15,6 @@ package org.activiti.form.engine.impl.persistence.deploy;
 import java.io.Serializable;
 
 import org.activiti.form.engine.impl.persistence.entity.FormEntity;
-import org.activiti.form.model.FormDefinition;
 
 /**
  * @author Tijs Rademakers
@@ -25,11 +24,11 @@ public class FormCacheEntry implements Serializable {
   private static final long serialVersionUID = 1L;
 
   protected FormEntity formEntity;
-  protected FormDefinition formDefinition;
+  protected String formJson;
 
-  public FormCacheEntry(FormEntity formEntity, FormDefinition formDefinition) {
+  public FormCacheEntry(FormEntity formEntity, String formJson) {
     this.formEntity = formEntity;
-    this.formDefinition = formDefinition;
+    this.formJson = formJson;
   }
 
   public FormEntity getFormEntity() {
@@ -40,11 +39,11 @@ public class FormCacheEntry implements Serializable {
     this.formEntity = formEntity;
   }
 
-  public FormDefinition getFormDefinition() {
-    return formDefinition;
+  public String getFormJson() {
+    return formJson;
   }
 
-  public void setFormDefinition(FormDefinition formDefinition) {
-    this.formDefinition = formDefinition;
+  public void setFormJson(String formJson) {
+    this.formJson = formJson;
   }
 }

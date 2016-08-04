@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
 import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.api.FormService;
 import org.activiti.form.engine.impl.FormEngineImpl;
@@ -197,6 +198,8 @@ public class FormEngineConfiguration {
   protected TransactionContextFactory transactionContextFactory;
   
   protected ExpressionManager expressionManager;
+  
+  protected FormJsonConverter formJsonConverter = new FormJsonConverter();
 
   // MYBATIS SQL SESSION FACTORY /////////////////////////////////////
 
@@ -1219,6 +1222,15 @@ public class FormEngineConfiguration {
 
   public FormEngineConfiguration setExpressionManager(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
+    return this;
+  }
+
+  public FormJsonConverter getFormJsonConverter() {
+    return formJsonConverter;
+  }
+
+  public FormEngineConfiguration setFormJsonConverter(FormJsonConverter formJsonConverter) {
+    this.formJsonConverter = formJsonConverter;
     return this;
   }
 

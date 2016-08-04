@@ -748,6 +748,7 @@
             "TABLE": "Dynamic table",
             "HEADER": "Header",
             "UPLOAD": "Upload",
+            "EXPRESSION": "Expression",
             "DISPLAY-VALUE": "Display value",
             "DISPLAY-TEXT": "Display text"
         },
@@ -771,14 +772,16 @@
             "EDIT-COMPONENT": "Edit form component"
         },
         "POPUP": {
-            "EDIT-TITLE": "Edit field '{{name}}'"
+            "EDIT-TITLE": "Edit field '{{name}}'",
+            "EXPRESSION-TITLE": "Edit expression"
         },
         "MESSAGE": {
             "EMPTY-CANVAS": "The form is currently empty. Add components to the form by dragging a desired component from the list on the left. Click on a component on the canvas to alter the label and other properties...",
             "SELECT-FIELD": "(No field selected)",
+            "EMPTY-EXPRESSION": "(No expression value)",
             "FIELD-VALUE": "Show value of field \"{{field}}\"",
             "SELECT-READONLY-FIELD": "Field:",
-            "READONLY-TEXT-HELP": "You can also display values previously submitted in any form, as part of the text, by referencing them using a notation as follows ${myFieldId}.",
+            "EXPRESSION-HELP": "You can also display values previously submitted in any form, as part of the text, by referencing them using a notation as follows ${myFieldId}.",
             "HYPERLINK-HELP": "You can also display values previously submitted in any form, as part of the HYPERLINK URL. Select a field below to insert it at the position of the cursor.",
             "HYPERLINK-HELP-RESPONSE-VARIABLE": "You can also display REST response variables as part of the HYPERLINK URL. Select a field below to insert it at the position of the cursor.",
             "DISPLAY-TEXT-HELP": "You can also display values previously submitted in any form, as part of the DISPLAY TEXT. Select a field below to insert it at the position of the cursor.",
@@ -803,6 +806,7 @@
             "DISPLAY-TEXT-DEFAULT": "Display text as part of the form",
             "BASE-ENDPOINT": "Base endpoint",
             "REQUIRED": "Required",
+            "EXPRESSION": "Expression",
             "READONLY": "Read only",
             "ADD-OPTION": "+ Add a new option",
             "UPLOAD-ALLOW-MULTIPLE": "Allow uploading multiple files",

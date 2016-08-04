@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
 import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
@@ -67,7 +68,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
 
   public FormDefinition execute(CommandContext commandContext) {
     FormCacheEntry formCacheEntry = resolveForm(commandContext);
-    FormDefinition formDefinition = resolveFormDefinition(formCacheEntry);
+    FormDefinition formDefinition = resolveFormDefinition(formCacheEntry, commandContext);
     fillFormFieldValues(formDefinition, commandContext);
     return formDefinition;
   }
@@ -204,9 +205,10 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
     }
   }
   
-  protected FormDefinition resolveFormDefinition(FormCacheEntry formCacheEntry) {
+  protected FormDefinition resolveFormDefinition(FormCacheEntry formCacheEntry, CommandContext commandContext) {
     FormEntity formEntity = formCacheEntry.getFormEntity();
-    FormDefinition formDefinition = formCacheEntry.getFormDefinition();
+    FormJsonConverter formJsonConverter = commandContext.getFormEngineConfiguration().getFormJsonConverter();
+    FormDefinition formDefinition = formJsonConverter.convertToForm(formCacheEntry.getFormJson(), formEntity.getId(), formEntity.getVersion());
     formDefinition.setId(formEntity.getId());
     formDefinition.setName(formEntity.getName());
     formDefinition.setKey(formEntity.getKey());
