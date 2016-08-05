@@ -52,6 +52,7 @@ public class DatabaseTablePrefixTest extends TestCase {
             .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config1.setDatabaseTablePrefix("SCHEMA1.");
     config1.setActiviti5CompatibilityEnabled(true);
+    config1.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
     ProcessEngine engine1 = config1.buildProcessEngine();
     
     ProcessEngineConfigurationImpl config2 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl
@@ -60,6 +61,7 @@ public class DatabaseTablePrefixTest extends TestCase {
             .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema        
     config2.setDatabaseTablePrefix("SCHEMA2.");
     config2.setActiviti5CompatibilityEnabled(true);
+    config2.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
     ProcessEngine engine2 = config2.buildProcessEngine();
     
     // create the tables in SCHEMA1
