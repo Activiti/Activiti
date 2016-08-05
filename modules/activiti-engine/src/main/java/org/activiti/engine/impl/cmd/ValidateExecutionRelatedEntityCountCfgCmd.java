@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Joram Barrez
  */
-public class ValidateExecutionRelatedEntityCountConfiguration implements Command<Void> {
+public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> {
   
-  private static final Logger logger = LoggerFactory.getLogger(ValidateExecutionRelatedEntityCountConfiguration.class);
+  private static final Logger logger = LoggerFactory.getLogger(ValidateExecutionRelatedEntityCountCfgCmd.class);
   
   public static String PROPERTY_EXECUTION_RELATED_ENTITY_COUNT = "cfg.execution-related-entities-count";
   
@@ -70,7 +70,7 @@ public class ValidateExecutionRelatedEntityCountConfiguration implements Command
           logger.info("Configuration change: execution related entity counting feature was enabled before, but now disabled. "
               + "Updating all execution entities.");
         }
-        commandContext.getProcessEngineConfiguration().getExecutionDataManager().updateAllExecutionRelatedEntityCountFlags(propertyValue);
+        commandContext.getProcessEngineConfiguration().getExecutionDataManager().updateAllExecutionRelatedEntityCountFlags(configProperty);
       }
       
       // Update property

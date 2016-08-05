@@ -126,7 +126,7 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
-import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountConfiguration;
+import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountCfgCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -2275,7 +2275,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    */
   protected void postProcessEngineInitialisation() {
     if (performanceSettings.isValidateExecutionRelationshipCountConfigOnBoot()) {
-      commandExecutor.execute(new ValidateExecutionRelatedEntityCountConfiguration());
+      commandExecutor.execute(new ValidateExecutionRelatedEntityCountCfgCmd());
     }
   }
 

@@ -23,9 +23,15 @@ import org.activiti.engine.ProcessEngines;
 public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
 
   protected String activitiConfigurationResource;
+  protected String processEngineName;
 
   public ResourceActivitiTestCase(String activitiConfigurationResource) {
+    this(activitiConfigurationResource, null);
+  }
+  
+  public ResourceActivitiTestCase(String activitiConfigurationResource, String processEngineName) {
     this.activitiConfigurationResource = activitiConfigurationResource;
+    this.processEngineName = processEngineName;
   }
 
   @Override
@@ -37,7 +43,16 @@ public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase 
 
   @Override
   protected void initializeProcessEngine() {
-    processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource).buildProcessEngine();
+    ProcessEngineConfiguration config = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource);
+    if (processEngineName != null) {
+      config.setProcessEngineName(processEngineName);
+    }
+    additionalConfiguration(config);
+    processEngine = config.buildProcessEngine();
+  }
+  
+  protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+    
   }
 
 }
