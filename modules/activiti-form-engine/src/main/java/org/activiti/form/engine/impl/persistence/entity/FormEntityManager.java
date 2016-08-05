@@ -27,6 +27,10 @@ public interface FormEntityManager extends EntityManager<FormEntity> {
   FormEntity findLatestFormByKey(String formDefinitionKey);
 
   FormEntity findLatestFormByKeyAndTenantId(String formDefinitionKey, String tenantId);
+  
+  FormEntity findLatestFormByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId);
+  
+  FormEntity findLatestFormByKeyParentDeploymentIdAndTenantId(String formDefinitionKey, String parentDeploymentId, String tenantId);
 
   List<Form> findFormsByQueryCriteria(FormQueryImpl formQuery, Page page);
 

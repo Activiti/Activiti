@@ -61,6 +61,16 @@ public interface FormQuery extends Query<FormQuery, Form> {
    * Select forms that are deployed in deployments with the given set of ids
    */
   FormQuery deploymentIds(Set<String> deploymentIds);
+  
+  /**
+   * Only select forms that have the given parent deployment id
+   */
+  FormQuery parentDeploymentId(String parentDeploymentId);
+  
+  /**
+   * Only select forms that have a parent deployment id like the given parameter
+   */
+  FormQuery parentDeploymentIdLike(String parentDeploymentIdLike);
 
   /**
    * Only select form with the given key.

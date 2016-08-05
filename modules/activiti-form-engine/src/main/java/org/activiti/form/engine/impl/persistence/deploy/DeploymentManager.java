@@ -87,6 +87,28 @@ public class DeploymentManager {
     form = resolveForm(form).getFormEntity();
     return form;
   }
+  
+  public FormEntity findDeployedLatestFormByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId) {
+    FormEntity form = formEntityManager.findLatestFormByKeyAndParentDeploymentId(formDefinitionKey, parentDeploymentId);
+    
+    if (form == null) {
+      throw new ActivitiFormObjectNotFoundException("no forms deployed with key '" + formDefinitionKey + 
+          "' for parent deployment id '" + parentDeploymentId + "'");
+    }
+    form = resolveForm(form).getFormEntity();
+    return form;
+  }
+  
+  public FormEntity findDeployedLatestFormByKeyParentDeploymentIdAndTenantId(String formDefinitionKey, String parentDeploymentId, String tenantId) {
+    FormEntity form = formEntityManager.findLatestFormByKeyParentDeploymentIdAndTenantId(formDefinitionKey, parentDeploymentId, tenantId);
+    
+    if (form == null) {
+      throw new ActivitiFormObjectNotFoundException("no forms deployed with key '" + formDefinitionKey + 
+          "' for parent deployment id '" + parentDeploymentId + "' and tenant identifier '" + tenantId + "'");
+    }
+    form = resolveForm(form).getFormEntity();
+    return form;
+  }
 
   public FormEntity findDeployedFormByKeyAndVersionAndTenantId(String formDefinitionKey, int formVersion, String tenantId) {
     FormEntity form = formEntityManager.findFormByKeyAndVersionAndTenantId(formDefinitionKey, formVersion, tenantId);

@@ -77,6 +77,16 @@ public interface FormDeploymentQuery extends Query<FormDeploymentQuery, FormDepl
    * Only select deployments with a form definition key like the given string.
    */
   FormDeploymentQuery formDefinitionKeyLike(String keyLike);
+  
+  /**
+   * Only select deployment that have the given deployment parent id.
+   */
+  FormDeploymentQuery parentDeploymentId(String deploymentParentId);
+
+  /**
+   * Only select deployments with a deployment parent id like the given one.
+   */
+  FormDeploymentQuery parentDeploymentIdLike(String deploymentParentIdLike);
 
   // sorting ////////////////////////////////////////////////////////
 

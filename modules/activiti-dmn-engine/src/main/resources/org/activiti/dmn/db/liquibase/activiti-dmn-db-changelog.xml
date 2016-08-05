@@ -11,11 +11,18 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="name_" type="varchar(255)" />
-            <column name="category_" type="varchar(255)" />
+            <column name="category_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
             <column name="deploy_time_" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="tenant_id_" type="varchar(255)" />
+            <column name="tenant_id_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
+            <column name="parent_deployment_id_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
         </createTable>
         
         <createTable tableName="ACT_DMN_DEPLOYMENT_RESOURCE">
@@ -36,11 +43,20 @@
             <column name="name_" type="varchar(255)" />
             <column name="version_" type="int" />
             <column name="key_" type="varchar(255)" />
-            <column name="category_" type="varchar(255)" />
+            <column name="category_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
             <column name="deployment_id_" type="varchar(255)" />
-            <column name="tenant_id_" type="varchar(255)" />
+            <column name="parent_deployment_id_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
+            <column name="tenant_id_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
             <column name="resource_name_" type="varchar(255)" />
-            <column name="description_" type="varchar(255)" />
+            <column name="description_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
         </createTable>
 
     </changeSet>

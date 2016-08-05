@@ -69,6 +69,16 @@ public interface DmnDeploymentQuery extends Query<DmnDeploymentQuery, DmnDeploym
    * Only select deployments that do not have a tenant id.
    */
   DmnDeploymentQuery deploymentWithoutTenantId();
+  
+  /**
+   * Only select deployment that have the given parent deployment id.
+   */
+  DmnDeploymentQuery parentDeploymentId(String parentDeploymentId);
+
+  /**
+   * Only select deployments with a parent deployment id like the given one.
+   */
+  DmnDeploymentQuery parentDeploymentIdLike(String parentDeploymentIdLike);
 
   /** Only select deployments with the given process definition key. */
   DmnDeploymentQuery decisionTableKey(String key);

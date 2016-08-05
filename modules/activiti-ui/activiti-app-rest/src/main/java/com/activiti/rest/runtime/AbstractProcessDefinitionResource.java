@@ -15,7 +15,6 @@ package com.activiti.rest.runtime;
 import java.net.URLDecoder;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -32,6 +31,7 @@ import org.activiti.form.model.FormField;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
@@ -41,111 +41,111 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractProcessDefinitionResource {
 
-    private final Logger logger = LoggerFactory.getLogger(AbstractProcessDefinitionResource.class);
+  private final Logger logger = LoggerFactory.getLogger(AbstractProcessDefinitionResource.class);
 
-    @Inject
-    protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-    @Inject
-    protected FormRepositoryService formRepositoryService;
+  @Autowired
+  protected FormRepositoryService formRepositoryService;
 
-    @Inject
-    protected PermissionService permissionService;
+  @Autowired
+  protected PermissionService permissionService;
 
-    @Inject
-    protected ObjectMapper objectMapper;
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-    public FormDefinition getProcessDefinitionStartForm(HttpServletRequest request) {
+  public FormDefinition getProcessDefinitionStartForm(HttpServletRequest request) {
 
-        String[] requestInfoArray = parseRequest(request);
-        String processDefinitionId = getProcessDefinitionId(requestInfoArray, requestInfoArray.length - 2);
+    String[] requestInfoArray = parseRequest(request);
+    String processDefinitionId = getProcessDefinitionId(requestInfoArray, requestInfoArray.length - 2);
 
-        ProcessDefinition processDefinition = permissionService.getProcessDefinitionById(processDefinitionId);
+    ProcessDefinition processDefinition = permissionService.getProcessDefinitionById(processDefinitionId);
 
-        try {
-            return getStartForm(processDefinition);
+    try {
+      return getStartForm(processDefinition);
 
-        } catch (ActivitiObjectNotFoundException aonfe) {
-            // Process definition does not exist
-            throw new NotFoundException("No process definition found with the given id: " + processDefinitionId);
-        }
+    } catch (ActivitiObjectNotFoundException aonfe) {
+      // Process definition does not exist
+      throw new NotFoundException("No process definition found with the given id: " + processDefinitionId);
+    }
+  }
+
+  protected FormDefinition getStartForm(ProcessDefinition processDefinition) {
+    FormDefinition formDefinition = null;
+    BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
+    Process process = bpmnModel.getProcessById(processDefinition.getKey());
+    FlowElement startElement = process.getInitialFlowElement();
+    if (startElement instanceof StartEvent) {
+      StartEvent startEvent = (StartEvent) startElement;
+      if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
+        formDefinition = formRepositoryService.getFormDefinitionByKeyAndParentDeploymentId(startEvent.getFormKey(), processDefinition.getDeploymentId());
+      }
     }
 
-    protected FormDefinition getStartForm(ProcessDefinition processDefinition) {
-      FormDefinition formDefinition = null;
-      BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
-      Process process = bpmnModel.getProcessById(processDefinition.getKey());
-      FlowElement startElement = process.getInitialFlowElement();
-      if (startElement instanceof StartEvent) {
-        StartEvent startEvent = (StartEvent) startElement;
-        if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
-          formDefinition = formRepositoryService.getFormDefinitionByKey(startEvent.getFormKey());
+    if (formDefinition == null) {
+      // Definition found, but no form attached
+      throw new NotFoundException("Process definition does not have a form defined: " + processDefinition.getId());
+    }
+
+    return formDefinition;
+  }
+
+  protected ProcessDefinition getProcessDefinitionFromRequest(String[] requestInfoArray, boolean isTableRequest) {
+    int paramPosition = requestInfoArray.length - 3;
+    if (isTableRequest) {
+      paramPosition--;
+    }
+    String processDefinitionId = getProcessDefinitionId(requestInfoArray, paramPosition);
+
+    ProcessDefinition processDefinition = permissionService.getProcessDefinitionById(processDefinitionId);
+
+    return processDefinition;
+  }
+
+  protected FormField getFormFieldFromRequest(String[] requestInfoArray, ProcessDefinition processDefinition, boolean isTableRequest) {
+    FormDefinition form = getStartForm(processDefinition);
+    int paramPosition = requestInfoArray.length - 1;
+    if (isTableRequest) {
+      paramPosition--;
+    }
+    String fieldVariable = requestInfoArray[paramPosition];
+
+    List<? extends FormField> allFields = form.listAllFields();
+    FormField selectedField = null;
+    if (CollectionUtils.isNotEmpty(allFields)) {
+      for (FormField formFieldRepresentation : allFields) {
+        if (formFieldRepresentation.getId().equalsIgnoreCase(fieldVariable)) {
+          selectedField = formFieldRepresentation;
         }
       }
-      
-      if (formDefinition == null) {
-        // Definition found, but no form attached
-        throw new NotFoundException("Process definition does not have a form defined: " + processDefinition.getId());
-      }
-      
-      return formDefinition;
     }
 
-    protected ProcessDefinition getProcessDefinitionFromRequest(String[] requestInfoArray, boolean isTableRequest) {
-        int paramPosition = requestInfoArray.length - 3;
-        if (isTableRequest) {
-            paramPosition--;
-        }
-        String processDefinitionId = getProcessDefinitionId(requestInfoArray, paramPosition);
-
-        ProcessDefinition processDefinition = permissionService.getProcessDefinitionById(processDefinitionId);
-
-        return processDefinition;
+    if (selectedField == null) {
+      throw new NotFoundException("Field could not be found in start form definition " + fieldVariable);
     }
 
-    protected FormField getFormFieldFromRequest(String[] requestInfoArray, ProcessDefinition processDefinition, boolean isTableRequest) {
-        FormDefinition form = getStartForm(processDefinition);
-        int paramPosition = requestInfoArray.length - 1;
-        if (isTableRequest) {
-            paramPosition--;
-        }
-        String fieldVariable = requestInfoArray[paramPosition];
+    return selectedField;
+  }
 
-        List<? extends FormField> allFields = form.listAllFields();
-        FormField selectedField = null;
-        if (CollectionUtils.isNotEmpty(allFields)) {
-            for (FormField formFieldRepresentation : allFields) {
-                if (formFieldRepresentation.getId().equalsIgnoreCase(fieldVariable)) {
-                    selectedField = formFieldRepresentation;
-                }
-            }
-        }
-
-        if (selectedField == null) {
-            throw new NotFoundException("Field could not be found in start form definition " + fieldVariable);
-        }
-
-        return selectedField;
+  protected String[] parseRequest(HttpServletRequest request) {
+    String requestURI = request.getRequestURI();
+    String[] requestInfoArray = requestURI.split("/");
+    if (requestInfoArray.length < 2) {
+      throw new BadRequestException("Start form request is not valid " + requestURI);
     }
-    
-    protected String[] parseRequest(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String[] requestInfoArray = requestURI.split("/");
-        if (requestInfoArray.length < 2) {
-            throw new BadRequestException("Start form request is not valid " + requestURI);
-        }
-        return requestInfoArray;
-    }
+    return requestInfoArray;
+  }
 
-    protected String getProcessDefinitionId(String[] requestInfoArray, int position) {
-        String processDefinitionVariable = requestInfoArray[position];
-        String processDefinitionId = null;
-        try {
-            processDefinitionId = URLDecoder.decode(processDefinitionVariable, "UTF-8");
-        } catch (Exception e) {
-            logger.error("Error decoding process definition " + processDefinitionVariable, e);
-            throw new InternalServerErrorException("Error decoding process definition " + processDefinitionVariable);
-        }
-        return processDefinitionId;
+  protected String getProcessDefinitionId(String[] requestInfoArray, int position) {
+    String processDefinitionVariable = requestInfoArray[position];
+    String processDefinitionId = null;
+    try {
+      processDefinitionId = URLDecoder.decode(processDefinitionVariable, "UTF-8");
+    } catch (Exception e) {
+      logger.error("Error decoding process definition " + processDefinitionVariable, e);
+      throw new InternalServerErrorException("Error decoding process definition " + processDefinitionVariable);
     }
+    return processDefinitionId;
+  }
 }

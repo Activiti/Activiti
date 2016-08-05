@@ -17,15 +17,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.api.FormService;
 import org.activiti.form.model.FormDefinition;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +52,9 @@ public abstract class AbstractTaskFormResource {
 
   @Autowired
   protected TaskService taskService;
+  
+  @Autowired
+  protected RepositoryService repositoryService;
   
   @Autowired
   protected HistoryService historyService;
@@ -81,12 +88,25 @@ public abstract class AbstractTaskFormResource {
       }
     }
     
+    String parentDeploymentId = null;
+    if (StringUtils.isNotEmpty(task.getProcessDefinitionId())) {
+      try {
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(task.getProcessDefinitionId());
+        parentDeploymentId = processDefinition.getDeploymentId();
+        
+      } catch (ActivitiException e) {
+        logger.error("Error getting process definition " + task.getProcessDefinitionId(), e);
+      }
+    }
+    
     FormDefinition formDefinition = null;
     if (task.getEndTime() != null) {
-      formDefinition = formService.getCompletedTaskFormDefinitionByKey(task.getFormKey(), taskId, task.getProcessInstanceId(), variables);
+      formDefinition = formService.getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(task.getFormKey(), parentDeploymentId, 
+          taskId, task.getProcessInstanceId(), variables);
       
     } else {
-      formDefinition = formService.getTaskFormDefinitionByKey(task.getFormKey(), task.getProcessInstanceId(), variables);
+      formDefinition = formService.getTaskFormDefinitionByKeyAndParentDeploymentId(task.getFormKey(), parentDeploymentId, 
+          task.getProcessInstanceId(), variables);
     }
 
     // If form does not exists, we don't want to leak out this info to just anyone

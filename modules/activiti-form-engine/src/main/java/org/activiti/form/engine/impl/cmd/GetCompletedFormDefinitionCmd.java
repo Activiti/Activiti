@@ -53,25 +53,29 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
   private static final long serialVersionUID = 1L;
 
   protected String formDefinitionKey;
+  protected String parentDeploymentId;
   protected String formId;
   protected String taskId;
   protected String processInstanceId;
   protected String tenantId;
   protected Map<String, Object> variables;
   
-  public GetCompletedFormDefinitionCmd(String formDefinitionKey, String formId, String taskId, String processInstanceId, Map<String, Object> variables) {
-    initializeValues(formDefinitionKey, formId, null, variables);
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
+  public GetCompletedFormDefinitionCmd(String formDefinitionKey, String formId, String taskId, 
+      String processInstanceId, Map<String, Object> variables) {
+    
+    initializeValues(formDefinitionKey, null, formId, null, taskId, processInstanceId, variables);
   }
   
-  public GetCompletedFormDefinitionCmd(String formDefinitionKey, String formId, String taskId, 
+  public GetCompletedFormDefinitionCmd(String formDefinitionKey, String parentDeploymentId, String formId, String taskId, 
+      String processInstanceId, Map<String, Object> variables) {
+    
+    initializeValues(formDefinitionKey, parentDeploymentId, formId, null, taskId, processInstanceId, variables);
+  }
+  
+  public GetCompletedFormDefinitionCmd(String formDefinitionKey, String parentDeploymentId, String formId, String taskId, 
       String processInstanceId, String tenantId, Map<String, Object> variables) {
     
-    initializeValues(formDefinitionKey, formId, null, variables);
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
-    this.tenantId = tenantId;
+    initializeValues(formDefinitionKey, parentDeploymentId, formId, tenantId, taskId, processInstanceId, variables);
   }
 
   public CompletedFormDefinition execute(CommandContext commandContext) {
@@ -86,10 +90,15 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
     return formDefinition;
   }
   
-  protected void initializeValues(String formDefinitionKey, String formId, String tenantId, Map<String, Object> variables) {
+  protected void initializeValues(String formDefinitionKey, String parentDeploymentId, String formId, String tenantId, 
+      String taskId, String processInstanceId, Map<String, Object> variables) {
+    
     this.formDefinitionKey = formDefinitionKey;
+    this.parentDeploymentId = parentDeploymentId;
     this.formId = formId;
     this.tenantId = tenantId;
+    this.taskId = taskId;
+    this.processInstanceId = processInstanceId;
     if (variables != null) {
       this.variables = variables;
     } else {
@@ -134,18 +143,34 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
         throw new ActivitiFormObjectNotFoundException("No form found for id = '" + formId + "'", FormEntity.class);
       }
 
-    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) && parentDeploymentId == null) {
 
       formEntity = deploymentManager.findDeployedLatestFormByKey(formDefinitionKey);
       if (formEntity == null) {
         throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "'", FormEntity.class);
       }
 
-    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)  && parentDeploymentId == null) {
 
       formEntity = deploymentManager.findDeployedLatestFormByKeyAndTenantId(formDefinitionKey, tenantId);
       if (formEntity == null) {
         throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "' for tenant identifier " + tenantId, FormEntity.class);
+      }
+      
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) && parentDeploymentId != null) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyAndParentDeploymentId(formDefinitionKey, parentDeploymentId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + 
+            "' for parent deployment id " + parentDeploymentId, FormEntity.class);
+      }
+      
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)  && parentDeploymentId != null) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyParentDeploymentIdAndTenantId(formDefinitionKey, parentDeploymentId, tenantId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + 
+            "' for parent deployment id '" + parentDeploymentId + "' and for tenant identifier " + tenantId, FormEntity.class);
       }
 
     } else {

@@ -54,6 +54,11 @@ public interface FormDeploymentBuilder {
    * Gives the deployment the given tenant id.
    */
   FormDeploymentBuilder tenantId(String tenantId);
+  
+  /**
+   * Gives the deployment the given parent deployment id.
+   */
+  FormDeploymentBuilder parentDeploymentId(String parentDeploymentId);
 
   /**
    * Deploys all provided sources to the Activiti engine.

@@ -61,6 +61,11 @@ public interface DmnDeploymentBuilder {
    * Gives the deployment the given tenant id.
    */
   DmnDeploymentBuilder tenantId(String tenantId);
+  
+  /**
+   * Gives the deployment the given parent deployment id.
+   */
+  DmnDeploymentBuilder parentDeploymentId(String parentDeploymentId);
 
   /**
    * Deploys all provided sources to the Activiti engine.

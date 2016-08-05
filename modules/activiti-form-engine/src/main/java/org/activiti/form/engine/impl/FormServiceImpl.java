@@ -60,7 +60,20 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   
   public FormDefinition getTaskFormDefinitionByKey(String formDefinitionKey, String processInstanceId, 
       Map<String, Object> variables, String tenantId) {
-    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(formDefinitionKey, null, processInstanceId, tenantId, variables));
+    
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(formDefinitionKey, null, null, processInstanceId, tenantId, variables));
+  }
+  
+  public FormDefinition getTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId, 
+      String processInstanceId, Map<String, Object> variables) {
+    
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(formDefinitionKey, parentDeploymentId, null, processInstanceId, variables));
+  }
+  
+  public FormDefinition getTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId, String processInstanceId, 
+      Map<String, Object> variables, String tenantId) {
+    
+    return commandExecutor.execute(new GetRuntimeFormDefinitionCmd(formDefinitionKey, parentDeploymentId, null, processInstanceId, tenantId, variables));
   }
   
   public CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, Map<String, Object> variables) {
@@ -78,7 +91,21 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   
   public CompletedFormDefinition getCompletedTaskFormDefinitionByKey(String formDefinitionKey, String taskId, String processInstanceId, 
       Map<String, Object> variables, String tenantId) {
-    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(formDefinitionKey, null, taskId, processInstanceId, tenantId, variables));
+    
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(formDefinitionKey, null, null, taskId, processInstanceId, tenantId, variables));
+  }
+  
+  public CompletedFormDefinition getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId,
+      String taskId, String processInstanceId, Map<String, Object> variables) {
+    
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(formDefinitionKey, parentDeploymentId, null, taskId, processInstanceId, variables));
+  }
+  
+  public CompletedFormDefinition getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId,
+      String taskId, String processInstanceId, Map<String, Object> variables, String tenantId) {
+    
+    return commandExecutor.execute(new GetCompletedFormDefinitionCmd(formDefinitionKey, parentDeploymentId, null, 
+        taskId, processInstanceId, tenantId, variables));
   }
   
   public SubmittedFormQuery createSubmittedFormQuery() {

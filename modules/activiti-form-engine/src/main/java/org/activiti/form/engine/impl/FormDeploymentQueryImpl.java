@@ -37,6 +37,8 @@ public class FormDeploymentQueryImpl extends AbstractQuery<FormDeploymentQuery, 
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
+  protected String parentDeploymentId;
+  protected String parentDeploymentIdLike;
   protected String formDefinitionKey;
   protected String formDefinitionKeyLike;
 
@@ -91,6 +93,27 @@ public class FormDeploymentQueryImpl extends AbstractQuery<FormDeploymentQuery, 
     return this;
   }
 
+  public FormDeploymentQueryImpl parentDeploymentId(String parentDeploymentId) {
+    if (parentDeploymentId == null) {
+      throw new ActivitiFormIllegalArgumentException("parentDeploymentId is null");
+    }
+    this.parentDeploymentId = parentDeploymentId;
+    return this;
+  }
+
+  public FormDeploymentQueryImpl parentDeploymentIdLike(String parentDeploymentIdLike) {
+    if (parentDeploymentIdLike == null) {
+      throw new ActivitiFormIllegalArgumentException("parentDeploymentIdLike is null");
+    }
+    this.parentDeploymentIdLike = parentDeploymentIdLike;
+    return this;
+  }
+
+  public FormDeploymentQueryImpl deploymentWithoutTenantId() {
+    this.withoutTenantId = true;
+    return this;
+  }
+  
   public FormDeploymentQueryImpl deploymentTenantId(String tenantId) {
     if (tenantId == null) {
       throw new ActivitiFormIllegalArgumentException("deploymentTenantId is null");
@@ -104,11 +127,6 @@ public class FormDeploymentQueryImpl extends AbstractQuery<FormDeploymentQuery, 
       throw new ActivitiFormIllegalArgumentException("deploymentTenantIdLike is null");
     }
     this.tenantIdLike = tenantIdLike;
-    return this;
-  }
-
-  public FormDeploymentQueryImpl deploymentWithoutTenantId() {
-    this.withoutTenantId = true;
     return this;
   }
 

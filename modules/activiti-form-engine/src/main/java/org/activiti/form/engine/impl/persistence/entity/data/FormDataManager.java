@@ -28,6 +28,10 @@ public interface FormDataManager extends DataManager<FormEntity> {
   FormEntity findLatestFormByKey(String formDefinitionKey);
 
   FormEntity findLatestFormByKeyAndTenantId(String formDefinitionKey, String tenantId);
+  
+  FormEntity findLatestFormByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId);
+  
+  FormEntity findLatestFormByKeyParentDeploymentIdAndTenantId(String formDefinitionKey, String parentDeploymentId, String tenantId);
 
   void deleteFormsByDeploymentId(String deploymentId);
 

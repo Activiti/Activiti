@@ -61,6 +61,16 @@ public interface DecisionTableQuery extends Query<DecisionTableQuery, DecisionTa
    * Select decision tables that are deployed in deployments with the given set of ids
    */
   DecisionTableQuery deploymentIds(Set<String> deploymentIds);
+  
+  /**
+   * Only select decision tables that are deployed in a deployment with the given parent deployment id
+   */
+  DecisionTableQuery parentDeploymentId(String parentDeploymentId);
+  
+  /**
+   * Only select decision tables that are deployed in a deployment like the given parent deployment id
+   */
+  DecisionTableQuery parentDeploymentIdLike(String parentDeploymentIdLike);
 
   /**
    * Only select decision table with the given key.

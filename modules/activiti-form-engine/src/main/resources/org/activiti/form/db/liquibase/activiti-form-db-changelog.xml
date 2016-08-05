@@ -20,6 +20,9 @@
             <column name="tenant_id_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
+            <column name="parent_deployment_id_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
         </createTable>
         
         <createTable tableName="ACT_FO_FORM_RESOURCE">
@@ -44,6 +47,9 @@
             	<constraints nullable="true" />
             </column>
             <column name="deployment_id_" type="varchar(255)" />
+            <column name="parent_deployment_id_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
             <column name="tenant_id_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>

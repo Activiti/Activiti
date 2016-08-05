@@ -88,7 +88,7 @@ public abstract class AbstractProcessInstanceResource {
 
     ProcessInstanceRepresentation processInstanceResult = new ProcessInstanceRepresentation(processInstance, processDefinition, processDefinition.isGraphicalNotationDefined(), userRep);
 
-    FormDefinition formDefinition = getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition.getKey(), processInstance.getId());
+    FormDefinition formDefinition = getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition, processInstance.getId());
     if (formDefinition != null) {
       processInstanceResult.setStartFormDefined(true);
     }
@@ -106,7 +106,7 @@ public abstract class AbstractProcessInstanceResource {
     
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
-    return getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition.getKey(), processInstance.getId());
+    return getStartFormDefinition(processInstance.getProcessDefinitionId(), processDefinition, processInstance.getId());
   }
 
   public void deleteProcessInstance(String processInstanceId) {
@@ -136,15 +136,16 @@ public abstract class AbstractProcessInstanceResource {
     }
   }
   
-  protected FormDefinition getStartFormDefinition(String processDefinitionId, String processDefinitionKey, String processInstanceId) {
+  protected FormDefinition getStartFormDefinition(String processDefinitionId, ProcessDefinitionEntity processDefinition, String processInstanceId) {
     FormDefinition formDefinition = null;
     BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
-    Process process = bpmnModel.getProcessById(processDefinitionKey);
+    Process process = bpmnModel.getProcessById(processDefinition.getKey());
     FlowElement startElement = process.getInitialFlowElement();
     if (startElement instanceof StartEvent) {
       StartEvent startEvent = (StartEvent) startElement;
       if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
-        formDefinition = formService.getCompletedTaskFormDefinitionByKey(startEvent.getFormKey(), null, processInstanceId, null);
+        formDefinition = formService.getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(startEvent.getFormKey(), 
+            processDefinition.getDeploymentId(), null, processInstanceId, null);
       }
     }
     

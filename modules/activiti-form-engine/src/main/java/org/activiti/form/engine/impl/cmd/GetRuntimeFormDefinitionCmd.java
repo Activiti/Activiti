@@ -50,6 +50,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
   private static final long serialVersionUID = 1L;
 
   protected String formDefinitionKey;
+  protected String parentDeploymentId;
   protected String formId;
   protected String processInstanceId;
   protected String tenantId;
@@ -60,8 +61,15 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
     this.processInstanceId = processInstanceId;
   }
   
-  public GetRuntimeFormDefinitionCmd(String formDefinitionKey, String formId, String processInstanceId, String tenantId, Map<String, Object> variables) {
+  public GetRuntimeFormDefinitionCmd(String formDefinitionKey, String parentDeploymentId, String formId, String processInstanceId, Map<String, Object> variables) {
     initializeValues(formDefinitionKey, formId, null, variables);
+    this.parentDeploymentId = parentDeploymentId;
+    this.processInstanceId = processInstanceId;
+  }
+  
+  public GetRuntimeFormDefinitionCmd(String formDefinitionKey, String parentDeploymentId, String formId, String processInstanceId, String tenantId, Map<String, Object> variables) {
+    initializeValues(formDefinitionKey, formId, null, variables);
+    this.parentDeploymentId = parentDeploymentId;
     this.processInstanceId = processInstanceId;
     this.tenantId = tenantId;
   }
@@ -130,6 +138,22 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
       formEntity = deploymentManager.findDeployedLatestFormByKeyAndTenantId(formDefinitionKey, tenantId);
       if (formEntity == null) {
         throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "' for tenant identifier " + tenantId, FormEntity.class);
+      }
+      
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) && parentDeploymentId != null) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyAndParentDeploymentId(formDefinitionKey, parentDeploymentId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + 
+            "' for parent deployment id " + parentDeploymentId, FormEntity.class);
+      }
+      
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)  && parentDeploymentId != null) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyParentDeploymentIdAndTenantId(formDefinitionKey, parentDeploymentId, tenantId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + 
+            "' for parent deployment id '" + parentDeploymentId + "' and for tenant identifier " + tenantId, FormEntity.class);
       }
 
     } else {

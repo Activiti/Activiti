@@ -34,6 +34,7 @@ public class DmnDeploymentEntityImpl implements DmnDeploymentEntity, Serializabl
   protected String name;
   protected String category;
   protected String tenantId = DmnEngineConfiguration.NO_TENANT_ID;
+  protected String parentDeploymentId;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean isNew;
@@ -124,6 +125,14 @@ public class DmnDeploymentEntityImpl implements DmnDeploymentEntity, Serializabl
 
   public void setTenantId(String tenantId) {
     this.tenantId = tenantId;
+  }
+
+  public String getParentDeploymentId() {
+    return parentDeploymentId;
+  }
+
+  public void setParentDeploymentId(String parentDeploymentId) {
+    this.parentDeploymentId = parentDeploymentId;
   }
 
   public void setResources(Map<String, ResourceEntity> resources) {

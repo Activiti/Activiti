@@ -44,163 +44,164 @@ import org.slf4j.LoggerFactory;
  */
 public class DmnParse implements DmnXMLConstants {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(DmnParse.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(DmnParse.class);
 
-    protected String name;
+  protected String name;
 
-    protected boolean validateSchema = true;
+  protected boolean validateSchema = true;
 
-    protected StreamSource streamSource;
-    protected String sourceSystemId;
+  protected StreamSource streamSource;
+  protected String sourceSystemId;
 
-    protected DmnDefinition dmnDefinition;
+  protected DmnDefinition dmnDefinition;
 
-    protected String targetNamespace;
+  protected String targetNamespace;
 
-    /** The deployment to which the parsed decision tables will be added. */
-    protected DmnDeploymentEntity deployment;
+  /** The deployment to which the parsed decision tables will be added. */
+  protected DmnDeploymentEntity deployment;
 
-    /** The end result of the parsing: a list of decision tables. */
-    protected List<DecisionTableEntity> decisionTables = new ArrayList<DecisionTableEntity>();
+  /** The end result of the parsing: a list of decision tables. */
+  protected List<DecisionTableEntity> decisionTables = new ArrayList<DecisionTableEntity>();
 
-    public DmnParse deployment(DmnDeploymentEntity deployment) {
-        this.deployment = deployment;
-        return this;
-    }
+  public DmnParse deployment(DmnDeploymentEntity deployment) {
+    this.deployment = deployment;
+    return this;
+  }
 
-    public DmnParse execute(DmnEngineConfiguration dmnEngineConfig) {
-        try {
+  public DmnParse execute(DmnEngineConfiguration dmnEngineConfig) {
+    try {
 
-            DmnXMLConverter converter = new DmnXMLConverter();
+      DmnXMLConverter converter = new DmnXMLConverter();
 
-            boolean enableSafeDmnXml = dmnEngineConfig.isEnableSafeDmnXml();
-            String encoding = dmnEngineConfig.getXmlEncoding();
-            
-            if (encoding != null) {
-                dmnDefinition = converter.convertToDmnModel(streamSource, validateSchema, enableSafeDmnXml, encoding);
-            } else {
-                dmnDefinition = converter.convertToDmnModel(streamSource, validateSchema, enableSafeDmnXml);
-            }
-            
-            if (dmnDefinition != null && dmnDefinition.getDrgElements() != null) {
-                for (Decision decision : dmnDefinition.getDrgElements()) {
-                    DecisionTableEntity decisionTableEntity = Context.getDmnEngineConfiguration().getDecisionTableEntityManager().create();
-                    decisionTableEntity.setKey(decision.getId());
-                    decisionTableEntity.setName(decision.getName());
-                    decisionTableEntity.setResourceName(name);
-                    decisionTableEntity.setDeploymentId(deployment.getId());
-                    decisionTableEntity.setDescription(decision.getDescription());
-                    decisionTables.add(decisionTableEntity);
-                }
-            }
+      boolean enableSafeDmnXml = dmnEngineConfig.isEnableSafeDmnXml();
+      String encoding = dmnEngineConfig.getXmlEncoding();
 
-        } catch (Exception e) {
-            if (e instanceof ActivitiDmnException) {
-                throw (ActivitiDmnException) e;
-            } else if (e instanceof DmnXMLException) {
-                throw (DmnXMLException) e;
-            } else {
-                throw new ActivitiDmnException("Error parsing XML", e);
-            }
+      if (encoding != null) {
+        dmnDefinition = converter.convertToDmnModel(streamSource, validateSchema, enableSafeDmnXml, encoding);
+      } else {
+        dmnDefinition = converter.convertToDmnModel(streamSource, validateSchema, enableSafeDmnXml);
+      }
+
+      if (dmnDefinition != null && dmnDefinition.getDrgElements() != null) {
+        for (Decision decision : dmnDefinition.getDrgElements()) {
+          DecisionTableEntity decisionTableEntity = Context.getDmnEngineConfiguration().getDecisionTableEntityManager().create();
+          decisionTableEntity.setKey(decision.getId());
+          decisionTableEntity.setName(decision.getName());
+          decisionTableEntity.setResourceName(name);
+          decisionTableEntity.setDeploymentId(deployment.getId());
+          decisionTableEntity.setParentDeploymentId(deployment.getParentDeploymentId());
+          decisionTableEntity.setDescription(decision.getDescription());
+          decisionTables.add(decisionTableEntity);
         }
+      }
 
-        return this;
+    } catch (Exception e) {
+      if (e instanceof ActivitiDmnException) {
+        throw (ActivitiDmnException) e;
+      } else if (e instanceof DmnXMLException) {
+        throw (DmnXMLException) e;
+      } else {
+        throw new ActivitiDmnException("Error parsing XML", e);
+      }
     }
 
-    public DmnParse name(String name) {
-        this.name = name;
-        return this;
-    }
+    return this;
+  }
 
-    public DmnParse sourceInputStream(InputStream inputStream) {
-        if (name == null) {
-            name("inputStream");
-        }
-        setStreamSource(new InputStreamSource(inputStream));
-        return this;
-    }
+  public DmnParse name(String name) {
+    this.name = name;
+    return this;
+  }
 
-    public DmnParse sourceUrl(URL url) {
-        if (name == null) {
-            name(url.toString());
-        }
-        setStreamSource(new UrlStreamSource(url));
-        return this;
+  public DmnParse sourceInputStream(InputStream inputStream) {
+    if (name == null) {
+      name("inputStream");
     }
+    setStreamSource(new InputStreamSource(inputStream));
+    return this;
+  }
 
-    public DmnParse sourceUrl(String url) {
-        try {
-            return sourceUrl(new URL(url));
-        } catch (MalformedURLException e) {
-            throw new ActivitiDmnException("malformed url: " + url, e);
-        }
+  public DmnParse sourceUrl(URL url) {
+    if (name == null) {
+      name(url.toString());
     }
+    setStreamSource(new UrlStreamSource(url));
+    return this;
+  }
 
-    public DmnParse sourceResource(String resource) {
-        if (name == null) {
-            name(resource);
-        }
-        setStreamSource(new ResourceStreamSource(resource));
-        return this;
+  public DmnParse sourceUrl(String url) {
+    try {
+      return sourceUrl(new URL(url));
+    } catch (MalformedURLException e) {
+      throw new ActivitiDmnException("malformed url: " + url, e);
     }
+  }
 
-    public DmnParse sourceString(String string) {
-        if (name == null) {
-            name("string");
-        }
-        setStreamSource(new StringStreamSource(string));
-        return this;
+  public DmnParse sourceResource(String resource) {
+    if (name == null) {
+      name(resource);
     }
+    setStreamSource(new ResourceStreamSource(resource));
+    return this;
+  }
 
-    protected void setStreamSource(StreamSource streamSource) {
-        if (this.streamSource != null) {
-            throw new ActivitiDmnException("invalid: multiple sources " + this.streamSource + " and " + streamSource);
-        }
-        this.streamSource = streamSource;
+  public DmnParse sourceString(String string) {
+    if (name == null) {
+      name("string");
     }
+    setStreamSource(new StringStreamSource(string));
+    return this;
+  }
 
-    public String getSourceSystemId() {
-        return sourceSystemId;
+  protected void setStreamSource(StreamSource streamSource) {
+    if (this.streamSource != null) {
+      throw new ActivitiDmnException("invalid: multiple sources " + this.streamSource + " and " + streamSource);
     }
+    this.streamSource = streamSource;
+  }
 
-    public DmnParse setSourceSystemId(String sourceSystemId) {
-        this.sourceSystemId = sourceSystemId;
-        return this;
-    }
+  public String getSourceSystemId() {
+    return sourceSystemId;
+  }
 
-    /*
-     * ------------------- GETTERS AND SETTERS -------------------
-     */
+  public DmnParse setSourceSystemId(String sourceSystemId) {
+    this.sourceSystemId = sourceSystemId;
+    return this;
+  }
 
-    public boolean isValidateSchema() {
-        return validateSchema;
-    }
+  /*
+   * ------------------- GETTERS AND SETTERS -------------------
+   */
 
-    public void setValidateSchema(boolean validateSchema) {
-        this.validateSchema = validateSchema;
-    }
+  public boolean isValidateSchema() {
+    return validateSchema;
+  }
 
-    public List<DecisionTableEntity> getDecisionTables() {
-        return decisionTables;
-    }
+  public void setValidateSchema(boolean validateSchema) {
+    this.validateSchema = validateSchema;
+  }
 
-    public String getTargetNamespace() {
-        return targetNamespace;
-    }
+  public List<DecisionTableEntity> getDecisionTables() {
+    return decisionTables;
+  }
 
-    public DmnDeploymentEntity getDeployment() {
-        return deployment;
-    }
+  public String getTargetNamespace() {
+    return targetNamespace;
+  }
 
-    public void setDeployment(DmnDeploymentEntity deployment) {
-        this.deployment = deployment;
-    }
+  public DmnDeploymentEntity getDeployment() {
+    return deployment;
+  }
 
-    public DmnDefinition getDmnDefinition() {
-        return dmnDefinition;
-    }
+  public void setDeployment(DmnDeploymentEntity deployment) {
+    this.deployment = deployment;
+  }
 
-    public void setDmnDefinition(DmnDefinition dmnDefinition) {
-        this.dmnDefinition = dmnDefinition;
-    }
+  public DmnDefinition getDmnDefinition() {
+    return dmnDefinition;
+  }
+
+  public void setDmnDefinition(DmnDefinition dmnDefinition) {
+    this.dmnDefinition = dmnDefinition;
+  }
 }
