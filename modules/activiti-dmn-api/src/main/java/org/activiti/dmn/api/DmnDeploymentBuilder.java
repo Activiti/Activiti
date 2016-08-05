@@ -35,6 +35,8 @@ public interface DmnDeploymentBuilder {
   DmnDeploymentBuilder addClasspathResource(String resource);
 
   DmnDeploymentBuilder addString(String resourceName, String text);
+  
+  DmnDeploymentBuilder addDmnBytes(String resourceName, byte[] dmnBytes);
 
   DmnDeploymentBuilder addDmnModel(String resourceName, DmnDefinition dmnDefinition);
 

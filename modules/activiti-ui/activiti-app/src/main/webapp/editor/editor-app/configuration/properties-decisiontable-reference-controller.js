@@ -59,10 +59,6 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.selectedDecisionTable = null;
             } else {
                 $scope.selectedDecisionTable = decisionTable;
-                if ($scope.selectedDecisionTable) {
-                    $scope.selectedDecisionTable.variablesmapping = [];
-                    $scope.property.newVariablesMapping = undefined;
-                }
             }
         };
 
@@ -79,6 +75,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': $scope.selectedDecisionTable.id,
                     'name': $scope.selectedDecisionTable.name,
+                    'key': $scope.selectedDecisionTable.key,
                     'referenceId': $scope.selectedDecisionTable.referenceId
                 };
                 
@@ -95,6 +92,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': $scope.selectedDecisionTable.id,
                     'name': $scope.selectedDecisionTable.name,
+                    'key': $scope.selectedDecisionTable.key,
                     'referenceId': $scope.selectedDecisionTable.referenceId
                 };
                 $scope.updatePropertyInModel($scope.property);
@@ -107,6 +105,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                     modeltype: modelMetaData.model.modelType,
                     json_xml: json,
                     name: modelMetaData.name,
+                    key: modelMetaData.key,
                     description: modelMetaData.description,
                     newversion: false,
                     lastUpdated: modelMetaData.lastUpdated
@@ -139,6 +138,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
 						$rootScope.editorHistory.push({
 	                        id: modelMetaData.modelId, 
 	                        name: modelMetaData.name,
+	                        key: modelMetaData.key,
 	                        stepId: $scope.selectedShape.resourceId,
 	                        type: 'bpmnmodel'
 	                    });
@@ -164,6 +164,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 loading: false,
                 decisionTable: {
                     name: '',
+                    key: '',
                     description: '',
                     modelType: 4,
                     referenceId: modelMetaData.modelId
@@ -175,7 +176,9 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
 
         $scope.createDecisionTable = function() {
 
-            if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0) {
+            if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0 ||
+            	!$scope.model.decisionTable.key || $scope.model.decisionTable.key.length == 0) {
+            	
                 return;
             }
 
@@ -193,7 +196,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': newDecisionTableId,
                     'name': data.name,
-                    'referenceId': data.referenceId
+                    'key': data.key
                 };
                 $scope.updatePropertyInModel($scope.property);
 
@@ -205,6 +208,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                     modeltype: modelMetaData.model.modelType,
                     json_xml: json,
                     name: modelMetaData.name,
+                    key: modelMetaData.key,
                     description: modelMetaData.description,
                     newversion: false,
                     lastUpdated: modelMetaData.lastUpdated,
@@ -241,6 +245,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                         $rootScope.editorHistory.push({
 	                        id: modelMetaData.modelId, 
 	                        name: modelMetaData.name,
+	                        key: modelMetaData.key,
 	                        stepId: $scope.selectedShape.resourceId,
 	                        type: 'bpmnmodel'
 	                    });

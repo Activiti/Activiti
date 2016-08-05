@@ -114,6 +114,12 @@
         </ul>
         <div id="{{activitiFieldIdPrefix + field.id}}" external-content link-only="field.params.link" on-content-upload="contentUploaded(content, field)" on-upload-in-progress="uploadInProgress(status)" ng-show="field.params.multiple || (!field.params.multiple && model.uploads[field.id].length != 1)"></div>
     </div>
+    
+    <div ng-switch-when="expression" class="form-group" ng-show="field.isVisible">
+    	<div class="well well-sm">
+        	{{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}
+        </div>
+    </div>
 </div>
 
 <div ng-if="field != null && field != undefined && field.readOnly" ng-switch="field.type">
@@ -164,6 +170,12 @@
     <div ng-switch-when="multi-line-text" class="form-group" ng-show="field.isVisible">
         <label class="control-label">{{field.name}}</label>
         <textarea class="form-control" readonly>{{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}</textarea>
+    </div>
+    
+    <div ng-switch-when="expression" ng-show="field.isVisible">
+        <div class="well well-sm">
+            {{field.value && field.value || ('FORM.MESSAGE.EMPTY' | translate)}}
+        </div>
     </div>
 
     <div ng-switch-default ng-show="field.isVisible">

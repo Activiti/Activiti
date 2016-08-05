@@ -280,7 +280,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
   
   @Override
-  public ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity) {
+  public ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity, String businessKey) {
     ExecutionEntity subProcessInstance = executionDataManager.create(); 
     inheritCommonProperties(superExecutionEntity, subProcessInstance);
     subProcessInstance.setProcessDefinitionId(processDefinitionId);
@@ -288,6 +288,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
     subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
+    subProcessInstance.setBusinessKey(businessKey);
 
     // Store in database
     insert(subProcessInstance, false);

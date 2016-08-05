@@ -12,7 +12,7 @@
             <column name="sequence_next_hi_value" type="integer" />
         </createTable>
 
-		<createTable tableName="PERSISTENT_TOKEN">
+		<createTable tableName="ACT_IDM_PERSISTENT_TOKEN">
             <column name="series" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -24,7 +24,7 @@
         </createTable>
 
         <!-- model -->
-		<createTable tableName="MODEL">
+		<createTable tableName="ACT_DE_MODEL">
 			<column name="id" type="bigint">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
@@ -73,12 +73,12 @@
 		</createTable>
         
         <createIndex indexName="idx_proc_mod_created"
-            tableName="MODEL" unique="false">
+            tableName="ACT_DE_MODEL" unique="false">
             <column name="created_by" />
         </createIndex>
         
         <!-- Model history -->
-        <createTable tableName="MODEL_HISTORY">
+        <createTable tableName="ACT_DE_MODEL_HISTORY">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -130,98 +130,11 @@
         </createTable>
         
         <createIndex indexName="idx_proc_mod_history_proc"
-            tableName="MODEL_HISTORY" unique="false">
+            tableName="ACT_DE_MODEL_HISTORY" unique="false">
             <column name="model_id" />
         </createIndex>
         
-        <createTable tableName="STENCIL_SET">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="description" type="varchar(4000)">
-                <constraints nullable="true" />
-            </column>
-            <column name="created" type="datetime(6)">
-                <constraints nullable="false" />
-            </column>
-            <column name="stencil_type" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="default_stencil_set" type="boolean">
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="content_type" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="user_id" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="stencil_set_json" type="longblob">
-                <constraints nullable="false" />
-            </column>
-            <column name="last_updated" type="datetime(6)">
-                <constraints nullable="true" />
-            </column>
-            <column name="last_updated_by" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="model_comment" type="varchar(4000)">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-        
-        <createTable tableName="STENCIL_SET_HISTORY">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="description" type="varchar(4000)">
-                <constraints nullable="true" />
-            </column>
-            <column name="created" type="datetime(6)">
-                <constraints nullable="false" />
-            </column>
-            <column name="last_updated" type="datetime(6)">
-                <constraints nullable="true" />
-            </column>
-            <column name="stencil_type" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="default_stencil_set" type="boolean">
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="content_type" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="user_id" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="last_updated_by" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="stencil_set_json" type="longblob">
-                <constraints nullable="false" />
-            </column>
-            <column name="model_comment" type="varchar(4000)">
-                <constraints nullable="true" />
-            </column>
-            <column name="stencil_set_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        
-        <createTable tableName="COMMENTS">
+        <createTable tableName="ACT_WO_COMMENTS">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -236,17 +149,17 @@
             <column name="comment_definition" type="longtext" />
         </createTable>
         
-        <createIndex tableName="COMMENTS" indexName="comment_task_created">
+        <createIndex tableName="ACT_WO_COMMENTS" indexName="comment_task_created">
             <column name="task_id" />
             <column name="created" />
         </createIndex>
         
-        <createIndex tableName="COMMENTS" indexName="comment_proc_created">
+        <createIndex tableName="ACT_WO_COMMENTS" indexName="comment_proc_created">
             <column name="proc_inst_id" />
             <column name="created" />
         </createIndex>
         
-        <createTable tableName="RELATED_CONTENT">
+        <createTable tableName="ACT_WO_RELATED_CONTENT">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -298,19 +211,19 @@
             <column name="content_size" type="bigint" defaultValueNumeric="0" />
         </createTable>
             
-        <createIndex tableName="RELATED_CONTENT" indexName="idx_relcont_createdby">
+        <createIndex tableName="ACT_WO_RELATED_CONTENT" indexName="idx_relcont_createdby">
             <column name="created_by" />
         </createIndex>
-        <createIndex tableName="RELATED_CONTENT" indexName="idx_relcont_taskid">
+        <createIndex tableName="ACT_WO_RELATED_CONTENT" indexName="idx_relcont_taskid">
             <column name="task_id" />
         </createIndex>
-        <createIndex tableName="RELATED_CONTENT" indexName="idx_relcont_procid">
+        <createIndex tableName="ACT_WO_RELATED_CONTENT" indexName="idx_relcont_procid">
             <column name="process_id" />
         </createIndex>
 	
 		<!-- MODEL RELATION -->
 		
-		 <createTable tableName="MODEL_RELATION">
+		 <createTable tableName="ACT_DE_MODEL_RELATION">
 		 	<column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false" />
             </column>
@@ -320,12 +233,12 @@
         </createTable>
         
         <addForeignKeyConstraint baseColumnNames="parent_model_id"
-			baseTableName="MODEL_RELATION" constraintName="fk_relation_parent"
-			referencedColumnNames="id" referencedTableName="MODEL" />
+			baseTableName="ACT_DE_MODEL_RELATION" constraintName="fk_relation_parent"
+			referencedColumnNames="id" referencedTableName="ACT_DE_MODEL" />
 			
 		<addForeignKeyConstraint baseColumnNames="model_id"
-			baseTableName="MODEL_RELATION" constraintName="fk_relation_child"
-			referencedColumnNames="id" referencedTableName="MODEL" />
+			baseTableName="ACT_DE_MODEL_RELATION" constraintName="fk_relation_child"
+			referencedColumnNames="id" referencedTableName="ACT_DE_MODEL" />
 			
 	</changeSet>
 

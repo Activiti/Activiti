@@ -12,9 +12,8 @@
  */
 package com.activiti.rest.editor;
 
-import javax.inject.Inject;
-
 import org.activiti.bpmn.model.GraphicInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,15 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.editor.BpmnDisplayJsonConverter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
-public class EditorDisplayJsonClientResource extends BaseModelResource {
+public class EditorDisplayJsonClientResource {
 
-	@Inject
+  @Autowired
+  protected ModelService modelService;
+  
+	@Autowired
 	protected BpmnDisplayJsonConverter bpmnDisplayJsonConverter;
 	
 	protected ObjectMapper objectMapper = new ObjectMapper();
@@ -38,7 +41,7 @@ public class EditorDisplayJsonClientResource extends BaseModelResource {
 	@RequestMapping(value = "/rest/models/{processModelId}/model-json", method = RequestMethod.GET, produces = "application/json")
 	public JsonNode getModelJSON(@PathVariable Long processModelId) {
 		ObjectNode displayNode = objectMapper.createObjectNode();
-		Model model = getModel(processModelId, true, false);
+		Model model = modelService.getModel(processModelId);
 		bpmnDisplayJsonConverter.processProcessElements(model, displayNode, new GraphicInfo());
 		return displayNode;
 	}
@@ -46,7 +49,7 @@ public class EditorDisplayJsonClientResource extends BaseModelResource {
 	@RequestMapping(value = "/rest/models/{processModelId}/history/{processModelHistoryId}/model-json", method = RequestMethod.GET, produces = "application/json")
     public JsonNode getModelHistoryJSON(@PathVariable Long processModelId, @PathVariable Long processModelHistoryId) {
 	    ObjectNode displayNode = objectMapper.createObjectNode();
-        ModelHistory model = getModelHistory(processModelId, processModelHistoryId, true, false);
+        ModelHistory model = modelService.getModelHistory(processModelId, processModelHistoryId);
         bpmnDisplayJsonConverter.processProcessElements(model, displayNode, new GraphicInfo());
         return displayNode;
     }

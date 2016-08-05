@@ -81,6 +81,10 @@ public interface DynamicBpmnService {
   
   void changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
   
+  ObjectNode changeDmnTaskDecisionTableKey(String id, String decisionTableKey);
+
+  void changeDmnTaskDecisionTableKey(String id, String decisionTableKey, ObjectNode infoNode);
+  
   ObjectNode changeSequenceFlowCondition(String id, String condition);
   
   void changeSequenceFlowCondition(String id, String condition, ObjectNode infoNode);

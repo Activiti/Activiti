@@ -2,7 +2,7 @@
 <div class="subheader" ng-if="model.form">
 	<div class="fixed-container">
 		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.form.latestVersion" ng-disabled="model.form.permission != 'write'">
+			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.form.latestVersion">
 				<i class="glyphicon glyphicon-edit icon-and-label"></i> {{'FORM.ACTION.OPEN-IN-EDITOR' | translate}}
 			</button>
 			<button type="button" class="btn btn-default" ng-click="useAsNewVersion()" ng-if="!model.form.latestVersion">
@@ -10,7 +10,7 @@
 			</button>
 		</div>
 		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-default" ng-click="editForm()" ng-disabled="!model.form.latestVersion || model.form.permission != 'write'"
+			<button type="button" class="btn btn-default" ng-click="editForm()" ng-disabled="!model.form.latestVersion"
 				title="{{'FORM.ACTION.EDIT' | translate}}">
 				<i class="glyphicon glyphicon-pencil"></i>
 			</button>
@@ -19,7 +19,7 @@
 				<i class="editor-icon editor-icon-copy"></i>
 			</button>
 			<button type="button" class="btn btn-default" ng-click="deleteForm()" title="{{'FORM.ACTION.DELETE' | translate}}"
-				 title="{{'FORM.ACTION.DELETE' | translate}}" ng-disabled="!model.form.latestVersion || model.form.permission != 'write'">
+				 title="{{'FORM.ACTION.DELETE' | translate}}" ng-disabled="!model.form.latestVersion">
 				<i class="glyphicon glyphicon-trash"></i>
 			</button>
 		</div>		

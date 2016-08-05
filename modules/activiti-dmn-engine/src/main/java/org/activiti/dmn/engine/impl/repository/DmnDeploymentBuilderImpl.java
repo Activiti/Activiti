@@ -46,7 +46,7 @@ public class DmnDeploymentBuilderImpl implements DmnDeploymentBuilder, Serializa
 
   public DmnDeploymentBuilderImpl() {
     DmnEngineConfiguration dmnEngineConfiguration = Context.getDmnEngineConfiguration();
-    this.repositoryService = dmnEngineConfiguration.getDmnRepositoryService();
+    this.repositoryService = (DmnRepositoryServiceImpl) dmnEngineConfiguration.getDmnRepositoryService();
     this.deployment = dmnEngineConfiguration.getDeploymentEntityManager().create();
     this.resourceEntityManager = dmnEngineConfiguration.getResourceEntityManager();
   }
@@ -94,6 +94,18 @@ public class DmnDeploymentBuilderImpl implements DmnDeploymentBuilder, Serializa
     } catch (UnsupportedEncodingException e) {
       throw new ActivitiDmnException("Unable to get process bytes.", e);
     }
+    deployment.addResource(resource);
+    return this;
+  }
+  
+  public DmnDeploymentBuilder addDmnBytes(String resourceName, byte[] dmnBytes) {
+    if (dmnBytes == null) {
+      throw new ActivitiDmnException("dmn bytes is null");
+    }
+
+    ResourceEntity resource = resourceEntityManager.create();
+    resource.setName(resourceName);
+    resource.setBytes(dmnBytes);
     deployment.addResource(resource);
     return this;
   }

@@ -18,6 +18,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.activiti.dmn.engine.DmnEngineConfiguration;
+import org.activiti.dmn.engine.configurator.DmnEngineConfigurator;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -119,6 +121,13 @@ public class ActivitiEngineConfiguration {
     	FormEngineConfigurator formEngineConfigurator = new FormEngineConfigurator();
     	formEngineConfigurator.setFormEngineConfiguration(formEngineConfiguration);
     	processEngineConfiguration.addConfigurator(formEngineConfigurator);
+    	
+    	DmnEngineConfiguration dmnEngineConfiguration = new DmnEngineConfiguration();
+    	dmnEngineConfiguration.setDataSource(dataSource);
+      
+      DmnEngineConfigurator dmnEngineConfigurator = new DmnEngineConfigurator();
+      dmnEngineConfigurator.setDmnEngineConfiguration(dmnEngineConfiguration);
+      processEngineConfiguration.addConfigurator(dmnEngineConfigurator);
     	
     	return processEngineConfiguration;
     }

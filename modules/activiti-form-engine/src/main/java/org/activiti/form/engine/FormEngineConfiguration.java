@@ -30,6 +30,9 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
+import org.activiti.form.api.FormRepositoryService;
+import org.activiti.form.api.FormService;
 import org.activiti.form.engine.impl.FormEngineImpl;
 import org.activiti.form.engine.impl.FormRepositoryServiceImpl;
 import org.activiti.form.engine.impl.FormServiceImpl;
@@ -116,7 +119,7 @@ public class FormEngineConfiguration {
 
   public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/form/db/mapping/mappings.xml";
   
-  public static final String LIQUIBASE_CHANGELOG_PREFIX = "FORM_";
+  public static final String LIQUIBASE_CHANGELOG_PREFIX = "ACT_FO_";
 
   /**
    * Checks the version of the DB schema against the library when the form engine is being created and throws an exception if the versions don't match.
@@ -175,8 +178,8 @@ public class FormEngineConfiguration {
   // SERVICES
   // /////////////////////////////////////////////////////////////////
 
-  protected FormRepositoryServiceImpl repositoryService = new FormRepositoryServiceImpl();
-  protected FormServiceImpl formService = new FormServiceImpl();
+  protected FormRepositoryService repositoryService = new FormRepositoryServiceImpl();
+  protected FormService formService = new FormServiceImpl();
 
   // DATA MANAGERS ///////////////////////////////////////////////////
 
@@ -195,6 +198,8 @@ public class FormEngineConfiguration {
   protected TransactionContextFactory transactionContextFactory;
   
   protected ExpressionManager expressionManager;
+  
+  protected FormJsonConverter formJsonConverter = new FormJsonConverter();
 
   // MYBATIS SQL SESSION FACTORY /////////////////////////////////////
 
@@ -401,7 +406,7 @@ public class FormEngineConfiguration {
     initService(formService);
   }
 
-  protected void initService(ServiceImpl service) {
+  protected void initService(Object service) {
     if (service instanceof ServiceImpl) {
       ((ServiceImpl) service).setCommandExecutor(commandExecutor);
     }
@@ -1060,11 +1065,11 @@ public class FormEngineConfiguration {
     return this;
   }
 
-  public FormRepositoryServiceImpl getFormRepositoryService() {
+  public FormRepositoryService getFormRepositoryService() {
     return repositoryService;
   }
 
-  public FormServiceImpl getFormService() {
+  public FormService getFormService() {
     return formService;
   }
 
@@ -1217,6 +1222,15 @@ public class FormEngineConfiguration {
 
   public FormEngineConfiguration setExpressionManager(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
+    return this;
+  }
+
+  public FormJsonConverter getFormJsonConverter() {
+    return formJsonConverter;
+  }
+
+  public FormEngineConfiguration setFormJsonConverter(FormJsonConverter formJsonConverter) {
+    this.formJsonConverter = formJsonConverter;
     return this;
   }
 

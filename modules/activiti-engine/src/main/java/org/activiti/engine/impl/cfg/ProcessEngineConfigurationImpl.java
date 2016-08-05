@@ -36,6 +36,8 @@ import java.util.concurrent.BlockingQueue;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.activiti.dmn.api.DmnRepositoryService;
+import org.activiti.dmn.api.DmnRuleService;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.FormService;
@@ -382,6 +384,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected boolean formEngineInitialized;
   protected FormRepositoryService formEngineRepositoryService;
   protected org.activiti.form.api.FormService formEngineFormService;
+  
+  // FORM ENGINE SERVICES /////////////////////////////////////////////////////
+  protected boolean dmnEngineInitialized;
+  protected DmnRepositoryService dmnEngineRepositoryService;
+  protected DmnRuleService dmnEngineRuleService;
 
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
 
@@ -2435,6 +2442,33 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setFormEngineFormService(org.activiti.form.api.FormService formEngineFormService) {
     this.formEngineFormService = formEngineFormService;
+    return this;
+  }
+  
+  public boolean isDmnEngineInitialized() {
+    return dmnEngineInitialized;
+  }
+
+  public ProcessEngineConfigurationImpl setDmnEngineInitialized(boolean dmnEngineInitialized) {
+    this.dmnEngineInitialized = dmnEngineInitialized;
+    return this;
+  }
+
+  public DmnRepositoryService getDmnEngineRepositoryService() {
+    return dmnEngineRepositoryService;
+  }
+
+  public ProcessEngineConfigurationImpl setDmnEngineRepositoryService(DmnRepositoryService dmnEngineRepositoryService) {
+    this.dmnEngineRepositoryService = dmnEngineRepositoryService;
+    return this;
+  }
+
+  public DmnRuleService getDmnEngineRuleService() {
+    return dmnEngineRuleService;
+  }
+
+  public ProcessEngineConfigurationImpl setDmnEngineRuleService(DmnRuleService dmnEngineRuleService) {
+    this.dmnEngineRuleService = dmnEngineRuleService;
     return this;
   }
 

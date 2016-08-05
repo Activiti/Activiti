@@ -10,16 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.test.helper;
+package org.activiti.editor.language.json.converter;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
+import java.util.Map;
 
-public class PassThroughServiceTask implements JavaDelegate {
+/**
+ * @author Tijs Rademakers
+ */
+public interface FormAwareConverter {
 
-	@Override
-  public void execute(DelegateExecution execution) {
-	  
-  }
-
+    public void setFormMap(Map<Long, String> formMap);
 }

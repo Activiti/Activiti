@@ -93,6 +93,18 @@
             <groupId>org.activiti</groupId>
             <artifactId>activiti-form-json-converter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-dmn-engine-configurator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-dmn-engine</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-dmn-model</artifactId>
+        </dependency>
 
 		<dependency>
             <groupId>com.h2database</groupId>

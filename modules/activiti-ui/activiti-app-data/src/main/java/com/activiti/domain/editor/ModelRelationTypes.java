@@ -20,4 +20,5 @@ public interface ModelRelationTypes {
 	
 	String TYPE_PROCESS_MODEL = "process-model";
 	
+	String TYPE_DECISION_TABLE_MODEL_CHILD = "decision-table-model";
 }

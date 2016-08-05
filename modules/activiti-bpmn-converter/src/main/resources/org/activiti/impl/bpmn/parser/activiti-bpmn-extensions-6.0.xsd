@@ -716,4 +716,21 @@
       </documentation>
     </annotation>
   </attribute>
+
+  <attribute name="businessKey" type="tns:tExpression">
+    <annotation>
+      <documentation>
+		To be used on the callActivity element to set the business key of that started process instance.
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <attribute name="inheritBusinessKey" type="boolean">
+    <annotation>
+      <documentation>
+        To be used on the callActivity element to set the business key of the started process instance
+        to the value of the business key from the calling process.
+      </documentation>
+    </annotation>
+  </attribute>
 </schema>

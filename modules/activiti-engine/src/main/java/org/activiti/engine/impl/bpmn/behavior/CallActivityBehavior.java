@@ -30,11 +30,13 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +52,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   private static final long serialVersionUID = 1L;
 
   protected String processDefinitonKey;
-  private Expression processDefinitionExpression;
+  protected Expression processDefinitionExpression;
   protected List<MapExceptionEntry> mapExceptions;
 
   public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
@@ -89,20 +91,33 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }
+    
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
 
-    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().createSubprocessInstance(processDefinition.getId(), executionEntity);
-    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(executionEntity, subProcessInstance, initialFlowElement);
-//    ExecutionEntity subProcessInstance = createSubProcessInstance(processDefinition, executionEntity, initialFlowElement);
+    String businessKey = null;
 
+    if (!StringUtils.isEmpty(callActivity.getBusinessKey())) {
+      Expression expression = expressionManager.createExpression(callActivity.getBusinessKey());
+      businessKey = expression.getValue(execution).toString();
+      
+    } else if (callActivity.isInheritBusinessKey()) {
+      ExecutionEntity processInstance = executionEntityManager.findById(execution.getProcessInstanceId());
+      businessKey = processInstance.getBusinessKey();
+    }
+
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().createSubprocessInstance(
+        processDefinition.getId(),executionEntity, businessKey);
+    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(executionEntity, subProcessInstance, initialFlowElement);
 
     // process template-defined data objects
     Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
 
     // copy process variables
-    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
     for (IOParameter ioParameter : callActivity.getInParameters()) {
       Object value = null;
       if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
@@ -120,7 +135,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     // Create the first execution that will visit all the process definition elements
-    ExecutionEntity subProcessInitialExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(subProcessInstance); 
+    ExecutionEntity subProcessInitialExecution = executionEntityManager.createChildExecution(subProcessInstance); 
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
     Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
@@ -130,8 +145,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
   
   protected ExecutionEntity createSubProcessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
-
-    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().create(); 
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExecutionEntity subProcessInstance = executionEntityManager.create(); 
     subProcessInstance.setProcessDefinitionId(processDefinition.getId());
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
@@ -145,7 +160,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     // Store in database
-    Context.getCommandContext().getExecutionEntityManager().insert(subProcessInstance, false);
+    executionEntityManager.insert(subProcessInstance, false);
 
     subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
     superExecutionEntity.setSubProcessInstance(subProcessInstance);

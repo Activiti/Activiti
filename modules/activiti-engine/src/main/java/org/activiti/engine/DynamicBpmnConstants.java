@@ -36,6 +36,8 @@ public interface DynamicBpmnConstants {
   String USER_TASK_CANDIDATE_USERS = "userTaskCandidateUsers";
   String USER_TASK_CANDIDATE_GROUPS = "userTaskCandidateGroups";
   
+  String DMN_TASK_DECISION_TABLE_KEY = "dmnTaskDecisionTableKey";
+  
   String SEQUENCE_FLOW_CONDITION = "sequenceFlowCondition";
 
   String LOCALIZATION_LANGUAGE = "language";

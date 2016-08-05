@@ -17,7 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="MODEL")
+@Table(name="ACT_DE_MODEL")
 public class Model extends AbstractModel {
 
 	@Column(name="thumbnail")

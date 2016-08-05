@@ -71,8 +71,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
   }
 
   public Void execute(CommandContext commandContext) {
-    // check that the new process definition is just another version of the
-    // same
+    // check that the new process definition is just another version of the same
     // process definition that the process instance is using
     ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
     ExecutionEntity processInstance = executionManager.findById(processInstanceId);
@@ -91,12 +90,10 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
 
     validateAndSwitchVersionOfExecution(commandContext, processInstance, newProcessDefinition);
 
-    // switch the historic process instance to the new process definition
-    // version
+    // switch the historic process instance to the new process definition version
     commandContext.getHistoryManager().recordProcessDefinitionChange(processInstanceId, newProcessDefinition.getId());
 
-    // switch all sub-executions of the process instance to the new process
-    // definition version
+    // switch all sub-executions of the process instance to the new process definition version
     Collection<ExecutionEntity> childExecutions = executionManager.findChildExecutionsByProcessInstanceId(processInstanceId);
     for (ExecutionEntity executionEntity : childExecutions) {
       validateAndSwitchVersionOfExecution(commandContext, executionEntity, newProcessDefinition);

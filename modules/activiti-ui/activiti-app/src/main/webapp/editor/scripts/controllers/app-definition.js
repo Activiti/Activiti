@@ -118,22 +118,16 @@ angular.module('activitiModeler')
 
 
     $scope.deleteApp = function() {
-        $http({method: 'GET', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/runtime/app-definitions/model/' + $scope.model.latestModelId}).
-            success(function(data, status, headers, config) {
-                if (data && data.id) {
-                    // User is owner of the app definition and the app definition is deployed
-                    _internalCreateModal({
-                        template: 'views/popup/app-definition-delete.html?version=' + Date.now(),
-                        scope: $scope
-                    }, $modal, $scope);
+        // User is owner of the app definition and the app definition is deployed
+        /*_internalCreateModal({
+            template: 'views/popup/app-definition-delete.html?version=' + Date.now(),
+            scope: $scope
+        }, $modal, $scope);*/
 
-                } else {
-                    _internalCreateModal({
-                        template: 'views/popup/model-delete.html?version=' + Date.now(),
-                        scope: $scope
-                    }, $modal, $scope);
-                }
-            });
+      	_internalCreateModal({
+            template: 'views/popup/model-delete.html?version=' + Date.now(),
+            scope: $scope
+        }, $modal, $scope);
     };
 
     $scope.publish = function() {

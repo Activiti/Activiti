@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.model.editor.ModelRepresentation;
+import com.activiti.repository.editor.ModelRepository;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
@@ -54,12 +55,16 @@ public class ModelResource extends AbstractModelResource {
 
   @Autowired
   protected ModelInternalService modelService;
+  
+  @Autowired
+  protected ModelRepository modelRepository;
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
   protected BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-
-  protected ObjectMapper objectMapper = new ObjectMapper();
 
   /**
    * GET /rest/models/{modelId} -> Get process model
@@ -83,7 +88,7 @@ public class ModelResource extends AbstractModelResource {
   @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.PUT)
   public ModelRepresentation updateModel(@PathVariable Long modelId, @RequestBody ModelRepresentation updatedModel) {
     // Get model, write-permission required if not a favorite-update
-    Model model = getModel(modelId, true, true);
+    Model model = modelService.getModel(modelId);
 
     try {
       if (updatedModel.getName() != null) {
@@ -106,7 +111,7 @@ public class ModelResource extends AbstractModelResource {
 
     // Get model to check if it exists, read-permission required for delete (in case user is not owner, only share info
     // will be deleted
-    Model model = getModel(modelId, true, false);
+    Model model = modelService.getModel(modelId);
 
     try {
       String currentUserId = SecurityUtils.getCurrentUserId();
@@ -126,7 +131,7 @@ public class ModelResource extends AbstractModelResource {
    */
   @RequestMapping(value = "/rest/models/{modelId}/editor/json", method = RequestMethod.GET, produces = "application/json")
   public ObjectNode getModelJSON(@PathVariable Long modelId) {
-    Model model = getModel(modelId, true, true);
+    Model model = modelService.getModel(modelId);
     ObjectNode modelNode = objectMapper.createObjectNode();
     modelNode.put("modelId", model.getId());
     modelNode.put("name", model.getName());
@@ -175,7 +180,7 @@ public class ModelResource extends AbstractModelResource {
       throw new BadRequestException("Invalid lastUpdated date: '" + lastUpdatedString + "'");
     }
 
-    Model model = getModel(modelId, true, true);
+    Model model = modelService.getModel(modelId);
     User currentUser = SecurityUtils.getCurrentUserObject();
     boolean currentUserIsOwner = model.getLastUpdatedBy().equals(currentUser.getId());
     String resolveAction = values.getFirst("conflictResolveAction");

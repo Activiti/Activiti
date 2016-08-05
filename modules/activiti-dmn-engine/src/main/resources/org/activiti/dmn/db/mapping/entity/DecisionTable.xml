@@ -7,7 +7,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertDecisionTable" parameterType="org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntityImpl">
-    insert into ${prefix}DMN_DECISION_TABLE(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DESCRIPTION_, TENANT_ID_)
+    insert into ${prefix}ACT_DMN_DECISION_TABLE(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DESCRIPTION_, TENANT_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
@@ -22,12 +22,12 @@
   <!-- DECISION TABLE UPDATE -->
 
   <update id="updateDecisionTable" parameterType="org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntityImpl">
-    update ${prefix}DMN_DECISION_TABLE set CATEGORY_ = #{category, jdbcType=VARCHAR}
+    update ${prefix}ACT_DMN_DECISION_TABLE set CATEGORY_ = #{category, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
   </update>
   
   <update id="updateDecisionTableTenantIdForDeploymentId" parameterType="java.util.Map">
-    update ${prefix}DMN_DECISION_TABLE set
+    update ${prefix}ACT_DMN_DECISION_TABLE set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where
       DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR}
@@ -36,7 +36,7 @@
   <!-- DECISION TABLE DELETE -->
 
   <delete id="deleteDecisionTablesByDeploymentId" parameterType="string">
-    delete from ${prefix}DMN_DECISION_TABLE where DEPLOYMENT_ID_ = #{deploymenId} 
+    delete from ${prefix}ACT_DMN_DECISION_TABLE where DEPLOYMENT_ID_ = #{deploymenId} 
   </delete>
   
   <!-- DECISION TABLE RESULTMAP -->
@@ -56,11 +56,11 @@
   <!-- DECISION TABLE SELECT -->
 
   <select id="selectDecisionTable" parameterType="string" resultMap="decisionTableResultMap">
-    select * from ${prefix}DMN_DECISION_TABLE where ID_ = #{decisionTableId, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_DMN_DECISION_TABLE where ID_ = #{decisionTableId, jdbcType=VARCHAR}
   </select>
 
   <select id="selectDecisionTableById" parameterType="string" resultMap="decisionTableResultMap">
-    select * from ${prefix}DMN_DECISION_TABLE where ID_ = #{decisionTableId}
+    select * from ${prefix}ACT_DMN_DECISION_TABLE where ID_ = #{decisionTableId}
   </select>
 
   <select id="selectDecisionTablesByQueryCriteria" parameterType="org.activiti.dmn.engine.impl.DecisionTableQueryImpl" resultMap="decisionTableResultMap">
@@ -77,7 +77,7 @@
   </select>
   
   <sql id="selectDecisionTablesByQueryCriteriaSql">  
-    from ${prefix}DMN_DECISION_TABLE RES
+    from ${prefix}ACT_DMN_DECISION_TABLE RES
     <where>
       <if test="id != null">
         RES.ID_ = #{id}
@@ -140,7 +140,7 @@
         </foreach>
       </if>
       <if test="latest">
-        and RES.VERSION_ = (select max(VERSION_) from ${prefix}DMN_DECISION_TABLE where KEY_ = RES.KEY_ 
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_DMN_DECISION_TABLE where KEY_ = RES.KEY_ 
              <if test="tenantId != null">
 	           and TENANT_ID_ = #{tenantId}
 	         </if>
@@ -169,7 +169,7 @@
     
   <select id="selectDecisionTableByDeploymentAndKey" parameterType="map" resultMap="decisionTableResultMap">
     select * 
-    from ${prefix}DMN_DECISION_TABLE 
+    from ${prefix}ACT_DMN_DECISION_TABLE 
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{decisionTableKey}
       and (TENANT_ID_ = '' or TENANT_ID_ is null)
@@ -177,7 +177,7 @@
   
    <select id="selectDecisionTableByDeploymentAndKeyAndTenantId" parameterType="map" resultMap="decisionTableResultMap">
     select * 
-    from ${prefix}DMN_DECISION_TABLE 
+    from ${prefix}ACT_DMN_DECISION_TABLE 
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{decisionTableKey}
       and TENANT_ID_ = #{tenantId}
@@ -185,31 +185,31 @@
   
   <select id="selectDecisionTablesByKeyAndVersion" parameterType="org.activiti.dmn.engine.impl.db.ListQueryParameterObject" resultMap="decisionTableResultMap">
     select *
-    from ${prefix}DMN_DECISION_TABLE 
+    from ${prefix}ACT_DMN_DECISION_TABLE 
     where KEY_ = #{parameter.decisionTableKey} and VERSION_ = #{parameter.decisionTableVersion} and (TENANT_ID_ = '' or TENANT_ID_ is null)
   </select>
     
   
    <select id="selectDecisionTablesByKeyAndVersionAndTenantId" parameterType="org.activiti.dmn.engine.impl.db.ListQueryParameterObject" resultMap="decisionTableResultMap">
     select *
-    from ${prefix}DMN_DECISION_TABLE 
+    from ${prefix}ACT_DMN_DECISION_TABLE 
     where KEY_ = #{parameter.decisionTableKey} and VERSION_ = #{parameter.decisionTableVersion} and TENANT_ID_ = #{parameter.tenantId}
   </select>
     
   <select id="selectLatestDecisionTableByKey" parameterType="string" resultMap="decisionTableResultMap">
     select *
-    from ${prefix}DMN_DECISION_TABLE 
+    from ${prefix}ACT_DMN_DECISION_TABLE 
     where KEY_ = #{key} and
           (TENANT_ID_ = ''  or TENANT_ID_ is null) and
-          VERSION_ = (select max(VERSION_) from ${prefix}DMN_DECISION_TABLE where KEY_ = #{decisionTableKey} and (TENANT_ID_ = '' or TENANT_ID_ is null))
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_DMN_DECISION_TABLE where KEY_ = #{decisionTableKey} and (TENANT_ID_ = '' or TENANT_ID_ is null))
   </select>
   
   <select id="selectLatestDecisionTableByKeyAndTenantId" parameterType="map" resultMap="decisionTableResultMap">
     select *
-    from ${prefix}DMN_DECISION_TABLE 
+    from ${prefix}ACT_DMN_DECISION_TABLE 
     where KEY_ = #{decisionTableKey} and
           TENANT_ID_ = #{tenantId} and
-          VERSION_ = (select max(VERSION_) from ${prefix}DMN_DECISION_TABLE where KEY_ = #{decisionTableKey} and TENANT_ID_ = #{tenantId})
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_DMN_DECISION_TABLE where KEY_ = #{decisionTableKey} and TENANT_ID_ = #{tenantId})
   </select>
   
   <!-- mysql specific sql -->

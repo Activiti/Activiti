@@ -101,7 +101,9 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
       }
 
       if (locale != null && foundDataObject != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), task.getProcessDefinitionId(), withLocalizationFallback);
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), 
+            task.getProcessDefinitionId(), withLocalizationFallback);
+        
         if (languageNode != null) {
           JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (nameNode != null) {
@@ -115,7 +117,8 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
       }
 
       if (foundDataObject != null) {
-        dataObject = new DataObjectImpl(variableEntity, foundDataObject.getDocumentation(), localizedName, localizedDescription, foundDataObject.getId());
+        dataObject = new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), 
+            foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId());
       }
     }
 

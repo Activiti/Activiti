@@ -55,6 +55,8 @@ public interface Problems {
 
   String SHELL_TASK_NO_COMMAND = "activiti-shelltask-no-command";
   String SHELL_TASK_INVALID_PARAM = "activiti-shelltask-invalid-param";
+  
+  String DMN_TASK_NO_KEY = "activiti-dmntask-no-decision-table-key";
 
   String EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW = "activiti-exclusive-gateway-no-outgoing-seq-flow";
   String EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW = "activiti-exclusive-gateway-condition-not-allowed-on-single-seq-flow";

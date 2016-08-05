@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.activiti.domain.editor.ModelInformation;
 import com.activiti.domain.editor.ModelRelation;
 import com.activiti.repository.editor.ModelRelationRepository;
-import com.activiti.repository.editor.ModelRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author jbarrez
@@ -37,13 +35,7 @@ public class ModelRelationService {
 	private static final Logger logger = LoggerFactory.getLogger(ModelRelationService.class);
 	
 	@Autowired
-	private ModelRepository modelRepository;
-	
-	@Autowired
 	private ModelRelationRepository modelRelationRepository;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
 	
 	/**
 	 * Returns the models which have a {@link ModelRelation} with the given model, 

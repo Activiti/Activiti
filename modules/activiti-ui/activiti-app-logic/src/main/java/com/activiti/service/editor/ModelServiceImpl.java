@@ -12,11 +12,8 @@
  */
 package com.activiti.service.editor;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,17 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.Artifact;
-import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.Lane;
-import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
@@ -55,7 +44,6 @@ import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.domain.editor.ModelRelation;
 import com.activiti.domain.editor.ModelRelationTypes;
-import com.activiti.image.ImageGenerator;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation.UnresolveModelRepresentation;
@@ -65,9 +53,8 @@ import com.activiti.repository.editor.ModelRepository;
 import com.activiti.service.api.DeploymentService;
 import com.activiti.service.api.ModelService;
 import com.activiti.service.api.UserCache;
-import com.activiti.service.exception.BaseModelerRestException;
 import com.activiti.service.exception.InternalServerErrorException;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.activiti.service.exception.NotFoundException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -78,11 +65,14 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   private final Logger log = LoggerFactory.getLogger(ModelServiceImpl.class);
 
   public static final String NAMESPACE = "http://activiti.com/modeler";
-
-  private static float THUMBNAIL_WIDTH = 300f;
+  
+  protected static final String PROCESS_NOT_FOUND_MESSAGE_KEY = "PROCESS.ERROR.NOT-FOUND";
 
   @Autowired
   protected DeploymentService deploymentService;
+  
+  @Autowired
+  protected ModelImageService modelImageService;
 
   @Autowired
   protected ModelRepository modelRepository;
@@ -102,20 +92,41 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
   protected BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-
+  
   @Override
-  public AbstractModel getModel(Long modelId) {
-    return modelRepository.findOne(modelId);
+  public Model getModel(Long modelId) {
+    Model model = modelRepository.findOne(modelId);
+
+    if (model == null) {
+      NotFoundException modelNotFound = new NotFoundException("No model found with the given id: " + modelId);
+      modelNotFound.setMessageKey(PROCESS_NOT_FOUND_MESSAGE_KEY);
+      throw modelNotFound;
+    }
+
+    return model;
   }
 
   @Override
   public List<AbstractModel> getModelsByModelTypeAndReferenceId(Integer modelType, Long referenceId) {
     return new ArrayList<AbstractModel>(modelRepository.findModelsByModelTypeAndReferenceIdOrNullReferenceId(modelType, referenceId));
   }
+  
+  @Override
+  public ModelHistory getModelHistory(Long modelId, Long modelHistoryId) {
+    // Check if the user has read-rights on the process-model in order to fetch history
+    Model model = getModel(modelId);
+    ModelHistory modelHistory = modelHistoryRepository.findOne(modelHistoryId);
+
+    // Check if history corresponds to the current model and is not deleted
+    if (modelHistory == null || modelHistory.getRemovalDate() != null || !modelHistory.getModelId().equals(model.getId())) {
+      throw new NotFoundException("Process model history not found: " + modelHistoryId);
+    }
+    return modelHistory;
+  }
 
   @Override
   public byte[] getBpmnXML(AbstractModel model) {
-    BpmnModel bpmnModel = getBpmnModel(model, false);
+    BpmnModel bpmnModel = getBpmnModel(model);
     return getBpmnXML(bpmnModel);
   }
 
@@ -132,6 +143,19 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     }
     byte[] xmlBytes = bpmnXMLConverter.convertToXML(bpmnModel);
     return xmlBytes;
+  }
+  
+  @Override
+  @Transactional
+  public Model createModel(Model newModel, User createdBy) {
+    newModel.setVersion(1);
+    newModel.setCreated(Calendar.getInstance().getTime());
+    newModel.setCreatedBy(createdBy.getId());
+    newModel.setLastUpdated(Calendar.getInstance().getTime());
+    newModel.setLastUpdatedBy(createdBy.getId());
+    
+    persistModel(newModel);
+    return newModel;
   }
 
   @Override
@@ -235,7 +259,6 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
       if (imageBytes != null) {
         modelObject.setThumbnail(imageBytes);
       }
-
     }
 
     return persistModel(modelObject);
@@ -359,22 +382,52 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
   }
 
   @Override
-  public BpmnModel getBpmnModel(AbstractModel model, boolean refreshReferences) {
+  public BpmnModel getBpmnModel(AbstractModel model) {
     BpmnModel bpmnModel = null;
     try {
-      ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(model.getModelEditorJson());
-      Map<Long, JsonNode> decisionTableMap = createDecisionTableMap(editorJsonNode);
-      bpmnModel = bpmnJsonConverter.convertToBpmnModel(editorJsonNode, decisionTableMap);
-
-    } catch (BaseModelerRestException e) {
-      throw e;
+      Map<Long, Model> formMap = new HashMap<Long, Model>();
+      Map<Long, Model> decisionTableMap = new HashMap<Long, Model>();
+      
+      List<Model> referencedModels = modelRepository.findModelsByParentModelId(model.getId());
+      for (Model childModel : referencedModels) {
+        if (Model.MODEL_TYPE_FORM == childModel.getModelType()) {
+          formMap.put(childModel.getId(), childModel);
+          
+        } else if (Model.MODEL_TYPE_DECISION_TABLE == childModel.getModelType()) {
+          decisionTableMap.put(childModel.getId(), childModel);
+        }
+      }
+      
+      bpmnModel = getBpmnModel(model, formMap, decisionTableMap);
 
     } catch (Exception e) {
-      log.error("Could not generate BPMN 2.0 XML for model " + model.getId(), e);
-      throw new InternalServerErrorException("Could not generate BPMN 2.0 xml");
+      log.error("Could not generate BPMN 2.0 model for " + model.getId(), e);
+      throw new InternalServerErrorException("Could not generate BPMN 2.0 model");
     }
 
     return bpmnModel;
+  }
+  
+  @Override
+  public BpmnModel getBpmnModel(AbstractModel model, Map<Long, Model> formMap, Map<Long, Model> decisionTableMap) {
+    try {
+      ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(model.getModelEditorJson());
+      Map<Long, String> formKeyMap = new HashMap<Long, String>();
+      for (Model formModel : formMap.values()) {
+        formKeyMap.put(formModel.getId(), formModel.getKey());
+      }
+      
+      Map<Long, String> decisionTableKeyMap = new HashMap<Long, String>();
+      for (Model decisionTableModel : decisionTableMap.values()) {
+        decisionTableKeyMap.put(decisionTableModel.getId(), decisionTableModel.getKey());
+      }
+      
+      return bpmnJsonConverter.convertToBpmnModel(editorJsonNode, formKeyMap, decisionTableKeyMap);
+      
+    } catch (Exception e) {
+      log.error("Could not generate BPMN 2.0 model for " + model.getId(), e);
+      throw new InternalServerErrorException("Could not generate BPMN 2.0 model");
+    }
   }
 
   protected void addOrUpdateExtensionElement(String name, String value, UserTask userTask) {
@@ -411,19 +464,25 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
       ObjectNode jsonNode = null;
       try {
         jsonNode = (ObjectNode) objectMapper.readTree(model.getModelEditorJson());
-      } catch (JsonProcessingException e) {
+      } catch (Exception e) {
         log.error("Could not deserialize json model", e);
-      } catch (IOException e) {
-        log.error("Could not deserialize json model", e);
+        throw new InternalServerErrorException("Could not deserialize json model");
       }
 
       if ((model.getModelType() == null || model.getModelType().intValue() == Model.MODEL_TYPE_BPMN)) {
 
         // Thumbnail
-        generateThumbnailImage((Model) model, jsonNode);
+        modelImageService.generateThumbnailImage(model, jsonNode);
 
         // Relations
         handleBpmnProcessFormModelRelations(model, jsonNode);
+        handleBpmnProcessDecisionTaskModelRelations(model, jsonNode);
+        
+      } else if (model.getModelType().intValue() == Model.MODEL_TYPE_FORM || 
+          model.getModelType().intValue() == Model.MODEL_TYPE_DECISION_TABLE) {
+        
+        jsonNode.put("name", model.getName());
+        jsonNode.put("key", model.getKey());
 
       } else if (model.getModelType().intValue() == Model.MODEL_TYPE_APP) {
 
@@ -438,33 +497,18 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     return modelHistoryRepository.save(modelHistory);
   }
 
-  protected void generateThumbnailImage(Model model, ObjectNode editorJsonNode) {
-    try {
-
-      BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
-
-      double scaleFactor = 1.0;
-      GraphicInfo diagramInfo = calculateDiagramSize(bpmnModel);
-      if (diagramInfo.getWidth() > THUMBNAIL_WIDTH) {
-        scaleFactor = diagramInfo.getWidth() / THUMBNAIL_WIDTH;
-        scaleDiagram(bpmnModel, scaleFactor);
-      }
-
-      BufferedImage modelImage = ImageGenerator.createImage(bpmnModel, scaleFactor);
-      if (modelImage != null) {
-        byte[] thumbnailBytes = ImageGenerator.createByteArrayForImage(modelImage, "png");
-        model.setThumbnail(thumbnailBytes);
-      }
-    } catch (Exception e) {
-      log.error("Error creating thumbnail image " + model.getId(), e);
-    }
-  }
-
   protected void handleBpmnProcessFormModelRelations(AbstractModel bpmnProcessModel, ObjectNode editorJsonNode) {
     List<JsonNode> formReferenceNodes = JsonConverterUtil.filterOutJsonNodes(JsonConverterUtil.getBpmnProcessModelFormReferences(editorJsonNode));
     Set<Long> formIds = JsonConverterUtil.gatherLongPropertyFromJsonNodes(formReferenceNodes, "id");
-
+    
     handleModelRelations(bpmnProcessModel, formIds, ModelRelationTypes.TYPE_FORM_MODEL_CHILD);
+  }
+  
+  protected void handleBpmnProcessDecisionTaskModelRelations(AbstractModel bpmnProcessModel, ObjectNode editorJsonNode) {
+    List<JsonNode> decisionTableNodes = JsonConverterUtil.filterOutJsonNodes(JsonConverterUtil.getBpmnProcessModelDecisionTableReferences(editorJsonNode));
+    Set<Long> decisionTableIds = JsonConverterUtil.gatherLongPropertyFromJsonNodes(decisionTableNodes, "id");
+
+    handleModelRelations(bpmnProcessModel, decisionTableIds, ModelRelationTypes.TYPE_DECISION_TABLE_MODEL_CHILD);
   }
 
   protected void handleAppModelProcessRelations(AbstractModel appModel, ObjectNode appModelJsonNode) {
@@ -479,7 +523,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
     // Find existing persisted relations
     List<ModelRelation> persistedModelRelations = modelRelationRepository.findByParentModelIdAndType(bpmnProcessModel.getId(), relationshipType);
-
+    
     // if no ids referenced now, just delete them all
     if (idsReferencedInJson == null || idsReferencedInJson.size() == 0) {
       modelRelationRepository.delete(persistedModelRelations);
@@ -498,7 +542,7 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
 
     // Loop over all referenced ids and see which one are new
     for (Long idReferencedInJson : idsReferencedInJson) {
-
+      
       // if model is referenced, but it is not yet persisted = create it
       if (!alreadyPersistedModelIds.contains(idReferencedInJson)) {
 
@@ -544,161 +588,5 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     model.setStencilSetId(basedOn.getStencilSetId());
     model.setReferenceId(basedOn.getReferenceId());
     model.setComment(basedOn.getComment());
-  }
-
-  protected Map<Long, JsonNode> createDecisionTableMap(JsonNode modelNode) {
-    Map<Long, JsonNode> decisionTableMap = new HashMap<Long, JsonNode>();
-    for (JsonConverterUtil.JsonLookupResult jsonLookupResult : JsonConverterUtil.getBpmnProcessModelDecisionTableReferences(modelNode)) {
-      JsonNode decisionTableReferenceNode = jsonLookupResult.getJsonNode();
-      JsonNode decisionTableIdNode = decisionTableReferenceNode.get("id");
-      if (decisionTableIdNode != null && decisionTableIdNode.isNull() == false) {
-        Long decisionTableId = decisionTableIdNode.asLong();
-        Model decisionTableModel = modelRepository.findOne(decisionTableId);
-        if (decisionTableModel != null) {
-          try {
-            JsonNode editorJsonNode = objectMapper.readTree(decisionTableModel.getModelEditorJson());
-            decisionTableMap.put(decisionTableId, editorJsonNode);
-          } catch (Exception e) {
-            log.error("Could not generate editor JSON for decision table " + decisionTableId, e);
-            throw new InternalServerErrorException("Could not generate BPMN 2.0 xml");
-          }
-        }
-      }
-    }
-    return decisionTableMap;
-  }
-
-  protected GraphicInfo calculateDiagramSize(BpmnModel bpmnModel) {
-    GraphicInfo diagramInfo = new GraphicInfo();
-
-    for (Pool pool : bpmnModel.getPools()) {
-      GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
-      double elementMaxX = graphicInfo.getX() + graphicInfo.getWidth();
-      double elementMaxY = graphicInfo.getY() + graphicInfo.getHeight();
-
-      if (elementMaxX > diagramInfo.getWidth()) {
-        diagramInfo.setWidth(elementMaxX);
-      }
-      if (elementMaxY > diagramInfo.getHeight()) {
-        diagramInfo.setHeight(elementMaxY);
-      }
-    }
-
-    for (Process process : bpmnModel.getProcesses()) {
-      calculateWidthForFlowElements(process.getFlowElements(), bpmnModel, diagramInfo);
-      calculateWidthForArtifacts(process.getArtifacts(), bpmnModel, diagramInfo);
-    }
-    return diagramInfo;
-  }
-
-  protected void scaleDiagram(BpmnModel bpmnModel, double scaleFactor) {
-    for (Pool pool : bpmnModel.getPools()) {
-      GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
-      scaleGraphicInfo(graphicInfo, scaleFactor);
-    }
-
-    for (Process process : bpmnModel.getProcesses()) {
-      scaleFlowElements(process.getFlowElements(), bpmnModel, scaleFactor);
-      scaleArtifacts(process.getArtifacts(), bpmnModel, scaleFactor);
-      for (Lane lane : process.getLanes()) {
-        scaleGraphicInfo(bpmnModel.getGraphicInfo(lane.getId()), scaleFactor);
-      }
-    }
-  }
-
-  protected void calculateWidthForFlowElements(Collection<FlowElement> elementList, BpmnModel bpmnModel, GraphicInfo diagramInfo) {
-    for (FlowElement flowElement : elementList) {
-      List<GraphicInfo> graphicInfoList = new ArrayList<GraphicInfo>();
-      if (flowElement instanceof SequenceFlow) {
-        List<GraphicInfo> flowGraphics = bpmnModel.getFlowLocationGraphicInfo(flowElement.getId());
-        if (flowGraphics != null && flowGraphics.size() > 0) {
-          graphicInfoList.addAll(flowGraphics);
-        }
-      } else {
-        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowElement.getId());
-        if (graphicInfo != null) {
-          graphicInfoList.add(graphicInfo);
-        }
-      }
-
-      processGraphicInfoList(graphicInfoList, diagramInfo);
-    }
-  }
-
-  protected void calculateWidthForArtifacts(Collection<Artifact> artifactList, BpmnModel bpmnModel, GraphicInfo diagramInfo) {
-    for (Artifact artifact : artifactList) {
-      List<GraphicInfo> graphicInfoList = new ArrayList<GraphicInfo>();
-      if (artifact instanceof Association) {
-        graphicInfoList.addAll(bpmnModel.getFlowLocationGraphicInfo(artifact.getId()));
-      } else {
-        graphicInfoList.add(bpmnModel.getGraphicInfo(artifact.getId()));
-      }
-
-      processGraphicInfoList(graphicInfoList, diagramInfo);
-    }
-  }
-
-  protected void processGraphicInfoList(List<GraphicInfo> graphicInfoList, GraphicInfo diagramInfo) {
-    for (GraphicInfo graphicInfo : graphicInfoList) {
-      double elementMaxX = graphicInfo.getX() + graphicInfo.getWidth();
-      double elementMaxY = graphicInfo.getY() + graphicInfo.getHeight();
-
-      if (elementMaxX > diagramInfo.getWidth()) {
-        diagramInfo.setWidth(elementMaxX);
-      }
-      if (elementMaxY > diagramInfo.getHeight()) {
-        diagramInfo.setHeight(elementMaxY);
-      }
-    }
-  }
-
-  protected void scaleFlowElements(Collection<FlowElement> elementList, BpmnModel bpmnModel, double scaleFactor) {
-    for (FlowElement flowElement : elementList) {
-      List<GraphicInfo> graphicInfoList = new ArrayList<GraphicInfo>();
-      if (flowElement instanceof SequenceFlow) {
-        List<GraphicInfo> flowList = bpmnModel.getFlowLocationGraphicInfo(flowElement.getId());
-        if (flowList != null) {
-          graphicInfoList.addAll(flowList);
-        }
-      } else {
-        graphicInfoList.add(bpmnModel.getGraphicInfo(flowElement.getId()));
-      }
-
-      scaleGraphicInfoList(graphicInfoList, scaleFactor);
-
-      if (flowElement instanceof SubProcess) {
-        SubProcess subProcess = (SubProcess) flowElement;
-        scaleFlowElements(subProcess.getFlowElements(), bpmnModel, scaleFactor);
-      }
-    }
-  }
-
-  protected void scaleArtifacts(Collection<Artifact> artifactList, BpmnModel bpmnModel, double scaleFactor) {
-    for (Artifact artifact : artifactList) {
-      List<GraphicInfo> graphicInfoList = new ArrayList<GraphicInfo>();
-      if (artifact instanceof Association) {
-        List<GraphicInfo> flowList = bpmnModel.getFlowLocationGraphicInfo(artifact.getId());
-        if (flowList != null) {
-          graphicInfoList.addAll(flowList);
-        }
-      } else {
-        graphicInfoList.add(bpmnModel.getGraphicInfo(artifact.getId()));
-      }
-
-      scaleGraphicInfoList(graphicInfoList, scaleFactor);
-    }
-  }
-
-  protected void scaleGraphicInfoList(List<GraphicInfo> graphicInfoList, double scaleFactor) {
-    for (GraphicInfo graphicInfo : graphicInfoList) {
-      scaleGraphicInfo(graphicInfo, scaleFactor);
-    }
-  }
-
-  protected void scaleGraphicInfo(GraphicInfo graphicInfo, double scaleFactor) {
-    graphicInfo.setX(graphicInfo.getX() / scaleFactor);
-    graphicInfo.setY(graphicInfo.getY() / scaleFactor);
-    graphicInfo.setWidth(graphicInfo.getWidth() / scaleFactor);
-    graphicInfo.setHeight(graphicInfo.getHeight() / scaleFactor);
   }
 }

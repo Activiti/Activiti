@@ -12,6 +12,8 @@
  */
 package com.activiti.service.editor;
 
+import java.util.Map;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.identity.User;
 
@@ -28,9 +30,13 @@ public interface ModelInternalService extends ModelService {
 
 	byte[] getBpmnXML(BpmnModel bpmnModel);
 
-	BpmnModel getBpmnModel(AbstractModel model, boolean refreshReferences);
+	BpmnModel getBpmnModel(AbstractModel model);
+	
+	BpmnModel getBpmnModel(AbstractModel model, Map<Long, Model> formMap, Map<Long, Model> decisionTableMap);
 
 	Model createModel(ModelRepresentation model, String editorJson, User createdBy);
+	
+	Model createModel(Model newModel, User createdBy);
 
 	Model saveModel(Model modelObject);
 	

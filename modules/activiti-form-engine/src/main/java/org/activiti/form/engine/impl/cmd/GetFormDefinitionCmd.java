@@ -14,11 +14,13 @@ package org.activiti.form.engine.impl.cmd;
 
 import java.io.Serializable;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
 import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.impl.interceptor.Command;
 import org.activiti.form.engine.impl.interceptor.CommandContext;
 import org.activiti.form.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.form.engine.impl.persistence.deploy.FormCacheEntry;
 import org.activiti.form.engine.impl.persistence.entity.FormEntity;
 import org.activiti.form.model.FormDefinition;
 
@@ -73,6 +75,8 @@ public class GetFormDefinitionCmd implements Command<FormDefinition>, Serializab
       throw new ActivitiFormObjectNotFoundException("formDefinitionKey and formDefinitionId are null");
     }
     
-    return deploymentManager.resolveForm(formEntity).getFormDefinition();
+    FormCacheEntry formCacheEntry = deploymentManager.resolveForm(formEntity);
+    FormJsonConverter formJsonConverter = commandContext.getFormEngineConfiguration().getFormJsonConverter();
+    return formJsonConverter.convertToForm(formCacheEntry.getFormJson(), formEntity.getId(), formEntity.getVersion());
   }
 }

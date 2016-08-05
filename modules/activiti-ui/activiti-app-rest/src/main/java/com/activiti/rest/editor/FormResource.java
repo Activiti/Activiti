@@ -15,7 +15,6 @@ package com.activiti.rest.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.identity.User;
@@ -23,6 +22,7 @@ import org.activiti.form.model.FormDefinition;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +38,6 @@ import com.activiti.security.SecurityUtils;
 import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
-import com.activiti.service.exception.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -46,18 +45,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @RequestMapping("/rest/form-models")
-public class FormResource extends BaseModelResource {
+public class FormResource {
 
   private static final Logger logger = LoggerFactory.getLogger(FormResource.class);
 
-  @Inject
+  @Autowired
   protected ModelInternalService modelService;
 
   protected ObjectMapper objectMapper = new ObjectMapper();
 
   @RequestMapping(value = "/{formId}", method = RequestMethod.GET, produces = "application/json")
   public FormRepresentation getForm(@PathVariable Long formId) {
-    Model model = getFormModel(formId, true, false);
+    Model model = modelService.getModel(formId);
     FormRepresentation form = createFormRepresentation(model);
     return form;
   }
@@ -73,7 +72,7 @@ public class FormResource extends BaseModelResource {
     }
 
     for (String formId : formIds) {
-      Model model = getFormModel(Long.valueOf(formId), true, false);
+      Model model = modelService.getModel(Long.valueOf(formId));
 
       FormRepresentation form = createFormRepresentation(model);
       formRepresentations.add(form);
@@ -84,7 +83,7 @@ public class FormResource extends BaseModelResource {
 
   @RequestMapping(value = "/{formId}/history/{formHistoryId}", method = RequestMethod.GET, produces = "application/json")
   public FormRepresentation getFormHistory(@PathVariable Long formId, @PathVariable Long formHistoryId) {
-    ModelHistory model = getFormModelHistory(formId, formHistoryId, true, false);
+    ModelHistory model = modelService.getModelHistory(formId, formHistoryId);
     FormRepresentation form = createFormRepresentation(model);
     return form;
   }
@@ -93,7 +92,7 @@ public class FormResource extends BaseModelResource {
   public FormRepresentation saveForm(@PathVariable Long formId, @RequestBody FormSaveRepresentation saveRepresentation) {
 
     User user = SecurityUtils.getCurrentUserObject();
-    Model model = getFormModel(formId, true, true);
+    Model model = modelService.getModel(formId);
 
     model.setName(saveRepresentation.getFormRepresentation().getName());
     model.setKey(saveRepresentation.getFormRepresentation().getKey());
@@ -127,37 +126,5 @@ public class FormResource extends BaseModelResource {
     FormRepresentation result = new FormRepresentation(model);
     result.setFormDefinition(formDefinition);
     return result;
-  }
-
-  protected Model getFormModel(Long modelId, boolean checkRead, boolean checkEdit) {
-    Model model = modelRepository.findOne(modelId);
-
-    if (model == null) {
-      NotFoundException processNotFound = new NotFoundException("No model found with the given id: " + modelId);
-      processNotFound.setMessageKey(PROCESS_NOT_FOUND_MESSAGE_KEY);
-      throw processNotFound;
-    }
-
-    return model;
-  }
-
-  protected ModelHistory getFormModelHistory(Long modelId, Long modelHistoryId, boolean checkRead, boolean checkEdit) {
-    // Check if the user has read-rights on the process-model in order to fetch history
-    Model model = getFormModel(modelId, checkRead, checkEdit);
-    ModelHistory modelHistory = historyRepository.findOne(modelHistoryId);
-
-    // Check if history corresponds to the current model and is not deleted
-    if (modelHistory == null || modelHistory.getRemovalDate() != null || !modelHistory.getModelId().equals(model.getId())) {
-      throw new NotFoundException("Process model history not found: " + modelHistoryId);
-    }
-    return modelHistory;
-  }
-
-  protected Model getParentModel(Long parentModelId) {
-    Model model = modelRepository.findOne(parentModelId);
-    if (model.getReferenceId() != null) {
-      return getParentModel(model.getReferenceId());
-    }
-    return model;
   }
 }

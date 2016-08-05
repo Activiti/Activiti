@@ -71,12 +71,12 @@ public interface DmnDeploymentQuery extends Query<DmnDeploymentQuery, DmnDeploym
   DmnDeploymentQuery deploymentWithoutTenantId();
 
   /** Only select deployments with the given process definition key. */
-  DmnDeploymentQuery processDefinitionKey(String key);
+  DmnDeploymentQuery decisionTableKey(String key);
 
   /**
    * Only select deployments with a process definition key like the given string.
    */
-  DmnDeploymentQuery processDefinitionKeyLike(String keyLike);
+  DmnDeploymentQuery decisionTableKeyLike(String keyLike);
 
   // sorting ////////////////////////////////////////////////////////
 

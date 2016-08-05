@@ -15,29 +15,33 @@ package com.activiti.rest.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
+import com.activiti.repository.editor.ModelHistoryRepository;
 import com.activiti.service.editor.ModelInternalService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
-public class AbstractModelHistoryResource extends BaseModelResource {
+public class AbstractModelHistoryResource {
 
-  @Inject
+  @Autowired
   protected ModelInternalService modelService;
+  
+  @Autowired
+  protected ModelHistoryRepository modelHistoryRepository;
 
-  protected ObjectMapper objectMapper = new ObjectMapper();
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   public ResultListDataRepresentation getModelHistoryCollection(Long modelId, Boolean includeLatestVersion) {
 
-    Model model = getModel(modelId, true, false);
-    List<ModelHistory> history = historyRepository.findByModelIdAndRemovalDateIsNullOrderByVersionDesc(model.getId());
+    Model model = modelService.getModel(modelId);
+    List<ModelHistory> history = modelHistoryRepository.findByModelIdAndRemovalDateIsNullOrderByVersionDesc(model.getId());
     ResultListDataRepresentation result = new ResultListDataRepresentation();
 
     List<ModelRepresentation> representations = new ArrayList<ModelRepresentation>();
@@ -62,7 +66,7 @@ public class AbstractModelHistoryResource extends BaseModelResource {
 
   public ModelRepresentation getProcessModelHistory(Long modelId, Long modelHistoryId) {
     // Check if the user has read-rights on the process-model in order to fetch history
-    ModelHistory modelHistory = getModelHistory(modelId, modelHistoryId, true, false);
+    ModelHistory modelHistory = modelService.getModelHistory(modelId, modelHistoryId);
     return new ModelRepresentation(modelHistory);
   }
 

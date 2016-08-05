@@ -14,8 +14,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
-import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -72,6 +70,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+
+import junit.framework.AssertionFailedError;
 
 public class BaseSpringRestTestCase extends AbstractTestCase {
 
@@ -438,6 +438,16 @@ public class BaseSpringRestTestCase extends AbstractTestCase {
       toBeFound.remove(id);
     }
     assertTrue("Not all expected ids have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+  }
+  
+  protected void assertEmptyResultsPresentInDataResponse(String url) throws JsonProcessingException, IOException {
+    // Do the actual call
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+
+    // Check status and size
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
+    assertEquals(0, dataNode.size());
   }
 
   /**

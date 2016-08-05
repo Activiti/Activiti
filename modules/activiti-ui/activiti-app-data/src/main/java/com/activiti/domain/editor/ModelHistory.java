@@ -21,7 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="MODEL_HISTORY")
+@Table(name="ACT_DE_MODEL_HISTORY")
 public class ModelHistory extends AbstractModel {
 
 	@Column(name="model_id")

@@ -28,16 +28,16 @@ import com.activiti.service.exception.NotFoundException;
 @RestController
 public class ModelRelationResource extends AbstractModelResource {
 
-    @Autowired
-    private ModelRelationService modelRelationService;
-    
-    @RequestMapping(value = "/rest/models/{modelId}/parent-relations", method = RequestMethod.GET, produces = "application/json")
-    public List<ModelInformation>  getModelRelations(@PathVariable Long modelId) {    
-    	Model model = getModel(modelId, true, false); 
-    	if (model == null) {
-    		throw new NotFoundException();
-    	}
-    	return modelRelationService.findParentModels(modelId);
+  @Autowired
+  private ModelRelationService modelRelationService;
+
+  @RequestMapping(value = "/rest/models/{modelId}/parent-relations", method = RequestMethod.GET, produces = "application/json")
+  public List<ModelInformation> getModelRelations(@PathVariable Long modelId) {
+    Model model = modelService.getModel(modelId);
+    if (model == null) {
+      throw new NotFoundException();
     }
-    
+    return modelRelationService.findParentModels(modelId);
+  }
+
 }

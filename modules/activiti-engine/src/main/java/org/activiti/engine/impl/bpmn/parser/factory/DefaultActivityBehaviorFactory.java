@@ -59,6 +59,7 @@ import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior
 import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.DmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessErrorStartEventActivityBehavior;
@@ -184,11 +185,19 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   public MailActivityBehavior createMailActivityBehavior(SendTask sendTask) {
     return createMailActivityBehavior(sendTask.getId(), sendTask.getFieldExtensions());
   }
-
+  
   protected MailActivityBehavior createMailActivityBehavior(String taskId, List<FieldExtension> fields) {
     List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fields);
     return (MailActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
         MailActivityBehavior.class, fieldDeclarations);
+  }
+  
+  public DmnActivityBehavior createDmnActivityBehavior(ServiceTask serviceTask) {
+    return new DmnActivityBehavior(serviceTask);
+  }
+
+  public DmnActivityBehavior createDmnActivityBehavior(SendTask sendTask) {
+    return new DmnActivityBehavior(sendTask);
   }
 
   // We do not want a hard dependency on Mule, hence we return

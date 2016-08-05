@@ -13,15 +13,10 @@
 package org.activiti.form.engine.impl.cfg;
 
 import org.activiti.form.engine.FormEngineConfiguration;
-import org.activiti.form.engine.impl.interceptor.CommandInterceptor;
 
 /**
  * @author Tijs Rademakers
  */
 public class StandaloneFormEngineConfiguration extends FormEngineConfiguration {
 
-  @Override
-  public CommandInterceptor createTransactionInterceptor() {
-    return null;
-  }
 }

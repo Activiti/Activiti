@@ -80,7 +80,10 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
 
         this.saveDecisionTable = function (data, name, key, description) {
 
-            data.decisionTableRepresentation = {name: name};
+            data.decisionTableRepresentation = {
+            	name: name,
+            	key: key
+            };
 
             if (description && description.length > 0) {
                 data.decisionTableRepresentation.description = description;
@@ -135,8 +138,8 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
                     error(function (data) {
                         console.log('Something went wrong when fetching decision table(s):' + JSON.stringify(data));
                     });
-            }
-            else {
+                    
+            } else {
                 if (callback) {
                     callback();
                 }

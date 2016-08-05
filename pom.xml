@@ -274,6 +274,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.activiti</groupId>
+				<artifactId>activiti-dmn-engine-configurator</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
 				<artifactId>activiti-form-model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -992,6 +997,7 @@
 				<module>modules/activiti-dmn-json-converter</module>
 				<module>modules/activiti-dmn-xml-converter</module>
 				<module>modules/activiti-dmn-engine</module>
+				<module>modules/activiti-dmn-engine-configurator</module>
 				<module>modules/activiti-form-model</module>
 				<module>modules/activiti-form-json-converter</module>
 				<module>modules/activiti-form-engine</module>
