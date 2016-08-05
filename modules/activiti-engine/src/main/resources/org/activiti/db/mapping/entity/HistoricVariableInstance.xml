@@ -180,7 +180,7 @@
         and RES.NAME_ = #{variableName}
       </if>
       <if test="variableNameLike != null">
-        and RES.NAME_ like #{variableNameLike}
+        and RES.NAME_ like #{variableNameLike} escape '\'
       </if>
       
       <!-- PLEASE NOTE: If you change anything have a look into the Execution, the same query object is used there! -->
@@ -196,6 +196,9 @@
           <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
           #{queryVariableValue.textValue}
+          <choose>
+            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+          </choose>
         </if>
         <if test="queryVariableValue.textValue2 != null">
         and RES.TEXT2_
@@ -204,6 +207,9 @@
           <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
           #{queryVariableValue.textValue2}
+          <choose>
+            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+          </choose>
         </if>
         <if test="queryVariableValue.longValue != null">
         and RES.LONG_

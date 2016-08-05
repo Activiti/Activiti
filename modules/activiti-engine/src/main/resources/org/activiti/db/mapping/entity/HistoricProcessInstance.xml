@@ -424,7 +424,7 @@
       </if>
       <if test="processKeyNotIn != null">
         <foreach collection="processKeyNotIn" index="index" item="procDefKey">
-        and DEF.KEY_ not like #{procDefKey}
+        and DEF.KEY_ not like #{procDefKey} escape '\'
       </foreach>
       </if>
       <if test="unfinished">
@@ -457,7 +457,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike}
+        and RES.TENANT_ID_ like #{tenantIdLike} escape '\'
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -466,10 +466,10 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike} escape '\'
       </if>
         <if test="nameLikeIgnoreCase != null">
-        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase} escape '\'
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">
@@ -494,6 +494,9 @@
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>
           #{queryVariableValue.textValue}
+          <choose>
+              <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+          </choose>
         </if>
         <if test="queryVariableValue.textValue2 != null">
         and A${index}.TEXT2_
@@ -502,6 +505,9 @@
           <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
           #{queryVariableValue.textValue2}
+          <choose>
+              <when test="queryVariableValue.operator.equals('LIKE')"> escape '\'</when>
+          </choose>
         </if>
         <if test="queryVariableValue.longValue != null">
         and A${index}.LONG_
@@ -588,7 +594,7 @@
             or
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <foreach collection="orQueryObject.processKeyNotIn" index="index" item="procDefKey">
-                and DEF_OR${orIndex}.KEY_ not like #{procDefKey}
+                and DEF_OR${orIndex}.KEY_ not like #{procDefKey} escape '\'
               </foreach>
             </trim>
           </if>
@@ -622,7 +628,7 @@
             or RES.TENANT_ID_ = #{orQueryObject.tenantId}
           </if>
           <if test="orQueryObject.tenantIdLike != null">
-            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}
+            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike} escape '\'
           </if>
           <if test="orQueryObject.withoutTenantId">
             or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -631,10 +637,10 @@
             or RES.NAME_ = #{orQueryObject.name}
           </if>
           <if test="orQueryObject.nameLike != null">
-            or RES.NAME_ like #{orQueryObject.nameLike}
+            or RES.NAME_ like #{orQueryObject.nameLike} escape '\'
           </if>
           <if test="orQueryObject.nameLikeIgnoreCase != null">
-            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase} escape '\'
           </if>
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
             or
@@ -661,6 +667,9 @@
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>
                 #{queryVariableValue.textValue}
+                <choose>
+                  <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+                </choose>
               </if>
               <if test="queryVariableValue.textValue2 != null">
                 and A_OR${orIndex}_${index}.TEXT2_
@@ -669,6 +678,9 @@
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>
                 #{queryVariableValue.textValue2}
+                <choose>
+                  <when test="queryVariableValue.operator.equals('LIKE')"> escape '\'</when>
+                </choose>
               </if>
               <if test="queryVariableValue.longValue != null">
                 and A_OR${orIndex}_${index}.LONG_

@@ -153,7 +153,7 @@
         and RES.CATEGORY_ = #{category}
       </if>
       <if test="categoryLike != null">
-        and RES.CATEGORY_ like #{categoryLike}
+        and RES.CATEGORY_ like #{categoryLike} escape '\'
       </if>
       <if test="categoryNotEquals != null">
         and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )
@@ -162,19 +162,19 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike} escape '\'
       </if>
       <if test="key != null">
         and RES.KEY_ = #{key}
       </if>
       <if test="keyLike != null">
-        and RES.KEY_ like #{keyLike}
+        and RES.KEY_ like #{keyLike} escape '\'
       </if>
       <if test="resourceName != null">
         and RES.RESOURCE_NAME_ = #{resourceName}
       </if>
       <if test="resourceNameLike != null">
-        and RES.RESOURCE_NAME_ like #{resourceNameLike}
+        and RES.RESOURCE_NAME_ like #{resourceNameLike} escape '\'
       </if>
       <if test="version != null">
         and RES.VERSION_ = #{version}
@@ -206,7 +206,7 @@
 	           and TENANT_ID_ = #{tenantId}
 	         </if>
 	         <if test="tenantIdLike != null">
-	           and TENANT_ID_ like #{tenantIdLike}
+	           and TENANT_ID_ like #{tenantIdLike} escape '\'
 	         </if>
 	         <if test="withoutTenantId">
 	           and (TENANT_ID_ = '' or TENANT_ID_ is null)
@@ -223,7 +223,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike}
+        and RES.TENANT_ID_ like #{tenantIdLike} escape '\'
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
