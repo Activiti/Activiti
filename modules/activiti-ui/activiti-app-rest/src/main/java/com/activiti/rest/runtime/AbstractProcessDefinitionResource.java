@@ -79,7 +79,8 @@ public abstract class AbstractProcessDefinitionResource {
     if (startElement instanceof StartEvent) {
       StartEvent startEvent = (StartEvent) startElement;
       if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
-        formDefinition = formRepositoryService.getFormDefinitionByKeyAndParentDeploymentId(startEvent.getFormKey(), processDefinition.getDeploymentId());
+        formDefinition = formRepositoryService.getFormDefinitionByKeyAndParentDeploymentId(startEvent.getFormKey(), 
+            processDefinition.getDeploymentId(), processDefinition.getTenantId());
       }
     }
 

@@ -12,6 +12,8 @@ import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -46,7 +48,7 @@ public class DmnActivityBehavior extends TaskActivityBehavior {
     ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
     
-    if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+    if (processEngineConfiguration.isEnableProcessDefinitionInfoCache()) {
       ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(task.getId(), execution.getProcessDefinitionId());
       activeDecisionTableKey = getActiveValue(activeDecisionTableKey, DynamicBpmnConstants.DMN_TASK_DECISION_TABLE_KEY, taskElementProperties); 
     }
@@ -64,10 +66,12 @@ public class DmnActivityBehavior extends TaskActivityBehavior {
     if (finaldecisionTableKeyValue == null || finaldecisionTableKeyValue.length() == 0) {
       throw new ActivitiIllegalArgumentException("decisionTableReferenceKey expression resolves to an empty value: " + decisionTableKeyValue);
     }
+    
+    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
 
-    DmnRuleService ruleService = Context.getCommandContext().getProcessEngineConfiguration().getDmnEngineRuleService();
-    RuleEngineExecutionResult executionResult = ruleService.executeDecisionByKeyAndTenantId(finaldecisionTableKeyValue, 
-        execution.getVariables(), execution.getTenantId());
+    DmnRuleService ruleService = processEngineConfiguration.getDmnEngineRuleService();
+    RuleEngineExecutionResult executionResult = ruleService.executeDecisionByKeyParentDeploymentIdAndTenantId(finaldecisionTableKeyValue, 
+        processDefinition.getDeploymentId(), execution.getVariables(), execution.getTenantId());
     
     execution.setVariables(executionResult.getResultVariables());
     

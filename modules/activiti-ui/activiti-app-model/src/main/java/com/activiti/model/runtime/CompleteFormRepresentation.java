@@ -16,13 +16,23 @@ import java.util.Map;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class CompleteFormRepresentation {
 	
-	private Map<String, Object> values;
-	private String outcome;
+  protected String formId;
+  protected Map<String, Object> values;
+  protected String outcome;
+  
+	public String getFormId() {
+    return formId;
+  }
 
-	public Map<String, Object> getValues() {
+  public void setFormId(String formId) {
+    this.formId = formId;
+  }
+
+  public Map<String, Object> getValues() {
 		return values;
 	}
 

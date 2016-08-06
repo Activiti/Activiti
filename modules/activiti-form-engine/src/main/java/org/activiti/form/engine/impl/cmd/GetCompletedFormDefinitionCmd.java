@@ -120,7 +120,11 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
         if (field instanceof ExpressionFormField) {
           ExpressionFormField expressionField = (ExpressionFormField) field;
           FormExpression formExpression = formEngineConfiguration.getExpressionManager().createExpression(expressionField.getExpression());
-          field.setValue(formExpression.getValue(variables));
+          try {
+            field.setValue(formExpression.getValue(variables));
+          } catch (Exception e) {
+            logger.error("Error getting value for expression " + expressionField.getExpression() + " " + e.getMessage());
+          }
           
         } else {
           field.setValue(variables.get(field.getId()));
@@ -309,7 +313,7 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
         try {
           if (StringUtils.isNotEmpty(fieldValue)) {
             LocalDate dateValue = LocalDate.parse(fieldValue);
-            variables.put(field.getId(), dateValue);
+            variables.put(field.getId(), dateValue.toString("d-M-yyyy"));
           }
         } catch (Exception e) {
           logger.error("Error parsing form date value for process instance " + processInstanceId + " and task " + taskId + " with value " + fieldValue, e);

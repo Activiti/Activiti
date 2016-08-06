@@ -159,9 +159,8 @@ angular.module('activitiApp')
                        field.isVisible == false
                         || field.type === 'people'
                         || field.type === 'functional-group'
-                        || field.type === 'readonly-text'
-                        || field.type === 'upload'
-                        || field.type === 'readonly');
+                        || field.type === 'expression'
+                        || field.type === 'upload');
                 });
 
                 sortedElements = sortedElements.sort(function (field1, field2) {
@@ -253,7 +252,7 @@ angular.module('activitiApp')
 
                 for (var fieldArrayIndex = 0; fieldArrayIndex < fields.length; fieldArrayIndex++) {
                     // Only adding value fields for form elements currently supported in condition evaluation
-                    if (fields[fieldArrayIndex].type !== 'readonly-text') {
+                    if (fields[fieldArrayIndex].type !== 'expression') {
                         localVariables.push(fields[fieldArrayIndex]);
                     }
                 }
@@ -318,57 +317,7 @@ angular.module('activitiApp')
                             newUploadValue += field.value[j].id;
                         }
                         field.value = newUploadValue;
-
-
-                    } else if (field.type == 'readonly' && field.params && field.params.field) {
-                        if (field.params.field.type == 'upload') {
-                            // Pass related content through service to add all URL's
-                            if (field.value && field.value.length > 0) {
-                                for (var j = 0; j < field.value.length; j++) {
-                                    RelatedContentService.addUrlToContent(field.value[j]);
-                                }
-                            }
-
-                        } else if (field.params.field.type == 'date') {
-                            var rawValue = field.value;
-                            if (rawValue) {
-                                field.value = new moment(rawValue).format('LL');
-                            }
-                        }
-
-                    } else if (field.type == 'readonly-text' && field.params && field.params.placeholders) {
-                        // Replace the value using the placeholder values
-                        for (var j = 0; j < field.params.placeholders.length; j++) {
-                            var placeHolder = field.params.placeholders[j];
-                            if (placeHolder.type == 'date') {
-                                field.value = field.value.replace(placeHolder.placeholder, new moment(placeHolder.value).format('MMMM Do YYYY'));
-                            } else if (placeHolder.type == 'upload') {
-                                // For each item of content, create a link and
-                                var links = '';
-                                for (var k = 0; k < placeHolder.value.length; k++) {
-                                    var content = placeHolder.value[k];
-                                    RelatedContentService.addUrlToContent(content);
-                                    RelatedContentService.checkRenditions(content);
-                                    if (k != 0) {
-                                        links += ', ';
-                                    }
-                                    links = links + '<a id="content-' + content.id + '">' + content.name + '</a>';
-
-                                }
-                                if (field.value) {
-                                    field.value = field.value.replace(placeHolder.placeholder, links);
-                                }
-                            }
-                        }
-
-                        if (field.value) {
-                            field.value = $sce.trustAsHtml(field.value);
-                        }
-
-                    }
-                    else if (field.type == "readonly-text") {
-                        field.value = field.value.replace(/\n/g, '<br/>')
-                    }
+					}
                 }
             };
 
@@ -582,6 +531,8 @@ angular.module('activitiApp')
                 
                 // Prep data
                 var postData = $scope.createPostData();
+                postData.formId = $scope.formData.id;
+                
                 if (outcome) {
                     postData.outcome = outcome.name;
                 }
@@ -594,6 +545,7 @@ angular.module('activitiApp')
                     if ($scope.processName) {
                         postData.name = $scope.processName;
                     }
+                    
                     FormService.completeStartForm(postData).then(
                         function (data) {
                             $scope.$emit('process-started', data);
@@ -603,7 +555,10 @@ angular.module('activitiApp')
                         function (errorResponse) {
                             $scope.model.completeButtonDisabled = false;
                             $scope.model.loading = false;
-                            $scope.$emit('process-started-error', {processDefinitionId: $scope.processDefinitionId, error: errorResponse});
+                            $scope.$emit('process-started-error', {
+                            	processDefinitionId: $scope.processDefinitionId, 
+                            	error: errorResponse
+                           	});
                         });
 
 
@@ -618,7 +573,10 @@ angular.module('activitiApp')
                         function (errorResponse) {
                             $scope.model.completeButtonDisabled = false;
                             $scope.model.loading = false;
-                            $scope.$emit('task-completed-error', {taskId: $scope.taskId, error: errorResponse});
+                            $scope.$emit('task-completed-error', {
+                            	taskId: $scope.taskId, 
+                            	error: errorResponse
+                            });
                         });
 
                 }
@@ -678,36 +636,6 @@ angular.module('activitiApp')
                 }
             };
 
-            $scope.handleReadonlyClick = function ($event, field) {
-                if ($event.target.id.indexOf('content-') == 0) {
-                    // Lookup content object on the field placeholders
-                    var id = $event.target.id.substring(8);
-                    var content;
-                    if (field.params && field.params.placeholders) {
-                        for (var i = 0; i < field.params.placeholders.length; i++) {
-                            var placeHolder = field.params.placeholders[i];
-                            if (placeHolder.type == 'upload') {
-                                for (var j = 0; j < placeHolder.value.length; j++) {
-                                    var c = placeHolder.value[j];
-                                    if (c.id == id) {
-                                        content = c;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (content) {
-                                break;
-                            }
-                        }
-                    }
-
-                    if (content) {
-                        $scope.showContentDetails(content);
-                    }
-                }
-            };
-
             $scope.onFieldValueChange = function (field) {
             };
 
@@ -719,37 +647,38 @@ angular.module('activitiApp')
             
             $scope.createPostData = function() {
                 var postData = {values: {}};
-                if ($scope.allFormFields) {
-                    for (var fieldArrayIndex = 0; fieldArrayIndex < $scope.allFormFields.length; fieldArrayIndex++) {
-                        var field = $scope.allFormFields[fieldArrayIndex];
-                        if (field && field.isVisible) {
+                if (!$scope.allFormFields) return postData;
+                    
+                for (var fieldArrayIndex = 0; fieldArrayIndex < $scope.allFormFields.length; fieldArrayIndex++) {
+                    var field = $scope.allFormFields[fieldArrayIndex];
+                    if (!field || !field.isVisible) continue;
 
-                            if (field.type === 'boolean' && field.value == null) {
-                                field.value = false;
-                            }
+                    if (field.type === 'boolean' && field.value == null) {
+                        field.value = false;
+                    }
 
-                            if (field && field.type !== 'readonly-text') {
-                                if (field.type !== 'readonly' || (field.params && field.params.documentsEditable)) {
+                    if (field && field.type !== 'expression') {
+                        
+                        if (field.type === 'dropdown' && field.hasEmptyValue !== null && field.hasEmptyValue !== undefined && field.hasEmptyValue === true) {
 
-                                    if (field.type === 'dropdown' && field.hasEmptyValue !== null && field.hasEmptyValue !== undefined && field.hasEmptyValue === true) {
+                            // Manually filled dropdown
+                            if (field.options !== null && field.options !== undefined && field.options.length > 0) {
 
-                                        // Manually filled dropdown
-                                        if (field.options !== null && field.options !== undefined && field.options.length > 0) {
-
-                                            var emptyValue = field.options[0];
-                                            if (emptyValue.name !== field.value.name) {
-                                                postData.values[field.id] = field.value;
-                                            }
-                                        }
-
-                                    } else {
-                                        postData.values[field.id] = field.value;
-                                    }
+                                var emptyValue = field.options[0];
+                                if (emptyValue.name !== field.value.name) {
+                                    postData.values[field.id] = field.value;
                                 }
                             }
+                            
+                        } else if (field.type === 'date' && field.value) {
+                        	postData.values[field.id] = field.value.toISOString().slice(0, 10);
+
+                        } else {
+                            postData.values[field.id] = field.value;
                         }
                     }
                 }
+                
                 return postData;
             };
 

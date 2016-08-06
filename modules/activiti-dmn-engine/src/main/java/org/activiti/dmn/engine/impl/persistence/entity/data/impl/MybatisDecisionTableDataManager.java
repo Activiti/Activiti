@@ -57,6 +57,23 @@ public class MybatisDecisionTableDataManager extends AbstractDataManager<Decisio
     params.put("tenantId", tenantId);
     return (DecisionTableEntity) getDbSqlSession().selectOne("selectLatestDecisionTableByKeyAndTenantId", params);
   }
+  
+  @Override
+  public DecisionTableEntity findLatestDecisionTableByKeyAndParentDeploymentId(String decisionTableKey, String parentDeploymentId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("decisionTableKey", decisionTableKey);
+    params.put("parentDeploymentId", parentDeploymentId);
+    return (DecisionTableEntity) getDbSqlSession().selectOne("selectLatestDecisionTableByKeyAndParentDeploymentId", params);
+  }
+  
+  @Override
+  public DecisionTableEntity findLatestDecisionTableByKeyParentDeploymentIdAndTenantId(String decisionTableKey, String parentDeploymentId, String tenantId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("decisionTableKey", decisionTableKey);
+    params.put("parentDeploymentId", parentDeploymentId);
+    params.put("tenantId", tenantId);
+    return (DecisionTableEntity) getDbSqlSession().selectOne("selectLatestDecisionTableByKeyParentDeploymentIdAndTenantId", params);
+  }
 
   @Override
   public void deleteDecisionTablesByDeploymentId(String deploymentId) {

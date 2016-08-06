@@ -102,11 +102,11 @@ public abstract class AbstractTaskFormResource {
     FormDefinition formDefinition = null;
     if (task.getEndTime() != null) {
       formDefinition = formService.getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(task.getFormKey(), parentDeploymentId, 
-          taskId, task.getProcessInstanceId(), variables);
+          taskId, task.getProcessInstanceId(), variables, task.getTenantId());
       
     } else {
       formDefinition = formService.getTaskFormDefinitionByKeyAndParentDeploymentId(task.getFormKey(), parentDeploymentId, 
-          task.getProcessInstanceId(), variables);
+          task.getProcessInstanceId(), variables, task.getTenantId());
     }
 
     // If form does not exists, we don't want to leak out this info to just anyone
@@ -126,7 +126,7 @@ public abstract class AbstractTaskFormResource {
       throw new NotFoundException("Task not found with id: " + taskId);
     }
     
-    FormDefinition formDefinition = formRepositoryService.getFormDefinitionByKey(task.getFormKey());
+    FormDefinition formDefinition = formRepositoryService.getFormDefinitionById(completeTaskFormRepresentation.getFormId());
 
     User currentUser = SecurityUtils.getCurrentUserObject();
 

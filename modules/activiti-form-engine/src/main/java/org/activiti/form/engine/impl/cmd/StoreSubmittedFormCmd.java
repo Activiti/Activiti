@@ -13,6 +13,7 @@
 package org.activiti.form.engine.impl.cmd;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 import org.activiti.form.api.SubmittedForm;
@@ -104,6 +105,7 @@ public class StoreSubmittedFormCmd implements Command<SubmittedForm>, Serializab
     submittedFormEntity.setFormId(formDefinition.getId());
     submittedFormEntity.setTaskId(taskId);
     submittedFormEntity.setProcessInstanceId(processInstanceId);
+    submittedFormEntity.setSubmittedDate(new Date());
     try {
       submittedFormEntity.setFormValueBytes(objectMapper.writeValueAsBytes(submittedFormValuesJson));
     } catch (Exception e) {

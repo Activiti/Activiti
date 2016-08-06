@@ -25,31 +25,31 @@ import org.activiti.dmn.model.DmnDefinition;
  */
 public interface DmnRepositoryService {
 
-    DmnDeploymentBuilder createDeployment();
-    
-    void deleteDeployment(String deploymentId);
-    
-    DecisionTableQuery createDecisionTableQuery();
-    
-    NativeDecisionTableQuery createNativeDecisionTableQuery();
+  DmnDeploymentBuilder createDeployment();
 
-    void setDeploymentCategory(String deploymentId, String category);
-    
-    void setDeploymentTenantId(String deploymentId, String newTenantId);
+  void deleteDeployment(String deploymentId);
 
-    List<String> getDeploymentResourceNames(String deploymentId);
+  DecisionTableQuery createDecisionTableQuery();
 
-    InputStream getResourceAsStream(String deploymentId, String resourceName);
-    
-    DmnDeploymentQuery createDeploymentQuery();
-    
-    NativeDmnDeploymentQuery createNativeDeploymentQuery();
+  NativeDecisionTableQuery createNativeDecisionTableQuery();
 
-    DecisionTable getDecisionTable(String decisionTableId);
-    
-    InputStream getDmnResource(String decisionTableId);
-    
-    void setDecisionTableCategory(String decisionTableId, String category);
+  void setDeploymentCategory(String deploymentId, String category);
 
-    DmnDefinition getDmnDefinition(String decisionTableId);
+  void setDeploymentTenantId(String deploymentId, String newTenantId);
+
+  List<String> getDeploymentResourceNames(String deploymentId);
+
+  InputStream getResourceAsStream(String deploymentId, String resourceName);
+
+  DmnDeploymentQuery createDeploymentQuery();
+
+  NativeDmnDeploymentQuery createNativeDeploymentQuery();
+
+  DecisionTable getDecisionTable(String decisionTableId);
+
+  InputStream getDmnResource(String decisionTableId);
+
+  void setDecisionTableCategory(String decisionTableId, String category);
+
+  DmnDefinition getDmnDefinition(String decisionTableId);
 }

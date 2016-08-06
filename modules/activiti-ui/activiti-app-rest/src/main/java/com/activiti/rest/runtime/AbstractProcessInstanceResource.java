@@ -145,7 +145,7 @@ public abstract class AbstractProcessInstanceResource {
       StartEvent startEvent = (StartEvent) startElement;
       if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
         formDefinition = formService.getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(startEvent.getFormKey(), 
-            processDefinition.getDeploymentId(), null, processInstanceId, null);
+            processDefinition.getDeploymentId(), null, processInstanceId, null, processDefinition.getTenantId());
       }
     }
     

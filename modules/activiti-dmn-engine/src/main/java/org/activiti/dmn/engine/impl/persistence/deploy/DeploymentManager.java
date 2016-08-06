@@ -93,6 +93,31 @@ public class DeploymentManager {
     decisionTable = resolveDecisionTable(decisionTable).getDecisionTableEntity();
     return decisionTable;
   }
+  
+  public DecisionTableEntity findDeployedLatestDecisionByKeyAndParentDeploymentId(String decisionTableKey, String parentDeploymentId) {
+    DecisionTableEntity decisionTable = decisionTableEntityManager.findLatestDecisionTableByKeyAndParentDeploymentId(decisionTableKey, parentDeploymentId);
+    
+    if (decisionTable == null) {
+      throw new ActivitiDmnObjectNotFoundException("no decisions deployed with key '" + decisionTableKey + 
+          "' for parent deployment id '" + parentDeploymentId + "'");
+    }
+    decisionTable = resolveDecisionTable(decisionTable).getDecisionTableEntity();
+    return decisionTable;
+  }
+  
+  public DecisionTableEntity findDeployedLatestDecisionByKeyParentDeploymentIdAndTenantId(String decisionTableKey, 
+      String parentDeploymentId, String tenantId) {
+    
+    DecisionTableEntity decisionTable = decisionTableEntityManager.findLatestDecisionTableByKeyParentDeploymentIdAndTenantId(
+        decisionTableKey, parentDeploymentId, tenantId);
+    
+    if (decisionTable == null) {
+      throw new ActivitiDmnObjectNotFoundException("no decisions deployed with key '" + decisionTableKey + 
+          "' for parent deployment id '" + parentDeploymentId + "' and tenant identifier " + tenantId);
+    }
+    decisionTable = resolveDecisionTable(decisionTable).getDecisionTableEntity();
+    return decisionTable;
+  }
 
   public DecisionTableEntity findDeployedDecisionByKeyAndVersionAndTenantId(String decisionKey, int decisionVersion, String tenantId) {
     DecisionTableEntity decisionTable = decisionTableEntityManager.findDecisionTableByKeyAndVersionAndTenantId(decisionKey, decisionVersion, tenantId);

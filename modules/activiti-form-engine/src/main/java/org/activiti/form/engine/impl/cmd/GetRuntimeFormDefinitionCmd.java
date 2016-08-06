@@ -105,7 +105,11 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
         if (field instanceof ExpressionFormField) {
           ExpressionFormField expressionField = (ExpressionFormField) field;
           FormExpression formExpression = formEngineConfiguration.getExpressionManager().createExpression(expressionField.getExpression());
-          field.setValue(formExpression.getValue(variables));
+          try {
+            field.setValue(formExpression.getValue(variables));
+          } catch (Exception e) {
+            logger.error("Error getting value for expression " + expressionField.getExpression() + " " + e.getMessage());
+          }
           
         } else {
           field.setValue(variables.get(field.getId()));
@@ -126,14 +130,14 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
         throw new ActivitiFormObjectNotFoundException("No form found for id = '" + formId + "'", FormEntity.class);
       }
 
-    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) && parentDeploymentId == null) {
 
       formEntity = deploymentManager.findDeployedLatestFormByKey(formDefinitionKey);
       if (formEntity == null) {
         throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "'", FormEntity.class);
       }
 
-    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId) && parentDeploymentId == null) {
 
       formEntity = deploymentManager.findDeployedLatestFormByKeyAndTenantId(formDefinitionKey, tenantId);
       if (formEntity == null) {
