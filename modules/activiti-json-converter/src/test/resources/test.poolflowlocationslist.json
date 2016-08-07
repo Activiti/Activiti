@@ -1,0 +1,334 @@
+{
+  "bounds": {
+	"lowerRight": {
+	  "x": 1485.0,
+	  "y": 700.0
+	},
+	"upperLeft": {
+	  "x": 0.0,
+	  "y": 0.0
+	}
+  },
+  "resourceId": "canvas",
+  "stencil": {
+	"id": "BPMNDiagram"
+  },
+  "stencilset": {
+	"namespace": "http://b3mn.org/stencilset/bpmn2.0#",
+	"url": "../editor/stencilsets/bpmn2.0/bpmn2.0.json"
+  },
+  "properties": {
+	"process_id": "simple-pool",
+	"name": "simple-pool-with-lanes",
+	"process_namespace": "http://www.activiti.org/test",
+	"messages": [],
+	"executionlisteners": {
+	  "executionListeners": []
+	},
+	"eventlisteners": {
+	  "eventListeners": []
+	},
+	"signaldefinitions": [],
+	"messagedefinitions": []
+  },
+  "childShapes": [
+	{
+	  "bounds": {
+		"lowerRight": {
+		  "x": 780.0,
+		  "y": 545.0
+		},
+		"upperLeft": {
+		  "x": 180.0,
+		  "y": 45.0
+		}
+	  },
+	  "resourceId": "sid-5EDCE3C2-3422-48B2-89CB-7F2ABAF06883",
+	  "childShapes": [
+		{
+		  "bounds": {
+			"lowerRight": {
+			  "x": 780.0,
+			  "y": 295.0
+			},
+			"upperLeft": {
+			  "x": 210.0,
+			  "y": 45.0
+			}
+		  },
+		  "resourceId": "sid-F2C34B34-2217-49D4-AC9A-5AD3933A5F57",
+		  "childShapes": [
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 172.0,
+				  "y": 212.0
+				},
+				"upperLeft": {
+				  "x": 128.0,
+				  "y": 212.0
+				}
+			  },
+			  "resourceId": "sid-D8F8C4F8-445F-42CC-B0FF-C1AF7BB8400A",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "SequenceFlow"
+			  },
+			  "dockers": [
+				{
+				  "x": 15.0,
+				  "y": 15.0
+				},
+				{
+				  "x": 50.0,
+				  "y": 40.0
+				}
+			  ],
+			  "outgoing": [
+				{
+				  "resourceId": "sid-304094DF-220E-435D-825A-33BCB3A60A4E"
+				}
+			  ],
+			  "target": {
+				"resourceId": "sid-304094DF-220E-435D-825A-33BCB3A60A4E"
+			  },
+			  "properties": {
+				"overrideid": "sid-D8F8C4F8-445F-42CC-B0FF-C1AF7BB8400A"
+			  }
+			},
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 172.0,
+				  "y": 212.0
+				},
+				"upperLeft": {
+				  "x": 128.0,
+				  "y": 212.0
+				}
+			  },
+			  "resourceId": "sid-C30FD08E-219F-4C3E-B777-CB0F2083C5A4",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "SequenceFlow"
+			  },
+			  "dockers": [
+				{
+				  "x": 50.0,
+				  "y": 40.0
+				},
+				{
+				  "x": 50.0,
+				  "y": 40.0
+				}
+			  ],
+			  "outgoing": [
+				{
+				  "resourceId": "sid-2A6481A8-F7D1-4A76-8A91-000968F546EF"
+				}
+			  ],
+			  "target": {
+				"resourceId": "sid-2A6481A8-F7D1-4A76-8A91-000968F546EF"
+			  },
+			  "properties": {
+				"overrideid": "sid-C30FD08E-219F-4C3E-B777-CB0F2083C5A4"
+			  }
+			},
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 97.0,
+				  "y": 140.0
+				},
+				"upperLeft": {
+				  "x": 67.0,
+				  "y": 110.0
+				}
+			  },
+			  "resourceId": "sid-15888AA7-3E3E-4E58-9EF4-287636D17082",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "StartNoneEvent"
+			  },
+			  "properties": {
+				"overrideid": "sid-15888AA7-3E3E-4E58-9EF4-287636D17082"
+			  },
+			  "outgoing": [
+				{
+				  "resourceId": "sid-D8F8C4F8-445F-42CC-B0FF-C1AF7BB8400A"
+				}
+			  ]
+			},
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 242.0,
+				  "y": 165.0
+				},
+				"upperLeft": {
+				  "x": 142.0,
+				  "y": 85.0
+				}
+			  },
+			  "resourceId": "sid-304094DF-220E-435D-825A-33BCB3A60A4E",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "UserTask"
+			  },
+			  "properties": {
+				"overrideid": "sid-304094DF-220E-435D-825A-33BCB3A60A4E",
+				"name": "Vraag",
+				"asynchronousdefinition": false,
+				"exclusivedefinition": true,
+				"tasklisteners": {
+				  "taskListeners": []
+				},
+				"executionlisteners": {
+				  "executionListeners": []
+				}
+			  },
+			  "outgoing": [
+				{
+				  "resourceId": "sid-C30FD08E-219F-4C3E-B777-CB0F2083C5A4"
+				}
+			  ]
+			}
+		  ],
+		  "stencil": {
+			"id": "Lane"
+		  },
+		  "properties": {
+			"overrideid": "sid-F2C34B34-2217-49D4-AC9A-5AD3933A5F57",
+			"name": "Klant"
+		  },
+		  "outgoing": []
+		},
+		{
+		  "bounds": {
+			"lowerRight": {
+			  "x": 780.0,
+			  "y": 545.0
+			},
+			"upperLeft": {
+			  "x": 210.0,
+			  "y": 295.0
+			}
+		  },
+		  "resourceId": "sid-97F370BE-F9F1-45B1-A5A8-0FE4344EB256",
+		  "childShapes": [
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 172.0,
+				  "y": 212.0
+				},
+				"upperLeft": {
+				  "x": 128.0,
+				  "y": 212.0
+				}
+			  },
+			  "resourceId": "sid-6A714B5B-9386-48B1-BE00-D5163A37B672",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "SequenceFlow"
+			  },
+			  "dockers": [
+				{
+				  "x": 50.0,
+				  "y": 40.0
+				},
+				{
+				  "x": 14.0,
+				  "y": 14.0
+				}
+			  ],
+			  "outgoing": [
+				{
+				  "resourceId": "sid-678A48D3-C9D4-4D65-9AC4-6ADFA7F7091D"
+				}
+			  ],
+			  "target": {
+				"resourceId": "sid-678A48D3-C9D4-4D65-9AC4-6ADFA7F7091D"
+			  },
+			  "properties": {
+				"overrideid": "sid-6A714B5B-9386-48B1-BE00-D5163A37B672"
+			  }
+			},
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 242.0,
+				  "y": 165.0
+				},
+				"upperLeft": {
+				  "x": 142.0,
+				  "y": 85.0
+				}
+			  },
+			  "resourceId": "sid-2A6481A8-F7D1-4A76-8A91-000968F546EF",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "UserTask"
+			  },
+			  "properties": {
+				"overrideid": "sid-2A6481A8-F7D1-4A76-8A91-000968F546EF",
+				"name": "Antwoord",
+				"asynchronousdefinition": false,
+				"exclusivedefinition": true,
+				"tasklisteners": {
+				  "taskListeners": []
+				},
+				"executionlisteners": {
+				  "executionListeners": []
+				}
+			  },
+			  "outgoing": [
+				{
+				  "resourceId": "sid-6A714B5B-9386-48B1-BE00-D5163A37B672"
+				}
+			  ]
+			},
+			{
+			  "bounds": {
+				"lowerRight": {
+				  "x": 358.0,
+				  "y": 139.0
+				},
+				"upperLeft": {
+				  "x": 330.0,
+				  "y": 111.0
+				}
+			  },
+			  "resourceId": "sid-678A48D3-C9D4-4D65-9AC4-6ADFA7F7091D",
+			  "childShapes": [],
+			  "stencil": {
+				"id": "EndNoneEvent"
+			  },
+			  "properties": {
+				"overrideid": "sid-678A48D3-C9D4-4D65-9AC4-6ADFA7F7091D"
+			  },
+			  "outgoing": []
+			}
+		  ],
+		  "stencil": {
+			"id": "Lane"
+		  },
+		  "properties": {
+			"overrideid": "sid-97F370BE-F9F1-45B1-A5A8-0FE4344EB256",
+			"name": "Klantendienst"
+		  },
+		  "outgoing": []
+		}
+	  ],
+	  "stencil": {
+		"id": "Pool"
+	  },
+	  "properties": {
+		"overrideid": "sid-5EDCE3C2-3422-48B2-89CB-7F2ABAF06883",
+		"process_id": "simple-pool",
+		"name": "simple-pool-with-lanes"
+	  },
+	  "outgoing": []
+	}
+  ]
+}
