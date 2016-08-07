@@ -267,7 +267,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 		} catch (Exception e) {
             String clazzName = StringUtils.isNotEmpty (businessRuleTask.getClassName()) ? businessRuleTask.getClassName() : "<null>";
 			throw new ActivitiException(
-					"Could not instantiate businessRuleTask class: " + clazzName, e);
+					"Could not instantiate businessRuleTask (id:" + businessRuleTask.getId()  + ") class: " + clazzName, e);
 		}
 	}else{
 		ruleActivity=new BusinessRuleTaskActivityBehavior();
