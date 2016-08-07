@@ -463,6 +463,16 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
   }
   
+  protected void assertEmptyResultsPresentInDataResponse(String url) throws JsonProcessingException, IOException {
+    // Do the actual call
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    
+    // Check status and size
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
+    assertEquals(0, dataNode.size());
+  }
+  
   /**
    * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) 
    * contains entries with the given ID's.

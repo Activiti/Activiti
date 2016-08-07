@@ -465,7 +465,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (isConcurrent()) {
       List< ? extends ActivityExecution> concurrentExecutions = getParent().getAllChildExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
-        if (concurrentExecution.getActivity()==activity) {
+        if (concurrentExecution.getActivity() != null && concurrentExecution.getActivity().getId().equals(activity.getId())) {
           if (!concurrentExecution.isActive()) {
             inactiveConcurrentExecutionsInActivity.add(concurrentExecution);
           }
