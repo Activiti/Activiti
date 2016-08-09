@@ -14,10 +14,14 @@
 package org.activiti.engine;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
+import javax.xml.namespace.QName;
 
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -117,6 +121,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String mailSessionJndi;
   protected Map<String,MailServerInfo> mailServers = new HashMap<String,MailServerInfo>();
   protected Map<String, String> mailSessionsJndi = new HashMap<String, String>();
+
+  protected ConcurrentMap<QName, URL> wsOverridenEndpointAddresses = new ConcurrentHashMap<QName, URL>();
 
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
@@ -382,6 +388,34 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setMailSessionsJndi(Map<String, String> mailSessionsJndi) {
     this.mailSessionsJndi.putAll(mailSessionsJndi);
+    return this;
+  }
+  
+  /**
+   * Add or replace the address of the given web-service endpoint with the given value
+   * @param endpointName The endpoint name for which a new address must be set
+   * @param address The new address of the endpoint
+   */
+  public ProcessEngineConfiguration addWsEndpointAddress(QName endpointName, URL address) {
+      this.wsOverridenEndpointAddresses.put(endpointName, address);
+      return this;
+  }
+  
+  /**
+   * Remove the address definition of the given web-service endpoint
+   * @param endpointName The endpoint name for which the address definition must be removed
+   */
+  public ProcessEngineConfiguration removeWsEndpointAddress(QName endpointName) {
+      this.wsOverridenEndpointAddresses.remove(endpointName);
+      return this;
+  }
+  
+  public ConcurrentMap<QName, URL> getWsOverridenEndpointAddresses() {
+      return this.wsOverridenEndpointAddresses;
+  }
+  
+  public ProcessEngineConfiguration setWsOverridenEndpointAddresses(final ConcurrentMap<QName, URL> wsOverridenEndpointAdress) {
+    this.wsOverridenEndpointAddresses.putAll(wsOverridenEndpointAdress);
     return this;
   }
   

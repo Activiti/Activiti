@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -72,7 +73,8 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     
     this.fillMessage(message, execution);
     
-    MessageInstance receivedMessage = this.operation.sendMessage(message);
+    ProcessEngineConfiguration processEngineConfig = execution.getEngineServices().getProcessEngineConfiguration();
+    MessageInstance receivedMessage = this.operation.sendMessage(message, processEngineConfig.getWsOverridenEndpointAddresses());
 
     execution.setVariable(CURRENT_MESSAGE, receivedMessage);
 

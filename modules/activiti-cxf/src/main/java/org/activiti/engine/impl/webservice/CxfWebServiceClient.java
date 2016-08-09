@@ -16,10 +16,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.namespace.QName;
 
 import org.activiti.engine.ActivitiException;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.apache.cxf.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -57,7 +63,13 @@ public class CxfWebServiceClient implements SyncWebServiceClient {
   /**
    * {@inheritDoc}}
    */
-  public Object[] send(String methodName, Object[] arguments) throws Exception {
+  public Object[] send(String methodName, Object[] arguments, final ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
+    // If needed, we override the endpoint address
+    final URL newEndpointAddress = overridenEndpointAddresses
+             .get(this.client.getEndpoint().getEndpointInfo().getName());
+    if (newEndpointAddress != null) {
+       this.client.getRequestContext().put(Message.ENDPOINT_ADDRESS, newEndpointAddress.toExternalForm());
+    }
     return client.invoke(methodName, arguments);
   }
 }
