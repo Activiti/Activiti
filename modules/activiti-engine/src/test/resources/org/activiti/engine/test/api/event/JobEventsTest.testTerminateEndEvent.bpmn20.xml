@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="testTerminateEndEvent">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow sourceRef="theStart" targetRef="subProcess1" />
+      
+    <userTask id="task" name="Outside Task" />
+    <subProcess id="subProcess1" name="SubProcess">
+        <startEvent id="subStart" name="Start"></startEvent>
+        <endEvent id="subEnd" name="End">
+            <terminateEventDefinition></terminateEventDefinition>
+        </endEvent>
+        
+        <intermediateCatchEvent id="timer">
+            <timerEventDefinition>
+              <timeDuration>PT5M</timeDuration>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+        
+        <userTask id="inTask" name="Inside Task"/>
+        
+        <sequenceFlow id="subFlow1" sourceRef="subStart" targetRef="timer"/>
+        <sequenceFlow id="subFlow2" sourceRef="subStart" targetRef="inTask"/>
+        <sequenceFlow id="subDone1" sourceRef="timer" targetRef="subEnd"/>
+        <sequenceFlow id="subDone2" sourceRef="inTask" targetRef="subEnd"/>
+    </subProcess>
+    
+    <sequenceFlow id="subToTask" sourceRef="subProcess1" targetRef="task" />
+    <sequenceFlow id="taskToEnd" sourceRef="task" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>
