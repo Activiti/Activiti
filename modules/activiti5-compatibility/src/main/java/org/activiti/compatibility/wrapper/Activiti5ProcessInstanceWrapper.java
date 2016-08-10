@@ -60,6 +60,11 @@ public class Activiti5ProcessInstanceWrapper implements ProcessInstance {
   public String getParentId() {
     return activiti5ProcessInstance.getParentId();
   }
+  
+  @Override
+  public String getSuperExecutionId() {
+    return activiti5ProcessInstance.getSuperExecutionId();
+  }
 
   @Override
   public String getProcessDefinitionId() {
