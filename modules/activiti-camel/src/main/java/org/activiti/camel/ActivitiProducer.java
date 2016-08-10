@@ -146,6 +146,7 @@ public class ActivitiProducer extends DefaultProducer {
     if (processInstanceId != null) {
       return processInstanceId;
     }
+    
     String processInstanceKey = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
         .processInstanceBusinessKey(processInstanceKey).singleResult();

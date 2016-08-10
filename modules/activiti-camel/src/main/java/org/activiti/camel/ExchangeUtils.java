@@ -121,7 +121,7 @@ public class ExchangeUtils {
     if (camelBody instanceof Map<?,?>) {
       Map<?,?> camelBodyMap = (Map<?,?>)camelBody;
       for (@SuppressWarnings("rawtypes") Map.Entry e : camelBodyMap.entrySet()) {
-        if (e.getKey() instanceof String) {
+        if (e.getKey() instanceof String && IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase((String) e.getKey()) == false) {
           camelVarMap.put((String) e.getKey(), e.getValue());
         }
       }

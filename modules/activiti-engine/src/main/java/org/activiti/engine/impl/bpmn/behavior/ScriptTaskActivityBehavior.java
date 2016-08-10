@@ -93,9 +93,10 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
         throw e;
       }
     }
-     if (noErrors) {
-       leave(execution);
-     }
+     
+    if (noErrors) {
+      leave(execution);
+    }
   }
   
 }

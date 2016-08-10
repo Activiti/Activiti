@@ -11,7 +11,7 @@
     <endEvent id="endevent2" name="End"></endEvent>
     <serviceTask id="exceptionPath" name="Exception path" activiti:class="org.activiti.camel.exception.tools.ExceptionServiceMock"></serviceTask>
     <scriptTask id="scripttask1" name="Script Task" scriptFormat="javascript" activiti:autoStoreVariables="false">
-      <script>println("happy path followed")</script>
+      <script>java.lang.System.out.println("happy path followed")</script>
     </scriptTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="errorCamelTask"></sequenceFlow>
     <sequenceFlow id="flow2" sourceRef="errorCamelTask" targetRef="scripttask1"></sequenceFlow>
