@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.activiti.engine.delegate.BusinessRuleTaskDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
@@ -33,7 +34,9 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * 
  * @author Tijs Rademakers
  */
-public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
+public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior implements BusinessRuleTaskDelegate {
+  
+  private static final long serialVersionUID = 1L;
   
   protected Set<Expression> variablesInputExpressions = new HashSet<Expression>();
   protected Set<Expression> rulesExpressions = new HashSet<Expression>();

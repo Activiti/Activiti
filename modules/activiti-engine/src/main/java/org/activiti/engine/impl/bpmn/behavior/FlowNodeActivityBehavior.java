@@ -50,8 +50,7 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
   }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    // concrete activity behaviours that do accept signals should override
-    // this method;
+    // concrete activity behaviours that do accept signals should override this method;
     throw new ActivitiException("this activity isn't waiting for a trigger");
   }
   

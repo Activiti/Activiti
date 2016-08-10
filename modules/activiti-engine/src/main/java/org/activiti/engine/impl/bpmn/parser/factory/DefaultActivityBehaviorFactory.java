@@ -47,6 +47,7 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BusinessRuleTaskDelegate;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
@@ -276,12 +277,12 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         ShellActivityBehavior.class, fieldDeclarations);
   }
 
-  public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
-    BusinessRuleTaskActivityBehavior ruleActivity = null;
+  public ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
+    BusinessRuleTaskDelegate ruleActivity = null;
     if (StringUtils.isNotEmpty(businessRuleTask.getClassName())) {
       try {
         Class<?> clazz = Class.forName(businessRuleTask.getClassName());
-        ruleActivity = (BusinessRuleTaskActivityBehavior) clazz.newInstance();
+        ruleActivity = (BusinessRuleTaskDelegate) clazz.newInstance();
       } catch (Exception e) {
         throw new ActivitiException("Could not instantiate businessRuleTask class: ", e);
       }
