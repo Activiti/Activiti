@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.standalone.rules;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -37,5 +36,11 @@ public class BusinessRuleTaskTest extends PluggableActivitiTestCase {
     
     assertTrue(CustomBusinessRuleTask.exclude);
     assertEquals("rulesOutput", CustomBusinessRuleTask.resultVariableName);
+    
+    runtimeService.signal(runtimeService.createExecutionQuery()
+        .processInstanceId(processInstance.getId())
+        .singleResult()
+        .getId());
+    assertProcessEnded(processInstance.getId());
   }
 }
