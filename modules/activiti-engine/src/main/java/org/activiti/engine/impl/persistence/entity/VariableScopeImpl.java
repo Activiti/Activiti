@@ -46,6 +46,9 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
   // The cache is used when fetching/setting specific variables
   protected Map<String, VariableInstanceEntity> usedVariablesCache = new HashMap<String, VariableInstanceEntity>();
+  
+  // Transient variable are not persisted and do not need to be represented as VariableInstanceEntity instances.
+  protected Map<String, Object> transientVariabes;
 
   protected ELContext cachedElContext;
 
@@ -599,36 +602,42 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     setVariable(variableName, value, getSourceActivityExecution(), fetchAllVariables);
   }
 
-  protected void setVariable(String variableName, Object value, ExecutionEntity sourceActivityExecution, boolean fetchAllVariables) {
+  /**
+   * Sets a variable as high as possible (highest parent).
+   * 
+   *  @param sourceExecution The execution where the variable was originally set, used for history data.
+   *  @param fetchAllVariables If true, all existing variables will be fetched when setting the variable.
+   */
+  protected void setVariable(String variableName, Object value, ExecutionEntity sourceExecution, boolean fetchAllVariables) {
 
     if (fetchAllVariables == true) {
 
       // If it's in the cache, it's more recent
       if (usedVariablesCache.containsKey(variableName)) {
-        updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+        updateVariableInstance(usedVariablesCache.get(variableName), value, sourceExecution);
       }
 
       // If the variable exists on this scope, replace it
       if (hasVariableLocal(variableName)) {
-        setVariableLocal(variableName, value, sourceActivityExecution, true);
+        setVariableLocal(variableName, value, sourceExecution, true);
         return;
       }
 
       // Otherwise, go up the hierarchy (we're trying to put it as high as possible)
       VariableScopeImpl parentVariableScope = getParentVariableScope();
       if (parentVariableScope != null) {
-        if (sourceActivityExecution == null) {
+        if (sourceExecution == null) {
           parentVariableScope.setVariable(variableName, value);
         } else {
-          parentVariableScope.setVariable(variableName, value, sourceActivityExecution, true);
+          parentVariableScope.setVariable(variableName, value, sourceExecution, true);
         }
         return;
       }
 
       // We're as high as possible and the variable doesn't exist yet, so
       // we're creating it
-      if (sourceActivityExecution != null) {
-        createVariableLocal(variableName, value, sourceActivityExecution);
+      if (sourceExecution != null) {
+        createVariableLocal(variableName, value, sourceExecution);
       } else {
         createVariableLocal(variableName, value);
       }
@@ -638,11 +647,11 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       // Check local cache first
       if (usedVariablesCache.containsKey(variableName)) {
 
-        updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+        updateVariableInstance(usedVariablesCache.get(variableName), value, sourceExecution);
 
       } else if (variableInstances != null && variableInstances.containsKey(variableName)) {
 
-        updateVariableInstance(variableInstances.get(variableName), value, sourceActivityExecution);
+        updateVariableInstance(variableInstances.get(variableName), value, sourceExecution);
 
       } else {
 
@@ -650,17 +659,17 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
         // Create it if it doesn't exist yet
         VariableInstanceEntity variable = getSpecificVariable(variableName);
         if (variable != null) {
-          updateVariableInstance(variable, value, sourceActivityExecution);
+          updateVariableInstance(variable, value, sourceExecution);
           usedVariablesCache.put(variableName, variable);
         } else {
 
           VariableScopeImpl parent = getParentVariableScope();
           if (parent != null) {
-            parent.setVariable(variableName, value, sourceActivityExecution, fetchAllVariables);
+            parent.setVariable(variableName, value, sourceExecution, fetchAllVariables);
             return;
           }
 
-          variable = createVariableInstance(variableName, value, sourceActivityExecution);
+          variable = createVariableInstance(variableName, value, sourceExecution);
           usedVariablesCache.put(variableName, variable);
 
         }
@@ -731,7 +740,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
     }
   }
-
+  
   public void createVariableLocal(String variableName, Object value) {
     createVariableLocal(variableName, value, getSourceActivityExecution());
   }
@@ -846,7 +855,118 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
     return variableInstance;
   }
+  
+  
+  /*
+   * Transient variables
+   */
+  
+  public void setTransientVariablesLocal(Map<String, Object> transientVariables) {
+    for (String variableName : transientVariables.keySet()) {
+      setTransientVariableLocal(variableName, transientVariables.get(variableName));
+    }
+  }
+  
+  public void setTransientVariableLocal(String variableName, Object variableValue) {
+    if (transientVariabes == null) {
+      transientVariabes = new HashMap<String, Object>();
+    }
+    transientVariabes.put(variableName, variableValue);
+  }
+  
+  public void setTransientVariables(Map<String, Object> transientVariables) {
+    for (String variableName : transientVariables.keySet()) {
+      setTransientVariable(variableName, transientVariables.get(variableName));
+    }
+  }
+  
+  public void setTransientVariable(String variableName, Object variableValue) {
+    VariableScopeImpl parentVariableScope = getParentVariableScope();
+    if (parentVariableScope != null) {
+      parentVariableScope.setTransientVariable(variableName, variableValue);
+      return;
+    }
+    setTransientVariableLocal(variableName, variableValue);
+  }
+  
+  public Object getTransientVariableLocal(String variableName) {
+    if (transientVariabes != null) {
+      return transientVariabes.get(variableName);
+    }
+    return null;
+  }
+  
+  public Map<String, Object> getTransientVariablesLocal() {
+    if (transientVariabes != null) {
+      return transientVariabes;
+    } else {
+      return Collections.emptyMap();
+    }
+  }
+  
+  public Object getTransientVariable(String variableName) {
+    if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
+      return transientVariabes.get(variableName);
+    }
+    
+    VariableScopeImpl  parentScope = getParentVariableScope();
+    if (parentScope != null) {
+      return parentScope.getTransientVariable(variableName);
+    }
 
+    return null;
+  }
+  
+  public Map<String, Object> getTransientVariables() {
+    return collectTransientVariables(new HashMap<String, Object>());
+  }
+  
+  protected Map<String, Object> collectTransientVariables(HashMap<String, Object> variables) {
+    VariableScopeImpl parentScope = getParentVariableScope();
+    if (parentScope != null) {
+      variables.putAll(parentScope.collectVariables(variables));
+    }
+    
+    if (transientVariabes != null) {
+      for (String variableName : transientVariabes.keySet()) {
+        variables.put(variableName, transientVariabes.get(variableName));
+      }
+    }
+
+    return variables;
+  }
+  
+  public void removeTransientVariableLocal(String variableName) {
+    if (transientVariabes != null) {
+      transientVariabes.remove(variableName);
+    }
+  }
+  
+  public void removeTransientVariablesLocal() {
+    if (transientVariabes != null) {
+      transientVariabes.clear();
+    }
+  }
+  
+  public void removeTransientVariable(String variableName) {
+    if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
+      removeTransientVariableLocal(variableName);
+      return;
+    }
+    VariableScopeImpl parentVariableScope = getParentVariableScope();
+    if (parentVariableScope != null) {
+      parentVariableScope.removeTransientVariable(variableName);
+    }
+  }
+  
+  public void removeTransientVariables() {
+    removeTransientVariablesLocal();
+    VariableScopeImpl parentVariableScope = getParentVariableScope();
+    if (parentVariableScope != null) {
+      parentVariableScope.removeTransientVariablesLocal();
+    }
+  }
+  
   /**
    * Execution variable updates have activity instance ids, but historic task variable updates don't.
    */

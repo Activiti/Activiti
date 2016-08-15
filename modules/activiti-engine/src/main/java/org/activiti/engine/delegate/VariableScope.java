@@ -115,10 +115,10 @@ public interface VariableScope {
    * 
    * <p>
    * Variables are set according algorithm for
-   * {@link #setVariable(String, Object)}, applied separately to each variable.
+   *;@link #setVariable(String, Object)}, applied separately to each variable.
    * 
    * @see #setVariable(String, Object)
-   *      {@link VariableScope#setVariable(String, Object)}
+   *     ;@link VariableScope#setVariable(String, Object)}
    * 
    * @param variables
    *          a map of keys and values for the variables to be set
@@ -138,39 +138,63 @@ public interface VariableScope {
   void createVariableLocal(String variableName, Object value);
 
   /**
-   * Removes the variable and creates a new {@link HistoricVariableUpdateEntity}
+   * Removes the variable and creates a new;@link HistoricVariableUpdateEntity}
    * .
    */
   void removeVariable(String variableName);
 
   /**
    * Removes the local variable and creates a new
-   * {@link HistoricVariableUpdateEntity}.
+   *;@link HistoricVariableUpdateEntity}.
    */
   void removeVariableLocal(String variableName);
 
   /**
    * Removes the variables and creates a new
-   * {@link HistoricVariableUpdateEntity} for each of them.
+   *;@link HistoricVariableUpdateEntity} for each of them.
    */
   void removeVariables(Collection<String> variableNames);
 
   /**
    * Removes the local variables and creates a new
-   * {@link HistoricVariableUpdateEntity} for each of them.
+   *;@link HistoricVariableUpdateEntity} for each of them.
    */
   void removeVariablesLocal(Collection<String> variableNames);
 
   /**
    * Removes the (local) variables and creates a new
-   * {@link HistoricVariableUpdateEntity} for each of them.
+   *;@link HistoricVariableUpdateEntity} for each of them.
    */
   void removeVariables();
 
   /**
    * Removes the (local) variables and creates a new
-   * {@link HistoricVariableUpdateEntity} for each of them.
+   *;@link HistoricVariableUpdateEntity} for each of them.
    */
   void removeVariablesLocal();
+  
+  void setTransientVariablesLocal(Map<String, Object> transientVariables);
+  
+  void setTransientVariableLocal(String variableName, Object variableValue);
+  
+  void setTransientVariables(Map<String, Object> transientVariables);
+  
+  void setTransientVariable(String variableName, Object variableValue);
+  
+  Object getTransientVariableLocal(String variableName);
+  
+  Map<String, Object> getTransientVariablesLocal();
+  
+  Object getTransientVariable(String variableName);
+  
+  Map<String, Object> getTransientVariables();
+  
+  void removeTransientVariableLocal(String variableName);
+
+  void removeTransientVariablesLocal();
+  
+  void removeTransientVariable(String variableName);
+  
+  void removeTransientVariables();
 
 }
