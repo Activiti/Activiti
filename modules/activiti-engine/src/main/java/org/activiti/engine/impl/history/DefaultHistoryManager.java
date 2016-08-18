@@ -630,8 +630,8 @@ public void recordTaskClaim(String taskId) {
   }
   
   /* (non-Javadoc)
-  +* @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionChange(java.lang.String, java.lang.String)
-  +*/
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskProcessDefinitionChange(java.lang.String, java.lang.String)
+   */
   @Override
   public void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
