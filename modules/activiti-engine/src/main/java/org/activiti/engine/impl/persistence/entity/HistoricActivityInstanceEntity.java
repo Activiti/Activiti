@@ -49,6 +49,7 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("executionId", executionId);
     persistentState.put("assignee", assignee);
+    persistentState.put("processDefinitionId", processDefinitionId);
     return persistentState;
   }
 
