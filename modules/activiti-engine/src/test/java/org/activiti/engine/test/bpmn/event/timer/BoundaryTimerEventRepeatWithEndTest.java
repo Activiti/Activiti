@@ -1,5 +1,3 @@
-package org.activiti.engine.test.bpmn.event.timer;
-
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +10,14 @@ package org.activiti.engine.test.bpmn.event.timer;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.test.bpmn.event.timer;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -22,14 +27,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 /**
  * @author Vasile Dirla
  */
-public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
+public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testRepeatWithEnd() throws Throwable {
@@ -62,53 +63,71 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     // complete will cause timer to be created
     taskService.complete(task.getId());
 
-    List<Job> jobs = managementService.createJobQuery().list();
+    List<Job> jobs = managementService.createTimerJobQuery().list();
     assertEquals(1, jobs.size());
+    
     // boundary events
-
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
-      fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
-    } catch (Exception ex) {
-      // expected exception because a new job is prepared
-    }
+    Job executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+    managementService.executeJob(executableJob.getId());
+    
+    assertEquals(0, managementService.createJobQuery().list().size());
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobs.size());
 
     nextTimeCal.add(Calendar.MINUTE, 15); // after 15 minutes
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
-      fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
-    } catch (Exception ex) {
-      // expected exception because a new job is prepared
-    }
+    executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+    managementService.executeJob(executableJob.getId());
+    
+    assertEquals(0, managementService.createJobQuery().list().size());
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(1, jobs.size());
 
-    nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20
-                                         // minutes and 1 second from the
-                                         // baseTime) the BoundaryEndTime is
-                                         // reached
+    nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20 minutes and 1 second from the baseTime) the BoundaryEndTime is reached
     nextTimeCal.add(Calendar.SECOND, 1);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
-    } catch (Exception ex) {
-      fail("Should not have any other jobs because the endDate is reached");
-    }
+    executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+    managementService.executeJob(executableJob.getId());
+    
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    
     tasks = taskService.createTaskQuery().list();
     task = tasks.get(0);
     assertEquals("Task B", task.getName());
     assertEquals(1, tasks.size());
     taskService.complete(task.getId());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-    } catch (Exception e) {
-      // expected
-      fail("No jobs should be active here.");
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
 
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
+      assertNotNull(historicInstance.getEndTime());
     }
 
+    // now all the process instances should be completed
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    // no jobs
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+    
+    jobs = managementService.createTimerJobQuery().list();
+    assertEquals(0, jobs.size());
+
+    // no tasks
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
   }
 
 }

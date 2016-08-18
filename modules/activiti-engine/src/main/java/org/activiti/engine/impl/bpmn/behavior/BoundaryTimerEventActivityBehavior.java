@@ -18,6 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
@@ -45,8 +46,8 @@ public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBeh
     }
 
     JobManager jobManager = Context.getCommandContext().getJobManager();
-    TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, interrupting, 
-        executionEntity, TriggerTimerEventJobHandler.TYPE, executionEntity.getCurrentActivityId());
+    TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, 
+        TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
     if (timerJob != null) {
       jobManager.scheduleTimerJob(timerJob);
     }
