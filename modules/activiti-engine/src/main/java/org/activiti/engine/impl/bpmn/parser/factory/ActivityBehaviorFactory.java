@@ -38,7 +38,6 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
@@ -144,7 +143,7 @@ public interface ActivityBehaviorFactory {
 
   public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 
-  public abstract BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
+  public abstract ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
 
   public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);
 

@@ -33,25 +33,29 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
   
   /** Cache with no limit */
   public DefaultDeploymentCache() {
-    this.cache = new HashMap<String, T>();
+    this(-1);
   }
   
   /** Cache which has a hard limit: no more elements will be cached than the limit. */
   public DefaultDeploymentCache(final int limit) {
-    this.cache = Collections.synchronizedMap(new LinkedHashMap<String, T>(limit + 1, 0.75f, true) { // +1 is needed, because the entry is inserted first, before it is removed
-                                                                       // 0.75 is the default (see javadocs)
-                                                                       // true will keep the 'access-order', which is needed to have a real LRU cache
-      private static final long serialVersionUID = 1L;
-
-      protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
-        boolean removeEldest = size() > limit;
-        if (removeEldest) {
-          logger.trace("Cache limit is reached, {} will be evicted",  eldest.getKey());
+    if (limit > 0) {
+      this.cache = Collections.synchronizedMap(new LinkedHashMap<String, T>(limit + 1, 0.75f, true) { // +1 is needed, because the entry is inserted first, before it is removed
+                                                                         // 0.75 is the default (see javadocs)
+                                                                         // true will keep the 'access-order', which is needed to have a real LRU cache
+        private static final long serialVersionUID = 1L;
+  
+        protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
+          boolean removeEldest = size() > limit;
+          if (removeEldest) {
+            logger.trace("Cache limit is reached, {} will be evicted",  eldest.getKey());
+          }
+          return removeEldest;
         }
-        return removeEldest;
-      }
-      
-    });
+        
+      });
+    } else {
+      this.cache = Collections.synchronizedMap(new HashMap<String, T>());
+    }
   }
   
   public T get(String id) {

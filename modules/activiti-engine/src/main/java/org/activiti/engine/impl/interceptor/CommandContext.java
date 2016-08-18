@@ -168,7 +168,7 @@ public class CommandContext {
               // reduce log level, as normally we're not interested in logging this exception
               log.debug("Optimistic locking exception : " + exception);
             } else {
-              log.debug("Error while closing command context", exception);
+              log.error("Error while closing command context", exception);
             }
 
             transactionContext.rollback();

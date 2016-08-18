@@ -4221,7 +4221,7 @@ In Activiti 5.12 we also introduced a new type of execution listener, the org.ac
   </activiti:field>
   <activiti:field name="language" stringValue="groovy" />
   <activiti:field name="resultVariable" stringValue="myVar" />
-<activiti:executionListener>
+</activiti:executionListener>
 ----
 
 
@@ -4360,7 +4360,7 @@ It is also possible to use <<serviceTaskFieldInjection,field injection>> to pass
   </activiti:field>
   <activiti:field name="language" stringValue="groovy" />
   <activiti:field name="resultVariable" stringValue="myVar" />
-<activiti:taskListener>
+</activiti:taskListener>
 ----
 
 

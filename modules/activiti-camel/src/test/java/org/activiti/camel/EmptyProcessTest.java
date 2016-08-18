@@ -56,9 +56,14 @@ public class EmptyProcessTest extends SpringActivitiTestCase {
   
   @Deployment(resources = {"process/empty.bpmn20.xml"})
   public void testRunProcessWithHeader() throws Exception {
+    CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = camelContext.createProducerTemplate();
     String body = "body text";
-    String instanceId = (String) tpl.requestBody("direct:startEmptyWithHeader", body);
+    Exchange exchange = ctx.getEndpoint("direct:startEmptyWithHeader").createExchange();
+    exchange.getIn().setBody(body);
+    tpl.send("direct:startEmptyWithHeader", exchange);
+
+    String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
     assertProcessEnded(instanceId);
     HistoricVariableInstance var = processEngine.getHistoryService().createHistoricVariableInstanceQuery().variableName("camelBody").singleResult();
     assertNotNull(var);
