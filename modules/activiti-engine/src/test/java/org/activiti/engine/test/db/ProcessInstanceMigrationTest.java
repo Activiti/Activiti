@@ -267,9 +267,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
       assertEquals("testFormKey", formService.getTaskFormData(task.getId()).getFormKey());
       
-      HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).singleResult();
-      assertEquals(newProcessDefinition.getId(), historicTask.getProcessDefinitionId());
-      assertEquals("testFormKey", formService.getTaskFormData(historicTask.getId()).getFormKey());
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+        HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).singleResult();
+        assertEquals(newProcessDefinition.getId(), historicTask.getProcessDefinitionId());
+        assertEquals("testFormKey", formService.getTaskFormData(historicTask.getId()).getFormKey());
+      }
 
       // continue
       taskService.complete(task.getId());
