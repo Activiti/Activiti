@@ -34,9 +34,24 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     String message = (String) taskService.getVariable(task.getId(), "message");
     assertEquals("Hello World!", message);
+    
+    // Variable should not be there after user task
+    assertNull(runtimeService.getVariable(processInstance.getId(), "response"));
   }
   
-  /* Service task class for previous test */
+  @Deployment
+  public void testUseTransientVariableInExclusiveGateway() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("responseOk", task.getTaskDefinitionKey());
+    
+    // Variable should not be there after user task
+    assertNull(runtimeService.getVariable(processInstance.getId(), "response"));
+  }
+  
+  
+  /* Service task class for previous tests */
+  
   
   /**
    * Mimics a service task that fetches data from a server and stored the whole thing
@@ -45,6 +60,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
   public static class FetchDataServiceTask implements JavaDelegate {
     public void execute(DelegateExecution execution) {
       execution.setTransientVariable("response", "author=kermit;version=3;message=Hello World");
+      execution.setTransientVariable("status", new Integer(200));
     }
   }
   
@@ -62,5 +78,5 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
       }
     }
   }
-
+  
 }

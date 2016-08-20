@@ -48,12 +48,6 @@ public class NoExecutionVariableScope implements VariableScope {
   }
   
   @SuppressWarnings("unchecked")
-  @Override
-  public Map<String, Object> getVariableValues() {
-    return Collections.EMPTY_MAP;
-  }
-
-  @SuppressWarnings("unchecked")
   public Map<String, Object> getVariablesLocal() {
     return Collections.EMPTY_MAP;
   }

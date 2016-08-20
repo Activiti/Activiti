@@ -677,11 +677,6 @@ public class ExecutionImpl implements
   }
   
   @Override
-  public Map<String, Object> getVariableValues() {
-    return getVariables();
-  }
-  
-  @Override
   public Map<String, Object> getVariables(Collection<String> variableNames) {
   	Map<String, Object> allVariables = getVariables();
   	Map<String, Object> filteredVariables = new HashMap<String, Object>();
