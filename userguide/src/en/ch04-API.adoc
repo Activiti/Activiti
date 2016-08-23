@@ -412,6 +412,90 @@ When using _true_ for the parameter _fetchAllVariables_, the behaviour will be e
 
 However, when using _false_ as value, a specific query will be used and no other variables will be fetched nor cached. Only the value of the variable in question here will be cached for subsequent use.
 
+[[apiTransientVariables]]
+
+=== Transient variables
+
+Transient variables are variables that behave like regular variables, but are not persisted. Typically, transient variables are used for advanced use cases (i.e. when in doubt, use a regular process variable).
+
+The following applies for transient variables:
+
+* There is not history stored at all for transient variables.
+* Like _regular_ variables, transient variables are put on the _highest parent_ when set. This means that when setting a variable on an execution, the transient variable is actually stored on the process instance execution. Like regular variables, a _local_ variant exist of the method if the variable should be set on the specific execution or task.
+* A transient variable can only be accessed until the next 'wait state' in the process definition. After that, they are gone. The wait state means here the point in the process instance where it is persisted to the data store. Note that an _async_ activity also is a 'wait state' in this definition!
+* Transient variables can only be set by the _setTransientVariable(name, value)_, but transient variables are also returned when calling _getVariable(name)_ (a _getTransientVariable(name)_ also exists, that only checks the transient variables). The reason for this is to make the writing of expressions as easy and existing logic using variables works for both types.
+* A transient variable _shadows_ a persistent variable with the same name. This means that when both a persistent and transient variable is set on a process instance and the _getVariable("someVariable")_ is used, the transient variable value will be returned .
+
+Transient variables can be get and/or set in most places where regular variables are exposed:
+
+* On _DelegateExecution_ in _JavaDelegate_ implementations
+* On _DelegateExecution_ in _ExecutionListener_ implementations and on _DelegateTask_ on _TaskListener_ implementations.
+* In script task via the _execution_ object
+* When starting a process instance via the runtime service
+* When completing a task
+* When calling the _runtimeService.trigger_ method
+
+The methods follow the naming convention of the regular process variables:
+
+[source,java,linenums]
+----
+void setTransientVariable(String variableName, Object variableValue);
+void setTransientVariableLocal(String variableName, Object variableValue);
+void setTransientVariables(Map<String, Object> transientVariables);
+void setTransientVariablesLocal(Map<String, Object> transientVariables);
+
+Object getTransientVariable(String variableName);
+Object getTransientVariableLocal(String variableName);
+
+Map<String, Object> getTransientVariables();
+Map<String, Object> getTransientVariablesLocal();
+
+void removeTransientVariable(String variableName);
+void removeTransientVariableLocal(String variableName);
+----
+
+Following BPMN diagram shows a typical example:
+
+image::images/api.transient.variable.example.png[align="center"]
+
+Let's assume the 'Fetch Data' service task calls some remote service (for example using REST). Let's assume some config parameters are needed and need to be provided when starting the process instance. Also, these config parameters are not important for historical audit purposes, so we pass them as transient variables:
+
+[source,java,linenums]
+----
+ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+       .processDefinitionKey("someKey")
+       .transientVariable("configParam01", "A")
+       .transientVariable("configParam02", "B")
+       .transientVariable("configParam03", "C")
+       .start();
+----
+
+Note that the variables will be available until the user task is reached and persisted to the database. For example, in the 'Additional Work' user task they are not available anymore. Also not that if 'Fetch Data' would have been asynchronous, they won't be available after that step too.
+
+The 'Fetch Data' (simplified) could be something like
+
+[source,java,linenums]
+----
+public static class FetchDataServiceTask implements JavaDelegate {
+  public void execute(DelegateExecution execution) {
+    String configParam01 = (String) execution.getVariable(configParam01);
+    // ...
+
+    RestReponse restResponse = executeRestCall();
+    execution.setTransientVariable("response", restResponse.getBody());
+    execution.setTransientVariable("status", restResponse.getStatus());
+  }
+}
+----
+
+The 'Process Data' would get the response transient variable, parse it and store the relevant data in real process variables as we need them later.
+
+The condition on the sequence flow leaving the exclusive gateway are oblivious whether persistent or transient variables are used (in this case the _status_ transient variable):
+
+[source,xml,linenums]
+----
+<conditionExpression xsi:type="tFormalExpression">${status == 200}</conditionExpression>
+----
 
 [[apiExpressions]]
 
