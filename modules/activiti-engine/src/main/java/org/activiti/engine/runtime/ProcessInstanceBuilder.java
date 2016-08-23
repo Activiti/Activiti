@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.runtime;
 
+import java.util.Map;
+
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+
 /**
  * Helper for starting new ProcessInstance.
  * 
@@ -21,29 +26,60 @@ package org.activiti.engine.runtime;
  * 
  * 
  * @author Bassam Al-Sarori
- * 
+ * @author Joram Barrez
  */
 public interface ProcessInstanceBuilder {
 
-  /** Set the id of the process definition **/
+  /** 
+   * Set the id of the process definition 
+   **/
   ProcessInstanceBuilder processDefinitionId(String processDefinitionId);
 
   /**
-   * Set the key of the process definition, latest version of the process definition with the given key. If processDefinitionId was set this will be ignored
+   * Set the key of the process definition, latest version of the process definition with the given key. 
+   * If processDefinitionId was set this will be ignored
    **/
   ProcessInstanceBuilder processDefinitionKey(String processDefinitionKey);
+  
+  /**
+   * Set the message name that needs to be used to look up the process definition that needs to be used to start the process instance.
+   */
+  ProcessInstanceBuilder messageName(String messageName);
 
-  /** Set the name of process instance **/
-  ProcessInstanceBuilder processInstanceName(String processInstanceName);
+  /** 
+   * Set the name of process instance 
+   **/
+  ProcessInstanceBuilder name(String processInstanceName);
 
-  /** Set the businessKey of process instance **/
+  /** 
+   * Set the businessKey of process instance 
+   **/
   ProcessInstanceBuilder businessKey(String businessKey);
 
-  /** Set the tenantId of process instance **/
+  /** 
+   * Set the tenantId of process instance 
+   **/
   ProcessInstanceBuilder tenantId(String tenantId);
 
-  /** Add a variable to the process instance **/
-  ProcessInstanceBuilder addVariable(String variableName, Object value);
+  /**
+   * Sets the process variables
+   */
+  ProcessInstanceBuilder variables(Map<String, Object> variables);
+  
+  /** 
+   * Adds a variable to the process instance 
+   **/
+  ProcessInstanceBuilder variable(String variableName, Object value);
+  
+  /**
+   * Sets the transient variables
+   */
+  ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables);
+  
+  /**
+   * Adds a transient variable to the process instance
+   */
+  ProcessInstanceBuilder transientVariable(String variableName, Object value);
 
   /**
    * Start the process instance
@@ -54,4 +90,5 @@ public interface ProcessInstanceBuilder {
    *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
    * **/
   ProcessInstance start();
+  
 }

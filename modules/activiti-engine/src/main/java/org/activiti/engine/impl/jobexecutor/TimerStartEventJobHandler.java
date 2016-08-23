@@ -60,7 +60,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
             throw new ActivitiException("Could not find matching FlowElement for activityId " + activityId);
           }
           ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-          processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, null, true);
+          processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, null, null, true);
         } else {
           new StartProcessInstanceCmd(processDefinitionEntity.getKey(), null, null, null, job.getTenantId()).execute(commandContext);
         }
