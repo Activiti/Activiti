@@ -336,6 +336,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void trigger(String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new TriggerCmd(executionId, processVariables));
   }
+  
+  public void trigger(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables) {
+    commandExecutor.execute(new TriggerCmd(executionId, processVariables, transientVariables));    
+  }
 
   public void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType) {
     commandExecutor.execute(new AddIdentityLinkForProcessInstanceCmd(processInstanceId, userId, null, identityLinkType));

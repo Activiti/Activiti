@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160823103434643" modeler:modelId="3" modeler:modelVersion="1" modeler:modelLastUpdated="1471941272741">
+  <process id="transientVarsTest" name="transientVarsTest" isExecutable="true">
+    <startEvent id="startEvent1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="sid-78575621-2BF9-4F12-AC51-4A7A069A5630" sourceRef="startEvent1" targetRef="sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-78575621-2BF9-4F12-AC51-4A7A069A5630]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <scriptTask id="sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B" name="Set transient var" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B]]></modeler:editor-resource-id>
+      </extensionElements>
+      <script><![CDATA[execution.setTransientVariable("theVar", "I am shadowed");]]></script>
+    </scriptTask>
+    <userTask id="sid-8188123A-1334-4034-B22A-F3C45C59C006" name="My Task" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-8188123A-1334-4034-B22A-F3C45C59C006]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <endEvent id="sid-86373E84-A134-4FAC-B33F-C27ED13EE30D">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-86373E84-A134-4FAC-B33F-C27ED13EE30D]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-A4DCDAEB-269E-4B67-9603-CF682C8396A9" sourceRef="sid-8188123A-1334-4034-B22A-F3C45C59C006" targetRef="sid-86373E84-A134-4FAC-B33F-C27ED13EE30D">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-A4DCDAEB-269E-4B67-9603-CF682C8396A9]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-22D98EA5-8EAC-41C5-96F3-FBA45B46AA34" sourceRef="sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B" targetRef="sid-469F0D65-9684-48A9-92F6-352B090AD718">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-22D98EA5-8EAC-41C5-96F3-FBA45B46AA34]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <scriptTask id="sid-469F0D65-9684-48A9-92F6-352B090AD718" name="Set persistent var based on transient var" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-469F0D65-9684-48A9-92F6-352B090AD718]]></modeler:editor-resource-id>
+      </extensionElements>
+      <script><![CDATA[execution.setVariable("resultVar", execution.getVariable("theVar"));]]></script>
+    </scriptTask>
+    <sequenceFlow id="sid-21BB7208-C0DD-4D2B-9C27-59F0F9351405" sourceRef="sid-469F0D65-9684-48A9-92F6-352B090AD718" targetRef="sid-8188123A-1334-4034-B22A-F3C45C59C006">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-21BB7208-C0DD-4D2B-9C27-59F0F9351405]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_transientVarsTest">
+    <bpmndi:BPMNPlane bpmnElement="transientVarsTest" id="BPMNPlane_transientVarsTest">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B" id="BPMNShape_sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="125.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8188123A-1334-4034-B22A-F3C45C59C006" id="BPMNShape_sid-8188123A-1334-4034-B22A-F3C45C59C006">
+        <omgdc:Bounds height="80.0" width="100.0" x="450.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-86373E84-A134-4FAC-B33F-C27ED13EE30D" id="BPMNShape_sid-86373E84-A134-4FAC-B33F-C27ED13EE30D">
+        <omgdc:Bounds height="28.0" width="28.0" x="595.0" y="161.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-469F0D65-9684-48A9-92F6-352B090AD718" id="BPMNShape_sid-469F0D65-9684-48A9-92F6-352B090AD718">
+        <omgdc:Bounds height="80.0" width="100.0" x="310.0" y="125.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-22D98EA5-8EAC-41C5-96F3-FBA45B46AA34" id="BPMNEdge_sid-22D98EA5-8EAC-41C5-96F3-FBA45B46AA34">
+        <omgdi:waypoint x="265.0" y="165.0"/>
+        <omgdi:waypoint x="310.0" y="165.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A4DCDAEB-269E-4B67-9603-CF682C8396A9" id="BPMNEdge_sid-A4DCDAEB-269E-4B67-9603-CF682C8396A9">
+        <omgdi:waypoint x="550.0" y="175.0"/>
+        <omgdi:waypoint x="595.0" y="175.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-21BB7208-C0DD-4D2B-9C27-59F0F9351405" id="BPMNEdge_sid-21BB7208-C0DD-4D2B-9C27-59F0F9351405">
+        <omgdi:waypoint x="410.0" y="168.57142857142856"/>
+        <omgdi:waypoint x="450.0" y="171.42857142857144"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-78575621-2BF9-4F12-AC51-4A7A069A5630" id="BPMNEdge_sid-78575621-2BF9-4F12-AC51-4A7A069A5630">
+        <omgdi:waypoint x="120.0" y="165.0"/>
+        <omgdi:waypoint x="165.0" y="165.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

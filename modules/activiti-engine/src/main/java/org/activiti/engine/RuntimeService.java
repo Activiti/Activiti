@@ -325,6 +325,13 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   void trigger(String executionId, Map<String, Object> processVariables);
+  
+  
+  /**
+   * Similar to {@link #trigger(String, Map)}, but with an extra parameter that allows to pass
+   * transient variables.
+   */
+  void trigger(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables);
 
   /**
    * Updates the business key for the provided process instance
