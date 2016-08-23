@@ -48,7 +48,6 @@ import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundarySignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
@@ -147,7 +146,7 @@ public interface ActivityBehaviorFactory {
 
   public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 
-  public abstract BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
+  public abstract ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
 
   public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);
 

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -361,6 +362,58 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertEquals(ActivitiEventType.JOB_RETRIES_DECREMENTED, event.getType());
     assertEquals(0, ((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
     checkEventContext(event, theJob);
+  }
+  
+  @Deployment
+  public void testTerminateEndEvent() throws Exception {
+    Clock previousClock = processEngineConfiguration.getClock();
+
+    TestActivitiEventListener activitiEventListener = new TestActivitiEventListener();
+    processEngineConfiguration.getEventDispatcher().addEventListener(activitiEventListener);
+    Clock testClock = new DefaultClockImpl();
+
+    processEngineConfiguration.setClock(testClock);
+
+    testClock.setCurrentTime(new Date());
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTerminateEndEvent");
+    listener.clearEventsReceived();
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("Inside Task", task.getName());
+
+    // Force timer to trigger so that subprocess will flow to terminate end event
+    Calendar later = Calendar.getInstance();
+    later.add(Calendar.YEAR, 1);
+    processEngineConfiguration.getClock().setCurrentTime(later.getTime());
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+
+    // Process Cancelled event should not be sent for the subprocess
+    List<ActivitiEvent> eventsReceived = activitiEventListener.getEventsReceived();
+    for (ActivitiEvent eventReceived : eventsReceived) {
+      if (ActivitiEventType.PROCESS_CANCELLED.equals(eventReceived.getType())) {
+        fail("Should not have received PROCESS_CANCELLED event");
+      }
+    }
+
+    // validate the activityType string
+    for (ActivitiEvent eventReceived : eventsReceived) {
+      if (ActivitiEventType.ACTIVITY_CANCELLED.equals(eventReceived.getType())) {
+        ActivitiActivityEvent event = (ActivitiActivityEvent) eventReceived;
+        String activityType = event.getActivityType();
+        if (!"userTask".equals(activityType) && (!"subProcess".equals(activityType)) && (!"endEvent".equals(activityType))) {
+          fail("Unexpected activity type: " + activityType);
+        }
+      }
+    }
+
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("Outside Task", task.getName());
+
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+
+    processEngineConfiguration.setClock(previousClock);
   }
 
   protected void checkEventContext(ActivitiEvent event, Job entity) {

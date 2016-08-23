@@ -50,6 +50,11 @@ public interface Execution {
    * Gets the id of the parent of this execution. If null, the execution represents a process-instance.
    */
   String getParentId();
+  
+  /**
+   * Gets the id of the super execution of this execution.
+   */
+  String getSuperExecutionId();
 
   /**
    * Id of the root of the execution tree representing the process instance that has no super execution.

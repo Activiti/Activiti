@@ -3,13 +3,11 @@
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:activiti="http://activiti.org/bpmn"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://activiti.org/bpmn http://activiti.org/bpmn/activiti-bpmn-extensions-5.18.xsd"
-targetNamespace="Examples">
+			 targetNamespace="Examples">
 
     <process id="repeatWithEnd">
 
-        <startEvent id="theStart">
-        </startEvent>
+        <startEvent id="theStart" />
 
         <sequenceFlow id="a1" sourceRef="theStart" targetRef="processStartedScript"/>
 
@@ -20,13 +18,13 @@ targetNamespace="Examples">
         </scriptTask>
 
         <sequenceFlow id="a2" sourceRef="processStartedScript" targetRef="task1"/>
-        <userTask id="task1" name="Task A"/>
+        <userTask id="task1" name="Task A" />
         <sequenceFlow id="flow2" sourceRef="task1" targetRef="task2"/>
-        <userTask id="task2" name="Task B"/>
+        <userTask id="task2" name="Task B" />
 
         <boundaryEvent id="timer" attachedToRef="task2" cancelActivity="false">
             <timerEventDefinition>
-                <timeCycle activiti:endDate="${EndDateForBoundary}">R20/PT2S</timeCycle>
+                <timeCycle activiti:endDate="${EndDateForBoundary}">R5/PT10S</timeCycle>
             </timerEventDefinition>
         </boundaryEvent>
         <sequenceFlow id="flow21" sourceRef="timer" targetRef="timerFiredTask"/>
@@ -39,9 +37,7 @@ targetNamespace="Examples">
 
         <sequenceFlow id="flow22" sourceRef="timerFiredTask" targetRef="nonInterruptingEnd"/>
         <endEvent id="nonInterruptingEnd"/>
-
-
-
+ 
         <sequenceFlow id="flow3" sourceRef="task2" targetRef="task2Completed"/>
 
         <scriptTask id="task2Completed" name="Execute script" scriptFormat="groovy">

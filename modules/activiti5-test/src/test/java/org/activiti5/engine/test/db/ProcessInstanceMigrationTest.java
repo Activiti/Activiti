@@ -15,7 +15,9 @@ package org.activiti5.engine.test.db;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.repository.DeploymentProperties;
@@ -200,6 +202,14 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
         .processInstanceId(pi.getId())
         .singleResult();
       assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
+      
+      List<HistoricActivityInstance> historicActivities = historyService
+          .createHistoricActivityInstanceQuery()
+          .processInstanceId(pi.getId())
+          .unfinished()
+          .list();
+      assertEquals(1, historicActivities.size());
+      assertEquals(newProcessDefinition.getId(), historicActivities.get(0).getProcessDefinitionId());
     }
 
     // undeploy "manually" deployed process definition
@@ -306,6 +316,12 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
       assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
       assertEquals("testFormKey", formService.getTaskFormData(task.getId()).getFormKey());
+      
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+        HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).singleResult();
+        assertEquals(newProcessDefinition.getId(), historicTask.getProcessDefinitionId());
+        assertEquals("testFormKey", formService.getTaskFormData(historicTask.getId()).getFormKey());
+      }
   
       // continue
       taskService.complete(task.getId());
