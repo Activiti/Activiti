@@ -25,6 +25,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +125,7 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       throw new ActivitiIllegalArgumentException("Only one of processDefinitionId, processDefinitionKey or message should be set.");
     }
 
-    if (request.isCustomTenantSet()) {
+    if (request.isTenantSet()) {
       // Tenant-id can only be used with either key or message
       if (request.getProcessDefinitionId() != null) {
         throw new ActivitiIllegalArgumentException("TenantId can only be used with either processDefinitionKey or message.");
@@ -141,29 +142,49 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
         startVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
       }
     }
+    
+    Map<String, Object> transientVariables = null;
+    if (request.getTransientVariables() != null) {
+      transientVariables = new HashMap<String, Object>();
+      for (RestVariable variable : request.getTransientVariables()) {
+        if (variable.getName() == null) {
+          throw new ActivitiIllegalArgumentException("Variable name is required.");
+        }
+        transientVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
+      }
+    }
 
     // Actually start the instance based on key or id
     try {
       ProcessInstance instance = null;
+      
+      ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
       if (request.getProcessDefinitionId() != null) {
-        instance = runtimeService.startProcessInstanceById(request.getProcessDefinitionId(), request.getBusinessKey(), startVariables);
-      } else if (request.getProcessDefinitionKey() != null) {
-        if (request.isCustomTenantSet()) {
-          instance = runtimeService.startProcessInstanceByKeyAndTenantId(request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables, request.getTenantId());
-        } else {
-          instance = runtimeService.startProcessInstanceByKey(request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables);
-        }
-      } else {
-        if (request.isCustomTenantSet()) {
-          instance = runtimeService.startProcessInstanceByMessageAndTenantId(request.getMessage(), request.getBusinessKey(), startVariables, request.getTenantId());
-        } else {
-          instance = runtimeService.startProcessInstanceByMessage(request.getMessage(), request.getBusinessKey(), startVariables);
-        }
+        processInstanceBuilder.processDefinitionId(request.getProcessDefinitionId());
       }
-
+      if (request.getProcessDefinitionKey() != null) {
+        processInstanceBuilder.processDefinitionKey(request.getProcessDefinitionKey());
+      }
+      if (request.getMessage() != null) {
+        processInstanceBuilder.messageName(request.getMessage());
+      }
+      if (request.getBusinessKey() != null) {
+        processInstanceBuilder.businessKey(request.getBusinessKey());
+      }
+      if (request.isTenantSet()) {
+        processInstanceBuilder.tenantId(request.getTenantId());
+      }
+      if (startVariables != null) {
+        processInstanceBuilder.variables(startVariables);
+      }
+      if (transientVariables != null) {
+        processInstanceBuilder.transientVariables(transientVariables);
+      }
+      
+      instance = processInstanceBuilder.start();
+      
       response.setStatus(HttpStatus.CREATED.value());
 
-      // Added by Ryan Johnston
       if (request.getReturnVariables()) {
         Map<String, Object> runtimeVariableMap = null;
         List<HistoricVariableInstance> historicVariableList = null;
@@ -177,10 +198,7 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       } else {
         return restResponseFactory.createProcessInstanceResponse(instance);
       }
-      // End Added by Ryan Johnston
 
-      // Removed by Ryan Johnston (obsolete given the above).
-      // return factory.createProcessInstanceResponse(this, instance);
     } catch (ActivitiObjectNotFoundException aonfe) {
       throw new ActivitiIllegalArgumentException(aonfe.getMessage(), aonfe);
     }

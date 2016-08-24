@@ -173,7 +173,7 @@ public interface Activiti5CompatibilityHandler {
   
   boolean mapException(Exception camelException, DelegateExecution execution, List<MapExceptionEntry> mapExceptions);
   
-  Map<String, Object> getVariableValues(ProcessInstance processInstance);
+  Map<String, Object> getVariables(ProcessInstance processInstance);
   
   Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution);
   

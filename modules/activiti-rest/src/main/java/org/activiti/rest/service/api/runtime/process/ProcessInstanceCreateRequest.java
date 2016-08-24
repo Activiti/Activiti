@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  * 
  * @author Frederik Heremans
  * @author Ryan Johnston (@rjfsu)
+ * @author Joram Barrez
  */
 public class ProcessInstanceCreateRequest {
 
@@ -36,6 +37,7 @@ public class ProcessInstanceCreateRequest {
   private String message;
   private String businessKey;
   private List<RestVariable> variables;
+  private List<RestVariable> transientVariables;
   private String tenantId;
 
   // Added by Ryan Johnston
@@ -89,9 +91,18 @@ public class ProcessInstanceCreateRequest {
   public void setVariables(List<RestVariable> variables) {
     this.variables = variables;
   }
+  
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = RestVariable.class)
+  public List<RestVariable> getTransientVariables() {
+    return transientVariables;
+  }
+
+  public void setTransientVariables(List<RestVariable> transientVariables) {
+    this.transientVariables = transientVariables;
+  }
 
   @JsonIgnore
-  public boolean isCustomTenantSet() {
+  public boolean isTenantSet() {
     return tenantId != null && !StringUtils.isEmpty(tenantId);
   }
 

@@ -188,9 +188,9 @@ public class ExecutionBaseResource {
     return execution;
   }
 
-  protected Map<String, Object> getVariablesToSet(ExecutionActionRequest actionRequest) {
+  protected Map<String, Object> getVariablesToSet(List<RestVariable> restVariables) {
     Map<String, Object> variablesToSet = new HashMap<String, Object>();
-    for (RestVariable var : actionRequest.getVariables()) {
+    for (RestVariable var : restVariables) {
       if (var.getName() == null) {
         throw new ActivitiIllegalArgumentException("Variable name is required");
       }

@@ -31,11 +31,17 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
   private static final long serialVersionUID = 1L;
 
-  protected final Map<String, Object> processVariables;
+  protected Map<String, Object> processVariables;
+  protected Map<String, Object> transientVariables;
 
   public TriggerCmd(String executionId, Map<String, Object> processVariables) {
     super(executionId);
     this.processVariables = processVariables;
+  }
+  
+  public TriggerCmd(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables) {
+    this(executionId, processVariables);
+    this.transientVariables = transientVariables;
   }
 
   protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
@@ -47,6 +53,10 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
     
     if (processVariables != null) {
       execution.setVariables(processVariables);
+    }
+    
+    if (transientVariables != null) {
+      execution.setTransientVariables(transientVariables);
     }
     
     Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
