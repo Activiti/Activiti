@@ -87,11 +87,6 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.1</version>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
