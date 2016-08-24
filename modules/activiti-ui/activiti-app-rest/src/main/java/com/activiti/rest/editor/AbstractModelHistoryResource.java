@@ -23,14 +23,14 @@ import com.activiti.domain.editor.ModelHistory;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.repository.editor.ModelHistoryRepository;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class AbstractModelHistoryResource {
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
   
   @Autowired
   protected ModelHistoryRepository modelHistoryRepository;

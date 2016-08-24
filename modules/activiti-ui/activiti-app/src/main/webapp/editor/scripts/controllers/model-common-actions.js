@@ -24,6 +24,9 @@ angular.module('activitiModeler')
         } else if ($scope.model.form) {
             model = $scope.model.form;
             popupType = 'FORM';
+        } else if ($scope.model.decisionTable) {
+            model = $scope.model.decisionTable;
+            popupType = 'DECISION-TABLE';
         } else {
             model = $scope.model.app;
             popupType = 'APP';
@@ -51,14 +54,22 @@ angular.module('activitiModeler')
         	$scope.model.description = $scope.popup.modelDescription;
 
     		$scope.popup.loading = true;
-    		var updateData = {name: $scope.model.name, description: $scope.model.description};
+    		var updateData = {
+    			name: $scope.model.name, 
+    			key: $scope.model.key, description: 
+    			$scope.model.description
+    		};
 
     		$http({method: 'PUT', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/models/' + $scope.popup.id, data: updateData}).
     			success(function(data, status, headers, config) {
     				if ($scope.model.process) {
     					$scope.model.process = data;
-    				} else {
+    				} else if ($scope.model.form) {
     					$scope.model.form = data;
+    				} else if ($scope.model.decisionTable) {
+    					$scope.model.decisionTable = data;
+    				} else {
+    					$scope.model.app = data;
     				}
 
     				$scope.addAlertPromise($translate('PROCESS.ALERT.EDIT-CONFIRM'), 'info');
@@ -69,14 +80,16 @@ angular.module('activitiModeler')
                         $location.path("/forms/" +  $scope.popup.id);
                     } else if (popupType === 'APP') {
                         $location.path("/apps/" +  $scope.popup.id);
+                    } else if (popupType === 'DECISION-TABLE') {
+                        $location.path("/decision-tables/" +  $scope.popup.id);
                     } else {
                         $location.path("/processes/" +  $scope.popup.id);
                     }
 
     			}).
     			error(function(data, status, headers, config) {
-    				$scope.$hide();
     				$scope.popup.loading = false;
+    				$scope.popup.errorMessage = data.message;
     			});
     	};
 
@@ -98,6 +111,9 @@ angular.module('activitiModeler')
         } else if ($scope.model.form) {
             model = $scope.model.form;
             popupType = 'FORM';
+        } else if ($scope.model.decisionTable) {
+            model = $scope.model.decisionTable;
+            popupType = 'DECISION-TABLE';
         } else {
             model = $scope.model.app;
             popupType = 'APP';
@@ -161,6 +177,9 @@ angular.module('activitiModeler')
 	} else if ($scope.model.form) {
         model = $scope.model.form;
         popupType = 'FORM';
+    } else if ($scope.model.decisionTable) {
+        model = $scope.model.decisionTable;
+        popupType = 'DECISION-TABLE';
     } else {
         model = $scope.model.app;
         popupType = 'APP';
@@ -190,6 +209,8 @@ angular.module('activitiModeler')
                         $location.path("/forms/" +  $scope.popup.latestModelId);
                     } else if (popupType === 'APP') {
                         $location.path("/apps/" +  $scope.popup.latestModelId);
+                    } else if (popupType === 'DECISION-TABLE') {
+                        $location.path("/decision-tables/" +  $scope.popup.latestModelId);
                     } else {
                         $location.path("/processes/" +  $scope.popup.latestModelId);
                     }

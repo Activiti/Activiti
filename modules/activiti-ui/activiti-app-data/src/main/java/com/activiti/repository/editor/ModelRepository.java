@@ -26,13 +26,6 @@ import com.activiti.domain.editor.Model;
  */
 public interface ModelRepository extends JpaRepository<Model, Long> {
 
-  @Query("from Model as model where model.createdBy = :user and (model.modelType is null or model.modelType = 0 or model.modelType = 1) and model.referenceId is null")
-  List<Model> findProcessesCreatedBy(@Param("user") String createdBy, Sort sort);
-
-  @Query("from Model as model where model.createdBy = :user and "
-      + "(lower(model.name) like :filter or lower(model.description) like :filter) and (model.modelType is null or model.modelType = 0 or model.modelType = 1) and model.referenceId is null")
-  List<Model> findProcessesCreatedBy(@Param("user") String createdBy, @Param("filter") String filter, Sort sort);
-
   @Query("from Model as model where model.createdBy = :user and model.modelType = :modelType and model.referenceId is null")
   List<Model> findModelsCreatedBy(@Param("user") String createdBy, @Param("modelType") Integer modelType, Sort sort);
 
@@ -40,6 +33,9 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
       + "(lower(model.name) like :filter or lower(model.description) like :filter) and model.modelType = :modelType and model.referenceId is null")
   List<Model> findModelsCreatedBy(@Param("user") String createdBy, @Param("modelType") Integer modelType, @Param("filter") String filter, Sort sort);
 
+  @Query("from Model as model where model.key = :key and model.modelType = :modelType")
+  List<Model> findModelsByKeyAndType(@Param("key") String key, @Param("modelType") Integer modelType);
+  
   @Query("from Model as model where model.referenceId = :referenceId")
   List<Model> findModelsByReferenceId(@Param("referenceId") Long referenceId);
 

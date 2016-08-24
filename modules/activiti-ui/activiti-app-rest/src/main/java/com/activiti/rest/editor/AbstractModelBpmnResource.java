@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.BaseModelerRestException;
 import com.activiti.service.exception.InternalServerErrorException;
@@ -40,7 +40,7 @@ public class AbstractModelBpmnResource {
   private final Logger log = LoggerFactory.getLogger(AbstractModelBpmnResource.class);
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
 
   public void getProcessModelBpmn20Xml(HttpServletResponse response, Long processModelId) throws IOException {
 

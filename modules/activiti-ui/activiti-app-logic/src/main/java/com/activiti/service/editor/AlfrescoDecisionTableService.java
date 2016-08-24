@@ -45,10 +45,12 @@ import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.DecisionTableSaveRepresentation;
+import com.activiti.model.editor.ModelKeyRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.decisiontable.DecisionTableDefinitionRepresentation;
 import com.activiti.model.editor.decisiontable.DecisionTableRepresentation;
 import com.activiti.security.SecurityUtils;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.util.XmlUtil;
@@ -67,7 +69,7 @@ public class AlfrescoDecisionTableService extends BaseAlfrescoModelService {
   protected static final int MIN_FILTER_LENGTH = 1;
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
 
   @Autowired
   protected ObjectMapper objectMapper;
@@ -258,9 +260,15 @@ public class AlfrescoDecisionTableService extends BaseAlfrescoModelService {
 
     User user = SecurityUtils.getCurrentUserObject();
     Model model = getModel(decisionTableId, false, false);
+    
+    String decisionKey = saveRepresentation.getDecisionTableRepresentation().getKey();
+    ModelKeyRepresentation modelKeyInfo = modelService.validateModelKey(model, model.getModelType(), decisionKey);
+    if (modelKeyInfo.isKeyAlreadyExists()) {
+      throw new BadRequestException("Provided model key already exists: " + decisionKey);
+    }
 
     model.setName(saveRepresentation.getDecisionTableRepresentation().getName());
-    model.setKey(saveRepresentation.getDecisionTableRepresentation().getKey());
+    model.setKey(decisionKey);
     model.setDescription(saveRepresentation.getDecisionTableRepresentation().getDescription());
 
     String editorJson = null;

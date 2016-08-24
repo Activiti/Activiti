@@ -32,6 +32,7 @@ import com.activiti.model.editor.AppDefinitionRepresentation;
 import com.activiti.model.editor.AppDefinitionUpdateResultRepresentation;
 import com.activiti.repository.editor.ModelRepository;
 import com.activiti.security.SecurityUtils;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,7 +47,7 @@ public class AppDefinitionImportService {
   protected AppDefinitionPublishService appDefinitionPublishService;
   
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
   
   @Autowired
   protected ModelRepository modelRepository;

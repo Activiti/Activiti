@@ -33,9 +33,10 @@ import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.model.editor.FormSaveRepresentation;
+import com.activiti.model.editor.ModelKeyRepresentation;
 import com.activiti.model.editor.form.FormRepresentation;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +51,7 @@ public class FormResource {
   private static final Logger logger = LoggerFactory.getLogger(FormResource.class);
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
 
   protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -93,9 +94,15 @@ public class FormResource {
 
     User user = SecurityUtils.getCurrentUserObject();
     Model model = modelService.getModel(formId);
+    
+    String formKey = saveRepresentation.getFormRepresentation().getKey();
+    ModelKeyRepresentation modelKeyInfo = modelService.validateModelKey(model, model.getModelType(), formKey);
+    if (modelKeyInfo.isKeyAlreadyExists()) {
+      throw new BadRequestException("Model with provided key already exists " + formKey);
+    }
 
     model.setName(saveRepresentation.getFormRepresentation().getName());
-    model.setKey(saveRepresentation.getFormRepresentation().getKey());
+    model.setKey(formKey);
     model.setDescription(saveRepresentation.getFormRepresentation().getDescription());
 
     String editorJson = null;

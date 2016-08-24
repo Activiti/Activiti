@@ -5,6 +5,12 @@
                 <div class="modal-header"><h2>{{'DECISION-TABLE.POPUP.SAVE-DECISION-TABLE-TITLE' | translate}}</h2></div>
                 <div class="modal-body">
                     <p>{{'DECISION-TABLE.POPUP.SAVE-DESCRIPTION' | translate}}</p>
+                    <div ng-if="saveDialog.errorMessage && saveDialog.errorMessage.length > 0" class="alert error" style="font-size: 14px; margin-top:20px">
+	                  <div class="popup-error" style="font-size: 14px">
+	                    <span class="glyphicon glyphicon-remove-circle"></span>
+	                    <span>{{saveDialog.errorMessage}}</span>
+	                  </div>
+	                </div>
                     <div class="form-group"  ng-class="{'has-error': decisionTableForm.name.$invalid}">
                         <label for="decisiontableName">{{'DECISION-TABLE.NAME' | translate}}</label>
                         <input ng-disabled="model.loading" type="text" class="form-control" name="name" ng-required="true"

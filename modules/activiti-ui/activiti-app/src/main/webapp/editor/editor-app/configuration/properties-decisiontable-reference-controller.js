@@ -260,7 +260,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
             }).
             error(function(data, status, headers, config) {
                 $scope.model.loading = false;
-                $scope.$hide();
+                $scope.model.errorMessage = data.message;
             });
         };
 

@@ -29,7 +29,7 @@ import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.NonJsonResourceNotFoundException;
 import com.activiti.util.XmlUtil;
@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class AbstractModelResource {
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
   
   @Autowired
   protected ObjectMapper objectMapper;
