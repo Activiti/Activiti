@@ -102,7 +102,7 @@ public class ExecutionCollectionResource extends ExecutionBaseResource {
     }
 
     if (actionRequest.getVariables() != null) {
-      runtimeService.signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest));
+      runtimeService.signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest.getVariables()));
     } else {
       runtimeService.signalEventReceived(actionRequest.getSignalName());
     }

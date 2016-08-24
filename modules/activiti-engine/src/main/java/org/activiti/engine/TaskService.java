@@ -210,6 +210,11 @@ public interface TaskService {
    *           When no task exists with the given id.
    */
   void resolveTask(String taskId, Map<String, Object> variables);
+  
+  /**
+   * Similar to {@link #resolveTask(String, Map)}, but allows to set transient variables too.
+   */
+  void resolveTask(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables);
 
   /**
    * Called when the task is successfully executed, and the required task parameters are given by the end-user.
@@ -222,6 +227,11 @@ public interface TaskService {
    *           when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
+  
+  /**
+   * Similar to {@link #complete(String, Map)}, but allows to set transient variables too. 
+   */
+  void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables);
 
   /**
    * Called when the task is successfully executed, and the required task parameters are given by the end-user.

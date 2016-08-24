@@ -503,21 +503,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return Collections.unmodifiableMap(variableInstances);
   }
   
-  public Map<String, Object> getVariableValues() {
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    if (variableInstances != null) {
-      for (String varName : variableInstances.keySet()) {
-        VariableInstanceEntity variableEntity = variableInstances.get(varName);
-        if (variableEntity != null) {
-          variableMap.put(varName, variableEntity.getValue());
-        } else {
-          variableMap.put(varName, null);
-        }
-      }
-    }
-    return variableMap;
-  }
-  
   public Map<String, VariableInstanceEntity> getUsedVariablesCache() {
     return usedVariablesCache;
   }
@@ -862,6 +847,57 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected boolean isActivityIdUsedForDetails() {
     return true;
   }
+  
+  // No support for transient variables in v5
+  
+  public void setTransientVariablesLocal(Map<String, Object> transientVariables) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void setTransientVariableLocal(String variableName, Object variableValue) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void setTransientVariables(Map<String, Object> transientVariables) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void setTransientVariable(String variableName, Object variableValue) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public Object getTransientVariableLocal(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public Map<String, Object> getTransientVariablesLocal() {
+    throw new UnsupportedOperationException();
+  }
+  
+  public Object getTransientVariable(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public Map<String, Object> getTransientVariables() {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void removeTransientVariableLocal(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void removeTransientVariablesLocal() {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void removeTransientVariable(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+  
+  public void removeTransientVariables() {
+    throw new UnsupportedOperationException();
+  }
+  
 
   // getters and setters //////////////////////////////////////////////////////
 

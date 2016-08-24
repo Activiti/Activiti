@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160822151517782" modeler:modelId="1" modeler:modelVersion="1" modeler:modelLastUpdated="1471871715697">
+  <process id="transientVarsTest" name="transientVarsTest" isExecutable="true">
+    <startEvent id="startEvent1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <userTask id="sid-69454AAD-0322-4A27-A659-F64FF39D4610" name="My Task" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-69454AAD-0322-4A27-A659-F64FF39D4610]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-2450CC62-0FE2-4B65-A3A4-283B3E505014" sourceRef="startEvent1" targetRef="sid-69454AAD-0322-4A27-A659-F64FF39D4610">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-2450CC62-0FE2-4B65-A3A4-283B3E505014]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <exclusiveGateway id="sid-403B6285-6510-4960-87A0-FC041B2E7301" default="sid-37B85BD0-57CD-4B81-A45D-046FF8D1498D">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-403B6285-6510-4960-87A0-FC041B2E7301]]></modeler:editor-resource-id>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="sid-A0FA6B83-37EC-4B8D-BD6B-6A622AB36251" sourceRef="sid-69454AAD-0322-4A27-A659-F64FF39D4610" targetRef="sid-403B6285-6510-4960-87A0-FC041B2E7301">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-A0FA6B83-37EC-4B8D-BD6B-6A622AB36251]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <scriptTask id="sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E" name="Set more transient vars" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E]]></modeler:editor-resource-id>
+      </extensionElements>
+      <script><![CDATA[execution.removeTransientVariable("unusedTransientVar");
+execution.setTransientVariable("secondTransientVar", "ABC");
+execution.setTransientVariable("thirdTransientVar", 123);
+]]></script>
+    </scriptTask>
+    <userTask id="sid-EDC9427E-EDEE-4938-B1E1-987179DF6D59" name="Other task" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-EDC9427E-EDEE-4938-B1E1-987179DF6D59]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <userTask id="sid-26433ACD-BBC8-4642-9AEA-2BBB096943BE" name="Final task" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-26433ACD-BBC8-4642-9AEA-2BBB096943BE]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-A4BA280B-63D8-4BED-907F-17DE1106CA4C" sourceRef="sid-EDC9427E-EDEE-4938-B1E1-987179DF6D59" targetRef="sid-26433ACD-BBC8-4642-9AEA-2BBB096943BE">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-A4BA280B-63D8-4BED-907F-17DE1106CA4C]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="sid-D382A7CE-420A-42BA-BB11-CB68224080DE">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-D382A7CE-420A-42BA-BB11-CB68224080DE]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-890EE71D-1243-4AE0-A7AA-A64CB0F67A40" sourceRef="sid-26433ACD-BBC8-4642-9AEA-2BBB096943BE" targetRef="sid-D382A7CE-420A-42BA-BB11-CB68224080DE">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-890EE71D-1243-4AE0-A7AA-A64CB0F67A40]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-C2AEA284-50F0-4BB5-9DD2-4BD26F5C33D8" sourceRef="sid-403B6285-6510-4960-87A0-FC041B2E7301" targetRef="sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C2AEA284-50F0-4BB5-9DD2-4BD26F5C33D8]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${transientVar == 'OK'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-37B85BD0-57CD-4B81-A45D-046FF8D1498D" sourceRef="sid-403B6285-6510-4960-87A0-FC041B2E7301" targetRef="sid-EDC9427E-EDEE-4938-B1E1-987179DF6D59">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-37B85BD0-57CD-4B81-A45D-046FF8D1498D]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-A873D0A9-CF0A-4F41-B192-53FA910DDB6F" sourceRef="sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E" targetRef="sid-26433ACD-BBC8-4642-9AEA-2BBB096943BE">
+      <extensionElements>
+        <activiti:executionListener event="take" class="org.activiti.engine.test.api.variables.TransientVariablesTest$CombineVariablesExecutionListener"/>
+        <modeler:editor-resource-id><![CDATA[sid-A873D0A9-CF0A-4F41-B192-53FA910DDB6F]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+</definitions>

@@ -41,9 +41,12 @@ public class ExecutionResource extends ExecutionBaseResource {
 
     Execution execution = getExecutionFromRequest(executionId);
 
-    if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
-      if (actionRequest.getVariables() != null) {
-        runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest));
+    if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())
+        || ExecutionActionRequest.ACTION_TRIGGER.equals(actionRequest.getAction())) {
+      if (actionRequest.getTransientVariables() != null && actionRequest.getVariables() != null) {
+        runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest.getVariables()), getVariablesToSet(actionRequest.getTransientVariables()));
+      } else if (actionRequest.getVariables() != null) {
+        runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest.getVariables()));
       } else {
         runtimeService.trigger(execution.getId());
       }
@@ -52,7 +55,7 @@ public class ExecutionResource extends ExecutionBaseResource {
         throw new ActivitiIllegalArgumentException("Signal name is required");
       }
       if (actionRequest.getVariables() != null) {
-        runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId(), getVariablesToSet(actionRequest));
+        runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId(), getVariablesToSet(actionRequest.getVariables()));
       } else {
         runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId());
       }
@@ -61,7 +64,7 @@ public class ExecutionResource extends ExecutionBaseResource {
         throw new ActivitiIllegalArgumentException("Message name is required");
       }
       if (actionRequest.getVariables() != null) {
-        runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId(), getVariablesToSet(actionRequest));
+        runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId(), getVariablesToSet(actionRequest.getVariables()));
       } else {
         runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId());
       }

@@ -845,9 +845,9 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     }
   }
   
-  public Map<String, Object> getVariableValues(ProcessInstance processInstance) {
+  public Map<String, Object> getVariables(ProcessInstance processInstance) {
     org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance = ((Activiti5ProcessInstanceWrapper) processInstance).getRawObject();
-    return ((ExecutionEntity) activiti5ProcessInstance).getVariableValues();
+    return ((ExecutionEntity) activiti5ProcessInstance).getVariables();
   }
   
   public Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution) {

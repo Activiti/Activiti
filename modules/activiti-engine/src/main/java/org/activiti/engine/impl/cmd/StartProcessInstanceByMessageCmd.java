@@ -22,6 +22,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -32,16 +33,25 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 
-  protected final String messageName;
-  protected final String businessKey;
-  protected final Map<String, Object> processVariables;
-  protected final String tenantId;
+  protected String messageName;
+  protected String businessKey;
+  protected Map<String, Object> processVariables;
+  protected Map<String, Object> transientVariables;
+  protected String tenantId;
 
   public StartProcessInstanceByMessageCmd(String messageName, String businessKey, Map<String, Object> processVariables, String tenantId) {
     this.messageName = messageName;
     this.businessKey = businessKey;
     this.processVariables = processVariables;
     this.tenantId = tenantId;
+  }
+  
+  public StartProcessInstanceByMessageCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    this.messageName = processInstanceBuilder.getMessageName();
+    this.businessKey = processInstanceBuilder.getBusinessKey();
+    this.processVariables = processInstanceBuilder.getVariables();
+    this.transientVariables = processInstanceBuilder.getTransientVariables();
+    this.tenantId = processInstanceBuilder.getTenantId();
   }
 
   public ProcessInstance execute(CommandContext commandContext) {
@@ -69,7 +79,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     }
 
     ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-    ProcessInstance processInstance = processInstanceHelper.createAndStartProcessInstanceByMessage(processDefinition, messageName, processVariables);
+    ProcessInstance processInstance = processInstanceHelper.createAndStartProcessInstanceByMessage(processDefinition, messageName, processVariables, transientVariables);
 
     return processInstance;
   }
