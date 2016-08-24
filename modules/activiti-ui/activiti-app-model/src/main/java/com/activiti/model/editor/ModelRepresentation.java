@@ -36,7 +36,6 @@ public class ModelRepresentation extends AbstractRepresentation {
   protected boolean latestVersion;
   protected int version;
   protected String comment;
-  protected Long referenceId;
   protected Integer modelType;
 
   public ModelRepresentation(AbstractModel model) {
@@ -57,7 +56,6 @@ public class ModelRepresentation extends AbstractRepresentation {
     this.version = model.getVersion();
     this.lastUpdatedBy = model.getLastUpdatedBy();
     this.comment = model.getComment();
-    this.referenceId = model.getReferenceId();
     this.modelType = model.getModelType();
 
     // When based on a ProcessModel and not history, this is always the latest version
@@ -146,14 +144,6 @@ public class ModelRepresentation extends AbstractRepresentation {
 
   public String getComment() {
     return comment;
-  }
-
-  public Long getReferenceId() {
-    return referenceId;
-  }
-
-  public void setReferenceId(Long referenceId) {
-    this.referenceId = referenceId;
   }
 
   public Integer getModelType() {

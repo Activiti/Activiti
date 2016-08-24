@@ -18,7 +18,6 @@ package com.activiti.model.editor.decisiontable;
 public class DecisionTableDefinitionModelRepresentation {
 
     protected DecisionTableDefinitionRepresentation decisionTableDefinition;
-    protected Long referenceId;
     protected String description;
     protected String editorJson;
 
@@ -28,14 +27,6 @@ public class DecisionTableDefinitionModelRepresentation {
     
     public void setDecisionTableDefinition(DecisionTableDefinitionRepresentation decisionTableDefinition) {
         this.decisionTableDefinition = decisionTableDefinition;
-    }
-
-    public Long getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Long referenceId) {
-        this.referenceId = referenceId;
     }
 
     public String getDescription() {

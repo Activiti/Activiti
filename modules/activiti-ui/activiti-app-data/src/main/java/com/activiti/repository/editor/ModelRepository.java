@@ -26,27 +26,21 @@ import com.activiti.domain.editor.Model;
  */
 public interface ModelRepository extends JpaRepository<Model, Long> {
 
-  @Query("from Model as model where model.createdBy = :user and model.modelType = :modelType and model.referenceId is null")
+  @Query("from Model as model where model.createdBy = :user and model.modelType = :modelType")
   List<Model> findModelsCreatedBy(@Param("user") String createdBy, @Param("modelType") Integer modelType, Sort sort);
 
   @Query("from Model as model where model.createdBy = :user and "
-      + "(lower(model.name) like :filter or lower(model.description) like :filter) and model.modelType = :modelType and model.referenceId is null")
+      + "(lower(model.name) like :filter or lower(model.description) like :filter) and model.modelType = :modelType")
   List<Model> findModelsCreatedBy(@Param("user") String createdBy, @Param("modelType") Integer modelType, @Param("filter") String filter, Sort sort);
 
   @Query("from Model as model where model.key = :key and model.modelType = :modelType")
   List<Model> findModelsByKeyAndType(@Param("key") String key, @Param("modelType") Integer modelType);
   
-  @Query("from Model as model where model.referenceId = :referenceId")
-  List<Model> findModelsByReferenceId(@Param("referenceId") Long referenceId);
+  @Query("from Model as model where (lower(model.name) like :filter or lower(model.description) like :filter) " + "and model.modelType = :modelType")
+  List<Model> findModelsByModelType(@Param("modelType") Integer modelType, @Param("filter") String filter);
 
-  @Query("from Model as model where model.modelType = :modelType and model.referenceId = :referenceId")
-  List<Model> findModelsByModelTypeAndReferenceId(@Param("modelType") Integer modelType, @Param("referenceId") Long referenceId);
-
-  @Query("from Model as model where (lower(model.name) like :filter or lower(model.description) like :filter) " + "and model.modelType = :modelType and model.referenceId = :referenceId")
-  List<Model> findModelsByModelTypeAndReferenceId(@Param("modelType") Integer modelType, @Param("filter") String filter, @Param("referenceId") Long referenceId);
-
-  @Query("from Model as model where model.modelType = :modelType and (model.referenceId = :referenceId or model.referenceId is null)")
-  List<Model> findModelsByModelTypeAndReferenceIdOrNullReferenceId(@Param("modelType") Integer modelType, @Param("referenceId") Long referenceId);
+  @Query("from Model as model where model.modelType = :modelType")
+  List<Model> findModelsByModelType(@Param("modelType") Integer modelType);
 
   @Query("select count(m.id) from Model m where m.createdBy = :user and m.modelType = :modelType")
   Long countByModelTypeAndUser(@Param("modelType") int modelType, @Param("user") String user);

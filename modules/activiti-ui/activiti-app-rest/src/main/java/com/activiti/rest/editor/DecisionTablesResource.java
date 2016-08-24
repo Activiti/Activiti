@@ -22,7 +22,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
@@ -39,7 +38,7 @@ public class DecisionTablesResource {
     protected AlfrescoDecisionTableService decisionTableService;
 	
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public ResultListDataRepresentation getDecisionTables(@RequestParam(required=true) Long referenceId, HttpServletRequest request) {
+	public ResultListDataRepresentation getDecisionTables(HttpServletRequest request) {
 	    // need to parse the filterText parameter ourselves, due to encoding issues with the default parsing.
         String filter = null;
         List<NameValuePair> params = URLEncodedUtils.parse(request.getQueryString(), Charset.forName("UTF-8"));
@@ -50,6 +49,6 @@ public class DecisionTablesResource {
                 }
             }
         }
-	    return decisionTableService.getDecisionTables(referenceId, filter);
+	    return decisionTableService.getDecisionTables(filter);
 	}
 }

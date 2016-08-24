@@ -55,9 +55,6 @@
 			<column name="version" type="int">
 				<constraints nullable="true" />
 			</column>
-			<column name="stencil_set_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
 			<column name="model_editor_json" type="longtext">
 				<constraints nullable="true" />
 			</column>
@@ -65,9 +62,6 @@
 				<constraints nullable="true" />
 			</column>
 			<column name="model_type" type="int">
-                <constraints nullable="true" />
-            </column>
-            <column name="reference_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 		</createTable>
@@ -112,9 +106,6 @@
             <column name="version" type="int">
                 <constraints nullable="true" />
             </column>
-            <column name="stencil_set_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
             <column name="model_editor_json" type="longtext">
                 <constraints nullable="true" />
             </column>
@@ -122,9 +113,6 @@
                 <constraints nullable="false" />
             </column>
             <column name="model_type" type="int">
-                <constraints nullable="true" />
-            </column>
-            <column name="reference_id" type="bigint">
                 <constraints nullable="true" />
             </column>
         </createTable>

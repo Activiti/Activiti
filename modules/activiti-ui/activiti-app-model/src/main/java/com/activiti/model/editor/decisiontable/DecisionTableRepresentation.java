@@ -29,7 +29,6 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
   protected Integer version;
   protected String lastUpdatedBy;
   protected Date lastUpdated;
-  protected Long referenceId;
   protected DecisionTableDefinitionRepresentation decisionTableDefinition;
 
   public DecisionTableRepresentation(AbstractModel model) {
@@ -40,7 +39,6 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
     this.version = model.getVersion();
     this.lastUpdated = model.getLastUpdated();
     this.lastUpdatedBy = model.getLastUpdatedBy();
-    this.referenceId = model.getReferenceId();
   }
 
   public DecisionTableRepresentation() {
@@ -100,14 +98,6 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
 
   public void setLastUpdated(Date lastUpdated) {
     this.lastUpdated = lastUpdated;
-  }
-
-  public Long getReferenceId() {
-    return referenceId;
-  }
-
-  public void setReferenceId(Long referenceId) {
-    this.referenceId = referenceId;
   }
 
   public DecisionTableDefinitionRepresentation getDecisionTableDefinition() {

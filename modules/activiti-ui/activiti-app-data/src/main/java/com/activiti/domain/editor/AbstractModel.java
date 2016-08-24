@@ -71,12 +71,6 @@ public class AbstractModel {
   @Column(name = "model_comment")
   protected String comment;
 
-  @Column(name = "stencil_set_id")
-  protected Long stencilSetId;
-
-  @Column(name = "reference_id")
-  protected Long referenceId;
-
   @Column(name = "model_type")
   protected Integer modelType;
 
@@ -170,22 +164,6 @@ public class AbstractModel {
 
   public String getComment() {
     return comment;
-  }
-
-  public Long getStencilSetId() {
-    return stencilSetId;
-  }
-
-  public void setStencilSetId(Long stencilSetId) {
-    this.stencilSetId = stencilSetId;
-  }
-
-  public Long getReferenceId() {
-    return referenceId;
-  }
-
-  public void setReferenceId(Long referenceId) {
-    this.referenceId = referenceId;
   }
 
   public Integer getModelType() {

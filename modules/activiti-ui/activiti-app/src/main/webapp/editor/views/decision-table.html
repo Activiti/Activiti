@@ -1,7 +1,7 @@
 
 <div class="subheader" ng-if="model.decisionTable">
 	<div class="fixed-container">
-		<div class="btn-group pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
+		<div class="btn-group pull-right" ng-if="!(currentKickstartModel)">
 			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.decisionTable.latestVersion">
 				<i class="glyphicon glyphicon-edit icon-and-label"></i> {{'DECISION-TABLE.ACTION.OPEN-IN-EDITOR' | translate}}
 			</button>
@@ -10,7 +10,7 @@
 			</button>
 		</div>
 
-		<div class="btn-group pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
+		<div class="btn-group pull-right" ng-if="!(currentKickstartModel)">
 			<button type="button" ng-click="toggleFavorite()" class="btn btn-default" title="{{'DECISION-TABLE.ACTION.FAVORITE' | translate}}"
 			    title="{{'DECISION-TABLE.ACTION.FAVORITE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.favoritePending">
 				<i class="glyphicon" ng-class="{'glyphicon-star highlight': model.decisionTable.favorite, 'glyphicon-star-empty': !model.decisionTable.favorite}"></i>
@@ -19,13 +19,12 @@
 			    title="{{'DECISION-TABLE.ACTION.SHARE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.decisionTable.createdBy != account.id">
 				<i class="glyphicon glyphicon-share"></i>
 			</button>
-			<a href="{{model.decisionTableDownloadUrl}}" class="btn btn-default" title="{{'DECISION-TABLE.ACTION.EXPORT' | translate}}"
- 	           ng-if="!model.process.referenceId">
+			<a href="{{model.decisionTableDownloadUrl}}" class="btn btn-default" title="{{'DECISION-TABLE.ACTION.EXPORT' | translate}}">
  	            <i class="glyphicon glyphicon-save"></i>
  	        </a>
 		</div>
 
-		<div class="btn-group pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
+		<div class="btn-group pull-right" ng-if="!(currentKickstartModel)">
 			<button type="button" class="btn btn-default" ng-click="editDecisionTable()" ng-disabled="!model.decisionTable.latestVersion"
 				title="{{'DECISION-TABLE.ACTION.EDIT' | translate}}">
 				<i class="glyphicon glyphicon-pencil"></i>
@@ -39,7 +38,7 @@
 				<i class="glyphicon glyphicon-trash"></i>
 			</button>
 		</div>		
-		<div class="pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
+		<div class="pull-right" ng-if="!(currentKickstartModel)">
 			<a ng-click="returnToList()" class="action">&larr; {{'GENERAL.ACTION.RETURN-TO-LIST' | translate}}</a>
 		</div>
 
@@ -60,7 +59,7 @@
 						    {{'DECISION-TABLE.DETAILS.COMMENTS-TITLE' | translate}} <span class="counter">{{model.comments.data.length}}</span>
                         </span>
 					</button>
-					<button id="toggle-history" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)" type="button" class="btn btn-subtle" ng-click="toggleHistory($event)"
+					<button id="toggle-history" ng-if="!(currentKickstartModel)" type="button" class="btn btn-subtle" ng-click="toggleHistory($event)"
 						title="{{'DECISION-TABLE.ACTION.EDIT' | translate}}">
 						{{'DECISION-TABLE.DETAILS.HISTORY-TITLE' | translate}} <span class="counter" ng-show="model.versions.data.length">{{model.versions.data.length}}</span>
 					</button>

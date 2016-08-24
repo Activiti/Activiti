@@ -14,7 +14,6 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
             var deferred = $q.defer();
             $http(options).
                 success(function (response, status, headers, config) {
-                    response.isEmbeddedTable = response.referenceId ? true : false;
                     deferred.resolve(response);
                 })
                 .error(function (response, status, headers, config) {
@@ -29,7 +28,7 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
                 {
                     method: 'GET',
                     url: ACTIVITI.CONFIG.contextRoot + '/app/rest/decision-table-models',
-                    params: {filter: filter, referenceId: $rootScope.currentKickstartModel.definition.id}
+                    params: {filter: filter}
                 }
             );
         };
@@ -96,7 +95,6 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
             decisionTableDefinition.rules = $rootScope.currentDecisionTableRules;
 
             cleanUpModel(decisionTableDefinition);
-            delete decisionTableDefinition.referenceId;
 
 			html2canvas(jQuery('#decisionTableGrid'), {
                 onrendered: function (canvas) {

@@ -108,8 +108,8 @@ public class ModelServiceImpl implements ModelService {
   }
 
   @Override
-  public List<AbstractModel> getModelsByModelTypeAndReferenceId(Integer modelType, Long referenceId) {
-    return new ArrayList<AbstractModel>(modelRepository.findModelsByModelTypeAndReferenceIdOrNullReferenceId(modelType, referenceId));
+  public List<AbstractModel> getModelsByModelType(Integer modelType) {
+    return new ArrayList<AbstractModel>(modelRepository.findModelsByModelType(modelType));
   }
   
   @Override
@@ -190,7 +190,6 @@ public class ModelServiceImpl implements ModelService {
     newModel.setModelEditorJson(editorJson);
     newModel.setLastUpdated(Calendar.getInstance().getTime());
     newModel.setLastUpdatedBy(createdBy.getId());
-    newModel.setReferenceId(model.getReferenceId());
 
     persistModel(newModel);
     return newModel;
@@ -334,18 +333,6 @@ public class ModelServiceImpl implements ModelService {
   }
 
   protected void internalDeleteModelAndChildren(Model model, List<Model> allModels) {
-
-    // Embedded models should be stored in the history such that they can be revived if needed one day
-    List<Model> embeddedModels = modelRepository.findModelsByReferenceId(model.getId());
-    for (Model embeddedModel : embeddedModels) {
-      ModelHistory embeddedHistoryModel = createNewModelhistory(embeddedModel);
-      embeddedHistoryModel.setRemovalDate(Calendar.getInstance().getTime());
-      persistModelHistory(embeddedHistoryModel);
-
-      // Delete all embedded models, and their children
-      internalDeleteModelAndChildren(embeddedModel, allModels);
-    }
-
     // Delete all related data
     modelRelationRepository.deleteModelRelationsForParentModel(model.getId());
 
@@ -585,8 +572,6 @@ public class ModelServiceImpl implements ModelService {
     historyModel.setModelType(model.getModelType());
     historyModel.setVersion(model.getVersion());
     historyModel.setModelId(model.getId());
-    historyModel.setStencilSetId(model.getStencilSetId());
-    historyModel.setReferenceId(model.getReferenceId());
     historyModel.setComment(model.getComment());
 
     return historyModel;
@@ -603,8 +588,6 @@ public class ModelServiceImpl implements ModelService {
     model.setModelEditorJson(basedOn.getModelEditorJson());
     model.setModelType(basedOn.getModelType());
     model.setVersion(basedOn.getVersion());
-    model.setStencilSetId(basedOn.getStencilSetId());
-    model.setReferenceId(basedOn.getReferenceId());
     model.setComment(basedOn.getComment());
   }
 }

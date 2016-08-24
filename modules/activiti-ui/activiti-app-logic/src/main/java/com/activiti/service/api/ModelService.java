@@ -29,7 +29,7 @@ public interface ModelService {
 
   Model getModel(Long modelId);
 
-  List<AbstractModel> getModelsByModelTypeAndReferenceId(Integer modelType, Long referenceId);
+  List<AbstractModel> getModelsByModelType(Integer modelType);
   
   ModelKeyRepresentation validateModelKey(Model model, Integer modelType, String key);
   

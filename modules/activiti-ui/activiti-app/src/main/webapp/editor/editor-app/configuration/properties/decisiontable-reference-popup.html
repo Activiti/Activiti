@@ -24,9 +24,6 @@
                            <div class="controls">
                                <input type="checkbox" value="option1" ng-click="selectDecisionTable(decisionTable, $event)" ng-checked="decisionTable.id == selectedDecisionTable.id" />
                            </div>
-                            <div ng-show="!decisionTable.referenceId"  class="private">
-                                <span data-placement="top" title="{{'DECISION-TABLE.POPUP.REUSABLE' | translate}}" class="glyphicon glyphicon-globe pull-right fa-2x" aria-hidden="true" />
-                            </div>
                            <h4>{{decisionTable.name}}</h4>
                            <img ng-src="{{config.contextRoot}}/app/rest/models/{{decisionTable.id}}/thumbnail" />
                          </div>

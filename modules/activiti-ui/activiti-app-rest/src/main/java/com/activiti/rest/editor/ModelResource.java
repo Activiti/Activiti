@@ -196,7 +196,7 @@ public class ModelResource extends AbstractModelResource {
 
         String saveAs = values.getFirst("saveAs");
         String json = values.getFirst("json_xml");
-        return createNewModel(saveAs, model.getDescription(), model.getStencilSetId(), model.getModelType(), json);
+        return createNewModel(saveAs, model.getDescription(), model.getModelType(), json);
 
       } else if (RESOLVE_ACTION_OVERWRITE.equals(resolveAction)) {
         return updateModel(model, values, false);
@@ -270,7 +270,7 @@ public class ModelResource extends AbstractModelResource {
     }
   }
 
-  protected ModelRepresentation createNewModel(String name, String description, Long stencilSetId, Integer modelType, String editorJson) {
+  protected ModelRepresentation createNewModel(String name, String description, Integer modelType, String editorJson) {
     ModelRepresentation model = new ModelRepresentation();
     model.setName(name);
     model.setDescription(description);

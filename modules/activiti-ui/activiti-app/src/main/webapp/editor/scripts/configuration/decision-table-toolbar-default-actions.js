@@ -97,11 +97,8 @@ angular.module('activitiModeler')
                 name: $rootScope.currentDecisionTableModel.name,
                 key: $rootScope.currentDecisionTableModel.key,
                 description: description,
-                reusable: false,
                 newVersion: false,
-                comment: '',
-                embedded: (typeof $rootScope.parentReferenceId !== 'undefined' && $rootScope.currentDecisionTable.referenceId)? true : false,
-                hasEmbedContext: typeof $rootScope.parentReferenceId !== 'undefined'
+                comment: ''
             };
 
             $scope.keyFieldPattern = /^[a-zA-Z_]\w*$/;

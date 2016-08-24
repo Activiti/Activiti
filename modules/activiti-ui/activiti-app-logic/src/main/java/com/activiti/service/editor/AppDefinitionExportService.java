@@ -127,9 +127,6 @@ public class AppDefinitionExportService {
     modelJson.put("name", model.getName());
     modelJson.put("key", model.getKey());
     modelJson.put("description", model.getDescription());
-    if (model.getReferenceId() != null) {
-      modelJson.put("referenceId", model.getReferenceId());
-    }
     
     try {
       modelJson.put("editorJson", objectMapper.readTree(model.getModelEditorJson()));

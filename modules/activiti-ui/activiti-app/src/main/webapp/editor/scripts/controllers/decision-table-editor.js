@@ -362,7 +362,6 @@ angular.module('activitiModeler')
                     $rootScope.currentDecisionTable.key = decisionTable.decisionTableDefinition.key;
                     $rootScope.currentDecisionTable.name = decisionTable.name;
                     $rootScope.currentDecisionTable.description = decisionTable.description;
-                    $rootScope.currentDecisionTable.referenceId = decisionTable.referenceId;
                     
                     // decision table model to used in save dialog
                     $rootScope.currentDecisionTableModel = {

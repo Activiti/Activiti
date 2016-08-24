@@ -156,10 +156,6 @@ angular.module('activitiModeler')
        }
     };
 
-    if ($rootScope.currentKickstartModel && $rootScope.currentKickstartModel.definition && $rootScope.currentKickstartModel.definition.id) {
-        $scope.model.decisionTable.referenceId = $rootScope.currentKickstartModel.definition.id;
-    }
-
     $scope.ok = function () {
 
         if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0 ||

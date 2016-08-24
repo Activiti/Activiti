@@ -75,8 +75,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': $scope.selectedDecisionTable.id,
                     'name': $scope.selectedDecisionTable.name,
-                    'key': $scope.selectedDecisionTable.key,
-                    'referenceId': $scope.selectedDecisionTable.referenceId
+                    'key': $scope.selectedDecisionTable.key
                 };
                 
             } else {
@@ -92,8 +91,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                 $scope.property.value = {
                     'id': $scope.selectedDecisionTable.id,
                     'name': $scope.selectedDecisionTable.name,
-                    'key': $scope.selectedDecisionTable.key,
-                    'referenceId': $scope.selectedDecisionTable.referenceId
+                    'key': $scope.selectedDecisionTable.key
                 };
                 $scope.updatePropertyInModel($scope.property);
 
@@ -166,8 +164,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
                     name: '',
                     key: '',
                     description: '',
-                    modelType: 4,
-                    referenceId: modelMetaData.modelId
+                    modelType: 4
                 },
                 defaultStencilSet: undefined,
                 decisionTableStencilSets: []
@@ -280,7 +277,7 @@ angular.module('activitiModeler').controller('ActivitiDecisionTableReferencePopu
 
         $scope.loadDecisionTables = function() {
             var modelMetaData = $scope.editor.getModelMetaData();
-            $http.get(ACTIVITI.CONFIG.contextRoot + '/app/rest/decision-table-models?referenceId=' + modelMetaData.modelId)
+            $http.get(ACTIVITI.CONFIG.contextRoot + '/app/rest/decision-table-models')
                 .success(
                     function(response) {
                         $scope.state.loadingDecisionTables = false;

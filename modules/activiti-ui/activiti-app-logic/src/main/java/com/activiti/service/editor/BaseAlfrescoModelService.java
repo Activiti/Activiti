@@ -67,14 +67,6 @@ public class BaseAlfrescoModelService {
     }
     return modelHistory;
   }
-
-  protected Model getParentModel(Long parentModelId) {
-    Model model = modelRepository.findOne(parentModelId);
-    if (model.getReferenceId() != null) {
-      return getParentModel(model.getReferenceId());
-    }
-    return model;
-  }
   
   protected List<String> getGroupIds(String userId) {
     List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();

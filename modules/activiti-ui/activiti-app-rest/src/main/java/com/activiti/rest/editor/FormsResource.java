@@ -20,18 +20,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.domain.editor.AbstractModel;
@@ -39,7 +35,6 @@ import com.activiti.domain.editor.Model;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.editor.form.FormRepresentation;
 import com.activiti.repository.editor.ModelRepository;
-import com.activiti.security.SecurityUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -60,7 +55,7 @@ public class FormsResource {
   protected ObjectMapper objectMapper;
 
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-  public ResultListDataRepresentation getForms(@RequestParam(required = true) Long referenceId, HttpServletRequest request) {
+  public ResultListDataRepresentation getForms(HttpServletRequest request) {
 
     // need to parse the filterText parameter ourselves, due to encoding issues with the default parsing.
     String filter = null;
@@ -76,18 +71,10 @@ public class FormsResource {
 
     List<Model> models = null;
     if (validFilter != null) {
-      models = modelRepository.findModelsByModelTypeAndReferenceId(AbstractModel.MODEL_TYPE_FORM, validFilter, referenceId);
-      List<Model> createdByModels = modelRepository.findModelsCreatedBy(SecurityUtils.getCurrentUserId(), AbstractModel.MODEL_TYPE_FORM, validFilter, new Sort(Direction.ASC, "name"));
-      if (CollectionUtils.isNotEmpty(createdByModels)) {
-        models.addAll(createdByModels);
-      }
+      models = modelRepository.findModelsByModelType(AbstractModel.MODEL_TYPE_FORM, validFilter);
 
     } else {
-      models = modelRepository.findModelsByModelTypeAndReferenceId(AbstractModel.MODEL_TYPE_FORM, referenceId);
-      List<Model> createdByModels = modelRepository.findModelsCreatedBy(SecurityUtils.getCurrentUserId(), AbstractModel.MODEL_TYPE_FORM, new Sort(Direction.ASC, "name"));
-      if (CollectionUtils.isNotEmpty(createdByModels)) {
-        models.addAll(createdByModels);
-      }
+      models = modelRepository.findModelsByModelType(AbstractModel.MODEL_TYPE_FORM);
     }
 
     List<FormRepresentation> reps = new ArrayList<FormRepresentation>();

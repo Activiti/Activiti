@@ -28,15 +28,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.xml.converter.DmnXMLConverter;
 import org.activiti.editor.dmn.converter.DmnJsonConverter;
-import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.identity.User;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,25 +84,16 @@ public class AlfrescoDecisionTableService extends BaseAlfrescoModelService {
     return decisionTableRepresentations;
   }
 
-  public ResultListDataRepresentation getDecisionTables(Long referenceId, String filter) {
+  public ResultListDataRepresentation getDecisionTables(String filter) {
     String validFilter = makeValidFilterText(filter);
 
     List<Model> models = null;
-    User currentUser = SecurityUtils.getCurrentUserObject();
-    List<String> groupIds = getGroupIds(currentUser.getId());
+    
     if (validFilter != null) {
-      models = modelRepository.findModelsByModelTypeAndReferenceId(AbstractModel.MODEL_TYPE_DECISION_TABLE, validFilter, referenceId);
-      List<Model> createdByModels = modelRepository.findModelsCreatedBy(SecurityUtils.getCurrentUserId(), AbstractModel.MODEL_TYPE_DECISION_TABLE, validFilter, new Sort(Direction.ASC, "name"));
-      if (CollectionUtils.isNotEmpty(createdByModels)) {
-        models.addAll(createdByModels);
-      }
+      models = modelRepository.findModelsByModelType(AbstractModel.MODEL_TYPE_DECISION_TABLE, validFilter);
 
     } else {
-      models = modelRepository.findModelsByModelTypeAndReferenceId(AbstractModel.MODEL_TYPE_DECISION_TABLE, referenceId);
-      List<Model> createdByModels = modelRepository.findModelsCreatedBy(SecurityUtils.getCurrentUserId(), AbstractModel.MODEL_TYPE_DECISION_TABLE, new Sort(Direction.ASC, "name"));
-      if (CollectionUtils.isNotEmpty(createdByModels)) {
-        models.addAll(createdByModels);
-      }
+      models = modelRepository.findModelsByModelType(AbstractModel.MODEL_TYPE_DECISION_TABLE);
     }
 
     List<DecisionTableRepresentation> reps = new ArrayList<DecisionTableRepresentation>();
