@@ -222,9 +222,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     }
     
     if (transientVariabes != null) {
-      for (String variableName : transientVariabes.keySet()) {
-        variables.put(variableName, transientVariabes.get(variableName));
-      }
+      variables.putAll(variables);
     }
 
     return variables;
@@ -411,9 +409,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
   protected Set<String> collectVariableNames(Set<String> variableNames) {
     if (transientVariabes != null) {
-      for (String variableName : transientVariabes.keySet()) {
-        variableNames.add(variableName);
-      }
+      variableNames.addAll(transientVariabes.keySet());
     }
     
     ensureVariableInstancesInitialized();
@@ -458,9 +454,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       variables.put(variableName, usedVariablesCache.get(variableName));
     }
     if (transientVariabes != null) {
-      for (String variableName : transientVariabes.keySet()) {
-        variables.put(variableName, transientVariabes.get(variableName));
-      }
+      variables.putAll(transientVariabes);;
     }
     return variables;
   }

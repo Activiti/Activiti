@@ -534,7 +534,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     } else if (processInstanceBuilder.getMessageName() != null) {
       return commandExecutor.execute(new StartProcessInstanceByMessageCmd(processInstanceBuilder));
     } else {
-      throw new IllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
+      throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
     }
     
   }
