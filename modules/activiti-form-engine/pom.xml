@@ -98,6 +98,30 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sourceforge.jtds</groupId>
+			<artifactId>jtds</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ibm.db2.jcc</groupId>
+			<artifactId>db2jcc4</artifactId>
+			<scope>test</scope>
+		</dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -190,6 +214,82 @@
 								<goals>
 									<goal>jar-no-fork</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!-- database qa profile -->
+		<profile>
+			<id>databaseform</id>
+			<activation>
+				<property>
+					<name>databaseform</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<!-- only worked with this version, there might be a bug with antrun 
+							see http://jira.codehaus.org/browse/MANTRUN-109 -->
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>database-test-create-schema</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="updating activiti form configuration to db ${databaseform}" />
+										<copy file="${basedir}/../../qa/db/activiti.form.cfg.xml"
+											todir="target/test-classes" overwrite="true">
+											<filterset
+												filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databaseform}.properties" />
+										</copy>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>databasewithschemaform</id>
+			<activation>
+				<property>
+					<name>databasewithschemaform</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<!-- only worked with this version, there might be a bug with antrun 
+							see http://jira.codehaus.org/browse/MANTRUN-109 -->
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>database-test-create-schema</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="updating activiti form configuration to db ${databasewithschemaform}" />
+										<copy file="${basedir}/../../qa/db/schema/activiti.form.cfg.xml"
+											todir="target/test-classes" overwrite="true">
+											<filterset
+												filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasewithschemaform}.properties" />
+										</copy>
+									</tasks>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
