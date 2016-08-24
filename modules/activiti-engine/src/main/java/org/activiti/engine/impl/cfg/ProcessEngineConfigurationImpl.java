@@ -856,9 +856,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * Tweak this parameter in case of exceptions indicating too much is being put into one bulk insert,
    * or make it higher if your database can cope with it and there are inserts with a huge amount of data.
    * 
-   * By default: 100.
+   * By default: 100 (75 for mssql server as it has a hard limit of 2000 parameters in a statement)
    */
   protected int maxNrOfStatementsInBulkInsert = 100;
+
+  public int DEFAULT_MAX_NR_OF_STATEMENTS_BULK_INSERT_SQL_SERVER = 70; // currently Execution has most params (28). 2000 / 28 = 71.
   
   protected ObjectMapper objectMapper = new ObjectMapper();
   
@@ -1205,6 +1207,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
       log.debug("using database type: {}", databaseType);
 
+      // Special care for MSSQL, as it has a hard limit of 2000 params per statement (incl bulk statement).
+      // Especially with executions, with 100 as default, this limit is passed.
+      if (DATABASE_TYPE_MYSQL.equals(databaseType)) {
+        maxNrOfStatementsInBulkInsert = DEFAULT_MAX_NR_OF_STATEMENTS_BULK_INSERT_SQL_SERVER;
+      }
+      
     } catch (SQLException e) {
       log.error("Exception while initializing Database connection", e);
     } finally {
