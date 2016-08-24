@@ -6,6 +6,12 @@
                 <div class="error-message" ng-if="errorMessage">
                     <span>{{errorMessage}}</span>
                 </div>
+                <div ng-if="model.errorMessage && model.errorMessage.length > 0" class="alert error" style="font-size: 14px; margin-top:20px">
+                  <div class="popup-error" style="font-size: 14px">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    <span>{{model.errorMessage}}</span>
+                  </div>
+                </div>
 				<p>{{'APP.POPUP.CREATE-DESCRIPTION' | translate}}</p>
 				<div class="form-group">
 				    <label for="newAppName">{{'APP.NAME' | translate}}</label>
@@ -29,7 +35,7 @@
 					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading">
 						{{'GENERAL.ACTION.CANCEL' | translate}}
 					</button>
-					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.app.name || !model.app.key">
+					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.app.name || model.app.name.length == 0 || !model.app.key || model.app.key.length == 0">
 						{{'APP.ACTION.CREATE-CONFIRM' | translate}}
 					</button>
 				</div>

@@ -121,19 +121,22 @@ angular.module('activitiModeler').controller('SaveAppDefinitionCtrl',
                         type: 'conflictingProcDefKey',
                         data: data.customData
                     };
+                    
                 } else if(status === 409 && data && data.messageKey === 'app.publish.procdef.duplicate.keys') {
                     $scope.conflict = {
                         type: 'duplicateProcDefKeys',
                         data: data.customData
                     };
+                    
                 } else if (status === 409 && data && data.messageKey === 'app.publish.process.model.already.used') {
                     $scope.conflict = {
                         type: 'processModelAlreadyUsed',
                         data: data.customData
                     };
+                    
                 } else {
-                    $scope.$hide();
-                    $rootScope.addAlertPromise($translate('APP.POPUP.SAVE-APP-SAVE-FAIL'), 'error');
+                	$scope.status.loading = false;
+                    $scope.saveDialog.errorMessage = data.message;
                 }
 
             });

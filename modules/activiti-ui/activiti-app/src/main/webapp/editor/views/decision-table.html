@@ -2,21 +2,21 @@
 <div class="subheader" ng-if="model.decisionTable">
 	<div class="fixed-container">
 		<div class="btn-group pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
-			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.decisionTable.latestVersion" ng-disabled="readOnly || model.decisionTable.permission != 'write'">
+			<button type="button" class="btn btn-default" ng-click="openEditor()" ng-if="model.decisionTable.latestVersion">
 				<i class="glyphicon glyphicon-edit icon-and-label"></i> {{'DECISION-TABLE.ACTION.OPEN-IN-EDITOR' | translate}}
 			</button>
-			<button type="button" class="btn btn-default" ng-click="useAsNewVersion()" ng-if="!model.decisionTable.latestVersion" ng-disabled="model.decisionTable.permission != 'write' || readOnly">
+			<button type="button" class="btn btn-default" ng-click="useAsNewVersion()" ng-if="!model.decisionTable.latestVersion">
 				{{'DECISION-TABLE.ACTION.USE-AS-NEW-VERSION' | translate}}
 			</button>
 		</div>
 
 		<div class="btn-group pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
 			<button type="button" ng-click="toggleFavorite()" class="btn btn-default" title="{{'DECISION-TABLE.ACTION.FAVORITE' | translate}}"
-			    title="{{'DECISION-TABLE.ACTION.FAVORITE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.favoritePending || readOnly">
+			    title="{{'DECISION-TABLE.ACTION.FAVORITE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.favoritePending">
 				<i class="glyphicon" ng-class="{'glyphicon-star highlight': model.decisionTable.favorite, 'glyphicon-star-empty': !model.decisionTable.favorite}"></i>
 			</button>
 			<button type="button" ng-click="shareDecisionTable()" class="btn btn-default" title="{{'DECISION-TABLE.ACTION.SHARE' | translate}}"
-			    title="{{'DECISION-TABLE.ACTION.SHARE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.decisionTable.createdBy != account.id || readOnly">
+			    title="{{'DECISION-TABLE.ACTION.SHARE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.decisionTable.createdBy != account.id">
 				<i class="glyphicon glyphicon-share"></i>
 			</button>
 			<a href="{{model.decisionTableDownloadUrl}}" class="btn btn-default" title="{{'DECISION-TABLE.ACTION.EXPORT' | translate}}"
@@ -26,16 +26,16 @@
 		</div>
 
 		<div class="btn-group pull-right" ng-if="!(model.decisionTable.referenceId || currentKickstartModel)">
-			<button type="button" class="btn btn-default" ng-click="editDecisionTable()" ng-disabled="!model.decisionTable.latestVersion || model.decisionTable.permission != 'write' || readOnly"
+			<button type="button" class="btn btn-default" ng-click="editDecisionTable()" ng-disabled="!model.decisionTable.latestVersion"
 				title="{{'DECISION-TABLE.ACTION.EDIT' | translate}}">
 				<i class="glyphicon glyphicon-pencil"></i>
 			</button>
-			<button type="button" class="btn btn-default" ng-click="duplicateDecisionTable()" ng-disabled="!model.decisionTable.latestVersion || model.decisionTable.referenceId || readOnly"
+			<button type="button" class="btn btn-default" ng-click="duplicateDecisionTable()" ng-disabled="!model.decisionTable.latestVersion"
 					title="{{'DECISION-TABLE.ACTION.DUPLICATE' | translate}}">
 				<i class="editor-icon editor-icon-copy"></i>
 			</button>
 			<button type="button" class="btn btn-default" ng-click="deleteDecisionTable()" title="{{'DECISION-TABLE.ACTION.DELETE' | translate}}"
-				 title="{{'DECISION-TABLE.ACTION.DELETE' | translate}}" ng-disabled="!model.decisionTable.latestVersion || model.decisionTable.permission != 'write' || readOnly">
+				 title="{{'DECISION-TABLE.ACTION.DELETE' | translate}}" ng-disabled="!model.decisionTable.latestVersion">
 				<i class="glyphicon glyphicon-trash"></i>
 			</button>
 		</div>		

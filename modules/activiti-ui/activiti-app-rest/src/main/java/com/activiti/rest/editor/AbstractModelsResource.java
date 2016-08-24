@@ -45,7 +45,7 @@ import com.activiti.model.editor.AppDefinitionListModelRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.repository.editor.ModelRepository;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.util.XmlUtil;
@@ -69,7 +69,7 @@ public class AbstractModelsResource {
   protected ModelRepository modelRepository;
 
   @Inject
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
 
   @Inject
   protected ObjectMapper objectMapper;
@@ -98,20 +98,10 @@ public class AbstractModelsResource {
     User user = SecurityUtils.getCurrentUserObject();
 
     if (validFilter != null) {
-      if (modelType == null || modelType == 0) {
-        models = modelRepository.findProcessesCreatedBy(user.getId(), validFilter, getSort(sort, false));
-
-      } else {
-        models = modelRepository.findModelsCreatedBy(user.getId(), modelType, validFilter, getSort(sort, false));
-      }
+      models = modelRepository.findModelsCreatedBy(user.getId(), modelType, validFilter, getSort(sort, false));
 
     } else {
-      if (modelType == null || modelType == 0) {
-        models = modelRepository.findProcessesCreatedBy(user.getId(), getSort(sort, false));
-
-      } else {
-        models = modelRepository.findModelsCreatedBy(user.getId(), modelType, getSort(sort, false));
-      }
+      models = modelRepository.findModelsCreatedBy(user.getId(), modelType, getSort(sort, false));
     }
 
     if (CollectionUtils.isNotEmpty(models)) {
@@ -137,7 +127,7 @@ public class AbstractModelsResource {
 
     List<Long> addedModelIds = new ArrayList<Long>();
 
-    List<Model> models = modelRepository.findProcessesCreatedBy(user.getId(), getSort(null, false));
+    List<Model> models = modelRepository.findModelsCreatedBy(user.getId(), 0, getSort(null, false));
 
     if (CollectionUtils.isNotEmpty(models)) {
       for (Model model : models) {

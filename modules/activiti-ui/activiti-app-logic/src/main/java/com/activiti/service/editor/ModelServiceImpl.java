@@ -44,6 +44,7 @@ import com.activiti.domain.editor.Model;
 import com.activiti.domain.editor.ModelHistory;
 import com.activiti.domain.editor.ModelRelation;
 import com.activiti.domain.editor.ModelRelationTypes;
+import com.activiti.model.editor.ModelKeyRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation;
 import com.activiti.model.editor.ReviveModelResultRepresentation.UnresolveModelRepresentation;
@@ -60,7 +61,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
-public class ModelServiceImpl implements ModelService, ModelInternalService {
+public class ModelServiceImpl implements ModelService {
 
   private final Logger log = LoggerFactory.getLogger(ModelServiceImpl.class);
 
@@ -143,6 +144,23 @@ public class ModelServiceImpl implements ModelService, ModelInternalService {
     }
     byte[] xmlBytes = bpmnXMLConverter.convertToXML(bpmnModel);
     return xmlBytes;
+  }
+  
+  public ModelKeyRepresentation validateModelKey(Model model, Integer modelType, String key) {
+    ModelKeyRepresentation modelKeyResponse = new ModelKeyRepresentation();
+    modelKeyResponse.setKey(key);
+    
+    List<Model> models = modelRepository.findModelsByKeyAndType(key, modelType);
+    for (Model modelInfo : models) {
+      if (model == null || modelInfo.getId().equals(model.getId()) == false) {
+        modelKeyResponse.setKeyAlreadyExists(true);
+        modelKeyResponse.setId(modelInfo.getId());
+        modelKeyResponse.setName(modelInfo.getName());
+        break;
+      }
+    }
+    
+    return modelKeyResponse;
   }
   
   @Override

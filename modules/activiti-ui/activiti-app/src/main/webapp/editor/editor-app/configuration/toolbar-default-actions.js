@@ -334,6 +334,7 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
     		$location.path('/processes');
     	});
     };
+    
     $scope.save = function (successCallback) {
 
         if (!$scope.saveDialog.name || $scope.saveDialog.name.length == 0 ||
@@ -418,14 +419,15 @@ angular.module('activitiModeler').controller('SaveModelCtrl', [ '$rootScope', '$
 
             })
             .error(function (data, status, headers, config) {
-                $scope.error = {};
                 if (status == 409) {
+                	$scope.error = {};
                     $scope.error.isConflict = true;
                     $scope.error.userFullName = data.customData.userFullName;
                     $scope.error.isNewVersionAllowed = data.customData.newVersionAllowed;
                     $scope.error.saveAs = modelMetaData.name + "_2";
                 } else {
-                    console.log('Something went wrong when updating the process model:' + JSON.stringify(data));
+                	$scope.error = undefined;
+                    $scope.saveDialog.errorMessage = data.message;
                 }
                 $scope.status.loading = false;
             });

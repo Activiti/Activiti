@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.activiti.domain.editor.Model;
 import com.activiti.service.api.AppDefinitionService;
 import com.activiti.service.api.DeploymentService;
+import com.activiti.service.api.ModelService;
 
 /**
  * Can't merge this with {@link AppDefinitionService}, as it doesn't have visibility of domain models needed to do the publication.
@@ -35,7 +36,7 @@ public class AppDefinitionPublishService {
   private static final Logger logger = LoggerFactory.getLogger(AppDefinitionPublishService.class);
 
   @Autowired
-  protected ModelInternalService modelInternalService;
+  protected ModelService modelService;
 
   @Autowired
   protected DeploymentService deploymentService;
@@ -43,7 +44,7 @@ public class AppDefinitionPublishService {
   public void publishAppDefinition(String comment, Model appDefinitionModel, User user) {
 
     // Create new version of the app model
-    modelInternalService.createNewModelVersion(appDefinitionModel, comment, user);
+    modelService.createNewModelVersion(appDefinitionModel, comment, user);
 
     // Deploy the app model to be executable
     deploymentService.updateAppDefinition(appDefinitionModel, user);

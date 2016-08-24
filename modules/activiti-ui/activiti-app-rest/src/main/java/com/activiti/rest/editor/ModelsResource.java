@@ -32,9 +32,11 @@ import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.AppDefinition;
 import com.activiti.domain.editor.Model;
 import com.activiti.model.common.ResultListDataRepresentation;
+import com.activiti.model.editor.ModelKeyRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.model.editor.decisiontable.DecisionTableDefinitionRepresentation;
 import com.activiti.security.SecurityUtils;
+import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -83,6 +85,12 @@ public class ModelsResource extends AbstractModelsResource {
   @RequestMapping(value = "/rest/models", method = RequestMethod.POST, produces = "application/json")
   public ModelRepresentation createModel(@RequestBody ModelRepresentation modelRepresentation) {
     modelRepresentation.setKey(modelRepresentation.getKey().replaceAll(" ", ""));
+    
+    ModelKeyRepresentation modelKeyInfo = modelService.validateModelKey(null, modelRepresentation.getModelType(), modelRepresentation.getKey());
+    if (modelKeyInfo.isKeyAlreadyExists()) {
+      throw new BadRequestException("Provided model key already exists: " + modelRepresentation.getKey());
+    }
+    
     String json = null;
     if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_FORM)) {
       try {

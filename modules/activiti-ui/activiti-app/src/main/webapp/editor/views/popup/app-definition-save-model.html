@@ -5,6 +5,12 @@
 			<div class="modal-header"><h2>{{'APP.POPUP.SAVE-APP-TITLE' | translate}}</h2></div>
 			<div class="modal-body">
 				<p>{{'APP.POPUP.CREATE-DESCRIPTION' | translate}}</p>
+				<div ng-if="saveDialog.errorMessage && saveDialog.errorMessage.length > 0" class="alert error" style="font-size: 14px; margin-top:20px">
+                  <div class="popup-error" style="font-size: 14px">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    <span>{{saveDialog.errorMessage}}</span>
+                  </div>
+                </div>
 				<div class="form-group">
 				    <label for="appName">{{'APP.NAME' | translate}}</label>
 				    <input ng-disabled="model.loading" type="text" class="form-control"
@@ -68,8 +74,8 @@
 
 				<div class="pull-right" ng-if="conflict == null || conflict == undefined || conflict.type != 'processModelAlreadyUsed'">
 					<button class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading" translate>GENERAL.ACTION.CANCEL</button>
-					<button class="btn btn-primary" ng-click="saveAndClose()" ng-disabled="status.loading" ng-show="!error && !error.hasCustomStencilItem && !error.hasValidationErrors" translate>ACTION.SAVE-AND-CLOSE</button>
-					<button class="btn btn-primary" ng-click="save()" ng-disabled="status.loading" ng-show="!error && !error.hasCustomStencilItem && !error.hasValidationErrors" translate>ACTION.SAVE</button>
+					<button class="btn btn-primary" ng-click="saveAndClose()" ng-disabled="status.loading || saveDialog.name.length == 0 || saveDialog.key.length == 0" ng-show="!error && !error.hasCustomStencilItem && !error.hasValidationErrors" translate>ACTION.SAVE-AND-CLOSE</button>
+					<button class="btn btn-primary" ng-click="save()" ng-disabled="status.loading || saveDialog.name.length == 0 || saveDialog.key.length == 0" ng-show="!error && !error.hasCustomStencilItem && !error.hasValidationErrors" translate>ACTION.SAVE</button>
 				</div>
 
                 <div class="pull-right" ng-if="conflict && conflict.type == 'processModelAlreadyUsed'">

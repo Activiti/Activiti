@@ -68,7 +68,8 @@ angular.module('activitiModeler')
 
 		  var params = {
 		      filter: $scope.model.activeFilter.id,
-		      sort: $scope.model.activeSort.id
+		      sort: $scope.model.activeSort.id,
+		      modelType: 0
 		  };
 
 		  if ($scope.model.filterText && $scope.model.filterText != '') {
@@ -175,9 +176,9 @@ angular.module('activitiModeler')
                 $rootScope.editorHistory = [];
                 $location.path("/editor/" + data.id);
             }).
-            error(function() {
+            error(function(data, status, headers, config) {
                 $scope.model.loading = false;
-                $modal.$hide();
+                $scope.model.errorMessage = data.message;
             });
     };
 

@@ -32,12 +32,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.activiti.domain.editor.AbstractModel;
 import com.activiti.domain.editor.Model;
+import com.activiti.model.editor.ModelKeyRepresentation;
 import com.activiti.model.editor.ModelRepresentation;
 import com.activiti.repository.editor.ModelRepository;
 import com.activiti.security.SecurityUtils;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.ConflictingRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
@@ -54,7 +54,7 @@ public class ModelResource extends AbstractModelResource {
   private static final String RESOLVE_ACTION_NEW_VERSION = "newVersion";
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
   
   @Autowired
   protected ModelRepository modelRepository;
@@ -89,12 +89,16 @@ public class ModelResource extends AbstractModelResource {
   public ModelRepresentation updateModel(@PathVariable Long modelId, @RequestBody ModelRepresentation updatedModel) {
     // Get model, write-permission required if not a favorite-update
     Model model = modelService.getModel(modelId);
+    
+    ModelKeyRepresentation modelKeyInfo = modelService.validateModelKey(model, model.getModelType(), updatedModel.getKey());
+    if (modelKeyInfo.isKeyAlreadyExists()) {
+      throw new BadRequestException("Model with provided key already exists " + updatedModel.getKey());
+    }
 
     try {
-      if (updatedModel.getName() != null) {
-        updatedModel.updateModel(model);
-        modelRepository.save(model);
-      }
+      updatedModel.updateModel(model);
+      modelRepository.save(model);
+      
       ModelRepresentation result = new ModelRepresentation(model);
       return result;
 
@@ -195,15 +199,15 @@ public class ModelResource extends AbstractModelResource {
         return createNewModel(saveAs, model.getDescription(), model.getStencilSetId(), model.getModelType(), json);
 
       } else if (RESOLVE_ACTION_OVERWRITE.equals(resolveAction)) {
-        return updateModel(modelId, values, false);
+        return updateModel(model, values, false);
       } else if (RESOLVE_ACTION_NEW_VERSION.equals(resolveAction)) {
-        return updateModel(modelId, values, true);
+        return updateModel(model, values, true);
       } else {
 
         // Exception case: the user is the owner and selected to create a new version
         String isNewVersionString = values.getFirst("newversion");
         if (currentUserIsOwner && "true".equals(isNewVersionString)) {
-          return updateModel(modelId, values, true);
+          return updateModel(model, values, true);
         } else {
           // Tried everything, this is really a conflict, return 409
           ConflictingRequestException exception = new ConflictingRequestException("Process model was updated in the meantime");
@@ -216,7 +220,7 @@ public class ModelResource extends AbstractModelResource {
     } else {
 
       // Actual, regular, update
-      return updateModel(modelId, values, false);
+      return updateModel(model, values, false);
 
     }
   }
@@ -228,14 +232,19 @@ public class ModelResource extends AbstractModelResource {
   public ModelRepresentation importNewVersion(@PathVariable Long modelId, @RequestParam("file") MultipartFile file) {
     return super.importNewVersion(modelId, file);
   }
-
-  protected ModelRepresentation updateModel(Long modelId, MultiValueMap<String, String> values, boolean forceNewVersion) {
+  
+  protected ModelRepresentation updateModel(Model model, MultiValueMap<String, String> values, boolean forceNewVersion) {
 
     String name = values.getFirst("name");
     String key = values.getFirst("key");
     String description = values.getFirst("description");
     String isNewVersionString = values.getFirst("newversion");
     String newVersionComment = null;
+    
+    ModelKeyRepresentation modelKeyInfo = modelService.validateModelKey(model, model.getModelType(), key);
+    if (modelKeyInfo.isKeyAlreadyExists()) {
+      throw new BadRequestException("Model with provided key already exists " + key);
+    }
 
     boolean newVersion = false;
     if (forceNewVersion) {
@@ -251,18 +260,17 @@ public class ModelResource extends AbstractModelResource {
     String json = values.getFirst("json_xml");
 
     try {
-      AbstractModel model = modelService.saveModel(modelId, name, key, description, json, newVersion, 
+      model = modelService.saveModel(model.getId(), name, key, description, json, newVersion, 
           newVersionComment, SecurityUtils.getCurrentUserObject());
       return new ModelRepresentation(model);
       
     } catch (Exception e) {
-      log.error("Error saving model " + modelId, e);
-      throw new BadRequestException("Process model could not be saved " + modelId);
+      log.error("Error saving model " + model.getId(), e);
+      throw new BadRequestException("Process model could not be saved " + model.getId());
     }
   }
 
   protected ModelRepresentation createNewModel(String name, String description, Long stencilSetId, Integer modelType, String editorJson) {
-
     ModelRepresentation model = new ModelRepresentation();
     model.setName(name);
     model.setDescription(description);

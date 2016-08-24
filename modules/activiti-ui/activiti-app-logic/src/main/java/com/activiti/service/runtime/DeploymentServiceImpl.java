@@ -46,7 +46,7 @@ import com.activiti.domain.editor.Model;
 import com.activiti.repository.editor.ModelRepository;
 import com.activiti.service.api.AppDefinitionService;
 import com.activiti.service.api.DeploymentService;
-import com.activiti.service.editor.ModelInternalService;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.exception.BadRequestException;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -65,7 +65,7 @@ public class DeploymentServiceImpl implements DeploymentService {
   protected AppDefinitionService appDefinitionService;
 
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
 
   @Autowired
   protected RepositoryService repositoryService;

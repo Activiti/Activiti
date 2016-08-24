@@ -54,8 +54,10 @@ var DECISION_TABLE_TOOLBAR = {
                     var data = {
                         newVersion: false
                     };
+                    
                     unbindEvents();
-                    services.DecisionTableBuilderService.saveDecisionTable(data, services.$rootScope.currentDecisionTable.name, null, description).then(callback);
+                    services.DecisionTableBuilderService.saveDecisionTable(data, services.$rootScope.currentDecisionTable.name, 
+                    	null, description, callback);
                 });
 
                 var unbindDiscardDataEvent = services.$scope.$on("discardDataEvent", function() {
@@ -158,11 +160,12 @@ angular.module('activitiModeler')
                 };
 
                 var errorCallback = function(errorMessage) {
-                    $scope.$hide();
-                    $rootScope.addAlertPromise($translate('DECISION-TABLE-EDITOR.ALERT.SAVE-ERROR', {name: $scope.saveDialog.name}), 'error');
+                	$scope.status.loading = false;
+                    $scope.saveDialog.errorMessage = errorMessage.message;
                 };
 
-                DecisionTableService.saveDecisionTable(data, $scope.saveDialog.name, $scope.saveDialog.key, $scope.saveDialog.description).then(saveCallback, errorCallback);
+                DecisionTableService.saveDecisionTable(data, $scope.saveDialog.name, $scope.saveDialog.key, 
+                	$scope.saveDialog.description, saveCallback, errorCallback);
             };
 
             $scope.isOkButtonDisabled = function() {

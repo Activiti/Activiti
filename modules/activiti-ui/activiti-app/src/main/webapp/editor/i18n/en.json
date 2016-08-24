@@ -523,6 +523,7 @@
 
     "APP": {
         "NAME": "App definition name",
+        "KEY": "App definition key",
         "DESCRIPTION": "Description",
         "VERSION-COMMENT": "Version comment",
         "ICON": "Icon",
@@ -1767,6 +1768,7 @@
 
     "MODEL.SAVE.TITLE" : "Save model",
     "MODEL.NAME" : "Name",
+    "MODEL.KEY" : "Key",
     "MODEL.DESCRIPTION" : "Description",
     "MODEL.SAVE.NEWVERSION" : "Save this as a new version?  This means you can always go back to a previous version",
     "MODEL.SAVE.COMMENT" : "Comment",

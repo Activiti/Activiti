@@ -148,7 +148,7 @@ angular.module('activitiModeler')
 
     $scope.model = {
        loading: false,
-        decisionTable: {
+       decisionTable: {
             name: '',
             key: '',
             description: '',
@@ -183,7 +183,7 @@ angular.module('activitiModeler')
             }).
             error(function(data, status, headers, config) {
                 $scope.model.loading = false;
-                $scope.$hide();
+                $scope.model.errorMessage = data.message;
             });
     };
 

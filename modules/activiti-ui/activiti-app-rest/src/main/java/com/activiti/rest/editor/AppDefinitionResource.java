@@ -39,9 +39,9 @@ import com.activiti.model.editor.AppDefinitionRepresentation;
 import com.activiti.model.editor.AppDefinitionSaveRepresentation;
 import com.activiti.model.editor.AppDefinitionUpdateResultRepresentation;
 import com.activiti.security.SecurityUtils;
+import com.activiti.service.api.ModelService;
 import com.activiti.service.editor.AppDefinitionExportService;
 import com.activiti.service.editor.AppDefinitionImportService;
-import com.activiti.service.editor.ModelInternalService;
 import com.activiti.service.exception.InternalServerErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,7 +55,7 @@ public class AppDefinitionResource {
   protected AppDefinitionImportService appDefinitionImportService;
   
   @Autowired
-  protected ModelInternalService modelService;
+  protected ModelService modelService;
   
   @Autowired
   protected ObjectMapper objectMapper;
