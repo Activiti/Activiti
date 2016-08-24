@@ -1060,6 +1060,19 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>databasewithschemaform</id>
+			<activation>
+				<property>
+					<name>databasewithschemaform</name>
+				</property>
+			</activation>
+			<modules>
+				<module>modules/activiti-form-model</module>
+				<module>modules/activiti-form-api</module>
+				<module>modules/activiti-form-engine</module>
+			</modules>
+		</profile>
+		<profile>
 			<!-- Profile used by the start-rest.sh script to build the Explorer webapp
 				and all its dependencies -->
 			<id>buildRestappDependencies</id>

@@ -117,6 +117,12 @@
 			<artifactId>db2jcc4</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.oracle.jdbc</groupId>
+			<artifactId>ojdbc7</artifactId>
+			<scope>test</scope>
+		</dependency>
 
         <dependency>
             <groupId>junit</groupId>
