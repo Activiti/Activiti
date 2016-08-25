@@ -21,23 +21,26 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
   
+  private static final Logger logger = LoggerFactory.getLogger(ChangeConfigAndRebootEngineTest.class);
+  
   protected boolean newExecutionRelationshipCountValue;
   
   public ChangeConfigAndRebootEngineTest() {
     // Simply boot up the same engine with the usual config file
-    // This way, dataase tests work. the only thing we have to make 
+    // This way, database tests work. the only thing we have to make 
     // sure is to give the process engine a name so it is 
     // registered and unregistered separately. 
     super("activiti.cfg.xml", ChangeConfigAndRebootEngineTest.class.getName());
@@ -45,11 +48,13 @@ public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
   
   @Override
   protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+    logger.info("Applying additional config: setting schema update to true and enabling execution relationship count");
     processEngineConfiguration.setDatabaseSchemaUpdate("true");
     ((ProcessEngineConfigurationImpl) processEngineConfiguration).setEnableExecutionRelationshipCounts(newExecutionRelationshipCountValue);
   }
 
   protected void rebootEngine(boolean newExecutionRelationshipCountValue) {
+    logger.info("Rebooting engine");
     this.newExecutionRelationshipCountValue = newExecutionRelationshipCountValue;
     closeDownProcessEngine();
     initializeProcessEngine();
