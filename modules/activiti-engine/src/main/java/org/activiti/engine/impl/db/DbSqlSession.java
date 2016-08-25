@@ -160,6 +160,8 @@ public class DbSqlSession implements Session {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
     this.sqlSession = dbSqlSessionFactory.getSqlSessionFactory().openSession();
     this.entityCache = entityCache;
+    this.connectionMetadataDefaultCatalog = dbSqlSessionFactory.getDatabaseCatalog();
+    this.connectionMetadataDefaultSchema = dbSqlSessionFactory.getDatabaseSchema();
   }
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, EntityCache entityCache, Connection connection, String catalog, String schema) {
@@ -1021,6 +1023,10 @@ public class DbSqlSession implements Session {
 
       if ("postgres".equals(databaseType)) {
         tableName = tableName.toLowerCase();
+      } 
+      
+      if (schema != null && "oracle".equals(databaseType)) {
+        schema = schema.toUpperCase();
       }
 
       try {
@@ -1286,6 +1292,7 @@ public class DbSqlSession implements Session {
 
   public void performSchemaOperationsProcessEngineBuild() {
     String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
+    log.debug("Executing performSchemaOperationsProcessEngineBuild with setting " + databaseSchemaUpdate);
     if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
       try {
         dbSchemaDrop();
