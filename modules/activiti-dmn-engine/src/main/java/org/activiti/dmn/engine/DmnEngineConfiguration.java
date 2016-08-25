@@ -12,7 +12,6 @@
  */
 package org.activiti.dmn.engine;
 
-import java.beans.PropertyVetoException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -79,8 +78,10 @@ import org.activiti.dmn.engine.impl.persistence.entity.data.impl.MybatisDmnDeplo
 import org.activiti.dmn.engine.impl.persistence.entity.data.impl.MybatisResourceDataManager;
 import org.activiti.dmn.engine.impl.util.DefaultClockImpl;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
+import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -97,8 +98,6 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -141,11 +140,14 @@ public class DmnEngineConfiguration {
   protected String jdbcUsername = "sa";
   protected String jdbcPassword = "";
   protected String dataSourceJndiName;
-  protected int jdbcMinPoolSize = 10;
-  protected int jdbcMaxPoolSize = 100;
-  protected int jdbcMaxIdleTime = 1800;
-  protected int jdbcMaxIdleTimeExcessConnections = 1800;
+  protected int jdbcMaxActiveConnections;
+  protected int jdbcMaxIdleConnections;
+  protected int jdbcMaxCheckoutTime;
+  protected int jdbcMaxWaitTime;
+  protected boolean jdbcPingEnabled;
   protected String jdbcPingQuery;
+  protected int jdbcPingConnectionNotUsedFor;
+  protected int jdbcDefaultTransactionIsolationLevel;
   protected DataSource dataSource;
 
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
@@ -490,34 +492,42 @@ public class DmnEngineConfiguration {
           logger.info("datasource driver: " + jdbcDriver);
           logger.info("datasource url : " + jdbcUrl);
           logger.info("datasource user name : " + jdbcUsername);
-          logger.info("Min pool size | Max pool size | acquire increment : " + jdbcMinPoolSize + " | " + jdbcMaxPoolSize);
         }
 
-        ComboPooledDataSource ds = new ComboPooledDataSource();
-        try {
-          ds.setDriverClass(jdbcDriver);
-        } catch (PropertyVetoException e) {
-          logger.error("Could not set Jdbc Driver class", e);
-          return;
+        PooledDataSource pooledDataSource = new PooledDataSource(this.getClass().getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
+
+        if (jdbcMaxActiveConnections > 0) {
+          pooledDataSource.setPoolMaximumActiveConnections(jdbcMaxActiveConnections);
         }
-
-        // Connection settings
-        ds.setJdbcUrl(jdbcUrl);
-        ds.setUser(jdbcUsername);
-        ds.setPassword(jdbcPassword);
-
-        // Pool config: see http://www.mchange.com/projects/c3p0/#configuration
-        ds.setMinPoolSize(jdbcMinPoolSize);
-        ds.setMaxPoolSize(jdbcMaxPoolSize);
-        if (jdbcPingQuery != null) {
-          ds.setPreferredTestQuery(jdbcPingQuery);
+        if (jdbcMaxIdleConnections > 0) {
+          pooledDataSource.setPoolMaximumIdleConnections(jdbcMaxIdleConnections);
         }
-        ds.setMaxIdleTimeExcessConnections(jdbcMaxIdleTimeExcessConnections);
-        ds.setMaxIdleTime(jdbcMaxIdleTime);
-
-        this.dataSource = ds;
+        if (jdbcMaxCheckoutTime > 0) {
+          pooledDataSource.setPoolMaximumCheckoutTime(jdbcMaxCheckoutTime);
+        }
+        if (jdbcMaxWaitTime > 0) {
+          pooledDataSource.setPoolTimeToWait(jdbcMaxWaitTime);
+        }
+        if (jdbcPingEnabled == true) {
+          pooledDataSource.setPoolPingEnabled(true);
+          if (jdbcPingQuery != null) {
+            pooledDataSource.setPoolPingQuery(jdbcPingQuery);
+          }
+          pooledDataSource.setPoolPingConnectionsNotUsedFor(jdbcPingConnectionNotUsedFor);
+        }
+        if (jdbcDefaultTransactionIsolationLevel > 0) {
+          pooledDataSource.setDefaultTransactionIsolationLevel(jdbcDefaultTransactionIsolationLevel);
+        }
+        dataSource = pooledDataSource;
+      }
+      
+      if (dataSource instanceof PooledDataSource) {
+        // ACT-233: connection pool of Ibatis is not properly
+        // initialized if this is not called!
+        ((PooledDataSource) dataSource).forceCloseAll();
       }
     }
+    
     if (databaseType == null) {
       initDatabaseType();
     }
@@ -532,6 +542,16 @@ public class DmnEngineConfiguration {
       Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
       database.setDatabaseChangeLogTableName(LIQUIBASE_CHANGELOG_PREFIX + database.getDatabaseChangeLogTableName());
       database.setDatabaseChangeLogLockTableName(LIQUIBASE_CHANGELOG_PREFIX + database.getDatabaseChangeLogLockTableName());
+      
+      if (StringUtils.isNotEmpty(databaseSchema)) {
+        database.setDefaultSchemaName(databaseSchema);
+        database.setLiquibaseSchemaName(databaseSchema);
+      }
+      
+      if (StringUtils.isNotEmpty(databaseCatalog)) {
+        database.setDefaultCatalogName(databaseCatalog);
+        database.setLiquibaseCatalogName(databaseCatalog);
+      }
 
       Liquibase liquibase = new Liquibase("org/activiti/dmn/db/liquibase/activiti-dmn-db-changelog.xml", new ClassLoaderResourceAccessor(), database);
 
@@ -942,39 +962,66 @@ public class DmnEngineConfiguration {
     return this;
   }
 
-  public int getJdbcMinPoolSize() {
-    return jdbcMinPoolSize;
+  public int getJdbcMaxActiveConnections() {
+    return jdbcMaxActiveConnections;
   }
 
-  public DmnEngineConfiguration setJdbcMinPoolSize(int jdbcMinPoolSize) {
-    this.jdbcMinPoolSize = jdbcMinPoolSize;
+  public DmnEngineConfiguration setJdbcMaxActiveConnections(int jdbcMaxActiveConnections) {
+    this.jdbcMaxActiveConnections = jdbcMaxActiveConnections;
     return this;
   }
 
-  public int getJdbcMaxPoolSize() {
-    return jdbcMaxPoolSize;
+  public int getJdbcMaxIdleConnections() {
+    return jdbcMaxIdleConnections;
   }
 
-  public DmnEngineConfiguration setJdbcMaxPoolSize(int jdbcMaxPoolSize) {
-    this.jdbcMaxPoolSize = jdbcMaxPoolSize;
+  public DmnEngineConfiguration setJdbcMaxIdleConnections(int jdbcMaxIdleConnections) {
+    this.jdbcMaxIdleConnections = jdbcMaxIdleConnections;
     return this;
   }
 
-  public int getJdbcMaxIdleTime() {
-    return jdbcMaxIdleTime;
+  public int getJdbcMaxCheckoutTime() {
+    return jdbcMaxCheckoutTime;
   }
 
-  public DmnEngineConfiguration setJdbcMaxIdleTime(int jdbcMaxIdleTime) {
-    this.jdbcMaxIdleTime = jdbcMaxIdleTime;
+  public DmnEngineConfiguration setJdbcMaxCheckoutTime(int jdbcMaxCheckoutTime) {
+    this.jdbcMaxCheckoutTime = jdbcMaxCheckoutTime;
     return this;
   }
 
-  public int getJdbcMaxIdleTimeExcessConnections() {
-    return jdbcMaxIdleTimeExcessConnections;
+  public int getJdbcMaxWaitTime() {
+    return jdbcMaxWaitTime;
   }
 
-  public DmnEngineConfiguration setJdbcMaxIdleTimeExcessConnections(int jdbcMaxIdleTimeExcessConnections) {
-    this.jdbcMaxIdleTimeExcessConnections = jdbcMaxIdleTimeExcessConnections;
+  public DmnEngineConfiguration setJdbcMaxWaitTime(int jdbcMaxWaitTime) {
+    this.jdbcMaxWaitTime = jdbcMaxWaitTime;
+    return this;
+  }
+
+  public boolean isJdbcPingEnabled() {
+    return jdbcPingEnabled;
+  }
+
+  public DmnEngineConfiguration setJdbcPingEnabled(boolean jdbcPingEnabled) {
+    this.jdbcPingEnabled = jdbcPingEnabled;
+    return this;
+  }
+
+  public int getJdbcPingConnectionNotUsedFor() {
+    return jdbcPingConnectionNotUsedFor;
+  }
+
+  public DmnEngineConfiguration setJdbcPingConnectionNotUsedFor(int jdbcPingConnectionNotUsedFor) {
+    this.jdbcPingConnectionNotUsedFor = jdbcPingConnectionNotUsedFor;
+    return this;
+  }
+
+  public int getJdbcDefaultTransactionIsolationLevel() {
+    return jdbcDefaultTransactionIsolationLevel;
+  }
+
+  public DmnEngineConfiguration setJdbcDefaultTransactionIsolationLevel(int jdbcDefaultTransactionIsolationLevel) {
+    this.jdbcDefaultTransactionIsolationLevel = jdbcDefaultTransactionIsolationLevel;
     return this;
   }
 

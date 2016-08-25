@@ -80,11 +80,6 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.1</version>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -113,6 +108,12 @@
 		<dependency>
 			<groupId>com.ibm.db2.jcc</groupId>
 			<artifactId>db2jcc4</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.oracle.jdbc</groupId>
+			<artifactId>ojdbc7</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -246,6 +247,20 @@
 									</tasks>
 								</configuration>
 							</execution>
+							<execution>
+								<id>database-test-drop-schema</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="dropping schema in ${databasedmn}" />
+										<java classname="org.activiti.dmn.engine.impl.db.DbSchemaDrop"
+											classpathref="maven.test.classpath" />
+									</tasks>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 				</plugins>
@@ -281,6 +296,20 @@
 											<filterset
 												filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasewithschemadmn}.properties" />
 										</copy>
+									</tasks>
+								</configuration>
+							</execution>
+							<execution>
+								<id>database-test-drop-schema</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="dropping schema in ${databasewithschemadmn}" />
+										<java classname="org.activiti.dmn.engine.impl.db.DbSchemaDrop"
+											classpathref="maven.test.classpath" />
 									</tasks>
 								</configuration>
 							</execution>
