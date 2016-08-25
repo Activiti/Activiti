@@ -1023,6 +1023,10 @@ public class DbSqlSession implements Session {
 
       if ("postgres".equals(databaseType)) {
         tableName = tableName.toLowerCase();
+      } 
+      
+      if (schema != null && "oracle".equals(databaseType)) {
+        schema = schema.toUpperCase();
       }
 
       try {
