@@ -267,9 +267,6 @@ angular.module('activitiApp')
                     var taskData = {
                         name: newTask.name,
                         description: newTask.description,
-                        assignee: {
-                            id: $rootScope.account.id
-                        }
                     };
 
                     if ($rootScope.activeAppDefinition) {

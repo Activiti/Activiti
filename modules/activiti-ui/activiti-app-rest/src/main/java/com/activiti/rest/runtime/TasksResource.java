@@ -16,24 +16,39 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.activiti.model.runtime.CreateTaskRepresentation;
 import com.activiti.model.runtime.TaskRepresentation;
+import com.activiti.security.SecurityUtils;
+import com.activiti.service.exception.BadRequestException;
 
 /**
  * REST controller for managing the current user's account.
  */
 @RestController
-public class TasksResource extends AbstractTasksResource {
+public class TasksResource {
 
-    @Inject
-    protected TaskService taskService;
-    
-	@RequestMapping(value = "/rest/tasks", method = RequestMethod.POST)
-    public TaskRepresentation createNewTask(@RequestBody TaskRepresentation taskRepresentation, HttpServletRequest request) {
-		return super.createNewTask(taskRepresentation, request);
+  @Inject
+  protected TaskService taskService;
+
+  @RequestMapping(value = "/rest/tasks", method = RequestMethod.POST)
+  public TaskRepresentation createNewTask(@RequestBody CreateTaskRepresentation taskRepresentation, HttpServletRequest request) {
+    if (StringUtils.isEmpty(taskRepresentation.getName())) {
+      throw new BadRequestException("Task name is required");
     }
+
+    Task task = taskService.newTask();
+    task.setName(taskRepresentation.getName());
+    task.setDescription(taskRepresentation.getDescription());
+    task.setAssignee(SecurityUtils.getCurrentUserId());
+    taskService.saveTask(task);
+    return new TaskRepresentation(taskService.createTaskQuery().taskId(task.getId()).singleResult());
+  }
+
 }

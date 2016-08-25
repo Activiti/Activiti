@@ -644,8 +644,6 @@ angular.module('activitiApp')
         function ($rootScope, $scope, $translate, $http, $location, TaskService) {
 
             $scope.createTask = function() {
-                $scope.newTask.assignee = {id: $rootScope.account.id};
-
                 TaskService.createTask($scope.newTask).then(function(createdTask) {
                     $scope.resetModel();
                     $rootScope.addAlertPromise($translate('TASK.ALERT.CREATED', createdTask));
