@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="DataObject_fatherProcess" isExecutable="true">
+    <dataObject id="fatherVariable" name="fatherVariable" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <activiti:value>fatherVariable</activiti:value>
+      </extensionElements>
+    </dataObject>
+    <startEvent id="startevent1" name="start1"/>
+    <scriptTask id="script1_in_FatherProcess" name="script_task1" activiti:async="false" scriptFormat="groovy" activiti:autoStoreVariables="true">
+      <script>
+System.out.println("groovy start---------");
+System.out.println("fatherVariable is: " + fatherVariable);
+System.out.println("groovy end---------");
+      </script>
+    </scriptTask>
+    <endEvent id="endevent1" name="end"/>
+    <sequenceFlow id="sid-A2938BB5-FDB0-406B-B254-385829F890A7" sourceRef="startevent1" targetRef="script1_in_FatherProcess"/>
+    <callActivity id="callSubProcess" name="call_subprocess" activiti:async="false" calledElement="DataObject_subProcess">
+      <extensionElements>
+        <activiti:in source="fatherVariable" target="fatherVariable"/>
+      </extensionElements>
+    </callActivity>
+    <sequenceFlow id="sid-9F27799C-1CC6-46F1-891C-82660756FED0" sourceRef="script1_in_FatherProcess" targetRef="callSubProcess"/>
+    <sequenceFlow id="sid-640D7686-576B-4BCD-BDFD-959D4985EBD7" sourceRef="callSubProcess" targetRef="endevent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_fatherProcess">
+    <bpmndi:BPMNPlane bpmnElement="fatherProcess" id="BPMNPlane_fatherProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="105.0" y="188.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="script1_in_FatherProcess" id="BPMNShape_script1_in_FatherProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="495.0" y="191.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callSubProcess" id="BPMNShape_callSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-A2938BB5-FDB0-406B-B254-385829F890A7" id="BPMNEdge_sid-A2938BB5-FDB0-406B-B254-385829F890A7">
+        <omgdi:waypoint x="134.99808036856138" y="203.239969285897"/>
+        <omgdi:waypoint x="195.0" y="204.2"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-9F27799C-1CC6-46F1-891C-82660756FED0" id="BPMNEdge_sid-9F27799C-1CC6-46F1-891C-82660756FED0">
+        <omgdi:waypoint x="295.0" y="205.0"/>
+        <omgdi:waypoint x="345.0" y="205.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-640D7686-576B-4BCD-BDFD-959D4985EBD7" id="BPMNEdge_sid-640D7686-576B-4BCD-BDFD-959D4985EBD7">
+        <omgdi:waypoint x="445.0" y="205.0"/>
+        <omgdi:waypoint x="495.0" y="205.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
