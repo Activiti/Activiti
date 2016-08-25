@@ -1028,6 +1028,10 @@ public class DbSqlSession implements Session {
       if (schema != null && "oracle".equals(databaseType)) {
         schema = schema.toUpperCase();
       }
+      
+      if (catalog != null && catalog.length() == 0) {
+        catalog = null;
+      }
 
       try {
         tables = databaseMetaData.getTables(catalog, schema, tableName, JDBC_METADATA_TABLE_TYPES);
