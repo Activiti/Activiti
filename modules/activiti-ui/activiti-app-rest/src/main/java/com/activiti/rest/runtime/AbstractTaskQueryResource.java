@@ -31,6 +31,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.TaskInfo;
 import org.activiti.engine.task.TaskInfoQueryWrapper;
@@ -91,9 +92,14 @@ public abstract class AbstractTaskQueryResource {
       taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
     }
 
-    JsonNode deploymentIdNode = requestNode.get("deploymentId");
-    if (deploymentIdNode != null && deploymentIdNode.isNull() == false) {
-      taskInfoQueryWrapper.getTaskInfoQuery().deploymentId(deploymentIdNode.asText());
+    JsonNode deploymentKeyNode = requestNode.get("deploymentKey");
+    if (deploymentKeyNode != null && deploymentKeyNode.isNull() == false) {
+      List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentKey(deploymentKeyNode.asText()).list();
+      List<String> deploymentIds = new ArrayList<String>(deployments.size());
+      for (Deployment deployment : deployments) {
+        deploymentIds.add(deployment.getId());
+      }
+      taskInfoQueryWrapper.getTaskInfoQuery().deploymentIdIn(deploymentIds);
     }
 
     JsonNode processInstanceIdNode = requestNode.get("processInstanceId");

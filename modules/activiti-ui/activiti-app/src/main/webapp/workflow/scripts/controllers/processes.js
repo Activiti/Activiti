@@ -56,11 +56,11 @@ angular.module('activitiApp')
             }
         };
 
-        $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
-        $scope.missingAppdefinition = $scope.appDefinitionId === false;
+        $scope.deploymentKey = $routeParams.deploymentKey;
+        $scope.missingAppdefinition = $scope.deploymentKey === false;
 
         // In case of viewing process instances in an app-context, need to make filter aware of this
-        $scope.model.filter.param.appDefinitionId = $scope.appDefinitionId;
+        $scope.model.filter.param.deploymentKey = $scope.deploymentKey;
 
         // The filter is stored on the rootScope, which allows the user to switch back and forth without losing the filter.
         if ($rootScope.processFilter !== null && $rootScope.processFilter !== undefined) {
@@ -70,7 +70,7 @@ angular.module('activitiApp')
         }
 
         // Update app on rootScope. If app id present, it will fetch definition if not already fetched to update view and navigation accordingly
-        AppDefinitionService.setActiveAppDefinitionId($scope.appDefinitionId);
+        AppDefinitionService.setActiveDeploymentKey($scope.deploymentKey);
 
         $scope.selectProcessInstance = function (processInstance) {
             $scope.selectedProcessInstance = processInstance;
@@ -124,8 +124,8 @@ angular.module('activitiApp')
                 page: $scope.model.page
             };
 
-            if (params.appDefinitionId) {
-                instanceQueryData.appDefinitionId = params.appDefinitionId;
+            if (params.deploymentKey) {
+                instanceQueryData.deploymentKey = params.deploymentKey;
             }
 
             if (params.state) {
@@ -299,7 +299,7 @@ angular.module('activitiApp')
                 });
         };
 
-        $rootScope.loadProcessDefinitions($scope.appDefinitionId);
+        $rootScope.loadProcessDefinitions($scope.deploymentKey);
 
         // If 'createProcessInstance' is set (eg from the task page)
         if($rootScope.createProcessInstance) {

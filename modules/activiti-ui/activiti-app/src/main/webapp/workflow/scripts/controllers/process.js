@@ -21,7 +21,7 @@ angular.module('activitiApp')
 
       $scope.selectedProcessInstance = { id: $routeParams.processId };
 
-        $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
+        $scope.deploymentKey = $routeParams.deploymentKey;
 
         $scope.$on('processinstance-deleted', function (event, data) {
             $scope.openProcesses();

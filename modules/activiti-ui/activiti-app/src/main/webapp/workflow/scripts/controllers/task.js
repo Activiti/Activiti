@@ -22,7 +22,7 @@ angular.module('activitiApp')
 
             $scope.selectedTask = { id: $routeParams.taskId };
 
-            $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
+            $scope.deploymentKey = $routeParams.deploymentKey;
 
             $scope.$on('task-completed', function (event, data) {
                 $rootScope.addAlertPromise($translate('TASK.ALERT.COMPLETED', data));

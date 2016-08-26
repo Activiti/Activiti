@@ -88,7 +88,7 @@ activitiApp
                 verify: authRouteResolver
             }
         })
-        .when('/apps/:appDefinitionId/start-process', {
+        .when('/apps/:deploymentKey/start-process', {
             templateUrl: appResourceRoot + 'views/start-process.html',
             controller: 'StartProcessController',
             resolve: {
@@ -102,7 +102,7 @@ activitiApp
                 verify: authRouteResolver
             }
         })
-        .when('/apps/:appDefinitionId/tasks', {
+        .when('/apps/:deploymentKey/tasks', {
             templateUrl: appResourceRoot + 'views/tasks.html',
             controller: 'TasksController',
             resolve: {
@@ -116,7 +116,7 @@ activitiApp
                 verify: authRouteResolver
             }
         })
-        .when('/apps/:appDefinitionId/task/:taskId', {
+        .when('/apps/:deploymentKey/task/:taskId', {
             templateUrl: appResourceRoot + 'views/task.html',
             controller: 'TaskController',
             resolve: {
@@ -130,7 +130,7 @@ activitiApp
                 verify: authRouteResolver
             }
         })
-        .when('/apps/:appDefinitionId/processes', {
+        .when('/apps/:deploymentKey/processes', {
             templateUrl: appResourceRoot + 'views/processes.html',
             controller: 'ProcessesController',
             resolve: {
@@ -144,7 +144,7 @@ activitiApp
                 verify: authRouteResolver
             }
         })
-        .when('/apps/:appDefinitionId/process/:processId', {
+        .when('/apps/:deploymentKey/process/:processId', {
             templateUrl: appResourceRoot + 'views/process.html',
             controller: 'ProcessController',
             resolve: {
@@ -321,10 +321,10 @@ activitiApp
         // TODO: remove proc-def from rootscope or make smarter
         $rootScope.root = {};
 
-        $rootScope.loadProcessDefinitions = function(appDefinitionId) {
+        $rootScope.loadProcessDefinitions = function(deploymentKey) {
             var url = ACTIVITI.CONFIG.contextRoot + '/app/rest/process-definitions?latest=true';
-            if (appDefinitionId) {
-                url += '&appDefinitionId=' + appDefinitionId;
+            if (deploymentKey) {
+                url += '&deploymentKey=' + deploymentKey;
             }
             $http({method: 'GET', url: url}).
                 success(function(response, status, headers, config) {

@@ -157,10 +157,10 @@ activitiApp.service('RuntimeAppDefinitionService', ['$http', '$q', '$location', 
             });
         };
 
-        this.deleteAppDefinition = function (appDefinitionId) {
+        this.deleteAppDefinition = function (deploymentKey) {
             var promise = httpAsPromise({
                 method: 'DELETE',
-                url: ACTIVITI.CONFIG.contextRoot + '/app/rest/runtime/app-definitions/' + appDefinitionId
+                url: ACTIVITI.CONFIG.contextRoot + '/app/rest/runtime/app-definitions/' + deploymentKey
             });
 
             return promise;

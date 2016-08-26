@@ -73,11 +73,11 @@ angular.module('activitiApp')
                 $scope.model.filter.param.assignment = $scope.model.assignmentOptions[0].id;
                 $scope.model.filter.param.processDefinitionId = 'default';
 
-                $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
-                $scope.missingAppdefinition = $scope.appDefinitionId === false;
+                $scope.deploymentKey = $routeParams.deploymentKey;
+                $scope.missingAppdefinition = $scope.deploymentKey === false;
 
                 // In case of viewing tasks in an app-context, need to make filter aware of this
-                $scope.model.filter.param.appDefinitionId = $scope.appDefinitionId;
+                $scope.model.filter.param.deploymentKey = $scope.deploymentKey;
 
                 // Propagate to root filter
                 if (forcePropagateToRootScope === true || ($rootScope.taskFilter === null && $rootScope.taskFilter === undefined)) {
@@ -96,7 +96,7 @@ angular.module('activitiApp')
             }
 
             // Update app on rootScope. If app id present, it will fetch definition if not already fetched to update view and navigation accordingly
-            AppDefinitionService.setActiveAppDefinitionId($scope.appDefinitionId);
+            AppDefinitionService.setActiveDeploymentKey($scope.deploymentKey);
 
             // Callback for state selection widget
             $scope.selectStateFilter = function (state) {
@@ -165,8 +165,8 @@ angular.module('activitiApp')
                 }
 
                 // App definition
-                if (params.appDefinitionId) {
-                    data.appDefinitionId = params.appDefinitionId;
+                if (params.deploymentKey) {
+                    data.deploymentKey = params.deploymentKey;
                 }
 
                 // Sort order
@@ -328,7 +328,7 @@ angular.module('activitiApp')
             });
 
             // Load process definitions for the filter dropdown
-            $rootScope.loadProcessDefinitions($scope.appDefinitionId);
+            $rootScope.loadProcessDefinitions($scope.deploymentKey);
 
             // Add a watch, so we can
             var unregisterWatch = $scope.$watch('root.processDefinitions', function(data) {
