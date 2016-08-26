@@ -12,6 +12,8 @@
  */
 package com.activiti.model.idm;
 
+import org.activiti.engine.identity.Group;
+
 import com.activiti.model.common.AbstractRepresentation;
 
 /**
@@ -22,6 +24,15 @@ public class GroupRepresentation extends AbstractRepresentation {
   protected String id;
   protected String name;
   protected String type;
+  
+  public GroupRepresentation() {
+  }
+  
+  public GroupRepresentation(Group group) {
+    setId(group.getId());
+    setName(group.getName());
+    setType(group.getType());
+  }
   
   public String getId() {
     return id;

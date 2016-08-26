@@ -15,6 +15,8 @@ package com.activiti.model.idm;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.identity.User;
+
 import com.activiti.model.common.AbstractRepresentation;
 
 /**
@@ -26,7 +28,20 @@ public class UserRepresentation extends AbstractRepresentation {
   protected String firstName;
   protected String lastName;
   protected String email;
+  protected String fullName;
   protected List<GroupRepresentation> groups = new ArrayList<GroupRepresentation>();
+  
+  public UserRepresentation() {
+    
+  }
+  
+  public UserRepresentation(User user) {
+    setId(user.getId());
+    setFirstName(user.getFirstName());
+    setLastName(user.getLastName());
+    setFullName( (user.getFirstName() != null ? user.getFirstName() : "") + " " + (user.getLastName() != null ? user.getLastName() : ""));
+    setEmail(user.getEmail());
+  }
   
   public String getId() {
     return id;
@@ -51,6 +66,12 @@ public class UserRepresentation extends AbstractRepresentation {
   }
   public void setEmail(String email) {
     this.email = email;
+  }
+  public String getFullName() {
+    return fullName;
+  }
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
   public List<GroupRepresentation> getGroups() {
     return groups;

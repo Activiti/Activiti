@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.activiti.constant.GroupIds;
 import com.activiti.constant.GroupTypes;
 
 /**
@@ -90,7 +91,7 @@ public class Bootstrapper implements ApplicationListener<ContextRefreshedEvent> 
 
   protected void initializeSuperUserGroups(User superUser) {
     String superUserGroupName = env.getRequiredProperty("admin.group");
-    Group group = identityService.newGroup("ROLE_ADMIN");
+    Group group = identityService.newGroup(GroupIds.ROLE_ADMIN);
     group.setName(superUserGroupName);
     group.setType(GroupTypes.TYPE_SECURITY_ROLE);
     identityService.saveGroup(group);

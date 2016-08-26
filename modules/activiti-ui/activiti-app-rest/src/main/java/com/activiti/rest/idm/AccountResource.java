@@ -68,19 +68,11 @@ public class AccountResource {
   public UserRepresentation getAccount() {
     User user = SecurityUtils.getCurrentActivitiAppUser().getUserObject();
     
-    UserRepresentation userRepresentation = new UserRepresentation();
-    userRepresentation.setId(user.getId());
-    userRepresentation.setFirstName(user.getFirstName());
-    userRepresentation.setLastName(user.getLastName());
-    userRepresentation.setEmail(user.getEmail());
+    UserRepresentation userRepresentation = new UserRepresentation(user);
     
     List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
     for (Group group : groups) {
-      GroupRepresentation groupRepresentation = new GroupRepresentation();
-      groupRepresentation.setId(group.getId());
-      groupRepresentation.setName(group.getName());
-      groupRepresentation.setType(group.getType());
-      userRepresentation.getGroups().add(groupRepresentation);
+      userRepresentation.getGroups().add(new GroupRepresentation(group));
     }
     
     return userRepresentation;

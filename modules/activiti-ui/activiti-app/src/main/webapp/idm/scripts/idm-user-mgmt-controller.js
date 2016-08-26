@@ -196,7 +196,6 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
         };
 
         $scope.loadUsers();
-        $scope.loadUserSummary();
 
     }]);
 
