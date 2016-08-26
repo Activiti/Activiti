@@ -896,6 +896,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         Reader reader = new InputStreamReader(inputStream);
         Properties properties = new Properties();
         properties.put("prefix", databaseTablePrefix);
+        properties.put("wildcardEscapeCharacter", wildcardEscapeCharacter);
         if(databaseType != null) {
           properties.put("limitBefore" , DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));

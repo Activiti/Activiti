@@ -180,7 +180,7 @@
         and RES.NAME_ = #{variableName}
       </if>
       <if test="variableNameLike != null">
-        and RES.NAME_ like #{variableNameLike} escape '\'
+        and RES.NAME_ like #{variableNameLike} escape '${wildcardEscapeCharacter}'
       </if>
       
       <!-- PLEASE NOTE: If you change anything have a look into the Execution, the same query object is used there! -->
@@ -197,7 +197,7 @@
         </choose>
           #{queryVariableValue.textValue}
           <choose>
-            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '${wildcardEscapeCharacter}'</when>
           </choose>
         </if>
         <if test="queryVariableValue.textValue2 != null">
@@ -208,7 +208,7 @@
         </choose>
           #{queryVariableValue.textValue2}
           <choose>
-            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '${wildcardEscapeCharacter}'</when>
           </choose>
         </if>
         <if test="queryVariableValue.longValue != null">

@@ -424,7 +424,7 @@
       </if>
       <if test="processKeyNotIn != null">
         <foreach collection="processKeyNotIn" index="index" item="procDefKey">
-        and DEF.KEY_ not like #{procDefKey} escape '\'
+        and DEF.KEY_ not like #{procDefKey} escape '${wildcardEscapeCharacter}'
       </foreach>
       </if>
       <if test="unfinished">
@@ -457,7 +457,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike} escape '\'
+        and RES.TENANT_ID_ like #{tenantIdLike} escape '${wildcardEscapeCharacter}'
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -466,10 +466,10 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike} escape '\'
+        and RES.NAME_ like #{nameLike} escape '${wildcardEscapeCharacter}'
       </if>
         <if test="nameLikeIgnoreCase != null">
-        and lower(RES.NAME_) like #{nameLikeIgnoreCase} escape '\'
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase} escape '${wildcardEscapeCharacter}'
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">
@@ -495,7 +495,7 @@
           </choose>
           #{queryVariableValue.textValue}
           <choose>
-              <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+              <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '${wildcardEscapeCharacter}'</when>
           </choose>
         </if>
         <if test="queryVariableValue.textValue2 != null">
@@ -506,7 +506,7 @@
         </choose>
           #{queryVariableValue.textValue2}
           <choose>
-              <when test="queryVariableValue.operator.equals('LIKE')"> escape '\'</when>
+              <when test="queryVariableValue.operator.equals('LIKE')"> escape '${wildcardEscapeCharacter}'</when>
           </choose>
         </if>
         <if test="queryVariableValue.longValue != null">
@@ -594,7 +594,7 @@
             or
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <foreach collection="orQueryObject.processKeyNotIn" index="index" item="procDefKey">
-                and DEF_OR${orIndex}.KEY_ not like #{procDefKey} escape '\'
+                and DEF_OR${orIndex}.KEY_ not like #{procDefKey} escape '${wildcardEscapeCharacter}'
               </foreach>
             </trim>
           </if>
@@ -628,7 +628,7 @@
             or RES.TENANT_ID_ = #{orQueryObject.tenantId}
           </if>
           <if test="orQueryObject.tenantIdLike != null">
-            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike} escape '\'
+            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike} escape '${wildcardEscapeCharacter}'
           </if>
           <if test="orQueryObject.withoutTenantId">
             or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -637,10 +637,10 @@
             or RES.NAME_ = #{orQueryObject.name}
           </if>
           <if test="orQueryObject.nameLike != null">
-            or RES.NAME_ like #{orQueryObject.nameLike} escape '\'
+            or RES.NAME_ like #{orQueryObject.nameLike} escape '${wildcardEscapeCharacter}'
           </if>
           <if test="orQueryObject.nameLikeIgnoreCase != null">
-            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase} escape '\'
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase} escape '${wildcardEscapeCharacter}'
           </if>
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
             or
@@ -668,7 +668,7 @@
                 </choose>
                 #{queryVariableValue.textValue}
                 <choose>
-                  <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '\'</when>
+                  <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '${wildcardEscapeCharacter}'</when>
                 </choose>
               </if>
               <if test="queryVariableValue.textValue2 != null">
@@ -679,7 +679,7 @@
                 </choose>
                 #{queryVariableValue.textValue2}
                 <choose>
-                  <when test="queryVariableValue.operator.equals('LIKE')"> escape '\'</when>
+                  <when test="queryVariableValue.operator.equals('LIKE')"> escape '${wildcardEscapeCharacter}'</when>
                 </choose>
               </if>
               <if test="queryVariableValue.longValue != null">
