@@ -95,10 +95,6 @@ activitiApp.controller('IdmProfileMgmtController', ['$rootScope', '$scope', '$mo
         };
         $scope.loadProfile();
 
-        IdmService.getIdmInfo().then(function(data) {
-            $scope.model.showChangePasswordButton = (data !== null && data !== undefined && data === 'default');
-        });
-
     }]);
 
 activitiApp.

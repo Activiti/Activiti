@@ -39,20 +39,6 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
 
         $scope.model.activeSort = $scope.model.sorts[0];
 
-        $scope.loadUserSummary = function() {
-            $scope.model.loading = true;
-
-            var summaryParams = {};
-            $http({method: 'GET', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/users/summary', params: summaryParams}).
-                success(function(data, status, headers, config) {
-                    $scope.model.summary = data;
-                }).error(function(data, status, headers, config) {
-                    if(status == 403) {
-                        $rootScope.backToLanding();
-                    }
-                });
-        };
-
         $scope.clearSelectedUsers = function() {
             $scope.model.selectedUsers = {};
             $scope.model.selectedUserCount = 0;
@@ -107,7 +93,6 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
                     // Actually do the refresh-call, after resetting start
                     $scope.model.start = 0;
                     $scope.loadUsers();
-                    $scope.loadUserSummary();
                 }
             }, 100);
         };
@@ -254,7 +239,6 @@ activitiApp.controller('IdmCreateUserPopupController', ['$rootScope', '$scope', 
 
                     $rootScope.addAlert('New user created', 'info');
                     $scope.loadUsers();
-                    $scope.loadUserSummary();
 
                     $scope.model.loading = false;
                     $scope.$hide();
@@ -381,7 +365,6 @@ activitiApp.controller('IdmUserBulkUpdatePopupController', ['$rootScope', '$scop
                 $scope.model.loading = false;
                 $rootScope.addAlert($scope.model.selectedUserCount + ' user(s) updated', 'info');
                 $scope.loadUsers();
-                $scope.loadUserSummary();
 
          }).
          error(function(data, status, headers, config) {
