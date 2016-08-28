@@ -148,7 +148,7 @@ public class ProcessInstanceHelper {
     }
     
     ExecutionEntity processInstance = commandContext.getExecutionEntityManager()
-    		.createProcessInstanceExecution(processDefinition.getId(), businessKey, processDefinition.getTenantId(), initiatorVariableName);
+    		.createProcessInstanceExecution(processDefinition, businessKey, processDefinition.getTenantId(), initiatorVariableName);
     
     commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
     
