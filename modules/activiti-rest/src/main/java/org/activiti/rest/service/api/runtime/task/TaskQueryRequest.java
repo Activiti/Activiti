@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class TaskQueryRequest extends PaginateRequest {
 
@@ -48,6 +49,7 @@ public class TaskQueryRequest extends PaginateRequest {
   private String processInstanceId;
   private String processInstanceBusinessKey;
   private String processInstanceBusinessKeyLike;
+  private String processDefinitionId;
   private String processDefinitionKey;
   private String processDefinitionName;
   private String processDefinitionKeyLike;
@@ -378,6 +380,14 @@ public class TaskQueryRequest extends PaginateRequest {
 	  return withoutDueDate;
   }
   
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
   public String getProcessDefinitionKey() {
 	  return processDefinitionKey;
   }
