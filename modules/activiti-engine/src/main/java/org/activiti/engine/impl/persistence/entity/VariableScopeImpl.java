@@ -222,7 +222,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     }
     
     if (transientVariabes != null) {
-      variables.putAll(variables);
+      variables.putAll(transientVariabes);
     }
 
     return variables;
