@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,19 @@ public class IdmUsersResource {
           }
         }
       }
+    }
+    
+    @RequestMapping(value = "/rest/admin/users/{userId}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable String userId) {
+      validateAdminRole();
+      
+      List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
+      if (groups != null && groups.size() > 0) {
+        for (Group group : groups) {
+          identityService.deleteMembership(userId, group.getId());
+        }
+      }
+      identityService.deleteUser(userId);
     }
  
     

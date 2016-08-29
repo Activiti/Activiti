@@ -180,6 +180,28 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
 
         };
 
+        $scope.deleteUsers = function() {
+            $scope.model.loading = true;
+            $scope.getSelectedUsers().forEach(function(selectedUser) {
+                $http({method: 'DELETE', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/users/' + selectedUser.id}).
+                    success(function (data, status, headers, config) {
+
+                        $rootScope.addAlert('User deleted', 'info');
+                        $scope.loadUsers();
+
+                        $scope.model.loading = false;
+                    }).
+                    error(function (data, status, headers, config) {
+                        $scope.model.loading = false;
+                        if (data && data.message) {
+                            $rootScope.addAlert(data.message, 'error');
+                        } else {
+                            $rootScope.addAlert('Error while deleting user', 'error');
+                        }
+                    });
+            });
+        };
+
         $scope.getSelectedUsers = function() {
             var selected = [];
             for(var i = 0; i<$scope.model.users.size; i++) {

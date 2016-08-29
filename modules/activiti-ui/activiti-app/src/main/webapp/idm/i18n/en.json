@@ -37,6 +37,7 @@
          "CHANGE-ACCOUNT-TYPE": "Change account type",
          "CHANGE-PASSWORD": "Change password",
          "EDIT-USER": "Change details",
+         "DELETE-USERS": "Delete",
          "TOTAL-USERS": "total",
          "INACTIVE-USERS": "inactive",
          "ENTERPRISE-USERS": "enterprise",
