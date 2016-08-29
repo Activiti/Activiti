@@ -99,6 +99,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       }
       
     } else {
+      Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+      
       innerActivityBehavior.execute(execution);
     }
   }
@@ -219,16 +221,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       setLoopVariable(execution, collectionElementVariable, value);
     }
 
-    // If loopcounter == 0, then historic activity instance already created,
-    // no need to pass through executeActivity again since it will create a new historic activity
-    if (loopCounter == 0) {
-      Context.getCommandContext().getProcessEngineConfiguration().getListenerNotificationHelper()
-        .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_START);
-      innerActivityBehavior.execute(execution);
-    } else {
-      execution.setCurrentFlowElement(activity);
-      Context.getAgenda().planContinueMultiInstanceOperation((ExecutionEntity) execution);
-    }
+    execution.setCurrentFlowElement(activity);
+    Context.getAgenda().planContinueMultiInstanceOperation((ExecutionEntity) execution);
   }
 
   protected boolean usesCollection() {
