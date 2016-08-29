@@ -12,15 +12,20 @@
  */
 package com.activiti.rest.idm;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activiti.security.ActivitiAppUser;
+import com.activiti.model.idm.GroupRepresentation;
+import com.activiti.model.idm.UserRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.UnauthorizedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +41,9 @@ public class AccountResource {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private IdentityService identityService;
 
   /**
    * GET  /rest/authenticate -> check if the user is authenticated, and return its full name.
@@ -57,8 +65,16 @@ public class AccountResource {
    * GET  /rest/account -> get the current user.
    */
   @RequestMapping(value = "/rest/account", method = RequestMethod.GET, produces = "application/json")
-  public User getAccount() {
-    ActivitiAppUser user = SecurityUtils.getCurrentActivitiAppUser();
-    return user.getUserObject();
+  public UserRepresentation getAccount() {
+    User user = SecurityUtils.getCurrentActivitiAppUser().getUserObject();
+    
+    UserRepresentation userRepresentation = new UserRepresentation(user);
+    
+    List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
+    for (Group group : groups) {
+      userRepresentation.getGroups().add(new GroupRepresentation(group));
+    }
+    
+    return userRepresentation;
   }
 }

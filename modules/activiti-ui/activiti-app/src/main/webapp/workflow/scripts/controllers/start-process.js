@@ -16,12 +16,12 @@ angular.module('activitiApp')
       .controller('StartProcessController', ['$rootScope', '$scope', '$translate', '$http', '$timeout','$location', '$route', '$modal', '$routeParams', '$q', 'AppDefinitionService', 'ProcessService', 'FormService', 'RelatedContentService',
    function ($rootScope, $scope, $translate, $http, $timeout, $location, $route, $modal, $routeParams, $q, AppDefinitionService, ProcessService, FormService, RelatedContentService) {
 
-       $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
-       $scope.missingAppdefinition = $scope.appDefinitionId === false;
+       $scope.deploymentKey = $routeParams.deploymentKey;
+       $scope.missingAppdefinition = $scope.deploymentKey === false;
 
-       AppDefinitionService.setActiveAppDefinitionId($scope.appDefinitionId);
+       AppDefinitionService.setActiveDeploymentKey($scope.deploymentKey);
 
-       ProcessService.getProcessDefinitions($scope.appDefinitionId).then(function(reponse){
+       ProcessService.getProcessDefinitions($scope.deploymentKey).then(function(reponse){
            $scope.processDefinitions = reponse.data;
        });
 
@@ -158,8 +158,8 @@ angular.module('activitiApp')
       };
 
       $scope.navigateToView = function (view) {
-          if ($scope.appDefinitionId && !ACTIVITI.CONFIG.integrationProfile) {
-              $location.path("/apps/" + encodeURIComponent($scope.appDefinitionId)+ view);
+          if ($scope.deploymentKey && !ACTIVITI.CONFIG.integrationProfile) {
+              $location.path("/apps/" + encodeURIComponent($scope.deploymentKey)+ view);
           }
           else {
               $location.path(view);

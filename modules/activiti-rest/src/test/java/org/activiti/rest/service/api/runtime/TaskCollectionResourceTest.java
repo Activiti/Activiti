@@ -285,6 +285,13 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?withoutTenantId=true";
       assertResultsPresentInDataResponse(url, adhocTask.getId(), processTask.getId());
 
+      // Process definition
+      url  = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?processDefinitionKey=" + processInstance.getProcessDefinitionKey();
+      assertResultsPresentInDataResponse(url, processTask.getId());
+            
+      url  = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?processDefinitionId=" + processInstance.getProcessDefinitionId();
+      assertResultsPresentInDataResponse(url, processTask.getId());
+      
       // Set tenant on deployment
       managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
 

@@ -27,16 +27,6 @@ angular.module('activitiApp').service('IdmService', ['$http', '$q', '$rootScope'
             return deferred.promise;
         };
 
-        this.getIdmInfo = function () {
-            return httpAsPromise(
-                {
-                    method: 'GET',
-                    url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/idm-info'
-                }
-            )
-        };
-
-
         /*
             PROFILE
         */

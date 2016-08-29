@@ -9,20 +9,12 @@
 
         <div style="padding: 0 15px 15px 15px;">
 
-            <h4>{{'IDM.USER-MGMT.EMAIL-OR-NAME' | translate}}</h4>
+            <h4>{{'IDM.USER-MGMT.NAME-SEARCH' | translate}}</h4>
             <div class="input-group">
                 <span class="input-group-addon">
                     <i class="glyphicon glyphicon-search"></i>
                 </span>
                 <input type="text" ng-model="model.pendingFilterText" class="form-control" ng-change="refreshDelayed()">
-            </div>
-
-            <h4>{{'IDM.USER-MGMT.COMPANY' | translate}}</h4>
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <i class="glyphicon glyphicon-briefcase"></i>
-                </span>
-                <input type="text" ng-model="model.pendingCompanyText" class="form-control" ng-change="refreshDelayed()">
             </div>
         </div>
 
@@ -50,18 +42,6 @@
             </div>
             <div>
                 <h2>{{'IDM.USER-MGMT.TITLE' | translate}}</h2>
-                <div class="detail">
-
-                    <table class="users-details">
-                        <tr>
-                            <td id="total-user-count" class="user-detail">
-                                <span><i class="glyphicon glyphicon-user"></i>{{model.summary.totalUserCount | number}} {{'IDM.USER-MGMT.TOTAL-USERS' | translate}}</span>
-                            </td>
-                        </tr>
-
-                    </table>
-
-                </div>
             </div>
 
         </div>
@@ -93,15 +73,15 @@
                     <table width="100%" class="users" ng-if="model.users && model.users.data.length > 0">
                         <tr>
                             <th width="4%"></th>
-                            <th width="20%">{{'IDM.USER-MGMT.EMAIL' | translate}}</th>
-                            <th width="15%">{{'IDM.USER-MGMT.NAME' | translate}}</th>
-                            <th width="15%">{{'IDM.USER-MGMT.CREATED' | translate}}</th>
+                            <th width="20%">{{'IDM.USER-MGMT.ID' | translate}}</th>
+                            <th width="30%">{{'IDM.USER-MGMT.EMAIL' | translate}}</th>
+                            <th width="30%">{{'IDM.USER-MGMT.NAME' | translate}}</th>
                         </tr>
                         <tr ng-repeat="user in model.users.data" ng-click="toggleUserSelection(user)" ng-class="{'selected': model.selectedUsers[user.id]}">
                             <td class="control"><input type="checkbox" ng-checked="model.selectedUsers[user.id]"></td>
+                            <td>{{user.id}}</td>
                             <td>{{user.email}}</td>
-                            <td>{{user.fullname}}</td>
-                            <td>{{user.created | dateformat}}</td>
+                            <td>{{user.fullName}}</td>
                         </tr>
                     </table>
                 </div>

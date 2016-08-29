@@ -243,6 +243,10 @@ public class TaskBaseResource {
     if (request.getProcessInstanceBusinessKeyLike() != null) {
       taskQuery.processInstanceBusinessKeyLike(request.getProcessInstanceBusinessKeyLike());
     }
+    
+    if (request.getProcessDefinitionId() != null) {
+      taskQuery.processDefinitionId(request.getProcessDefinitionId());
+    }
 
     if (request.getProcessDefinitionKey() != null) {
       taskQuery.processDefinitionKey(request.getProcessDefinitionKey());

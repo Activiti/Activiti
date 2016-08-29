@@ -28,7 +28,7 @@ public class ProcessDefinitionsResource extends AbstractProcessDefinitionsResour
 	@RequestMapping(value = "/rest/process-definitions", method = RequestMethod.GET)
     public ResultListDataRepresentation getProcessDefinitions(
     		@RequestParam(value="latest", required=false) Boolean latest,
-            @RequestParam(value="deploymentKey", required=false) String deploymentKey) {
+        @RequestParam(value="deploymentKey", required=false) String deploymentKey) {
 	    
 	    return super.getProcessDefinitions(latest, deploymentKey);
     }

@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -27,11 +28,11 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
   
-  ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId, String initiatorVariableName);
+  ExecutionEntity createProcessInstanceExecution(ProcessDefinition processDefinition, String businessKey, String tenantId, String initiatorVariableName);
 
   ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity);
   
-  ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity, String businessKey);
+  ExecutionEntity createSubprocessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, String businessKey);
   
   /**
    * Finds the {@link ExecutionEntity} for the given root process instance id.

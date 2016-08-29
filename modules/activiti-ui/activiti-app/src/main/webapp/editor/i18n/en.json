@@ -102,7 +102,7 @@
             "MY-PROCESSES-COUNT": "You have {{total}} business process models",
             "MY-PROCESSES-ONE": "You have one business process model",
             "MY-PROCESSES-EMPTY": "It looks like you have not created any business process models yet. You can design process models, user forms and then bundle them up into a process app to share with any colleagues. The first step is to create a process model:",
-            "MY-PROCESSES-BPMN-HINT": "If you are familiar with the BPMN standard, you can use the Visual Editor.",
+            "MY-PROCESSES-BPMN-HINT": "Create a BPMN model using the BPMN Visual Editor.",
             "MY-PROCESSES-BPMN-IMPORT-HINT": "You can also import existing BPMN models.",
             "MY-PROCESSES-STEP-HINT": "If you are new to designing processes, you can use the Step Editor.",
             "FILTER-TEXT": ", matching \"{{filterText}}\"",
@@ -148,7 +148,7 @@
             "NAME-DESC": "Name, Z-A"
         }
     },
-    
+
     "DECISION-TABLES-LIST": {
         "TITLE": "Decision Tables",
         "SEARCH-PLACEHOLDER": "Search",
@@ -429,7 +429,7 @@
           "NOT-FOUND": "The requested form does not exist"
         }
     },
-    
+
     "DECISION-TABLE": {
         "NAME": "Decision Table name",
         "KEY": "Decision Table key",
@@ -855,7 +855,7 @@
           "VALIDATION-ERROR": "Form contains validation errors."
         }
     },
-    
+
     "DECISION-TABLE-EDITOR": {
         "EMPTY-MESSAGES": {
             "NO-COLUMN": "You need to create at least 1 condition and 1 action column before you can start adding decision rows to your table.",
@@ -985,7 +985,7 @@
             "VALIDATION-ERROR": "Decision table model contains validation errors."
         }
     },
-    
+
     "RECAPTCHA": {
         "RECAPTCHA-IMAGE": "Enter the words you read below",
         "RECAPTCHA-AUDIO": "Enter the numbers you hear",
@@ -1796,7 +1796,7 @@
     "EVENT_TYPE.VARIABLE.CREATED.TOOLTIP": "A new variable has been created",
     "EVENT_TYPE.VARIABLE.DELETED.TOOLTIP": "An existing variable has been deleted",
     "EVENT_TYPE.VARIABLE.UPDATED.TOOLTIP": "An existing variable has been updated",
-    
+
     "PROPERTY.DECISIONTABLEREFERENCE.EMPTY" : "No reference selected",
     "PROPERTY.DECISIONTABLEREFERENCE.TITLE" : "Decision table reference",
     "PROPERTY.DECISIONTABLEREFERENCE.ERROR.FORM" : "There was an error loading the decision tables. Try again later",

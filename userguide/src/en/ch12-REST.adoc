@@ -3037,6 +3037,7 @@ GET runtime/tasks
 |processInstanceId|No|String|Only return tasks which are part of the process instance with the given id.
 |processInstanceBusinessKey|No|String|Only return tasks which are part of the process instance with the given business key.
 |processInstanceBusinessKeyLike|No|String|Only return tasks which are part of the process instance which has a business key like the given value.
+|processDefinitionId|No|String|Only return tasks which are part of a process instance which has a process definition with the given id.
 |processDefinitionKey|No|String|Only return tasks which are part of a process instance which has a process definition with the given key.
 |processDefinitionKeyLike|No|String|Only return tasks which are part of a process instance which has a process definition with a key like the given value.
 |processDefinitionName|No|String|Only return tasks which are part of a process instance which has a process definition with the given name.

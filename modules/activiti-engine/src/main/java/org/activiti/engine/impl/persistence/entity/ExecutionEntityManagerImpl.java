@@ -35,6 +35,7 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
@@ -205,14 +206,15 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   // CREATE METHODS
 
   @Override
-  public ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId, String initiatorVariableName) {
+  public ExecutionEntity createProcessInstanceExecution(ProcessDefinition processDefinition, String businessKey, String tenantId, String initiatorVariableName) {
     ExecutionEntity processInstanceExecution = executionDataManager.create();
     
     if (isExecutionRelatedEntityCountEnabledGlobally()) {
       ((CountingExecutionEntity) processInstanceExecution).setCountEnabled(true);
     }
     
-    processInstanceExecution.setProcessDefinitionId(processDefinitionId);
+    processInstanceExecution.setProcessDefinitionId(processDefinition.getId());
+    processInstanceExecution.setProcessDefinitionKey(processDefinition.getKey());
     processInstanceExecution.setBusinessKey(businessKey);
     processInstanceExecution.setScope(true); // process instance is always a scope for all child executions
 
@@ -257,6 +259,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     inheritCommonProperties(parentExecutionEntity, childExecution);
     childExecution.setParent(parentExecutionEntity);
     childExecution.setProcessDefinitionId(parentExecutionEntity.getProcessDefinitionId());
+    childExecution.setProcessDefinitionKey(parentExecutionEntity.getProcessDefinitionKey());
     childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
         ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
     childExecution.setScope(false);
@@ -280,10 +283,11 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
   
   @Override
-  public ExecutionEntity createSubprocessInstance(String processDefinitionId, ExecutionEntity superExecutionEntity, String businessKey) {
+  public ExecutionEntity createSubprocessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, String businessKey) {
     ExecutionEntity subProcessInstance = executionDataManager.create(); 
     inheritCommonProperties(superExecutionEntity, subProcessInstance);
-    subProcessInstance.setProcessDefinitionId(processDefinitionId);
+    subProcessInstance.setProcessDefinitionId(processDefinition.getId());
+    subProcessInstance.setProcessDefinitionKey(processDefinition.getKey());
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions

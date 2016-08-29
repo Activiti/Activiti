@@ -111,7 +111,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().createSubprocessInstance(
-        processDefinition.getId(),executionEntity, businessKey);
+        processDefinition,executionEntity, businessKey);
     Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(executionEntity, subProcessInstance, initialFlowElement);
 
     // process template-defined data objects
@@ -144,38 +144,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));
   }
   
-  protected ExecutionEntity createSubProcessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
-    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-    ExecutionEntity subProcessInstance = executionEntityManager.create(); 
-    subProcessInstance.setProcessDefinitionId(processDefinition.getId());
-    subProcessInstance.setSuperExecution(superExecutionEntity);
-    subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
-    subProcessInstance.setScope(true); // process instance is always a scope for all child executions
-    subProcessInstance.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
-    subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
-
-    // Inherit tenant id (if any)
-    if (processDefinition.getTenantId() != null) {
-      subProcessInstance.setTenantId(processDefinition.getTenantId());
-    }
-
-    // Store in database
-    executionEntityManager.insert(subProcessInstance, false);
-
-    subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
-    superExecutionEntity.setSubProcessInstance(subProcessInstance);
-
-    // Fire events manage bidirectional super-subprocess relation
-    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(superExecutionEntity, subProcessInstance, initialFlowElement);
-
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
-    }
-
-    return subProcessInstance;
-  }
-
-
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data. no control flow available on this execution.
 
