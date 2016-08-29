@@ -74,7 +74,7 @@ public class IdmGroupsResource {
     
     UserQuery userQuery = identityService.createUserQuery().memberOfGroup(groupId);
     if (StringUtils.isNotEmpty(filter)) {
-      userQuery.userFullNameLike(filter);
+      userQuery.userFullNameLike("%" + filter + "%");
     }
     List<User> users = userQuery.listPage(pageValue, pageSizeValue);
     

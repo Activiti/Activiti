@@ -21,7 +21,9 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.task.IdentityLink;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.activiti.model.common.ResultListDataRepresentation;
@@ -45,7 +47,11 @@ public class AbstractWorkflowUsersResource {
     int page = 0;
     int pageSize = MAX_PEOPLE_SIZE;
 
-    List<User> matchingUsers = identityService.createUserQuery().userFullNameLike(filter).listPage(page, pageSize);
+    UserQuery userQuery = identityService.createUserQuery();
+    if (StringUtils.isNotEmpty(filter)) {
+      userQuery.userFullNameLike("%" + filter + "%");
+    }
+    List<User> matchingUsers = userQuery.listPage(page, pageSize);
 
     // Filter out users already part of the task/process of which the ID has been passed
     if (excludeTaskId != null) {

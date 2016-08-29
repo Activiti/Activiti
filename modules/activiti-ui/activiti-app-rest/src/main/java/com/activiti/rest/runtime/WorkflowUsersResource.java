@@ -12,7 +12,6 @@
  */
 package com.activiti.rest.runtime;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,20 +30,11 @@ public class WorkflowUsersResource extends AbstractWorkflowUsersResource {
     		@RequestParam(value="filter", required=false) String filter, 
     		@RequestParam(value="email", required=false) String email,
     		@RequestParam(value="externalId", required=false) String externalId,
-            @RequestParam(value="excludeTaskId", required=false) String excludeTaskId,
-            @RequestParam(value="excludeProcessId", required=false) String excludeProcessId,
-            @RequestParam(value="groupId", required=false) Long groupId,
-            @RequestParam(value="tenantId", required=false) Long tenantId) {
-    	
+        @RequestParam(value="excludeTaskId", required=false) String excludeTaskId,
+        @RequestParam(value="excludeProcessId", required=false) String excludeProcessId,
+        @RequestParam(value="groupId", required=false) Long groupId,
+        @RequestParam(value="tenantId", required=false) Long tenantId) {
     	return super.getUsers(filter, email, excludeTaskId, excludeProcessId, groupId);
-    }
-    
-    @RequestMapping(value = "/rest/workflow-users/{userId}/recent-users", method = RequestMethod.GET)
-    public ResultListDataRepresentation getRecentUsers(@PathVariable(value="userId") Long userId,
-            @RequestParam(value="excludeTaskId", required=false) String excludeTaskId,
-            @RequestParam(value="excludeProcessId", required=false) String excludeProcessId) {
-        
-    	return new ResultListDataRepresentation();
     }
     
 }
