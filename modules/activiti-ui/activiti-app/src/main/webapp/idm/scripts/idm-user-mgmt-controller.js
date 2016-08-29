@@ -131,6 +131,7 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
         $scope.addUser = function() {
             $scope.model.errorMessage = undefined;
             $scope.model.user = undefined;
+            $scope.model.mode = 'create';
             _internalCreateModal({
                 scope: $scope,
                 template: 'views/popup/idm-user-create.html?version=' + new Date().getTime(),
@@ -153,6 +154,7 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
         $scope.editUserDetails = function() {
 
             $scope.model.user = undefined;
+            $scope.model.mode = 'edit';
             var selectedUsers = $scope.getSelectedUsers();
             if (selectedUsers && selectedUsers.length == 1) {
                 $scope.model.user = selectedUsers[0];
@@ -212,9 +214,7 @@ activitiApp.controller('IdmCreateUserPopupController', ['$rootScope', '$scope', 
 
 
         if ($scope.model.user === null || $scope.model.user === undefined) {
-
-            $scope.model.user = {
-            };
+            $scope.model.user = {};
         }
 
         $scope.createNewUser = function () {
@@ -226,11 +226,11 @@ activitiApp.controller('IdmCreateUserPopupController', ['$rootScope', '$scope', 
             model.loading = true;
 
             var data = {
+                id: model.user.id,
                 email: model.user.email,
                 firstName: model.user.firstName,
                 lastName: model.user.lastName,
                 password: model.user.password,
-                company: model.user.company
             };
 
             $http({method: 'POST', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/users', data: data}).
@@ -261,7 +261,7 @@ activitiApp.controller('IdmCreateUserPopupController', ['$rootScope', '$scope', 
         };
 
         $scope.editUserDetails = function() {
-            if (!$scope.model.user.email) {
+            if (!$scope.model.user.id) {
                 return;
             }
 
@@ -269,17 +269,16 @@ activitiApp.controller('IdmCreateUserPopupController', ['$rootScope', '$scope', 
             model.loading = true;
 
             var data = {
+                id: model.user.id,
                 email: model.user.email,
                 firstName: model.user.firstName,
                 lastName: model.user.lastName,
-                company: model.user.company
             };
 
             $http({method: 'PUT', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/users/' + $scope.model.user.id, data: data}).
                 success(function (data, status, headers, config) {
 
                     $scope.loadUsers();
-                    $scope.loadUserSummary();
 
                     $scope.model.loading = false;
                     $scope.$hide();
@@ -320,19 +319,11 @@ activitiApp.controller('IdmUserBulkUpdatePopupController', ['$rootScope', '$scop
           $scope.backToLanding();
       }
 
-      if($scope.model.mode == 'status') {
-            $scope.model.updateUsers = {
-                sendNotifications: false
-            };
-        } else if ($scope.model.mode == 'type') {
-            $scope.model.updateUsers = {
-                type: $scope.model.typeFilters[1]
-            };
-        } else if ($scope.model.mode == 'password') {
-            $scope.model.updateUsers = {
-                password: ''
-            };
-        }
+      if ($scope.model.mode == 'password') {
+          $scope.model.updateUsers = {
+              password: ''
+          };
+      }
 
      $scope.updateUsers = function () {
        $scope.model.loading = true;
@@ -349,12 +340,7 @@ activitiApp.controller('IdmUserBulkUpdatePopupController', ['$rootScope', '$scop
            users: userIds
        };
 
-       if($scope.model.mode == 'status') {
-         data.status = $scope.model.updateUsers.status.id;
-         data.sendNotifications = $scope.model.updateUsers.sendNotifications
-       } else if ($scope.model.mode == 'type') {
-         data.accountType = $scope.model.updateUsers.type.id;
-       } else if ($scope.model.mode == 'password') {
+       if ($scope.model.mode == 'password') {
          data.password = $scope.model.updateUsers.password;
        }
 

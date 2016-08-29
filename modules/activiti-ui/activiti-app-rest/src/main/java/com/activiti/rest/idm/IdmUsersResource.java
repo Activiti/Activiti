@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activiti.constant.GroupIds;
 import com.activiti.model.common.ResultListDataRepresentation;
 import com.activiti.model.idm.CreateUserRepresentation;
+import com.activiti.model.idm.UpdateUsersRepresentation;
 import com.activiti.model.idm.UserRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.BadRequestException;
@@ -84,9 +85,31 @@ public class IdmUsersResource {
     }
 
     @RequestMapping(value = "/rest/admin/users/{userId}", method = RequestMethod.PUT)
-    public void updateUserDetails(@PathVariable String userId, @RequestBody User userRepresentation) {
+    public void updateUserDetails(@PathVariable String userId, @RequestBody UpdateUsersRepresentation updateUsersRepresentation) {
+      User user = identityService.createUserQuery().userId(userId).singleResult();
+      if (user != null) {
+        user.setId(updateUsersRepresentation.getId());
+        user.setFirstName(updateUsersRepresentation.getFirstName());
+        user.setLastName(updateUsersRepresentation.getLastName());
+        user.setEmail(updateUsersRepresentation.getEmail());
+        identityService.saveUser(user);
+      }
+    }
+    
+    @RequestMapping(value = "/rest/admin/users", method = RequestMethod.PUT)
+    public void bulkUpdateUserDetails(@RequestBody UpdateUsersRepresentation updateUsersRepresentation) {
       validateAdminRole();
-    	//super.updateUserDetails(userId, userRepresentation);
+      
+      // Password update
+      if (updateUsersRepresentation.getPassword() != null) {
+        for (String userId : updateUsersRepresentation.getUsers()) {
+          User user = identityService.createUserQuery().userId(userId).singleResult();
+          if (user != null) {
+            user.setPassword(updateUsersRepresentation.getPassword());
+            identityService.saveUser(user);
+          }
+        }
+      }
     }
  
     

@@ -28,7 +28,7 @@
       "USER-MGMT": {
         "TITLE": "Matching users",
          "CREATE-USER": "Create user",
-         "EMAIL-OR-NAME": "Email or name",
+         "NAME-SEARCH": "Search by name",
          "COMPANY": "Company",
          "STATUS": "Status",
          "ACCOUNT": "Account type",
@@ -47,6 +47,7 @@
          "SHOW-PREVIOUS": "Show previous",
          "NO-MATCHING-USERS": "Found no matching users",
          "MATCHING-USERS": "Found {{total | number}} matching user(s), showing {{start + 1}} to {{start + size}}",
+         "ID": "ID",
          "EMAIL": "Email",
          "NAME": "Name",
          "CREATED": "Created",
@@ -68,6 +69,7 @@
          "POPUP": {
              "CREATE-TITLE": "Create user",
              "EDIT-TITLE": "Edit user details",
+             "CREATE-ID": "User id",
              "CREATE-EMAIL": "Email",
              "CREATE-INVALID-EMAIL": "Invalid",
              "CREATE-PASSWORD": "Password",
