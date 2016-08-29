@@ -22,6 +22,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import com.activiti.model.common.AbstractRepresentation;
+import com.activiti.model.idm.UserRepresentation;
 
 /**
  * REST representation of a process instance.
@@ -37,7 +38,7 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
     protected String tenantId;
     protected Date started;
     protected Date ended;
-    protected User startedBy;
+    protected UserRepresentation startedBy;
     protected String processDefinitionName;
     protected String processDefinitionDescription;
     protected String processDefinitionKey;
@@ -61,7 +62,7 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
         this.processDefinitionId = processInstance.getProcessDefinitionId();
         this.tenantId = processInstance.getTenantId();
         this.graphicalNotationDefined = graphicalNotation;
-        this.startedBy = startedBy;
+        this.startedBy = new UserRepresentation(startedBy);
     }
 
     public ProcessInstanceRepresentation(HistoricProcessInstance processInstance, ProcessDefinition processDefinition, boolean graphicalNotation, User startedBy) {
@@ -78,7 +79,7 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
         this.graphicalNotationDefined = graphicalNotation;
         this.started = processInstance.getStartTime();
         this.ended = processInstance.getEndTime();
-        this.startedBy = startedBy;
+        this.startedBy = new UserRepresentation(startedBy);
     }
 
     protected void mapProcessDefinition(ProcessDefinition processDefinition) {
@@ -105,11 +106,11 @@ public class ProcessInstanceRepresentation extends AbstractRepresentation {
         return name;
     }
 
-    public User getStartedBy() {
+    public UserRepresentation getStartedBy() {
         return startedBy;
     }
     
-    public void setStartedBy(User startedBy) {
+    public void setStartedBy(UserRepresentation startedBy) {
       this.startedBy = startedBy;
   }
     

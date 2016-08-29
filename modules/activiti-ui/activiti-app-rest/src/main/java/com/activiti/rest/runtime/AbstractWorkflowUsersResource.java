@@ -12,6 +12,7 @@
  */
 package com.activiti.rest.runtime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.activiti.model.common.ResultListDataRepresentation;
+import com.activiti.model.idm.UserRepresentation;
 
 public class AbstractWorkflowUsersResource {
 
@@ -60,11 +62,15 @@ public class AbstractWorkflowUsersResource {
       filterUsersInvolvedInProcess(excludeProcessId, matchingUsers);
     }
 
-    ResultListDataRepresentation result = new ResultListDataRepresentation(matchingUsers);
+    List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>(matchingUsers.size());
+    for (User user : matchingUsers) {
+      userRepresentations.add(new UserRepresentation(user));
+    }
+    ResultListDataRepresentation result = new ResultListDataRepresentation(userRepresentations);
 
     if (page != 0 || (page == 0 && matchingUsers.size() == pageSize)) {
       // Total differs from actual result size, need to fetch it
-      result.setTotal(identityService.createUserQuery().userFullNameLike(filter).count());
+      result.setTotal(userQuery.count());
     }
     return result;
   }

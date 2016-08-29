@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.model.common.ResultListDataRepresentation;
+import com.activiti.model.idm.UserRepresentation;
 import com.activiti.model.runtime.TaskRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.api.UserCache;
@@ -96,7 +97,7 @@ public class HistoricTaskQueryResource {
 
         CachedUser cachedUser = userCache.getUser(task.getAssignee());
         if (cachedUser != null && cachedUser.getUser() != null) {
-          representation.setAssignee(cachedUser.getUser());
+          representation.setAssignee(new UserRepresentation(cachedUser.getUser()));
         }
 
         result.add(representation);

@@ -16,12 +16,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
 
 import com.activiti.model.common.AbstractRepresentation;
+import com.activiti.model.idm.UserRepresentation;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,7 +37,7 @@ public class TaskRepresentation extends AbstractRepresentation {
   protected String name;
   protected String description;
   protected String category;
-  protected User assignee;
+  protected UserRepresentation assignee;
   protected Date created;
   protected Date dueDate;
   protected Date endDate;
@@ -58,9 +58,9 @@ public class TaskRepresentation extends AbstractRepresentation {
   protected boolean isMemberOfCandidateGroup;
   protected boolean isMemberOfCandidateUsers;
 
-  @JsonDeserialize(contentAs = User.class)
+  @JsonDeserialize(contentAs = UserRepresentation.class)
   @JsonInclude(Include.NON_NULL)
-  protected List<User> involvedPeople;
+  protected List<UserRepresentation> involvedPeople;
 
   // Needed for serialization!
   public TaskRepresentation() {
@@ -155,11 +155,11 @@ public class TaskRepresentation extends AbstractRepresentation {
     this.category = category;
   }
 
-  public User getAssignee() {
+  public UserRepresentation getAssignee() {
     return assignee;
   }
 
-  public void setAssignee(User assignee) {
+  public void setAssignee(UserRepresentation assignee) {
     this.assignee = assignee;
   }
 
@@ -315,11 +315,11 @@ public class TaskRepresentation extends AbstractRepresentation {
     this.duration = duration;
   }
 
-  public List<User> getInvolvedPeople() {
+  public List<UserRepresentation> getInvolvedPeople() {
     return involvedPeople;
   }
 
-  public void setInvolvedPeople(List<User> involvedPeople) {
+  public void setInvolvedPeople(List<UserRepresentation> involvedPeople) {
     this.involvedPeople = involvedPeople;
   }
 }

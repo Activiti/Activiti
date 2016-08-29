@@ -14,14 +14,14 @@
             </div>
 
             <div style="float:left; width:60px;">
-                <img ng-src="{{restRootUrl()}}/app/rest/admin/profile-picture?{{model.profile.lastUpdate}}"
+                <img ng-src="{{restRootUrl()}}/app/rest/admin/profile-picture?{{cacheBuster()}}"
                      style="width:60px; height: 60px;"
                      class="img-thumbnail clickable"
                      ng-click="showUploadPictureModal()">
             </div>
 
             <div>
-                <h2 style="margin-left:70px;margin-top:10px;">{{model.profile.firstName}} {{model.profile.lastName}}</h2>
+                <h2 style="margin-left:70px;margin-top:15px;">{{model.profile.firstName}} {{model.profile.lastName}}</h2>
             </div>
 
         </div>

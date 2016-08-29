@@ -85,6 +85,15 @@ activitiApp.controller('IdmProfileMgmtController', ['$rootScope', '$scope', '$mo
             }, $modal, $scope);
         };
 
+        // To fix cache
+        $scope.cacheBuster = function(force) {
+            if (!$scope.model.cacheBuster || force) {
+                $scope.model.cacheBuster = new Date().getTime();
+            } else {
+                return $scope.model.cacheBuster;
+            }
+        };
+
         // Fetch profile when page is shown
         $scope.loadProfile = function() {
             IdmService.getProfile().then(function (profileData) {
@@ -120,6 +129,7 @@ activitiApp.
                 }).success(function(data, status, headers, config) {
                     $scope.popup.loading = false;
                     $scope.$hide();
+                    $scope.cacheBuster(true);
                     $scope.loadProfile();
                 }).error(function(data, status, headers, config) {
 

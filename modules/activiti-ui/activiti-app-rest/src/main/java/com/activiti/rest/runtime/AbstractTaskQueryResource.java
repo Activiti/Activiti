@@ -38,6 +38,7 @@ import org.activiti.engine.task.TaskInfoQueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 
 import com.activiti.model.common.ResultListDataRepresentation;
+import com.activiti.model.idm.UserRepresentation;
 import com.activiti.model.runtime.TaskRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.api.UserCache;
@@ -277,7 +278,7 @@ public abstract class AbstractTaskQueryResource {
           CachedUser cachedUser = userCache.getUser(task.getAssignee());
           if (cachedUser != null && cachedUser.getUser() != null) {
             User assignee = cachedUser.getUser();
-            representation.setAssignee(assignee);
+            representation.setAssignee(new UserRepresentation(assignee));
           }
         }
         

@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.activiti.model.idm.UserRepresentation;
 import com.activiti.model.runtime.TaskRepresentation;
 import com.activiti.model.runtime.TaskUpdateRepresentation;
 import com.activiti.rest.util.TaskUtil;
@@ -95,21 +96,21 @@ public abstract class AbstractTaskResource {
     if (task.getAssignee() != null) {
       CachedUser cachedUser = userCache.getUser(task.getAssignee());
       if (cachedUser != null && cachedUser.getUser() != null) {
-        rep.setAssignee(cachedUser.getUser());
+        rep.setAssignee(new UserRepresentation(cachedUser.getUser()));
       }
     }
   }
 
-  protected List<User> getInvolvedUsers(String taskId) {
+  protected List<UserRepresentation> getInvolvedUsers(String taskId) {
     List<HistoricIdentityLink> idLinks = historyService.getHistoricIdentityLinksForTask(taskId);
-    List<User> result = new ArrayList<User>(idLinks.size());
+    List<UserRepresentation> result = new ArrayList<UserRepresentation>(idLinks.size());
 
     for (HistoricIdentityLink link : idLinks) {
       // Only include users and non-assignee links
       if (link.getUserId() != null && !IdentityLinkType.ASSIGNEE.equals(link.getType())) {
         CachedUser cachedUser = userCache.getUser(link.getUserId());
         if (cachedUser != null && cachedUser.getUser() != null) {
-          result.add(cachedUser.getUser());
+          result.add(new UserRepresentation(cachedUser.getUser()));
         }
       }
     }

@@ -12,23 +12,35 @@
  */
 package com.activiti.rest.idm;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.activiti.model.idm.ChangePasswordRepresentation;
 import com.activiti.model.idm.GroupRepresentation;
 import com.activiti.model.idm.UserRepresentation;
 import com.activiti.security.SecurityUtils;
 import com.activiti.service.exception.BadRequestException;
+import com.activiti.service.exception.InternalServerErrorException;
 import com.activiti.service.exception.NotFoundException;
 
 /**
@@ -74,6 +86,7 @@ public class IdmProfileResource {
     return new UserRepresentation(user);
   }
   
+  @ResponseStatus(value = HttpStatus.OK)
   @RequestMapping(value = "/profile-password", method = RequestMethod.POST, produces = "application/json")
   public void changePassword(@RequestBody ChangePasswordRepresentation changePasswordRepresentation) {
     User user = identityService.createUserQuery().userId(SecurityUtils.getCurrentUserId()).singleResult();
@@ -82,6 +95,42 @@ public class IdmProfileResource {
     }
     user.setPassword(changePasswordRepresentation.getNewPassword());
     identityService.saveUser(user);
+  }
+  
+  @RequestMapping(value = "/profile-picture", method = RequestMethod.GET)
+  public void getProfilePicture(HttpServletResponse response) {
+    try {
+      Picture picture = identityService.getUserPicture(SecurityUtils.getCurrentUserId());
+      response.setContentType(picture.getMimeType());
+      ServletOutputStream servletOutputStream = response.getOutputStream();
+      BufferedInputStream in = new BufferedInputStream(  new ByteArrayInputStream(picture.getBytes()));
+  
+      byte[] buffer = new byte[32384];
+      while (true) {
+        int count = in.read(buffer);
+        if (count == -1)
+          break;
+        servletOutputStream.write(buffer, 0, count);
+      }
+  
+      // Flush and close stream
+      servletOutputStream.flush();
+      servletOutputStream.close();
+    } catch (Exception e) {
+      throw new InternalServerErrorException("Could not get profile picture", e);
+    }
+  }
+
+  @ResponseStatus(value = HttpStatus.OK)
+  @RequestMapping(value = "/profile-picture", method = RequestMethod.POST, produces = "application/json")
+  public void uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+    Picture picture = null;
+    try {
+      picture = new Picture(file.getBytes(), file.getContentType());
+    } catch (IOException e) {
+      throw new InternalServerErrorException(e.getMessage(), e);
+    }
+    identityService.setUserPicture(SecurityUtils.getCurrentUserId(), picture);
   }
   
 }
