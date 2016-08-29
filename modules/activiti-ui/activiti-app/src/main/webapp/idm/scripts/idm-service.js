@@ -67,7 +67,7 @@ angular.module('activitiApp').service('IdmService', ['$http', '$q', '$rootScope'
                 {
                     method: 'POST',
                     url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/profile-password',
-                    data: {oldPassword: oldPassword, newPassword: newPassword}
+                    data: {originalPassword: oldPassword, newPassword: newPassword}
                 }
             )
         };

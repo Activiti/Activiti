@@ -12,11 +12,24 @@
  */
 package com.activiti.rest.idm;
 
+import java.util.List;
+
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.activiti.model.idm.ChangePasswordRepresentation;
+import com.activiti.model.idm.GroupRepresentation;
+import com.activiti.model.idm.UserRepresentation;
+import com.activiti.security.SecurityUtils;
+import com.activiti.service.exception.BadRequestException;
+import com.activiti.service.exception.NotFoundException;
 
 /**
  * 
@@ -25,15 +38,50 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/rest/admin")
-public class IdmProfileResource extends AbstractIdmProfileResource {
+public class IdmProfileResource {
+  
+  @Autowired
+  protected IdentityService identityService;
 
   @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = "application/json")
-  public User getProfile() {
-    return super.getProfile();
+  public UserRepresentation getProfile() {
+    User user = SecurityUtils.getCurrentActivitiAppUser().getUserObject();
+    
+    UserRepresentation userRepresentation = new UserRepresentation(user);
+    
+    List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
+    for (Group group : groups) {
+      userRepresentation.getGroups().add(new GroupRepresentation(group));
+    }
+    
+    return userRepresentation;
   }
 
   @RequestMapping(value = "/profile", method = RequestMethod.POST, produces = "application/json")
-  public User updateUser(@RequestBody User userRepresentation) {
-    return super.updateUser(userRepresentation);
+  public UserRepresentation updateProfile(@RequestBody UserRepresentation userRepresentation) {
+    User currentUser = SecurityUtils.getCurrentUserObject();
+
+    // If user is not externally managed, we need the email address for login, so an empty email is not allowed
+    if (StringUtils.isEmpty(userRepresentation.getEmail())) {
+      throw new BadRequestException("Empty email is not allowed");
+    }
+    
+    User user = identityService.createUserQuery().userId(currentUser.getId()).singleResult();
+    user.setFirstName(userRepresentation.getFirstName());
+    user.setLastName(userRepresentation.getLastName());
+    user.setEmail(userRepresentation.getEmail());
+    identityService.saveUser(user);
+    return new UserRepresentation(user);
   }
+  
+  @RequestMapping(value = "/profile-password", method = RequestMethod.POST, produces = "application/json")
+  public void changePassword(@RequestBody ChangePasswordRepresentation changePasswordRepresentation) {
+    User user = identityService.createUserQuery().userId(SecurityUtils.getCurrentUserId()).singleResult();
+    if (!user.getPassword().equals(changePasswordRepresentation.getOriginalPassword())) {
+      throw new NotFoundException();
+    }
+    user.setPassword(changePasswordRepresentation.getNewPassword());
+    identityService.saveUser(user);
+  }
+  
 }

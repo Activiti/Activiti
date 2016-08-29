@@ -14,31 +14,41 @@ package com.activiti.rest.idm;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.activiti.model.idm.UserRepresentation;
+import com.activiti.security.SecurityUtils;
+import com.activiti.service.exception.NotFoundException;
+import com.activiti.service.exception.NotPermittedException;
 
 /**
  * REST controller for managing users.
  */
 @RestController
-public class UserResource extends AbstractUserResource {
-	
-    @RequestMapping(value = "/rest/users/{userId}",
-            method = RequestMethod.GET,
-            produces = "application/json")
-    public User getUser(@PathVariable String userId, HttpServletResponse response) {
-       return super.getUser(userId, response);
+public class UserResource {
+
+  @Autowired
+  protected IdentityService identityService;
+
+  @RequestMapping(value = "/rest/users/{userId}", method = RequestMethod.GET, produces = "application/json")
+  public UserRepresentation getUser(@PathVariable String userId, HttpServletResponse response) {
+    User user = identityService.createUserQuery().userId(userId).singleResult();
+
+    if (user == null) {
+      throw new NotFoundException("User with id: " + userId + " does not exist or is inactive");
     }
-    
-    @RequestMapping(value = "/rest/users/{userId}",
-            method = RequestMethod.PUT,
-            produces = "application/json")
-    public User updateUser(@PathVariable String userId, @RequestBody User userRequest, HttpServletResponse response) {
-        return super.updateUser(userId, userRequest, response);
+
+    if (!user.getId().equals(SecurityUtils.getCurrentUserId())) {
+      throw new NotPermittedException("Can only get user details for authenticated user");
     }
-    
+
+    return new UserRepresentation(user);
+  }
+
 }
