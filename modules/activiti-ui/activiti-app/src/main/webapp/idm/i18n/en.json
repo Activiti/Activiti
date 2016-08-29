@@ -65,7 +65,9 @@
              "SORT-DATE-NEWEST": "Date created, newest",
              "SORT-DATE-OLDEST": "Date created, oldest",
              "SORT-EMAIL-A": "Email, A-Z",
-             "SORT-EMAIL-Z": "Email, Z-A"
+             "SORT-EMAIL-Z": "Email, Z-A",
+             "SORT-ID-A": "User id, A-Z",
+             "SORT-ID-Z": "User id, Z-A"
          },
          "POPUP": {
              "CREATE-TITLE": "Create user",

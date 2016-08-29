@@ -25,8 +25,8 @@ activitiApp.controller('IdmUserMgmtController', ['$rootScope', '$scope', '$trans
         $scope.model = {
             loading: false,
             sorts: [
-                {id: 'createdDesc', name: $translate.instant('IDM.USER-MGMT.FILTERS.SORT-DATE-NEWEST')},
-                {id: 'createdAsc', name: $translate.instant('IDM.USER-MGMT.FILTERS.SORT-DATE-OLDEST')},
+                {id: 'idAsc', name: $translate.instant('IDM.USER-MGMT.FILTERS.SORT-ID-A')},
+                {id: 'idDesc', name: $translate.instant('IDM.USER-MGMT.FILTERS.SORT-ID-Z')},
                 {id: 'emailAsc', name: $translate.instant('IDM.USER-MGMT.FILTERS.SORT-EMAIL-A')},
                 {id: 'emailDesc', name: $translate.instant('IDM.USER-MGMT.FILTERS.SORT-EMAIL-Z')}
             ],

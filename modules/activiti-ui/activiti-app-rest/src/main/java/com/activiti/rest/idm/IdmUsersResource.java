@@ -66,6 +66,19 @@ public class IdmUsersResource {
         userQuery.userFullNameLike("%" + filter + "%");
       }
       
+      if (StringUtils.isNotEmpty(sort)) {
+        if ("idDesc".equals(sort)) {
+          userQuery.orderByUserId().desc();
+        } else if ("idAsc".equals(sort)) {
+          userQuery.orderByUserId().asc();
+        } else if ("emailAsc".equals(sort)) {
+          userQuery.orderByUserEmail().asc();
+        } else if ("emailDesc".equals(sort)) {
+          userQuery.orderByUserEmail().desc();
+        }
+        
+      }
+      
       Integer startValue = start != null ? start.intValue() : 0;
       Integer size = MAX_USER_SIZE; // TODO: pass actual size
       List<User> users = userQuery.listPage(startValue, (size != null && size > 0) ? size : MAX_USER_SIZE);
