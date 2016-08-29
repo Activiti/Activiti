@@ -11,6 +11,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
@@ -36,13 +37,21 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
   public void run() {
     FlowElement currentFlowElement = getCurrentFlowElement(execution);
     if (currentFlowElement instanceof FlowNode) {
-      continueThroughFlowNode((FlowNode) currentFlowElement);
+      continueThroughMultiInstanceFlowNode((FlowNode) currentFlowElement);
     } else {
       throw new RuntimeException("Programmatic error: no valid multi instance flow node, type: " + currentFlowElement + ". Halting.");
     }
   }
-
-  protected void continueThroughFlowNode(FlowNode flowNode) {
+  
+  protected void continueThroughMultiInstanceFlowNode(FlowNode flowNode) {
+    if (!flowNode.isAsynchronous()) {
+      executeSynchronous(flowNode);
+    } else {
+      executeAsynchronous(flowNode);
+    }
+  }
+  
+  protected void executeSynchronous(FlowNode flowNode) {
     
     // Execution listener
     if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
@@ -76,5 +85,10 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
     } else {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
     }
+  }
+  
+  protected void executeAsynchronous(FlowNode flowNode) {
+    JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
+    commandContext.getJobManager().scheduleAsyncJob(job);
   }
 }

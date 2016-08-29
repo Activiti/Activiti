@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.async;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -322,14 +323,171 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   @Deployment
   public void testMultiInstanceAsyncTask() {
     // start process
-    runtimeService.startProcessInstanceByKey("asyncTask");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
+    
     // now there should be one job in the database:
-    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(3, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
 
-    waitForJobExecutorToProcessAllJobs(5000L, 250L);
+    // execute first of 3 parallel multi instance tasks
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+    assertEquals(2, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    
+    // execute second of 3 parallel multi instance tasks
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+    assertEquals(1, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    
+    // execute third of 3 parallel multi instance tasks
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
 
     // the job is done
-    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .list();
+      
+      int startCount = 0;
+      int taskCount = 0;
+      int endCount = 0;
+      for (HistoricActivityInstance historicActivityInstance : historicActivities) {
+        if ("task".equals(historicActivityInstance.getActivityId())) {
+          taskCount++;
+        
+        } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
+          startCount++;
+        
+        } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
+          endCount++;
+        
+        } else {
+          Assert.fail("Unexpected activity found " + historicActivityInstance.getActivityId());
+        }
+      }
+      
+      assertEquals(1, startCount);
+      assertEquals(3, taskCount);
+      assertEquals(1, endCount);
+    }
+  }
+  
+  @Deployment
+  public void testMultiInstanceTask() {
+    // start process
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .list();
+      
+      int startCount = 0;
+      int taskCount = 0;
+      int endCount = 0;
+      for (HistoricActivityInstance historicActivityInstance : historicActivities) {
+        if ("task".equals(historicActivityInstance.getActivityId())) {
+          taskCount++;
+        
+        } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
+          startCount++;
+        
+        } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
+          endCount++;
+        
+        } else {
+          Assert.fail("Unexpected activity found " + historicActivityInstance.getActivityId());
+        }
+      }
+      
+      assertEquals(1, startCount);
+      assertEquals(3, taskCount);
+      assertEquals(1, endCount);
+    }
+  }
+  
+  @Deployment
+  public void testMultiInstanceAsyncSequentialTask() {
+    // start process
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
+    
+    // now there should be one job in the database:
+    assertEquals(1, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+
+    // execute first of 3 sequential multi instance tasks
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
+    assertEquals(1, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    
+    // execute second of 3 sequential multi instance tasks
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
+    assertEquals(1, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    
+    // execute third of 3 sequential multi instance tasks
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
+    
+    // the job is done
+    assertEquals(0, managementService.createJobQuery().processInstanceId(processInstance.getId()).count());
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .list();
+      
+      int startCount = 0;
+      int taskCount = 0;
+      int endCount = 0;
+      for (HistoricActivityInstance historicActivityInstance : historicActivities) {
+        if ("task".equals(historicActivityInstance.getActivityId())) {
+          taskCount++;
+        
+        } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
+          startCount++;
+        
+        } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
+          endCount++;
+        
+        } else {
+          Assert.fail("Unexpected activity found " + historicActivityInstance.getActivityId());
+        }
+      }
+      
+      assertEquals(1, startCount);
+      assertEquals(3, taskCount);
+      assertEquals(1, endCount);
+    }
+  }
+  
+  @Deployment
+  public void testMultiInstanceSequentialTask() {
+    // start process
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
+    
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .list();
+      
+      int startCount = 0;
+      int taskCount = 0;
+      int endCount = 0;
+      for (HistoricActivityInstance historicActivityInstance : historicActivities) {
+        if ("task".equals(historicActivityInstance.getActivityId())) {
+          taskCount++;
+        
+        } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
+          startCount++;
+        
+        } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
+          endCount++;
+        
+        } else {
+          Assert.fail("Unexpected activity found " + historicActivityInstance.getActivityId());
+        }
+      }
+      
+      assertEquals(1, startCount);
+      assertEquals(3, taskCount);
+      assertEquals(1, endCount);
+    }
   }
 
 }
