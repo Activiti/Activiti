@@ -66,11 +66,12 @@ public class IdmUsersResource {
         userQuery.userFullNameLike("%" + filter + "%");
       }
       
+      Integer startValue = start != null ? start.intValue() : 0;
       Integer size = MAX_USER_SIZE; // TODO: pass actual size
-      List<User> users = userQuery.listPage(start, (size != null && size > 0) ? size : MAX_USER_SIZE);
+      List<User> users = userQuery.listPage(startValue, (size != null && size > 0) ? size : MAX_USER_SIZE);
       Long totalCount = userQuery.count();
       result.setTotal(Long.valueOf(totalCount.intValue()));
-      result.setStart(start);
+      result.setStart(startValue);
       result.setSize(users.size());
       result.setData(convertToUserRepresentations(users));
       

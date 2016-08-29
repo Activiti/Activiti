@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scope', '$translate', '$http', '$timeout','$location', '$modal', '$popover', 'IdmService',
+activitiApp.controller('GroupMgmtController', ['$rootScope', '$scope', '$translate', '$http', '$timeout','$location', '$modal', '$popover', 'IdmService',
     function ($rootScope, $scope, $translate, $http, $timeout, $location, $modal, $popover, IdmService) {
 
         if (!$scope.hasAdminCapability()) {
@@ -28,30 +28,12 @@ activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scop
 
         $scope.showCreateGroupPopup = function() {
             $scope.model.editedGroup  = {};
+            $scope.model.mode = 'create';
             _internalCreateModal({
                 scope: $scope,
                 template: 'views/popup/idm-group-create.html',
                 show: true
             }, $modal, $scope);
-        };
-
-        /* Returns a mapping of groupId -> parent group object */
-        $scope.groupListToParentMap = function(groups) {
-
-            var _groupListToParentMap = function(groups, currentParent, mapping) {
-                if (groups && groups.length > 0) {
-                    for (var i = 0; i < groups.length; i++) {
-                        if (currentParent) {
-                            mapping[groups[i].id] = currentParent;
-                        }
-                        _groupListToParentMap(groups[i].groups, groups[i], mapping);
-                    }
-                }
-            };
-
-            var mapping = {};
-            _groupListToParentMap(groups, undefined, mapping);
-            return mapping;
         };
 
         var fetchUserPage = function() {
@@ -63,51 +45,17 @@ activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scop
             });
         };
 
-        $scope.selectGroup = function(groupId, force) {
+        $scope.selectGroup = function(groupId) {
+            $scope.model.loadingGroup = true;
+            IdmService.getGroup(groupId).then(function (data) {
+                $scope.model.selectedGroup = data;
 
-            // Only refetch if it is a different selection
-            var isNewSelection = true;
-            if (force === null || force === undefined || force === false) {
-                if (groupId && $scope.model.selectedGroup && groupId === $scope.model.selectedGroup.id) {
-                    isNewSelection = false;
-                }
-            }
+                $scope.model.userPage = 0;
+                $scope.model.pageSize = 50;
+                fetchUserPage();
 
-            // Switch expanded/collapsed state for the selected group (and potentially children)
-            var switchExpandedState = function() {
-                var currentState = $scope.model.expanded[$scope.model.selectedGroup.id];
-                if (currentState === null || currentState === undefined) {
-                    $scope.model.expanded[$scope.model.selectedGroup.id] = true;
-                } else {
-                    $scope.model.expanded[$scope.model.selectedGroup.id] = !currentState;
-                }
-            };
-
-            if (isNewSelection) {
-                $scope.model.loadingGroup = true;
-                IdmService.getGroup(groupId).then(function (data) {
-                    $scope.model.selectedGroup = data;
-
-                    $scope.model.expanded[data.id] = true; // always expand the new selection
-
-                    // All parents need to be expanded too
-                    var parentMapping = $scope.groupListToParentMap($scope.model.groups);
-                    var currentParent = parentMapping[data.id];
-                    while (currentParent) {
-                        $scope.model.expanded[currentParent.id] = true;
-                        currentParent = parentMapping[currentParent.id];
-                    }
-
-                    $scope.model.userPage = 0;
-                    $scope.model.pageSize = 50;
-                    fetchUserPage();
-
-                    $scope.model.loadingGroup = false;
-                });
-            } else {
-                switchExpandedState();
-            }
-
+                $scope.model.loadingGroup = false;
+            });
         };
 
         $scope.showPreviousUsers = function() {
@@ -146,34 +94,28 @@ activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scop
             }, 100);
         };
 
-        $scope.saveGroup = function() {
-            if (!$scope.model.editedGroup.id) {
+        $scope.createGroup = function() {
+            $scope.model.loading = true;
+            IdmService.createGroup($scope.model.editedGroup).then(function (data) {
+                $scope.fetchGroups(data.id);
+                $scope.model.loading = false;
+            });
+        };
 
-                // Create
-                $scope.model.loading = true;
-                IdmService.createGroup($scope.model.editedGroup,  $rootScope.common.selectedTenantId, 1).then(function (data) {   // 1 == functional group
-                    $scope.fetchGroups(data.id);
-                    $scope.model.loading = false;
-                });
+        $scope.updateGroup = function() {
+            $scope.model.loadingGroup = true;
+            IdmService.updateGroup($scope.model.editedGroup.id, $scope.model.editedGroup).then(function (data) {
+                $scope.model.selectedGroup = data;
 
-            } else {
-
-                // Update
-                $scope.model.loadingGroup = true;
-                IdmService.updateGroup($scope.model.editedGroup.id, $rootScope.common.selectedTenantId, $scope.model.editedGroup).then(function (data) {
-                    $scope.model.selectedGroup = data;
-
-                    // Find the entry in the list on the left, and update its name
-                    for (var i=0; i<$scope.model.groups.length; i++){
-                        if ($scope.model.groups[i].id === data.id) {
-                            $scope.model.groups[i].name = data.name;
-                        }
+                // Find the entry in the list on the left, and update its name
+                for (var i=0; i<$scope.model.groups.length; i++){
+                    if ($scope.model.groups[i].id === data.id) {
+                        $scope.model.groups[i].name = data.name;
                     }
+                }
 
-                    $scope.model.loadingGroup = false;
-                });
-
-            }
+                $scope.model.loadingGroup = false;
+            });
         };
 
         $scope.showDeleteGroupModal = function() {
@@ -218,6 +160,7 @@ activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scop
 
         $scope.showEditGroupModal = function() {
             $scope.model.editedGroup  = $scope.model.selectedGroup;
+            $scope.model.mode = 'edit';
             _internalCreateModal({
                 scope: $scope,
                 template: 'views/popup/idm-group-create.html',
@@ -253,16 +196,6 @@ activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scop
             });
         };
 
-        $scope.showCreateSubgroupPopup = function() {
-            $scope.model.editedGroup  = { parentGroupId: $scope.model.selectedGroup.id };
-            _internalCreateModal({
-                scope: $scope,
-                template: 'views/popup/idm-group-create.html',
-                show: true
-            }, $modal, $scope);
-        };
-
-
         // Load the groups
         $scope.fetchGroups = function(groupIdToSelect) {
             $scope.model.loading = true;
@@ -288,8 +221,6 @@ activitiApp.controller('IdmFunctionalGroupMgmtController', ['$rootScope', '$scop
             });
         };
 
-
-        // Has to be done at the end: the default tenant needs to be set (see if-else) just above
         if(validUser) {
             $scope.fetchGroups();
         }

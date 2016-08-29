@@ -67,9 +67,9 @@ activitiApp.config(['$provide', '$routeProvider', '$translateProvider', function
                     verify: authRouteResolver
                 }
             })
-            .when('/functional-group-mgmt', {
-                controller: 'IdmFunctionalGroupMgmtController',
-                templateUrl: appResourceRoot + 'views/idm-functional-group-mgmt.html',
+            .when('/group-mgmt', {
+                controller: 'GroupMgmtController',
+                templateUrl: appResourceRoot + 'views/idm-group-mgmt.html',
                 resolve: {
                     verify: authRouteResolver
                 }
@@ -237,8 +237,8 @@ activitiApp.config(['$provide', '$routeProvider', '$translateProvider', function
                     },
                     {
                         id: 'functionalGroupMgmt',
-                        title: 'IDM.GENERAL.NAVIGATION.FUNCTIONAL-GROUP-MGMT',
-                        path: '/functional-group-mgmt',
+                        title: 'IDM.GENERAL.NAVIGATION.GROUP-MGMT',
+                        path: '/group-mgmt',
                         isVisible: function() {
                             return AuthenticationSharedService.hasAdminCapability();
                         }

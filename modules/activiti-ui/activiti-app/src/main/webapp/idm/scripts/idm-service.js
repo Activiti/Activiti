@@ -157,13 +157,9 @@ angular.module('activitiApp').service('IdmService', ['$http', '$q', '$rootScope'
         };
 
 
-        this.updateGroup = function (groupId, tenantId, updatedGroupData) {
+        this.updateGroup = function (groupId, updatedGroupData) {
 
             var data = {name: updatedGroupData.name};
-            if (tenantId !== null && tenantId !== undefined && tenantId !== -1) {
-                data.tenantId = tenantId;
-            }
-
             return httpAsPromise(
                 {
                     method: 'PUT',

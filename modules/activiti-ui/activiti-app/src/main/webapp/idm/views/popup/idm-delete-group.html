@@ -16,23 +16,15 @@
             </div>
             <div class="modal-body">
 
-                <div ng-if="model.selectedGroup.type == 0">
-                    {{'IDM.SYSTEM-GROUP-MGMT.POPUP.DELETE-DESCRIPTION' | translate}}
-                </div>
-
-                <div ng-if="model.selectedGroup.type == 1 && model.selectedGroup.status == 'inactive'">
+                <div>
                     {{'IDM.FUNCTIONAL-GROUP-MGMT.POPUP.DELETE-DESCRIPTION' | translate}}
-                </div>
-
-                <div ng-if="model.selectedGroup.type == 1 && model.selectedGroup.status != 'inactive'">
-                    {{'IDM.FUNCTIONAL-GROUP-MGMT.POPUP.DEACTIVATE-DESCRIPTION' | translate}}
                 </div>
 
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" ng-click="$hide()">{{'IDM.GENERAL.ACTION.CANCEL' | translate}}</button>
-                <button type="button" class="btn btn-primary" ng-click="deleteGroup(); $hide()">{{'IDM.SYSTEM-GROUP-MGMT.POPUP.DELETE-CONFIRM' | translate}}</button>
+                <button type="button" class="btn btn-primary" ng-click="deleteGroup(); $hide()">{{'IDM.FUNCTIONAL-GROUP-MGMT.POPUP.DELETE-CONFIRM' | translate}}</button>
             </div>
 
         </div>

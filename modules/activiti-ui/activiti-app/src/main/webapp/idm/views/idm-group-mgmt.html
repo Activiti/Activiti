@@ -9,22 +9,20 @@
 
         <span loading="model.loading"></span>
 
-        <script type="text/ng-template" id="groupTree">
-            <a href="" ng-click="selectGroup(group.id)" ng-class="{'active': model.selectedGroup.id == group.id}" >
-                <span ng-if="group.groups && group.groups.length > 0 && model.expanded[group.id] == true" class="glyphicon glyphicon-folder-open group-icon" ></span>
-                <span ng-if="group.groups && group.groups.length > 0 && (model.expanded[group.id] == undefined || model.expanded[group.id] == false)" class="glyphicon glyphicon-folder-close group-icon" ></span>
-                <span ng-if="group.status != 'inactive'">{{ group.name }}</span>
-                <span ng-if="group.status == 'inactive'" class="disabled-group">{{ group.name }}</span>
-            </a>
-            <ul ng-if="group.groups && model.expanded[group.id] == true">
-                <li ng-repeat="group in group.groups" ng-include="'groupTree'"></li>
-            </ul>
-        </script>
+        <div class="list-wrapper" ng-show="!model.loading" auto-height>
 
-        <div class="group-tree">
-            <ul>
-                <li ng-repeat="group in model.groups" ng-include="'groupTree'"></li>
+            <ul class="full-list" offset-top="100">
+                <li ng-repeat="group in model.groups" ng-class="{'active': model.selectedGroup.id == group.id}" ng-click="selectGroup(group.id)">
+                    <div>
+                        <div class="title">
+                            {{group.name}}
+                        </div>
+                    </div>
+                </li>
             </ul>
+            <div class="nothing-to-see" ng-show="model.tasks.length == 0">
+                <span  translate="TASK.MESSAGE.NO-TASKS"></span>
+            </div>
         </div>
 
 
@@ -144,7 +142,7 @@
                             </tr>
                         </table>
 
-                        <div ng-if="!model.selectedGroup.users || model.selectedGroup.users.length == 0">
+                        <div ng-if="!model.users || model.users.length == 0">
                             <span>{{'IDM.FUNCTIONAL-GROUP-MGMT.NO-MEMBERS' | translate}}</span>
                         </div>
                     </div>

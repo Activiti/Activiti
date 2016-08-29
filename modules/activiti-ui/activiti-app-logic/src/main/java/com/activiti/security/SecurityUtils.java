@@ -17,6 +17,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.activiti.constant.GroupIds;
+import com.activiti.service.exception.NotPermittedException;
+
 /**
  * Utility class for Spring Security.
  */
@@ -83,4 +86,5 @@ public final class SecurityUtils {
   public static void clearAssumeUser() {
     assumeUser = null;
   }
+  
 }

@@ -12,9 +12,15 @@
  */
 package com.activiti.rest.idm;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,54 +28,174 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.activiti.constant.GroupIds;
+import com.activiti.constant.GroupTypes;
 import com.activiti.model.common.ResultListDataRepresentation;
+import com.activiti.model.idm.GroupRepresentation;
+import com.activiti.model.idm.UserRepresentation;
+import com.activiti.security.SecurityUtils;
+import com.activiti.service.exception.BadRequestException;
+import com.activiti.service.exception.NotFoundException;
+import com.activiti.service.exception.NotPermittedException;
 
 /**
  * @author Joram Barrez
  */
 @RestController
-@RequestMapping(value="/rest/admin/groups")
-public class IdmGroupsResource extends AbstractIdmGroupsResource {
+@RequestMapping(value = "/rest/admin/groups")
+public class IdmGroupsResource {
+
+  @Autowired
+  private IdentityService identityService;
+
+  @RequestMapping(method = RequestMethod.GET)
+  public List<GroupRepresentation> getGroups() {
+    validateAdminRole();
+    List<Group> groups = identityService.createGroupQuery().list();
+    List<GroupRepresentation> result = new ArrayList<GroupRepresentation>(groups.size());
+    for (Group group : groups) {
+      result.add(new GroupRepresentation(group));
+    }
+    return result;
+  }
+
+  @RequestMapping(value = "/{groupId}", method = RequestMethod.GET)
+  public GroupRepresentation getGroup(@PathVariable String groupId) {
+    validateAdminRole();
+    return new GroupRepresentation(identityService.createGroupQuery().groupId(groupId).singleResult());
+  }
+
+  @RequestMapping(value = "/{groupId}/users", method = RequestMethod.GET)
+  public ResultListDataRepresentation getGroupUsers(@PathVariable String groupId, @RequestParam(required = false) String filter, @RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer pageSize) {
+    validateAdminRole();
+    int pageValue = page != null ? page.intValue() : 0;
+    int pageSizeValue = pageSize != null ? pageSize.intValue() : 50;
     
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Group> getGroups() {
-    	return super.getGroups();
+    UserQuery userQuery = identityService.createUserQuery().memberOfGroup(groupId);
+    if (StringUtils.isNotEmpty(filter)) {
+      userQuery.userFullNameLike(filter);
+    }
+    List<User> users = userQuery.listPage(pageValue, pageSizeValue);
+    
+    List<UserRepresentation> userRepresentations = new ArrayList<UserRepresentation>(users.size());
+    for (User user : users) {
+      userRepresentations.add(new UserRepresentation(user));
     }
 
-    @RequestMapping(value="/{groupId}", method = RequestMethod.GET)
-    public Group getGroup(@PathVariable String groupId) {
-        return super.getGroup(groupId);
-    }
-    
-    @RequestMapping(value="/{groupId}/users", method = RequestMethod.GET)
-    public ResultListDataRepresentation getGroupUsers(@PathVariable String groupId, @RequestParam(required=false) String filter,
-    		@RequestParam(required=false) Integer page, @RequestParam(required=false) Integer pageSize) {
-    	return super.getGroupUsers(groupId, filter, page, pageSize);
-    }
-    
-    @RequestMapping(method = RequestMethod.POST)
-    public Group createNewGroup(@RequestBody Group groupRepresentation) {
-    	return super.createNewGroup(groupRepresentation);
-    }
-    
-    @RequestMapping(value="/{groupId}", method = RequestMethod.PUT)
-    public Group updateGroup(@PathVariable String groupId, @RequestBody Group groupRepresentation) {
-    	return super.updateGroup(groupId, groupRepresentation);
-    }
-    
-    @RequestMapping(value="/{groupId}", method = RequestMethod.DELETE)
-    public void deleteGroup(@PathVariable String groupId) {
-    	super.deleteGroup(groupId);
-    }
-    
-    @RequestMapping(value="/{groupId}/members/{userId}", method = RequestMethod.POST)
-    public void addGroupMember(@PathVariable String groupId, @PathVariable String userId) {
-    	super.addGroupMember(groupId, userId);
-    }
-    
+    ResultListDataRepresentation resultListDataRepresentation = new ResultListDataRepresentation(userRepresentations);
+    resultListDataRepresentation.setStart(pageValue * pageSizeValue);
+    resultListDataRepresentation.setSize(userRepresentations.size());
+    resultListDataRepresentation.setTotal(userQuery.count());
+    return resultListDataRepresentation;
+  }
 
-    @RequestMapping(value="/{groupId}/members/{userId}", method = RequestMethod.DELETE)
-    public void deleteGroupMember(@PathVariable String groupId, @PathVariable String userId) {
-    	super.deleteGroupMember(groupId, userId);
+  @RequestMapping(method = RequestMethod.POST)
+  public GroupRepresentation createNewGroup(@RequestBody GroupRepresentation groupRepresentation) {
+    validateAdminRole();
+    if (StringUtils.isBlank(groupRepresentation.getName())) {
+      throw new BadRequestException("Group name required");
     }
+
+    Group newGroup = identityService.newGroup(groupRepresentation.getId());
+    newGroup.setName(groupRepresentation.getName());
+    
+    if (groupRepresentation.getType() == null) {
+      newGroup.setType(GroupTypes.TYPE_ASSIGNMENT);
+    } else {
+      newGroup.setType(groupRepresentation.getType());
+    }
+    
+    identityService.saveGroup(newGroup);
+    return new GroupRepresentation(newGroup);
+  }
+
+  @RequestMapping(value = "/{groupId}", method = RequestMethod.PUT)
+  public GroupRepresentation updateGroup(@PathVariable String groupId, @RequestBody GroupRepresentation groupRepresentation) {
+    validateAdminRole();
+    if (StringUtils.isBlank(groupRepresentation.getName())) {
+      throw new BadRequestException("Group name required");
+    }
+
+    Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
+    if (group == null) {
+      throw new NotFoundException();
+    }
+    
+    group.setName(groupRepresentation.getName());
+    identityService.saveGroup(group);
+    
+    return new GroupRepresentation(group);
+  }
+
+  @RequestMapping(value = "/{groupId}", method = RequestMethod.DELETE)
+  public void deleteGroup(@PathVariable String groupId) {
+    validateAdminRole();
+    Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
+    if (group == null) {
+      throw new NotFoundException();
+    }
+
+    identityService.deleteGroup(groupId);
+  }
+
+  @RequestMapping(value = "/{groupId}/members/{userId}", method = RequestMethod.POST)
+  public void addGroupMember(@PathVariable String groupId, @PathVariable String userId) {
+    validateAdminRole();
+    verifyGroupMemberExists(groupId, userId);
+    Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
+    if (group == null) {
+      throw new NotFoundException();
+    }
+    
+    User user = identityService.createUserQuery().userId(userId).singleResult();
+    if (user == null) {
+      throw new NotFoundException();
+    }
+    
+    identityService.createMembership(userId, groupId);
+  }
+
+  @RequestMapping(value = "/{groupId}/members/{userId}", method = RequestMethod.DELETE)
+  public void deleteGroupMember(@PathVariable String groupId, @PathVariable String userId) {
+    validateAdminRole();
+    verifyGroupMemberExists(groupId, userId);
+    Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
+    if (group == null) {
+      throw new NotFoundException();
+    }
+    
+    User user = identityService.createUserQuery().userId(userId).singleResult();
+    if (user == null) {
+      throw new NotFoundException();
+    }
+    
+    identityService.deleteMembership(userId, groupId);
+  }
+  
+  protected void verifyGroupMemberExists(String groupId, String userId) {
+    // Check existence
+    Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
+    User user = identityService.createUserQuery().userId(userId).singleResult();
+    for (User groupMember : identityService.createUserQuery().memberOfGroup(groupId).list()) {
+      if (groupMember.getId().equals(userId)) {
+        user = groupMember;
+      }
+    }
+
+    if (group == null || user == null) {
+      throw new NotFoundException();
+    }
+  }
+  
+  protected void validateAdminRole() {
+    boolean isAdmin = identityService.createGroupQuery()
+        .groupId(GroupIds.ROLE_ADMIN)
+        .groupMember(SecurityUtils.getCurrentUserId())
+        .count() > 0;
+        if (!isAdmin) {
+          throw new NotPermittedException();
+        }
+  }
+  
 }
