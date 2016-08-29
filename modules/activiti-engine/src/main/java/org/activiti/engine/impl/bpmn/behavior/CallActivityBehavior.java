@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
@@ -44,6 +45,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   private Expression processDefinitionExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected boolean inheritVariables;
 
   public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
     this.processDefinitonKey = processDefinitionKey;
@@ -62,6 +64,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void addDataOutputAssociation(AbstractDataAssociation dataOutputAssociation) {
     this.dataOutputAssociations.add(dataOutputAssociation);
+  }
+
+  public void setInheritVariables(boolean inheritVariables) {
+    this.inheritVariables = inheritVariables;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
@@ -87,17 +93,24 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
-    
-    // copy process variables
-    for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
-      Object value = null;
-      if (dataInputAssociation.getSourceExpression()!=null) {
-        value = dataInputAssociation.getSourceExpression().getValue(execution);
+
+    if (inheritVariables) {
+      Map<String, Object> variables = execution.getVariables();
+      for (Map.Entry<String, Object> entry : variables.entrySet()) {
+        subProcessInstance.setVariable(entry.getKey(), entry.getValue());
       }
-      else {
-        value = execution.getVariable(dataInputAssociation.getSource());
+    } else {
+      // copy process variables
+      for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
+        Object value = null;
+        if (dataInputAssociation.getSourceExpression()!=null) {
+          value = dataInputAssociation.getSourceExpression().getValue(execution);
+        }
+        else {
+          value = execution.getVariable(dataInputAssociation.getSource());
+        }
+        subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
       }
-      subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
     }
     
     try {
