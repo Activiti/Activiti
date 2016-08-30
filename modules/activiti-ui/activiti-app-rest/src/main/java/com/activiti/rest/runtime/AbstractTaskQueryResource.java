@@ -100,7 +100,11 @@ public abstract class AbstractTaskQueryResource {
       for (Deployment deployment : deployments) {
         deploymentIds.add(deployment.getId());
       }
-      taskInfoQueryWrapper.getTaskInfoQuery().deploymentIdIn(deploymentIds);
+      
+      taskInfoQueryWrapper.getTaskInfoQuery().or()
+        .deploymentIdIn(deploymentIds)
+        .taskCategory(deploymentKeyNode.asText())
+        .endOr();
     }
 
     JsonNode processInstanceIdNode = requestNode.get("processInstanceId");
