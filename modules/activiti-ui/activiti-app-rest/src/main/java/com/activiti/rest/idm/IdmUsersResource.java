@@ -145,10 +145,10 @@ public class IdmUsersResource {
     public User createNewUser(@RequestBody CreateUserRepresentation userRepresentation) {
       validateAdminRole();
       
-      if(StringUtils.isBlank(userRepresentation.getEmail()) ||
+      if(StringUtils.isBlank(userRepresentation.getId()) ||
           StringUtils.isBlank(userRepresentation.getPassword()) || 
-          StringUtils.isBlank(userRepresentation.getLastName())) {
-          throw new BadRequestException("Email, password and last name are required");
+          StringUtils.isBlank(userRepresentation.getFirstName())) {
+          throw new BadRequestException("Id, password and first name are required");
       }
       
       if (userRepresentation.getEmail() != null && identityService.createUserQuery().userEmail(userRepresentation.getEmail()).count() > 0) {

@@ -240,7 +240,7 @@ activitiApp.controller('IdmCreateUserPopupController', ['$rootScope', '$scope', 
         }
 
         $scope.createNewUser = function () {
-            if (!$scope.model.user.email) {
+            if (!$scope.model.user.id) {
                 return;
             }
 

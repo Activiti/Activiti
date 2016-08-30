@@ -131,11 +131,13 @@
 
                         <table width="100%" class="users" ng-if="model.users.data && model.users.data.length > 0">
                             <tr>
-                                <th width="50%">{{'IDM.USER-MGMT.EMAIL' | translate}}</th>
-                                <th width="40%%">{{'IDM.USER-MGMT.NAME' | translate}}</th>
+                                <th width="30%">{{'IDM.USER-MGMT.ID' | translate}}</th>
+                                <th width="30%">{{'IDM.USER-MGMT.EMAIL' | translate}}</th>
+                                <th width="30%%">{{'IDM.USER-MGMT.NAME' | translate}}</th>
                                 <th width="10%"></th>
                             </tr>
                             <tr ng-repeat="user in model.users.data">
+                                <td>{{user.id}}</td>
                                 <td>{{user.email}}</td>
                                 <td>{{user.firstName}} {{user.lastName}}</td>
                                 <td align="center" ng-click="showRemoveMemberModal(user)"><i class="glyphicon glyphicon-trash" ></i></td>
