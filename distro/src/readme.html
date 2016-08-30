@@ -9,12 +9,7 @@
 <img src="docs/userguide/images/activiti_readme.png" alt="readme"/>
 
 <h1>License</h1>
-<p>All the software included in this distribution is distributed under <a href="license.txt">Apache license V2</a>
-    unless for these exceptions:
-</p>
-<ul>
-    <li>We are including slightly modified source code of the Apache Licensed <a href="http://juel.sourceforge.net/" title="JUEL project page">JUEL 2.2.1</a>, created by Odysseus Software GmbH.</li>
-</ul>
+<p>All the software included in this distribution is distributed under <a href="license.txt">Apache license V2</a></p>
 
 <h1>Documentation</h1>
 <ul>
@@ -33,6 +28,45 @@ A more elaborate collection of Activiti-links can be found on the
 <a href="http://activiti.org/community.html">Activiti Community page</a>
 
 <h1>Activiti Release Notes</h1>
+
+<h3>Release Notes - Activiti - 6.0.0.Beta3</h3>
+
+<h4>Highlights</h4>
+<ul>
+    <li>Introduction of 2 new engines, a <a href="http://www.omg.org/spec/DMN/1.1/">DMN (Decision Model Notation)</a> Rule Engine and a Form Engine.
+    The DMN Engine allows you to create decision tables and get an outcome based on the input values and the rules defined in the decision table.
+    These decision tables can be invoked from a decision rule task in a BPMN definition, but also independently of a process instance.
+    The Form Engine centralizes the form logic that was introduced with the new Activiti 6 UI. Forms can be deployed with BPMN process definitions but also seperately.
+    A start or task form references a form definition defined in a JSON format with a logical key. The Activiti 6 UI includes the new Rule Engine and Form Engine by default.</li>
+    <li>Ad-hoc sub process support was added, a blog post is available <a href="http://bpmn20inaction.blogspot.com/2016/02/activiti-6-adds-ad-hoc-sub-process.html">here</a>.</li>
+    <li>The job executor has been refactored. In Activiti 6 there's only one job executor (based on the async executor from Activiti 5. Jobs are now divided into 4 different tables:
+    executable jobs, timer jobs, suspended jobs and deadletter jobs. All jobs in the executable jobs table can be executed as soon as possible. 
+    Timer jobs are now stored in a separate table and a thread will look for timer jobs that are due and then the timer jobs due will be moved to the executable jobs table.
+    When a process instance is suspended, the suspended jobs will be moved to the suspended jobs table.
+    And when the retries of a job have been exhausted, the job will be moved to the deadletter jobs table.
+    This refactoring was done mainly to improve the job queries, that were very complicated because it had to take into account due timer jobs, suspended jobs and deadletter jobs.
+    The job query to look for executable jobs is now a lot less complex, because every job in the executable jobs table needs to execute.</li>
+    <li>Implementation of a message queue based Activiti job executor, you can read more about it <a href="http://www.jorambarrez.be/blog/2016/07/20/message-queue-async-executor-benchmark/">here</a></li>
+    <li>Introduction of transient variables. Transient variables won't be persisted in the Activiti variable tables, but are still available on the execution for the duration of a single transaction.
+    Transient variables can for example be used to store a REST response that is only needed to create a request to another REST service, or to use a Java service task result in the next Java service task without it getting persisted.</li> 
+    <li>Introduction of transaction dependent listeners. You can now register a listener which will be executed before commit, after commit or on rollback. 
+    The transaction dependent listener is an addition to the already existing execution, task and event listeners and provides more ways to listen to the execution of a process instance in the Activiti Engine.</li>
+    <li>A simple DMN editor has been added to the Activiti 6 UI app</li>
+    <li>Lots of refactoring in the Activiti 6 UI app, for example app definitions are now deployed as normal Activiti deployments without separate app definition tables</li>
+    <li>Lots of improvements to Activiti 6 QA</li>
+    <li>Various and many small bugfixes all around.</li>
+</ul>
+
+<h4>Release remarks</h4>
+<ul>
+    <li>The Activiti 6 Engine is now considered feature complete for a final version 6 release and mainly needs community testing and bug fixes when issues are found</li>
+    <li>A first refactor of the userguide has been completed for version 6, but there's still work left</li>
+    <li>A lot of changes were made to the Activiti 6 UI app and we expect there will still be breaking changes before the final version 6 release</li>
+    <li>The DMN and Form Engine are feature complete but there can still be some changes before the final version 6</li>
+    <li>An Admin application has been added to the Activiti Github project but is not yet included in the Beta 3 release. 
+    The Admin application will provide query capabilities on deployments, process instances, tasks, jobs, forms and decision tables.
+    For the final version 6 release the Admin application will be added to the release</li>
+</ul>
 
 <h3>Release Notes - Activiti - 6.0.0.Beta2</h3>
 
