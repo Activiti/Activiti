@@ -21,6 +21,7 @@ public class CreateTaskRepresentation extends AbstractRepresentation {
   
   protected String name;
   protected String description;
+  protected String category;
 
   public String getName() {
     return name;
@@ -36,6 +37,14 @@ public class CreateTaskRepresentation extends AbstractRepresentation {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
   }
   
 }

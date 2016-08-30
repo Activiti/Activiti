@@ -28,13 +28,11 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -116,6 +114,13 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     // process template-defined data objects
     Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
+    
+    if (callActivity.isInheritVariables()) {
+      Map<String, Object> executionVariables = execution.getVariables();
+      for (Map.Entry<String, Object> entry : executionVariables.entrySet()) {
+        variables.put(entry.getKey(), entry.getValue());
+      }
+    }
 
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
@@ -170,14 +175,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     leave(execution);
   }
 
-  public void setProcessDefinitonKey(String processDefinitonKey) {
-    this.processDefinitonKey = processDefinitonKey;
-  }
-
-  public String getProcessDefinitonKey() {
-    return processDefinitonKey;
-  }
-
   // Allow subclass to determine which version of a process to start.
   protected ProcessDefinition findProcessDefinition(String processDefinitionKey, String tenantId) {
     if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
@@ -202,5 +199,13 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   // Allow a subclass to override how variables are initialized.
   protected void initializeVariables(ExecutionEntity subProcessInstance, Map<String,Object> variables) {
     subProcessInstance.setVariables(variables);
+  }
+  
+  public void setProcessDefinitonKey(String processDefinitonKey) {
+    this.processDefinitonKey = processDefinitonKey;
+  }
+
+  public String getProcessDefinitonKey() {
+    return processDefinitonKey;
   }
 }
