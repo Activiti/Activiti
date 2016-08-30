@@ -23,7 +23,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -148,7 +147,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         .name("childProcessDeployment")
         .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
 
-    Map<String, Object> variables = new HashMap<>();
+    Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("var1", "String test value");
     variables.put("var2", true);
     variables.put("var3", 12345);
@@ -185,7 +184,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         .name("mainProcessDeployment")
         .addBpmnModel("mainProcess.bpmn20.xml", mainBpmnModel).deploy();
     
-    Map<String, Object> variables = new HashMap<>();
+    Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("var1", "String test value");
     variables.put("var2", true);
     variables.put("var3", 12345);

@@ -99,18 +99,18 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       for (Map.Entry<String, Object> entry : variables.entrySet()) {
         subProcessInstance.setVariable(entry.getKey(), entry.getValue());
       }
-    } else {
-      // copy process variables
-      for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
-        Object value = null;
-        if (dataInputAssociation.getSourceExpression()!=null) {
-          value = dataInputAssociation.getSourceExpression().getValue(execution);
-        }
-        else {
-          value = execution.getVariable(dataInputAssociation.getSource());
-        }
-        subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
+    }
+    
+    // copy process variables
+    for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
+      Object value = null;
+      if (dataInputAssociation.getSourceExpression()!=null) {
+        value = dataInputAssociation.getSourceExpression().getValue(execution);
       }
+      else {
+        value = execution.getVariable(dataInputAssociation.getSource());
+      }
+      subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
     }
     
     try {
