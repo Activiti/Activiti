@@ -15,6 +15,7 @@ package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -45,6 +46,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   private Expression processDefinitionExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected boolean inheritVariables;
 
   public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
     this.processDefinitonKey = processDefinitionKey;
@@ -90,6 +92,13 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     ActivityExecution activityExecution = (ActivityExecution) execution;
     PvmProcessInstance subProcessInstance = activityExecution.createSubProcessInstance((ProcessDefinitionEntity) processDefinition);
     
+    if (inheritVariables) {
+      Map<String, Object> variables = execution.getVariables();
+      for (Map.Entry<String, Object> entry : variables.entrySet()) {
+        subProcessInstance.setVariable(entry.getKey(), entry.getValue());
+      }
+    }
+    
     // copy process variables
     for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
       Object value = null;
@@ -112,14 +121,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       
   }
   
-  public void setProcessDefinitonKey(String processDefinitonKey) {
-    this.processDefinitonKey = processDefinitonKey;
-  }
-  
-  public String getProcessDefinitonKey() {
-    return processDefinitonKey;
-  }
-  
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data.  no control flow available on this execution.
 
@@ -140,6 +141,18 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   public void completed(ActivityExecution execution) throws Exception {
     // only control flow.  no sub process instance data available
     leave(execution);
+  }
+  
+  public void setProcessDefinitonKey(String processDefinitonKey) {
+    this.processDefinitonKey = processDefinitonKey;
+  }
+  
+  public String getProcessDefinitonKey() {
+    return processDefinitonKey;
+  }
+  
+  public void setInheritVariables(boolean inheritVariables) {
+    this.inheritVariables = inheritVariables;
   }
 
 }

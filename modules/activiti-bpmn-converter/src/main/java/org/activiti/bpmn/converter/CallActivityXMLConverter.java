@@ -58,6 +58,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     callActivity.setBusinessKey(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_BUSINESS_KEY));
     callActivity.setInheritBusinessKey(Boolean.parseBoolean(xtr.getAttributeValue(
         ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY)));
+    callActivity.setInheritVariables(Boolean.valueOf(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES)));
     parseChildElements(getXMLElementName(), callActivity, childParserMap, model, xtr);
     return callActivity;
   }
@@ -74,6 +75,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     if (callActivity.isInheritBusinessKey()) {
       writeQualifiedAttribute(ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY, "true", xtw);
     }
+    xtw.writeAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES, String.valueOf(callActivity.isInheritVariables()));
   }
 
   @Override
