@@ -503,7 +503,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike} escape '${wildcardEscapeCharacter}'
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -512,10 +512,10 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike} escape '${wildcardEscapeCharacter}'
+        and RES.NAME_ like #{nameLike}${wildcardEscapeClause}
       </if>
        <if test="nameLikeIgnoreCase != null">
-        and lower(RES.NAME_) like #{nameLikeIgnoreCase} escape '${wildcardEscapeCharacter}'
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})
@@ -549,7 +549,7 @@
 	      </choose>
   	      #{queryVariableValue.textValue}
   	      <choose>
-  	        <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '${wildcardEscapeCharacter}'</when>
+  	        <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
   	      </choose>
       	</if>
       	<if test="queryVariableValue.textValue2 != null">
@@ -560,7 +560,7 @@
 	      </choose>
 	        #{queryVariableValue.textValue2}
 	      <choose>
-	        <when test="queryVariableValue.operator.equals('LIKE')"> escape '${wildcardEscapeCharacter}'</when>
+	        <when test="queryVariableValue.operator.equals('LIKE')">${wildcardEscapeClause}</when>
 	      </choose>
       	</if>
       	<if test="queryVariableValue.longValue != null">
@@ -675,7 +675,7 @@
             or RES.TENANT_ID_ = #{orQueryObject.tenantId}
           </if>
           <if test="orQueryObject.tenantIdLike != null">
-            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike} escape '${wildcardEscapeCharacter}'
+            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
           </if>
           <if test="orQueryObject.withoutTenantId">
             or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -684,10 +684,10 @@
             or RES.NAME_ = #{orQueryObject.name}
           </if>
           <if test="orQueryObject.nameLike != null">
-            or RES.NAME_ like #{orQueryObject.nameLike} escape '${wildcardEscapeCharacter}'
+            or RES.NAME_ like #{orQueryObject.nameLike}${wildcardEscapeClause}
           </if>
           <if test="orQueryObject.nameLikeIgnoreCase != null">
-            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase} escape '${wildcardEscapeCharacter}'
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}${wildcardEscapeClause}
           </if>
           <if test="orQueryObject.involvedUser != null">
             or EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{orQueryObject.involvedUser})
@@ -723,7 +723,7 @@
               </choose>
                 #{queryVariableValue.textValue}
               <choose>
-                <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')"> escape '${wildcardEscapeCharacter}'</when>
+                <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
               </choose>
               </if>
               <if test="queryVariableValue.textValue2 != null">
@@ -734,7 +734,7 @@
               </choose>
                 #{queryVariableValue.textValue2}
                 <choose>
-                  <when test="queryVariableValue.operator.equals('LIKE')"> escape '${wildcardEscapeCharacter}'</when>
+                  <when test="queryVariableValue.operator.equals('LIKE')">${wildcardEscapeClause}</when>
                 </choose>
               </if>
               <if test="queryVariableValue.longValue != null">

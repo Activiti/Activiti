@@ -109,22 +109,22 @@
         and RES.FIRST_ = #{firstName}
       </if>
       <if test="firstNameLike != null">
-        and RES.FIRST_ like #{firstNameLike} escape '${wildcardEscapeCharacter}'
+        and RES.FIRST_ like #{firstNameLike}${wildcardEscapeClause}
       </if>
       <if test="lastName != null">
         and RES.LAST_ = #{lastName}
       </if>
       <if test="lastNameLike != null">
-        and RES.LAST_ like #{lastNameLike} escape '${wildcardEscapeCharacter}'
+        and RES.LAST_ like #{lastNameLike}${wildcardEscapeClause}
       </if>
       <if test="fullNameLike != null">
-        and (RES.FIRST_ like #{fullNameLike} escape '${wildcardEscapeCharacter}' or RES.LAST_ like #{fullNameLike} escape '${wildcardEscapeCharacter}')
+        and (RES.FIRST_ like #{fullNameLike}${wildcardEscapeClause} or RES.LAST_ like #{fullNameLike}${wildcardEscapeClause})
       </if>
       <if test="email != null">
         and RES.EMAIL_ = #{email}
       </if>
       <if test="emailLike != null">
-        and RES.EMAIL_ like #{emailLike} escape '${wildcardEscapeCharacter}'
+        and RES.EMAIL_ like #{emailLike}${wildcardEscapeClause}
       </if>
       <if test="groupId != null">
         and G.ID_ = #{groupId}

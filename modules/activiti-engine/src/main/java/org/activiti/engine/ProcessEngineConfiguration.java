@@ -180,7 +180,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   /**
    * escape character for wildcard
    */
-  protected String wildcardEscapeCharacter = "\\";
+  protected String wildcardEscapeCharacter = "";
   
   /**
    * database catalog to use
