@@ -796,9 +796,10 @@
                 <goals>
                   <goal>jar</goal>
                 </goals>
-                <configuration>
+                <!-- Disable this configuration if we are working with Java 7 or below -->
+                <!-- <configuration>
                   <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
+                </configuration> -->
               </execution>
             </executions>
           </plugin>
@@ -944,9 +945,10 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<configuration>
+                        <!-- Disable this configuration if we are working with Java 7 or below -->
+						<!-- <configuration>
               <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
+            </configuration> -->
 					</execution>
 				</executions>
 			</plugin>
