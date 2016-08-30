@@ -68,7 +68,7 @@
                     <button ng-if="model.mode == 'create'"
                             type="button"
                             class="btn btn-primary"
-                            ng-disabled="model.loading || !model.user.id || !model.user.password || !model.user.lastName"
+                            ng-disabled="model.loading || !model.user.id || !model.user.password || !model.user.firstName"
                             ng-click="createNewUser();">{{'IDM.GENERAL.ACTION.SAVE' | translate}}
                     </button>
                     <button ng-if="model.mode == 'edit'"
