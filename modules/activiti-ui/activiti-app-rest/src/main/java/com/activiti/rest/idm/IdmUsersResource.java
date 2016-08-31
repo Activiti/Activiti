@@ -21,11 +21,13 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.constant.GroupIds;
@@ -99,6 +101,7 @@ public class IdmUsersResource {
       return result;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/rest/admin/users/{userId}", method = RequestMethod.PUT)
     public void updateUserDetails(@PathVariable String userId, @RequestBody UpdateUsersRepresentation updateUsersRepresentation) {
       User user = identityService.createUserQuery().userId(userId).singleResult();
@@ -111,6 +114,7 @@ public class IdmUsersResource {
       }
     }
     
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/rest/admin/users", method = RequestMethod.PUT)
     public void bulkUpdateUserDetails(@RequestBody UpdateUsersRepresentation updateUsersRepresentation) {
       validateAdminRole();
@@ -127,6 +131,7 @@ public class IdmUsersResource {
       }
     }
     
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/rest/admin/users/{userId}", method = RequestMethod.DELETE)
     public void deleteUser(@PathVariable String userId) {
       validateAdminRole();

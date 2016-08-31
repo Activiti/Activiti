@@ -21,11 +21,13 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activiti.constant.GroupIds;
@@ -128,6 +130,7 @@ public class IdmGroupsResource {
     return new GroupRepresentation(group);
   }
 
+  @ResponseStatus(value = HttpStatus.OK)
   @RequestMapping(value = "/{groupId}", method = RequestMethod.DELETE)
   public void deleteGroup(@PathVariable String groupId) {
     validateAdminRole();
@@ -139,6 +142,7 @@ public class IdmGroupsResource {
     identityService.deleteGroup(groupId);
   }
 
+  @ResponseStatus(value = HttpStatus.OK)
   @RequestMapping(value = "/{groupId}/members/{userId}", method = RequestMethod.POST)
   public void addGroupMember(@PathVariable String groupId, @PathVariable String userId) {
     validateAdminRole();
@@ -156,6 +160,7 @@ public class IdmGroupsResource {
     identityService.createMembership(userId, groupId);
   }
 
+  @ResponseStatus(value = HttpStatus.OK)
   @RequestMapping(value = "/{groupId}/members/{userId}", method = RequestMethod.DELETE)
   public void deleteGroupMember(@PathVariable String groupId, @PathVariable String userId) {
     validateAdminRole();
