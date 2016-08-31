@@ -108,7 +108,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
           try {
             field.setValue(formExpression.getValue(variables));
           } catch (Exception e) {
-            logger.error("Error getting value for expression " + expressionField.getExpression() + " " + e.getMessage());
+            logger.error("Error getting value for expression " + expressionField.getExpression() + " " + e.getMessage(), e);
           }
           
         } else {
