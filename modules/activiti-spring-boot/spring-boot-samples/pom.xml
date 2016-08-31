@@ -7,7 +7,7 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot</artifactId>
         <relativePath>../</relativePath>
-        <version>6.0.0.Beta3-SNAPSHOT</version>
+        <version>6.0.0.Beta3</version>
     </parent>
 
     <artifactId>activiti-spring-boot-samples</artifactId>
