@@ -1008,6 +1008,7 @@
 				<module>modules/activiti-dmn-xml-converter</module>
 				<module>modules/activiti-dmn-engine</module>
 				<module>modules/activiti-dmn-engine-configurator</module>
+				<module>modules/activiti-dmn-rest</module>
 				<module>modules/activiti-form-model</module>
 				<module>modules/activiti-form-json-converter</module>
 				<module>modules/activiti-form-engine</module>

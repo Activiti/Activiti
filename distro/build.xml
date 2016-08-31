@@ -92,6 +92,9 @@
 			<fileset dir="../modules/activiti-dmn-xml-converter/target">
 				<include name="activiti-dmn-xml-converter-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti-dmn-api/target">
+				<include name="activiti-dmn-api-*.jar" />
+			</fileset>
 			<fileset dir="../modules/activiti-dmn-engine/target">
 				<include name="activiti-dmn-engine-*.jar" />
 			</fileset>
@@ -106,6 +109,9 @@
 			</fileset>
 			<fileset dir="../modules/activiti-form-json-converter/target">
 				<include name="activiti-form-json-converter-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-form-api/target">
+				<include name="activiti-form-api-*.jar" />
 			</fileset>
 			<fileset dir="../modules/activiti-form-engine/target">
 				<include name="activiti-form-engine-*.jar" />
