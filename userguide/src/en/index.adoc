@@ -1,5 +1,5 @@
 = Activiti User Guide
-v  6.0.0.Beta2-SNAPSHOT
+v  6.0.0.Beta3-SNAPSHOT
 :doctype: book
 :toc: left
 :toclevels: 5
