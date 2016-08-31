@@ -49,9 +49,18 @@ A more elaborate collection of Activiti-links can be found on the
     <li>Implementation of a message queue based Activiti job executor, you can read more about it <a href="http://www.jorambarrez.be/blog/2016/07/20/message-queue-async-executor-benchmark/">here</a></li>
     <li>Introduction of transient variables. Transient variables won't be persisted in the Activiti variable tables, but are still available on the execution for the duration of a single transaction.
     Transient variables can for example be used to store a REST response that is only needed to create a request to another REST service, or to use a Java service task result in the next Java service task without it getting persisted.</li> 
+    <li>Introduction of two new experimental performance flags: 'eager execution tree fetching' will fetch a complete execution tree while fetching a part of a process instance, 
+    as typically following parts of the tree are needed when continuing a process instance. 'Execution relationship counting' keeps a count of various related objects to an execution 
+    and thus removes the need for explicit checking and deleting related objects when an execution is removed (which happens frequently). 
+    First performance benchmarks using these flags gave some great results. The flags have been tested against the Activiti test suite and all test pass, but the flags are currently not enabled by default.</li>
     <li>Introduction of transaction dependent listeners. You can now register a listener which will be executed before commit, after commit or on rollback. 
     The transaction dependent listener is an addition to the already existing execution, task and event listeners and provides more ways to listen to the execution of a process instance in the Activiti Engine.</li>
     <li>A simple DMN editor has been added to the Activiti 6 UI app</li>
+    <li>Added terminate multi instance end behaviour: this allows to use an end event that will end all instances of a multi instance.</li>
+    <li>Optimize the compensation activity behaviour and added support for the use of subprocesses as compensation activity.</li>
+    <li>Expose start time and start user id on runtime process instance and executions. Expose claim time on runtime task. Before: only on historical counterpart.</li>
+    <li>Fix the use of database schema's (oracle/postgres) properly (workarounds were needed before).</li>
+    <li>Fix historical data capturing (vs Beta2 especially, but also against certain v5 cases).</li>
     <li>Lots of refactoring in the Activiti 6 UI app, for example app definitions are now deployed as normal Activiti deployments without separate app definition tables</li>
     <li>Lots of improvements to Activiti 6 QA</li>
     <li>Various and many small bugfixes all around.</li>
