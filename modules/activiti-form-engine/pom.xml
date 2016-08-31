@@ -95,32 +95,8 @@
         </dependency>
         
         <dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>net.sourceforge.jtds</groupId>
-			<artifactId>jtds</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.ibm.db2.jcc</groupId>
-			<artifactId>db2jcc4</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.oracle.jdbc</groupId>
-			<artifactId>ojdbc7</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -324,6 +300,108 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		
+		<profile>
+			<id>oracle</id>
+			<activation>
+				<property>
+					<name>databaseform</name>
+					<value>oracle</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.oracle.jdbc</groupId>
+					<artifactId>ojdbc7</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>oraclewithschemaform</id>
+			<activation>
+				<property>
+					<name>databasewithschemaform</name>
+					<value>oracle</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.oracle.jdbc</groupId>
+					<artifactId>ojdbc7</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>db2</id>
+			<activation>
+				<property>
+					<name>databaseform</name>
+					<value>db2</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.ibm.db2.jcc</groupId>
+					<artifactId>db2jcc4</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>mssql</id>
+			<activation>
+				<property>
+					<name>databaseform</name>
+					<value>mssql</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>net.sourceforge.jtds</groupId>
+					<artifactId>jtds</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>mysql</id>
+			<activation>
+				<property>
+					<name>databaseform</name>
+					<value>mysql</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>hsql</id>
+			<activation>
+				<property>
+					<name>databaseform</name>
+					<value>hsql</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 
