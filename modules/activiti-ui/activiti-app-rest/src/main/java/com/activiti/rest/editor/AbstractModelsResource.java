@@ -171,6 +171,7 @@ public class AbstractModelsResource {
         String description = process.getDocumentation();
 
         ModelRepresentation model = new ModelRepresentation();
+        model.setKey(process.getId());
         model.setName(name);
         model.setDescription(description);
         model.setModelType(AbstractModel.MODEL_TYPE_BPMN);
