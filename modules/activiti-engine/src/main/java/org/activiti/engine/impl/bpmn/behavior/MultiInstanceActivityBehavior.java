@@ -179,11 +179,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected int resolveNrOfInstances(DelegateExecution execution) {
     if (loopCardinalityExpression != null) {
       return resolveLoopCardinality(execution);
+      
     } else if(usesCollection()) {
       Collection collection = resolveAndValidateCollection(execution);
       return collection.size();
-    }
-    else {
+      
+    } else {
       throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
     }
   }
@@ -207,20 +208,23 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     Context.getAgenda().planContinueMultiInstanceOperation((ExecutionEntity) execution);
   }
 
+  @SuppressWarnings("rawtypes")
   protected Collection resolveAndValidateCollection(DelegateExecution execution) {
     Object obj = resolveCollection(execution);
     if (collectionExpression != null) {
       if (!(obj instanceof Collection)) {
         throw new ActivitiIllegalArgumentException(collectionExpression.getExpressionText() + "' didn't resolve to a Collection");
       }
-    }
-    else if (collectionVariable != null) {
+      
+    } else if (collectionVariable != null) {
       if (obj == null) {
         throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + " is not found");
       }
+      
       if (!(obj instanceof Collection)) {
         throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + "' is not a Collection");
       }
+      
     } else {
       throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
     }
@@ -231,6 +235,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     Object collection = null;
     if (collectionExpression != null) {
       collection = collectionExpression.getValue(execution);
+      
     } else if (collectionVariable != null) {
       collection = execution.getVariable(collectionVariable);
     }
@@ -250,8 +255,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     Object value = loopCardinalityExpression.getValue(execution);
     if (value instanceof Number) {
       return ((Number) value).intValue();
+      
     } else if (value instanceof String) {
       return Integer.valueOf((String) value);
+      
     } else {
       throw new ActivitiIllegalArgumentException("Could not resolve loopCardinality expression '" + loopCardinalityExpression.getExpressionText() + "': not a number nor number String");
     }
@@ -263,6 +270,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       if (!(value instanceof Boolean)) {
         throw new ActivitiIllegalArgumentException("completionCondition '" + completionConditionExpression.getExpressionText() + "' does not evaluate to a boolean value");
       }
+      
       Boolean booleanValue = (Boolean) value;
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Completion condition of multi-instance satisfied: {}", booleanValue);
