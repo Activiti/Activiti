@@ -12,7 +12,7 @@
   </insert>
 
   <insert id="bulkInsertDeployment" parameterType="java.util.List">
-    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_)
     values
       <foreach collection="list" item="deployment" index="index" separator=",">
         (#{deployment.id, jdbcType=VARCHAR},
@@ -27,7 +27,7 @@
   <insert id="bulkInsertDeployment" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL 
       <foreach collection="list" item="deployment" index="index">
-        into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_) VALUES 
+        into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_) VALUES 
           (#{deployment.id, jdbcType=VARCHAR},
            #{deployment.name, jdbcType=VARCHAR},
            #{deployment.category, jdbcType=VARCHAR},
