@@ -16,12 +16,15 @@ import java.util.List;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+import org.apache.commons.lang3.StringUtils;
 
 public class IntermediateCatchMessageEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
@@ -34,8 +37,19 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   }
 
   public void execute(DelegateExecution execution) {
+    CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
+    
+    String messageName = null;
+    if (StringUtils.isNotEmpty(messageEventDefinition.getMessageRef())) {
+      messageName = messageEventDefinition.getMessageRef();
+    } else {
+      Expression messageExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
+          .createExpression(messageEventDefinition.getMessageExpression());
+      messageName = messageExpression.getValue(execution).toString();
+    }
+    
+    commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageName, executionEntity);
   }
 
   @Override

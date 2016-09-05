@@ -14,9 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
-import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Signal;
-import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 
@@ -36,9 +34,9 @@ public interface EventSubscriptionEntityManager extends EntityManager<EventSubsc
   
   /* Create and insert */
   
-  SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution);
+  SignalEventSubscriptionEntity insertSignalEvent(String signalName, Signal signal, ExecutionEntity execution);
 
-  MessageEventSubscriptionEntity insertMessageEvent(MessageEventDefinition messageEventDefinition, ExecutionEntity execution);
+  MessageEventSubscriptionEntity insertMessageEvent(String messageName, ExecutionEntity execution);
 
   CompensateEventSubscriptionEntity insertCompensationEvent(ExecutionEntity execution, String activityId);
   

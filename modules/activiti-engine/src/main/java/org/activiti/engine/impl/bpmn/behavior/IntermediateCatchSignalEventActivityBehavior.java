@@ -17,12 +17,15 @@ import java.util.List;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.apache.commons.lang3.StringUtils;
 
 public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
@@ -37,8 +40,19 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
   }
 
   public void execute(DelegateExecution execution) {
+    CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
+    
+    String signalName = null;
+    if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
+      signalName = signalEventDefinition.getSignalRef();
+    } else {
+      Expression signalExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
+          .createExpression(signalEventDefinition.getSignalExpression());
+      signalName = signalExpression.getValue(execution).toString();
+    }
+    
+    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
   }
 
   @Override

@@ -37,6 +37,7 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     MessageEventDefinition eventDefinition = new MessageEventDefinition();
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
+    eventDefinition.setMessageExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_EXPRESSION));
 
     if (!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
 
@@ -47,22 +48,17 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
         String messageRef = eventDefinition.getMessageRef().substring(indexOfP + 1);
 
         if (resolvedNamespace == null) {
-          // if it's an invalid prefix will consider this is not a
-          // namespace prefix so will be used as part of the
-          // stringReference
+          // if it's an invalid prefix will consider this is not a namespace prefix so will be used as part of the stringReference
           messageRef = prefix + ":" + messageRef;
         } else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
-          // if it's a valid namespace prefix but it's not the
-          // targetNamespace then we'll use it as a valid namespace
-          // (even out editor does not support defining namespaces it
-          // is still a valid xml file)
+          // if it's a valid namespace prefix but it's not the targetNamespace then we'll use it as a valid namespace
+          // (even out editor does not support defining namespaces it is still a valid xml file)
           messageRef = resolvedNamespace + ":" + messageRef;
         }
         eventDefinition.setMessageRef(messageRef);
       } else {
         eventDefinition.setMessageRef(eventDefinition.getMessageRef());
       }
-
     }
 
     BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_MESSAGEDEFINITION, eventDefinition, xtr, model);

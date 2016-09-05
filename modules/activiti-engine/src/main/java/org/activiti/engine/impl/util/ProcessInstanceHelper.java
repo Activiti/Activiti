@@ -200,7 +200,7 @@ public class ProcessInstanceHelper {
                 ExecutionEntity messageExecution = commandContext.getExecutionEntityManager().createChildExecution(processInstance); 
                 messageExecution.setCurrentFlowElement(startEvent);
                 messageExecution.setEventScope(true);
-                commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, messageExecution);
+                commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition.getMessageRef(), messageExecution);
               }
             }
           }

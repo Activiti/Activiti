@@ -37,6 +37,7 @@ public class SignalEventDefinitionParser extends BaseChildElementParser {
     SignalEventDefinition eventDefinition = new SignalEventDefinition();
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setSignalRef(xtr.getAttributeValue(null, ATTRIBUTE_SIGNAL_REF));
+    eventDefinition.setSignalExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_SIGNAL_EXPRESSION));
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS))) {
       eventDefinition.setAsync(Boolean.parseBoolean(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)));
     }

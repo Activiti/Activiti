@@ -32,10 +32,8 @@ public class EndEventTest extends PluggableActivitiTestCase {
 
     // We will now start two threads that both complete the task.
     // In the process, the task is followed by a delay of three seconds
-    // This will cause both threads to call the taskService.complete method
-    // with enough time,
-    // before ending the process. Both threads will now try to end the
-    // process
+    // This will cause both threads to call the taskService.complete method with enough time,
+    // before ending the process. Both threads will now try to end the process
     // and only one should succeed (due to optimistic locking).
     TaskCompleter taskCompleter1 = new TaskCompleter(task.getId());
     TaskCompleter taskCompleter2 = new TaskCompleter(task.getId());

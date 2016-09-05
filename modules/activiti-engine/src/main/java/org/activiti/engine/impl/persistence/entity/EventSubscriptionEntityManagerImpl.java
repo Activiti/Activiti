@@ -16,9 +16,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Signal;
-import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -63,7 +61,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   }
   
   @Override
-  public SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution) {
+  public SignalEventSubscriptionEntity insertSignalEvent(String signalName, Signal signal, ExecutionEntity execution) {
     SignalEventSubscriptionEntity subscriptionEntity = createSignalEventSubscription();
     subscriptionEntity.setExecution(execution);
     if (signal != null) {
@@ -72,7 +70,7 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
         subscriptionEntity.setConfiguration(signal.getScope());
       }
     } else {
-      subscriptionEntity.setEventName(signalEventDefinition.getSignalRef());
+      subscriptionEntity.setEventName(signalName);
     }
 
     subscriptionEntity.setActivityId(execution.getCurrentActivityId());
@@ -86,10 +84,10 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
   }
 
   @Override
-  public MessageEventSubscriptionEntity insertMessageEvent(MessageEventDefinition messageEventDefinition, ExecutionEntity execution) {
+  public MessageEventSubscriptionEntity insertMessageEvent(String messageName, ExecutionEntity execution) {
     MessageEventSubscriptionEntity subscriptionEntity = createMessageEventSubscription();
     subscriptionEntity.setExecution(execution);
-    subscriptionEntity.setEventName(messageEventDefinition.getMessageRef());
+    subscriptionEntity.setEventName(messageName);
 
     subscriptionEntity.setActivityId(execution.getCurrentActivityId());
     subscriptionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());

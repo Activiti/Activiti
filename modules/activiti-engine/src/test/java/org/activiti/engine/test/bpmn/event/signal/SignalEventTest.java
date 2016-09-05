@@ -38,7 +38,6 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
       "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml" })
   public void testSignalCatchIntermediate() {
-
     runtimeService.startProcessInstanceByKey("catchSignal");
 
     assertEquals(1, createEventSubscriptionQuery().count());
@@ -48,7 +47,22 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
     assertEquals(0, createEventSubscriptionQuery().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalExpression.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalExpression.bpmn20.xml" })
+  public void testSignalCatchIntermediateExpression() {
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("mySignalName", "testSignal");
+    runtimeService.startProcessInstanceByKey("catchSignal", variableMap);
+    
+    assertEquals(1, createEventSubscriptionQuery().count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    
+    runtimeService.startProcessInstanceByKey("throwSignal", variableMap);
+    
+    assertEquals(0, createEventSubscriptionQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalBoundary.bpmn20.xml",
