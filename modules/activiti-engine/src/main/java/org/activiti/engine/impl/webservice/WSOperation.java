@@ -67,15 +67,11 @@ public class WSOperation implements OperationImplementation {
     return message.getStructureInstance().toArray();
   }
   
-    private Object[] safeSend(Object[] arguments) throws Exception {
+  private Object[] safeSend(Object[] arguments) throws Exception {
     Object[] results = null;
-    
-    try {
-      results = this.service.getClient().send(this.name, arguments);
-    } catch (Exception e) {
-      throw e;
-    }
-    
+
+    results = this.service.getClient().send(this.name, arguments);
+
     if (results == null) {
       results = new Object[] {};
     }
