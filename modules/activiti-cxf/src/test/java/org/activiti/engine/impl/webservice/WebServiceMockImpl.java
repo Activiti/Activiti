@@ -16,6 +16,8 @@ import java.util.Date;
 
 import javax.jws.WebService;
 
+import org.apache.cxf.common.i18n.UncheckedException;
+
 /**
  * An implementation of a Counter WS
  *
@@ -43,8 +45,14 @@ public class WebServiceMockImpl implements WebServiceMock {
   /**
    * {@inheritDoc}
    */
-  public void inc() {
-    this.count++;
+  public void inc() throws MaxValueReachedFault {
+    if (this.count == 123456) {
+      throw new RuntimeException("A runtime exception not expected in the processing of the web-service");
+    } else if (this.count != Integer.MAX_VALUE) {
+      this.count++;
+    } else  {
+      throw new MaxValueReachedFault();
+    }
   }
 
   /**
