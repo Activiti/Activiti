@@ -15,46 +15,22 @@ package org.activiti.engine.impl.webservice;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
-import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
+import org.apache.cxf.binding.soap.SoapFault;
+import org.apache.cxf.interceptor.Fault;
 
 /**
  * An integration test for CXF based web services
  *
  * @author <a href="mailto:gnodet@gmail.com">Guillaume Nodet</a>
  */
-public class WebServiceTaskTest extends PluggableActivitiTestCase {
-
-    private WebServiceMock webServiceMock;
-    private Server server;
-
-    @Override
-    protected void initializeProcessEngine() {
-        super.initializeProcessEngine();
-
-        webServiceMock = new WebServiceMockImpl();
-        JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
-        svrFactory.setServiceClass(WebServiceMock.class);
-        svrFactory.setAddress("http://localhost:63081/webservicemock");
-        svrFactory.setServiceBean(webServiceMock);
-        svrFactory.getInInterceptors().add(new LoggingInInterceptor());
-        svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
-        server = svrFactory.create();
-        server.start();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        server.stop();
-    }
+public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
 
     @Deployment
     public void testWebServiceInvocation() throws Exception {
@@ -81,6 +57,43 @@ public class WebServiceTaskTest extends PluggableActivitiTestCase {
 
         assertEquals(expectedDate, webServiceMock.getDataStructure().eltDate);
         assertTrue(processInstance.isEnded());
+    }
+
+    @Deployment
+    public void testFaultManagement() throws Exception {
+
+        assertEquals(-1, webServiceMock.getCount());
+
+        // Expected fault catched with a boundary error event
+
+        webServiceMock.setTo(Integer.MAX_VALUE);
+        ProcessInstance processInstanceWithExpectedFault = runtimeService
+                .startProcessInstanceByKey("webServiceInvocation");
+        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+        assertTrue(processInstanceWithExpectedFault.isEnded());
+        final List<HistoricProcessInstance> historicProcessInstanceWithExpectedFault = historyService
+                .createHistoricProcessInstanceQuery().processInstanceId(processInstanceWithExpectedFault.getId())
+                .list();
+        assertEquals(1, historicProcessInstanceWithExpectedFault.size());
+        assertEquals("theEndWithError", historicProcessInstanceWithExpectedFault.get(0).getEndActivityId());
+
+        // Runtime exception occurring during processing of the web-service, so not catched in the process definition
+        webServiceMock.setTo(123456);
+        try {
+            runtimeService.startProcessInstanceByKey("webServiceInvocation");
+        } catch (ActivitiException e) {
+            assertTrue(e.getCause() instanceof SoapFault);
+        }
+
+        // Unexpected fault invoking the web-service, so not catched in the process definition
+        server.stop();
+        try {
+            runtimeService.startProcessInstanceByKey("webServiceInvocation");
+        } catch (ActivitiException e) {
+            assertTrue(e.getCause() instanceof Fault);
+        } finally {
+            server.start();
+        }
     }
 
 }
