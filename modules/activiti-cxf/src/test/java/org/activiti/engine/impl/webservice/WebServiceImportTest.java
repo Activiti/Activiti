@@ -19,7 +19,7 @@ import org.activiti.engine.test.Deployment;
  *
  * @author Christophe DENEUX
  */
-public class WebServiceImportTest extends AbstratWebServiceTask {
+public class WebServiceImportTest extends AbstractWebServiceTaskTest {
 
     @Deployment
     public void testImport() throws Exception {

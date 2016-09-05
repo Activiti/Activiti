@@ -30,7 +30,7 @@ import org.apache.cxf.interceptor.Fault;
  *
  * @author <a href="mailto:gnodet@gmail.com">Guillaume Nodet</a>
  */
-public class WebServiceTaskTest extends AbstratWebServiceTask {
+public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
 
     @Deployment
     public void testWebServiceInvocation() throws Exception {

@@ -24,7 +24,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
  * @author <a href="mailto:gnodet@gmail.com">Guillaume Nodet</a>
  * @author Christophe DENEUX
  */
-public abstract class AbstratWebServiceTask extends PluggableActivitiTestCase {
+public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCase {
 
     protected WebServiceMock webServiceMock;
 
