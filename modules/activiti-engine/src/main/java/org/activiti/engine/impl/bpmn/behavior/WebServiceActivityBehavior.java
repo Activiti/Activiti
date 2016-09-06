@@ -47,6 +47,7 @@ import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociat
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -131,7 +132,9 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   
       fillMessage(dataInputAssociations, execution);
   
-      MessageInstance receivedMessage = operation.sendMessage(message);
+      ProcessEngineConfigurationImpl processEngineConfig = Context.getProcessEngineConfiguration();
+      MessageInstance receivedMessage = operation.sendMessage(message,
+          processEngineConfig.getWsOverridenEndpointAddresses());
   
       execution.setVariable(CURRENT_MESSAGE, receivedMessage);
       

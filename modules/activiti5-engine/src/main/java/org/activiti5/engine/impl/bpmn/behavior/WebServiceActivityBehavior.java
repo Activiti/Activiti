@@ -20,6 +20,8 @@ import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti5.engine.delegate.BpmnError;
 import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
@@ -75,7 +77,9 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     
        this.fillMessage(message, execution);
     
-       MessageInstance receivedMessage = this.operation.sendMessage(message);
+       ProcessEngineConfigurationImpl processEngineConfig = Context.getProcessEngineConfiguration();
+       MessageInstance receivedMessage = this.operation.sendMessage(message,
+           processEngineConfig.getWsOverridenEndpointAddresses());
 
        execution.setVariable(CURRENT_MESSAGE, receivedMessage);
 

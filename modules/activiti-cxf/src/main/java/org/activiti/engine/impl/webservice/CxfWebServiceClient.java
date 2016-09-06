@@ -16,12 +16,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.namespace.QName;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.apache.cxf.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +66,18 @@ public class CxfWebServiceClient implements SyncWebServiceClient {
   /**
    * {@inheritDoc}
    */
-  public Object[] send(String methodName, Object[] arguments) throws Exception {
+  public Object[] send(String methodName, Object[] arguments, ConcurrentMap<QName,URL> overridenEndpointAddresses) throws Exception {
     try {
-       return client.invoke(methodName, arguments);
+      URL newEndpointAddress = null;
+      if (overridenEndpointAddresses != null) {
+        newEndpointAddress = overridenEndpointAddresses
+               .get(this.client.getEndpoint().getEndpointInfo().getName());
+      }
+      
+      if (newEndpointAddress != null) {
+          this.client.getRequestContext().put(Message.ENDPOINT_ADDRESS, newEndpointAddress.toExternalForm());
+      }
+      return client.invoke(methodName, arguments);
     } catch (Fault e) {
        LOGGER.debug("Technical error calling WS", e);
        throw new ActivitiException(e.getMessage(), e);

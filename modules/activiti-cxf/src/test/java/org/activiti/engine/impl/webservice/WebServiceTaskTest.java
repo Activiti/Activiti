@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -94,6 +97,22 @@ public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
         } finally {
             server.start();
         }
+    }
+    
+    @Deployment
+    public void testWebServiceInvocationWithEndpointAddressConfigured() throws Exception {
+
+        assertEquals(-1, webServiceMock.getCount());
+
+        processEngineConfiguration.addWsEndpointAddress(
+                new QName("http://webservice.impl.engine.activiti.org/", "CounterImplPort"),
+                new URL("http://localhost:63081/webservicemock"));
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocation");
+        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+        assertEquals(0, webServiceMock.getCount());
+        assertTrue(processInstance.isEnded());
     }
 
 }
