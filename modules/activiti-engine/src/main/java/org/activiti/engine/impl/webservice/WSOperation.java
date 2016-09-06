@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import java.net.URL;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.namespace.QName;
+
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
@@ -33,8 +38,8 @@ public class WSOperation implements OperationImplementation {
   protected String name;
   
   protected WSService service;
-  
-  public WSOperation(String id, String operationName, WSService service) {
+
+    public WSOperation(String id, String operationName, WSService service) {
     this.id = id;
     this.name = operationName;
     this.service = service;
@@ -57,9 +62,9 @@ public class WSOperation implements OperationImplementation {
   /**
    * {@inheritDoc}
    */
-    public MessageInstance sendFor(MessageInstance message, Operation operation) throws Exception {
+  public MessageInstance sendFor(MessageInstance message, Operation operation, final ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
     Object[] arguments = this.getArguments(message);
-    Object[] results = this.safeSend(arguments);
+    Object[] results = this.safeSend(arguments, overridenEndpointAddresses);
     return this.createResponseMessage(results, operation);
   }
 
@@ -67,11 +72,8 @@ public class WSOperation implements OperationImplementation {
     return message.getStructureInstance().toArray();
   }
   
-  private Object[] safeSend(Object[] arguments) throws Exception {
-    Object[] results = null;
-
-    results = this.service.getClient().send(this.name, arguments);
-
+  private Object[] safeSend(Object[] arguments, final ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
+    Object[] results = this.service.getClient().send(this.name, arguments, overridenEndpointAddresses);
     if (results == null) {
       results = new Object[] {};
     }

@@ -12,6 +12,10 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import java.net.URL;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.namespace.QName;
 
 /**
  * A dynamic web service client that allows to perform synchronous calls
@@ -26,7 +30,8 @@ public interface SyncWebServiceClient {
    * 
    * @param methodName a not null method name
    * @param arguments a not null list of arguments
+   * @param overridenEndpointAddresses a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
    * @return the result of invoking the method of the web service
    */
-  Object[] send(String methodName, Object[] arguments) throws Exception;
+  Object[] send(String methodName, Object[] arguments, final ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception;
 }
