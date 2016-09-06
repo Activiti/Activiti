@@ -16,6 +16,7 @@ package org.activiti.engine.impl.cfg;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -32,9 +33,12 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import javax.xml.namespace.QName;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
@@ -523,6 +527,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int historicProcessInstancesQueryLimit = 20000;
 
   protected String wsSyncFactoryClassName = DEFAULT_WS_SYNC_FACTORY;
+  protected ConcurrentMap<QName, URL> wsOverridenEndpointAddresses = new ConcurrentHashMap<QName, URL>();
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
@@ -1901,6 +1906,34 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public ProcessEngineConfigurationImpl setWsSyncFactoryClassName(String wsSyncFactoryClassName) {
     this.wsSyncFactoryClassName = wsSyncFactoryClassName;
+    return this;
+  }
+  
+  /**
+   * Add or replace the address of the given web-service endpoint with the given value
+   * @param endpointName The endpoint name for which a new address must be set
+   * @param address The new address of the endpoint
+   */
+  public ProcessEngineConfiguration addWsEndpointAddress(QName endpointName, URL address) {
+      this.wsOverridenEndpointAddresses.put(endpointName, address);
+      return this;
+  }
+  
+  /**
+   * Remove the address definition of the given web-service endpoint
+   * @param endpointName The endpoint name for which the address definition must be removed
+   */
+  public ProcessEngineConfiguration removeWsEndpointAddress(QName endpointName) {
+      this.wsOverridenEndpointAddresses.remove(endpointName);
+      return this;
+  }
+  
+  public ConcurrentMap<QName, URL> getWsOverridenEndpointAddresses() {
+      return this.wsOverridenEndpointAddresses;
+  }
+  
+  public ProcessEngineConfiguration setWsOverridenEndpointAddresses(final ConcurrentMap<QName, URL> wsOverridenEndpointAdress) {
+    this.wsOverridenEndpointAddresses.putAll(wsOverridenEndpointAdress);
     return this;
   }
   
