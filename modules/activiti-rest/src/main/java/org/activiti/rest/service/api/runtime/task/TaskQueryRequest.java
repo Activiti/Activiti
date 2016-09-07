@@ -437,8 +437,12 @@ public class TaskQueryRequest extends PaginateRequest {
     this.candidateOrAssigned = candidateOrAssigned;
   }
 
-  public String getCategory() {return category; }
+  public String getCategory() {
+    return category;
+  }
 
-  public void setCategory(String category) {this.category = category; }
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
 }

@@ -5054,6 +5054,7 @@ GET history/historic-task-instances
 |taskDescription|No|String|The task description of the historic task instance.
 |taskDescriptionLike|No|String|The task description with 'like' operator for the historic task instance.
 |taskDefinitionKey|No|String|The task identifier from the process definition for the historic task instance.
+|taskCategory|No|String|Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).
 |taskDeleteReason|No|String|The task delete reason of the historic task instance.
 |taskDeleteReasonLike|No|String|The task delete reason with 'like' operator for the historic task instance.
 |taskAssignee|No|String|The assignee of the historic task instance.
@@ -5080,7 +5081,6 @@ GET history/historic-task-instances
 |tenantId|No|String|Only return historic task instances with the given tenantId.
 |tenantIdLike|No|String|Only return historic task instances with a tenantId like the given value.
 |withoutTenantId|No|Boolean|If +true+, only returns historic task instances without a tenantId set. If +false+, the +withoutTenantId+ parameter is ignored.
-|category|No|String|Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).
 
 |The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
