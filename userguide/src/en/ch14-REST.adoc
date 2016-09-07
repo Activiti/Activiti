@@ -3043,6 +3043,7 @@ GET runtime/tasks
 |tenantIdLike|No|String|Only return tasks with a tenantId like the given value.
 |withoutTenantId|No|Boolean|If +true+, only returns tasks without a tenantId set. If +false+, the +withoutTenantId+ parameter is ignored.
 |candidateOrAssigned|No|String|Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
+|category|No|string|Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).
 |The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
 |===============
@@ -5079,6 +5080,8 @@ GET history/historic-task-instances
 |tenantId|No|String|Only return historic task instances with the given tenantId.
 |tenantIdLike|No|String|Only return historic task instances with a tenantId like the given value.
 |withoutTenantId|No|Boolean|If +true+, only returns historic task instances without a tenantId set. If +false+, the +withoutTenantId+ parameter is ignored.
+|category|No|String|Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).
+
 |The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
 |===============
