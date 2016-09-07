@@ -1,5 +1,5 @@
 = Activiti Migraton Guide : Activiti v5 to Activiti v6
-v  6.0.0.Beta4
+v  6.0.0.RC1-SNAPSHOT
 :doctype: book
 :toc: left
 :toclevels: 5
