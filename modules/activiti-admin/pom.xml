@@ -9,14 +9,14 @@
     <inceptionYear>2016</inceptionYear>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-admin</artifactId>
-    <version>6.0.0.RC1-SNAPSHOT</version>
+    <version>6.0.0.Beta4</version>
 	<packaging>war</packaging>
 	
     <parent>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-root</artifactId>
       <relativePath>../..</relativePath>
-      <version>6.0.0.RC1-SNAPSHOT</version>
+      <version>6.0.0.Beta4</version>
     </parent>
 
     <properties>
@@ -25,7 +25,7 @@
   		<java.version>1.7</java.version>
 
   		<!-- Libraries versions -->
-  		<activiti.version>6.0.0.RC1-SNAPSHOT</activiti.version>
+  		<activiti.version>6.0.0.Beta4</activiti.version>
   	    <spring.version>4.1.6.RELEASE</spring.version>
   		<spring.security.version>4.0.1.RELEASE</spring.security.version>
   		<hibernate.version>4.2.16.Final</hibernate.version>
