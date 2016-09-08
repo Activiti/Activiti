@@ -59,9 +59,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author erikwinlof
  */
 @Service
-public class AlfrescoDecisionTableService extends BaseAlfrescoModelService {
+public class ActivitiDecisionTableService extends BaseActivitiModelService {
 
-  private static final Logger logger = LoggerFactory.getLogger(AlfrescoDecisionTableService.class);
+  private static final Logger logger = LoggerFactory.getLogger(ActivitiDecisionTableService.class);
 
   protected static final int MIN_FILTER_LENGTH = 1;
 

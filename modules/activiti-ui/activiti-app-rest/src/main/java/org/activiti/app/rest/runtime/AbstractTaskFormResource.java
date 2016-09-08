@@ -23,7 +23,6 @@ import org.activiti.app.security.SecurityUtils;
 import org.activiti.app.service.exception.NotFoundException;
 import org.activiti.app.service.exception.NotPermittedException;
 import org.activiti.app.service.runtime.PermissionService;
-import org.activiti.app.service.runtime.RelatedContentService;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -67,9 +66,6 @@ public abstract class AbstractTaskFormResource {
 
   @Autowired
   protected PermissionService permissionService;
-
-  @Autowired
-  protected RelatedContentService relatedContentService;
 
   @Autowired
   protected ObjectMapper objectMapper;

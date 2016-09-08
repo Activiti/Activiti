@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class ProcessInstanceQueryResource extends AbstractProcessInstanceQueryResource {
     
 	@RequestMapping(value = "/rest/query/process-instances", method = RequestMethod.POST, produces = "application/json")
-    public ResultListDataRepresentation getProcessInstances(@RequestBody ObjectNode requestNode) {
-		return super.getProcessInstances(requestNode);
-    }
+  public ResultListDataRepresentation getProcessInstances(@RequestBody ObjectNode requestNode) {
+	  return super.getProcessInstances(requestNode);
+  }
 	
 }

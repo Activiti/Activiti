@@ -34,100 +34,98 @@ import org.apache.commons.lang3.StringUtils;
 
 public class AbstractCommentsResource {
 
-    @Inject
-    private PermissionService permissionService;
+  @Inject
+  private PermissionService permissionService;
 
-    @Inject
-    private CommentService commentService;
-    
-    @Inject
-    private HistoryService historyService;
+  @Inject
+  private CommentService commentService;
 
-    public ResultListDataRepresentation getTaskComments(String taskId, Boolean latestFirst) {
+  @Inject
+  private HistoryService historyService;
 
-        User currentUser = SecurityUtils.getCurrentUserObject();
-        checkReadPermissionOnTask(currentUser, taskId);
-        List<Comment> comments = commentService.getCommentsForTask(taskId, Boolean.TRUE.equals(latestFirst));
+  public ResultListDataRepresentation getTaskComments(String taskId, Boolean latestFirst) {
 
-        // Create representation for all comments
-        List<CommentRepresentation> commentList = new ArrayList<CommentRepresentation>();
-        for (Comment comment : comments) {
-            commentList.add(new CommentRepresentation(comment));
-        }
+    User currentUser = SecurityUtils.getCurrentUserObject();
+    checkReadPermissionOnTask(currentUser, taskId);
+    List<Comment> comments = commentService.getCommentsForTask(taskId, Boolean.TRUE.equals(latestFirst));
 
-        return new ResultListDataRepresentation(commentList);
+    // Create representation for all comments
+    List<CommentRepresentation> commentList = new ArrayList<CommentRepresentation>();
+    for (Comment comment : comments) {
+      commentList.add(new CommentRepresentation(comment));
     }
 
-    public CommentRepresentation addTaskComment(CommentRepresentation commentRequest, String taskId) {
+    return new ResultListDataRepresentation(commentList);
+  }
 
-        if (StringUtils.isBlank(commentRequest.getMessage())) {
-            throw new BadRequestException("Comment should not be empty");
-        }
-        
-        HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-        if (task == null) {
-            throw new NotFoundException("No task found with id: " + taskId);
-        }
+  public CommentRepresentation addTaskComment(CommentRepresentation commentRequest, String taskId) {
 
-        // Check read permission and message
-        User currentUser = SecurityUtils.getCurrentUserObject();
-        checkReadPermissionOnTask(currentUser, taskId);
-
-        // Create comment
-        Comment comment = commentService.createComment(commentRequest.getMessage(), currentUser, task.getId(), task.getProcessInstanceId());
-        return new CommentRepresentation(comment);
-    }
-    
-    public ResultListDataRepresentation getProcessInstanceComments(String processInstanceId, Boolean latestFirst) {
-
-        User currentUser = SecurityUtils.getCurrentUserObject();
-        checkReadPermissionOnProcessInstance(currentUser, processInstanceId);
-        List<Comment> comments = commentService.getCommentsForProcessInstance(processInstanceId, Boolean.TRUE.equals(latestFirst));
-
-        // Create representation for all comments
-        List<CommentRepresentation> commentList = new ArrayList<CommentRepresentation>();
-        for (Comment comment : comments) {
-            commentList.add(new CommentRepresentation(comment));
-        }
-
-        return new ResultListDataRepresentation(commentList);
-    }
-    
-    public CommentRepresentation addProcessInstanceComment(CommentRepresentation commentRequest, String processInstanceId) {
-
-        if (StringUtils.isBlank(commentRequest.getMessage())) {
-            throw new BadRequestException("Comment should not be empty");
-        }
-        
-        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceId(processInstanceId)
-                .singleResult();
-        if (processInstance == null) {
-            throw new NotFoundException("No process instance found with id: " + processInstanceId);
-        }
-
-        // Check read permission and message
-        User currentUser = SecurityUtils.getCurrentUserObject();
-        checkReadPermissionOnProcessInstance(currentUser, processInstanceId);
-
-        // Create comment
-        Comment comment = commentService.createComment(commentRequest.getMessage(), currentUser, processInstanceId);
-        return new CommentRepresentation(comment);
+    if (StringUtils.isBlank(commentRequest.getMessage())) {
+      throw new BadRequestException("Comment should not be empty");
     }
 
-    protected void checkReadPermissionOnTask(User user, String taskId) {
-        if (taskId == null) {
-            throw new BadRequestException("Task id is required");
-        }
-        permissionService.validateReadPermissionOnTask(SecurityUtils.getCurrentUserObject(), taskId);
+    HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+    if (task == null) {
+      throw new NotFoundException("No task found with id: " + taskId);
     }
-    
-    protected void checkReadPermissionOnProcessInstance(User user, String processInstanceId) {
-        if (processInstanceId == null) {
-            throw new BadRequestException("Process instance id is required");
-        }
-        if (!permissionService.hasReadPermissionOnProcessInstance(SecurityUtils.getCurrentUserObject(), processInstanceId)) {
-            throw new NotPermittedException("You are not permitted to read process instance with id: " + processInstanceId);
-        }
+
+    // Check read permission and message
+    User currentUser = SecurityUtils.getCurrentUserObject();
+    checkReadPermissionOnTask(currentUser, taskId);
+
+    // Create comment
+    Comment comment = commentService.createComment(commentRequest.getMessage(), currentUser, task.getId(), task.getProcessInstanceId());
+    return new CommentRepresentation(comment);
+  }
+
+  public ResultListDataRepresentation getProcessInstanceComments(String processInstanceId, Boolean latestFirst) {
+
+    User currentUser = SecurityUtils.getCurrentUserObject();
+    checkReadPermissionOnProcessInstance(currentUser, processInstanceId);
+    List<Comment> comments = commentService.getCommentsForProcessInstance(processInstanceId, Boolean.TRUE.equals(latestFirst));
+
+    // Create representation for all comments
+    List<CommentRepresentation> commentList = new ArrayList<CommentRepresentation>();
+    for (Comment comment : comments) {
+      commentList.add(new CommentRepresentation(comment));
     }
+
+    return new ResultListDataRepresentation(commentList);
+  }
+
+  public CommentRepresentation addProcessInstanceComment(CommentRepresentation commentRequest, String processInstanceId) {
+
+    if (StringUtils.isBlank(commentRequest.getMessage())) {
+      throw new BadRequestException("Comment should not be empty");
+    }
+
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new NotFoundException("No process instance found with id: " + processInstanceId);
+    }
+
+    // Check read permission and message
+    User currentUser = SecurityUtils.getCurrentUserObject();
+    checkReadPermissionOnProcessInstance(currentUser, processInstanceId);
+
+    // Create comment
+    Comment comment = commentService.createComment(commentRequest.getMessage(), currentUser, processInstanceId);
+    return new CommentRepresentation(comment);
+  }
+
+  protected void checkReadPermissionOnTask(User user, String taskId) {
+    if (taskId == null) {
+      throw new BadRequestException("Task id is required");
+    }
+    permissionService.validateReadPermissionOnTask(SecurityUtils.getCurrentUserObject(), taskId);
+  }
+
+  protected void checkReadPermissionOnProcessInstance(User user, String processInstanceId) {
+    if (processInstanceId == null) {
+      throw new BadRequestException("Process instance id is required");
+    }
+    if (!permissionService.hasReadPermissionOnProcessInstance(SecurityUtils.getCurrentUserObject(), processInstanceId)) {
+      throw new NotPermittedException("You are not permitted to read process instance with id: " + processInstanceId);
+    }
+  }
 }

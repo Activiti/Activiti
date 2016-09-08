@@ -76,11 +76,11 @@ public class DatabaseConfiguration {
 
     } else {
 
-      String dataSourceDriver = env.getProperty("datasource.driver", "com.mysql.jdbc.Driver");
-      String dataSourceUrl = env.getProperty("datasource.url", "jdbc:mysql://127.0.0.1:3306/modeler?characterEncoding=UTF-8");
+      String dataSourceDriver = env.getProperty("datasource.driver", "org.h2.Driver");
+      String dataSourceUrl = env.getProperty("datasource.url", "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=-1");
 
-      String dataSourceUsername = env.getProperty("datasource.username", "alfresco");
-      String dataSourcePassword = env.getProperty("datasource.password", "alfresco");
+      String dataSourceUsername = env.getProperty("datasource.username", "sa");
+      String dataSourcePassword = env.getProperty("datasource.password", "");
 
       Integer minPoolSize = env.getProperty("datasource.min-pool-size", Integer.class);
       if (minPoolSize == null) {
@@ -180,7 +180,7 @@ public class DatabaseConfiguration {
   public JpaVendorAdapter jpaVendorAdapter() {
     HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
     jpaVendorAdapter.setShowSql(env.getProperty("hibernate.show_sql", Boolean.class, false));
-    jpaVendorAdapter.setDatabasePlatform(env.getProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect"));
+    jpaVendorAdapter.setDatabasePlatform(env.getProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect"));
     return jpaVendorAdapter;
   }
 

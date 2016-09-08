@@ -21,7 +21,6 @@ import org.activiti.app.security.SecurityUtils;
 import org.activiti.app.service.api.UserCache;
 import org.activiti.app.service.api.UserCache.CachedUser;
 import org.activiti.app.service.exception.BadRequestException;
-import org.activiti.app.service.runtime.PermissionService;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -44,9 +43,6 @@ public abstract class AbstractProcessInstanceQueryResource {
 
   @Autowired
   protected HistoryService historyService;
-
-  @Autowired
-  protected PermissionService permissionService;
 
   @Autowired
   protected UserCache userCache;

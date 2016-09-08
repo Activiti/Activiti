@@ -28,9 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BaseAlfrescoModelService {
+public class BaseActivitiModelService {
 
-  private static final Logger logger = LoggerFactory.getLogger(BaseAlfrescoModelService.class);
+  private static final Logger logger = LoggerFactory.getLogger(BaseActivitiModelService.class);
 
   protected static final String PROCESS_NOT_FOUND_MESSAGE_KEY = "PROCESS.ERROR.NOT-FOUND";
 

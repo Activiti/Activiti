@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.app.model.editor.DecisionTableSaveRepresentation;
 import org.activiti.app.model.editor.ModelRepresentation;
 import org.activiti.app.model.editor.decisiontable.DecisionTableRepresentation;
-import org.activiti.app.service.editor.AlfrescoDecisionTableService;
+import org.activiti.app.service.editor.ActivitiDecisionTableService;
 import org.activiti.app.service.exception.BadRequestException;
 import org.activiti.app.service.exception.InternalServerErrorException;
 import org.slf4j.Logger;
@@ -43,65 +43,64 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/rest/decision-table-models")
 public class DecisionTableResource {
-	
 
-    private static final Logger logger = LoggerFactory.getLogger(DecisionTableResource.class);
-    
-    @Autowired
-    protected ObjectMapper objectMapper;
-    
-    @Autowired
-    protected AlfrescoDecisionTableService decisionTableService;
+  private static final Logger logger = LoggerFactory.getLogger(DecisionTableResource.class);
 
-    @RequestMapping(value = "/values", method = RequestMethod.GET, produces = "application/json")
-    public List<DecisionTableRepresentation> getDecisionTables(HttpServletRequest request) {
-        String[] decisionTableIds = request.getParameterValues("decisionTableId");
-        if (decisionTableIds == null || decisionTableIds.length == 0) {
-            throw new BadRequestException("No decisionTableId parameter(s) provided in the request");
-        }
-        return decisionTableService.getDecisionTables(decisionTableIds);
-    }
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-    @RequestMapping(value = "/{decisionTableId}", method = RequestMethod.GET, produces = "application/json")
-    public DecisionTableRepresentation getDecisionTable(@PathVariable Long decisionTableId) {
-        return decisionTableService.getDecisionTable(decisionTableId);
-    }
-    
-    @RequestMapping(value = "/{decisionTableId}/export", method = RequestMethod.GET)
-    public void exportDecisionTable(HttpServletResponse response, @PathVariable Long decisionTableId) {
-        decisionTableService.exportDecisionTable(response, decisionTableId);
-    }
-    
-    @RequestMapping(value = "/import-decision-table", method = RequestMethod.POST, produces = "application/json")
-    public ModelRepresentation importDecisionTable(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
-        return decisionTableService.importDecisionTable(request, file);
-    }
-    
-    @RequestMapping(value = "/import-decision-table-text", method = RequestMethod.POST, produces = "application/json")
-    public String importDecisionTableText(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
-        ModelRepresentation decisionTableRepresentation = decisionTableService.importDecisionTable(request, file);
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(decisionTableRepresentation);
-        } catch (Exception e) {
-            logger.error("Error writing imported decision table json", e);
-            throw new InternalServerErrorException("Error writing imported decision table representation json");
-        }
-        return json;
-    }
+  @Autowired
+  protected ActivitiDecisionTableService decisionTableService;
 
-    @RequestMapping(value = "/history/{historyModelId}", method = RequestMethod.GET, produces = "application/json")
-    public DecisionTableRepresentation getHistoricDecisionTable(@PathVariable Long historyModelId) {
-        return decisionTableService.getHistoricDecisionTable(historyModelId);
+  @RequestMapping(value = "/values", method = RequestMethod.GET, produces = "application/json")
+  public List<DecisionTableRepresentation> getDecisionTables(HttpServletRequest request) {
+    String[] decisionTableIds = request.getParameterValues("decisionTableId");
+    if (decisionTableIds == null || decisionTableIds.length == 0) {
+      throw new BadRequestException("No decisionTableId parameter(s) provided in the request");
     }
-    
-    @RequestMapping(value = "/history/{historyModelId}/export", method = RequestMethod.GET)
-    public void exportHistoricDecisionTable(HttpServletResponse response, @PathVariable Long historyModelId) {
-        decisionTableService.exportHistoricDecisionTable(response, historyModelId);
-    }
+    return decisionTableService.getDecisionTables(decisionTableIds);
+  }
 
-    @RequestMapping(value = "/{decisionTableId}", method = RequestMethod.PUT, produces = "application/json")
-    public DecisionTableRepresentation saveDecisionTable(@PathVariable Long decisionTableId, @RequestBody DecisionTableSaveRepresentation saveRepresentation) {
-        return decisionTableService.saveDecisionTable(decisionTableId, saveRepresentation);
+  @RequestMapping(value = "/{decisionTableId}", method = RequestMethod.GET, produces = "application/json")
+  public DecisionTableRepresentation getDecisionTable(@PathVariable Long decisionTableId) {
+    return decisionTableService.getDecisionTable(decisionTableId);
+  }
+
+  @RequestMapping(value = "/{decisionTableId}/export", method = RequestMethod.GET)
+  public void exportDecisionTable(HttpServletResponse response, @PathVariable Long decisionTableId) {
+    decisionTableService.exportDecisionTable(response, decisionTableId);
+  }
+
+  @RequestMapping(value = "/import-decision-table", method = RequestMethod.POST, produces = "application/json")
+  public ModelRepresentation importDecisionTable(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+    return decisionTableService.importDecisionTable(request, file);
+  }
+
+  @RequestMapping(value = "/import-decision-table-text", method = RequestMethod.POST, produces = "application/json")
+  public String importDecisionTableText(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+    ModelRepresentation decisionTableRepresentation = decisionTableService.importDecisionTable(request, file);
+    String json = null;
+    try {
+      json = objectMapper.writeValueAsString(decisionTableRepresentation);
+    } catch (Exception e) {
+      logger.error("Error writing imported decision table json", e);
+      throw new InternalServerErrorException("Error writing imported decision table representation json");
     }
+    return json;
+  }
+
+  @RequestMapping(value = "/history/{historyModelId}", method = RequestMethod.GET, produces = "application/json")
+  public DecisionTableRepresentation getHistoricDecisionTable(@PathVariable Long historyModelId) {
+    return decisionTableService.getHistoricDecisionTable(historyModelId);
+  }
+
+  @RequestMapping(value = "/history/{historyModelId}/export", method = RequestMethod.GET)
+  public void exportHistoricDecisionTable(HttpServletResponse response, @PathVariable Long historyModelId) {
+    decisionTableService.exportHistoricDecisionTable(response, historyModelId);
+  }
+
+  @RequestMapping(value = "/{decisionTableId}", method = RequestMethod.PUT, produces = "application/json")
+  public DecisionTableRepresentation saveDecisionTable(@PathVariable Long decisionTableId, @RequestBody DecisionTableSaveRepresentation saveRepresentation) {
+    return decisionTableService.saveDecisionTable(decisionTableId, saveRepresentation);
+  }
 }
