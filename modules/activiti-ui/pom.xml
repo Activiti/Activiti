@@ -43,6 +43,7 @@
 		<module>editor-image-generator</module>
 		<module>activiti-app-logic</module>
 		<module>activiti-app-rest</module>
+		<module>activiti-app-conf</module>
 	</modules>
 
 	<dependencyManagement>
@@ -65,6 +66,11 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-app-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-app-conf</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
