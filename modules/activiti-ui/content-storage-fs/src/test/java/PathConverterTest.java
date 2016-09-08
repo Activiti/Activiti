@@ -13,12 +13,11 @@
 import java.io.File;
 import java.math.BigInteger;
 
+import org.activiti.content.storage.exception.ContentStorageException;
+import org.activiti.content.storage.fs.PathConverter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.activiti.content.storage.exception.ContentStorageException;
-import com.activiti.content.storage.fs.PathConverter;
 
 
 /**
