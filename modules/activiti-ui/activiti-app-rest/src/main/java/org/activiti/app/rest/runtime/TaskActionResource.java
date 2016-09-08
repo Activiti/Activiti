@@ -13,6 +13,8 @@
 package org.activiti.app.rest.runtime;
 
 import org.activiti.app.model.runtime.TaskRepresentation;
+import org.activiti.app.service.editor.ActivitiTaskActionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,35 +26,38 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
-public class TaskActionResource extends AbstractTaskActionResource {
+public class TaskActionResource {
+  
+  @Autowired
+  protected ActivitiTaskActionService taskActionService;
 
   @RequestMapping(value = "/rest/tasks/{taskId}/action/complete", method = RequestMethod.PUT)
   @ResponseStatus(value = HttpStatus.OK)
   public void completeTask(@PathVariable String taskId) {
-    super.completeTask(taskId);
+    taskActionService.completeTask(taskId);
   }
 
   @RequestMapping(value = "/rest/tasks/{taskId}/action/assign", method = RequestMethod.PUT)
   public TaskRepresentation assignTask(@PathVariable String taskId, @RequestBody ObjectNode requestNode) {
-    return super.assignTask(taskId, requestNode);
+    return taskActionService.assignTask(taskId, requestNode);
   }
 
   @RequestMapping(value = "/rest/tasks/{taskId}/action/involve", method = RequestMethod.PUT, produces = "application/json")
   @ResponseStatus(value = HttpStatus.OK)
   public void involveUser(@PathVariable("taskId") String taskId, @RequestBody ObjectNode requestNode) {
-    super.involveUser(taskId, requestNode);
+    taskActionService.involveUser(taskId, requestNode);
   }
 
   @RequestMapping(value = "/rest/tasks/{taskId}/action/remove-involved", method = RequestMethod.PUT, produces = "application/json")
   @ResponseStatus(value = HttpStatus.OK)
   public void removeInvolvedUser(@PathVariable("taskId") String taskId, @RequestBody ObjectNode requestNode) {
-    super.removeInvolvedUser(taskId, requestNode);
+    taskActionService.removeInvolvedUser(taskId, requestNode);
   }
 
   @RequestMapping(value = "/rest/tasks/{taskId}/action/claim", method = RequestMethod.PUT)
   @ResponseStatus(value = HttpStatus.OK)
   public void claimTask(@PathVariable String taskId) {
-    super.claimTask(taskId);
+    taskActionService.claimTask(taskId);
   }
 
 }

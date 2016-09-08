@@ -16,7 +16,9 @@ import java.util.List;
 
 import org.activiti.app.model.runtime.CompleteFormRepresentation;
 import org.activiti.app.model.runtime.ProcessInstanceVariableRepresentation;
+import org.activiti.app.service.editor.ActivitiTaskFormService;
 import org.activiti.form.model.FormDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,21 +32,24 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/rest/task-forms")
-public class TaskFormResource extends AbstractTaskFormResource {
+public class TaskFormResource {
+  
+  @Autowired
+  protected ActivitiTaskFormService taskFormService;
 
   @RequestMapping(value = "/{taskId}", method = RequestMethod.GET, produces = "application/json")
   public FormDefinition getTaskForm(@PathVariable String taskId) {
-    return super.getTaskForm(taskId);
+    return taskFormService.getTaskForm(taskId);
   }
 
   @ResponseStatus(value = HttpStatus.OK)
   @RequestMapping(value = "/{taskId}", method = RequestMethod.POST, produces = "application/json")
   public void completeTaskForm(@PathVariable String taskId, @RequestBody CompleteFormRepresentation completeTaskFormRepresentation) {
-    super.completeTaskForm(taskId, completeTaskFormRepresentation);
+    taskFormService.completeTaskForm(taskId, completeTaskFormRepresentation);
   }
 
   @RequestMapping(value = "/{taskId}/variables", method = RequestMethod.GET, produces = "application/json")
   public List<ProcessInstanceVariableRepresentation> getProcessInstanceVariables(@PathVariable String taskId) {
-    return super.getProcessInstanceVariables(taskId);
+    return taskFormService.getProcessInstanceVariables(taskId);
   }
 }

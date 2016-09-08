@@ -31,7 +31,6 @@ public class ModelHistoryResource extends AbstractModelHistoryResource {
 
   @RequestMapping(value = "/rest/models/{modelId}/history", method = RequestMethod.GET, produces = "application/json")
   public ResultListDataRepresentation getModelHistoryCollection(@PathVariable Long modelId, @RequestParam(value = "includeLatestVersion", required = false) Boolean includeLatestVersion) {
-
     return super.getModelHistoryCollection(modelId, includeLatestVersion);
   }
 

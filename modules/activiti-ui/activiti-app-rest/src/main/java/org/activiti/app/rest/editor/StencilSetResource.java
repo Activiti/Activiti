@@ -27,19 +27,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class StencilSetResource {
 
-    private final Logger log = LoggerFactory.getLogger(StencilSetResource.class);
-    
-    @Inject
-    protected ObjectMapper objectMapper;
-    
-    @RequestMapping(value = "/rest/stencil-sets/editor", method = RequestMethod.GET, produces = "application/json")
-    public JsonNode getStencilSetForEditor() {
-        try {
-            JsonNode stencilNode = objectMapper.readTree(this.getClass().getClassLoader().getResourceAsStream("stencilset_bpmn.json"));
-            return stencilNode;
-        } catch(Exception e) {
-            log.error("Error reading bpmn stencil set json", e);
-            throw new InternalServerErrorException("Error reading bpmn stencil set json");
-        }
+  private final Logger log = LoggerFactory.getLogger(StencilSetResource.class);
+
+  @Inject
+  protected ObjectMapper objectMapper;
+
+  @RequestMapping(value = "/rest/stencil-sets/editor", method = RequestMethod.GET, produces = "application/json")
+  public JsonNode getStencilSetForEditor() {
+    try {
+      JsonNode stencilNode = objectMapper.readTree(this.getClass().getClassLoader().getResourceAsStream("stencilset_bpmn.json"));
+      return stencilNode;
+    } catch (Exception e) {
+      log.error("Error reading bpmn stencil set json", e);
+      throw new InternalServerErrorException("Error reading bpmn stencil set json");
     }
+  }
 }

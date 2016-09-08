@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.app.rest.runtime;
+package org.activiti.app.service.editor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,15 +39,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Joram Barrez
+ * @author Tijs Rademakers
  */
-public abstract class AbstractTaskFormResource {
+@Service
+public class ActivitiTaskFormService {
 
-  private static final Logger logger = LoggerFactory.getLogger(AbstractTaskFormResource.class);
+  private static final Logger logger = LoggerFactory.getLogger(ActivitiTaskFormService.class);
 
   @Autowired
   protected TaskService taskService;
@@ -112,7 +114,7 @@ public abstract class AbstractTaskFormResource {
 
     return formDefinition;
   }
-
+  
   public void completeTaskForm(String taskId, CompleteFormRepresentation completeTaskFormRepresentation) {
 
     // Get the form definition
@@ -140,7 +142,7 @@ public abstract class AbstractTaskFormResource {
     
     taskService.complete(taskId, variables);
   }
-
+  
   public List<ProcessInstanceVariableRepresentation> getProcessInstanceVariables(String taskId) {
     HistoricTaskInstance task = permissionService.validateReadPermissionOnTask(SecurityUtils.getCurrentUserObject(), taskId);
     List<HistoricVariableInstance> historicVariables = historyService.createHistoricVariableInstanceQuery().processInstanceId(task.getProcessInstanceId()).list();

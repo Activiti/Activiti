@@ -10,43 +10,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.app.rest.runtime;
+package org.activiti.app.service.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.app.model.idm.UserRepresentation;
 import org.activiti.app.model.runtime.TaskRepresentation;
-import org.activiti.app.rest.util.TaskUtil;
 import org.activiti.app.security.SecurityUtils;
+import org.activiti.app.service.api.UserCache;
 import org.activiti.app.service.api.UserCache.CachedUser;
 import org.activiti.app.service.exception.BadRequestException;
 import org.activiti.app.service.exception.NotFoundException;
 import org.activiti.app.service.exception.NotPermittedException;
 import org.activiti.app.service.runtime.PermissionService;
+import org.activiti.app.service.util.TaskUtil;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public abstract class AbstractTaskActionResource extends AbstractTaskResource {
+/**
+ * @author Tijs Rademakers
+ */
+@Service
+public class ActivitiTaskActionService {
 
-  private final Logger log = LoggerFactory.getLogger(AbstractTaskActionResource.class);
-
-  @Autowired
-  private TaskService taskService;
-
-  @Autowired
-  private PermissionService permissionService;
+  private static final Logger logger = LoggerFactory.getLogger(ActivitiTaskActionService.class);
 
   @Autowired
-  private IdentityService identityService;
+  protected RepositoryService repositoryService;
+  
+  @Autowired
+  protected TaskService taskService;
+
+  @Autowired
+  protected PermissionService permissionService;
+
+  @Autowired
+  protected IdentityService identityService;
+  
+  @Autowired
+  protected HistoryService historyService;
+  
+  @Autowired
+  protected UserCache userCache;
 
   public void completeTask(String taskId) {
     User currentUser = SecurityUtils.getCurrentUserObject();
@@ -65,7 +86,7 @@ public abstract class AbstractTaskActionResource extends AbstractTaskResource {
     try {
       taskService.complete(task.getId());
     } catch (ActivitiException e) {
-      log.error("Error completing task " + taskId, e);
+      logger.error("Error completing task " + taskId, e);
       throw new BadRequestException("Task " + taskId + " can't be completed", e);
     }
   }
@@ -216,5 +237,29 @@ public abstract class AbstractTaskActionResource extends AbstractTaskResource {
       taskService.addUserIdentityLink(task.getId(), userId, linkType);
     }
   }
+  
+  protected void populateAssignee(TaskInfo task, TaskRepresentation rep) {
+    if (task.getAssignee() != null) {
+      CachedUser cachedUser = userCache.getUser(task.getAssignee());
+      if (cachedUser != null && cachedUser.getUser() != null) {
+        rep.setAssignee(new UserRepresentation(cachedUser.getUser()));
+      }
+    }
+  }
 
+  protected List<UserRepresentation> getInvolvedUsers(String taskId) {
+    List<HistoricIdentityLink> idLinks = historyService.getHistoricIdentityLinksForTask(taskId);
+    List<UserRepresentation> result = new ArrayList<UserRepresentation>(idLinks.size());
+
+    for (HistoricIdentityLink link : idLinks) {
+      // Only include users and non-assignee links
+      if (link.getUserId() != null && !IdentityLinkType.ASSIGNEE.equals(link.getType())) {
+        CachedUser cachedUser = userCache.getUser(link.getUserId());
+        if (cachedUser != null && cachedUser.getUser() != null) {
+          result.add(new UserRepresentation(cachedUser.getUser()));
+        }
+      }
+    }
+    return result;
+  }
 }

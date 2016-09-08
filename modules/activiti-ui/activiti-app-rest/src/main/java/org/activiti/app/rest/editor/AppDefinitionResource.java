@@ -108,9 +108,7 @@ public class AppDefinitionResource {
 
   @RequestMapping(value = "/rest/app-definitions/{modelId}/publish", method = RequestMethod.POST, produces = "application/json")
   public AppDefinitionUpdateResultRepresentation publishAppDefinition(@PathVariable("modelId") Long modelId, @RequestBody AppDefinitionPublishRepresentation publishModel) {
-
     return appDefinitionImportService.publishAppDefinition(modelId, publishModel);
-
   }
 
   @RequestMapping(value = "/rest/app-definitions/{modelId}/export", method = RequestMethod.GET)
