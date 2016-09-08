@@ -25,15 +25,7 @@
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
             <artifactId>activiti-app-logic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-data</artifactId>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>

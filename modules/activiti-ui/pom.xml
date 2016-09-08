@@ -2,12 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti UI</name>
-  <organization>
-	  <name>Alfresco</name>
-  </organization>
-  <inceptionYear>2014</inceptionYear>
-  
+  <name>Activiti UI App Root</name>
   <artifactId>activiti-ui-root</artifactId>
   <packaging>pom</packaging>
   
@@ -43,11 +38,9 @@
 	</prerequisites>
 	
 	<modules>
-		<module>activiti-app-data</module>	
 		<module>content-storage-api</module>
 		<module>content-storage-fs</module>
 		<module>editor-image-generator</module>
-		<module>activiti-app-model</module>
 		<module>activiti-app-logic</module>
 		<module>activiti-app-rest</module>
 	</modules>
@@ -62,16 +55,6 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>content-storage-fs</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-data</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-model</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

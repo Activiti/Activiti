@@ -39,6 +39,10 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-converter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-json-converter</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-bpmn-layout</artifactId>
