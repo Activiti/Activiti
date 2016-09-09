@@ -178,6 +178,11 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String databaseTablePrefix = "";
 
   /**
+   * escape character for wildcard
+   */
+  protected String wildcardEscapeCharacter = "";
+  
+  /**
    * database catalog to use
    */
   protected String databaseCatalog = "";
@@ -718,7 +723,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 	  return tablePrefixIsSchema;
   }
 
-  public String getDatabaseCatalog() {
+  public String getWildcardEscapeCharacter() {
+    return wildcardEscapeCharacter;
+}
+
+  public ProcessEngineConfiguration setWildcardEscapeCharacter(String wildcardEscapeCharacter) {
+    this.wildcardEscapeCharacter = wildcardEscapeCharacter;
+    return this;
+  }
+
+public String getDatabaseCatalog() {
     return databaseCatalog;
   }
 

@@ -401,10 +401,10 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}${wildcardEscapeClause}
       </if>
       <if test="nameLikeIgnoreCase != null">
-        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <if test="nameList != null &amp;&amp; nameList.size() &gt; 0">
         and RES.NAME_ IN
@@ -424,10 +424,10 @@
         and RES.DESCRIPTION_ = #{description}
       </if>
       <if test="descriptionLike != null">
-        and RES.DESCRIPTION_ like #{descriptionLike}
+        and RES.DESCRIPTION_ like #{descriptionLike}${wildcardEscapeClause}
       </if>
       <if test="descriptionLikeIgnoreCase != null">
-        and lower(RES.DESCRIPTION_) like #{descriptionLikeIgnoreCase}
+        and lower(RES.DESCRIPTION_) like #{descriptionLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <if test="priority != null">
         and RES.PRIORITY_ = #{priority}
@@ -442,19 +442,19 @@
         and RES.ASSIGNEE_ = #{assignee}
       </if>
       <if test="assigneeLike != null">
-        and RES.ASSIGNEE_ like #{assigneeLike}
+        and RES.ASSIGNEE_ like #{assigneeLike}${wildcardEscapeClause}
       </if>
       <if test="assigneeLikeIgnoreCase != null">
-        and lower(RES.ASSIGNEE_) like #{assigneeLikeIgnoreCase}
+        and lower(RES.ASSIGNEE_) like #{assigneeLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <if test="owner != null">
         and RES.OWNER_ = #{owner}
       </if>
       <if test="ownerLike != null">
-        and RES.OWNER_ like #{ownerLike}
+        and RES.OWNER_ like #{ownerLike}${wildcardEscapeClause}
       </if>
        <if test="ownerLikeIgnoreCase != null">
-        and lower(RES.OWNER_) like #{ownerLikeIgnoreCase}
+        and lower(RES.OWNER_) like #{ownerLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <if test="unassigned">
         and RES.ASSIGNEE_ IS NULL
@@ -479,10 +479,10 @@
         and E.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
       <if test="processInstanceBusinessKeyLike != null">
-        and E.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+        and E.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}
       </if>      
       <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
-        and lower(E.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}
+        and lower(E.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
       </if>         
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -500,7 +500,7 @@
         and RES.TASK_DEF_KEY_ = #{key}
       </if>
       <if test="keyLike != null">
-        and RES.TASK_DEF_KEY_ like #{keyLike}
+        and RES.TASK_DEF_KEY_ like #{keyLike}${wildcardEscapeClause}
       </if>
       <if test="processDefinitionId != null">
         and RES.PROC_DEF_ID_ = #{processDefinitionId}
@@ -509,7 +509,7 @@
         and D.KEY_ = #{processDefinitionKey}
       </if>
       <if test="processDefinitionKeyLike != null">
-        and D.KEY_ like #{processDefinitionKeyLike}
+        and D.KEY_ like #{processDefinitionKeyLike}${wildcardEscapeClause}
       </if>
       <if test="processDefinitionKeyLikeIgnoreCase != null">
         and lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}
@@ -524,7 +524,7 @@
         and D.NAME_ = #{processDefinitionName}
       </if>
       <if test="processDefinitionNameLike != null">
-        and D.NAME_ like #{processDefinitionNameLike}
+        and D.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}
       </if>
       <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
         and D.CATEGORY_ IN
@@ -629,6 +629,9 @@
               <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
           #{var.textValue}
+          <choose>
+              <when test="var.operator.equals('LIKE') || var.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+          </choose>
         </if>
         <if test="var.textValue2 != null">
           and A${index}.TEXT2_ 
@@ -637,6 +640,9 @@
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
           #{var.textValue2}
+          <choose>
+            <when test="var.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+          </choose>
         </if>
         <if test="var.longValue != null">
           and A${index}.LONG_
@@ -672,7 +678,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike}
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -712,10 +718,10 @@
               or RES.NAME_ = #{orQueryObject.name}
             </if>
             <if test="orQueryObject.nameLike != null">
-              or RES.NAME_ like #{orQueryObject.nameLike}
+              or RES.NAME_ like #{orQueryObject.nameLike}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.nameLikeIgnoreCase != null">
-              or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
+              or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.nameList != null &amp;&amp; orQueryObject.nameList.size() &gt; 0">
               or RES.NAME_ IN
@@ -735,10 +741,10 @@
               or RES.DESCRIPTION_ = #{orQueryObject.description}
             </if>
             <if test="orQueryObject.descriptionLike != null">
-              or RES.DESCRIPTION_ like #{orQueryObject.descriptionLike}
+              or RES.DESCRIPTION_ like #{orQueryObject.descriptionLike}${wildcardEscapeClause}
             </if>
              <if test="orQueryObject.descriptionLikeIgnoreCase != null">
-              or lower(RES.DESCRIPTION_) like #{orQueryObject.descriptionLikeIgnoreCase}
+              or lower(RES.DESCRIPTION_) like #{orQueryObject.descriptionLikeIgnoreCase}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.priority != null">
               or RES.PRIORITY_ = #{orQueryObject.priority}
@@ -753,19 +759,19 @@
               or RES.ASSIGNEE_ = #{orQueryObject.assignee}
             </if>
             <if test="orQueryObject.assigneeLike != null">
-              or RES.ASSIGNEE_ like #{orQueryObject.assigneeLike}
+              or RES.ASSIGNEE_ like #{orQueryObject.assigneeLike}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.assigneeLikeIgnoreCase != null">
-              or lower(RES.ASSIGNEE_) like #{orQueryObject.assigneeLikeIgnoreCase}
+              or lower(RES.ASSIGNEE_) like #{orQueryObject.assigneeLikeIgnoreCase}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.owner != null">
               or RES.OWNER_ = #{orQueryObject.owner}
             </if>
             <if test="orQueryObject.ownerLike != null">
-              or RES.OWNER_ like #{orQueryObject.ownerLike}
+              or RES.OWNER_ like #{orQueryObject.ownerLike}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.ownerLikeIgnoreCase != null">
-              or RES.OWNER_ like #{orQueryObject.ownerLikeIgnoreCase}
+              or RES.OWNER_ like #{orQueryObject.ownerLikeIgnoreCase}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.unassigned">
               or RES.ASSIGNEE_ IS NULL
@@ -790,10 +796,10 @@
               or E_OR${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
             </if>
             <if test="orQueryObject.processInstanceBusinessKeyLike != null">
-              or E_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}
+              or E_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}
             </if>      
             <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
-              or lower(E.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}
+              or lower(E.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
             </if>         
             <if test="orQueryObject.executionId != null">
               or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
@@ -811,7 +817,7 @@
               or RES.TASK_DEF_KEY_ = #{orQueryObject.key}
             </if>
             <if test="orQueryObject.keyLike != null">
-              or RES.TASK_DEF_KEY_ like #{orQueryObject.keyLike}
+              or RES.TASK_DEF_KEY_ like #{orQueryObject.keyLike}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.processDefinitionId != null">
               or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
@@ -820,10 +826,10 @@
               or D_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
             </if>
             <if test="orQueryObject.processDefinitionKeyLike != null">
-              or D_OR${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}
+              or D_OR${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}${wildcardEscapeClause}
             </if>
              <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
-              or lower(D_OR${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}
+              or lower(D_OR${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
               or D_OR${orIndex}.KEY_ in
@@ -835,7 +841,7 @@
               or D_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
             </if>
             <if test="orQueryObject.processDefinitionNameLike != null">
-              or D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}
+              or D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
               or D_OR${orIndex}.CATEGORY_ IN
@@ -939,6 +945,9 @@
                     <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>          
                 #{var.textValue}
+                <choose>
+                    <when test="var.operator.equals('LIKE') || var.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+                </choose>
               </if>
               <if test="var.textValue2 != null">
                 and A_OR${orIndex}_${index}.TEXT2_ 
@@ -947,6 +956,9 @@
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>          
                 #{var.textValue2}
+                <choose>
+                  <when test="var.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+                </choose>
               </if>
               <if test="var.longValue != null">
                 and A_OR${orIndex}_${index}.LONG_
@@ -983,7 +995,7 @@
               or RES.TENANT_ID_ = #{orQueryObject.tenantId}
             </if>
             <if test="orQueryObject.tenantIdLike != null">
-              or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}
+              or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
             </if>
             <if test="orQueryObject.withoutTenantId">
               or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
