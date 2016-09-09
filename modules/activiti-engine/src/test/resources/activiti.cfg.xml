@@ -46,6 +46,8 @@
     <property name="history" value="full" />
 
     <property name="enableProcessDefinitionInfoCache" value="true" />
+
+    <property name="wildcardEscapeCharacter" value="\"></property>
   </bean>
 
   <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
