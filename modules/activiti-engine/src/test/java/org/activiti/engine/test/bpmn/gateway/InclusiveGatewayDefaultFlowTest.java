@@ -16,7 +16,7 @@ public class InclusiveGatewayDefaultFlowTest extends PluggableActivitiTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     deploymentId = repositoryService.createDeployment()
-          .addClasspathResource("org/activiti/engine/test/bpmn/inclusive/InclusiveGatewayTest.defaultFlowTest.bpmn20.xml")
+          .addClasspathResource("org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.defaultFlowTest.bpmn20.xml")
           .deploy().getId();
   }
 
