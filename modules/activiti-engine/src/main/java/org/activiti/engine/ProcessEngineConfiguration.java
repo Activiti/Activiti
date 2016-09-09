@@ -178,9 +178,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String databaseTablePrefix = "";
 
   /**
-   * escape character for wildcard
+   * Escape character for doing wildcard searches.
+   * 
+   * This will be added at then end of queries that include for example a LIKE clause.
+   * For example: SELECT * FROM table WHERE column LIKE '%\%%' ESCAPE '\';
    */
-  protected String wildcardEscapeCharacter = "";
+  protected String databaseWildcardEscapeCharacter;
   
   /**
    * database catalog to use
@@ -723,16 +726,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 	  return tablePrefixIsSchema;
   }
 
-  public String getWildcardEscapeCharacter() {
-    return wildcardEscapeCharacter;
-}
+  public String getDatabaseWildcardEscapeCharacter() {
+    return databaseWildcardEscapeCharacter;
+  }
 
-  public ProcessEngineConfiguration setWildcardEscapeCharacter(String wildcardEscapeCharacter) {
-    this.wildcardEscapeCharacter = wildcardEscapeCharacter;
+  public ProcessEngineConfiguration setDatabaseWildcardEscapeCharacter(String databaseWildcardEscapeCharacter) {
+    this.databaseWildcardEscapeCharacter = databaseWildcardEscapeCharacter;
     return this;
   }
 
-public String getDatabaseCatalog() {
+  public String getDatabaseCatalog() {
     return databaseCatalog;
   }
 

@@ -902,8 +902,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         Properties properties = new Properties();
         properties.put("prefix", databaseTablePrefix);
         String wildcardEscapeClause = "";
-        if((wildcardEscapeCharacter !=null)&&(wildcardEscapeCharacter.length() !=0)){
-          wildcardEscapeClause = " escape '" + wildcardEscapeCharacter + "'";
+        if ((databaseWildcardEscapeCharacter != null) && (databaseWildcardEscapeCharacter.length() != 0)) {
+          wildcardEscapeClause = " escape '" + databaseWildcardEscapeCharacter + "'";
         }
         properties.put("wildcardEscapeClause", wildcardEscapeClause);
         if(databaseType != null) {
