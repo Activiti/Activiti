@@ -83,7 +83,8 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         if (defaultSequenceFlow != null) {
           PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
           if (defaultTransition != null) {
-            execution.take(defaultTransition);
+            transitionsToTake.add(defaultTransition);
+            execution.takeAll(transitionsToTake, joinedExecutions);
           } else {
             throw new ActivitiException("Default sequence flow '"
                 + defaultSequenceFlow + "' could not be not found");
