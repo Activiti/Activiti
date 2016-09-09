@@ -289,6 +289,10 @@ public class TaskBaseResource {
     if (request.getCandidateOrAssigned() != null) {
       taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
     }
+
+    if (request.getCategory() != null) {
+      taskQuery.taskCategory(request.getCategory());
+    }
     
     return new TaskPaginateList(restResponseFactory).paginateList(
         requestParams, request, taskQuery, "id", properties);

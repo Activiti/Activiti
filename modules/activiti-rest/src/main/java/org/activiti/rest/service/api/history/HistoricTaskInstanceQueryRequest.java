@@ -44,6 +44,7 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   private String taskDescriptionLike;
   private String taskDefinitionKey;
   private String taskDefinitionKeyLike;
+  private String taskCategory;
   private String taskDeleteReason;
   private String taskDeleteReasonLike;
   private String taskAssignee;
@@ -204,6 +205,14 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
 	  this.taskDefinitionKeyLike = taskDefinitionKeyLike;
   }
   
+  public String getTaskCategory() {
+    return taskCategory;
+  }
+
+  public void setTaskCategory(String taskCategory) {
+    this.taskCategory = taskCategory;
+  }
+
   public String getTaskDeleteReason() {
     return taskDeleteReason;
   }

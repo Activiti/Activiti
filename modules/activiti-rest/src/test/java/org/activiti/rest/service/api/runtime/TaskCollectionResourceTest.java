@@ -143,6 +143,7 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       adhocTask.setName("Name one");
       adhocTask.setDueDate(adhocTaskCreate.getTime());
       adhocTask.setPriority(100);
+      adhocTask.setCategory("some-category");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "misspiggy", IdentityLinkType.PARTICIPANT);
 
@@ -312,6 +313,10 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?tenantIdLike=" + encode("%enant");
       assertResultsPresentInDataResponse(url, processTask.getId());
       
+      // Category filtering
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?category=" + encode("some-category");
+      assertResultsPresentInDataResponse(url, adhocTask.getId());
+
       // Suspend process-instance to have a supended task
       runtimeService.suspendProcessInstanceById(processInstance.getId());
       

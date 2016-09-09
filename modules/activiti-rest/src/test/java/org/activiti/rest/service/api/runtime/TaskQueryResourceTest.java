@@ -66,6 +66,7 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
       adhocTask.setDueDate(adhocTaskCreate.getTime());
       adhocTask.setPriority(100);
       adhocTask.setFormKey("myForm.json");
+      adhocTask.setCategory("some-category");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "misspiggy", IdentityLinkType.PARTICIPANT);
 
@@ -270,6 +271,11 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
       requestNode.put("active", true);
       assertResultsPresentInPostDataResponse(url, requestNode, adhocTask.getId());
       
+      // Filtering by category
+      requestNode.removeAll();
+      requestNode.put("category", "some-category");
+      assertResultsPresentInPostDataResponse(url, requestNode, adhocTask.getId());
+
       // Filtering without duedate
       requestNode.removeAll();
       requestNode.put("withoutDueDate", true);
