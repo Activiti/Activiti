@@ -2,12 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti UI</name>
-  <organization>
-	  <name>Alfresco</name>
-  </organization>
-  <inceptionYear>2014</inceptionYear>
-  
+  <name>Activiti UI App Root</name>
   <artifactId>activiti-ui-root</artifactId>
   <packaging>pom</packaging>
   
@@ -15,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>6.0.0.Beta4</version>
+    <version>6.0.0.RC1-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -24,7 +19,7 @@
 		<java.version>1.7</java.version>
 
 		<!-- Libraries versions -->
-		<activiti.version>6.0.0.Beta4</activiti.version>
+		<activiti.version>6.0.0.RC1-SNAPSHOT</activiti.version>
 	    <spring.version>4.1.6.RELEASE </spring.version>
 		<spring.security.version>4.0.1.RELEASE</spring.security.version>
 		<hibernate.version>4.2.16.Final</hibernate.version>
@@ -43,13 +38,12 @@
 	</prerequisites>
 	
 	<modules>
-		<module>activiti-app-data</module>	
 		<module>content-storage-api</module>
 		<module>content-storage-fs</module>
 		<module>editor-image-generator</module>
-		<module>activiti-app-model</module>
 		<module>activiti-app-logic</module>
 		<module>activiti-app-rest</module>
+		<module>activiti-app-conf</module>
 	</modules>
 
 	<dependencyManagement>
@@ -66,22 +60,17 @@
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-data</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
             <artifactId>activiti-app-logic</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-app-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-app-conf</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

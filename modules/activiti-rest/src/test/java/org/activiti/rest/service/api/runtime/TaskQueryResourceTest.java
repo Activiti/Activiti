@@ -273,8 +273,8 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
       
       // Filtering by category
       requestNode.removeAll();
-      requestNode.put("category", "someCategory");
-      assertResultsPresentInPostDataResponse(url, requestNode);
+      requestNode.put("category", "some-category");
+      assertResultsPresentInPostDataResponse(url, requestNode, adhocTask.getId());
 
       // Filtering without duedate
       requestNode.removeAll();
