@@ -15,6 +15,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -99,6 +102,12 @@ public class DefaultJobManager implements JobManager {
     }
     
     processEngineConfiguration.getTimerJobEntityManager().insert(timerJob);
+
+    CommandContext commandContext = Context.getCommandContext();
+    ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
+    if (eventDispatcher.isEnabled()) {
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_SCHEDULED, timerJob));
+    }
   }
   
   @Override
@@ -278,7 +287,7 @@ public class DefaultJobManager implements JobManager {
     if (timerEntity.getRepeat() != null) {
       TimerJobEntity newTimerJobEntity = timerJobEntityManager.createAndCalculateNextTimer(timerEntity, variableScope);
       if (newTimerJobEntity != null) {
-        timerJobEntityManager.insert(newTimerJobEntity);
+        scheduleTimerJob(newTimerJobEntity);
       }
     }
   }
