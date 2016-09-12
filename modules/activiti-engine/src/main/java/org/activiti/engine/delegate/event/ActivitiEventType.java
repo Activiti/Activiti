@@ -59,6 +59,11 @@ public enum ActivitiEventType {
   ENTITY_ACTIVATED,
 
   /**
+   * A Timer has been scheduled.
+   */
+  TIMER_SCHEDULED,
+
+  /**
    * Timer has been fired successfully.
    */
   TIMER_FIRED,
