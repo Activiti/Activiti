@@ -220,7 +220,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike}
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -235,7 +235,7 @@
         and RES.DELETE_REASON_ = #{deleteReason}
       </if>
       <if test="deleteReasonLike != null">
-        and RES.DELETE_REASON_ like #{deleteReasonLike}
+        and RES.DELETE_REASON_ like #{deleteReasonLike}${wildcardEscapeClause}
       </if>
     </where>
   </sql>

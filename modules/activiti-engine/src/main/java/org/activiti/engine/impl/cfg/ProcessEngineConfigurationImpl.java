@@ -1254,6 +1254,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         Reader reader = new InputStreamReader(inputStream);
         Properties properties = new Properties();
         properties.put("prefix", databaseTablePrefix);
+        String wildcardEscapeClause = "";
+        if ((databaseWildcardEscapeCharacter != null) && (databaseWildcardEscapeCharacter.length() != 0)) {
+          wildcardEscapeClause = " escape '" + databaseWildcardEscapeCharacter + "'";
+        }
+        properties.put("wildcardEscapeClause", wildcardEscapeClause);
         //set default properties
         properties.put("limitBefore" , "");
         properties.put("limitAfter" , "");
