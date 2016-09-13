@@ -35,6 +35,15 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
     List<Task> tasks3 = taskService.createTaskQuery().list();
     assertEquals(0, tasks3.size());
   }
+  
+  @Deployment
+  public void testWithCandidateGroups() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
+    vars.put("skip", true);
+    runtimeService.startProcessInstanceByKey("skipExpressionUserTask", vars);
+    assertEquals(0, taskService.createTaskQuery().list().size());
+  }
 
   @Deployment
   public void testSkipMultipleTasks()
