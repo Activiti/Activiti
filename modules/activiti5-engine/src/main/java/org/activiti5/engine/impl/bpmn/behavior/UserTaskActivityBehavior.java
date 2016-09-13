@@ -202,8 +202,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
     
-    handleAssignments(activeAssigneeExpression, activeOwnerExpression, activeCandidateUserExpressions, 
+    Expression skipExpression = taskDefinition.getSkipExpression();
+    boolean skipUserTask = SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression) &&
+        SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression);
+    
+    if (!skipUserTask) {
+      handleAssignments(activeAssigneeExpression, activeOwnerExpression, activeCandidateUserExpressions, 
         activeCandidateGroupExpressions, task, activityExecution);
+    }
     
     task.fireEvent(TaskListener.EVENTNAME_CREATE);
    
@@ -213,10 +219,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
 
-    Expression skipExpression = taskDefinition.getSkipExpression();
-    if (SkipExpressionUtil.isSkipExpressionEnabled(activityExecution, skipExpression) &&
-        SkipExpressionUtil.shouldSkipFlowElement(activityExecution, skipExpression)) {
-      
+    if (skipUserTask) {
       task.complete(null, false);
     }
   }
