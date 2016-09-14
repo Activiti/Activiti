@@ -53,6 +53,12 @@ public interface FormService {
     FormDefinition getTaskFormDefinitionByKey(String formDefinitionKey, String processInstanceId, 
         Map<String, Object> variables, String tenantId);
     
+    FormDefinition getTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId, 
+        String processInstanceId, Map<String, Object> variables);
+    
+    FormDefinition getTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId, String processInstanceId, 
+        Map<String, Object> variables, String tenantId);
+    
     CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, Map<String, Object> variables);
     
     CompletedFormDefinition getCompletedTaskFormDefinitionById(String formId, String taskId, String processInstanceId, 
@@ -62,6 +68,12 @@ public interface FormService {
     
     CompletedFormDefinition getCompletedTaskFormDefinitionByKey(String formDefinitionKey, String taskId, String processInstanceId, 
         Map<String, Object> variables, String tenantId);
+    
+    CompletedFormDefinition getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId,
+        String taskId, String processInstanceId, Map<String, Object> variables);
+    
+    CompletedFormDefinition getCompletedTaskFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId,
+        String taskId, String processInstanceId, Map<String, Object> variables, String tenantId);
     
     SubmittedFormQuery createSubmittedFormQuery();
 }

@@ -47,7 +47,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti5.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
 import org.activiti5.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
@@ -235,7 +234,7 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
 	}
 
 	@Override
-	public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
+	public ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
 		return wrappedActivityBehaviorFactory.createBusinessRuleTaskActivityBehavior(businessRuleTask);
 	}
 

@@ -115,6 +115,9 @@ public class HistoricTaskInstanceBaseResource {
     if (queryRequest.getTaskDefinitionKeyLike() != null) {
       query.taskDefinitionKeyLike(queryRequest.getTaskDefinitionKeyLike());
     }
+    if (queryRequest.getTaskCategory() != null) {
+      query.taskCategory(queryRequest.getTaskCategory());
+    }
     if (queryRequest.getTaskDeleteReason() != null) {
       query.taskDeleteReason(queryRequest.getTaskDeleteReason());
     }

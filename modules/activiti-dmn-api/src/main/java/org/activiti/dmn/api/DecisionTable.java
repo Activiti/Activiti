@@ -14,12 +14,7 @@ package org.activiti.dmn.api;
 
 
 /**
- * An object structure representing an executable process composed of activities and transitions.
- * 
- * Business processes are often created with graphical editors that store the process definition in certain file format. These files can be added to a {@link Deployment} artifact, such as for example
- * a Business Archive (.bar) file.
- * 
- * At deploy time, the engine will then parse the process definition files to an executable instance of this class, that can be used to start a {@link ProcessInstance}.
+ * An object structure representing an executable decision table 
  * 
  * @author Tijs Rademakers
  * @author Joram Barez
@@ -30,31 +25,34 @@ public interface DecisionTable {
   String getId();
 
   /**
-   * category name which is derived from the targetNamespace attribute in the definitions element
+   * category name of this decision table
    */
   String getCategory();
 
   /** label used for display purposes */
   String getName();
 
-  /** unique name for all versions this process definitions */
+  /** unique name for all versions this decision table */
   String getKey();
 
-  /** description of this process **/
+  /** description of this decision table **/
   String getDescription();
 
-  /** version of this process definition */
+  /** version of this decision table */
   int getVersion();
 
   /**
-   * name of {@link RepositoryService#getResourceAsStream(String, String) the resource} of this process definition.
+   * name of {@link DmnRepositoryService#getResourceAsStream(String, String) the resource} of this decision table.
    */
   String getResourceName();
 
-  /** The deployment in which this process definition is contained. */
+  /** The deployment in which this decision table is contained. */
   String getDeploymentId();
+  
+  /** The parent deployment in which this decision table is contained. */
+  String getParentDeploymentId();
 
-  /** The tenant identifier of this process definition */
+  /** The tenant identifier of this decision table */
   String getTenantId();
 
 }

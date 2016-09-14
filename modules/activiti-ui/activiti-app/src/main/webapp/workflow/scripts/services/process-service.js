@@ -28,10 +28,10 @@ angular.module('activitiApp').service('ProcessService', ['$http', '$q', '$rootSc
             return deferred.promise;
         };
 
-        this.getProcessDefinitions = function(appDefinitionId) {
+        this.getProcessDefinitions = function(deploymentKey) {
             var url = ACTIVITI.CONFIG.contextRoot + '/app/rest/process-definitions?latest=true';
-            if (appDefinitionId) {
-                url += '&appDefinitionId=' + appDefinitionId;
+            if (deploymentKey) {
+                url += '&deploymentKey=' + deploymentKey;
             }
             return httpAsPromise(
                 {

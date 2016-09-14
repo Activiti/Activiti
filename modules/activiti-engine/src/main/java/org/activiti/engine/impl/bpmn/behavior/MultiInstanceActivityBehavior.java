@@ -101,6 +101,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       }
 
     } else {
+      Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+
       innerActivityBehavior.execute(execution);
     }
   }
@@ -177,39 +179,22 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   @SuppressWarnings("rawtypes")
   protected int resolveNrOfInstances(DelegateExecution execution) {
-    int nrOfInstances = -1;
     if (loopCardinalityExpression != null) {
-      nrOfInstances = resolveLoopCardinality(execution);
-    } else if (collectionExpression != null) {
-      Object obj = collectionExpression.getValue(execution);
-      if (!(obj instanceof Collection)) {
-        throw new ActivitiIllegalArgumentException(collectionExpression.getExpressionText() + "' didn't resolve to a Collection");
-      }
-      nrOfInstances = ((Collection) obj).size();
-    } else if (collectionVariable != null) {
-      Object obj = execution.getVariable(collectionVariable);
-      if (obj == null) {
-        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + " is not found");
-      }
-      if (!(obj instanceof Collection)) {
-        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + "' is not a Collection");
-      }
-      nrOfInstances = ((Collection) obj).size();
+      return resolveLoopCardinality(execution);
+
+    } else if(usesCollection()) {
+      Collection collection = resolveAndValidateCollection(execution);
+      return collection.size();
+
     } else {
       throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
     }
-    return nrOfInstances;
   }
 
   @SuppressWarnings("rawtypes")
   protected void executeOriginalBehavior(DelegateExecution execution, int loopCounter) {
     if (usesCollection() && collectionElementVariable != null) {
-      Collection collection = null;
-      if (collectionExpression != null) {
-        collection = (Collection) collectionExpression.getValue(execution);
-      } else if (collectionVariable != null) {
-        collection = (Collection) execution.getVariable(collectionVariable);
-      }
+      Collection collection = (Collection) resolveCollection(execution);
 
       Object value = null;
       int index = 0;
@@ -221,16 +206,42 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       setLoopVariable(execution, collectionElementVariable, value);
     }
 
-    // If loopcounter == 0, then historic activity instance already created,
-    // no need to pass through executeActivity again since it will create a new historic activity
-    if (loopCounter == 0) {
-      Context.getCommandContext().getProcessEngineConfiguration().getListenerNotificationHelper()
-        .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_START);
-      innerActivityBehavior.execute(execution);
+    execution.setCurrentFlowElement(activity);
+    planContinueMultiInstanceOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) execution);
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected Collection resolveAndValidateCollection(DelegateExecution execution) {
+    Object obj = resolveCollection(execution);
+    if (collectionExpression != null) {
+      if (!(obj instanceof Collection)) {
+        throw new ActivitiIllegalArgumentException(collectionExpression.getExpressionText() + "' didn't resolve to a Collection");
+      }
+
+    } else if (collectionVariable != null) {
+      if (obj == null) {
+        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + " is not found");
+      }
+
+      if (!(obj instanceof Collection)) {
+        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + "' is not a Collection");
+      }
+
     } else {
-      execution.setCurrentFlowElement(activity);
-      planContinueMultiInstanceOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) execution);
+      throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
     }
+    return (Collection) obj;
+  }
+
+  protected Object resolveCollection(DelegateExecution execution) {
+    Object collection = null;
+    if (collectionExpression != null) {
+      collection = collectionExpression.getValue(execution);
+
+    } else if (collectionVariable != null) {
+      collection = execution.getVariable(collectionVariable);
+    }
+    return collection;
   }
 
   protected boolean usesCollection() {
@@ -246,8 +257,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     Object value = loopCardinalityExpression.getValue(execution);
     if (value instanceof Number) {
       return ((Number) value).intValue();
+
     } else if (value instanceof String) {
       return Integer.valueOf((String) value);
+
     } else {
       throw new ActivitiIllegalArgumentException("Could not resolve loopCardinality expression '" + loopCardinalityExpression.getExpressionText() + "': not a number nor number String");
     }
@@ -259,6 +272,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       if (!(value instanceof Boolean)) {
         throw new ActivitiIllegalArgumentException("completionCondition '" + completionConditionExpression.getExpressionText() + "' does not evaluate to a boolean value");
       }
+
       Boolean booleanValue = (Boolean) value;
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Completion condition of multi-instance satisfied: {}", booleanValue);

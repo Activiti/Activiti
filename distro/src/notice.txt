@@ -1,7 +1,4 @@
-Activiti BPM Platform
-Copyright 2010-2014 Alfresco Software, Ltd.
-
-The following activiti software libraries are distributed under the Apache License Version 2.0 (the License):
+The following Activiti software libraries are distributed under the Apache License Version 2.0 (the License):
  * activiti-bpmn-converter-<version>-sources.jar
  * activiti-bpmn-converter-<version>.jar
  * activiti-bpmn-layout-<version>-sources.jar
@@ -20,8 +17,6 @@ The following activiti software libraries are distributed under the Apache Licen
  * activiti-diagram-rest-<version>.jar
  * activiti-engine-<version>-sources.jar
  * activiti-engine-<version>.jar
- * activiti-explorer-<version>-sources.jar
- * activiti-explorer-<version>.jar
  * activiti-json-converter-<version>-sources.jar
  * activiti-json-converter-<version>.jar
  * activiti-ldap-<version>-sources.jar

@@ -4,7 +4,7 @@
              xmlns:activiti="http://activiti.org/bpmn"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://activiti.org/bpmn http://activiti.org/bpmn/activiti-bpmn-extensions-5.18.xsd"
-targetNamespace="Examples">
+			 targetNamespace="Examples">
 
     <process id="repeatWithEnd">
 

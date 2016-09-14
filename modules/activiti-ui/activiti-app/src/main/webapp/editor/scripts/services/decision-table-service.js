@@ -7,14 +7,13 @@
 'use strict';
 
 // Decision Table service
-angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope', '$http', '$q', '$timeout', '$translate', 'ThumbnailService',
-    function ($rootScope, $http, $q, $timeout, $translate, ThumbnailService) {
+angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope', '$http', '$q', '$timeout', '$translate',
+    function ($rootScope, $http, $q, $timeout, $translate) {
 
         var httpAsPromise = function(options) {
             var deferred = $q.defer();
             $http(options).
                 success(function (response, status, headers, config) {
-                    response.isEmbeddedTable = response.referenceId ? true : false;
                     deferred.resolve(response);
                 })
                 .error(function (response, status, headers, config) {
@@ -29,7 +28,7 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
                 {
                     method: 'GET',
                     url: ACTIVITI.CONFIG.contextRoot + '/app/rest/decision-table-models',
-                    params: {filter: filter, referenceId: $rootScope.currentKickstartModel.definition.id}
+                    params: {filter: filter}
                 }
             );
         };
@@ -78,7 +77,7 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
             }
         }
 
-        this.saveDecisionTable = function (data, name, key, description) {
+        this.saveDecisionTable = function (data, name, key, description, saveCallback, errorCallback) {
 
             data.decisionTableRepresentation = {
             	name: name,
@@ -96,19 +95,40 @@ angular.module('activitiModeler').service('DecisionTableService', [ '$rootScope'
             decisionTableDefinition.rules = $rootScope.currentDecisionTableRules;
 
             cleanUpModel(decisionTableDefinition);
-            delete decisionTableDefinition.referenceId;
 
-            return ThumbnailService.generateThumbnail('decisionTableGrid').then(function (imageBase64) {
+			html2canvas(jQuery('#decisionTableGrid'), {
+                onrendered: function (canvas) {
 
-                data.decisionTableImageBase64 = imageBase64;
+                    var scale = canvas.width / 300.0;
 
-                delete Array.prototype.toJSON;
+                    var extra_canvas = document.createElement('canvas');
+                    extra_canvas.setAttribute('width', 300);
+                    extra_canvas.setAttribute('height', canvas.height / scale);
 
-                return $http({
-                    method: 'PUT',
-                    url: ACTIVITI.CONFIG.contextRoot + '/app/rest/decision-table-models/' + $rootScope.currentDecisionTable.id,
-                    data: data
-                });
+                    var ctx = extra_canvas.getContext('2d');
+                    ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, 300, canvas.height / scale);
+
+                    data.decisionTableImageBase64 = extra_canvas.toDataURL('image/png');
+                    
+                    delete Array.prototype.toJSON;
+
+	                $http({
+	                    method: 'PUT',
+	                    url: ACTIVITI.CONFIG.contextRoot + '/app/rest/decision-table-models/' + $rootScope.currentDecisionTable.id,
+	                    data: data}).
+	                
+	                	success(function (response, status, headers, config) {
+
+                            if (saveCallback) {
+                                saveCallback();
+                            }
+                        }).
+                        error(function (response, status, headers, config) {
+                            if (errorCallback) {
+                                errorCallback(response);
+                            }
+                        });
+                }
             });
         };
 

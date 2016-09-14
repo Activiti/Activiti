@@ -12,6 +12,7 @@
  */
 package org.activiti.form.engine.impl.deployer;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
 import org.activiti.form.engine.FormEngineConfiguration;
 import org.activiti.form.engine.impl.context.Context;
 import org.activiti.form.engine.impl.persistence.deploy.DeploymentCache;
@@ -25,6 +26,8 @@ import org.activiti.form.model.FormDefinition;
  */
 public class CachingAndArtifactsManager {
   
+  protected FormJsonConverter formJsonConverter = new FormJsonConverter();
+  
   /**
    * Ensures that the decision table is cached in the appropriate places, including the
    * deployment's collection of deployed artifacts and the deployment manager's cache.
@@ -37,7 +40,7 @@ public class CachingAndArtifactsManager {
     for (FormEntity form : parsedDeployment.getAllForms()) {
       FormDefinition formDefinition = parsedDeployment.getFormDefinitionForForm(form);
       formDefinition.setId(form.getId());
-      FormCacheEntry cacheEntry = new FormCacheEntry(form, formDefinition);
+      FormCacheEntry cacheEntry = new FormCacheEntry(form, formJsonConverter.convertToJson(formDefinition));
       formCache.add(form.getId(), cacheEntry);
     
       // Add to deployment for further usage

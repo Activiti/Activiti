@@ -157,10 +157,9 @@ angular.module('activitiModeler')
             $rootScope.formChanges = false;
         };
 
-        var errorCallback = function() {
-            $scope.$hide();
-            // TODO: i18n
-            $rootScope.addAlert("Form '" + $scope.saveDialog.name, ' could not be saved');
+        var errorCallback = function(errorMessage) {
+        	$scope.status.loading = false;
+            $scope.saveDialog.errorMessage = errorMessage.message;
         };
 
         FormBuilderService.saveForm(data, $scope.saveDialog.name, $scope.saveDialog.formKey, 

@@ -355,9 +355,9 @@
       <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
         left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
       </if>
-      <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
-        left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex}_${index} on RES.PROC_INST_ID_ = A_OR${orIndex}_${index}.PROC_INST_ID_
-      </foreach>
+      <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
+        left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex} on RES.PROC_INST_ID_ = A_OR${orIndex}.PROC_INST_ID_
+      </if>
     </foreach>
     <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
@@ -424,7 +424,7 @@
       </if>
       <if test="processKeyNotIn != null">
         <foreach collection="processKeyNotIn" index="index" item="procDefKey">
-        and DEF.KEY_ not like #{procDefKey}
+        and DEF.KEY_ not like #{procDefKey}${wildcardEscapeClause}
       </foreach>
       </if>
       <if test="unfinished">
@@ -457,7 +457,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike}
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -466,10 +466,10 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}${wildcardEscapeClause}
       </if>
         <if test="nameLikeIgnoreCase != null">
-        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">
@@ -494,6 +494,9 @@
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>
           #{queryVariableValue.textValue}
+          <choose>
+            <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+          </choose>
         </if>
         <if test="queryVariableValue.textValue2 != null">
         and A${index}.TEXT2_
@@ -588,7 +591,7 @@
             or
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <foreach collection="orQueryObject.processKeyNotIn" index="index" item="procDefKey">
-                and DEF_OR${orIndex}.KEY_ not like #{procDefKey}
+                and DEF_OR${orIndex}.KEY_ not like #{procDefKey}${wildcardEscapeClause}
               </foreach>
             </trim>
           </if>
@@ -622,7 +625,7 @@
             or RES.TENANT_ID_ = #{orQueryObject.tenantId}
           </if>
           <if test="orQueryObject.tenantIdLike != null">
-            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}
+            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
           </if>
           <if test="orQueryObject.withoutTenantId">
             or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -631,29 +634,29 @@
             or RES.NAME_ = #{orQueryObject.name}
           </if>
           <if test="orQueryObject.nameLike != null">
-            or RES.NAME_ like #{orQueryObject.nameLike}
+            or RES.NAME_ like #{orQueryObject.nameLike}${wildcardEscapeClause}
           </if>
           <if test="orQueryObject.nameLikeIgnoreCase != null">
-            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}${wildcardEscapeClause}
           </if>
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
             or
             <trim prefix="(" prefixOverrides="AND" suffix=")">
               <if test="queryVariableValue.name != null">
                 <!-- Match-all variable-names when name is null -->
-                and A_OR${orIndex}_${index}.NAME_= #{queryVariableValue.name}
+                and A_OR${orIndex}.NAME_= #{queryVariableValue.name}
               </if>
               <if test="!queryVariableValue.type.equals('null')">
               <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
-                and A_OR${orIndex}_${index}.VAR_TYPE_ = #{queryVariableValue.type}
+                and A_OR${orIndex}.VAR_TYPE_ = #{queryVariableValue.type}
               </if>
               <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
                   <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">
-                    and lower(A_OR${orIndex}_${index}.TEXT_)
+                    and lower(A_OR${orIndex}.TEXT_)
                   </when>
                   <otherwise>
-                    and A_OR${orIndex}_${index}.TEXT_
+                    and A_OR${orIndex}.TEXT_
                   </otherwise>
                 </choose>
                 <choose>
@@ -661,22 +664,28 @@
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>
                 #{queryVariableValue.textValue}
+                <choose>
+                  <when test="queryVariableValue.operator.equals('LIKE') || queryVariableValue.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+                </choose>
               </if>
               <if test="queryVariableValue.textValue2 != null">
-                and A_OR${orIndex}_${index}.TEXT2_
+                and A_OR${orIndex}.TEXT2_
                 <choose>
                   <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
                 </choose>
                 #{queryVariableValue.textValue2}
+                <choose>
+                  <when test="queryVariableValue.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+                </choose>
               </if>
               <if test="queryVariableValue.longValue != null">
-                and A_OR${orIndex}_${index}.LONG_
+                and A_OR${orIndex}.LONG_
                 <include refid="executionVariableOperator" />
                 #{queryVariableValue.longValue}
               </if>
               <if test="queryVariableValue.doubleValue != null">
-                and A_OR${orIndex}_${index}.DOUBLE_
+                and A_OR${orIndex}.DOUBLE_
                 <include refid="executionVariableOperator" />
                 #{queryVariableValue.doubleValue}
               </if>
@@ -684,10 +693,10 @@
               <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
                 <choose>
                   <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
-                    and (A_OR${orIndex}_${index}.TEXT_ is not null or A_OR${orIndex}_${index}.TEXT2_ is not null or A_OR${orIndex}_${index}.LONG_ is not null or A_OR${orIndex}_${index}.DOUBLE_ is not null or A_OR${orIndex}_${index}.BYTEARRAY_ID_ is not null)
+                    and (A_OR${orIndex}.TEXT_ is not null or A_OR${orIndex}.TEXT2_ is not null or A_OR${orIndex}.LONG_ is not null or A_OR${orIndex}.DOUBLE_ is not null or A_OR${orIndex}.BYTEARRAY_ID_ is not null)
                   </when>
                   <otherwise>
-                    and A_OR${orIndex}_${index}.TEXT_ is null and A_OR${orIndex}_${index}.TEXT2_ is null and A_OR${orIndex}_${index}.LONG_ is null and A_OR${orIndex}_${index}.DOUBLE_ is null and A_OR${orIndex}_${index}.BYTEARRAY_ID_ is null
+                    and A_OR${orIndex}.TEXT_ is null and A_OR${orIndex}.TEXT2_ is null and A_OR${orIndex}.LONG_ is null and A_OR${orIndex}.DOUBLE_ is null and A_OR${orIndex}.BYTEARRAY_ID_ is null
                   </otherwise>
                 </choose>
               </if>

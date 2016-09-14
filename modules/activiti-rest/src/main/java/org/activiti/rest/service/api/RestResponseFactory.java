@@ -642,6 +642,11 @@ public class RestResponseFactory {
     if (execution.getParentId() != null) {
       result.setParentUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, execution.getParentId()));
     }
+    
+    result.setSuperExecutionId(execution.getSuperExecutionId());
+    if (execution.getSuperExecutionId() != null) {
+      result.setSuperExecutionUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, execution.getSuperExecutionId()));
+    }
 
     result.setProcessInstanceId(execution.getProcessInstanceId());
     if (execution.getProcessInstanceId() != null) {

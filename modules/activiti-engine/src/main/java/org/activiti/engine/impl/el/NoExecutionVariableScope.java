@@ -44,11 +44,6 @@ public class NoExecutionVariableScope implements VariableScope {
     return Collections.EMPTY_MAP;
   }
   
-  @Override
-  public Map<String, Object> getVariableValues() {
-    return Collections.EMPTY_MAP;
-  }
-
   @SuppressWarnings("unchecked")
   public Map<String, Object> getVariablesLocal() {
     return Collections.EMPTY_MAP;
@@ -236,6 +231,54 @@ public class NoExecutionVariableScope implements VariableScope {
   }
 
   public void removeVariablesLocal(Collection<String> variableNames) {
+    throw new UnsupportedOperationException("No execution active, no variables can be removed");
+  }
+
+  public void setTransientVariablesLocal(Map<String, Object> transientVariables) {
+    throw new UnsupportedOperationException("No execution active, no variables can be set");
+  }
+
+  public void setTransientVariableLocal(String variableName, Object variableValue) {
+    throw new UnsupportedOperationException("No execution active, no variables can be set");
+  }
+
+  public void setTransientVariables(Map<String, Object> transientVariables) {
+    throw new UnsupportedOperationException("No execution active, no variables can be set");
+  }
+
+  public void setTransientVariable(String variableName, Object variableValue) {
+    throw new UnsupportedOperationException("No execution active, no variables can be set");
+  }
+
+  public Object getTransientVariableLocal(String variableName) {
+    return null;
+  }
+
+  public Map<String, Object> getTransientVariablesLocal() {
+    return null;
+  }
+
+  public Object getTransientVariable(String variableName) {
+    return null;
+  }
+
+  public Map<String, Object> getTransientVariables() {
+    return null;
+  }
+
+  public void removeTransientVariableLocal(String variableName) {
+    throw new UnsupportedOperationException("No execution active, no variables can be removed");
+  }
+
+  public void removeTransientVariablesLocal() {
+    throw new UnsupportedOperationException("No execution active, no variables can be removed");
+  }
+
+  public void removeTransientVariable(String variableName) {
+    throw new UnsupportedOperationException("No execution active, no variables can be removed");
+  }
+
+  public void removeTransientVariables() {
     throw new UnsupportedOperationException("No execution active, no variables can be removed");
   }
 }

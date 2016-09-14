@@ -7,76 +7,82 @@
     <changeSet id="1" author="activiti">
 
         <createTable tableName="ACT_FO_FORM_DEPLOYMENT">
-            <column name="id_" type="varchar(255)">
+            <column name="ID_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name_" type="varchar(255)" />
-            <column name="category_" type="varchar(255)">
+            <column name="NAME_" type="varchar(255)" />
+            <column name="CATEGORY_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
-            <column name="deploy_time_" type="datetime">
+            <column name="DEPLOY_TIME_" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="tenant_id_" type="varchar(255)">
+            <column name="TENANT_ID_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
+            <column name="PARENT_DEPLOYMENT_ID_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
         </createTable>
         
         <createTable tableName="ACT_FO_FORM_RESOURCE">
-            <column name="id_" type="varchar(255)">
+            <column name="ID_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name_" type="varchar(255)" />
-            <column name="deployment_id_" type="varchar(255)" />
-            <column name="resource_bytes_" type="longblob">
+            <column name="NAME_" type="varchar(255)" />
+            <column name="DEPLOYMENT_ID_" type="varchar(255)" />
+            <column name="RESOURCE_BYTES_" type="longblob">
                 <constraints nullable="true" />
             </column>
         </createTable>
         
         <createTable tableName="ACT_FO_FORM_DEFINITION">
-            <column name="id_" type="varchar(255)">
+            <column name="ID_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name_" type="varchar(255)" />
-            <column name="version_" type="int" />
-            <column name="key_" type="varchar(255)" />
-            <column name="category_" type="varchar(255)">
+            <column name="NAME_" type="varchar(255)" />
+            <column name="VERSION_" type="int" />
+            <column name="KEY_" type="varchar(255)" />
+            <column name="CATEGORY_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
-            <column name="deployment_id_" type="varchar(255)" />
-            <column name="tenant_id_" type="varchar(255)">
+            <column name="DEPLOYMENT_ID_" type="varchar(255)" />
+            <column name="PARENT_DEPLOYMENT_ID_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
-            <column name="resource_name_" type="varchar(255)" />
-            <column name="description_" type="varchar(255)">
+            <column name="TENANT_ID_" type="varchar(255)">
+            	<constraints nullable="true" />
+            </column>
+            <column name="RESOURCE_NAME_" type="varchar(255)" />
+            <column name="DESCRIPTION_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
         </createTable>
         
         <createTable tableName="ACT_FO_SUBMITTED_FORM">
-            <column name="id_" type="varchar(255)">
+            <column name="ID_" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="form_id_" type="varchar(255)">
+            <column name="FORM_ID_" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="task_id_" type="varchar(255)">
+            <column name="TASK_ID_" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="proc_inst_id_" type="varchar(255)">
+            <column name="PROC_INST_ID_" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="proc_def_id_" type="varchar(255)">
+            <column name="PROC_DEF_ID_" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="submitted_date_" type="datetime" />
-            <column name="submitted_by_" type="varchar(255)">
+            <column name="SUBMITTED_DATE_" type="datetime" />
+            <column name="SUBMITTED_BY_" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="form_values_id_" type="varchar(255)">
+            <column name="FORM_VALUES_ID_" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="tenant_id_" type="varchar(255)">
+            <column name="TENANT_ID_" type="varchar(255)">
             	<constraints nullable="true" />
             </column>
         </createTable>

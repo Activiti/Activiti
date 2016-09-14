@@ -4,7 +4,7 @@
 
 	<property file="${user.home}/.activiti/build.properties" />
 
-	<property name="activiti.version" value="6.0.0.Beta3-SNAPSHOT" />
+	<property name="activiti.version" value="6.0.0.RC1-SNAPSHOT" />
 	<property name="target.distro.root" value="target/zip/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
 
@@ -80,6 +80,45 @@
 			<fileset dir="../modules/activiti-process-validation/target">
 				<include name="activiti-process-validation-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti-secure-javascript/target">
+				<include name="activiti-secure-javascript-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-model/target">
+				<include name="activiti-dmn-model-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-json-converter/target">
+				<include name="activiti-dmn-json-converter-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-xml-converter/target">
+				<include name="activiti-dmn-xml-converter-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-api/target">
+				<include name="activiti-dmn-api-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-engine/target">
+				<include name="activiti-dmn-engine-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-engine-configurator/target">
+				<include name="activiti-dmn-engine-configurator-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-dmn-rest/target">
+				<include name="activiti-dmn-rest-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-form-model/target">
+				<include name="activiti-form-model-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-form-json-converter/target">
+				<include name="activiti-form-json-converter-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-form-api/target">
+				<include name="activiti-form-api-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-form-engine/target">
+				<include name="activiti-form-engine-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-form-engine-configurator/target">
+				<include name="activiti-form-engine-configurator-*.jar" />
+			</fileset>
 			<fileset dir="../modules/activiti5-compatibility/target">
 				<include name="activiti5-compatibility-*.jar" />
 			</fileset>
@@ -152,9 +191,6 @@
 			<fileset dir="../modules/activiti-ui/activiti-app-rest/target">
 				<include name="activiti-app-rest-*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-ui/activiti-cipher/target">
-				<include name="activiti-cipher-*.jar" />
-			</fileset>
 			<fileset dir="../modules/activiti-ui/content-storage-api/target">
 				<include name="content-storage-api-*.jar" />
 			</fileset>
@@ -169,6 +205,9 @@
 			</fileset>
 			<fileset dir="../modules/activiti-jmx/target">
 				<include name="activiti-jmx-*.jar" />
+			</fileset>
+			<fileset dir="../modules/activiti-jms-spring-executor/target">
+				<include name="activiti-jms-spring-executor-*.jar" />
 			</fileset>
 		</copy>
 

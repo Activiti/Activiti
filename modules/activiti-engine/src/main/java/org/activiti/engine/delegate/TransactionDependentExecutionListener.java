@@ -18,8 +18,6 @@ import org.activiti.bpmn.model.FlowElement;
 import java.util.Map;
 
 /**
- * Callback interface to be notified of {@link org.activiti.engine.impl.interceptor.CommandContextCloseListener} events; closing, closed and closeFailure
- * 
  * @author Yvo Swillens
  */
 public interface TransactionDependentExecutionListener extends BaseExecutionListener {

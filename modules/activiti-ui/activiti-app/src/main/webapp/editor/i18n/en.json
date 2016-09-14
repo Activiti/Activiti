@@ -102,7 +102,7 @@
             "MY-PROCESSES-COUNT": "You have {{total}} business process models",
             "MY-PROCESSES-ONE": "You have one business process model",
             "MY-PROCESSES-EMPTY": "It looks like you have not created any business process models yet. You can design process models, user forms and then bundle them up into a process app to share with any colleagues. The first step is to create a process model:",
-            "MY-PROCESSES-BPMN-HINT": "If you are familiar with the BPMN standard, you can use the Visual Editor.",
+            "MY-PROCESSES-BPMN-HINT": "Create a BPMN model using the BPMN Visual Editor.",
             "MY-PROCESSES-BPMN-IMPORT-HINT": "You can also import existing BPMN models.",
             "MY-PROCESSES-STEP-HINT": "If you are new to designing processes, you can use the Step Editor.",
             "FILTER-TEXT": ", matching \"{{filterText}}\"",
@@ -148,7 +148,7 @@
             "NAME-DESC": "Name, Z-A"
         }
     },
-    
+
     "DECISION-TABLES-LIST": {
         "TITLE": "Decision Tables",
         "SEARCH-PLACEHOLDER": "Search",
@@ -429,7 +429,7 @@
           "NOT-FOUND": "The requested form does not exist"
         }
     },
-    
+
     "DECISION-TABLE": {
         "NAME": "Decision Table name",
         "KEY": "Decision Table key",
@@ -523,6 +523,7 @@
 
     "APP": {
         "NAME": "App definition name",
+        "KEY": "App definition key",
         "DESCRIPTION": "Description",
         "VERSION-COMMENT": "Version comment",
         "ICON": "Icon",
@@ -748,6 +749,7 @@
             "TABLE": "Dynamic table",
             "HEADER": "Header",
             "UPLOAD": "Upload",
+            "EXPRESSION": "Expression",
             "DISPLAY-VALUE": "Display value",
             "DISPLAY-TEXT": "Display text"
         },
@@ -771,14 +773,16 @@
             "EDIT-COMPONENT": "Edit form component"
         },
         "POPUP": {
-            "EDIT-TITLE": "Edit field '{{name}}'"
+            "EDIT-TITLE": "Edit field '{{name}}'",
+            "EXPRESSION-TITLE": "Edit expression"
         },
         "MESSAGE": {
             "EMPTY-CANVAS": "The form is currently empty. Add components to the form by dragging a desired component from the list on the left. Click on a component on the canvas to alter the label and other properties...",
             "SELECT-FIELD": "(No field selected)",
+            "EMPTY-EXPRESSION": "(No expression value)",
             "FIELD-VALUE": "Show value of field \"{{field}}\"",
             "SELECT-READONLY-FIELD": "Field:",
-            "READONLY-TEXT-HELP": "You can also display values previously submitted in any form, as part of the text, by referencing them using a notation as follows ${myFieldId}.",
+            "EXPRESSION-HELP": "You can also display values previously submitted in any form, as part of the text, by referencing them using a notation as follows ${myFieldId}.",
             "HYPERLINK-HELP": "You can also display values previously submitted in any form, as part of the HYPERLINK URL. Select a field below to insert it at the position of the cursor.",
             "HYPERLINK-HELP-RESPONSE-VARIABLE": "You can also display REST response variables as part of the HYPERLINK URL. Select a field below to insert it at the position of the cursor.",
             "DISPLAY-TEXT-HELP": "You can also display values previously submitted in any form, as part of the DISPLAY TEXT. Select a field below to insert it at the position of the cursor.",
@@ -803,6 +807,7 @@
             "DISPLAY-TEXT-DEFAULT": "Display text as part of the form",
             "BASE-ENDPOINT": "Base endpoint",
             "REQUIRED": "Required",
+            "EXPRESSION": "Expression",
             "READONLY": "Read only",
             "ADD-OPTION": "+ Add a new option",
             "UPLOAD-ALLOW-MULTIPLE": "Allow uploading multiple files",
@@ -850,7 +855,7 @@
           "VALIDATION-ERROR": "Form contains validation errors."
         }
     },
-    
+
     "DECISION-TABLE-EDITOR": {
         "EMPTY-MESSAGES": {
             "NO-COLUMN": "You need to create at least 1 condition and 1 action column before you can start adding decision rows to your table.",
@@ -980,7 +985,7 @@
             "VALIDATION-ERROR": "Decision table model contains validation errors."
         }
     },
-    
+
     "RECAPTCHA": {
         "RECAPTCHA-IMAGE": "Enter the words you read below",
         "RECAPTCHA-AUDIO": "Enter the numbers you hear",
@@ -1751,6 +1756,7 @@
     "PROPERTY.SEQUENCEFLOW.CONDITION.TYPE.STATIC" : "Fixed value",
     "PROPERTY.SEQUENCEFLOW.CONDITION.STATIC" : "Condition expression",
     "PROPERTY.SEQUENCEFLOW.CONDITION.STATIC_PLACEHOLDER" : "Fill-in expression value",
+    "PROPERTY.SEQUENCEFLOW.CONDITION.NO-CONDITION-DISPLAY": "No condition set",
 
     "PROPERTY.DUEDATE.EMPTY" : "No due date",
     "PROPERTY.DUEDATE.DEFINED" : "Due date defined",
@@ -1763,6 +1769,7 @@
 
     "MODEL.SAVE.TITLE" : "Save model",
     "MODEL.NAME" : "Name",
+    "MODEL.KEY" : "Key",
     "MODEL.DESCRIPTION" : "Description",
     "MODEL.SAVE.NEWVERSION" : "Save this as a new version?  This means you can always go back to a previous version",
     "MODEL.SAVE.COMMENT" : "Comment",
@@ -1790,7 +1797,7 @@
     "EVENT_TYPE.VARIABLE.CREATED.TOOLTIP": "A new variable has been created",
     "EVENT_TYPE.VARIABLE.DELETED.TOOLTIP": "An existing variable has been deleted",
     "EVENT_TYPE.VARIABLE.UPDATED.TOOLTIP": "An existing variable has been updated",
-    
+
     "PROPERTY.DECISIONTABLEREFERENCE.EMPTY" : "No reference selected",
     "PROPERTY.DECISIONTABLEREFERENCE.TITLE" : "Decision table reference",
     "PROPERTY.DECISIONTABLEREFERENCE.ERROR.FORM" : "There was an error loading the decision tables. Try again later",

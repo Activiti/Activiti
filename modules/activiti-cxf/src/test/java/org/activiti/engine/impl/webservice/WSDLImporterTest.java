@@ -90,7 +90,7 @@ public class WSDLImporterTest {
     WSService service = services.get(0);
     
     assertEquals("Counter", service.getName());
-    assertEquals("http://localhost:63081/counter", service.getLocation());
+    assertEquals("http://localhost:63081/webservicemock", service.getLocation());
     
     List<StructureDefinition> structures = sortStructures();
     List<WSOperation> operations = sortOperations();

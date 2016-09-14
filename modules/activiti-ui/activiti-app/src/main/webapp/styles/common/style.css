@@ -539,7 +539,6 @@ a.dropdown-toggle {
     padding-top: 0px;
     line-height: 40px;
     height: 40px;
-    background: url(../../images/logo.png) no-repeat 10px center;
     width: 180px;
 }
 
@@ -3274,46 +3273,3 @@ ul#strength > li:last-child {
   height:auto;
 }
 
-/*About popup */
-
-.modal-header-about {
-    height: 30px;
-    padding-right: 10px;
-    padding-left: 10px;
-    padding-top: 5px;
-}
-
-.about-background {
-    background: url("../../images/alfresco-about-bg.png");
-    height: 248px;
-}
-
-.about {
-    font-size: 14px;
-    color: #666;
-}
-
-.about-title {
-    font-size: 131%;
-    padding-top: 8px;
-}
-
-.about-copyright-info {
-    color: #000;
-    font-size: 77%;
-    margin-top: 0.5em;
-}
-
-.about-vertical-spacer {
-    height: 80px;
-    color: #333;
-    font-size: 85%;
-    overflow: hidden;
-}
-
-.about-popup-logo {
-    display: inline;
-    height: 30px;
-    margin-top: 10px;
-    content:url(../../images/logo-2x-black.png);
-}

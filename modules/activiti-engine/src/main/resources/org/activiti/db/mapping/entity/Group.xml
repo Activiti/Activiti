@@ -115,7 +115,7 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike}${wildcardEscapeClause}
       </if>
       <if test="type != null">
         and RES.TYPE_ = #{type}

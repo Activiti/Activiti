@@ -31,7 +31,7 @@
                     <img ng-if="account.tenantPictureId && account.tenantId"
                          ng-src="{{restRootUrl()}}/app/rest/tenants/{{account.tenantId}}/logo">
 
-                    <img ng-if="!account.tenantPictureId" ng-src="{{appResourceRoot}}../images/logo-2x.png">
+                    <img ng-if="!account.tenantPictureId" ng-src="{{appResourceRoot}}../images/activiti-logo.png">
                 </a>
                 <ul class="nav navbar-nav" ng-show="authenticationChecked">
                     <li ng-repeat="item in mainNavigation" ng-show="(authenticated && !item.unauthenticated) || (item.unauthenticated && !authenticated)" ng-class="{'active': item.id == mainPage.id}">

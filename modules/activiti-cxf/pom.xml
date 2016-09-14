@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>6.0.0.Beta3-SNAPSHOT</version>
+    <version>6.0.0.RC1-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -64,6 +64,13 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.7.1</version>
+        <configuration>
+         <forkMode>always</forkMode>
+        </configuration>
       </plugin>
     </plugins>
     <pluginManagement>

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.activiti.engine.delegate.BusinessRuleTaskDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
@@ -33,7 +34,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
+public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior implements BusinessRuleTaskDelegate {
 
   private static final long serialVersionUID = 1L;
   

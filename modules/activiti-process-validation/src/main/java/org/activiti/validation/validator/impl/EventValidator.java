@@ -60,8 +60,12 @@ public class EventValidator extends ProcessLevelValidator {
     MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
 
     if (StringUtils.isEmpty(messageEventDefinition.getMessageRef())) {
-      // message ref should be filled in
-      addError(errors, Problems.MESSAGE_EVENT_MISSING_MESSAGE_REF, process, event, "attribute 'messageRef' is required");
+      
+      if (StringUtils.isEmpty(messageEventDefinition.getMessageExpression())) {
+        // message ref should be filled in
+        addError(errors, Problems.MESSAGE_EVENT_MISSING_MESSAGE_REF, process, event, "attribute 'messageRef' is required");
+      }
+      
     } else if (!bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
       // message ref should exist
       addError(errors, Problems.MESSAGE_EVENT_INVALID_MESSAGE_REF, process, event, "Invalid 'messageRef': no message with that id can be found in the model");
@@ -72,7 +76,11 @@ public class EventValidator extends ProcessLevelValidator {
     SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
 
     if (StringUtils.isEmpty(signalEventDefinition.getSignalRef())) {
-      addError(errors, Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF, process, event, "signalEventDefinition does not have mandatory property 'signalRef'");
+      
+      if (StringUtils.isEmpty(signalEventDefinition.getSignalExpression())) {
+        addError(errors, Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF, process, event, "signalEventDefinition does not have mandatory property 'signalRef'");
+      }
+      
     } else if (!bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
       addError(errors, Problems.SIGNAL_EVENT_INVALID_SIGNAL_REF, process, event, "Invalid 'signalRef': no signal with that id can be found in the model");
     }

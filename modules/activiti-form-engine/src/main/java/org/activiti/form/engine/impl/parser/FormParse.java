@@ -88,6 +88,7 @@ public class FormParse {
         formEntity.setName(formDefinition.getName());
         formEntity.setResourceName(name);
         formEntity.setDeploymentId(deployment.getId());
+        formEntity.setParentDeploymentId(deployment.getParentDeploymentId());
         formEntity.setDescription(formDefinition.getDescription());
         forms.add(formEntity);
       }

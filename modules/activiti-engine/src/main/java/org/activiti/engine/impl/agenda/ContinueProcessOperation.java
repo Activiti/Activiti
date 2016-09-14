@@ -1,6 +1,16 @@
 package org.activiti.engine.impl.agenda;
 
-import org.activiti.bpmn.model.*;
+import java.util.Collection;
+import java.util.List;
+
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -58,7 +68,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     } else if (currentFlowElement instanceof SequenceFlow) {
       continueThroughSequenceFlow((SequenceFlow) currentFlowElement);
     } else {
-      throw new RuntimeException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
+      throw new ActivitiException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
     }
   }
 
@@ -83,8 +93,13 @@ public class ContinueProcessOperation extends AbstractOperation {
       createChildExecutionForSubProcess((SubProcess) flowNode);
     }
 
-    if (forceSynchronousOperation || !flowNode.isAsynchronous()) {
+    if (flowNode instanceof Activity && ((Activity) flowNode).hasMultiInstanceLoopCharacteristics()) {
+      // the multi instance execution will look at async
+      executeMultiInstanceSynchronous(flowNode);
+
+    } else if (forceSynchronousOperation || !flowNode.isAsynchronous()) {
       executeSynchronous(flowNode);
+
     } else {
       executeAsynchronous(flowNode);
     }
@@ -125,31 +140,62 @@ public class ContinueProcessOperation extends AbstractOperation {
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
 
     if (activityBehavior != null) {
-      logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
+      executeActivityBehavior(activityBehavior, flowNode);
 
-      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
-                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
-      }
-
-      try {
-        activityBehavior.execute(execution);
-      } catch (RuntimeException e) {
-        if (LogMDC.isMDCEnabled()) {
-          LogMDC.putMDCExecution(execution);
-        }
-        throw e;
-      }
     } else {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
-      planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), execution, true);
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
   }
 
   protected void executeAsynchronous(FlowNode flowNode) {
     JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
     commandContext.getJobManager().scheduleAsyncJob(job);
+  }
+
+  protected void executeMultiInstanceSynchronous(FlowNode flowNode) {
+
+    // Execution listener: event 'start'
+    if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
+      executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
+    }
+
+    // Execute any boundary events, sub process boundary events will be executed from the activity behavior
+    if (!inCompensation && flowNode instanceof Activity) { // Only activities can have boundary events
+      List<BoundaryEvent> boundaryEvents = ((Activity) flowNode).getBoundaryEvents();
+      if (CollectionUtil.isNotEmpty(boundaryEvents)) {
+        executeBoundaryEvents(boundaryEvents, execution);
+      }
+    }
+
+    // Execute the multi instance behavior
+    ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+
+    if (activityBehavior != null) {
+      executeActivityBehavior(activityBehavior, flowNode);
+
+    } else {
+      throw new ActivitiException("Expected an activity behavior in flow node " + flowNode.getId());
+    }
+  }
+
+  protected void executeActivityBehavior(ActivityBehavior activityBehavior, FlowNode flowNode) {
+    logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
+
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
+              execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
+    }
+
+    try {
+      activityBehavior.execute(execution);
+    } catch (RuntimeException e) {
+      if (LogMDC.isMDCEnabled()) {
+        LogMDC.putMDCExecution(execution);
+      }
+      throw e;
+    }
   }
 
   protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {

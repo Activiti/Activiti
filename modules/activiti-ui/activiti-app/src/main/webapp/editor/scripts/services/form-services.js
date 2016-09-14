@@ -83,7 +83,7 @@ angular.module('activitiModeler').service('FormBuilderService', ['$http', '$q', 
                         }).
                         error(function (response, status, headers, config) {
                             if (errorCallback) {
-                                errorCallback();
+                                errorCallback(response);
                             }
                         });
 

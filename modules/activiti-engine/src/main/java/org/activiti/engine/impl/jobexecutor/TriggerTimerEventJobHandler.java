@@ -95,8 +95,8 @@ public class TriggerTimerEventJobHandler implements JobHandler {
 
   protected void dispatchActivityTimeOut(JobEntity timerEntity, FlowNode flowNode, ExecutionEntity execution, CommandContext commandContext) {
     commandContext.getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), execution.getProcessInstanceId(),
-            execution.getProcessDefinitionId(), parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), timerEntity));
+        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), 
+            execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode), timerEntity));
   }
 
   protected String parseActivityType(FlowNode flowNode) {

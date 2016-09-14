@@ -38,6 +38,8 @@ public class FormQueryImpl extends AbstractQuery<FormQuery, Form> implements For
   protected String nameLike;
   protected String deploymentId;
   protected Set<String> deploymentIds;
+  protected String parentDeploymentId;
+  protected String parentDeploymentIdLike;
   protected String key;
   protected String keyLike;
   protected String resourceName;
@@ -127,6 +129,22 @@ public class FormQueryImpl extends AbstractQuery<FormQuery, Form> implements For
       throw new ActivitiFormIllegalArgumentException("ids are null");
     }
     this.deploymentIds = deploymentIds;
+    return this;
+  }
+  
+  public FormQueryImpl parentDeploymentId(String parentDeploymentId) {
+    if (parentDeploymentId == null) {
+      throw new ActivitiFormIllegalArgumentException("parentDeploymentId is null");
+    }
+    this.parentDeploymentId = parentDeploymentId;
+    return this;
+  }
+  
+  public FormQueryImpl parentDeploymentIdLike(String parentDeploymentIdLike) {
+    if (parentDeploymentIdLike == null) {
+      throw new ActivitiFormIllegalArgumentException("parentDeploymentIdLike is null");
+    }
+    this.parentDeploymentIdLike = parentDeploymentIdLike;
     return this;
   }
 

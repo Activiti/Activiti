@@ -40,4 +40,5 @@ public interface DmnDeployment {
 
   String getTenantId();
 
+  String getParentDeploymentId();
 }

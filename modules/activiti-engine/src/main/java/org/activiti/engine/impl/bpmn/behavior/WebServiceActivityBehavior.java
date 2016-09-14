@@ -27,6 +27,7 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
@@ -38,6 +39,7 @@ import org.activiti.engine.impl.bpmn.data.ItemKind;
 import org.activiti.engine.impl.bpmn.data.SimpleDataInputAssociation;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.bpmn.data.TransformationDataOutputAssociation;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
@@ -45,6 +47,7 @@ import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociat
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -111,38 +114,60 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
     Operation operation = operationMap.get(operationRef);
     
-    if (ioSpecification != null) {
-      initializeIoSpecification(ioSpecification, execution, bpmnModel);
-      if (ioSpecification.getDataInputRefs().size() > 0) {
-        String firstDataInputName = ioSpecification.getDataInputRefs().get(0);
-        ItemInstance inputItem = (ItemInstance) execution.getVariable(firstDataInputName);
-        message = new MessageInstance(operation.getInMessage(), inputItem);
-      }
-      
-    } else {
-      message = operation.getInMessage().createInstance();
-    }
-
-    execution.setVariable(CURRENT_MESSAGE, message);
-
-    fillMessage(dataInputAssociations, execution);
-
-    MessageInstance receivedMessage = operation.sendMessage(message);
-
-    execution.setVariable(CURRENT_MESSAGE, receivedMessage);
+    try {
     
-    if (ioSpecification != null && ioSpecification.getDataOutputRefs().size() > 0) {
-      String firstDataOutputName = ioSpecification.getDataOutputRefs().get(0);
-      if (firstDataOutputName != null) {
-        ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
-        outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+      if (ioSpecification != null) {
+        initializeIoSpecification(ioSpecification, execution, bpmnModel);
+        if (ioSpecification.getDataInputRefs().size() > 0) {
+          String firstDataInputName = ioSpecification.getDataInputRefs().get(0);
+          ItemInstance inputItem = (ItemInstance) execution.getVariable(firstDataInputName);
+          message = new MessageInstance(operation.getInMessage(), inputItem);
+        }
+        
+      } else {
+        message = operation.getInMessage().createInstance();
       }
-    }
+  
+      execution.setVariable(CURRENT_MESSAGE, message);
+  
+      fillMessage(dataInputAssociations, execution);
+  
+      ProcessEngineConfigurationImpl processEngineConfig = Context.getProcessEngineConfiguration();
+      MessageInstance receivedMessage = operation.sendMessage(message,
+          processEngineConfig.getWsOverridenEndpointAddresses());
+  
+      execution.setVariable(CURRENT_MESSAGE, receivedMessage);
+      
+      if (ioSpecification != null && ioSpecification.getDataOutputRefs().size() > 0) {
+        String firstDataOutputName = ioSpecification.getDataOutputRefs().get(0);
+        if (firstDataOutputName != null) {
+          ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
+          outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+        }
+      }
+  
+      returnMessage(dataOutputAssociations, execution);
+  
+      execution.setVariable(CURRENT_MESSAGE, null);
+      leave(execution);
+    } catch (Exception exc) {
 
-    returnMessage(dataOutputAssociations, execution);
+      Throwable cause = exc;
+      BpmnError error = null;
+      while (cause != null) {
+         if (cause instanceof BpmnError) {
+            error = (BpmnError) cause;
+            break;
+         }
+         cause = cause.getCause();
+      }
 
-    execution.setVariable(CURRENT_MESSAGE, null);
-    leave(execution);
+      if (error != null) {
+         ErrorPropagation.propagateError(error, execution);
+      } else if (exc instanceof RuntimeException){
+         throw (RuntimeException) exc;
+      }
+   } 
   }
   
   protected void initializeIoSpecification(IOSpecification activityIoSpecification, DelegateExecution execution, BpmnModel bpmnModel) {

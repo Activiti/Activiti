@@ -608,6 +608,19 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       }
     }
   }
+  
+  /* (non-Javadoc)
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskProcessDefinitionChange(java.lang.String, java.lang.String)
+   */
+  @Override
+  public void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
+      if (historicTaskInstance != null) {
+        historicTaskInstance.setProcessDefinitionId(processDefinitionId);
+      }
+    }
+  }
 
   // Variables related history
 

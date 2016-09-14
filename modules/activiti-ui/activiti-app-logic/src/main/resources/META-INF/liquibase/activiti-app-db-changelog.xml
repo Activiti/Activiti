@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="1" author="activiti">
+    
+        <!-- Hibernate sequence table -->
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="varchar(255)" />
+            <column name="sequence_next_hi_value" type="integer" />
+        </createTable>
+
+		<createTable tableName="ACT_IDM_PERSISTENT_TOKEN">
+            <column name="series" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="varchar(255)"/>
+            <column name="token_value" type="varchar(255)"/>
+            <column name="token_date" type="datetime(6)"/>
+            <column name="ip_address" type="varchar(39)"/>
+            <column name="user_agent" type="varchar(255)"/>
+        </createTable>
+
+        <!-- model -->
+		<createTable tableName="ACT_DE_MODEL">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(400)">
+				<constraints nullable="false" />
+			</column>
+			<column name="model_key" type="varchar(400)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="varchar(4000)">
+				<constraints nullable="true" />
+			</column>
+			<column name="model_comment" type="varchar(4000)">
+				<constraints nullable="true" />
+			</column>
+			<column name="created" type="datetime(6)">
+				<constraints nullable="true" />
+			</column>
+			<column name="created_by" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+			<column name="last_updated" type="datetime(6)">
+				<constraints nullable="true" />
+			</column>
+			<column name="last_updated_by" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+			<column name="version" type="int">
+				<constraints nullable="true" />
+			</column>
+			<column name="model_editor_json" type="longtext">
+				<constraints nullable="true" />
+			</column>
+			<column name="thumbnail" type="longblob">
+				<constraints nullable="true" />
+			</column>
+			<column name="model_type" type="int">
+                <constraints nullable="true" />
+            </column>
+		</createTable>
+        
+        <createIndex indexName="idx_proc_mod_created"
+            tableName="ACT_DE_MODEL" unique="false">
+            <column name="created_by" />
+        </createIndex>
+        
+        <!-- Model history -->
+        <createTable tableName="ACT_DE_MODEL_HISTORY">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(400)">
+                <constraints nullable="false" />
+            </column>
+            <column name="model_key" type="varchar(400)">
+				<constraints nullable="false" />
+			</column>
+            <column name="description" type="varchar(4000)">
+                <constraints nullable="true" />
+            </column>
+            <column name="model_comment" type="varchar(4000)">
+                <constraints nullable="true" />
+            </column>
+            <column name="created" type="datetime(6)">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="last_updated" type="datetime(6)">
+                <constraints nullable="true" />
+            </column>
+            <column name="last_updated_by" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="removal_date" type="datetime(6)">
+                <constraints nullable="true" />
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="true" />
+            </column>
+            <column name="model_editor_json" type="longtext">
+                <constraints nullable="true" />
+            </column>
+            <column name="model_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="model_type" type="int">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+        
+        <createIndex indexName="idx_proc_mod_history_proc"
+            tableName="ACT_DE_MODEL_HISTORY" unique="false">
+            <column name="model_id" />
+        </createIndex>
+        
+        <createTable tableName="ACT_WO_COMMENTS">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="message" type="varchar(4000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp(6)" />
+            <column name="created_by" type="varchar(255)" /> 
+            <column name="task_id" type="varchar(255)" /> 
+            <column name="proc_inst_id" type="varchar(255)" /> 
+             
+            <column name="comment_definition" type="longtext" />
+        </createTable>
+        
+        <createIndex tableName="ACT_WO_COMMENTS" indexName="comment_task_created">
+            <column name="task_id" />
+            <column name="created" />
+        </createIndex>
+        
+        <createIndex tableName="ACT_WO_COMMENTS" indexName="comment_proc_created">
+            <column name="proc_inst_id" />
+            <column name="created" />
+        </createIndex>
+        
+        <createTable tableName="ACT_WO_RELATED_CONTENT">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created" type="timestamp(6)" />
+            <column name="created_by" type="varchar(255)" />
+            
+            <column name="task_id" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="process_id" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content_source" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="source_id" type="varchar(4000)">
+                <constraints nullable="true" />
+            </column>
+            <column name="store_id" type="varchar(255)"/>
+            <column name="mime_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="field" type="varchar(400)">
+                <constraints nullable="true" />
+            </column>
+            <column name="related_content" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="link" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="link_url" type="varchar(4000)">
+                <constraints nullable="true" />
+            </column>
+            <column name="content_available" type="boolean" defaultValueBoolean="false" />
+            <column name="locked" type="boolean" defaultValueBoolean="false" />
+            <column name="lock_date" type="timestamp(6)" />
+            <column name="lock_exp_date" type="timestamp(6)" />
+            <column name="lock_owner" type="varchar(255)" />
+            <column name="checked_out" type="boolean" defaultValueBoolean="false" />
+            <column name="checkout_date" type="timestamp(6)" />
+            <column name="checkout_owner" type="varchar(255)" />
+            <column name="last_modified" type="timestamp(6)" />
+            <column name="last_modified_by" type="varchar(255)" />
+            <column name="checked_out_to_local" type="boolean" defaultValueBoolean="false" />
+            <column name="content_size" type="bigint" defaultValueNumeric="0" />
+        </createTable>
+            
+        <createIndex tableName="ACT_WO_RELATED_CONTENT" indexName="idx_relcont_createdby">
+            <column name="created_by" />
+        </createIndex>
+        <createIndex tableName="ACT_WO_RELATED_CONTENT" indexName="idx_relcont_taskid">
+            <column name="task_id" />
+        </createIndex>
+        <createIndex tableName="ACT_WO_RELATED_CONTENT" indexName="idx_relcont_procid">
+            <column name="process_id" />
+        </createIndex>
+	
+		<!-- MODEL RELATION -->
+		
+		 <createTable tableName="ACT_DE_MODEL_RELATION">
+		 	<column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="parent_model_id" type="bigint" />
+            <column name="model_id" type="bigint" />
+            <column name="relation_type" type="varchar(255)" />
+        </createTable>
+        
+        <addForeignKeyConstraint baseColumnNames="parent_model_id"
+			baseTableName="ACT_DE_MODEL_RELATION" constraintName="fk_relation_parent"
+			referencedColumnNames="id" referencedTableName="ACT_DE_MODEL" />
+			
+		<addForeignKeyConstraint baseColumnNames="model_id"
+			baseTableName="ACT_DE_MODEL_RELATION" constraintName="fk_relation_child"
+			referencedColumnNames="id" referencedTableName="ACT_DE_MODEL" />
+			
+	</changeSet>
+
+</databaseChangeLog>

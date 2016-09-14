@@ -27,16 +27,6 @@ angular.module('activitiApp').service('IdmService', ['$http', '$q', '$rootScope'
             return deferred.promise;
         };
 
-        this.getIdmInfo = function () {
-            return httpAsPromise(
-                {
-                    method: 'GET',
-                    url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/idm-info'
-                }
-            )
-        };
-
-
         /*
             PROFILE
         */
@@ -77,7 +67,7 @@ angular.module('activitiApp').service('IdmService', ['$http', '$q', '$rootScope'
                 {
                     method: 'POST',
                     url: ACTIVITI.CONFIG.contextRoot + '/app/rest/admin/profile-password',
-                    data: {oldPassword: oldPassword, newPassword: newPassword}
+                    data: {originalPassword: oldPassword, newPassword: newPassword}
                 }
             )
         };
@@ -167,13 +157,9 @@ angular.module('activitiApp').service('IdmService', ['$http', '$q', '$rootScope'
         };
 
 
-        this.updateGroup = function (groupId, tenantId, updatedGroupData) {
+        this.updateGroup = function (groupId, updatedGroupData) {
 
             var data = {name: updatedGroupData.name};
-            if (tenantId !== null && tenantId !== undefined && tenantId !== -1) {
-                data.tenantId = tenantId;
-            }
-
             return httpAsPromise(
                 {
                     method: 'PUT',

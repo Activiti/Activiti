@@ -14,20 +14,19 @@
 package org.activiti5.engine.test.history;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class Noop implements ActivityBehavior {
+public class Noop implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {
-    ActivityExecution activityExecution = (ActivityExecution) execution;
-    PvmTransition transition = activityExecution.getActivity().getOutgoingTransitions().get(0);
-    activityExecution.take(transition);
+   
   }
 
 }

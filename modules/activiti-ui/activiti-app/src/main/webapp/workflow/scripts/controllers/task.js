@@ -22,7 +22,7 @@ angular.module('activitiApp')
 
             $scope.selectedTask = { id: $routeParams.taskId };
 
-            $scope.appDefinitionId = $routeParams.appDefinitionId || AppDefinitionService.getIntegrationAppDefinitionId();
+            $scope.deploymentKey = $routeParams.deploymentKey;
 
             $scope.$on('task-completed', function (event, data) {
                 $rootScope.addAlertPromise($translate('TASK.ALERT.COMPLETED', data));
@@ -644,8 +644,6 @@ angular.module('activitiApp')
         function ($rootScope, $scope, $translate, $http, $location, TaskService) {
 
             $scope.createTask = function() {
-                $scope.newTask.assignee = {id: $rootScope.account.id};
-
                 TaskService.createTask($scope.newTask).then(function(createdTask) {
                     $scope.resetModel();
                     $rootScope.addAlertPromise($translate('TASK.ALERT.CREATED', createdTask));

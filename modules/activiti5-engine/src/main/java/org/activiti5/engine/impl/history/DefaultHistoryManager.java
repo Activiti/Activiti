@@ -600,10 +600,10 @@ public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
   }
 
   /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskExecutionIdChange(java.lang.String, java.lang.String)
- */
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskExecutionIdChange(java.lang.String, java.lang.String)
+   */
   @Override
-public void recordTaskExecutionIdChange(String taskId, String executionId) {
+  public void recordTaskExecutionIdChange(String taskId, String executionId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
@@ -613,10 +613,10 @@ public void recordTaskExecutionIdChange(String taskId, String executionId) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionKeyChange(org.activiti5.engine.impl.persistence.entity.TaskEntity, java.lang.String)
- */
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordTaskDefinitionKeyChange(org.activiti5.engine.impl.persistence.entity.TaskEntity, java.lang.String)
+   */
   @Override
-public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
+  public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, task.getId());
       if (historicTaskInstance != null) {
@@ -635,14 +635,26 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskProcessDefinitionChange(java.lang.String, java.lang.String)
+   */
+  @Override
+  public void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance != null) {
+        historicTaskInstance.setProcessDefinitionId(processDefinitionId);
+      }
+    }
+  }
  
   // Variables related history
   
   /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordVariableCreate(org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity)
- */
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordVariableCreate(org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity)
+   */
   @Override
-public void recordVariableCreate(VariableInstanceEntity variable) {
+  public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity.copyAndInsert(variable);
@@ -650,10 +662,10 @@ public void recordVariableCreate(VariableInstanceEntity variable) {
   }
   
   /* (non-Javadoc)
- * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordHistoricDetailVariableCreate(org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity, org.activiti5.engine.impl.persistence.entity.ExecutionEntity, boolean)
- */
+   * @see org.activiti5.engine.impl.history.HistoryManagerInterface#recordHistoricDetailVariableCreate(org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity, org.activiti5.engine.impl.persistence.entity.ExecutionEntity, boolean)
+   */
   @Override
-public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
+  public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
     if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
       
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = 

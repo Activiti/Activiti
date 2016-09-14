@@ -33,6 +33,7 @@ public class FormEntityImpl implements FormEntity, Serializable {
   protected int version;
   protected String category;
   protected String deploymentId;
+  protected String parentDeploymentId;
   protected String resourceName;
   protected String tenantId = FormEngineConfiguration.NO_TENANT_ID;
   
@@ -75,6 +76,14 @@ public class FormEntityImpl implements FormEntity, Serializable {
 
   public void setDeploymentId(String deploymentId) {
     this.deploymentId = deploymentId;
+  }
+
+  public String getParentDeploymentId() {
+    return parentDeploymentId;
+  }
+
+  public void setParentDeploymentId(String parentDeploymentId) {
+    this.parentDeploymentId = parentDeploymentId;
   }
 
   public int getVersion() {

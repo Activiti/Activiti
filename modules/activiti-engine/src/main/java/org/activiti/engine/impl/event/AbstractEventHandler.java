@@ -13,18 +13,20 @@
 
 package org.activiti.engine.impl.event;
 
-import org.activiti.bpmn.model.*;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
 
 /**
  * @author Tijs Rademakers
@@ -94,8 +96,9 @@ public abstract class AbstractEventHandler implements EventHandler {
 
     // Scope
     commandContext.getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), boundaryEventExecution.getId(), boundaryEventExecution.getProcessInstanceId(), boundaryEventExecution.getProcessDefinitionId(),
-            parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
+        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), boundaryEventExecution.getId(),
+            boundaryEventExecution.getProcessInstanceId(), boundaryEventExecution.getProcessDefinitionId(),
+            parseActivityType(flowNode), eventSubscription));
 
     if (flowNode instanceof SubProcess) {
       // The parent of the boundary event execution will be the one on which the boundary event is set
@@ -118,8 +121,9 @@ public abstract class AbstractEventHandler implements EventHandler {
 
         FlowNode flowNode = (FlowNode) childExecution.getCurrentFlowElement();
         commandContext.getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), childExecution.getId(), childExecution.getProcessInstanceId(), childExecution.getProcessDefinitionId(),
-                parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
+            ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), childExecution.getId(),
+                childExecution.getProcessInstanceId(), childExecution.getProcessDefinitionId(),
+                parseActivityType(flowNode), eventSubscription));
 
         if (childExecution.isScope()) {
           dispatchActivityCancelledForChildExecution(eventSubscription, childExecution, boundaryEventExecution, commandContext);

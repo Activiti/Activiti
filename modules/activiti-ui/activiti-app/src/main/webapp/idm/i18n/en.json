@@ -5,7 +5,7 @@
         "NAVIGATION": {
             "PROFILE": "Personal",
             "USER-MGMT": "Users",
-            "FUNCTIONAL-GROUP-MGMT": "Organization"
+            "GROUP-MGMT": "Groups"
         },
         "ACTION": {
           "CANCEL": "Cancel",
@@ -28,7 +28,7 @@
       "USER-MGMT": {
         "TITLE": "Matching users",
          "CREATE-USER": "Create user",
-         "EMAIL-OR-NAME": "Email or name",
+         "NAME-SEARCH": "Search by name",
          "COMPANY": "Company",
          "STATUS": "Status",
          "ACCOUNT": "Account type",
@@ -37,6 +37,7 @@
          "CHANGE-ACCOUNT-TYPE": "Change account type",
          "CHANGE-PASSWORD": "Change password",
          "EDIT-USER": "Change details",
+         "DELETE-USERS": "Delete",
          "TOTAL-USERS": "total",
          "INACTIVE-USERS": "inactive",
          "ENTERPRISE-USERS": "enterprise",
@@ -47,6 +48,7 @@
          "SHOW-PREVIOUS": "Show previous",
          "NO-MATCHING-USERS": "Found no matching users",
          "MATCHING-USERS": "Found {{total | number}} matching user(s), showing {{start + 1}} to {{start + size}}",
+         "ID": "ID",
          "EMAIL": "Email",
          "NAME": "Name",
          "CREATED": "Created",
@@ -63,11 +65,14 @@
              "SORT-DATE-NEWEST": "Date created, newest",
              "SORT-DATE-OLDEST": "Date created, oldest",
              "SORT-EMAIL-A": "Email, A-Z",
-             "SORT-EMAIL-Z": "Email, Z-A"
+             "SORT-EMAIL-Z": "Email, Z-A",
+             "SORT-ID-A": "User id, A-Z",
+             "SORT-ID-Z": "User id, Z-A"
          },
          "POPUP": {
              "CREATE-TITLE": "Create user",
              "EDIT-TITLE": "Edit user details",
+             "CREATE-ID": "User id",
              "CREATE-EMAIL": "Email",
              "CREATE-INVALID-EMAIL": "Invalid",
              "CREATE-PASSWORD": "Password",
@@ -107,23 +112,26 @@
         "USER-ADDED": "Users have been added to group",
         "INACTIVE": "deactivated",
         "INACTIVE-DESCRIPTION": "This group has been deactivated. Users will still be able complete currently assigned tasks to this group, but new process definitions cannot use this group anymore.",
-        "ADD-POPOVER-TITLE": "Select userh",
+        "ADD-POPOVER-TITLE": "Select user",
             "POPUP": {
                 "CREATE-TITLE": "Create group",
+                "CREATE-ID": "Group id",
                 "CREATE-NAME": "Name",
                 "DELETE-TITLE": "Delete group",
-                "DELETE-DESCRIPTION": "Are you sure you want to delete this deactivated group? This will delete all sub groups and new task assigned to this group or its subgroups will not be able be found using the regular search filters.",
+                "DELETE-DESCRIPTION": "Are you sure you want to delete this group?",
+                "DELETE-CONFIRM": "Confirm",
                 "DEACTIVATE-TITLE": "Deactivate group",
                 "DEACTIVATE-DESCRIPTION": "Are you sure you want to delete this group? This will delete all sub groups too. Note that a group will first be deactivated, such that tasks of processes can be properly finished. Clicking the removal button a second time will delete the group completely.",
                 "DELETE-MEMBER-TITLE": "Delete group member",
-                "DELETE-MEMBER-DESCRIPTION": "Are you sure you want to delete \"{{userToRemove.fullname}}\" from the group?",
+                "DELETE-MEMBER-DESCRIPTION": "Are you sure you want to delete this user from the group?",
                 "DELETE-CONFIRM": "Confirm",
                 "ADD-MEMBER-TITLE": "Add user",
                 "ADD-MEMBER-NO-USERS": "No users found",
                 "ADD-MEMBER-CONFIRM": "Add ({{selectedUsers.length}})",
                 "ACTIVATE-TITLE": "Activate group",
                 "ACTIVATE-DESCRIPTION": "Activate this group again? This means that this group would again be eligble for task assignment. Note that subgroups of a group are not activated by default.",
-                "ACTIVATE-CONFIRM": "Activate"
+                "ACTIVATE-CONFIRM": "Activate",
+                "EDIT-TITLE": "Edit group"
             }
         },
       "PROFILE-MGMT": {

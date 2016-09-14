@@ -677,11 +677,6 @@ public class ExecutionImpl implements
   }
   
   @Override
-  public Map<String, Object> getVariableValues() {
-    return getVariables();
-  }
-  
-  @Override
   public Map<String, Object> getVariables(Collection<String> variableNames) {
   	Map<String, Object> allVariables = getVariables();
   	Map<String, Object> filteredVariables = new HashMap<String, Object>();
@@ -1039,4 +1034,55 @@ public class ExecutionImpl implements
   public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
     
   }
+  
+  // No support for transient variables in v5
+
+  public void setTransientVariablesLocal(Map<String, Object> transientVariables) {
+    throw new UnsupportedOperationException();
+  }
+
+  public void setTransientVariableLocal(String variableName, Object variableValue) {
+    throw new UnsupportedOperationException();
+  }
+
+  public void setTransientVariables(Map<String, Object> transientVariables) {
+    throw new UnsupportedOperationException();
+  }
+
+  public void setTransientVariable(String variableName, Object variableValue) {
+    throw new UnsupportedOperationException();
+  }
+
+  public Object getTransientVariableLocal(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+
+  public Map<String, Object> getTransientVariablesLocal() {
+    throw new UnsupportedOperationException();
+  }
+
+  public Object getTransientVariable(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+
+  public Map<String, Object> getTransientVariables() {
+    throw new UnsupportedOperationException();
+  }
+
+  public void removeTransientVariableLocal(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+
+  public void removeTransientVariablesLocal() {
+    throw new UnsupportedOperationException();
+  }
+
+  public void removeTransientVariable(String variableName) {
+    throw new UnsupportedOperationException();
+  }
+
+  public void removeTransientVariables() {
+    throw new UnsupportedOperationException();
+  }
+  
 }

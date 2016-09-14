@@ -171,8 +171,11 @@ angular.module('activitiModeler')
                 }).
                 error(function (response, status, headers, config) {
                     $scope.model.loading = false;
-
-                    if (response && response.messageKey) {
+					
+					if (response && response.message && response.message.length > 0) {
+						$scope.model.errorMessage = response.message;
+						
+					} else if (response && response.messageKey) {
                         $translate(response.messageKey, response.customData).then(function (message) {
                             $scope.errorMessage = message;
                         });

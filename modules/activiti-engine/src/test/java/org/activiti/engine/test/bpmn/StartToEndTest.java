@@ -41,7 +41,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     varMap.put("test", "hello");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
-    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariableValues();
+    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
     assertEquals("hello", returnVarMap.get("test"));
   }
 
@@ -51,7 +51,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     varMap.put("test", "hello");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
-    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariableValues();
+    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
     assertEquals("hello", returnVarMap.get("test"));
     assertEquals("string", returnVarMap.get("string"));
     assertEquals(true, returnVarMap.get("boolean"));
@@ -65,7 +65,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     varMap.put("test", "hello");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
-    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariableValues();
+    Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
     assertEquals("hello", returnVarMap.get("test"));
     Person person1 = (Person) returnVarMap.get("person1");
     assertEquals("1", person1.getId());

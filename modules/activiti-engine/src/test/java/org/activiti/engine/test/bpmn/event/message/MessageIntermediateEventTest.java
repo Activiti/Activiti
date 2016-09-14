@@ -13,7 +13,9 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -29,7 +31,6 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testSingleIntermediateMessageEvent() {
-
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
 
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
@@ -48,6 +49,28 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
     assertNotNull(task);
     taskService.complete(task.getId());
 
+  }
+  
+  @Deployment
+  public void testSingleIntermediateMessageExpressionEvent() {
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("myMessageName", "testMessage");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("process", variableMap);
+
+    List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
+    assertNotNull(activeActivityIds);
+    assertEquals(1, activeActivityIds.size());
+    assertTrue(activeActivityIds.contains("messageCatch"));
+
+    String messageName = "testMessage";
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName(messageName).singleResult();
+    assertNotNull(execution);
+
+    runtimeService.messageEventReceived(messageName, execution.getId());
+
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
   }
 
   @Deployment

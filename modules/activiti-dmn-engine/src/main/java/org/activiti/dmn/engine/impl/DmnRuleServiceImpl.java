@@ -33,6 +33,18 @@ public class DmnRuleServiceImpl extends ServiceImpl implements DmnRuleService {
 
   @Override
   public RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> variables, String tenantId) {
-    return commandExecutor.execute(new ExecuteDecisionCmd(decisionKey, variables, tenantId));
+    return commandExecutor.execute(new ExecuteDecisionCmd(decisionKey, null, variables, tenantId));
+  }
+  
+  @Override
+  public RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> variables) {
+    return commandExecutor.execute(new ExecuteDecisionCmd(decisionKey, parentDeploymentId, variables));
+  }
+  
+  @Override
+  public RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, 
+      Map<String, Object> variables, String tenantId) {
+    
+    return commandExecutor.execute(new ExecuteDecisionCmd(decisionKey, parentDeploymentId, variables, tenantId));
   }
 }

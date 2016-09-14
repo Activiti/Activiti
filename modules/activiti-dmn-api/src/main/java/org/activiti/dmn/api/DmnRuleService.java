@@ -15,11 +15,16 @@ package org.activiti.dmn.api;
 import java.util.Map;
 
 /**
+ * @author Tijs Rademakers
  * @author Yvo Swillens
  */
 public interface DmnRuleService {
 
-    RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> processVariables);
+  RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> processVariables);
 
-    RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> processVariables, String tenantId);
+  RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> processVariables, String tenantId);
+
+  RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> variables);
+
+  RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, Map<String, Object> variables, String tenantId);
 }

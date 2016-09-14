@@ -7,8 +7,9 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertFormDeployment" parameterType="org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityImpl">
-    insert into ${prefix}ACT_FO_FORM_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
+    insert into ${prefix}ACT_FO_FORM_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_, PARENT_DEPLOYMENT_ID_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, 
+    #{deploymentTime, jdbcType=TIMESTAMP}, #{parentDeploymentId, jdbcType=VARCHAR})
   </insert>
 
   <!-- DEPLOYMENT UPDATE -->
@@ -34,6 +35,7 @@
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="parentDeploymentId" column="PARENT_DEPLOYMENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->
@@ -86,6 +88,12 @@
       </if>
       <if test="formDefinitionKeyLike != null">
         and FORM.KEY_ like #{formDefinitionKeyLike}
+      </if>
+      <if test="parentDeploymentId != null">
+        and RES.PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId}
+      </if>
+      <if test="parentDeploymentIdLike != null">
+        and RES.PARENT_DEPLOYMENT_ID_ like #{parentDeploymentIdLike}
       </if>
     </where>
   </sql>

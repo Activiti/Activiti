@@ -227,8 +227,8 @@ public class ActivitiEventBuilder {
     return elementType;
   }
 
-  public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId, String processInstanceId, String processDefinitionId,
-      String activityType, String behaviourClass, Object cause) {
+  public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId, 
+      String processInstanceId, String processDefinitionId, String activityType, Object cause) {
 
     ActivitiActivityCancelledEventImpl newEvent = new ActivitiActivityCancelledEventImpl();
     newEvent.setActivityId(activityId);

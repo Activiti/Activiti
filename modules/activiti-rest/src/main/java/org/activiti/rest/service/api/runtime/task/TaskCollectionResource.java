@@ -115,6 +115,10 @@ public class TaskCollectionResource extends TaskBaseResource {
       }
       request.setCandidateGroupIn(groups);
     }
+    
+    if (requestParams.containsKey("processDefinitionId")) {
+      request.setProcessDefinitionId(requestParams.get("processDefinitionId"));
+    }
 
     if (requestParams.containsKey("processDefinitionKey")) {
       request.setProcessDefinitionKey(requestParams.get("processDefinitionKey"));
@@ -210,6 +214,10 @@ public class TaskCollectionResource extends TaskBaseResource {
 
     if (requestParams.containsKey("candidateOrAssigned")) {
       request.setCandidateOrAssigned(requestParams.get("candidateOrAssigned"));
+    }
+    
+    if (requestParams.containsKey("category")) {
+      request.setCategory(requestParams.get("category"));
     }
 
     return getTasksFromQueryRequest(request, requestParams);

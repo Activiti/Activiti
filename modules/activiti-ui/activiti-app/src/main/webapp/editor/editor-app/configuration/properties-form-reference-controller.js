@@ -159,8 +159,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
                  name: '',
                  key: '',
                  description: '',
-                 modelType: 2,
-                 referenceId:  modelMetaData.modelId    
+                 modelType: 2
             }
         };
     };
@@ -244,7 +243,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
             }).
             error(function(data, status, headers, config) {
                 $scope.model.loading = false;
-                $scope.$hide();
+                $scope.model.errorMessage = data.message;
             });
     };
     
@@ -254,7 +253,7 @@ angular.module('activitiModeler').controller('KisBpmFormReferencePopupCrtl',
 
     $scope.loadForms = function() {
         var modelMetaData = $scope.editor.getModelMetaData();
-        $http.get(ACTIVITI.CONFIG.contextRoot + '/app/rest/form-models?referenceId=' + modelMetaData.modelId)
+        $http.get(ACTIVITI.CONFIG.contextRoot + '/app/rest/form-models')
             .success(
                 function(response) {
                     $scope.state.loadingForms = false;

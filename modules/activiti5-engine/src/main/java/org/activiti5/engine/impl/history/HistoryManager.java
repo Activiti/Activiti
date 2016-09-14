@@ -159,20 +159,22 @@ public interface HistoryManager extends Session {
 	/**
 	 * Record task parent task id change, if audit history is enabled.
 	 */
-	public abstract void recordTaskParentTaskIdChange(String taskId,
-			String parentTaskId);
+	public abstract void recordTaskParentTaskIdChange(String taskId, String parentTaskId);
 
 	/**
 	 * Record task execution id change, if audit history is enabled.
 	 */
-	public abstract void recordTaskExecutionIdChange(String taskId,
-			String executionId);
+	public abstract void recordTaskExecutionIdChange(String taskId, String executionId);
 
 	/**
 	 * Record task definition key change, if audit history is enabled.
 	 */
-	public abstract void recordTaskDefinitionKeyChange(TaskEntity task,
-			String taskDefinitionKey);
+	public abstract void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey);
+	
+	/**
+   * Record a change of the process-definition id of a task instance, if activity history is enabled.
+   */
+  public abstract void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId);
 
 	/**
 	 * Record a variable has been created, if audit history is enabled.

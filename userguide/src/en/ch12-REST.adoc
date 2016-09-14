@@ -1580,6 +1580,8 @@ POST runtime/process-instances
 }
 ----
 
+Note that also a _transientVariables_ property is accepted as part of this json, that follows the same structure as the _variables_ property.
+
 
 Only one of +processDefinitionId+, +processDefinitionKey+ or +message+ can be used in the request body. Parameters +businessKey+, +variables+ and +tenantId+ are optional. If +tenantId+ is omitted, the default tenant will be used. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that the variable-scope that is supplied is ignored, process-variables are always +local+.
 
@@ -2331,6 +2333,21 @@ PUT runtime/executions/{executionId}
 }
 ----
 
+Both a _variables_ and _transientVariables_ property is accepted with following structure:
+
+[source,json,linenums]
+----
+{
+  "action":"signal",
+  "variables" : [
+    {
+      "name": "myVar",
+      "value": "someValue"
+    }
+  ]
+}
+----
+
 
 *Request body (signal event received for execution):*
 
@@ -3020,6 +3037,7 @@ GET runtime/tasks
 |processInstanceId|No|String|Only return tasks which are part of the process instance with the given id.
 |processInstanceBusinessKey|No|String|Only return tasks which are part of the process instance with the given business key.
 |processInstanceBusinessKeyLike|No|String|Only return tasks which are part of the process instance which has a business key like the given value.
+|processDefinitionId|No|String|Only return tasks which are part of a process instance which has a process definition with the given id.
 |processDefinitionKey|No|String|Only return tasks which are part of a process instance which has a process definition with the given key.
 |processDefinitionKeyLike|No|String|Only return tasks which are part of a process instance which has a process definition with a key like the given value.
 |processDefinitionName|No|String|Only return tasks which are part of a process instance which has a process definition with the given name.
@@ -3042,6 +3060,7 @@ GET runtime/tasks
 |tenantIdLike|No|String|Only return tasks with a tenantId like the given value.
 |withoutTenantId|No|Boolean|If +true+, only returns tasks without a tenantId set. If +false+, the +withoutTenantId+ parameter is ignored.
 |candidateOrAssigned|No|String|Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
+|category|No|string|Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).
 |The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
 |===============
@@ -3238,6 +3257,8 @@ POST runtime/tasks/{taskId}
 
 
 Completes the task. Optional variable array can be passed in using the +variables+ property. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the +TaskService.completeTask(taskId, variables)+ invocation.
+
+Note that also a _transientVariables_ property is accepted as part of this json, that follows the same structure as the _variables_ property.
 
 *Claim a task - Body JSON:*
 
@@ -5052,6 +5073,7 @@ GET history/historic-task-instances
 |taskDescription|No|String|The task description of the historic task instance.
 |taskDescriptionLike|No|String|The task description with 'like' operator for the historic task instance.
 |taskDefinitionKey|No|String|The task identifier from the process definition for the historic task instance.
+|taskCategory|No|String|Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).
 |taskDeleteReason|No|String|The task delete reason of the historic task instance.
 |taskDeleteReasonLike|No|String|The task delete reason with 'like' operator for the historic task instance.
 |taskAssignee|No|String|The assignee of the historic task instance.
@@ -7203,7 +7225,3 @@ DELETE identity/groups/{groupId}/members/{userId}
     "url":"http://localhost:8182/identity/groups/sales/members/kermit"
 }
 ----
-
-
-
-

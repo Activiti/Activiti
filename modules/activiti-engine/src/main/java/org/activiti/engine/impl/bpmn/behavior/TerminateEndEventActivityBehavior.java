@@ -184,8 +184,13 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
+      if ((execution.isProcessInstanceType() && execution.getSuperExecutionId() == null) ||
+          (execution.getParentId() == null && execution.getSuperExecutionId() != null)) {
+        
+        Context.getProcessEngineConfiguration().getEventDispatcher()
+            .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), 
+                execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
+      }
     }
 
     dispatchExecutionCancelled(execution, terminateEndEvent);
@@ -214,13 +219,12 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   }
 
   protected void dispatchActivityCancelled(DelegateExecution execution, FlowElement terminateEndEvent) {
-    Context
-        .getProcessEngineConfiguration()
+    Context.getProcessEngineConfiguration()
         .getEventDispatcher()
         .dispatchEvent(
-            ActivitiEventBuilder.createActivityCancelledEvent(execution.getCurrentFlowElement().getId(), execution.getCurrentFlowElement().getName(), execution.getId(),
-                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), execution.getCurrentFlowElement().getClass().getName(), ((FlowNode) execution.getCurrentFlowElement())
-                    .getBehavior().getClass().getCanonicalName(), terminateEndEvent));
+            ActivitiEventBuilder.createActivityCancelledEvent(execution.getCurrentFlowElement().getId(), 
+                execution.getCurrentFlowElement().getName(), execution.getId(), execution.getProcessInstanceId(), 
+                execution.getProcessDefinitionId(), parseActivityType((FlowNode) execution.getCurrentFlowElement()), terminateEndEvent));
   }
 
   protected String createDeleteReason(String activityId) {

@@ -66,7 +66,6 @@ public class GetVariablesFromFormSubmissionCmd implements Command<Map<String, Ob
       }
 
       if (values.containsKey(fieldId)) {
-
         variableValue = transformFormFieldValueToVariableValue(formField, values.get(fieldId));
         variables.put(formField.getId(), variableValue);
       }
@@ -101,6 +100,7 @@ public class GetVariablesFromFormSubmissionCmd implements Command<Map<String, Ob
           result = LocalDate.parse((String) formFieldValue);
   
         } catch (Exception e) {
+          e.printStackTrace();
           result = null;
         }
       }

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.editor.form.converter.FormJsonConverter;
 import org.activiti.form.api.SubmittedForm;
 import org.activiti.form.engine.ActivitiFormException;
 import org.activiti.form.engine.ActivitiFormObjectNotFoundException;
@@ -49,6 +50,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
   private static final long serialVersionUID = 1L;
 
   protected String formDefinitionKey;
+  protected String parentDeploymentId;
   protected String formId;
   protected String processInstanceId;
   protected String tenantId;
@@ -59,15 +61,22 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
     this.processInstanceId = processInstanceId;
   }
   
-  public GetRuntimeFormDefinitionCmd(String formDefinitionKey, String formId, String processInstanceId, String tenantId, Map<String, Object> variables) {
+  public GetRuntimeFormDefinitionCmd(String formDefinitionKey, String parentDeploymentId, String formId, String processInstanceId, Map<String, Object> variables) {
     initializeValues(formDefinitionKey, formId, null, variables);
+    this.parentDeploymentId = parentDeploymentId;
+    this.processInstanceId = processInstanceId;
+  }
+  
+  public GetRuntimeFormDefinitionCmd(String formDefinitionKey, String parentDeploymentId, String formId, String processInstanceId, String tenantId, Map<String, Object> variables) {
+    initializeValues(formDefinitionKey, formId, null, variables);
+    this.parentDeploymentId = parentDeploymentId;
     this.processInstanceId = processInstanceId;
     this.tenantId = tenantId;
   }
 
   public FormDefinition execute(CommandContext commandContext) {
     FormCacheEntry formCacheEntry = resolveForm(commandContext);
-    FormDefinition formDefinition = resolveFormDefinition(formCacheEntry);
+    FormDefinition formDefinition = resolveFormDefinition(formCacheEntry, commandContext);
     fillFormFieldValues(formDefinition, commandContext);
     return formDefinition;
   }
@@ -96,7 +105,11 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
         if (field instanceof ExpressionFormField) {
           ExpressionFormField expressionField = (ExpressionFormField) field;
           FormExpression formExpression = formEngineConfiguration.getExpressionManager().createExpression(expressionField.getExpression());
-          field.setValue(formExpression.getValue(variables));
+          try {
+            field.setValue(formExpression.getValue(variables));
+          } catch (Exception e) {
+            logger.error("Error getting value for expression " + expressionField.getExpression() + " " + e.getMessage(), e);
+          }
           
         } else {
           field.setValue(variables.get(field.getId()));
@@ -117,18 +130,34 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
         throw new ActivitiFormObjectNotFoundException("No form found for id = '" + formId + "'", FormEntity.class);
       }
 
-    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) && parentDeploymentId == null) {
 
       formEntity = deploymentManager.findDeployedLatestFormByKey(formDefinitionKey);
       if (formEntity == null) {
         throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "'", FormEntity.class);
       }
 
-    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId) && parentDeploymentId == null) {
 
       formEntity = deploymentManager.findDeployedLatestFormByKeyAndTenantId(formDefinitionKey, tenantId);
       if (formEntity == null) {
         throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + "' for tenant identifier " + tenantId, FormEntity.class);
+      }
+      
+    } else if (formDefinitionKey != null && (tenantId == null || FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)) && parentDeploymentId != null) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyAndParentDeploymentId(formDefinitionKey, parentDeploymentId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + 
+            "' for parent deployment id " + parentDeploymentId, FormEntity.class);
+      }
+      
+    } else if (formDefinitionKey != null && tenantId != null && !FormEngineConfiguration.NO_TENANT_ID.equals(tenantId)  && parentDeploymentId != null) {
+
+      formEntity = deploymentManager.findDeployedLatestFormByKeyParentDeploymentIdAndTenantId(formDefinitionKey, parentDeploymentId, tenantId);
+      if (formEntity == null) {
+        throw new ActivitiFormObjectNotFoundException("No form found for key '" + formDefinitionKey + 
+            "' for parent deployment id '" + parentDeploymentId + "' and for tenant identifier " + tenantId, FormEntity.class);
       }
 
     } else {
@@ -204,9 +233,10 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
     }
   }
   
-  protected FormDefinition resolveFormDefinition(FormCacheEntry formCacheEntry) {
+  protected FormDefinition resolveFormDefinition(FormCacheEntry formCacheEntry, CommandContext commandContext) {
     FormEntity formEntity = formCacheEntry.getFormEntity();
-    FormDefinition formDefinition = formCacheEntry.getFormDefinition();
+    FormJsonConverter formJsonConverter = commandContext.getFormEngineConfiguration().getFormJsonConverter();
+    FormDefinition formDefinition = formJsonConverter.convertToForm(formCacheEntry.getFormJson(), formEntity.getId(), formEntity.getVersion());
     formDefinition.setId(formEntity.getId());
     formDefinition.setName(formEntity.getName());
     formDefinition.setKey(formEntity.getKey());

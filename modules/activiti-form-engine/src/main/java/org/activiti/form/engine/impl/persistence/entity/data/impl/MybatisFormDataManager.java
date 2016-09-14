@@ -57,6 +57,23 @@ public class MybatisFormDataManager extends AbstractDataManager<FormEntity> impl
     params.put("tenantId", tenantId);
     return (FormEntity) getDbSqlSession().selectOne("selectLatestFormByKeyAndTenantId", params);
   }
+  
+  @Override
+  public FormEntity findLatestFormByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("formDefinitionKey", formDefinitionKey);
+    params.put("parentDeploymentId", parentDeploymentId);
+    return (FormEntity) getDbSqlSession().selectOne("selectLatestFormByKeyAndParentDeploymentId", params);
+  }
+  
+  @Override
+  public FormEntity findLatestFormByKeyParentDeploymentIdAndTenantId(String formDefinitionKey, String parentDeploymentId, String tenantId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("formDefinitionKey", formDefinitionKey);
+    params.put("parentDeploymentId", parentDeploymentId);
+    params.put("tenantId", tenantId);
+    return (FormEntity) getDbSqlSession().selectOne("selectLatestFormByKeyParentDeploymentIdAndTenantId", params);
+  }
 
   @Override
   public void deleteFormsByDeploymentId(String deploymentId) {

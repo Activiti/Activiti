@@ -7,8 +7,15 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDmnDeployment" parameterType="org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntityImpl">
-    insert into ${prefix}ACT_DMN_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
+    insert into ${prefix}ACT_DMN_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_, PARENT_DEPLOYMENT_ID_)
+    values(
+    	#{id, jdbcType=VARCHAR}, 
+    	#{name, jdbcType=VARCHAR}, 
+    	#{category, jdbcType=VARCHAR}, 
+    	#{tenantId, jdbcType=VARCHAR}, 
+    	#{deploymentTime, jdbcType=TIMESTAMP},
+    	#{parentDeploymentId, jdbcType=VARCHAR} 
+    )
   </insert>
 
   <!-- DEPLOYMENT UPDATE -->
@@ -33,6 +40,7 @@
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="parentDeploymentId" column="PARENT_DEPLOYMENT_ID_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
   </resultMap>
 
@@ -80,6 +88,12 @@
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+      <if test="parentDeploymentId != null">
+        and RES.PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId}
+      </if>
+      <if test="parentDeploymentIdLike != null">
+        and RES.PARENT_DEPLOYMENT_ID_ like #{parentDeploymentIdLike}
       </if>
       <if test="decisionTableKey != null">
         and DECISIONTABLE.KEY_ = #{decisionTableKey}

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.activiti</groupId>
     	<artifactId>activiti-ui-root</artifactId>
-    	<version>6.0.0.Beta3-SNAPSHOT</version>
+    	<version>6.0.0.RC1-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
 
@@ -20,10 +20,6 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>content-storage-fs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>

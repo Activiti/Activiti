@@ -28,6 +28,8 @@ public interface DecisionTableEntity extends DecisionTable, Entity {
   void setDescription(String description);
 
   void setDeploymentId(String deploymentId);
+  
+  void setParentDeploymentId(String parentDeploymentId);
 
   void setVersion(int version);
 

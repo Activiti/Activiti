@@ -218,14 +218,18 @@ activitiApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'auth
                     authService.loginCancelled({isFromLogout: true});
                 });
         },
-        hasCapability: function(capability) {
-            if ($rootScope.account && $rootScope.account.capabilities) {
-                return $rootScope.account.capabilities.indexOf(capability) > -1;
+
+        hasAdminCapability: function() {
+            if ($rootScope.account && $rootScope.account.groups) {
+                for (var groupIndex = 0; groupIndex < $rootScope.account.groups.length; groupIndex++) {
+                    var group = $rootScope.account.groups[groupIndex];
+                    if (group.type !== null && group.type !== undefined && group.type.toLowerCase() === 'security-role') {
+                        return group.id !== null && group.id !== undefined && group.id.toLowerCase() === 'role_admin';
+                    }
+                }
             }
             return false;
-        },
-        hasAdminCapability: function() {
-            return this.hasCapability('ROLE_ADMIN');
         }
+
       };
     }]);

@@ -40,9 +40,8 @@ public class DmnDeployer implements Deployer {
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {
-      log.info("DmnDeployer: processing resource {}", resourceName);
       if (resourceName.endsWith(".dmn")) {
-        
+        log.info("DmnDeployer: processing resource {}", resourceName);
         if (dmnDeploymentBuilder == null) {
           DmnRepositoryService dmnRepositoryService = Context.getProcessEngineConfiguration().getDmnEngineRepositoryService();
           dmnDeploymentBuilder = dmnRepositoryService.createDeployment();
@@ -53,6 +52,7 @@ public class DmnDeployer implements Deployer {
     }
     
     if (dmnDeploymentBuilder != null) {
+      dmnDeploymentBuilder.parentDeploymentId(deployment.getId());
       if (deployment.getTenantId() != null && deployment.getTenantId().length() > 0) {
         dmnDeploymentBuilder.tenantId(deployment.getTenantId());
       }

@@ -40,6 +40,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   protected String processDefinitionKey;
   protected String processDefinitionId;
   protected Map<String, Object> variables;
+  protected Map<String, Object> transientVariables;
   protected String businessKey;
   protected String tenantId;
   protected String processInstanceName;
@@ -58,9 +59,13 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   }
 
   public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
-    this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(), 
-        processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(), processInstanceBuilder.getTenantId());
+    this(processInstanceBuilder.getProcessDefinitionKey(), 
+        processInstanceBuilder.getProcessDefinitionId(), 
+        processInstanceBuilder.getBusinessKey(), 
+        processInstanceBuilder.getVariables(), 
+        processInstanceBuilder.getTenantId());
     this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
+    this.transientVariables = processInstanceBuilder.getTransientVariables();
   }
 
   public ProcessInstance execute(CommandContext commandContext) {
@@ -94,13 +99,14 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     }
 
     processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-    ProcessInstance processInstance = createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
+    ProcessInstance processInstance = createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables);
 
     return processInstance;
   }
 
-  protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, String businessKey, String processInstanceName, Map<String,Object> variables) {
-    return processInstanceHelper.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
+  protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, String businessKey, String processInstanceName, 
+      Map<String,Object> variables, Map<String, Object> transientVariables) {
+    return processInstanceHelper.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables);
   }
   
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {

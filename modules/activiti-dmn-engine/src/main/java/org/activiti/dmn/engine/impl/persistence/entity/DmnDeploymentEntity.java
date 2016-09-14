@@ -39,6 +39,8 @@ public interface DmnDeploymentEntity extends DmnDeployment, Entity {
   void setCategory(String category);
 
   void setTenantId(String tenantId);
+  
+  void setParentDeploymentId(String parentDeploymentId);
 
   void setResources(Map<String, ResourceEntity> resources);
 

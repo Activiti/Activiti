@@ -22,6 +22,8 @@ public class ExecutionResponse {
   protected String url;
   protected String parentId;
   protected String parentUrl;
+  protected String superExecutionId;
+  protected String superExecutionUrl;
   protected String processInstanceId;
   protected String processInstanceUrl;
   protected boolean suspended;
@@ -58,6 +60,22 @@ public class ExecutionResponse {
 
   public void setParentUrl(String parentUrl) {
     this.parentUrl = parentUrl;
+  }
+  
+  public String getSuperExecutionId() {
+    return superExecutionId;
+  }
+
+  public void setSuperExecutionId(String superExecutionId) {
+    this.superExecutionId = superExecutionId;
+  }
+
+  public String getSuperExecutionUrl() {
+    return superExecutionUrl;
+  }
+
+  public void setSuperExecutionUrl(String superExecutionUrl) {
+    this.superExecutionUrl = superExecutionUrl;
   }
 
   public String getProcessInstanceId() {

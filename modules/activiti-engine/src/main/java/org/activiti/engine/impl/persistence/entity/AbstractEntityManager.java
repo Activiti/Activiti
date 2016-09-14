@@ -29,39 +29,6 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
     super(processEngineConfiguration);
   }
   
-  protected boolean isExecutionRelatedEntityCountEnabledGlobally() {
-    return processEngineConfiguration.getPerformanceSettings().isEnableExecutionRelationshipCounts();
-  }
-  
-  protected boolean isExecutionRelatedEntityCountEnabled(ExecutionEntity executionEntity) {
-    if (executionEntity instanceof CountingExecutionEntity) {
-      return isExecutionRelatedEntityCountEnabled((CountingExecutionEntity) executionEntity);
-    }
-    return false;
-  }
-  
-  protected boolean isExecutionRelatedEntityCountEnabled(CountingExecutionEntity executionEntity) {
-    
-    /*
-     * There are two flags here: a global flag and a flag on the execution entity.
-     * The global flag can be switched on and off between different reboots,
-     * however the flag on the executionEntity refers to the state at that particular moment.
-     * 
-     * Global flag / ExecutionEntity flag : result
-     * 
-     * T / T : T (all true, regular mode with flags enabled)
-     * T / F : F (global is true, but execution was of a time when it was disabled, thus treating it as disabled)
-     * F / T : F (execution was of time when counting was done. But this is overruled by the global flag and thus the queries will be done)
-     * F / F : F (all disabled)
-     * 
-     * From this table it is clear that only when both are true, the result should be true,
-     * which is the regular AND rule for booleans.
-     */
-    
-    return isExecutionRelatedEntityCountEnabledGlobally() && executionEntity.isCountEnabled();
-  }
-  
-  
   /*
    * CRUD operations
    */
@@ -130,5 +97,40 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
   }
   
   protected abstract DataManager<EntityImpl> getDataManager();
+  
+  /* Execution related entity count methods */
+  
+  protected boolean isExecutionRelatedEntityCountEnabledGlobally() {
+    return processEngineConfiguration.getPerformanceSettings().isEnableExecutionRelationshipCounts();
+  }
+  
+  protected boolean isExecutionRelatedEntityCountEnabled(ExecutionEntity executionEntity) {
+    if (executionEntity instanceof CountingExecutionEntity) {
+      return isExecutionRelatedEntityCountEnabled((CountingExecutionEntity) executionEntity);
+    }
+    return false;
+  }
+  
+  protected boolean isExecutionRelatedEntityCountEnabled(CountingExecutionEntity executionEntity) {
+    
+    /*
+     * There are two flags here: a global flag and a flag on the execution entity.
+     * The global flag can be switched on and off between different reboots,
+     * however the flag on the executionEntity refers to the state at that particular moment.
+     * 
+     * Global flag / ExecutionEntity flag : result
+     * 
+     * T / T : T (all true, regular mode with flags enabled)
+     * T / F : F (global is true, but execution was of a time when it was disabled, thus treating it as disabled)
+     * F / T : F (execution was of time when counting was done. But this is overruled by the global flag and thus the queries will be done)
+     * F / F : F (all disabled)
+     * 
+     * From this table it is clear that only when both are true, the result should be true,
+     * which is the regular AND rule for booleans.
+     */
+    
+    return isExecutionRelatedEntityCountEnabledGlobally() && executionEntity.isCountEnabled();
+  }
+  
 
 }

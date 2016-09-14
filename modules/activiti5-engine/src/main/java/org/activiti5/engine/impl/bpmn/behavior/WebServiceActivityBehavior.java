@@ -15,12 +15,15 @@ package org.activiti5.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti5.engine.delegate.BpmnError;
+import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -58,38 +61,58 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   /**
    * {@inheritDoc}
    */
-  public void execute(DelegateExecution execution) {
-    ActivityExecution activityExecution = (ActivityExecution) execution;
+  public void execute(ActivityExecution execution) throws Exception {
     MessageInstance message;
     
-    if (ioSpecification != null) {
-      this.ioSpecification.initialize(activityExecution);
-      ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
-      message = new MessageInstance(this.operation.getInMessage(), inputItem);
-    } else {
-      message = this.operation.getInMessage().createInstance();
-    }
+    try {
+       if (ioSpecification != null) {
+         this.ioSpecification.initialize(execution);
+         ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
+         message = new MessageInstance(this.operation.getInMessage(), inputItem);
+       } else {
+         message = this.operation.getInMessage().createInstance();
+       }
     
-    execution.setVariable(CURRENT_MESSAGE, message);
+       execution.setVariable(CURRENT_MESSAGE, message);
     
-    this.fillMessage(message, activityExecution);
+       this.fillMessage(message, execution);
     
-    MessageInstance receivedMessage = this.operation.sendMessage(message);
+       ProcessEngineConfigurationImpl processEngineConfig = Context.getProcessEngineConfiguration();
+       MessageInstance receivedMessage = this.operation.sendMessage(message,
+           processEngineConfig.getWsOverridenEndpointAddresses());
 
-    execution.setVariable(CURRENT_MESSAGE, receivedMessage);
+       execution.setVariable(CURRENT_MESSAGE, receivedMessage);
 
-    if (ioSpecification != null) {
-      String firstDataOutputName = this.ioSpecification.getFirstDataOutputName();
-      if (firstDataOutputName != null) {
-        ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
-        outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
-      }
+       if (ioSpecification != null) {
+         String firstDataOutputName = this.ioSpecification.getFirstDataOutputName();
+         if (firstDataOutputName != null) {
+           ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
+           outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+         }
+       }
+    
+       this.returnMessage(receivedMessage, execution);
+    
+       execution.setVariable(CURRENT_MESSAGE, null);
+       leave(execution);
+    } catch (Exception exc) {
+
+       Throwable cause = exc;
+       BpmnError error = null;
+       while (cause != null) {
+          if (cause instanceof BpmnError) {
+             error = (BpmnError) cause;
+             break;
+          }
+          cause = cause.getCause();
+       }
+
+       if (error != null) {
+          ErrorPropagation.propagateError(error, execution);
+       } else {
+          throw exc;
+       }
     }
-    
-    this.returnMessage(receivedMessage, activityExecution);
-    
-    execution.setVariable(CURRENT_MESSAGE, null);
-    leave(activityExecution);
   }
   
   private void returnMessage(MessageInstance message, ActivityExecution execution) {

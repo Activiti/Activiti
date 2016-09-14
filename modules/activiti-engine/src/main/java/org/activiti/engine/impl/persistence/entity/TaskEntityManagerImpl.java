@@ -22,8 +22,6 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -172,8 +170,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     for (TaskEntity task : tasks) {
       if (getEventDispatcher().isEnabled()) {
         getEventDispatcher().dispatchEvent(
-                ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
-                    task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
+              ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), 
+                  task.getExecutionId(), task.getProcessInstanceId(),
+                  task.getProcessDefinitionId(), "userTask", deleteReason));
       }
 
       deleteTask(task, deleteReason, cascade, false);
@@ -213,7 +212,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
                       task.getProcessInstanceId(),
                       task.getProcessDefinitionId(), 
                       "userTask", 
-                      UserTaskActivityBehavior.class.getName(), 
                       deleteReason));
         }
         

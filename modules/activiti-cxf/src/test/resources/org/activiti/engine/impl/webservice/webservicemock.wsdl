@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="Counter" targetNamespace="http://webservice.impl.engine.activiti.org/"
+   xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.impl.engine.activiti.org/"
+   xmlns:tns1="http://impl.engine.activiti.org/test" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <wsdl:types>
+      <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified"
+         targetNamespace="http://webservice.impl.engine.activiti.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+         <xs:element name="getCount" type="tns:getCount" />
+         <xs:element name="getCountResponse" type="tns:getCountResponse" />
+         <xs:element name="inc" type="tns:inc" />
+         <xs:element name="incResponse" type="tns:incResponse" />
+         <xs:element name="prettyPrintCount" type="tns:prettyPrintCount" />
+         <xs:element name="prettyPrintCountResponse" type="tns:prettyPrintCountResponse" />
+         <xs:element name="noNameResult" type="tns:noNameResult" />
+         <xs:element name="noNameResultResponse" type="tns:noNameResultResponse" />
+         <xs:element name="reservedWordAsName" type="tns:reservedWordAsName" />
+         <xs:element name="reservedWordAsNameResponse" type="tns:reservedWordAsNameResponse" />
+         <xs:element name="reset" type="tns:reset" />
+         <xs:element name="resetResponse" type="tns:resetResponse" />
+         <xs:element name="setTo" type="tns:setTo" />
+         <xs:element name="setToResponse" type="tns:setToResponse" />
+         <xs:complexType name="reset">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="resetResponse">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="setTo">
+            <xs:sequence>
+               <xs:element name="value" type="xs:int" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="setToResponse">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="inc">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="incResponse">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="prettyPrintCount">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="prefix" type="xs:string" />
+               <xs:element minOccurs="0" name="suffix" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="prettyPrintCountResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="prettyPrint" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+
+         <xs:complexType name="noNameResult">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="prefix" type="xs:string" />
+               <xs:element minOccurs="0" name="suffix" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="noNameResultResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="return" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+
+         <xs:complexType name="reservedWordAsName">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="prefix" type="xs:string" />
+               <xs:element minOccurs="0" name="suffix" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="reservedWordAsNameResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="static" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+
+         <xs:complexType name="getCount">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="getCountResponse">
+            <xs:sequence>
+               <xs:element name="count" type="xs:int" />
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns1="http://impl.engine.activiti.org/test"
+         attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://impl.engine.activiti.org/test">
+         <xsd:element name="MaxValueReachedFault" type="tns1:MaxValueReachedFault" />
+         <xsd:complexType name="MaxValueReachedFault">
+            <xsd:sequence>
+               <xsd:element minOccurs="0" name="message" type="xsd:string" />
+            </xsd:sequence>
+         </xsd:complexType>
+      </xsd:schema>
+   </wsdl:types>
+   <wsdl:message name="getCount">
+      <wsdl:part element="tns:getCount" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="setTo">
+      <wsdl:part element="tns:setTo" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="prettyPrintCountResponse">
+      <wsdl:part element="tns:prettyPrintCountResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="noNameResultResponse">
+      <wsdl:part element="tns:noNameResultResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+
+   <wsdl:message name="reservedWordAsNameResponse">
+      <wsdl:part element="tns:reservedWordAsNameResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="resetResponse">
+      <wsdl:part element="tns:resetResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="reset">
+      <wsdl:part element="tns:reset" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="getCountResponse">
+      <wsdl:part element="tns:getCountResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="incResponse">
+      <wsdl:part element="tns:incResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="prettyPrintCount">
+      <wsdl:part element="tns:prettyPrintCount" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="noNameResult">
+      <wsdl:part element="tns:noNameResult" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="reservedWordAsName">
+      <wsdl:part element="tns:reservedWordAsName" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="inc">
+      <wsdl:part element="tns:inc" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="setToResponse">
+      <wsdl:part element="tns:setToResponse" name="parameters">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:message name="MaxValueReachedFault">
+      <wsdl:part element="tns1:MaxValueReachedFault" name="MaxValueReachedFault">
+      </wsdl:part>
+   </wsdl:message>
+   <wsdl:portType name="Counter">
+      <wsdl:operation name="reset">
+         <wsdl:input message="tns:reset" name="reset">
+         </wsdl:input>
+         <wsdl:output message="tns:resetResponse" name="resetResponse">
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="setTo">
+         <wsdl:input message="tns:setTo" name="setTo">
+         </wsdl:input>
+         <wsdl:output message="tns:setToResponse" name="setToResponse">
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="inc">
+         <wsdl:input message="tns:inc" name="inc">
+         </wsdl:input>
+         <wsdl:output message="tns:incResponse" name="incResponse">
+         </wsdl:output>
+         <wsdl:fault message="tns:MaxValueReachedFault" name="MaxValueReachedFault">
+         </wsdl:fault>
+      </wsdl:operation>
+      <wsdl:operation name="prettyPrintCount">
+         <wsdl:input message="tns:prettyPrintCount" name="prettyPrintCount">
+         </wsdl:input>
+         <wsdl:output message="tns:prettyPrintCountResponse" name="prettyPrintCountResponse">
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="noNameResult">
+         <wsdl:input message="tns:noNameResult" name="noNameResult">
+         </wsdl:input>
+         <wsdl:output message="tns:noNameResultResponse" name="noNameResultResponse">
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="reservedWordAsName">
+         <wsdl:input message="tns:reservedWordAsName" name="reservedWordAsName">
+         </wsdl:input>
+         <wsdl:output message="tns:reservedWordAsNameResponse" name="reservedWordAsNameResponse">
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="getCount">
+         <wsdl:input message="tns:getCount" name="getCount">
+         </wsdl:input>
+         <wsdl:output message="tns:getCountResponse" name="getCountResponse">
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="CounterSoapBinding" type="tns:Counter">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+      <wsdl:operation name="reset">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="reset">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="resetResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="setTo">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="setTo">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="setToResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="inc">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="inc">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="incResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+         <wsdl:fault name="MaxValueReachedFault">
+            <soap:fault name="MaxValueReachedFault" use="literal" />
+         </wsdl:fault>
+      </wsdl:operation>
+      <wsdl:operation name="prettyPrintCount">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="prettyPrintCount">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="prettyPrintCountResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="noNameResult">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="noNameResult">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="noNameResultResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+
+      <wsdl:operation name="reservedWordAsName">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="reservedWordAsName">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="reservedWordAsNameResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="getCount">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="getCount">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="getCountResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="Counter">
+      <wsdl:port binding="tns:CounterSoapBinding" name="CounterImplPort">
+         <!-- The endpoint address is configured at Activiti engine level -->
+         <soap:address location="http://localhost:8080/a-webservicemock" />
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

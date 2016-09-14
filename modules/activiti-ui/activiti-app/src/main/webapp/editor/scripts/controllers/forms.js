@@ -154,10 +154,6 @@ angular.module('activitiModeler')
        }
     };
 
-    if ($rootScope.currentKickstartModel && $rootScope.currentKickstartModel.definition && $rootScope.currentKickstartModel.definition.id) {
-        $scope.model.form.referenceId = $rootScope.currentKickstartModel.definition.id;
-    }
-
     $scope.ok = function () {
 
         if (!$scope.model.form.name || $scope.model.form.name.length == 0 ||
@@ -181,7 +177,7 @@ angular.module('activitiModeler')
             }).
             error(function(data, status, headers, config) {
                 $scope.model.loading = false;
-                $scope.$hide();
+                $scope.model.errorMessage = data.message;
             });
     };
 

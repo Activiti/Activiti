@@ -461,7 +461,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 	  String piName = "Customized Process Instance Name";
 	  ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
 	  builder.processDefinitionKey("oneTaskProcess");
-	  builder.processInstanceName(piName);
+	  builder.name(piName);
 	  ProcessInstance processInstance1 = builder.start();
 	
 	  HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance1.getProcessInstanceId()).singleResult();

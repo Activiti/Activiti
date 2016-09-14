@@ -30,20 +30,20 @@ angular.module('activitiApp').service('AppDefinitionService', ['$http', '$q', '$
 
 
         /**
-         * Set the id of the app definition that should be used. In case the app definition
+         * Set the deployment key of the app that should be used. In case the app definition
          * is not yet cached, it will be fetched.
          *
          * Updating this value will be reflected in the header, to make user aware of a change of context.
          */
-        this.setActiveAppDefinitionId = function(appDefinitionId) {
-            if (appDefinitionId) {
-                if ($rootScope.appDefinitions[appDefinitionId]) {
-                    $rootScope.activeAppDefinition = $rootScope.appDefinitions[appDefinitionId];
+        this.setActiveDeploymentKey = function(deploymentKey) {
+            if (deploymentKey) {
+                if ($rootScope.appDefinitions[deploymentKey]) {
+                    $rootScope.activeAppDefinition = $rootScope.appDefinitions[deploymentKey];
                 } else {
                     // Add placeholder with ID only, and fetch the actual object
-                    $rootScope.activeAppDefinition = {id: appDefinitionId};
-                    $rootScope.appDefinitions[appDefinitionId] = $rootScope.activeAppDefinition
-                    this.getAppDefinition(appDefinitionId).then(function(result) {
+                    $rootScope.activeAppDefinition = {id: deploymentKey};
+                    $rootScope.appDefinitions[deploymentKey] = $rootScope.activeAppDefinition
+                    this.getAppDefinition(deploymentKey).then(function(result) {
                         $rootScope.appDefinitions[result.id] = result;
 
                         // Also update the active definition, if the fetched definition id matches the active one
@@ -63,24 +63,11 @@ angular.module('activitiApp').service('AppDefinitionService', ['$http', '$q', '$
             }
         };
 
-        this.getAppDefinition = function (appDefinitionId) {
+        this.getAppDefinition = function (deploymentKey) {
             return httpAsPromise({
                 method: 'GET',
-                url: ACTIVITI.CONFIG.contextRoot + '/app/rest/runtime/app-definitions/' + appDefinitionId
+                url: ACTIVITI.CONFIG.contextRoot + '/app/rest/runtime/app-definitions/' + deploymentKey
             });
         };
 
-        this.getIntegrationAppDefinitionId = function () {
-            if (ACTIVITI.CONFIG.integrationProfile) {
-                var apps = $rootScope.account.apps;
-                for (var i = 0, il = apps.length; i <il; i++) {
-                    if (apps[i].name === ACTIVITI.CONFIG.integrationProfile) {
-                        return apps[i].id;
-                    }
-                }
-                // Return false so we can see that an app definition was looked for but not found
-                return false;
-            }
-            return null;
-        };
     }]);

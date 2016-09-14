@@ -7,13 +7,15 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertForm" parameterType="org.activiti.form.engine.impl.persistence.entity.FormEntityImpl">
-    insert into ${prefix}ACT_FO_FORM_DEFINITION(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DESCRIPTION_, TENANT_ID_)
+    insert into ${prefix}ACT_FO_FORM_DEFINITION(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, 
+    	PARENT_DEPLOYMENT_ID_, RESOURCE_NAME_, DESCRIPTION_, TENANT_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
             #{version, jdbcType=INTEGER},
             #{deploymentId, jdbcType=VARCHAR},
+            #{parentDeploymentId, jdbcType=VARCHAR},
             #{resourceName, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{tenantId, jdbcType=VARCHAR})
@@ -48,6 +50,7 @@
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
+    <result property="parentDeploymentId" column="PARENT_DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
     <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
@@ -139,8 +142,20 @@
           #{item}
         </foreach>
       </if>
+      <if test="parentDeploymentId != null">
+        and RES.PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId}
+      </if>
+      <if test="parentDeploymentIdLike != null">
+        and RES.PARENT_DEPLOYMENT_ID_ like #{parentDeploymentIdLike}
+      </if>
       <if test="latest">
         and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_FO_FORM_DEFINITION where KEY_ = RES.KEY_ 
+             <if test="parentDeploymentId != null">
+        		and PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId}
+      		</if>
+      		<if test="parentDeploymentIdLike != null">
+        		and PARENT_DEPLOYMENT_ID_ like #{parentDeploymentIdLike}
+     	 	</if>
              <if test="tenantId != null">
 	           and TENANT_ID_ = #{tenantId}
 	         </if>
@@ -199,7 +214,7 @@
   <select id="selectLatestFormByKey" parameterType="string" resultMap="formResultMap">
     select *
     from ${prefix}ACT_FO_FORM_DEFINITION 
-    where KEY_ = #{key} and
+    where KEY_ = #{formDefinitionKey} and
           (TENANT_ID_ = ''  or TENANT_ID_ is null) and
           VERSION_ = (select max(VERSION_) from ${prefix}ACT_FO_FORM_DEFINITION where KEY_ = #{formDefinitionKey} and (TENANT_ID_ = '' or TENANT_ID_ is null))
   </select>
@@ -210,6 +225,25 @@
     where KEY_ = #{formDefinitionKey} and
           TENANT_ID_ = #{tenantId} and
           VERSION_ = (select max(VERSION_) from ${prefix}ACT_FO_FORM_DEFINITION where KEY_ = #{formDefinitionKey} and TENANT_ID_ = #{tenantId})
+  </select>
+  
+  <select id="selectLatestFormByKeyAndParentDeploymentId" parameterType="map" resultMap="formResultMap">
+    select *
+    from ${prefix}ACT_FO_FORM_DEFINITION 
+    where KEY_ = #{formDefinitionKey} and PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId} and
+          (TENANT_ID_ = ''  or TENANT_ID_ is null) and
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_FO_FORM_DEFINITION where KEY_ = #{formDefinitionKey} and 
+          PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId} and (TENANT_ID_ = '' or TENANT_ID_ is null))
+  </select>
+  
+  <select id="selectLatestFormByKeyParentDeploymentIdAndTenantId" parameterType="map" resultMap="formResultMap">
+    select *
+    from ${prefix}ACT_FO_FORM_DEFINITION 
+    where KEY_ = #{formDefinitionKey} and
+    	  PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId} and
+          TENANT_ID_ = #{tenantId} and
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_FO_FORM_DEFINITION where KEY_ = #{formDefinitionKey} and 
+          PARENT_DEPLOYMENT_ID_ = #{parentDeploymentId} and TENANT_ID_ = #{tenantId})
   </select>
   
   <!-- mysql specific sql -->

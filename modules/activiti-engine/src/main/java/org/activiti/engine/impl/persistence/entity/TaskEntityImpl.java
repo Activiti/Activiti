@@ -47,8 +47,6 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   private static final long serialVersionUID = 1L;
 
-  protected int revision;
-
   protected String owner;
   protected int assigneeUpdatedCount; // needed for v5 compatibility
   protected String originalAssignee; // needed for v5 compatibility

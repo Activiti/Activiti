@@ -37,6 +37,8 @@ public class DmnDeploymentQueryImpl extends AbstractQuery<DmnDeploymentQuery, Dm
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
+  protected String parentDeploymentId;
+  protected String parentDeploymentIdLike;
   protected String decisionTableKey;
   protected String decisionTableKeyLike;
 
@@ -109,6 +111,22 @@ public class DmnDeploymentQueryImpl extends AbstractQuery<DmnDeploymentQuery, Dm
 
   public DmnDeploymentQueryImpl deploymentWithoutTenantId() {
     this.withoutTenantId = true;
+    return this;
+  }
+  
+  public DmnDeploymentQueryImpl parentDeploymentId(String parentDeploymentId) {
+    if (parentDeploymentId == null) {
+      throw new ActivitiDmnIllegalArgumentException("parentDeploymentId is null");
+    }
+    this.parentDeploymentId = parentDeploymentId;
+    return this;
+  }
+
+  public DmnDeploymentQueryImpl parentDeploymentIdLike(String parentDeploymentIdLike) {
+    if (parentDeploymentIdLike == null) {
+      throw new ActivitiDmnIllegalArgumentException("parentDeploymentIdLike is null");
+    }
+    this.parentDeploymentIdLike = parentDeploymentIdLike;
     return this;
   }
 

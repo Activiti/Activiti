@@ -1,0 +1,164 @@
+
+<div class="main-list" id="main-list">
+    <div class="list-subheader clearfix" style="margin-top: 0px; min-height: 60px">
+        <div class="btn-group pull-right">
+            <button class="btn" translate="IDM.FUNCTIONAL-GROUP-MGMT.CREATE" ng-click="showCreateGroupPopup()">&nbsp;</button>
+        </div>
+    </div>
+    <div class="list-wrapper" auto-height>
+
+        <span loading="model.loading"></span>
+
+        <div class="list-wrapper" ng-show="!model.loading" auto-height>
+
+            <ul class="full-list" offset-top="100">
+                <li ng-repeat="group in model.groups" ng-class="{'active': model.selectedGroup.id == group.id}" ng-click="selectGroup(group.id)">
+                    <div>
+                        <div class="title">
+                            {{group.name}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="nothing-to-see" ng-show="model.tasks.length == 0">
+                <span  translate="TASK.MESSAGE.NO-TASKS"></span>
+            </div>
+        </div>
+
+
+        <div class="nothing-to-see" ng-if="model.groups.length == 0">
+            <span  translate="IDM.FUNCTIONAL-GROUP-MGMT.NO-GROUPS"></span>
+        </div>
+
+    </div>
+</div>
+
+<div class="main-content-wrapper">
+
+    <div class="main-content" ng-show="!model.loadingGroup">
+
+        <div class="header" ng-if="model.selectedGroup">
+
+            <div class="pull-right">
+                <button class="btn btn-clean" ng-click="showEditGroupModal()">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <button class="btn btn-clean" ng-click="showActivateGroupModal()" ng-if="model.selectedGroup.status == 'inactive'">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </button>
+                <button class="btn btn-clean" ng-click="showDeleteGroupModal()">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </div>
+
+            <h2>
+                <span>{{model.selectedGroup.name}}</span>
+                <span ng-if="model.selectedGroup.status == 'inactive'">({{'IDM.FUNCTIONAL-GROUP-MGMT.INACTIVE' | translate}})</span>
+            </h2>
+
+        </div>
+
+        <div class="content" ng-show="model.selectedGroup" auto-height offset="70">
+
+            <span loading="model.loadingGroup"></span>
+
+            <div ng-if="!model.loadingGroup">
+
+                <div class="col-xs-12">
+
+                    <div class="section" style="min-height: 0; font-style: italic;" ng-if="model.selectedGroup.status == 'inactive'">
+                        <blockquote>
+                            {{'IDM.FUNCTIONAL-GROUP-MGMT.INACTIVE-DESCRIPTION' | translate}}
+                        </blockquote>
+                    </div>
+
+                    <!-- Sync details -->
+                    <div class="section" style="min-height: 0" ng-if="model.selectedGroup.externalId != null && model.selectedGroup.externalId != undefined">
+
+                        <h3 style="margin-bottom: 10px;">
+                            {{'IDM.FUNCTIONAL-GROUP-MGMT.SYNC-DETAILS' | translate}}
+                        </h3>
+
+                        <table>
+                            <tr>
+                                <td style="padding-right: 10px;">{{'IDM.FUNCTIONAL-GROUP-MGMT.EXTERNAL-ID' | translate}}</td>
+                                <td>{{model.selectedGroup.externalId}}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding-right:10px;">{{'IDM.FUNCTIONAL-GROUP-MGMT.LAST-SYNC-TIME' | translate}}</td>
+                                <td>{{model.selectedGroup.lastSyncTimeStamp | dateformat}}</td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+
+                    <!-- Users -->
+                    <div class="section" style="min-height: 0">
+
+                        <h3 style="margin-bottom: 10px;">
+                            {{'IDM.FUNCTIONAL-GROUP-MGMT.MEMBERS' | translate}}
+                            <span class="action">
+                                 <a id="toggle-add-group-member"
+                                    select-people-popover
+                                    popover-title="IDM.FUNCTIONAL-GROUP-MGMT.ADD-POPOVER-TITLE"
+                                    placement="bottom"
+                                    on-people-selected="addGroupMember(user)"
+                                    email-mode-disabled="true"
+                                    tenant-id="common.selectedTenantId"
+                                    type="'idm'"
+                                    style="font-weight: normal">
+                                     {{'IDM.FUNCTIONAL-GROUP-MGMT.ADD-USER' | translate}}
+                                 </a>
+                            </span>
+                        </h3>
+
+                        <div class="input-group user-search-field">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </span>
+                            <input type="text" ng-model="model.userFilter" class="form-control" ng-change="refreshDelayed()">
+                        </div>
+
+                        <span loading="model.loadingUsers"></span>
+
+                    <span ng-if="model.users.data && model.users.data.length > 0">
+                        {{'IDM.USER-MGMT.MATCHING-USERS' | translate:model.users}}
+    					<a ng-click="showPreviousUsers()" ng-show="model.userPage > 0">&laquo; {{'IDM.USER-MGMT.SHOW-PREVIOUS' | translate}} {{model.pageSize}}</a>
+						<span ng-show="model.userPage > 0 && model.moreUsers">|</span>
+						<a ng-click="showNextUsers()" ng-show="model.moreUsers">{{'IDM.USER-MGMT.SHOW-NEXT' | translate}} {{model.pageSize}} &raquo;</a>
+					</span>
+
+                        <table width="100%" class="users" ng-if="model.users.data && model.users.data.length > 0">
+                            <tr>
+                                <th width="30%">{{'IDM.USER-MGMT.ID' | translate}}</th>
+                                <th width="30%">{{'IDM.USER-MGMT.EMAIL' | translate}}</th>
+                                <th width="30%%">{{'IDM.USER-MGMT.NAME' | translate}}</th>
+                                <th width="10%"></th>
+                            </tr>
+                            <tr ng-repeat="user in model.users.data">
+                                <td>{{user.id}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.firstName}} {{user.lastName}}</td>
+                                <td align="center" ng-click="showRemoveMemberModal(user)"><i class="glyphicon glyphicon-trash" ></i></td>
+                            </tr>
+                        </table>
+
+                        <div ng-if="!model.users || model.users.length == 0">
+                            <span>{{'IDM.FUNCTIONAL-GROUP-MGMT.NO-MEMBERS' | translate}}</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="nothing-to-see" ng-if="model.groups.length > 0 && !model.selectedGroup && !model.loading">
+            <span>{{'IDM.FUNCTIONAL-GROUP-MGMT.NO-SELECTION' | translate}}</span>
+        </div>
+
+    </div>
+
+</div>

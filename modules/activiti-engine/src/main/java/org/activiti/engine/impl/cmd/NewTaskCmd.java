@@ -35,6 +35,7 @@ public class NewTaskCmd implements Command<Task>, Serializable {
   public Task execute(CommandContext commandContext) {
     TaskEntity task = commandContext.getTaskEntityManager().create(); 
     task.setId(taskId);
+    task.setRevision(0);
     return task;
   }
 

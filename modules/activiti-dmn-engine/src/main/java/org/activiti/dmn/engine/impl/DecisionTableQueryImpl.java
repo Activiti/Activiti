@@ -38,6 +38,8 @@ public class DecisionTableQueryImpl extends AbstractQuery<DecisionTableQuery, De
   protected String nameLike;
   protected String deploymentId;
   protected Set<String> deploymentIds;
+  protected String parentDeploymentId;
+  protected String parentDeploymentIdLike;
   protected String key;
   protected String keyLike;
   protected String resourceName;
@@ -128,6 +130,22 @@ public class DecisionTableQueryImpl extends AbstractQuery<DecisionTableQuery, De
       throw new ActivitiDmnIllegalArgumentException("ids are null");
     }
     this.deploymentIds = deploymentIds;
+    return this;
+  }
+  
+  public DecisionTableQueryImpl parentDeploymentId(String parentDeploymentId) {
+    if (parentDeploymentId == null) {
+      throw new ActivitiDmnIllegalArgumentException("parentDeploymentId is null");
+    }
+    this.parentDeploymentId = parentDeploymentId;
+    return this;
+  }
+  
+  public DecisionTableQueryImpl parentDeploymentIdLike(String parentDeploymentIdLike) {
+    if (parentDeploymentIdLike == null) {
+      throw new ActivitiDmnIllegalArgumentException("parentDeploymentIdLike is null");
+    }
+    this.parentDeploymentIdLike = parentDeploymentIdLike;
     return this;
   }
 

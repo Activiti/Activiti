@@ -59,7 +59,7 @@ public class SignalEventHandler extends AbstractEventHandler {
         variables = (Map<String, Object>) payload;
       }
       ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-      processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, flowElement, process, variables, true);
+      processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, flowElement, process, variables, null, true);
       
     } else {
       throw new ActivitiException("Invalid signal handling: no execution nor process definition set");

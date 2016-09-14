@@ -12,8 +12,18 @@
  */
 package org.activiti.engine.impl.util;
 
-import org.activiti.bpmn.model.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -25,12 +35,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
-
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
@@ -38,19 +42,20 @@ import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinuePr
 public class ProcessInstanceHelper {
 
   public ProcessInstance createProcessInstance(ProcessDefinitionEntity processDefinition,
-      String businessKey, String processInstanceName, Map<String, Object> variables) {
+      String businessKey, String processInstanceName, Map<String, Object> variables, Map<String, Object> transientVariables) {
 
-    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, false);
+    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables, false);
   }
 
   public ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
-      String businessKey, String processInstanceName, Map<String, Object> variables) {
+      String businessKey, String processInstanceName, Map<String, Object> variables, Map<String, Object> transientVariables) {
 
-    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, true);
+    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables, true);
   }
 
   protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
-      String businessKey, String processInstanceName, Map<String, Object> variables, boolean startProcessInstance) {
+      String businessKey, String processInstanceName,
+      Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
 
     CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
     if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
@@ -76,10 +81,12 @@ public class ProcessInstanceHelper {
     }
 
     return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey,
-        processInstanceName, initialFlowElement, process, variables, startProcessInstance);
+        processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);
   }
 
-  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String messageName, Map<String, Object> variables) {
+  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String messageName,
+      Map<String, Object> variables, Map<String, Object> transientVariables) {
+
     CommandContext commandContext = Context.getCommandContext();
     if (processDefinition.getEngineVersion() != null) {
       if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
@@ -125,12 +132,12 @@ public class ProcessInstanceHelper {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
 
-    return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, true);
+    return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, transientVariables, true);
   }
 
   public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
-      Process process, Map<String, Object> variables, boolean startProcessInstance) {
+      Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
 
     CommandContext commandContext = Context.getCommandContext();
 
@@ -141,7 +148,7 @@ public class ProcessInstanceHelper {
     }
 
     ExecutionEntity processInstance = commandContext.getExecutionEntityManager()
-    		.createProcessInstanceExecution(processDefinition.getId(), businessKey, processDefinition.getTenantId(), initiatorVariableName);
+    		.createProcessInstanceExecution(processDefinition, businessKey, processDefinition.getTenantId(), initiatorVariableName);
 
     commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
 
@@ -151,6 +158,11 @@ public class ProcessInstanceHelper {
     if (variables != null) {
       for (String varName : variables.keySet()) {
         processInstance.setVariable(varName, variables.get(varName));
+      }
+    }
+    if (transientVariables != null) {
+      for (String varName : transientVariables.keySet()) {
+        processInstance.setTransientVariable(varName, transientVariables.get(varName));
       }
     }
 
@@ -188,7 +200,7 @@ public class ProcessInstanceHelper {
                 ExecutionEntity messageExecution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);
                 messageExecution.setCurrentFlowElement(startEvent);
                 messageExecution.setEventScope(true);
-                commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, messageExecution);
+                commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition.getMessageRef(), messageExecution);
               }
             }
           }
@@ -205,7 +217,7 @@ public class ProcessInstanceHelper {
 
   public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables) {
     ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
-    planContinueProcessOperation(commandContext.getAgenda(), commandContext, execution);
+    commandContext.getAgenda().planContinueProcessOperation(execution);
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher()

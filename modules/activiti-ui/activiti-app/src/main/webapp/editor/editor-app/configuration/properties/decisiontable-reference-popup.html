@@ -24,9 +24,6 @@
                            <div class="controls">
                                <input type="checkbox" value="option1" ng-click="selectDecisionTable(decisionTable, $event)" ng-checked="decisionTable.id == selectedDecisionTable.id" />
                            </div>
-                            <div ng-show="!decisionTable.referenceId"  class="private">
-                                <span data-placement="top" title="{{'DECISION-TABLE.POPUP.REUSABLE' | translate}}" class="glyphicon glyphicon-globe pull-right fa-2x" aria-hidden="true" />
-                            </div>
                            <h4>{{decisionTable.name}}</h4>
                            <img ng-src="{{config.contextRoot}}/app/rest/models/{{decisionTable.id}}/thumbnail" />
                          </div>
@@ -41,6 +38,12 @@
             </div>
             <div class="modal-body" ng-if="popup.state == 'newDecisionTable'">
                 <p>{{'DECISION-TABLE.POPUP.CREATE-DESCRIPTION' | translate}}</p>
+                <div ng-if="model.errorMessage && model.errorMessage.length > 0" class="alert error" style="font-size: 14px; margin-top:20px">
+                  <div class="popup-error" style="font-size: 14px">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    <span>{{model.errorMessage}}</span>
+                  </div>
+                </div>
                 <div class="form-group">
                     <label for="newDecisionTableName">{{'DECISION-TABLE.NAME' | translate}}</label>
                     <input ng-disabled="model.loading" type="text" class="form-control"
@@ -58,13 +61,13 @@
             </div>
             <div class="modal-footer" ng-if="popup.state == 'decisionTableReference'">
                 <button ng-click="cancel()" class="btn btn-primary" translate>GENERAL.ACTION.CANCEL</button>
-            	<button ng-disabled="state.decisionTableError || readOnly" ng-click="newDecisionTable()" class="btn btn-primary" translate>GENERAL.ACTION.NEW-DECISION-TABLE</button>
+            	<button ng-disabled="state.decisionTableError" ng-click="newDecisionTable()" class="btn btn-primary" translate>GENERAL.ACTION.NEW-DECISION-TABLE</button>
             	<button ng-disabled="!selectedDecisionTable || state.decisionTableError" ng-click="open()" class="btn btn-primary" translate>GENERAL.ACTION.OPEN</button>
-                <button ng-disabled="state.decisionTableError || readOnly" ng-click="save()" class="btn btn-primary" translate>GENERAL.ACTION.SAVE</button>
+                <button ng-disabled="state.decisionTableError" ng-click="save()" class="btn btn-primary" translate>GENERAL.ACTION.SAVE</button>
             </div>
             <div class="modal-footer" ng-if="popup.state == 'newDecisionTable'">
                 <button ng-click="cancel()" class="btn btn-primary" translate>GENERAL.ACTION.CANCEL</button>
-                <button ng-disabled="state.decisionTableError || readOnly" ng-click="createDecisionTable()" class="btn btn-primary" translate>GENERAL.ACTION.CREATE-DECISION-TABLE</button>
+                <button ng-disabled="state.decisionTableError || model.decisionTable.name.length == 0 || model.decisionTable.key.length == 0" ng-click="createDecisionTable()" class="btn btn-primary" translate>GENERAL.ACTION.CREATE-DECISION-TABLE</button>
             </div>
         </div>
     </div>

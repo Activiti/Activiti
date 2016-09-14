@@ -68,6 +68,8 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ORDERING = "ordering";
   public static final String ATTRIBUTE_CANCEL_REMAINING_INSTANCES = "cancelRemainingInstances";
   public static final String ELEMENT_COMPLETION_CONDITION = "completionCondition";
+  public static final String ATTRIBUTE_MESSAGE_EXPRESSION = "messageExpression";
+  public static final String ATTRIBUTE_SIGNAL_EXPRESSION = "signalExpression";
 
   public static final String ELEMENT_DATA_STATE = "dataState";
 
@@ -199,6 +201,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT = "calledElement";
   public static final String ATTRIBUTE_CALL_ACTIVITY_BUSINESS_KEY = "businessKey";
   public static final String ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY = "inheritBusinessKey";
+  public static final String ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES = "inheritVariables";
   public static final String ELEMENT_CALL_ACTIVITY_IN_PARAMETERS = "in";
   public static final String ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS = "out";
   public static final String ATTRIBUTE_IOPARAMETER_SOURCE = "source";

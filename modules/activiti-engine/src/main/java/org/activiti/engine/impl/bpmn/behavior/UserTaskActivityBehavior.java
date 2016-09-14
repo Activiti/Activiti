@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -42,7 +41,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -197,9 +195,18 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     
     taskEntityManager.insert(task, (ExecutionEntity) execution);
     
+    boolean skipUserTask = false;
+    if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
+      Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
+      skipUserTask = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) 
+          && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression);
+    }
+    
     // Handling assignments need to be done after the task is inserted, to have an id
-    handleAssignments(taskEntityManager, activeTaskAssignee, activeTaskOwner, 
+    if (!skipUserTask) {
+      handleAssignments(taskEntityManager, activeTaskAssignee, activeTaskOwner, 
         activeTaskCandidateUsers, activeTaskCandidateGroups, task, expressionManager, execution);
+    }
     
     processEngineConfiguration.getListenerNotificationHelper().executeTaskListeners(task, TaskListener.EVENTNAME_CREATE);
     
@@ -209,12 +216,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
     }
     
-    if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
-      Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
-      if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
-        taskEntityManager.deleteTask(task, null, false, false);
-        leave(execution);
-      }
+    if (skipUserTask) {
+      taskEntityManager.deleteTask(task, null, false, false);
+      leave(execution);
     }
     
   }

@@ -39,7 +39,7 @@ public class FormDeploymentBuilderImpl implements FormDeploymentBuilder, Seriali
 
   protected transient FormRepositoryServiceImpl repositoryService;
   protected transient ResourceEntityManager resourceEntityManager;
-  
+
   protected FormDeploymentEntity deployment;
   protected boolean isDuplicateFilterEnabled;
 
@@ -61,11 +61,11 @@ public class FormDeploymentBuilderImpl implements FormDeploymentBuilder, Seriali
     } catch (Exception e) {
       throw new ActivitiFormException("could not get byte array from resource '" + resourceName + "'");
     }
-    
+
     if (bytes == null) {
       throw new ActivitiFormException("byte array for resource '" + resourceName + "' is null");
     }
-    
+
     ResourceEntity resource = resourceEntityManager.create();
     resource.setName(resourceName);
     resource.setBytes(bytes);
@@ -96,7 +96,7 @@ public class FormDeploymentBuilderImpl implements FormDeploymentBuilder, Seriali
     deployment.addResource(resource);
     return this;
   }
-  
+
   public FormDeploymentBuilder addFormBytes(String resourceName, byte[] formBytes) {
     if (formBytes == null) {
       throw new ActivitiFormException("form bytes is null");
@@ -113,34 +113,39 @@ public class FormDeploymentBuilderImpl implements FormDeploymentBuilder, Seriali
     FormJsonConverter formConverter = new FormJsonConverter();
     String formJson = formConverter.convertToJson(formDefinition);
     addString(resourceName, formJson);
-    
+
     return this;
   }
 
   public FormDeploymentBuilder name(String name) {
-      deployment.setName(name);
-      return this;
+    deployment.setName(name);
+    return this;
   }
 
   public FormDeploymentBuilder category(String category) {
-      deployment.setCategory(category);
-      return this;
+    deployment.setCategory(category);
+    return this;
   }
 
   public FormDeploymentBuilder tenantId(String tenantId) {
-      deployment.setTenantId(tenantId);
-      return this;
+    deployment.setTenantId(tenantId);
+    return this;
+  }
+  
+  public FormDeploymentBuilder parentDeploymentId(String parentDeploymentId) {
+    deployment.setParentDeploymentId(parentDeploymentId);
+    return this;
   }
 
   public FormDeployment deploy() {
-      return repositoryService.deploy(this);
+    return repositoryService.deploy(this);
   }
 
   // getters and setters
   // //////////////////////////////////////////////////////
 
   public FormDeploymentEntity getDeployment() {
-      return deployment;
+    return deployment;
   }
 
   public boolean isDuplicateFilterEnabled() {

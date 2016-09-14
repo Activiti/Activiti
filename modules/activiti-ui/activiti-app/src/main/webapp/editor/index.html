@@ -44,7 +44,7 @@
                     <img ng-if="account.tenantPictureId && account.tenantId"
                          ng-src="{{restRootUrl()}}/app/rest/tenants/{{account.tenantId}}/logo">
 
-                    <img ng-if="!account.tenantPictureId" ng-src="{{appResourceRoot}}../images/logo-2x.png">
+                    <img ng-if="!account.tenantPictureId" ng-src="{{appResourceRoot}}../images/activiti-logo.png">
                 </a>
                 <ul class="nav navbar-nav" id="main-nav" ng-show="authenticated">
                     <li ng-class="{'active' : item.id == mainPage.id}" ng-repeat="item in mainNavigation"
@@ -178,7 +178,6 @@
 
 <script src="scripts/services/util-services.js"></script>
 <script src="scripts/services/identity-services.js"></script>
-<script src="scripts/services/thumbnail-services.js"></script>
 
 <script src="scripts/services/form-services.js"></script>
 <script src="scripts/controllers/form-builder.js"></script>

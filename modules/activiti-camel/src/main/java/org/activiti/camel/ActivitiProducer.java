@@ -84,9 +84,9 @@ public class ActivitiProducer extends DefaultProducer {
       Map<String, Object> processVariables = null;
       if (repositoryService.isActiviti5ProcessDefinition(pi.getProcessDefinitionId())) {
         Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-        processVariables = activiti5CompatibilityHandler.getVariableValues(pi);
+        processVariables = activiti5CompatibilityHandler.getVariables(pi);
       } else {
-        processVariables = ((ExecutionEntity) pi).getVariableValues();
+        processVariables = ((ExecutionEntity) pi).getVariables();
       }
       
       if (processVariables != null) {

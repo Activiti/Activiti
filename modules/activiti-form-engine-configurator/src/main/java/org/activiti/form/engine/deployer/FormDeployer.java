@@ -40,9 +40,8 @@ public class FormDeployer implements Deployer {
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {
-      log.info("FormDeployer: processing resource {}", resourceName);
       if (resourceName.endsWith(".form")) {
-        
+        log.info("FormDeployer: processing resource {}", resourceName);
         if (formDeploymentBuilder == null) {
           FormRepositoryService formRepositoryService = Context.getProcessEngineConfiguration().getFormEngineRepositoryService();
           formDeploymentBuilder = formRepositoryService.createDeployment();
@@ -53,6 +52,7 @@ public class FormDeployer implements Deployer {
     }
     
     if (formDeploymentBuilder != null) {
+      formDeploymentBuilder.parentDeploymentId(deployment.getId());
       if (deployment.getTenantId() != null && deployment.getTenantId().length() > 0) {
         formDeploymentBuilder.tenantId(deployment.getTenantId());
       }

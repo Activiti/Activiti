@@ -8,7 +8,7 @@
 
     <startEvent id="theStart">
       <timerEventDefinition activiti:businessCalendarName="custom">
-        <timeCycle>R2/PT5S</timeCycle>
+        <timeCycle activiti:endDate="${EndDate}">R2/PT5S</timeCycle>
       </timerEventDefinition>
     </startEvent>
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="timer"/>

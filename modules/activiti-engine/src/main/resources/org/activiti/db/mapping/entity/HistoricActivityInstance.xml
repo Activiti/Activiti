@@ -220,7 +220,7 @@
         and RES.TENANT_ID_ = #{tenantId}
       </if>
       <if test="tenantIdLike != null">
-        and RES.TENANT_ID_ like #{tenantIdLike}
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
@@ -235,7 +235,7 @@
         and RES.DELETE_REASON_ = #{deleteReason}
       </if>
       <if test="deleteReasonLike != null">
-        and RES.DELETE_REASON_ like #{deleteReasonLike}
+        and RES.DELETE_REASON_ like #{deleteReasonLike}${wildcardEscapeClause}
       </if>
     </where>
   </sql>
@@ -250,12 +250,12 @@
   
   <select id="selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
     select * from ${prefix}ACT_HI_ACTINST RES
-    where EXECUTION_ID_ = #{parameter.executionId} and ACT_ID_ = #{parameter.activityId} and END_TIME_ is null
+    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and ACT_ID_ = #{parameter.activityId, jdbcType=VARCHAR} and END_TIME_ is null
   </select>
   
    <select id="selectUnfinishedHistoricActivityInstanceByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
     select * from ${prefix}ACT_HI_ACTINST RES
-    where PROC_INST_ID_ = #{parameter.processInstanceId} and END_TIME_ is null
+    where PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR} and END_TIME_ is null
   </select>
   
 </mapper>

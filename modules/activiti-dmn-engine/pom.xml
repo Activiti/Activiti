@@ -10,7 +10,7 @@
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
-		<version>6.0.0.Beta3-SNAPSHOT</version>
+		<version>6.0.0.RC1-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -80,19 +80,20 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.1</version>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
+        
         <dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>provided</scope>
@@ -188,6 +189,212 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<!-- database qa profile -->
+		<profile>
+			<id>databasedmn</id>
+			<activation>
+				<property>
+					<name>databasedmn</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<!-- only worked with this version, there might be a bug with antrun 
+							see http://jira.codehaus.org/browse/MANTRUN-109 -->
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>database-test-create-schema</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="updating activiti dmn configuration to db ${databasedmn}" />
+										<copy file="${basedir}/../../qa/db/activiti.dmn.cfg.xml"
+											todir="target/test-classes" overwrite="true">
+											<filterset
+												filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasedmn}.properties" />
+										</copy>
+									</tasks>
+								</configuration>
+							</execution>
+							<execution>
+								<id>database-test-drop-schema</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="dropping schema in ${databasedmn}" />
+										<java classname="org.activiti.dmn.engine.impl.db.DbSchemaDrop"
+											classpathref="maven.test.classpath" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>databasewithschemadmn</id>
+			<activation>
+				<property>
+					<name>databasewithschemadmn</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<!-- only worked with this version, there might be a bug with antrun 
+							see http://jira.codehaus.org/browse/MANTRUN-109 -->
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>database-test-create-schema</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="updating activiti dmn configuration to db ${databasewithschemadmn}" />
+										<copy file="${basedir}/../../qa/db/schema/activiti.dmn.cfg.xml"
+											todir="target/test-classes" overwrite="true">
+											<filterset
+												filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasewithschemadmn}.properties" />
+										</copy>
+									</tasks>
+								</configuration>
+							</execution>
+							<execution>
+								<id>database-test-drop-schema</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="dropping schema in ${databasewithschemadmn}" />
+										<java classname="org.activiti.dmn.engine.impl.db.DbSchemaDrop"
+											classpathref="maven.test.classpath" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>oracle</id>
+			<activation>
+				<property>
+					<name>databasedmn</name>
+					<value>oracle</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.oracle.jdbc</groupId>
+					<artifactId>ojdbc7</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>oraclewithschema</id>
+			<activation>
+				<property>
+					<name>databasewithschemadmn</name>
+					<value>oracle</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.oracle.jdbc</groupId>
+					<artifactId>ojdbc7</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>db2</id>
+			<activation>
+				<property>
+					<name>databasedmn</name>
+					<value>db2</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.ibm.db2.jcc</groupId>
+					<artifactId>db2jcc4</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>mssql</id>
+			<activation>
+				<property>
+					<name>databasedmn</name>
+					<value>mssql</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>net.sourceforge.jtds</groupId>
+					<artifactId>jtds</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>mysql</id>
+			<activation>
+				<property>
+					<name>databasedmn</name>
+					<value>mysql</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>hsql</id>
+			<activation>
+				<property>
+					<name>databasedmn</name>
+					<value>hsql</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 

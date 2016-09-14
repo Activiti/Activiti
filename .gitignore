@@ -11,3 +11,4 @@ target
 /userguide/src/en/index.html
 migration.html
 /modules/**/bin
+modules/activiti-ui/activiti-app/data

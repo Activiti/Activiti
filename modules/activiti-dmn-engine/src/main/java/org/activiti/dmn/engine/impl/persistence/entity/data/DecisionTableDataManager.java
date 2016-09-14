@@ -28,6 +28,11 @@ public interface DecisionTableDataManager extends DataManager<DecisionTableEntit
   DecisionTableEntity findLatestDecisionTableByKey(String decisionTableKey);
 
   DecisionTableEntity findLatestDecisionTableByKeyAndTenantId(String decisionTableKey, String tenantId);
+  
+  DecisionTableEntity findLatestDecisionTableByKeyAndParentDeploymentId(String decisionTableKey, String parentDeploymentId);
+  
+  DecisionTableEntity findLatestDecisionTableByKeyParentDeploymentIdAndTenantId(String decisionTableKey, 
+      String parentDeploymentId, String tenantId);
 
   void deleteDecisionTablesByDeploymentId(String deploymentId);
 

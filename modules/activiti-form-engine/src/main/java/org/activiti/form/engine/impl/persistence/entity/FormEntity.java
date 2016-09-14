@@ -28,6 +28,8 @@ public interface FormEntity extends Form, Entity {
   void setDescription(String description);
 
   void setDeploymentId(String deploymentId);
+  
+  void setParentDeploymentId(String parentDeploymentId);
 
   void setVersion(int version);
 

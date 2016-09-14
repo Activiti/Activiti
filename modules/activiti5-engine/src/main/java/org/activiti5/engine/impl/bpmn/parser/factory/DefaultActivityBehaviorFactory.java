@@ -42,6 +42,7 @@ import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.delegate.BusinessRuleTaskDelegate;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.SimpleDataInputAssociation;
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
@@ -257,19 +258,19 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return (ShellActivityBehavior) ClassDelegate.defaultInstantiateDelegate(ShellActivityBehavior.class, fieldDeclarations);
   }
   
-  public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
-    BusinessRuleTaskActivityBehavior ruleActivity = null;
-	if(StringUtils.isNotEmpty(businessRuleTask.getClassName())){
-		try {
-			Class<?> clazz=Class.forName(businessRuleTask.getClassName());
-			ruleActivity=(BusinessRuleTaskActivityBehavior)clazz.newInstance();
-		} catch (Exception e) {
-			throw new ActivitiException(
-					"Could not instiate businessRuleTask class: ", e);
-		}
-	}else{
-		ruleActivity=new BusinessRuleTaskActivityBehavior();
-	}
+  public ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
+    BusinessRuleTaskDelegate ruleActivity = null;
+    if (StringUtils.isNotEmpty(businessRuleTask.getClassName())){
+  		try {
+  			Class<?> clazz = Class.forName(businessRuleTask.getClassName());
+  			ruleActivity = (BusinessRuleTaskDelegate) clazz.newInstance();
+  		} catch (Exception e) {
+  		  throw new ActivitiException("Could not instantiate businessRuleTask (id:" + businessRuleTask.getId()  + ") class: " + 
+            businessRuleTask.getClassName(), e);
+  		}
+	  } else{
+	    ruleActivity = new BusinessRuleTaskActivityBehavior();
+	  }
 	
     for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
       ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
@@ -345,6 +346,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     } else {
       callActivityBehaviour = new CallActivityBehavior(callActivity.getCalledElement(), callActivity.getMapExceptions());
     }
+    
+    callActivityBehaviour.setInheritVariables(callActivity.isInheritVariables());
 
     for (IOParameter ioParameter : callActivity.getInParameters()) {
       if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {

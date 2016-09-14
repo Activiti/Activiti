@@ -52,6 +52,10 @@ public interface FormRepositoryService {
     
     FormDefinition getFormDefinitionByKey(String formDefinitionKey, String tenantId);
     
+    FormDefinition getFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId);
+    
+    FormDefinition getFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId, String tenantId);
+    
     InputStream getFormResource(String formId);
     
     void setFormCategory(String formId, String category);

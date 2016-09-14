@@ -108,6 +108,14 @@ public class FormRepositoryServiceImpl extends ServiceImpl implements FormReposi
       return commandExecutor.execute(new GetFormDefinitionCmd(formDefinitionKey, null, tenantId));
     }
     
+    public FormDefinition getFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId) {
+      return commandExecutor.execute(new GetFormDefinitionCmd(formDefinitionKey, null, null, parentDeploymentId));
+    }
+    
+    public FormDefinition getFormDefinitionByKeyAndParentDeploymentId(String formDefinitionKey, String parentDeploymentId, String tenantId) {
+      return commandExecutor.execute(new GetFormDefinitionCmd(formDefinitionKey, null, tenantId, parentDeploymentId));
+    }
+    
     public InputStream getFormResource(String formId) {
       return commandExecutor.execute(new GetDeploymentFormResourceCmd(formId));
     }

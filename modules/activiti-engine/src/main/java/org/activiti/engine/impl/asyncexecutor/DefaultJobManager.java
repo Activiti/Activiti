@@ -15,6 +15,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -26,6 +29,7 @@ import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -98,6 +102,12 @@ public class DefaultJobManager implements JobManager {
     }
     
     processEngineConfiguration.getTimerJobEntityManager().insert(timerJob);
+
+    CommandContext commandContext = Context.getCommandContext();
+    ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
+    if (eventDispatcher.isEnabled()) {
+      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_SCHEDULED, timerJob));
+    }
   }
   
   @Override
@@ -277,7 +287,7 @@ public class DefaultJobManager implements JobManager {
     if (timerEntity.getRepeat() != null) {
       TimerJobEntity newTimerJobEntity = timerJobEntityManager.createAndCalculateNextTimer(timerEntity, variableScope);
       if (newTimerJobEntity != null) {
-        timerJobEntityManager.insert(newTimerJobEntity);
+        scheduleTimerJob(newTimerJobEntity);
       }
     }
   }
@@ -296,7 +306,8 @@ public class DefaultJobManager implements JobManager {
   protected void restoreExtraData(JobEntity timerEntity, VariableScope variableScope) {
     String activityId = timerEntity.getJobHandlerConfiguration();
 
-    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
+    if (timerEntity.getJobHandlerType().equalsIgnoreCase(TimerStartEventJobHandler.TYPE) ||
+        timerEntity.getJobHandlerType().equalsIgnoreCase(TriggerTimerEventJobHandler.TYPE)) {
 
       activityId = TimerEventHandler.getActivityIdFromConfiguration(timerEntity.getJobHandlerConfiguration());
       String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(timerEntity.getJobHandlerConfiguration());

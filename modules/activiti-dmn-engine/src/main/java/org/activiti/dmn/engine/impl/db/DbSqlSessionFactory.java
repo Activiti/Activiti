@@ -13,10 +13,12 @@
 
 package org.activiti.dmn.engine.impl.db;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.impl.cfg.IdGenerator;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.Session;
@@ -56,7 +58,22 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
 
   public Session openSession(CommandContext commandContext) {
-    return new DbSqlSession(this);
+    DbSqlSession dbSqlSession = new DbSqlSession(this);
+    if (getDatabaseSchema() != null && getDatabaseSchema().length() > 0) {
+      try {
+        dbSqlSession.getSqlSession().getConnection().setSchema(getDatabaseSchema());
+      } catch (SQLException e) {
+        throw new ActivitiDmnException("Could not set database schema on connection", e);
+      }
+    }
+    if (getDatabaseCatalog() != null && getDatabaseCatalog().length() > 0) {
+      try {
+        dbSqlSession.getSqlSession().getConnection().setCatalog(getDatabaseCatalog());
+      } catch (SQLException e) {
+        throw new ActivitiDmnException("Could not set database catalog on connection", e);
+      }
+    }
+    return dbSqlSession;
   }
 
   // insert, update and delete statements

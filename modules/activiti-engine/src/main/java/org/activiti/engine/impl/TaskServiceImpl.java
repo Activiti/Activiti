@@ -185,6 +185,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public void complete(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables));
   }
+  
+  @Override
+  public void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+    commandExecutor.execute(new CompleteTaskCmd(taskId, variables, transientVariables));
+  }
 
   public void complete(String taskId, Map<String, Object> variables, boolean localScope) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables, localScope));
@@ -200,6 +205,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void resolveTask(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new ResolveTaskCmd(taskId, variables));
+  }
+  
+  @Override
+  public void resolveTask(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+    commandExecutor.execute(new ResolveTaskCmd(taskId, variables, transientVariables));
   }
 
   public void setPriority(String taskId, int priority) {

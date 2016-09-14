@@ -43,17 +43,17 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
 
     calendar.setTime(baseTime);
-    calendar.add(Calendar.HOUR, 2);
-    // expect to wait after competing task B for 1 hour even I set the end
-    // date for 2 hours (the expression will trigger the execution)
+    calendar.add(Calendar.MINUTE, 10);
+    // after 10 minutes the end Date will be reached but the intermediate timers will ignore it
+    // since the end date is validated only when a new timer is going to be created
+    
     DateTime dt = new DateTime(calendar.getTime());
     String dateStr1 = fmt.print(dt);
 
     calendar.setTime(baseTime);
     calendar.add(Calendar.HOUR, 1);
     calendar.add(Calendar.MINUTE, 30);
-    // expect to wait after competing task B for 1 hour and 30 minutes (the
-    // end date will be reached, the expression will not be considered)
+    
     dt = new DateTime(calendar.getTime());
     String dateStr2 = fmt.print(dt);
 
@@ -75,19 +75,20 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-    // Test Timer Catch Intermediate Events after completing Task B (endDate
-    // not reached but it will be executed according to the expression)
+    // Test Timer Catch Intermediate Events after completing Task A (endDate not reached but it will be executed according to the expression)
     taskService.complete(task.getId());
 
     Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
     
     waitForJobExecutorToProcessAllJobs(2000, 500);
+    
     // Expected that job isn't executed because the timer is in t0");
     Job timerJobAfter = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals(timerJob.getId(), timerJobAfter.getId());
 
-    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be triggered and the flow will go to the next step
+    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour and 5 minutes the timer event should be executed.
+    nextTimeCal.add(Calendar.MINUTE, 5);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 200);
@@ -103,15 +104,17 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
 
     // Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
-    nextTimeCal.add(Calendar.MINUTE, 60); 
+    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour and 5 minutes the timer event should be executed.
+    nextTimeCal.add(Calendar.MINUTE, 5);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     // expect to execute because the end time is reached.
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
       assertNotNull(historicInstance.getEndTime());
     }
 

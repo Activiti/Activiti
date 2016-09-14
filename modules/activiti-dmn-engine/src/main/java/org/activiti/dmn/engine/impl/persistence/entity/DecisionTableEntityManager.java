@@ -27,6 +27,11 @@ public interface DecisionTableEntityManager extends EntityManager<DecisionTableE
   DecisionTableEntity findLatestDecisionTableByKey(String decisionTableKey);
 
   DecisionTableEntity findLatestDecisionTableByKeyAndTenantId(String decisionTableKey, String tenantId);
+  
+  DecisionTableEntity findLatestDecisionTableByKeyAndParentDeploymentId(String decisionTableKey, String parentDeploymentId);
+  
+  DecisionTableEntity findLatestDecisionTableByKeyParentDeploymentIdAndTenantId(String decisionTableKey, 
+      String parentDeploymentId, String tenantId);
 
   List<DecisionTable> findDecisionTablesByQueryCriteria(DecisionTableQueryImpl decisionTableQuery, Page page);
 
