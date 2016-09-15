@@ -22,7 +22,6 @@ import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +67,8 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     } else {
       tenantExecutor = tenantAwareAyncExecutorFactory.createAsyncExecutor(tenantId);
     }
+
+    tenantExecutor.setProcessEngineConfiguration(processEngineConfiguration);
     
     if (tenantExecutor instanceof DefaultAsyncJobExecutor) {
       DefaultAsyncJobExecutor defaultAsyncJobExecutor = (DefaultAsyncJobExecutor) tenantExecutor;
@@ -75,8 +76,6 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
       defaultAsyncJobExecutor.setTimerJobRunnable(new TenantAwareAcquireTimerJobsRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
       defaultAsyncJobExecutor.setExecuteAsyncRunnableFactory(new TenantAwareExecuteAsyncRunnableFactory(tenantInfoHolder, tenantId));
     }
-    
-    tenantExecutor.setProcessEngineConfiguration(processEngineConfiguration); // Needs to be done for job executors created after boot. Doesn't hurt on boot.
     
     tenantExecutors.put(tenantId, tenantExecutor);
     
@@ -106,6 +105,7 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   
   @Override
   public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
     for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
       asyncExecutor.setProcessEngineConfiguration(processEngineConfiguration);
     }
