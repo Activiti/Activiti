@@ -112,7 +112,7 @@ public class IdentityInfoEntityManager extends AbstractManager {
 
   public String decryptPassword(byte[] storedPassword, String userPassword) {
     // TODO
-    return Arrays.toString(storedPassword)
+    return Arrays.toString(storedPassword);
   }
 
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
