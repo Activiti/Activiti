@@ -96,10 +96,18 @@ public class MultiTenantProcessEngineTest {
   }
   
   @Test
-  public void testStartProcessInstances() throws Exception {
-    
+  public void testStartProcessInstancesWithSharedExecutor() throws Exception {
     setupProcessEngine(true);
-    
+    runProcessInstanceTest();
+  }
+  
+  @Test
+  public void testStartProcessInstancesWithExecutorPerTenantAsyncExecutor() throws Exception {
+    setupProcessEngine(false);
+    runProcessInstanceTest();
+  }
+
+  private void runProcessInstanceTest() throws InterruptedException {
     // Generate data
     startProcessInstances("joram");
     startProcessInstances("joram");
@@ -134,7 +142,6 @@ public class MultiTenantProcessEngineTest {
     assertData("raphael", 0, 0);
     assertData("tony", 2, 0);
     assertData("clark", 4, 0);
-    
   }
   
   private void startProcessInstances(String userId) {
