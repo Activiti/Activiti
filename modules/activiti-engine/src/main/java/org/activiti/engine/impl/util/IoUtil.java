@@ -59,7 +59,7 @@ public class IoUtil {
     } finally {
       IoUtil.closeSilently(inputStream);
     }
-    return new String(buffer);
+    return Arrays.toString(buffer);
   }
   
   public static File getFile(String filePath) {
