@@ -55,7 +55,8 @@ public class ResetExpiredJobsRunnable implements Runnable {
 
       try {
         
-        List<JobEntity> expiredJobs = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor().execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
+        List<JobEntity> expiredJobs = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor()
+            .execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
         
         List<String> expiredJobIds = new ArrayList<String>(expiredJobs.size());
         for (JobEntity expiredJob : expiredJobs) {
@@ -63,7 +64,8 @@ public class ResetExpiredJobsRunnable implements Runnable {
         }
         
         if (expiredJobIds.size() > 0) {
-          asyncExecutor.getProcessEngineConfiguration().getCommandExecutor().execute(new ResetExpiredJobsCmd(expiredJobIds));
+          asyncExecutor.getProcessEngineConfiguration().getCommandExecutor()
+            .execute(new ResetExpiredJobsCmd(expiredJobIds));
         }
         
       } catch (Throwable e) {
