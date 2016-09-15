@@ -1,8 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="Counter" targetNamespace="http://webservice.activiti.org/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.activiti.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="Counter" targetNamespace="http://webservice.impl.engine.activiti.org/"
+   xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.impl.engine.activiti.org/"
+   xmlns:tns1="http://impl.engine.activiti.org/test" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
    <wsdl:types>
       <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified"
-                 targetNamespace="http://webservice.activiti.org/"
-                 xmlns:tns="http://webservice.activiti.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+         targetNamespace="http://webservice.impl.engine.activiti.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
          <xs:element name="getCount" type="tns:getCount" />
          <xs:element name="getCountResponse" type="tns:getCountResponse" />
          <xs:element name="inc" type="tns:inc" />
@@ -82,6 +84,15 @@
             </xs:sequence>
          </xs:complexType>
       </xs:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns1="http://impl.engine.activiti.org/test"
+         attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://impl.engine.activiti.org/test">
+         <xsd:element name="MaxValueReachedFault" type="tns1:MaxValueReachedFault" />
+         <xsd:complexType name="MaxValueReachedFault">
+            <xsd:sequence>
+               <xsd:element minOccurs="0" name="message" type="xsd:string" />
+            </xsd:sequence>
+         </xsd:complexType>
+      </xsd:schema>
    </wsdl:types>
    <wsdl:message name="getCount">
       <wsdl:part element="tns:getCount" name="parameters">
@@ -140,6 +151,10 @@
       <wsdl:part element="tns:setToResponse" name="parameters">
       </wsdl:part>
    </wsdl:message>
+   <wsdl:message name="MaxValueReachedFault">
+      <wsdl:part element="tns1:MaxValueReachedFault" name="MaxValueReachedFault">
+      </wsdl:part>
+   </wsdl:message>
    <wsdl:portType name="Counter">
       <wsdl:operation name="reset">
          <wsdl:input message="tns:reset" name="reset">
@@ -158,6 +173,8 @@
          </wsdl:input>
          <wsdl:output message="tns:incResponse" name="incResponse">
          </wsdl:output>
+         <wsdl:fault message="tns:MaxValueReachedFault" name="MaxValueReachedFault">
+         </wsdl:fault>
       </wsdl:operation>
       <wsdl:operation name="prettyPrintCount">
          <wsdl:input message="tns:prettyPrintCount" name="prettyPrintCount">
@@ -212,6 +229,9 @@
          <wsdl:output name="incResponse">
             <soap:body use="literal" />
          </wsdl:output>
+         <wsdl:fault name="MaxValueReachedFault">
+            <soap:fault name="MaxValueReachedFault" use="literal" />
+         </wsdl:fault>
       </wsdl:operation>
       <wsdl:operation name="prettyPrintCount">
          <soap:operation soapAction="" style="document" />

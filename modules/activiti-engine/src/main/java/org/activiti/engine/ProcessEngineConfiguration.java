@@ -178,6 +178,14 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String databaseTablePrefix = "";
 
   /**
+   * Escape character for doing wildcard searches.
+   * 
+   * This will be added at then end of queries that include for example a LIKE clause.
+   * For example: SELECT * FROM table WHERE column LIKE '%\%%' ESCAPE '\';
+   */
+  protected String databaseWildcardEscapeCharacter;
+  
+  /**
    * database catalog to use
    */
   protected String databaseCatalog = "";
@@ -716,6 +724,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public boolean isTablePrefixIsSchema() {
 	  return tablePrefixIsSchema;
+  }
+
+  public String getDatabaseWildcardEscapeCharacter() {
+    return databaseWildcardEscapeCharacter;
+  }
+
+  public ProcessEngineConfiguration setDatabaseWildcardEscapeCharacter(String databaseWildcardEscapeCharacter) {
+    this.databaseWildcardEscapeCharacter = databaseWildcardEscapeCharacter;
+    return this;
   }
 
   public String getDatabaseCatalog() {

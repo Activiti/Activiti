@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn.webservice;
 
+import java.net.URL;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.namespace.QName;
+
 /**
  * Represents an implementation of a {@link Operation}
  * 
@@ -34,7 +39,8 @@ public interface OperationImplementation {
    * 
    * @param message the message to be sent
    * @param operation the operation that is interested on sending the message
+   * @param overridenEndpointAddresses a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
    * @return the resulting message
    */
-  MessageInstance sendFor(MessageInstance message, Operation operation);
+  MessageInstance sendFor(MessageInstance message, Operation operation, final ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception;
 }

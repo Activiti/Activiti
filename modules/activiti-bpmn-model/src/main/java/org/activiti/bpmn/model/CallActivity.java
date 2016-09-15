@@ -21,6 +21,7 @@ import java.util.List;
 public class CallActivity extends Activity {
 
   protected String calledElement;
+  protected boolean inheritVariables;
   protected List<IOParameter> inParameters = new ArrayList<IOParameter>();
   protected List<IOParameter> outParameters = new ArrayList<IOParameter>();
 
@@ -29,6 +30,12 @@ public class CallActivity extends Activity {
   }
   public void setCalledElement(String calledElement) {
     this.calledElement = calledElement;
+  }
+  public boolean isInheritVariables() {
+    return inheritVariables;
+  }
+  public void setInheritVariables(boolean inheritVariables) {
+    this.inheritVariables = inheritVariables;
   }
   public List<IOParameter> getInParameters() {
     return inParameters;

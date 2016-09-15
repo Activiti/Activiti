@@ -347,6 +347,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     } else {
       callActivityBehaviour = new CallActivityBehavior(callActivity.getCalledElement(), callActivity.getMapExceptions());
     }
+    callActivityBehaviour.setInheritVariables(callActivity.isInheritVariables());
 
     for (IOParameter ioParameter : callActivity.getInParameters()) {
       if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {

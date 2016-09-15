@@ -418,7 +418,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       xtw.writeStartElement(ATTRIBUTE_TIMER_CYCLE);
 
       if (StringUtils.isNotEmpty(timerDefinition.getEndDate())) {
-        xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE,ATTRIBUTE_END_DATE,timerDefinition.getEndDate());
+        xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE,timerDefinition.getEndDate());
       }
 
       xtw.writeCharacters(timerDefinition.getTimeCycle());

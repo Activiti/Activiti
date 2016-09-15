@@ -50,16 +50,15 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
     }
 
     if (allRequestParams.get("processBusinessKeyLike") != null) {
-        queryRequest.setProcessBusinessKeyLike(allRequestParams.get("processBusinessKeyLike"));
+      queryRequest.setProcessBusinessKeyLike(allRequestParams.get("processBusinessKeyLike"));
     }
-    
     
     if (allRequestParams.get("processDefinitionKey") != null) {
       queryRequest.setProcessDefinitionKey(allRequestParams.get("processDefinitionKey"));
     }
     
     if (allRequestParams.get("processDefinitionKeyLike") != null) {
-        queryRequest.setProcessDefinitionKeyLike(allRequestParams.get("processDefinitionKeyLike"));
+      queryRequest.setProcessDefinitionKeyLike(allRequestParams.get("processDefinitionKeyLike"));
     }
 
     if (allRequestParams.get("processDefinitionId") != null) {
@@ -69,9 +68,9 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
     if (allRequestParams.get("processDefinitionName") != null) {
       queryRequest.setProcessDefinitionName(allRequestParams.get("processDefinitionName"));
     }
+    
     if (allRequestParams.get("processDefinitionNameLike") != null) {
-    	queryRequest.setProcessDefinitionNameLike(allRequestParams.get("processDefinitionNameLike"));
-    	
+    	queryRequest.setProcessDefinitionNameLike(allRequestParams.get("processDefinitionNameLike"));	
     }
     
     if (allRequestParams.get("executionId") != null) {
@@ -96,6 +95,10 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
     
     if (allRequestParams.get("taskDefinitionKey") != null) {
       queryRequest.setTaskDefinitionKey(allRequestParams.get("taskDefinitionKey"));
+    }
+    
+    if (allRequestParams.containsKey("taskCategory")) {
+      queryRequest.setTaskCategory(allRequestParams.get("taskCategory"));
     }
     
     if (allRequestParams.get("taskDeleteReason") != null) {

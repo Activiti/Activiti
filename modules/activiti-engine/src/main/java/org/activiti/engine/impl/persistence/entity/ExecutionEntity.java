@@ -302,7 +302,13 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // Initialize the new execution
     subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
     subProcessInstance.setProcessInstance(subProcessInstance);
-
+    
+    // initialize the template-defined data objects as variables first
+    Map<String, Object> dataObjectVars = ((ProcessDefinitionEntity) processDefinition).getVariables();
+    if (dataObjectVars != null) {
+      subProcessInstance.setVariables(dataObjectVars);
+    }
+    
     Context.getCommandContext().getHistoryManager()
       .recordSubProcessInstanceStart(this, subProcessInstance);
 

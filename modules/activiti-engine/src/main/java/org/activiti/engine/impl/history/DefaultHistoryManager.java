@@ -629,6 +629,18 @@ public void recordTaskClaim(String taskId) {
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskProcessDefinitionChange(java.lang.String, java.lang.String)
+   */
+  @Override
+  public void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance != null) {
+        historicTaskInstance.setProcessDefinitionId(processDefinitionId);
+      }
+    }
+  }
  
   // Variables related history
   

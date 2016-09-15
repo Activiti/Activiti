@@ -18,7 +18,9 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionVersionCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -33,6 +35,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   
@@ -182,6 +185,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       .createProcessDefinitionQuery()
       .processDefinitionVersion(2)
       .singleResult();
+    
     pi = runtimeService
       .createProcessInstanceQuery()
       .processInstanceId(pi.getId())
@@ -195,6 +199,14 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
         .processInstanceId(pi.getId())
         .singleResult();
       assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
+      
+      List<HistoricActivityInstance> historicActivities = historyService
+          .createHistoricActivityInstanceQuery()
+          .processInstanceId(pi.getId())
+          .unfinished()
+          .list();
+      assertEquals(1, historicActivities.size());
+      assertEquals(newProcessDefinition.getId(), historicActivities.get(0).getProcessDefinitionId());
     }
 
     // undeploy "manually" deployed process definition
@@ -273,39 +285,45 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   @Deployment(resources = {TEST_PROCESS_USER_TASK_V1})
   public void testSetProcessDefinitionVersionWithWithTask() {
     try {
-    // start process instance
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("userTask");
-
-    // check that user task has been reached    
-    assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
-    
-    // deploy new version of the process definition
-    org.activiti.engine.repository.Deployment deployment = repositoryService
-      .createDeployment()
-      .addClasspathResource(TEST_PROCESS_USER_TASK_V2)
-      .deploy();
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").count());
-    
-    ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
-
-    // migrate process instance to new process definition version
-    processEngineConfiguration.getCommandExecutor().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
-    
-    // check UserTask
-    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
-    assertEquals("testFormKey", formService.getTaskFormData(task.getId()).getFormKey());
-
-    // continue
-    taskService.complete(task.getId());
-
-    assertProcessEnded(pi.getId());
-
-    // undeploy "manually" deployed process definition
-    repositoryService.deleteDeployment(deployment.getId(), true);
-    }
-    catch (Exception ex) {
-     ex.printStackTrace(); 
+      // start process instance
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("userTask");
+  
+      // check that user task has been reached    
+      assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+      
+      // deploy new version of the process definition
+      org.activiti.engine.repository.Deployment deployment = repositoryService
+        .createDeployment()
+        .addClasspathResource(TEST_PROCESS_USER_TASK_V2)
+        .deploy();
+      assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").count());
+      
+      ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
+  
+      // migrate process instance to new process definition version
+      processEngineConfiguration.getCommandExecutor().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+      
+      // check UserTask
+      Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+      assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
+      assertEquals("testFormKey", formService.getTaskFormData(task.getId()).getFormKey());
+      
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+        HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).singleResult();
+        assertEquals(newProcessDefinition.getId(), historicTask.getProcessDefinitionId());
+        assertEquals("testFormKey", formService.getTaskFormData(historicTask.getId()).getFormKey());
+      }
+  
+      // continue
+      taskService.complete(task.getId());
+  
+      assertProcessEnded(pi.getId());
+  
+      // undeploy "manually" deployed process definition
+      repositoryService.deleteDeployment(deployment.getId(), true);
+      
+    } catch (Exception ex) {
+      fail(ex.getMessage());
     }
   }
 
