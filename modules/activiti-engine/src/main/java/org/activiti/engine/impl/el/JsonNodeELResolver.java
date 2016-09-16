@@ -327,6 +327,6 @@ public class JsonNodeELResolver extends ELResolver {
    * @return base != null
    */
   private final boolean isResolvable(Object base) {
-    return base != null && base instanceof JsonNode;
+    return base instanceof JsonNode;
   }
 }

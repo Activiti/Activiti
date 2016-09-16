@@ -58,7 +58,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
     List<Association> associations = process.findAssociationsWithSourceRefRecursive(boundaryEvent.getId());
     for (Association association : associations) {
       FlowElement targetElement = process.getFlowElement(association.getTargetRef(), true);
-      if (targetElement != null && targetElement instanceof Activity) {
+      if (targetElement instanceof Activity) {
         Activity activity = (Activity) targetElement;
         if (activity.isForCompensation()) {
           compensationActivity = activity;

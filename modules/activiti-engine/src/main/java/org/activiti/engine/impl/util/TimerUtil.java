@@ -129,7 +129,7 @@ public class TimerUtil {
       // ACT-1951: intermediate catching timer events shouldn't repeat according to spec
       if (executionEntity != null) {
         FlowElement currentElement = executionEntity.getCurrentFlowElement();
-        if (currentElement != null && currentElement instanceof IntermediateCatchEvent) {
+        if (currentElement instanceof IntermediateCatchEvent) {
           repeat = false;
         }
       }

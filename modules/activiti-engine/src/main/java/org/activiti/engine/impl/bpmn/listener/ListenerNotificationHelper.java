@@ -99,7 +99,7 @@ public class ListenerNotificationHelper {
     if (taskEntity.getProcessDefinitionId() != null) {
       org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(taskEntity.getProcessDefinitionId());
       FlowElement flowElement = process.getFlowElement(taskEntity.getTaskDefinitionKey(), true);
-      if (flowElement != null && flowElement instanceof UserTask) {
+      if (flowElement instanceof UserTask) {
         UserTask userTask = (UserTask) flowElement;
         executeTaskListeners(userTask, taskEntity, eventType);
       }

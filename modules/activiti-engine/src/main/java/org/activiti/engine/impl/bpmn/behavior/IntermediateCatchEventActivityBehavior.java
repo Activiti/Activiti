@@ -66,7 +66,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
   
   protected EventGateway getPrecedingEventBasedGateway(DelegateExecution execution) {
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
-    if (currentFlowElement != null && currentFlowElement instanceof IntermediateCatchEvent) {
+    if (currentFlowElement instanceof IntermediateCatchEvent) {
       IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) currentFlowElement;
       List<SequenceFlow> incomingSequenFlow = intermediateCatchEvent.getIncomingFlows();
       

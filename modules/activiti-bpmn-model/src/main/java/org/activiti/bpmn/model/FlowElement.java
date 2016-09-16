@@ -59,7 +59,7 @@ public abstract class FlowElement extends BaseElement implements HasExecutionLis
   @JsonIgnore
   public SubProcess getSubProcess() {
     SubProcess subProcess = null;
-    if (parentContainer != null && parentContainer instanceof SubProcess) {
+    if (parentContainer instanceof SubProcess) {
       subProcess = (SubProcess) parentContainer;
     }
     

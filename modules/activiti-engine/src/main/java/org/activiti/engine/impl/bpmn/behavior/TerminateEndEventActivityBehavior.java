@@ -210,7 +210,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     // activity with message/signal boundary events
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
-    if (currentFlowElement != null && currentFlowElement instanceof FlowNode) {
+    if (currentFlowElement instanceof FlowNode) {
       dispatchActivityCancelled(execution, terminateEndEvent);
     }
   }

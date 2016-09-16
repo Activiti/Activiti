@@ -106,7 +106,7 @@ public class ExecutionGraphUtil {
       visitedElements.add(sourceElement.getId());
 
       FlowElementsContainer parentElement = process.findParent(sourceElement);
-      if (parentElement != null && parentElement instanceof SubProcess) {
+      if (parentElement instanceof SubProcess) {
         sourceElement = (SubProcess) parentElement;
       } else {
         return false;
