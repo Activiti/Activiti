@@ -154,7 +154,6 @@ public class ProfilingDbSqlSession extends DbSqlSession {
       ProfileSession profileSession = ActivitiProfiler.getInstance().getCurrentProfileSession();
       if (profileSession != null) {
         this.commandExecutionResult = profileSession.getCurrentCommandExecution();
-        ;
       }
     }
     return commandExecutionResult;

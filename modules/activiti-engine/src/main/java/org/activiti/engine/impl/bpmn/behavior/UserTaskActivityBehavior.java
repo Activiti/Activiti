@@ -247,7 +247,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         assigneeValue = assigneeExpressionValue.toString();
       }
 
-      taskEntityManager.changeTaskAssignee(task, assigneeValue);;
+      taskEntityManager.changeTaskAssignee(task, assigneeValue);
     }
 
     if (StringUtils.isNotEmpty(owner)) {
